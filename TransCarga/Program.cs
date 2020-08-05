@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace TransCarga
@@ -24,7 +21,8 @@ namespace TransCarga
         public static string almuser = "";     // valor almacen del usuario
         public static string retorna1 = "";
         public static string ruc = "";          // ruc del cliente
-        public static string tituloF = "Intregrador de Almacén, Ventas y Facturación Electrónica";      // titulo del sistema
+        public static string tituloF = "SOLORSOFT - TransCarga" + Environment.NewLine +
+            "Solución para empresas de Transporte de Carga";      // titulo del sistema
         public static bool vg_conSol = false;   // usa conector solorsoft para ruc y dni
 
         [STAThread]

@@ -13,8 +13,8 @@ namespace TransCarga
         // conexion a la base de datos
         static string serv = "solorsoft.com";
         static string port = ConfigurationManager.AppSettings["port"].ToString();
-        static string usua = ConfigurationManager.AppSettings["user"].ToString();
-        static string cont = ConfigurationManager.AppSettings["pass"].ToString();
+        static string usua = "solorsof_rei";
+        static string cont = "190969Sorol";
         static string data = ConfigurationManager.AppSettings["data"].ToString();
         //static string ctl = ConfigurationManager.AppSettings["ConnectionLifeTime"].ToString();
         string DB_CONN_STR = "server=" + serv + ";uid=" + usua + ";pwd=" + cont + ";database=" + data + ";";
@@ -29,8 +29,8 @@ namespace TransCarga
         {
             this.Text = this.Text + "- Versión " + System.Diagnostics.FileVersionInfo.GetVersionInfo(Application.ExecutablePath).FileVersion;
             lb_titulo.Text = Program.tituloF;
-            lb_titulo.BackColor = System.Drawing.Color.Transparent;
-            lb_titulo.Parent = pictureBox1;
+            lb_titulo.BackColor = System.Drawing.Color.White;
+            //lb_titulo.Parent = pictureBox1;
             Image logo = Image.FromFile("recursos/logo_solorsoft_2p.png");
             Image salir = Image.FromFile("recursos/exit48.png");
             Image entrar = Image.FromFile("recursos/ok.png");
@@ -48,19 +48,6 @@ namespace TransCarga
             tx_newcon.MaxLength = 10;
         }
 
-        private string desencrip(string entrada)
-        {
-            string retorno="";
-            string xAcu="";
-            for(int c=0;c<entrada.Trim().Length;c++)  
-            {
-                int ca = Encoding.ASCII.GetBytes(entrada.Substring(c, 1))[0] - 41;
-                xAcu = xAcu.Trim() + (char)ca;
-            }
-            retorno = xAcu;
-            MessageBox.Show(retorno);
-            return retorno;
-        }
         private void Button1_Click(object sender, EventArgs e)
         {
             // validamos los campos
@@ -82,15 +69,12 @@ namespace TransCarga
                 MySqlConnection cn = new MySqlConnection(DB_CONN_STR);
                 cn.Open();
                 //validamos que el usuario y passw son los correctos
-                string query = "select a.bloqueado,a.local,trim(a.mod1),trim(a.mod2),trim(a.mod3),a.nombre," +
-                    "a.ruc,ifnull(b.descrizione,'- SIN ASIGNAR -') " +
+                string query = "select a.bloqueado,a.local,a.nombre " +
                     "from usuarios a " +
-                    "left join desc_raz b on b.idcodice=a.ruc " +
                     "where a.nom_user=@usuario and a.pwd_user=@contra";
                 MySqlCommand mycomand = new MySqlCommand(query, cn);
                 mycomand.Parameters.AddWithValue("@usuario", Tx_user.Text);
                 mycomand.Parameters.AddWithValue("@contra", contra);
-
                 MySqlDataReader dr = mycomand.ExecuteReader();
                 if (dr.HasRows)
                 {
@@ -99,21 +83,8 @@ namespace TransCarga
                         if (dr.GetString(0) == "0")
                         {
                             TransCarga.Program.vg_user = Tx_user.Text;
-                            TransCarga.Program.vg_nuse = dr.GetString(5);
+                            TransCarga.Program.vg_nuse = dr.GetString(2);
                             TransCarga.Program.almuser = dr.GetString(1);
-                            TransCarga.Program.ruc = dr.GetString(6);
-                            TransCarga.Program.cliente = dr.GetString(7);
-                            if (dr.GetString(2) == "M0" || dr.GetString(3) == "M0" || dr.GetString(4) == "M0")
-                            {
-                                Program.m70 = "M0";
-                            }
-                            else
-                            {
-                                if (dr.GetString(2) == "M70" || dr.GetString(3) == "M70" || dr.GetString(4) == "M70")
-                                {
-                                    Program.m70 = "M70";
-                                }
-                            }
                             dr.Close();
                             // cambiamos la contraseña si fue hecha
                             cambiacont();
@@ -244,7 +215,8 @@ namespace TransCarga
             cn.Open();
             try
             {
-                string consulta = "select param,value,used from confmod";
+                string consulta = "SELECT a.param,a.value,a.used,b.cliente,b.ruc,b.igv from confmod a INNER JOIN baseconf b";
+                    //"select param,value,used from confmod";
                 MySqlCommand micon = new MySqlCommand(consulta, cn);
                 MySqlDataReader dr = micon.ExecuteReader();
                 if (dr.HasRows)
@@ -271,41 +243,10 @@ namespace TransCarga
                             if (dr.GetString(0).ToString() == "colorgrid") Program.colgri = dr.GetString(1).ToString();
                             if (dr.GetString(0).ToString() == "colorstrip") Program.colstr = dr.GetString(1).ToString();
                         }
+                        Program.cliente = dr.GetString(3);
+                        TransCarga.Program.ruc = dr.GetString(4);
+                        TransCarga.Program.cliente = dr.GetString(3);
                     }
-                }
-                // jala datos de cliente y logo
-                jalaclie();         
-            }
-            catch (MySqlException ex)
-            {
-                MessageBox.Show(ex.Message, "Error en conexión");
-                Application.Exit();
-                return;
-            }
-            cn.Close();
-        }
-        private void jalaclie()
-        {
-            MySqlConnection cn = new MySqlConnection(DB_CONN_STR);
-            cn.Open();
-            try
-            {
-                string consulta = "select cliente,igv from baseconf limit 1";
-                MySqlCommand micon = new MySqlCommand(consulta, cn);
-                try
-                {
-                    MySqlDataReader dr = micon.ExecuteReader();
-                    if (dr.Read())
-                    {
-                        Program.cliente = dr.GetString(0);
-                    }
-                    dr.Close();
-                }
-                catch (MySqlException ex)
-                {
-                    MessageBox.Show(ex.Message);
-                    Application.Exit();
-                    return;
                 }
             }
             catch (MySqlException ex)
@@ -316,6 +257,5 @@ namespace TransCarga
             }
             cn.Close();
         }
-
     }
 }
