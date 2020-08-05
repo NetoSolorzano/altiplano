@@ -11,7 +11,7 @@ namespace TransCarga
     public partial class login : Form
     {
         // conexion a la base de datos
-        static string serv = ConfigurationManager.AppSettings["serv"].ToString();
+        static string serv = "solorsoft.com";
         static string port = ConfigurationManager.AppSettings["port"].ToString();
         static string usua = ConfigurationManager.AppSettings["user"].ToString();
         static string cont = ConfigurationManager.AppSettings["pass"].ToString();
@@ -31,7 +31,7 @@ namespace TransCarga
             lb_titulo.Text = Program.tituloF;
             lb_titulo.BackColor = System.Drawing.Color.Transparent;
             lb_titulo.Parent = pictureBox1;
-            Image logo = Image.FromFile("recursos/logo_artesanos_omg_peru.jpeg");
+            Image logo = Image.FromFile("recursos/logo_solorsoft_2p.png");
             Image salir = Image.FromFile("recursos/exit48.png");
             Image entrar = Image.FromFile("recursos/ok.png");
             pictureBox1.Image = logo;
@@ -317,9 +317,5 @@ namespace TransCarga
             cn.Close();
         }
 
-        private void titulo2_Click(object sender, EventArgs e)
-        {
-
-        }
     }
 }
