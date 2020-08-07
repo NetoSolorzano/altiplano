@@ -28,10 +28,19 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
+            this.SuspendLayout();
+            // 
+            // main
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Text = "main";
+            this.ClientSize = new System.Drawing.Size(884, 561);
+            this.Name = "main";
+            this.Text = "Solorsoft TransCarga";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.main_FormClosing);
+            this.Load += new System.EventHandler(this.main_Load);
+            this.ResumeLayout(false);
+
         }
 
         #endregion

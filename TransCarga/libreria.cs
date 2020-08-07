@@ -157,13 +157,14 @@ namespace TransCarga
         }
         public string ipwan()                                               // retorna la IP wan del cliente
         {
+
             // check IP using DynDNS's service
             WebRequest request = WebRequest.Create("http://checkip.dyndns.org");
             WebResponse response = request.GetResponse();
             StreamReader stream = new StreamReader(response.GetResponseStream());
 
             // IMPORTANT: set Proxy to null, to drastically INCREASE the speed of request
-            request.Proxy = null;
+            //request.Proxy = null;
 
             // read complete response
             string ipAddress = stream.ReadToEnd();

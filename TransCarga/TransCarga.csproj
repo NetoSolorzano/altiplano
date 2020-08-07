@@ -32,7 +32,13 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>solorsoft.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AdvancedDataGridView, Version=0.1.0.10, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ADGV.0.1.0.10\lib\net40\AdvancedDataGridView.dll</HintPath>
+    </Reference>
     <Reference Include="MySql.Data, Version=8.0.18.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\..\Solorsoft_DNI_RUC\Solorsoft_DNI_RUC\bin\Debug\MySql.Data.dll</HintPath>
@@ -51,6 +57,30 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="clients.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="clients.designer.cs">
+      <DependentUpon>clients.cs</DependentUpon>
+    </Compile>
+    <Compile Include="defs.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="defs.designer.cs">
+      <DependentUpon>defs.cs</DependentUpon>
+    </Compile>
+    <Compile Include="enlaces.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="enlaces.designer.cs">
+      <DependentUpon>enlaces.cs</DependentUpon>
+    </Compile>
+    <Compile Include="facelec.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="facelec.designer.cs">
+      <DependentUpon>facelec.cs</DependentUpon>
+    </Compile>
     <Compile Include="libreria.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -66,10 +96,52 @@
     <Compile Include="main.Designer.cs">
       <DependentUpon>main.cs</DependentUpon>
     </Compile>
+    <Compile Include="permisos.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="permisos.designer.cs">
+      <DependentUpon>permisos.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="sernum.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="sernum.designer.cs">
+      <DependentUpon>sernum.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TransMain.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TransMain.designer.cs">
+      <DependentUpon>TransMain.cs</DependentUpon>
+    </Compile>
+    <Compile Include="users.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="users.designer.cs">
+      <DependentUpon>users.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="clients.resx">
+      <DependentUpon>clients.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="defs.resx">
+      <DependentUpon>defs.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="enlaces.resx">
+      <DependentUpon>enlaces.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="facelec.resx">
+      <DependentUpon>facelec.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="login.resx">
       <DependentUpon>login.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="main.resx">
+      <DependentUpon>main.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="permisos.resx">
+      <DependentUpon>permisos.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -81,6 +153,16 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="sernum.resx">
+      <DependentUpon>sernum.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TransMain.resx">
+      <DependentUpon>TransMain.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="users.resx">
+      <DependentUpon>users.cs</DependentUpon>
+    </EmbeddedResource>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -93,6 +175,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="solorsoft.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -10,10 +10,10 @@ namespace TransCarga
     public partial class login : Form
     {
         // conexion a la base de datos
-        static string serv = "solorsoft.com";
+        public static string serv = "solorsoft.com";
         static string port = ConfigurationManager.AppSettings["port"].ToString();
-        static string usua = "solorsof_rei";
-        static string cont = "190969Sorol";
+        public static string usua = "solorsof_rei";
+        public static string cont = "190969Sorol";
         static string data = ConfigurationManager.AppSettings["data"].ToString();
         //static string ctl = ConfigurationManager.AppSettings["ConnectionLifeTime"].ToString();
         string DB_CONN_STR = "server=" + serv + ";uid=" + usua + ";pwd=" + cont + ";database=" + data + ";";
@@ -102,7 +102,8 @@ namespace TransCarga
                                 cambiacont();
                                 // nos vamos al form principal
                                 Program.vg_user = this.Tx_user.Text;
-                                main Main = new main();
+                                //main Main = new main();
+                                TransMain Main = new TransMain();
                                 Main.Show();
                                 this.Hide();
                             }
