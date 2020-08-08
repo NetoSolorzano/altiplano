@@ -100,7 +100,7 @@
             this.bt_solorsoft.Name = "bt_solorsoft";
             this.bt_solorsoft.Size = new System.Drawing.Size(45, 39);
             this.bt_solorsoft.TabIndex = 0;
-            this.toolTip1.SetToolTip(this.bt_solorsoft, "http://www.solorsoft.com");
+            this.toolTip1.SetToolTip(this.bt_solorsoft, "http://www.solorsoft.com/transcarga/");
             this.bt_solorsoft.UseVisualStyleBackColor = true;
             this.bt_solorsoft.Click += new System.EventHandler(this.bt_solorsoft_Click);
             // 
@@ -289,7 +289,6 @@
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBox1.TabIndex = 2;
             this.pictureBox1.TabStop = false;
-            this.toolTip1.SetToolTip(this.pictureBox1, "http://www.artesanosdonbosco.pe");
             this.pictureBox1.Click += new System.EventHandler(this.pictureBox1_Click);
             // 
             // bt_salir

@@ -46,6 +46,7 @@ namespace TransCarga
         string Cboleta = "";                                            // documento boleta
         string iFE = "";                                                // identificador de factura electrónica
         // funcionamiento del formulario
+        string urlemis = "";                                            // url de la empresa
         string nomform = "TransMain";                                   // nombre del formulario
         string asd = Program.vg_user;                                   // usuario logueado
         string img_log1 = "";                                           // ruta y nombre del logo del applicativo
@@ -181,7 +182,7 @@ namespace TransCarga
                         provemi = dr.GetString("provin").Trim();
                         urbemis = dr.GetString("referen2").Trim();              // urbanizacion
                         depaemi = dr.GetString("depart").Trim();          // departamento
-                        //
+                        urlemis = dr.GetString("urlCliente").Trim();          // 
                     }
                     dr.Close();
                 }
@@ -709,7 +710,7 @@ namespace TransCarga
         //
         private void pictureBox1_Click(object sender, EventArgs e)
         {
-            string url = "http://www.solorsoft.com/TransCarga/";   // hacer la pagina de Transcarga con estilo manual
+            string url = urlemis;   // hacer la pagina de Transcarga con estilo manual
             Process.Start(url);
         }
         #endregion

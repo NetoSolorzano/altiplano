@@ -37,12 +37,12 @@ namespace TransCarga
         string cn_mir = "";     // codigo nivel usuario solo mira
         libreria lib = new libreria();
         // string de conexion
-        static string serv = ConfigurationManager.AppSettings["serv"].ToString();
+        //static string serv = ConfigurationManager.AppSettings["serv"].ToString();
         static string port = ConfigurationManager.AppSettings["port"].ToString();
-        static string usua = ConfigurationManager.AppSettings["user"].ToString();
-        static string cont = ConfigurationManager.AppSettings["pass"].ToString();
+        //static string usua = ConfigurationManager.AppSettings["user"].ToString();
+        //static string cont = ConfigurationManager.AppSettings["pass"].ToString();
         static string data = ConfigurationManager.AppSettings["data"].ToString();
-        string DB_CONN_STR = "server=" + serv + ";uid=" + usua + ";pwd=" + cont + ";database=" + data + ";";
+        string DB_CONN_STR = "server=" + login.serv + ";uid=" + login.usua + ";pwd=" + login.cont + ";database=" + data + ";";
         DataTable dtg = new DataTable();
 
         public users()
@@ -98,14 +98,13 @@ namespace TransCarga
         }
         private void grilla()                   // arma la grilla
         {
-            // id,nom_user,nombre,pwd_user,bloqueado,nivel,tipuser,acceso,local,tienda,sede,ruc,
-            // mod1,mod2,mod3,priv1,priv2,derecho,aoper,fecha,foto
             Font tiplg = new Font("Arial",7, FontStyle.Bold);
             advancedDataGridView1.Font = tiplg;
             advancedDataGridView1.DefaultCellStyle.Font = tiplg;
             advancedDataGridView1.RowTemplate.Height = 15;
             advancedDataGridView1.DefaultCellStyle.BackColor = Color.MediumAquamarine;
             advancedDataGridView1.DataSource = dtg;
+            /*
             // id del usuario
             advancedDataGridView1.Columns[0].Visible = false;
             // nom_user
@@ -188,6 +187,7 @@ namespace TransCarga
             advancedDataGridView1.Columns[18].Visible = false;
             advancedDataGridView1.Columns[19].Visible = false;
             advancedDataGridView1.Columns[20].Visible = false;
+            */
         }
         private void jalainfo()                 // obtiene datos de imagenes
         {
@@ -309,8 +309,7 @@ namespace TransCarga
             comboBox3.DisplayMember = "descrizionerid";
             comboBox3.ValueMember = "idcodice";
             // datos de usuarios
-            string datgri = "select id,nom_user,nombre,pwd_user,bloqueado,nivel,tipuser,acceso,local,tienda,sede," +
-                "ruc,mod1,mod2,mod3,priv1,priv2,derecho,aoper,fecha,foto " +
+            string datgri = "select id,nom_user,nombre,pwd_user,bloqueado,nivel,tipuser,local " +
                 "from usuarios";
             MySqlCommand cdg = new MySqlCommand(datgri, conn);
             MySqlDataAdapter dag = new MySqlDataAdapter(cdg);
