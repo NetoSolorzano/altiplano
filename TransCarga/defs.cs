@@ -11,9 +11,12 @@ namespace TransCarga
     {
         static string nomform = "defs"; // nombre del formulario
         string asd = TransCarga.Program.vg_user;   // usuario conectado al sistema
-        string colback = TransCarga.Program.colbac;   // color de fondo
+        string colback = TransCarga.Program.colbac;   // color de fondo del form
         string colpage = TransCarga.Program.colpag;   // color de los pageframes
-        string colgrid = TransCarga.Program.colgri;   // color de las grillas
+        string colgrid = TransCarga.Program.colgri;   // color fondo del grillas 
+        string colfogr = TransCarga.Program.colfog;   // color fondo con grillas
+        string colsfon = TransCarga.Program.colsbg;   // color fondo seleccion
+        string colsfgr = TransCarga.Program.colsfc;   // color seleccion
         string colstrp = TransCarga.Program.colstr;   // color del strip
         static string nomtab = "descrittive";
         public int totfilgrid, cta;      // variables para impresion
@@ -33,12 +36,12 @@ namespace TransCarga
         string img_anul = "";
         libreria lib = new libreria();
         // string de conexion
-        static string serv = ConfigurationManager.AppSettings["serv"].ToString();
+        //static string serv = ConfigurationManager.AppSettings["serv"].ToString();
         static string port = ConfigurationManager.AppSettings["port"].ToString();
-        static string usua = ConfigurationManager.AppSettings["user"].ToString();
-        static string cont = ConfigurationManager.AppSettings["pass"].ToString();
+        //static string usua = ConfigurationManager.AppSettings["user"].ToString();
+        //static string cont = ConfigurationManager.AppSettings["pass"].ToString();
         static string data = ConfigurationManager.AppSettings["data"].ToString();
-        string DB_CONN_STR = "server=" + serv + ";uid=" + usua + ";pwd=" + cont + ";database=" + data + ";";
+        string DB_CONN_STR = "server=" + login.serv + ";uid=" + login.usua + ";pwd=" + login.cont + ";database=" + data + ";";
         DataTable dtg = new DataTable();
 
         public defs()
@@ -63,7 +66,7 @@ namespace TransCarga
             toolTipNombre.InitialDelay = 1000;
             toolTipNombre.ReshowDelay = 500;
             toolTipNombre.ShowAlways = true;                 // Force the ToolTip text to be displayed whether or not the form is active.
-            toolTipNombre.SetToolTip(toolStrip1, nomform);   // Set up the ToolTip text for the object
+            toolTipNombre.SetToolTip(toolStrip1, nomform);   // toolStrip1 Set up the ToolTip text for the object
             init();
             toolboton();
             limpiar(this);
@@ -71,16 +74,18 @@ namespace TransCarga
             dataload();
             grilla();
             KeyPreview = true;
-            //Bt_add_Click(null, null);
             tabControl1.SelectedTab = tabgrilla;
             advancedDataGridView1.Enabled = false;
         }
         private void init()
         {
             this.BackColor = Color.FromName(colback);
-            this.toolStrip1.BackColor = Color.FromName(colstrp);
-            this.advancedDataGridView1.BackgroundColor = Color.FromName(TransCarga.Program.colgri);
-            this.tabreg.BackColor = Color.FromName(TransCarga.Program.colgri);
+            toolStrip1.BackColor = Color.FromName(colstrp);
+            tabreg.BackColor = Color.FromName(colpage);
+            advancedDataGridView1.DefaultCellStyle.BackColor = Color.FromName(colgrid);
+            advancedDataGridView1.DefaultCellStyle.ForeColor = Color.FromName(colfogr);
+            advancedDataGridView1.DefaultCellStyle.SelectionBackColor = Color.FromName(colsfon);
+            advancedDataGridView1.DefaultCellStyle.SelectionForeColor = Color.FromName(colsfgr);
 
             jalainfo();
             Bt_add.Image = Image.FromFile(img_btN);

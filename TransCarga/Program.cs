@@ -13,7 +13,10 @@ namespace TransCarga
         public static string bd = "";           // base de datos seleccionada
         public static string colbac = "";       // back color
         public static string colpag = "";       // pagaframe color
-        public static string colgri = "";       // grids color
+        public static string colgri = "";       // grids color fondo sin grilla
+        public static string colfog = "";       // grids color fondo con grilla
+        public static string colsbg = "";       // grids color seleccion fondo
+        public static string colsfc = "";       // grids color seleccion contenido
         public static string colstr = "";       // strip color
         public static string colpnc = "";       // panel cabecera color
         public static string m70 = "";          // acceso directo a modulo almacen fisico

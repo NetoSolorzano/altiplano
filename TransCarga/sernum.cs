@@ -9,11 +9,14 @@ namespace TransCarga
 {
     public partial class sernum : Form
     {
-        static string nomform = "sernum"; // nombre del formulario
-        string asd = TransCarga.Program.vg_user;   // usuario conectado al sistema
+        static string nomform = "sernum";               // nombre del formulario
+        string asd = TransCarga.Program.vg_user;        // usuario conectado al sistema
         string colback = TransCarga.Program.colbac;   // color de fondo
         string colpage = TransCarga.Program.colpag;   // color de los pageframes
-        string colgrid = TransCarga.Program.colgri;   // color de las grillas
+        string colgrid = TransCarga.Program.colgri;   // color fondo sin grillas
+        string colfogr = TransCarga.Program.colfog;   // color fondo con grillas
+        string colsfon = TransCarga.Program.colsbg;   // color fondo seleccion
+        string colsfgr = TransCarga.Program.colsfc;   // color seleccion
         string colstrp = TransCarga.Program.colstr;   // color del strip
         static string nomtab = "series";
         public int totfilgrid, cta;      // variables para impresion
@@ -33,12 +36,12 @@ namespace TransCarga
         string img_anul = "";
         libreria lib = new libreria();
         // string de conexion
-        static string serv = ConfigurationManager.AppSettings["serv"].ToString();
+        //static string serv = ConfigurationManager.AppSettings["serv"].ToString();
         static string port = ConfigurationManager.AppSettings["port"].ToString();
-        static string usua = ConfigurationManager.AppSettings["user"].ToString();
-        static string cont = ConfigurationManager.AppSettings["pass"].ToString();
+        //static string usua = ConfigurationManager.AppSettings["user"].ToString();
+        //static string cont = ConfigurationManager.AppSettings["pass"].ToString();
         static string data = ConfigurationManager.AppSettings["data"].ToString();
-        string DB_CONN_STR = "server=" + serv + ";uid=" + usua + ";pwd=" + cont + ";database=" + data + ";";
+        string DB_CONN_STR = "server=" + login.serv + ";uid=" + login.usua + ";pwd=" + login.cont + ";database=" + data + ";";
         DataTable dtg = new DataTable();
 
         public sernum()
@@ -78,9 +81,12 @@ namespace TransCarga
         private void init()
         {
             this.BackColor = Color.FromName(colback);
-            this.toolStrip1.BackColor = Color.FromName(colstrp);
-            this.advancedDataGridView1.BackgroundColor = Color.FromName(TransCarga.Program.colgri);
-            this.tabreg.BackColor = Color.FromName(TransCarga.Program.colgri);
+            toolStrip1.BackColor = Color.FromName(colstrp);
+            advancedDataGridView1.DefaultCellStyle.BackColor = Color.FromName(colgrid);
+            advancedDataGridView1.DefaultCellStyle.ForeColor = Color.FromName(colfogr);
+            advancedDataGridView1.DefaultCellStyle.SelectionBackColor = Color.FromName(colsfon);
+            advancedDataGridView1.DefaultCellStyle.SelectionForeColor = Color.FromName(colsfgr);
+            tabreg.BackColor = Color.FromName(colpage);
 
             jalainfo();
             Bt_add.Image = Image.FromFile(img_btN);
@@ -419,9 +425,19 @@ namespace TransCarga
                 }
             }
         }
-        public static void limpiar(Form ofrm)
+        private void limpiar(Form ofrm)
         {
             foreach (Control oControls in ofrm.Controls)
+            {
+                if (oControls is TextBox)
+                {
+                    oControls.Text = "";
+                }
+            }
+        }
+        private void limpiaPag(TabPage pag)
+        {
+            foreach (Control oControls in pag.Controls)
             {
                 if (oControls is TextBox)
                 {
@@ -480,7 +496,6 @@ namespace TransCarga
             // grabamos, actualizamos, etc
             string modo = this.Tx_modo.Text;
             string iserror = "no";
-            string asd = TransCarga.Program.vg_user;
             string verapp = System.Diagnostics.FileVersionInfo.GetVersionInfo(Application.ExecutablePath).FileVersion;
             if (modo == "NUEVO")
             {
@@ -596,8 +611,10 @@ namespace TransCarga
             {
                 // debe limpiar los campos y actualizar la grilla
                 limpiar(this);
+                limpiaPag(tabreg);
                 limpia_otros();
-                //this.textBox1.Focus();
+                limpia_chk();
+                limpia_combos();
                 //dataload();
             }
         }
@@ -615,43 +632,6 @@ namespace TransCarga
                 //tx_idr.Text = aca;
                 jalaoc("tx_idr");               // jalamos los datos del registro
             }
-        }
-        private void textBox1_Leave(object sender, EventArgs e)
-        {
-            /*  validamos segun el modo
-            if (textBox1.Text != "" && Tx_modo.Text=="NUEVO")
-            {
-                MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
-                conn.Open();
-                if (conn.State != ConnectionState.Open)
-                {
-                    MessageBox.Show("No se pudo conectar con el servidor", "Error de conexión");
-                    Application.Exit();
-                    return;
-                }
-                string consulta = "select count(nom_user) as cant from usuarios where nom_user=@usuario";
-                MySqlCommand mycomand = new MySqlCommand(consulta, conn);
-                mycomand.Parameters.AddWithValue("@usuario", this.textBox1.Text);
-                int cant = System.Convert.ToInt16(mycomand.ExecuteScalar());
-                if (cant > 0)
-                {
-                    MessageBox.Show("Usuario YA existe!", "Error",MessageBoxButtons.OK,MessageBoxIcon.Error);
-                    this.textBox1.Text = "";
-                    return;        
-                }
-                conn.Close();
-            }
-            if (textBox1.Text != "" && Tx_modo.Text != "NUEVO")
-            {
-                DataRow[] linea = dtg.Select("nom_user like '%" + textBox1.Text + "%'");
-                foreach(DataRow row in linea)
-                {
-                    textBox2.Text = row[1].ToString();
-                    textBox3.Text = row[2].ToString();
-                }
-                
-            }
-            */
         }
         #endregion leaves;
 

@@ -13,7 +13,10 @@ namespace TransCarga
         string asd = TransCarga.Program.vg_user;   // usuario conectado al sistema
         string colback = TransCarga.Program.colbac;   // color de fondo
         string colpage = TransCarga.Program.colpag;   // color de los pageframes
-        string colgrid = TransCarga.Program.colgri;   // color de las grillas
+        string colgrid = TransCarga.Program.colgri;   // color fondo sin grillas
+        string colfogr = TransCarga.Program.colfog;   // color fondo con grillas
+        string colsfon = TransCarga.Program.colsbg;   // color fondo seleccion
+        string colsfgr = TransCarga.Program.colsfc;   // color seleccion
         string colstrp = TransCarga.Program.colstr;   // color del strip
         static string nomtab = "usuarios";
         public int totfilgrid, cta;      // variables para impresion
@@ -82,9 +85,13 @@ namespace TransCarga
         private void init()
         {
             this.BackColor = Color.FromName(colback);
-            this.toolStrip1.BackColor = Color.FromName(colstrp);
-            this.advancedDataGridView1.BackgroundColor = Color.FromName(TransCarga.Program.colgri);
-            this.tabuser.BackColor = Color.FromName(TransCarga.Program.colgri);
+            toolStrip1.BackColor = Color.FromName(colstrp);
+            //this.advancedDataGridView1.BackgroundColor = Color.FromName(colgrid);
+            advancedDataGridView1.DefaultCellStyle.BackColor = Color.FromName(colgrid);
+            advancedDataGridView1.DefaultCellStyle.ForeColor = Color.FromName(colfogr);
+            advancedDataGridView1.DefaultCellStyle.SelectionBackColor = Color.FromName(colsfon);
+            advancedDataGridView1.DefaultCellStyle.SelectionForeColor = Color.FromName(colsfgr);
+            tabuser.BackColor = Color.FromName(colpage);
 
             jalainfo();
             Bt_add.Image = Image.FromFile(img_btN);
@@ -102,8 +109,12 @@ namespace TransCarga
             advancedDataGridView1.Font = tiplg;
             advancedDataGridView1.DefaultCellStyle.Font = tiplg;
             advancedDataGridView1.RowTemplate.Height = 15;
-            advancedDataGridView1.DefaultCellStyle.BackColor = Color.MediumAquamarine;
+            //advancedDataGridView1.DefaultCellStyle.BackColor = Color.MediumAquamarine;
             advancedDataGridView1.DataSource = dtg;
+            for(int i = 0; i < dtg.Columns.Count; i++)
+            {
+                advancedDataGridView1.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            }
             /*
             // id del usuario
             advancedDataGridView1.Columns[0].Visible = false;

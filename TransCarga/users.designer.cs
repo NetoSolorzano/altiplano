@@ -56,6 +56,7 @@
             this.tabgrilla = new System.Windows.Forms.TabPage();
             this.advancedDataGridView1 = new ADGV.AdvancedDataGridView();
             this.tabuser = new System.Windows.Forms.TabPage();
+            this.chk_permisos = new System.Windows.Forms.CheckBox();
             this.tx_rind = new System.Windows.Forms.TextBox();
             this.comboBox3 = new System.Windows.Forms.ComboBox();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
@@ -90,7 +91,6 @@
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.button1 = new System.Windows.Forms.Button();
-            this.chk_permisos = new System.Windows.Forms.CheckBox();
             this.toolStrip1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabgrilla.SuspendLayout();
@@ -405,6 +405,7 @@
             this.tabuser.Controls.Add(this.textBox2);
             this.tabuser.Controls.Add(this.textBox1);
             this.tabuser.Controls.Add(this.button1);
+            this.tabuser.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.tabuser.Location = new System.Drawing.Point(4, 22);
             this.tabuser.Name = "tabuser";
             this.tabuser.Padding = new System.Windows.Forms.Padding(3);
@@ -412,6 +413,17 @@
             this.tabuser.TabIndex = 1;
             this.tabuser.Text = "Registro";
             this.tabuser.UseVisualStyleBackColor = true;
+            // 
+            // chk_permisos
+            // 
+            this.chk_permisos.AutoSize = true;
+            this.chk_permisos.ForeColor = System.Drawing.Color.Black;
+            this.chk_permisos.Location = new System.Drawing.Point(85, 218);
+            this.chk_permisos.Name = "chk_permisos";
+            this.chk_permisos.Size = new System.Drawing.Size(123, 17);
+            this.chk_permisos.TabIndex = 189;
+            this.chk_permisos.Text = "Reinicializa permisos";
+            this.chk_permisos.UseVisualStyleBackColor = true;
             // 
             // tx_rind
             // 
@@ -740,23 +752,13 @@
             // button1
             // 
             this.button1.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.button1.ForeColor = System.Drawing.SystemColors.ControlDark;
             this.button1.Location = new System.Drawing.Point(500, 95);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(62, 56);
             this.button1.TabIndex = 159;
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
-            // 
-            // chk_permisos
-            // 
-            this.chk_permisos.AutoSize = true;
-            this.chk_permisos.ForeColor = System.Drawing.Color.Black;
-            this.chk_permisos.Location = new System.Drawing.Point(85, 218);
-            this.chk_permisos.Name = "chk_permisos";
-            this.chk_permisos.Size = new System.Drawing.Size(123, 17);
-            this.chk_permisos.TabIndex = 189;
-            this.chk_permisos.Text = "Reinicializa permisos";
-            this.chk_permisos.UseVisualStyleBackColor = true;
             // 
             // users
             // 
