@@ -785,6 +785,15 @@ namespace TransCarga
                 jalaoc("tx_idr");
             }
         }
+
+        private void button2_Click(object sender, EventArgs e)  // carga a grilla permisos del usuario
+        {
+            // nos conectamos a la bd
+            // seleccionamos los permisos del usuario
+            // pasamos los datos al adgv
+
+        }
+
         private void advancedDataGridView1_CellValidating(object sender, DataGridViewCellValidatingEventArgs e) // valida cambios en valor de la celda
         {
             if (e.RowIndex > -1 && e.ColumnIndex > 0 

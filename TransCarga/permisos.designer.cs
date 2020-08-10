@@ -81,6 +81,7 @@
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.button1 = new System.Windows.Forms.Button();
+            this.button2 = new System.Windows.Forms.Button();
             this.toolStrip1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabgrilla.SuspendLayout();
@@ -363,6 +364,8 @@
             // 
             // tabreg
             // 
+            this.tabreg.Controls.Add(this.button2);
+            this.tabreg.Controls.Add(this.textBox1);
             this.tabreg.Controls.Add(this.chk_expor);
             this.tabreg.Controls.Add(this.chk_prev);
             this.tabreg.Controls.Add(this.chk_salir);
@@ -383,7 +386,6 @@
             this.tabreg.Controls.Add(this.checkBox1);
             this.tabreg.Controls.Add(this.textBox3);
             this.tabreg.Controls.Add(this.textBox2);
-            this.tabreg.Controls.Add(this.textBox1);
             this.tabreg.Controls.Add(this.button1);
             this.tabreg.Location = new System.Drawing.Point(4, 22);
             this.tabreg.Name = "tabreg";
@@ -441,9 +443,9 @@
             // 
             this.groupBox5.BackColor = System.Drawing.Color.White;
             this.groupBox5.Controls.Add(this.groupBox6);
-            this.groupBox5.Location = new System.Drawing.Point(79, 57);
+            this.groupBox5.Location = new System.Drawing.Point(79, 52);
             this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(481, 1);
+            this.groupBox5.Size = new System.Drawing.Size(209, 1);
             this.groupBox5.TabIndex = 202;
             this.groupBox5.TabStop = false;
             // 
@@ -476,7 +478,7 @@
             // comboBox1
             // 
             this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(167, 62);
+            this.comboBox1.Location = new System.Drawing.Point(167, 31);
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(121, 21);
             this.comboBox1.TabIndex = 1;
@@ -528,7 +530,7 @@
             // 
             // tx_rind
             // 
-            this.tx_rind.Location = new System.Drawing.Point(383, 6);
+            this.tx_rind.Location = new System.Drawing.Point(705, 82);
             this.tx_rind.Name = "tx_rind";
             this.tx_rind.Size = new System.Drawing.Size(36, 20);
             this.tx_rind.TabIndex = 188;
@@ -536,7 +538,7 @@
             // 
             // tx_idr
             // 
-            this.tx_idr.Location = new System.Drawing.Point(341, 6);
+            this.tx_idr.Location = new System.Drawing.Point(663, 82);
             this.tx_idr.Name = "tx_idr";
             this.tx_idr.Size = new System.Drawing.Size(36, 20);
             this.tx_idr.TabIndex = 185;
@@ -557,7 +559,7 @@
             // 
             this.label1.AutoSize = true;
             this.label1.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label1.Location = new System.Drawing.Point(82, 66);
+            this.label1.Location = new System.Drawing.Point(82, 35);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(43, 13);
             this.label1.TabIndex = 178;
@@ -568,7 +570,7 @@
             // 
             this.label7.AutoSize = true;
             this.label7.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label7.Location = new System.Drawing.Point(82, 42);
+            this.label7.Location = new System.Drawing.Point(82, 64);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(74, 13);
             this.label7.TabIndex = 177;
@@ -578,9 +580,9 @@
             // 
             this.groupBox1.BackColor = System.Drawing.Color.White;
             this.groupBox1.Controls.Add(this.groupBox2);
-            this.groupBox1.Location = new System.Drawing.Point(81, 82);
+            this.groupBox1.Location = new System.Drawing.Point(81, 80);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(315, 1);
+            this.groupBox1.Size = new System.Drawing.Size(479, 1);
             this.groupBox1.TabIndex = 172;
             this.groupBox1.TabStop = false;
             // 
@@ -596,7 +598,7 @@
             // 
             this.checkBox1.AutoSize = true;
             this.checkBox1.ForeColor = System.Drawing.Color.Black;
-            this.checkBox1.Location = new System.Drawing.Point(167, 18);
+            this.checkBox1.Location = new System.Drawing.Point(663, 115);
             this.checkBox1.Name = "checkBox1";
             this.checkBox1.Size = new System.Drawing.Size(73, 17);
             this.checkBox1.TabIndex = 8;
@@ -617,7 +619,7 @@
             // 
             this.textBox2.BackColor = System.Drawing.SystemColors.Window;
             this.textBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBox2.Location = new System.Drawing.Point(301, 64);
+            this.textBox2.Location = new System.Drawing.Point(372, 33);
             this.textBox2.Name = "textBox2";
             this.textBox2.Size = new System.Drawing.Size(94, 18);
             this.textBox2.TabIndex = 2;
@@ -627,7 +629,7 @@
             // 
             this.textBox1.BackColor = System.Drawing.SystemColors.Window;
             this.textBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBox1.Location = new System.Drawing.Point(167, 40);
+            this.textBox1.Location = new System.Drawing.Point(167, 62);
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(393, 18);
             this.textBox1.TabIndex = 0;
@@ -636,12 +638,23 @@
             // button1
             // 
             this.button1.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.button1.Location = new System.Drawing.Point(500, 130);
+            this.button1.Location = new System.Drawing.Point(334, 268);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(62, 56);
             this.button1.TabIndex = 9;
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // button2
+            // 
+            this.button2.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.button2.Location = new System.Drawing.Point(299, 24);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(62, 35);
+            this.button2.TabIndex = 207;
+            this.button2.Text = "Carga permisos\r\n";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
             // permisos
             // 
@@ -730,5 +743,6 @@
         private System.Windows.Forms.CheckBox chk_prev;
         private System.Windows.Forms.CheckBox chk_salir;
         private System.Windows.Forms.CheckBox chk_impri;
+        private System.Windows.Forms.Button button2;
     }
 }

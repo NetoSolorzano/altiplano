@@ -342,7 +342,7 @@ namespace TransCarga
             ControlBox = true;
             MaximizeBox = true;
             MinimizeBox = true;
-            FormBorderStyle = FormBorderStyle.FixedSingle;
+            FormBorderStyle = FormBorderStyle.Sizable;  // FormBorderStyle.FixedSingle
             Text = Program.tituloF;
             Left = Screen.PrimaryScreen.Bounds.Left;
             Top = Screen.PrimaryScreen.Bounds.Top;
