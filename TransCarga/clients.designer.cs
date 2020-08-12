@@ -142,9 +142,9 @@
             this.toolStripSeparator3,
             this.Bt_ini,
             this.toolStripSeparator12,
+            this.Bt_sig,
             this.Bt_ret,
             this.toolStripSeparator9,
-            this.Bt_sig,
             this.toolStripSeparator10,
             this.Bt_fin,
             this.toolStripSeparator11});
@@ -355,7 +355,6 @@
             this.tx_mld.Name = "tx_mld";
             this.tx_mld.Size = new System.Drawing.Size(26, 18);
             this.tx_mld.TabIndex = 274;
-            this.tx_mld.Visible = false;
             // 
             // groupBox23
             // 
@@ -393,7 +392,7 @@
             this.textBox13.MaxLength = 6;
             this.textBox13.Name = "textBox13";
             this.textBox13.Size = new System.Drawing.Size(54, 18);
-            this.textBox13.TabIndex = 244;
+            this.textBox13.TabIndex = 9;
             this.textBox13.Leave += new System.EventHandler(this.textBox13_Leave);
             // 
             // groupBox21
@@ -432,7 +431,7 @@
             this.textBox12.MaxLength = 0;
             this.textBox12.Name = "textBox12";
             this.textBox12.Size = new System.Drawing.Size(211, 18);
-            this.textBox12.TabIndex = 247;
+            this.textBox12.TabIndex = 12;
             this.textBox12.Leave += new System.EventHandler(this.textBox12_Leave);
             // 
             // textBox11
@@ -443,7 +442,7 @@
             this.textBox11.MaxLength = 0;
             this.textBox11.Name = "textBox11";
             this.textBox11.Size = new System.Drawing.Size(101, 18);
-            this.textBox11.TabIndex = 246;
+            this.textBox11.TabIndex = 11;
             // 
             // groupBox19
             // 
@@ -481,7 +480,7 @@
             this.textBox10.MaxLength = 0;
             this.textBox10.Name = "textBox10";
             this.textBox10.Size = new System.Drawing.Size(101, 18);
-            this.textBox10.TabIndex = 245;
+            this.textBox10.TabIndex = 10;
             // 
             // groupBox17
             // 
@@ -519,7 +518,7 @@
             this.textBox9.MaxLength = 0;
             this.textBox9.Name = "textBox9";
             this.textBox9.Size = new System.Drawing.Size(134, 18);
-            this.textBox9.TabIndex = 242;
+            this.textBox9.TabIndex = 8;
             this.textBox9.Leave += new System.EventHandler(this.textBox9_Leave);
             // 
             // groupBox15
@@ -558,7 +557,7 @@
             this.textBox8.MaxLength = 0;
             this.textBox8.Name = "textBox8";
             this.textBox8.Size = new System.Drawing.Size(122, 18);
-            this.textBox8.TabIndex = 241;
+            this.textBox8.TabIndex = 7;
             this.textBox8.Leave += new System.EventHandler(this.textBox8_Leave);
             // 
             // groupBox13
@@ -597,7 +596,7 @@
             this.textBox7.MaxLength = 0;
             this.textBox7.Name = "textBox7";
             this.textBox7.Size = new System.Drawing.Size(101, 18);
-            this.textBox7.TabIndex = 240;
+            this.textBox7.TabIndex = 6;
             this.textBox7.Leave += new System.EventHandler(this.textBox7_Leave);
             // 
             // groupBox11
@@ -636,7 +635,7 @@
             this.textBox6.MaxLength = 0;
             this.textBox6.Name = "textBox6";
             this.textBox6.Size = new System.Drawing.Size(540, 18);
-            this.textBox6.TabIndex = 239;
+            this.textBox6.TabIndex = 5;
             // 
             // groupBox9
             // 
@@ -674,7 +673,7 @@
             this.textBox5.Location = new System.Drawing.Point(320, 70);
             this.textBox5.Name = "textBox5";
             this.textBox5.Size = new System.Drawing.Size(101, 18);
-            this.textBox5.TabIndex = 233;
+            this.textBox5.TabIndex = 1;
             this.textBox5.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // groupBox7
@@ -713,7 +712,7 @@
             this.textBox4.MaxLength = 0;
             this.textBox4.Name = "textBox4";
             this.textBox4.Size = new System.Drawing.Size(539, 18);
-            this.textBox4.TabIndex = 238;
+            this.textBox4.TabIndex = 4;
             // 
             // groupBox5
             // 
@@ -753,11 +752,12 @@
             // 
             // comboBox1
             // 
+            this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox1.FormattingEnabled = true;
             this.comboBox1.Location = new System.Drawing.Point(320, 97);
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(78, 21);
-            this.comboBox1.TabIndex = 236;
+            this.comboBox1.TabIndex = 2;
             this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
             this.comboBox1.Leave += new System.EventHandler(this.comboBox1_Leave);
             // 
@@ -839,7 +839,7 @@
             this.textBox3.MaxLength = 0;
             this.textBox3.Name = "textBox3";
             this.textBox3.Size = new System.Drawing.Size(101, 18);
-            this.textBox3.TabIndex = 237;
+            this.textBox3.TabIndex = 3;
             this.textBox3.Leave += new System.EventHandler(this.textBox3_Leave);
             // 
             // textBox2
@@ -869,7 +869,7 @@
             this.button1.Location = new System.Drawing.Point(669, 270);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(62, 56);
-            this.button1.TabIndex = 248;
+            this.button1.TabIndex = 13;
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 

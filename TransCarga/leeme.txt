@@ -7,4 +7,5 @@ form users:
 - la opcion de ANULAR usuarios los borra siempre y cuando no tengan operaciones efectuadas, solo se bloquea
   si ya tiene oporaciones
 form clients:
+- el código para enlazar a conectorSolorsoft esta hecho y funcionando
 

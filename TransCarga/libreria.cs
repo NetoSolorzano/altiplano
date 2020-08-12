@@ -160,23 +160,6 @@ namespace TransCarga
         public string ipwan()                                               // retorna la IP wan del cliente
         {
             string externalip = new WebClient().DownloadString("http://icanhazip.com");
-            /*
-            // check IP using DynDNS's service
-            WebRequest request = WebRequest.Create("http://checkip.dyndns.org");
-            WebResponse response = request.GetResponse();
-            StreamReader stream = new StreamReader(response.GetResponseStream());
-
-            // IMPORTANT: set Proxy to null, to drastically INCREASE the speed of request
-            //request.Proxy = null;
-
-            // read complete response
-            string ipAddress = stream.ReadToEnd();
-
-            // replace everything and keep only IP
-            return ipAddress.
-                Replace("<html><head><title>Current IP Check</title></head><body>Current IP Address: ", string.Empty).
-                Replace("</body></html>", string.Empty);
-            */
             return externalip;
         }
         public string nbname()                                              // retorna el nombre de la pc cliente
@@ -1715,10 +1698,10 @@ namespace TransCarga
         {
             string retorno = "";
             string consulta= "";
-            if(vista=="CLI"){                       //  |
-                consulta = "select concat(trim(nombre),'|',trim(nombre2)) from anag_cli where vista=@vis and docu=@doc and ruc=@ruc";
+            if(vista=="CLI"){
+                consulta = "select RazonSocial from anag_cli where IDCategoria=@vis and tipdoc=@doc and ruc=@ruc";
             }
-            else consulta = "select nombre from anag_for where vista=@vis and docu=@doc and ruc=@ruc";
+            else consulta = "select RazonSocial from anag_for where IDCategoria=@vis and tipdoc=@doc and ruc=@ruc";
             MySqlConnection conl = new MySqlConnection(DB_CONN_STR);
             conl.Open();
             if (conl.State == ConnectionState.Open)

@@ -184,8 +184,49 @@ namespace TransCarga
         }
         public void jalaoc(string campo)        // en este form no hay
         {
-            // IDAnagrafica,tipdoc,RUC,RazonSocial,concat(trim(Direcc1),' ',trim(Direcc2)),depart,Provincia,Localidad,NumeroTel1,NumeroTel2,EMail,pais,ubigeo,estado
-            //            0,     1,  2,          3,                                      4,     5,        6,        7,         8,         9,   10,  11,    12,    13
+            try
+            {
+                MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
+                conn.Open();
+                if (conn.State == ConnectionState.Open)
+                {
+                    string consulta = "select tipdoc,RUC,RazonSocial,Direcc1,Direcc2,depart,Provincia,Localidad,NumeroTel1,NumeroTel2,EMail,pais,ubigeo," +
+                        "codigo,estado,idcategoria,id " +
+                        "from anag_cli where id=@ida";
+                    MySqlCommand micon = new MySqlCommand(consulta, conn);
+                    micon.Parameters.AddWithValue("@ida", tx_idr.Text);
+                    MySqlDataReader dr = micon.ExecuteReader();
+                    if (dr.Read())
+                    {
+                        checkBox1.Checked = (dr.GetInt16("estado") == 0) ? false : true;
+                        textBox5.Text = dr.GetString("pais");
+                        textBox1.Text = dr.GetString("id");
+                        textBox2.Text = dr.GetString("tipdoc");
+                        textBox3.Text = dr.GetString("RUC");
+                        textBox4.Text = dr.GetString("RazonSocial");
+                        textBox6.Text = dr.GetString("Direcc1").Trim() + " " + dr.GetString("Direcc2").Trim();
+                        textBox7.Text = dr.GetString("depart");
+                        textBox8.Text = dr.GetString("Provincia");
+                        textBox9.Text = dr.GetString("Localidad");
+                        textBox13.Text = dr.GetString("ubigeo");
+                        textBox10.Text = dr.GetString("NumeroTel1");
+                        textBox11.Text = dr.GetString("NumeroTel2");
+                        textBox12.Text = dr.GetString("EMail");
+                        //
+                        comboBox1.SelectedValue = textBox2.Text;
+                    }
+                    //
+                    dr.Dispose();
+                    micon.Dispose();
+                }
+                conn.Close();
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error Fatal");
+                Application.Exit();
+                return;
+            }
         }
         public void dataload()                  // jala datos para los combos y la grilla
         {
@@ -566,9 +607,10 @@ namespace TransCarga
             {
                 // debe limpiar los campos y actualizar la grilla
                 limpiar(this);
+                limpia_chk();
                 limpia_otros();
+                limpia_combos();
                 textBox5.Focus();
-                //dataload();
             }
         }
         private bool graba()
@@ -647,7 +689,7 @@ namespace TransCarga
                         "Direcc2=@dir2,depart=@depa,Provincia=@prov,Localidad=@dist,NumeroTel1=@tel1,NumeroTel2=@tel2," +
                         "EMail=@mail,pais=@pais,ubigeo=@ubig,estado=@bloq," +
                         "verApp=@verApp,userm=@asd,fechm=now(),diriplan4=@iplan,diripwan4=@ipwan,nbname=@nbnam " +
-                        "where idanagrafica=@idan";
+                        "where id=@idan";
                     MySqlCommand micon = new MySqlCommand(inserta, conn);
                     micon.Parameters.AddWithValue("@tidoc", textBox2.Text);
                     micon.Parameters.AddWithValue("@nudoc", textBox3.Text);
@@ -882,52 +924,104 @@ namespace TransCarga
                     return;
                 }
                 string encuentra = "no";
-                if (Tx_modo.Text == "NUEVO")    //  || Tx_modo.Text == "EDITAR"
+                if (Tx_modo.Text == "NUEVO")
                 {
-                    foreach (DataRow row in dtg.Rows)   // && row["tipdoc"].ToString() == textBox2.Text.Trim()  && Tx_modo.Text == "NUEVO"
+                    if (string.IsNullOrEmpty(lib.nomsn("CLI", textBox2.Text, textBox3.Text)))
                     {
-                        if (row["RUC"].ToString().Trim() == textBox3.Text.Trim())
+                        if (textBox2.Text == vtc_ruc)
                         {
-                            MessageBox.Show("Ya existe el cliente!", "Atención - Verifique", MessageBoxButtons.OK, MessageBoxIcon.Hand);
-                            encuentra = "si";
-                            textBox3.Focus();
-                            return;
-                        }
-                    }
-                    if (textBox2.Text == vtc_ruc)
-                    {
-                        if (lib.valiruc(textBox3.Text, vtc_ruc) == false)
-                        {
-                            MessageBox.Show("Número de RUC inválido", "Atención - revise", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                            textBox3.Focus();
-                            return;
-                        }
-                        if (encuentra == "no")
-                        {
-                            if (TransCarga.Program.vg_conSol == true) // conector solorsoft para ruc
+                            if (lib.valiruc(textBox3.Text, vtc_ruc) == false)
                             {
-                                //XconectorSolorsoft("RUC");
-                                string[] rl = lib.conectorSolorsoft("RUC", textBox3.Text);
-                                textBox4.Text = rl[0];      // razon social
-                                textBox13.Text = rl[1];     // ubigeo
-                                textBox6.Text = rl[2];      // direccion
-                                textBox7.Text = rl[3];      // departamento
-                                textBox8.Text = rl[4];      // provincia
-                                textBox9.Text = rl[5];      // distrito
+                                MessageBox.Show("Número de RUC inválido", "Atención - revise", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                textBox3.Focus();
+                                return;
+                            }
+                            if (encuentra == "no")
+                            {
+                                if (TransCarga.Program.vg_conSol == true) // conector solorsoft para ruc
+                                {
+                                    string[] rl = lib.conectorSolorsoft("RUC", textBox3.Text);
+                                    textBox4.Text = rl[0];      // razon social
+                                    textBox13.Text = rl[1];     // ubigeo
+                                    textBox6.Text = rl[2];      // direccion
+                                    textBox7.Text = rl[3];      // departamento
+                                    textBox8.Text = rl[4];      // provincia
+                                    textBox9.Text = rl[5];      // distrito
+                                }
+                            }
+                        }
+                        if (textBox2.Text == vtc_dni)
+                        {
+                            if (encuentra == "no")
+                            {
+                                if (TransCarga.Program.vg_conSol == true) // conector solorsoft para dni
+                                {
+                                    string[] rl = lib.conectorSolorsoft("DNI", textBox3.Text);
+                                    textBox4.Text = rl[0];      // nombre
+                                    textBox3.Text = rl[1];     // num dni
+                                }
                             }
                         }
                     }
-                    if (textBox2.Text == vtc_dni)
+                    else
                     {
-                        if (encuentra == "no")
+                        MessageBox.Show("Ya existe el cliente!", "Atención corrija", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                        textBox3.Text = "";
+                        //
+                    }
+                }
+                else
+                {
+                    if (string.IsNullOrEmpty(lib.nomsn("CLI", textBox2.Text, textBox3.Text)))
+                    {
+                        MessageBox.Show("El cliente no existe!", "Atención corrija", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                        textBox3.Text = "";
+                        //
+                    }
+                    else
+                    {
+                        try
                         {
-                            if (TransCarga.Program.vg_conSol == true) // conector solorsoft para dni
+                            MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
+                            conn.Open();
+                            if (conn.State == ConnectionState.Open)
                             {
-                                //XconectorSolorsoft("DNI");
-                                string[] rl = lib.conectorSolorsoft("DNI", textBox3.Text);
-                                textBox4.Text = rl[0];      // nombre
-                                textBox3.Text = rl[1];     // num dni
+                                string consulta = "select tipdoc,RUC,RazonSocial,Direcc1,Direcc2,depart,Provincia,Localidad,NumeroTel1,NumeroTel2,EMail,pais,ubigeo," +
+                                    "codigo,estado,idcategoria,id " +
+                                    "from anag_cli where tipdoc=@tdo and ruc=@ndo";
+                                MySqlCommand micon = new MySqlCommand(consulta, conn);
+                                micon.Parameters.AddWithValue("@tdo", textBox2.Text);
+                                micon.Parameters.AddWithValue("@ndo", textBox3.Text);
+                                MySqlDataReader dr = micon.ExecuteReader();
+                                if (dr.Read())
+                                {
+                                    checkBox1.Checked = (dr.GetInt16("estado") == 0) ? false : true;
+                                    textBox5.Text = dr.GetString("pais");
+                                    textBox1.Text = dr.GetString("id");
+                                    tx_idr.Text = dr.GetString("id");
+                                    textBox4.Text = dr.GetString("RazonSocial");
+                                    textBox6.Text = dr.GetString("Direcc1").Trim() + " " + dr.GetString("Direcc2").Trim();
+                                    textBox7.Text = dr.GetString("depart");
+                                    textBox8.Text = dr.GetString("Provincia");
+                                    textBox9.Text = dr.GetString("Localidad");
+                                    textBox13.Text = dr.GetString("ubigeo");
+                                    textBox10.Text = dr.GetString("NumeroTel1");
+                                    textBox11.Text = dr.GetString("NumeroTel2");
+                                    textBox12.Text = dr.GetString("EMail");
+                                    //
+                                    comboBox1.SelectedValue = textBox2.Text;
+                                }
+                                //
+                                dr.Dispose();
+                                micon.Dispose();
                             }
+                            conn.Close();
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show(ex.Message, "Error Fatal");
+                            Application.Exit();
+                            return;
                         }
                     }
                 }
@@ -1055,30 +1149,41 @@ namespace TransCarga
             limpiar(this);
             limpia_chk();
             limpia_combos();
-            //tx_rind_Leave(null, null);
+            limpia_otros();
+            tx_idr.Text = lib.gofirts(nomtab);
+            tx_idr_Leave(null, null);
         }
         private void Bt_back_Click(object sender, EventArgs e)
         {
-            //int aca = int.Parse(tx_rind.Text) - 1;
-            limpia_chk();
-            limpia_combos();
-            limpiar(this);
-            //tx_rind_Leave(null, null);
+            if(tx_idr.Text.Trim() != "")
+            {
+                int aca = int.Parse(tx_idr.Text) - 1;
+                limpiar(this);
+                limpia_chk();
+                limpia_combos();
+                limpia_otros();
+                tx_idr.Text = aca.ToString();
+                tx_idr_Leave(null, null);
+            }
         }
         private void Bt_next_Click(object sender, EventArgs e)
         {
-            //int aca = int.Parse(tx_rind.Text) + 1;
+            int aca = int.Parse(tx_idr.Text) + 1;
+            limpiar(this);
             limpia_chk();
             limpia_combos();
-            limpiar(this);
-            //tx_rind_Leave(null, null);
+            limpia_otros();
+            tx_idr.Text = aca.ToString();
+            tx_idr_Leave(null, null);
         }
         private void Bt_last_Click(object sender, EventArgs e)
         {
             limpiar(this);
             limpia_chk();
             limpia_combos();
-            //tx_rind_Leave(null, null);
+            limpia_otros();
+            tx_idr.Text = lib.golast(nomtab);
+            tx_idr_Leave(null, null);
         }
         #endregion botones;
         // clients para habilitar los botones de comando
