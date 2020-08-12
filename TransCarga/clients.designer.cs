@@ -394,6 +394,7 @@
             this.textBox13.Name = "textBox13";
             this.textBox13.Size = new System.Drawing.Size(54, 18);
             this.textBox13.TabIndex = 244;
+            this.textBox13.Leave += new System.EventHandler(this.textBox13_Leave);
             // 
             // groupBox21
             // 
@@ -432,6 +433,7 @@
             this.textBox12.Name = "textBox12";
             this.textBox12.Size = new System.Drawing.Size(211, 18);
             this.textBox12.TabIndex = 247;
+            this.textBox12.Leave += new System.EventHandler(this.textBox12_Leave);
             // 
             // textBox11
             // 
@@ -518,6 +520,7 @@
             this.textBox9.Name = "textBox9";
             this.textBox9.Size = new System.Drawing.Size(134, 18);
             this.textBox9.TabIndex = 242;
+            this.textBox9.Leave += new System.EventHandler(this.textBox9_Leave);
             // 
             // groupBox15
             // 
@@ -556,6 +559,7 @@
             this.textBox8.Name = "textBox8";
             this.textBox8.Size = new System.Drawing.Size(122, 18);
             this.textBox8.TabIndex = 241;
+            this.textBox8.Leave += new System.EventHandler(this.textBox8_Leave);
             // 
             // groupBox13
             // 
@@ -594,6 +598,7 @@
             this.textBox7.Name = "textBox7";
             this.textBox7.Size = new System.Drawing.Size(101, 18);
             this.textBox7.TabIndex = 240;
+            this.textBox7.Leave += new System.EventHandler(this.textBox7_Leave);
             // 
             // groupBox11
             // 
@@ -753,6 +758,8 @@
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(78, 21);
             this.comboBox1.TabIndex = 236;
+            this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
+            this.comboBox1.Leave += new System.EventHandler(this.comboBox1_Leave);
             // 
             // tx_idr
             // 
@@ -761,6 +768,7 @@
             this.tx_idr.Size = new System.Drawing.Size(36, 20);
             this.tx_idr.TabIndex = 253;
             this.tx_idr.Visible = false;
+            this.tx_idr.Leave += new System.EventHandler(this.tx_idr_Leave);
             // 
             // label2
             // 
@@ -832,6 +840,7 @@
             this.textBox3.Name = "textBox3";
             this.textBox3.Size = new System.Drawing.Size(101, 18);
             this.textBox3.TabIndex = 237;
+            this.textBox3.Leave += new System.EventHandler(this.textBox3_Leave);
             // 
             // textBox2
             // 
@@ -862,6 +871,7 @@
             this.button1.Size = new System.Drawing.Size(62, 56);
             this.button1.TabIndex = 248;
             this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // clients
             // 

@@ -483,7 +483,7 @@ namespace TransCarga
             if (modo == "EDITAR")
             {
                 string consulta = "update descrittive set " +
-                        "descrizione=@des,descrizionerid=@der,numero=@num " +
+                        "descrizione=@des,descrizionerid=@der,numero=@num,codigo=@cod " +
                         "where id=@idc";    // codigo=@cod,
                 MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
                 conn.Open();

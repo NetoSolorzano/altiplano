@@ -70,6 +70,7 @@ namespace TransCarga
         }
         private void clients_Load(object sender, EventArgs e)
         {
+            /*
             ToolTip toolTipNombre = new ToolTip();           // Create the ToolTip and associate with the Form container.
             // Set up the delays for the ToolTip.
             toolTipNombre.AutoPopDelay = 5000;
@@ -77,21 +78,21 @@ namespace TransCarga
             toolTipNombre.ReshowDelay = 500;
             toolTipNombre.ShowAlways = true;                 // Force the ToolTip text to be displayed whether or not the form is active.
             toolTipNombre.SetToolTip(toolStrip1, nomform);   // Set up the ToolTip text for the object
+            */
             jalainfo();
             init();
+            dataload();
             toolboton();
             limpiar(this);
             sololee(this);
-            //dataload();
-            //grilla();
             this.KeyPreview = true;
             Bt_add.Enabled = true;
             Bt_anul.Enabled = true;
             comboBox1.SelectedIndex = -1;
             autopais();                                     // autocompleta paises
             autodepa();                                     // autocompleta departamentos
-            //autoprov();                                     // autocompleta provincias
-            //autodist();                                     // autocompleta distritos
+            autoprov();                                     // autocompleta provincias
+            autodist();                                     // autocompleta distritos
         }
         private void init()
         {
@@ -181,7 +182,7 @@ namespace TransCarga
                 return;
             }
         }
-        public void jalaoc(string campo)        // jala datos id o ????
+        public void jalaoc(string campo)        // en este form no hay
         {
             // IDAnagrafica,tipdoc,RUC,RazonSocial,concat(trim(Direcc1),' ',trim(Direcc2)),depart,Provincia,Localidad,NumeroTel1,NumeroTel2,EMail,pais,ubigeo,estado
             //            0,     1,  2,          3,                                      4,     5,        6,        7,         8,         9,   10,  11,    12,    13
@@ -596,7 +597,7 @@ namespace TransCarga
                     micon.Parameters.AddWithValue("@tel1", textBox10.Text);
                     micon.Parameters.AddWithValue("@tel2", textBox11.Text);
                     micon.Parameters.AddWithValue("@mail", textBox12.Text);
-                    micon.Parameters.AddWithValue("@pais", textBox5.Text);
+                    micon.Parameters.AddWithValue("@pais", textBox5.Text.Substring(0,3));
                     micon.Parameters.AddWithValue("@ubig", textBox13.Text);
                     micon.Parameters.AddWithValue("@codi", textBox1.Text);
                     micon.Parameters.AddWithValue("@bloq", (checkBox1.Checked == true) ? "1" : "0");
@@ -693,7 +694,7 @@ namespace TransCarga
         {
             if (Tx_modo.Text != "NUEVO" && tx_idr.Text != "")
             {
-                jalaoc("tx_idr");               // jalamos los datos del registro
+                jalaoc("tx_idr");               // no usamos grilla en este form
             }
         }
         private void textBox7_Leave(object sender, EventArgs e)         // departamento, jala provincia

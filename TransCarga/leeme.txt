@@ -6,4 +6,5 @@ Campos: diriplan4,diripwan4 (tabla usuarios) => van las direcciones desde donde 
 form users:
 - la opcion de ANULAR usuarios los borra siempre y cuando no tengan operaciones efectuadas, solo se bloquea
   si ya tiene oporaciones
+form clients:
 
