@@ -11,6 +11,7 @@ namespace TransCarga
     {
         static string nomform = "sernum";               // nombre del formulario
         string asd = TransCarga.Program.vg_user;        // usuario conectado al sistema
+        string verapp = System.Diagnostics.FileVersionInfo.GetVersionInfo(Application.ExecutablePath).FileVersion;
         string colback = TransCarga.Program.colbac;   // color de fondo
         string colpage = TransCarga.Program.colpag;   // color de los pageframes
         string colgrid = TransCarga.Program.colgri;   // color fondo sin grillas
@@ -34,6 +35,8 @@ namespace TransCarga
         string img_btq = "";
         string img_grab = "";
         string img_anul = "";
+        string vEstAnu = "";            // estado de serie anulada
+        AutoCompleteStringCollection forimp = new AutoCompleteStringCollection();
         libreria lib = new libreria();
         // string de conexion
         //static string serv = ConfigurationManager.AppSettings["serv"].ToString();
@@ -60,13 +63,14 @@ namespace TransCarga
         }
         private void sernum_Load(object sender, EventArgs e)
         {
+            /*
             ToolTip toolTipNombre = new ToolTip();           // Create the ToolTip and associate with the Form container.
-            // Set up the delays for the ToolTip.
             toolTipNombre.AutoPopDelay = 5000;
             toolTipNombre.InitialDelay = 1000;
             toolTipNombre.ReshowDelay = 500;
             toolTipNombre.ShowAlways = true;                 // Force the ToolTip text to be displayed whether or not the form is active.
             toolTipNombre.SetToolTip(toolStrip1, nomform);   // Set up the ToolTip text for the object
+            */
             init();
             toolboton();
             limpiar(this);
@@ -97,17 +101,29 @@ namespace TransCarga
             Bt_sig.Image = Image.FromFile(img_bts);
             Bt_ret.Image = Image.FromFile(img_btr);
             Bt_fin.Image = Image.FromFile(img_btf);
+            // tamaños maximos de caracteres
+            textBox1.MaxLength = 4;
+            textBox2.MaxLength = 8;
+            textBox10.MaxLength = 8;
+            textBox3.MaxLength = 99;
+            textBox6.MaxLength = 2;
+            textBox7.MaxLength = 90;
+            textBox8.MaxLength = 90;
+            textBox9.MaxLength = 6;         // ubigeo
+            // autocompletado
+            textBox6.AutoCompleteMode = AutoCompleteMode.Suggest;
+            textBox6.AutoCompleteSource = AutoCompleteSource.CustomSource;
+            textBox6.AutoCompleteCustomSource = forimp;
         }
         private void grilla()                   // arma la grilla
         {
-            //id,rsocial,tipdoc,serie,inicial,actual,final,coment,status,userc,fechc,userm,fechm,usera,fecha,vercrea,
-            //vermodi,sede,destino,format,zona,glosaser,
-            //imp_ini,imp_fec,imp_det,imp_dtr,imp_pie,dir_pe,ubigeo
+            //id,rsocial,tipdoc,serie,inicial,actual,final,coment,status,userc,fechc,userm,fechm,usera,fecha,
+            //sede,destino,format,zona,glosaser,imp_ini,imp_fec,imp_det,imp_dtr,imp_pie,dir_pe,ubigeo
             Font tiplg = new Font("Arial",7, FontStyle.Bold);
             advancedDataGridView1.Font = tiplg;
             advancedDataGridView1.DefaultCellStyle.Font = tiplg;
             advancedDataGridView1.RowTemplate.Height = 15;
-            advancedDataGridView1.DefaultCellStyle.BackColor = Color.MediumAquamarine;
+            //advancedDataGridView1.DefaultCellStyle.BackColor = Color.MediumAquamarine;
             advancedDataGridView1.DataSource = dtg;
             // id 
             advancedDataGridView1.Columns[0].Visible = false;
@@ -157,53 +173,54 @@ namespace TransCarga
             advancedDataGridView1.Columns[12].Visible = false;          // fechm
             advancedDataGridView1.Columns[13].Visible = false;          // usera
             advancedDataGridView1.Columns[14].Visible = false;          // fecha
-            advancedDataGridView1.Columns[15].Visible = false;          // vercrea
-            advancedDataGridView1.Columns[16].Visible = false;          // vermodi
             // sede
-            advancedDataGridView1.Columns[17].Visible = true;    
-            advancedDataGridView1.Columns[17].HeaderText = "sede";
+            advancedDataGridView1.Columns[15].Visible = true;    
+            advancedDataGridView1.Columns[15].HeaderText = "sede";
+            advancedDataGridView1.Columns[15].Width = 50;
+            advancedDataGridView1.Columns[15].ReadOnly = true;
+            advancedDataGridView1.Columns[15].Tag = "validaSI";
+            advancedDataGridView1.Columns[15].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            // destino
+            advancedDataGridView1.Columns[16].Visible = false;
+            // format
+            advancedDataGridView1.Columns[17].Visible = true;
+            advancedDataGridView1.Columns[17].HeaderText = "Formato";
             advancedDataGridView1.Columns[17].Width = 50;
             advancedDataGridView1.Columns[17].ReadOnly = true;
-            advancedDataGridView1.Columns[17].Tag = "validaSI";
+            advancedDataGridView1.Columns[17].Tag = "validaNO";
             advancedDataGridView1.Columns[17].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-            // destino
+            // zona
             advancedDataGridView1.Columns[18].Visible = false;
-            // format
+            // glosaser
             advancedDataGridView1.Columns[19].Visible = true;
-            advancedDataGridView1.Columns[19].HeaderText = "Formato";
+            advancedDataGridView1.Columns[19].HeaderText = "Glosa";
             advancedDataGridView1.Columns[19].Width = 50;
             advancedDataGridView1.Columns[19].ReadOnly = true;
             advancedDataGridView1.Columns[19].Tag = "validaNO";
             advancedDataGridView1.Columns[19].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-            // zona
-            advancedDataGridView1.Columns[20].Visible = false;
-            // glosaser
-            advancedDataGridView1.Columns[21].Visible = true;
-            advancedDataGridView1.Columns[21].HeaderText = "Glosa";
-            advancedDataGridView1.Columns[21].Width = 50;
-            advancedDataGridView1.Columns[21].ReadOnly = true;
-            advancedDataGridView1.Columns[21].Tag = "validaNO";
-            advancedDataGridView1.Columns[21].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
             // invisibles
-            advancedDataGridView1.Columns[22].Visible = false;           // imp_ini
-            advancedDataGridView1.Columns[23].Visible = false;           // imp_fec
-            advancedDataGridView1.Columns[24].Visible = false;          // imp_det
-            advancedDataGridView1.Columns[25].Visible = false;          // imp_dtr
-            advancedDataGridView1.Columns[26].Visible = false;          // imp_pie
+            advancedDataGridView1.Columns[20].Visible = false;           // imp_ini
+            advancedDataGridView1.Columns[21].Visible = false;           // imp_fec
+            advancedDataGridView1.Columns[22].Visible = false;          // imp_det
+            advancedDataGridView1.Columns[23].Visible = false;          // imp_dtr
+            advancedDataGridView1.Columns[24].Visible = false;          // imp_pie
             // dir_pe
-            advancedDataGridView1.Columns[27].Visible = true;
-            advancedDataGridView1.Columns[27].HeaderText = "Direc.Pto.Emisión";
-            advancedDataGridView1.Columns[27].Width = 100;
-            advancedDataGridView1.Columns[27].ReadOnly = true;
-            advancedDataGridView1.Columns[27].Tag = "validaNO";
-            advancedDataGridView1.Columns[27].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            advancedDataGridView1.Columns[25].Visible = true;
+            advancedDataGridView1.Columns[25].HeaderText = "Direc.Pto.Emisión";
+            advancedDataGridView1.Columns[25].Width = 100;
+            advancedDataGridView1.Columns[25].ReadOnly = true;
+            advancedDataGridView1.Columns[25].Tag = "validaNO";
+            advancedDataGridView1.Columns[25].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
             // ubigeo
-            advancedDataGridView1.Columns[28].Visible = false;  
-            advancedDataGridView1.Columns[28].HeaderText = "Ubigeo";
-            advancedDataGridView1.Columns[28].Width = 60;
-            advancedDataGridView1.Columns[28].ReadOnly = false;
-            advancedDataGridView1.Columns[28].Tag = "validaSI";
-            advancedDataGridView1.Columns[28].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            advancedDataGridView1.Columns[26].Visible = false;  
+            advancedDataGridView1.Columns[26].HeaderText = "Ubigeo";
+            advancedDataGridView1.Columns[26].Width = 60;
+            advancedDataGridView1.Columns[26].ReadOnly = false;
+            advancedDataGridView1.Columns[26].Tag = "validaSI";
+            advancedDataGridView1.Columns[26].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            // codigos de tipo de documento y sede
+            advancedDataGridView1.Columns[27].Visible = false;           // a.tipdoc
+            advancedDataGridView1.Columns[28].Visible = false;           // a.sede
         }
         private void jalainfo()                 // obtiene datos de imagenes
         {
@@ -235,7 +252,8 @@ namespace TransCarga
                         if (row["param"].ToString() == "img_gra") img_grab = row["valor"].ToString().Trim();         // imagen del boton grabar nuevo
                         if (row["param"].ToString() == "img_anu") img_anul = row["valor"].ToString().Trim();         // imagen del boton grabar anular
                     }
-                }
+                    if (row["campo"].ToString() == "estado" && row["param"].ToString() == "anulado") vEstAnu = row["valor"].ToString().Trim();
+            }
                 da.Dispose();
                 dt.Dispose();
                 conn.Close();
@@ -249,31 +267,21 @@ namespace TransCarga
         }
         public void jalaoc(string campo)        // jala datos de definiciones
         {
-            if (campo == "tx_idr")
-            {
-
-            }
-            if (campo == "tx_corre")
-            {
-
-            }
-            // id,rsocial,tipdoc,serie,inicial,actual,final,coment,status,userc,fechc,userm,fechm,usera,fecha,vercrea," +
-            //    vermodi,sede,destino,format,zona,glosaser," +
-            //    imp_ini,imp_fec,imp_det,imp_dtr,imp_pie,dir_pe,ubigeo
             textBox4.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[1].Value.ToString();  // rsocial
             comboBox1.SelectedValue = textBox4.Text;
-            textCmb2.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[2].Value.ToString();  // tipdoc
+            textCmb2.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[27].Value.ToString();  // tipdoc
             comboBox2.SelectedValue = textCmb2.Text;
             textBox1.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[3].Value.ToString();  // serie
             textBox2.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[5].Value.ToString();  // actual
             textBox3.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[7].Value.ToString();   // coment
-            textBox5.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[17].Value.ToString();   // sede
+            textBox5.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[28].Value.ToString();   // sede
             comboBox3.SelectedValue = textBox5.Text;
-            textBox6.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[19].Value.ToString();   // format
-            textBox7.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[21].Value.ToString();   // glosaser
-            textBox8.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[27].Value.ToString();   // dir_pe
-            textBox9.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[28].Value.ToString();   // ubigeo
-            //checkBox1.Checked = (advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[6].Value.ToString() == "1") ? true : false;
+            textBox6.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[17].Value.ToString();   // format
+            textBox7.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[19].Value.ToString();   // glosaser
+            textBox8.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[25].Value.ToString();   // dir_pe
+            textBox9.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[26].Value.ToString();   // ubigeo
+            textBox10.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[6].Value.ToString();   // final
+            checkBox1.Checked = (advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[8].Value.ToString() != vEstAnu) ? true : false;
         }
         public void dataload()                  // jala datos para los combos y la grilla
         {
@@ -287,7 +295,7 @@ namespace TransCarga
             }
             tabControl1.SelectedTab = tabreg;
             // DATOS DEL COMBOBOX1  Razón social
-            this.comboBox1.Items.Clear();
+            comboBox1.Items.Clear();
             const string contpu = "select idcodice,descrizione from descrittive " +
                 "where idtabella='RAZ' order by idcodice";
             MySqlCommand cmbtpu = new MySqlCommand(contpu, conn);
@@ -319,11 +327,16 @@ namespace TransCarga
             comboBox3.DataSource = dtcmb3;
             comboBox3.DisplayMember = "descrizione";
             comboBox3.ValueMember = "idcodice";
+            // datos de los formatos de impresion
+            autoforimp();
             // datos de las series
-            string datgri = "select id,rsocial,tipdoc,serie,inicial,actual,final,coment,status,userc,fechc,userm,fechm,usera,fecha,vercrea," +
-                "vermodi,sede,destino,format,zona,glosaser," +
-                "imp_ini,imp_fec,imp_det,imp_dtr,imp_pie,dir_pe,ubigeo " +
-                "from series order by sede,tipdoc,serie";
+            string datgri = "select a.id,a.rsocial,c.descrizionerid,a.serie,a.inicial,a.actual,a.final,a.coment,a.status," +
+                "a.userc,a.fechc,a.userm,a.fechm,a.usera,a.fecha,b.descrizionerid,a.destino,a.format,a.zona,a.glosaser," +
+                "a.imp_ini,a.imp_fec,a.imp_det,a.imp_dtr,a.imp_pie,a.dir_pe,a.ubigeo,a.tipdoc,a.sede " +
+                "from series a " +
+                "left join desc_loc b on b.idcodice=a.sede " +
+                "left join desc_tdv c on c.idcodice=a.tipdoc " +
+                "order by a.sede,a.tipdoc,a.serie";
             MySqlCommand cdg = new MySqlCommand(datgri, conn);
             MySqlDataAdapter dag = new MySqlDataAdapter(cdg);
             dtg.Clear();
@@ -451,11 +464,13 @@ namespace TransCarga
         }
         public void limpia_otros()
         {
-            this.checkBox1.Checked = false;
+            checkBox1.Checked = false;
         }
         public void limpia_combos()
         {
-            this.comboBox1.SelectedIndex = -1;
+            comboBox1.SelectedIndex = -1;
+            comboBox2.SelectedIndex = -1;
+            comboBox3.SelectedIndex = -1;
         }
         #endregion limpiadores_modos;
 
@@ -493,22 +508,25 @@ namespace TransCarga
                 comboBox3.Focus();
                 return;
             }
+            if (textBox9.Text == "")
+            {
+                MessageBox.Show("Ingrese el Ubigeo de la dirección", " Atención ");
+                textBox9.Focus();
+                return;
+            }
             // grabamos, actualizamos, etc
             string modo = this.Tx_modo.Text;
             string iserror = "no";
-            string verapp = System.Diagnostics.FileVersionInfo.GetVersionInfo(Application.ExecutablePath).FileVersion;
             if (modo == "NUEVO")
             {
                 var aa = MessageBox.Show("Confirma que desea agregar?", "Atención - Confirme", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (aa == DialogResult.Yes)
                 {
-                    //id,rsocial,tipdoc,serie,inicial,actual,coment,
-                    //sede,format,glosaser,dir_pe,ubigeo
                     iserror = "no";
-                    string consulta = "insert into series (" +
-                        "rsocial,tipdoc,serie,actual,coment,sede,format,glosaser,dir_pe,ubigeo)" +
-                        " values (" +
-                        "@raz,@tip,@ser,@act,@com,@sed,@for,@glo,@dir,@ubi)";
+                    string consulta = "insert into series (rsocial,tipdoc,serie,actual,coment,sede,format,glosaser,dir_pe,ubigeo," +
+                        "inicial,final,userc,fechc,verApp,diriplan4,diripwan4,status)" +
+                        " values (@raz,@tip,@ser,@act,@com,@sed,@for,@glo,@dir,@ubi," +
+                        "@nini,@nfin,@asd,now(),@vapp,@dil4,@diw4,@est)";
                     MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
                     conn.Open();
                     if (conn.State == ConnectionState.Open)
@@ -522,18 +540,53 @@ namespace TransCarga
                         mycomand.Parameters.AddWithValue("@sed", textBox5.Text);
                         mycomand.Parameters.AddWithValue("@for", textBox6.Text);
                         mycomand.Parameters.AddWithValue("@glo", textBox7.Text);
+                        mycomand.Parameters.AddWithValue("@est", (checkBox1.Checked == true) ? "" : vEstAnu);
                         mycomand.Parameters.AddWithValue("@dir", textBox8.Text);
                         mycomand.Parameters.AddWithValue("@ubi", textBox9.Text);
+                        mycomand.Parameters.AddWithValue("@nini", textBox2.Text);
+                        mycomand.Parameters.AddWithValue("@nfin", textBox10.Text);
+                        mycomand.Parameters.AddWithValue("@asd", asd);
+                        mycomand.Parameters.AddWithValue("@vapp", verapp);
+                        mycomand.Parameters.AddWithValue("@dil4", lib.iplan());
+                        mycomand.Parameters.AddWithValue("@diw4", lib.ipwan());
                         try
                         {
                             mycomand.ExecuteNonQuery();
-                            //string resulta = lib.ult_mov(nomform, nomtab, asd);
-                            //if (resulta != "OK")                                    // actualizamos la tabla usuarios
-                            //{
-                            //    MessageBox.Show(resulta, "Error en actualización de tabla definiciones", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            //    Application.Exit();
-                            //    return;
-                            //}
+                            mycomand = new MySqlCommand("select last_insert_id()", conn);
+                            MySqlDataReader dr = mycomand.ExecuteReader();
+                            string idtu = "";
+                            if (dr.Read()) idtu = dr.GetString(0);
+                            dr.Close();
+                            mycomand.Dispose();
+                            // insertamos en el datatable
+                            DataRow drs = dtg.NewRow();
+                            //id,rsocial,tipdoc,serie,inicial,actual,final,coment,status,userc,fechc,userm,fechm,usera,fecha,
+                            //sede,destino,format,zona,glosaser,imp_ini,imp_fec,imp_det,imp_dtr,imp_pie,dir_pe,ubigeo
+                            drs[0] = idtu;
+                            drs[1] = textBox4.Text;
+                            drs[2] = comboBox2.Text;
+                            drs[3] = textBox1.Text;
+                            drs[4] = textBox2.Text;
+                            drs[5] = textBox2.Text;
+                            drs[6] = textBox10.Text;
+                            drs[7] = textBox3.Text;
+                            drs[8] = (checkBox1.Checked == true) ? "" : vEstAnu;
+                            drs[15] = comboBox3.Text;
+                            drs[17] = textBox6.Text;
+                            drs[19] = textBox7.Text;
+                            drs[25] = textBox8.Text;
+                            drs[26] = textBox9.Text;
+                            drs[27] = textCmb2.Text;
+                            drs[28] = textBox5.Text;
+                            dtg.Rows.Add(drs);
+                            //
+                            string resulta = lib.ult_mov(nomform, nomtab, asd);
+                            if (resulta != "OK")                                    // actualizamos la tabla usuarios
+                            {
+                                MessageBox.Show(resulta, "Error en actualización de tabla definiciones", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                Application.Exit();
+                                return;
+                            }
                         }
                         catch (MySqlException ex)
                         {
@@ -557,8 +610,8 @@ namespace TransCarga
                 {
                     iserror = "no";
                     string consulta = "update series set " +
-                            "rsocial=@raz,tipdoc=@tip,serie=@ser,actual=@act,coment=@com,sede=@sed,format=@for,glosaser=@glo," +
-                            "dir_pe=@dir,ubigeo=@ubi " +
+                            "rsocial=@raz,tipdoc=@tip,serie=@ser,actual=@act,coment=@com,sede=@sed,format=@for,glosaser=@glo,status=@est," +
+                            "dir_pe=@dir,ubigeo=@ubi,final=@nfin,userm=@asd,fechm=now(),verApp=@vapp,diriplan4=@dil4,diripwan4=@diw4 " +
                             "where id=@idc";
                     MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
                     conn.Open();
@@ -574,18 +627,55 @@ namespace TransCarga
                         mycom.Parameters.AddWithValue("@sed", textBox5.Text);
                         mycom.Parameters.AddWithValue("@for", textBox6.Text);
                         mycom.Parameters.AddWithValue("@glo", textBox7.Text);
+                        mycom.Parameters.AddWithValue("@est", (checkBox1.Checked == true) ? "": vEstAnu);
                         mycom.Parameters.AddWithValue("@dir", textBox8.Text);
                         mycom.Parameters.AddWithValue("@ubi", textBox9.Text);
+                        mycom.Parameters.AddWithValue("@nfin", textBox10.Text);
+                        mycom.Parameters.AddWithValue("@asd", asd);
+                        mycom.Parameters.AddWithValue("@vapp", verapp);
+                        mycom.Parameters.AddWithValue("@dil4", lib.iplan());
+                        mycom.Parameters.AddWithValue("@diw4", lib.ipwan());
                         try
                         {
                             mycom.ExecuteNonQuery();
-                            //string resulta = lib.ult_mov(nomform, nomtab, asd);
-                            //if (resulta != "OK")                                        // actualizamos la tabla usuarios
-                            //{
-                            //    MessageBox.Show(resulta, "Error en actualización de tabla usuarios", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            //    Application.Exit();
-                            //    return;
-                            //}
+                            mycom = new MySqlCommand("select last_insert_id()", conn);
+                            MySqlDataReader dr = mycom.ExecuteReader();
+                            string idtu = "";
+                            if (dr.Read()) idtu = dr.GetString(0);
+                            dr.Close();
+                            mycom.Dispose();
+                            // actualizamos el datatable
+                            for (int i = 0; i < dtg.Rows.Count; i++)
+                            {
+                                DataRow row = dtg.Rows[i];
+                                if (row[0].ToString() == tx_idr.Text)
+                                {
+                                    //id,rsocial,tipdoc,serie,inicial,actual,final,coment,status,userc,fechc,userm,fechm,usera,fecha,
+                                    //sede,destino,format,zona,glosaser,imp_ini,imp_fec,imp_det,imp_dtr,imp_pie,dir_pe,ubigeo
+                                    dtg.Rows[i][1] = textBox4.Text;
+                                    dtg.Rows[i][2] = comboBox2.Text;
+                                    dtg.Rows[i][3] = textBox1.Text;
+                                    dtg.Rows[i][4] = textBox2.Text;
+                                    dtg.Rows[i][5] = textBox2.Text;
+                                    dtg.Rows[i][6] = textBox10.Text;
+                                    dtg.Rows[i][7] = textBox3.Text;
+                                    dtg.Rows[i][8] = (checkBox1.Checked == true) ? "" : vEstAnu;
+                                    dtg.Rows[i][15] = comboBox3.Text;
+                                    dtg.Rows[i][17] = textBox6.Text;
+                                    dtg.Rows[i][19] = textBox7.Text;
+                                    dtg.Rows[i][25] = textBox8.Text;
+                                    dtg.Rows[i][26] = textBox9.Text;
+                                    dtg.Rows[i][27] = textCmb2.Text;
+                                    dtg.Rows[i][28] = textBox5.Text;
+                                }
+                            }
+                            string resulta = lib.ult_mov(nomform, nomtab, asd);
+                            if (resulta != "OK")                                        // actualizamos la tabla usuarios
+                            {
+                                MessageBox.Show(resulta, "Error en actualización de tabla usuarios", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                Application.Exit();
+                                return;
+                            }
                         }
                         catch (MySqlException ex)
                         {
@@ -625,12 +715,41 @@ namespace TransCarga
         {
             if (Tx_modo.Text != "NUEVO" && tx_idr.Text != "")
             {
-                //string aca = tx_idr.Text;
-                //limpia_chk();
-                //limpia_combos();
-                //limpiar(this);
-                //tx_idr.Text = aca;
                 jalaoc("tx_idr");               // jalamos los datos del registro
+            }
+        }
+        private void ubigeo_Leave(object sender, EventArgs e)
+        {
+            try
+            {
+                MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
+                conn.Open();
+                if (conn.State == ConnectionState.Open)
+                {
+                    String consulta = "select count(id) from ubigeos where concat(depart,provin,distri) = @cod";
+                    MySqlCommand micon = new MySqlCommand(consulta, conn);
+                    micon.Parameters.AddWithValue("@cod", textBox9.Text);
+                    MySqlDataReader dr = micon.ExecuteReader();
+                    if (dr.Read())
+                    {
+                        if(dr.GetInt16(0) < 1)
+                        {
+                            MessageBox.Show("Código de ubigeo NO existe!", "Error en ingreso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            textBox9.Text = "";
+                            textBox9.Focus();
+                        }
+                    }
+                    dr.Close();
+                    micon.Dispose();
+                    conn.Close();
+                    return;
+                }
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error fatal");
+                Application.Exit();
+                return;
             }
         }
         #endregion leaves;
@@ -706,9 +825,9 @@ namespace TransCarga
             advancedDataGridView1.Enabled = true;
             tabControl1.SelectedTab = tabreg;
             escribe(this);
-            this.Tx_modo.Text = "NUEVO";
-            this.button1.Image = Image.FromFile(img_grab);
-            this.textBox1.Focus();
+            Tx_modo.Text = "NUEVO";
+            button1.Image = Image.FromFile(img_grab);
+            textBox1.Focus();
             limpiar(this);
             limpia_otros();
             limpia_combos();
@@ -899,5 +1018,38 @@ namespace TransCarga
             }
         }
         #endregion
+
+        #region autocompletados
+        private void autoforimp()
+        {
+            MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
+            conn.Open();
+            if (conn.State == ConnectionState.Open)
+            {
+                string consulta = "select distinct descrizionerid from desc_fim order by descrizionerid asc";
+                MySqlCommand micon = new MySqlCommand(consulta, conn);
+                try
+                {
+                    MySqlDataReader dr = micon.ExecuteReader();
+                    if (dr.HasRows == true)
+                    {
+                        while (dr.Read())
+                        {
+                            forimp.Add(dr["descrizionerid"].ToString());
+                        }
+                    }
+                    dr.Close();
+                    micon.Dispose();
+                }
+                catch (MySqlException ex)
+                {
+                    MessageBox.Show(ex.Message, "Error en obtener unidades", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Application.Exit();
+                    return;
+                }
+                finally { conn.Close(); }
+            }
+        }
+        #endregion autocompletados
     }
 }

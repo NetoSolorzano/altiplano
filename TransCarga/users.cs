@@ -11,6 +11,7 @@ namespace TransCarga
     {
         static string nomform = "users"; // nombre del formulario
         string asd = TransCarga.Program.vg_user;   // usuario conectado al sistema
+        string verapp = System.Diagnostics.FileVersionInfo.GetVersionInfo(Application.ExecutablePath).FileVersion;
         string colback = TransCarga.Program.colbac;   // color de fondo
         string colpage = TransCarga.Program.colpag;   // color de los pageframes
         string colgrid = TransCarga.Program.colgri;   // color fondo sin grillas
@@ -64,6 +65,7 @@ namespace TransCarga
         }
         private void users_Load(object sender, EventArgs e)
         {
+            /*
             ToolTip toolTipNombre = new ToolTip();           // Create the ToolTip and associate with the Form container.
             // Set up the delays for the ToolTip.
             toolTipNombre.AutoPopDelay = 5000;
@@ -71,6 +73,7 @@ namespace TransCarga
             toolTipNombre.ReshowDelay = 500;
             toolTipNombre.ShowAlways = true;                 // Force the ToolTip text to be displayed whether or not the form is active.
             toolTipNombre.SetToolTip(toolStrip1, nomform);   // Set up the ToolTip text for the object
+            */
             init();
             toolboton();
             limpiar(this);
@@ -114,91 +117,54 @@ namespace TransCarga
             for(int i = 0; i < dtg.Columns.Count; i++)
             {
                 advancedDataGridView1.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                //if (advancedDataGridView1.Columns[i].Name.ToString() == "pwd_user") advancedDataGridView1.Columns[i].Visible = false;
+                //if (advancedDataGridView1.Columns[i].Name.ToString() == "id") advancedDataGridView1.Columns[i].ReadOnly = true;
+                //if (advancedDataGridView1.Columns[i].Name.ToString() == "nom_user") advancedDataGridView1.Columns[i].ReadOnly = true;
             }
-            /*
             // id del usuario
-            advancedDataGridView1.Columns[0].Visible = false;
+            advancedDataGridView1.Columns["id"].Visible = false;
             // nom_user
-            advancedDataGridView1.Columns[1].Visible = true;            // columna visible o no
-            advancedDataGridView1.Columns[1].HeaderText = "USUARIO";    // titulo de la columna
-            advancedDataGridView1.Columns[1].Width = 70;                // ancho
-            advancedDataGridView1.Columns[1].ReadOnly = true;           // lectura o no
-            advancedDataGridView1.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            advancedDataGridView1.Columns["nom_user"].Visible = true;            // columna visible o no
+            advancedDataGridView1.Columns["nom_user"].HeaderText = "USUARIO";    // titulo de la columna
+            //advancedDataGridView1.Columns[1].Width = 70;                // ancho
+            advancedDataGridView1.Columns["nom_user"].ReadOnly = true;           // lectura o no
+            //advancedDataGridView1.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
             // nombre del usuario
-            advancedDataGridView1.Columns[2].Visible = true;       
-            advancedDataGridView1.Columns[2].HeaderText = "MOMBRE";
-            advancedDataGridView1.Columns[2].Width = 150;
-            advancedDataGridView1.Columns[2].ReadOnly = false;          // las celdas de esta columna pueden cambiarse
-            advancedDataGridView1.Columns[2].Tag = "validaNO";          // las celdas de esta columna se NO se validan
-            advancedDataGridView1.Columns[2].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            advancedDataGridView1.Columns["nombre"].Visible = true;       
+            advancedDataGridView1.Columns["nombre"].HeaderText = "MOMBRE";
+            //advancedDataGridView1.Columns[2].Width = 150;
+            advancedDataGridView1.Columns["nombre"].ReadOnly = false;          // las celdas de esta columna pueden cambiarse
+            advancedDataGridView1.Columns["nombre"].Tag = "validaNO";          // las celdas de esta columna se NO se validan
+            //advancedDataGridView1.Columns[2].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
             // passw
-            advancedDataGridView1.Columns[3].Visible = false;
+            advancedDataGridView1.Columns["pwd_user"].Visible = false;
             // bloqueado
-            advancedDataGridView1.Columns[4].Visible = true;       
-            advancedDataGridView1.Columns[4].HeaderText = "BLOQ";
-            advancedDataGridView1.Columns[4].Width = 30;
-            advancedDataGridView1.Columns[4].ReadOnly = true;       // no dejo cambiar aca porque no lo puedo validar
-            advancedDataGridView1.Columns[4].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            advancedDataGridView1.Columns["bloqueado"].Visible = true;       
+            advancedDataGridView1.Columns["bloqueado"].HeaderText = "BLOQ";
+            //advancedDataGridView1.Columns["bloqueado"].Width = 30;
+            advancedDataGridView1.Columns["bloqueado"].ReadOnly = true;       // no dejo cambiar aca porque no lo puedo validar
+            //advancedDataGridView1.Columns["bloqueado"].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
             // nivel
-            advancedDataGridView1.Columns[5].Visible = true;       
-            advancedDataGridView1.Columns[5].HeaderText = "NIVEL";
-            advancedDataGridView1.Columns[5].Width = 30;
-            advancedDataGridView1.Columns[5].ReadOnly = false;
-            advancedDataGridView1.Columns[5].Tag = "validaSI";          // las celdas de esta columna SI se validan
-            advancedDataGridView1.Columns[5].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-            // tipo de usuario
-            advancedDataGridView1.Columns[6].Visible = false;    
-            advancedDataGridView1.Columns[6].HeaderText = "TIPO";
-            advancedDataGridView1.Columns[6].Width = 60;
-            advancedDataGridView1.Columns[6].ReadOnly = false;
-            advancedDataGridView1.Columns[6].Tag = "validaSI";
-            advancedDataGridView1.Columns[6].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-            // acceso
-            advancedDataGridView1.Columns[7].Visible = false;       
-            advancedDataGridView1.Columns[7].HeaderText = "ACCESO";
-            advancedDataGridView1.Columns[7].Width = 60;
-            advancedDataGridView1.Columns[7].ReadOnly = false;
-            advancedDataGridView1.Columns[7].Tag = "validaSI";
-            advancedDataGridView1.Columns[7].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            advancedDataGridView1.Columns["nivel"].Visible = true;       
+            advancedDataGridView1.Columns["nivel"].HeaderText = "NIVEL";
+            //advancedDataGridView1.Columns["nivel"].Width = 30;
+            advancedDataGridView1.Columns["nivel"].ReadOnly = false;
+            advancedDataGridView1.Columns["nivel"].Tag = "validaSI";          // las celdas de esta columna SI se validan
+            //advancedDataGridView1.Columns["nivel"].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            // tipo de usuario  
+            advancedDataGridView1.Columns["tipuser"].Visible = false;    
+            advancedDataGridView1.Columns["tipuser"].HeaderText = "TIPO";
+            //advancedDataGridView1.Columns[6].Width = 60;
+            advancedDataGridView1.Columns["tipuser"].ReadOnly = false;
+            advancedDataGridView1.Columns["tipuser"].Tag = "validaSI";
+            //advancedDataGridView1.Columns[6].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
             // local
-            advancedDataGridView1.Columns[8].Visible = true;    
-            advancedDataGridView1.Columns[8].HeaderText = "LOCAL";
-            advancedDataGridView1.Columns[8].Width = 60;
-            advancedDataGridView1.Columns[8].ReadOnly = false;
-            advancedDataGridView1.Columns[8].Tag = "validaSI";
-            advancedDataGridView1.Columns[8].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-            // tienda
-            advancedDataGridView1.Columns[9].Visible = false;    
-            advancedDataGridView1.Columns[9].HeaderText = "TIENDA";
-            advancedDataGridView1.Columns[9].Width = 60;
-            advancedDataGridView1.Columns[9].ReadOnly = false;
-            advancedDataGridView1.Columns[9].Tag = "validaSI";
-            advancedDataGridView1.Columns[9].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-            // sede
-            advancedDataGridView1.Columns[10].Visible = false;    
-            advancedDataGridView1.Columns[10].HeaderText = "SEDE";
-            advancedDataGridView1.Columns[10].Width = 60;
-            advancedDataGridView1.Columns[10].ReadOnly = false;
-            advancedDataGridView1.Columns[10].Tag = "validaSI";
-            advancedDataGridView1.Columns[10].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-            // ruc de la organización (una de las tres en OMG)
-            advancedDataGridView1.Columns[11].Visible = true;    
-            advancedDataGridView1.Columns[11].HeaderText = "RUC";
-            advancedDataGridView1.Columns[11].Width = 60;
-            advancedDataGridView1.Columns[11].ReadOnly = false;
-            advancedDataGridView1.Columns[11].Tag = "validaSI";
-            advancedDataGridView1.Columns[11].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-            // resto de columnas no visibles
-            advancedDataGridView1.Columns[12].Visible = false;
-            advancedDataGridView1.Columns[13].Visible = false;
-            advancedDataGridView1.Columns[14].Visible = false;
-            advancedDataGridView1.Columns[15].Visible = false;
-            advancedDataGridView1.Columns[16].Visible = false;
-            advancedDataGridView1.Columns[17].Visible = false;
-            advancedDataGridView1.Columns[18].Visible = false;
-            advancedDataGridView1.Columns[19].Visible = false;
-            advancedDataGridView1.Columns[20].Visible = false;
-            */
+            advancedDataGridView1.Columns["local"].Visible = true;    
+            advancedDataGridView1.Columns["local"].HeaderText = "LOCAL";
+            //advancedDataGridView1.Columns[8].Width = 60;
+            advancedDataGridView1.Columns["local"].ReadOnly = false;
+            advancedDataGridView1.Columns["local"].Tag = "validaSI";
+            //advancedDataGridView1.Columns[8].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
         }
         private void jalainfo()                 // obtiene datos de imagenes
         {
@@ -251,25 +217,18 @@ namespace TransCarga
         }
         public void jalaoc(string campo)        // jala datos de usuarios por id o nom_user
         {
-            if (campo == "tx_idr")
-            {
-
-            }
-            if (campo == "tx_corre")
-            {
-
-            }
             if(tx_rind.Text.Trim() != "")
             {
-                textBox1.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[1].Value.ToString();  // usurio
-                textBox2.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[3].Value.ToString();  // contraseña
-                textBox3.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[2].Value.ToString();  // nombre
-                textBox4.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[11].Value.ToString();  // ruc
-                textBox5.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[5].Value.ToString();  // nivel
-                textBox6.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[8].Value.ToString();  // local
+                textBox1.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells["nom_user"].Value.ToString();  // usurio
+                textBox2.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells["pwd_user"].Value.ToString();  // contraseña
+                textBox3.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells["nombre"].Value.ToString();  // nombre
+                textBox4.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells["tipuser"].Value.ToString();  // tipo user
+                textBox5.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells["nivel"].Value.ToString();  // nivel
+                textBox6.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells["local"].Value.ToString();  // local
                 comboBox1.SelectedValue = textBox4.Text;
                 comboBox2.SelectedValue = textBox5.Text;
                 comboBox3.SelectedValue = textBox6.Text;
+                //id,nom_user,nombre,pwd_user,bloqueado,nivel,tipuser,local
             }
         }
         public void dataload()                  // jala datos para los combos y la grilla
@@ -283,10 +242,10 @@ namespace TransCarga
                 return;
             }
             tabControl1.SelectedTab = tabuser;
-            // DATOS DEL COMBOBOX1  RAZON SOCIAL
+            // DATOS DEL COMBOBOX1  tipo de usuario
             this.comboBox1.Items.Clear();
             ComboItem citem_tpu = new ComboItem();
-            const string contpu = "select descrizione,idcodice from desc_raz " +
+            const string contpu = "select descrizione,idcodice from desc_tpu " +
                 "where numero=1";
             MySqlCommand cmbtpu = new MySqlCommand(contpu, conn);
             DataTable dttpu = new DataTable();
@@ -298,7 +257,7 @@ namespace TransCarga
             // DATOS DEL COMBOBOX2  NIVEL DE ACCESO
             this.comboBox2.Items.Clear();
             ComboItem citem_nvu = new ComboItem();
-            const string consnvu = "select descrizione,codigo from desc_niv " +
+            const string consnvu = "select descrizione,idcodice from desc_niv " +
                 "where numero=1";
             MySqlCommand cmd2 = new MySqlCommand(consnvu, conn);
             DataTable dt2 = new DataTable();
@@ -306,7 +265,7 @@ namespace TransCarga
             da2.Fill(dt2);
             comboBox2.DataSource = dt2;
             comboBox2.DisplayMember = "descrizione";
-            comboBox2.ValueMember = "codigo";
+            comboBox2.ValueMember = "idcodice";
             // DATOS DEL COMBOBOX3  LOCAL
             this.comboBox3.Items.Clear();
             ComboItem citem_sds = new ComboItem();
@@ -338,9 +297,9 @@ namespace TransCarga
                     retorna[0] = "desc_niv";
                     retorna[1] = "codigo";
                     break;
-                case "???":
-                    retorna[0] = "";
-                    retorna[1] = "";
+                case "TIPO":
+                    retorna[0] = "desc_tpu";
+                    retorna[1] = "idcodice";
                     break;
                 case "????":
                     retorna[0] = "";
@@ -465,188 +424,202 @@ namespace TransCarga
         private void button1_Click(object sender, EventArgs e)
         {
             // validamos que los campos no esten vacíos
-            if (this.textBox1.Text == "")
+            if (textBox1.Text.Trim() == "")
             {
                 MessageBox.Show("El usuario no puede estar vacío", " Error! ");
                 return;
             }
-            if (this.textBox2.Text == "")
+            if (textBox2.Text.Trim() == "")
             {
                 MessageBox.Show("La contraseña no puede estar vacía", " Error! ");
                 return;
             }
-            if (this.comboBox1.Text == "")
+            if (textBox4.Text.Trim() == "")
             {
-                MessageBox.Show("Seleccione la organización", " Atención ");
+                MessageBox.Show("Seleccione tipo de usuario", " Atención ");
+                comboBox1.Focus();
                 return;
             }
-            if (this.comboBox2.Text == "")
+            if (textBox5.Text.Trim() == "")
             {
                 MessageBox.Show("Seleccione el nivel de acceso", " Atención ");
+                comboBox2.Focus();
                 return;
             }
-            if (this.comboBox3.Text == "")
+            if (textBox6.Text.Trim() == "")
             {
                 MessageBox.Show("La sede del usuario no puede estar vacío", " Error! ");
+                comboBox3.Focus();
                 return;
             }
             // grabamos, actualizamos, etc
             string modo = this.Tx_modo.Text;
             string iserror = "no";
-            string asd = TransCarga.Program.vg_user;
-            string verapp = System.Diagnostics.FileVersionInfo.GetVersionInfo(Application.ExecutablePath).FileVersion;
             if (modo == "NUEVO")
             {
-                string consulta = "insert into usuarios (" +
-                    "nom_user,pwd_user,nombre,nivel,bloqueado,fecha,local,ruc,verapp,userc,fechc)" +
-                    " values (" +
-                    "@usuario,@contra,@nombre,@niv,@bloq,date(now()),@loca,@ruc,@ver,@vguser,now())";
-                MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
-                conn.Open();
-                if (conn.State == ConnectionState.Open)
+                var mes = MessageBox.Show("Realmente desea AGREGAR el usuario?", "Confirme por favor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (mes == DialogResult.Yes)
                 {
-                    MySqlCommand mycomand = new MySqlCommand(consulta, conn);
-                    mycomand.Parameters.AddWithValue("@usuario", this.textBox1.Text);
-                    mycomand.Parameters.AddWithValue("@contra", lib.md5(this.textBox2.Text));
-                    mycomand.Parameters.AddWithValue("@nombre", this.textBox3.Text);
-                    mycomand.Parameters.AddWithValue("@niv", this.textBox5.Text);
-                    mycomand.Parameters.AddWithValue("@bloq", this.checkBox1.Checked);
-                    mycomand.Parameters.AddWithValue("@loca", this.textBox6.Text);
-                    mycomand.Parameters.AddWithValue("@ruc", this.textBox4.Text);
-                    mycomand.Parameters.AddWithValue("@ver", verapp);
-                    mycomand.Parameters.AddWithValue("@vguser", asd);
-                    try
+                    string consulta = "insert into usuarios (" +
+                        "nom_user,pwd_user,nivel,bloqueado,tipuser,local,nombre,cacc,verApp,userc,fechc)" +
+                        " values (" +
+                        "@usuario,@contra,@niv,@bloq,@tipu,@loca,@nombre,0,@verap,@vguser,now())";
+                    MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
+                    conn.Open();
+                    if (conn.State == ConnectionState.Open)
                     {
-                        mycomand.ExecuteNonQuery();
-                        string resulta = lib.ult_mov(nomform, nomtab, asd); 
-                        if (resulta != "OK")                                    // actualizamos la tabla usuarios
+                        MySqlCommand mycomand = new MySqlCommand(consulta, conn);
+                        mycomand.Parameters.AddWithValue("@usuario", textBox1.Text);
+                        mycomand.Parameters.AddWithValue("@contra", lib.md5(textBox2.Text));
+                        mycomand.Parameters.AddWithValue("@niv", textBox5.Text);
+                        mycomand.Parameters.AddWithValue("@bloq", checkBox1.Checked);
+                        mycomand.Parameters.AddWithValue("@tipu", textBox4.Text);
+                        mycomand.Parameters.AddWithValue("@loca", textBox6.Text);
+                        mycomand.Parameters.AddWithValue("@nombre", textBox3.Text);
+                        mycomand.Parameters.AddWithValue("@verap", verapp);
+                        mycomand.Parameters.AddWithValue("@vguser", asd);
+                        try
                         {
-                            MessageBox.Show(resulta, "Error en actualización de tabla usuarios", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            Application.Exit();
-                            return;
+                            mycomand.ExecuteNonQuery();
+                            mycomand = new MySqlCommand("select last_insert_id()", conn);
+                            MySqlDataReader dr = mycomand.ExecuteReader();
+                            string idtu = "";
+                            if (dr.Read()) idtu = dr.GetString(0);
+                            dr.Close();
+                            string resulta = lib.ult_mov(nomform, nomtab, asd);
+                            if (resulta != "OK")                                    // actualizamos la tabla usuarios
+                            {
+                                MessageBox.Show(resulta, "Error en actualización de tabla usuarios", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                Application.Exit();
+                                return;
+                            }
+                            if (confper("nuevo", textBox1.Text) == false)
+                            {
+                                MessageBox.Show("No fue posible crear los permisos nuevos" + Environment.NewLine +
+                                    "deberá borrar y volver a crear este usuario"
+                                    , "Error en tabla de permisos", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                return;
+                            }
+                            // id,nom_user,nombre,pwd_user,bloqueado,nivel,tipuser,local
+                            DataRow nrow = dtg.NewRow();
+                            nrow["id"] = idtu;
+                            nrow["nom_user"] = textBox1.Text;
+                            nrow["pwd_user"] = textBox2.Text;
+                            nrow["nombre"] = textBox3.Text;
+                            nrow["nivel"] = textBox5.Text;
+                            nrow["bloqueado"] = checkBox1.Checked;
+                            nrow["local"] = textBox6.Text;
+                            nrow["tipuser"] = textBox4.Text;
+                            dtg.Rows.Add(nrow);
                         }
-                        if(confper("nuevo",textBox1.Text) == false)
+                        catch (MySqlException ex)
                         {
-                            MessageBox.Show("No fue posible crear los permisos nuevos" + Environment.NewLine +
-                                "deberá borrar y volver a crear este usuario"
-                                , "Error en tabla de permisos", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            return;
+                            MessageBox.Show(ex.Message, "Error en ingresar usuario", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            iserror = "si";
                         }
-                        // agregar al datatable y eso hará que automaticamente se agregue al datagridview1
-                        // acceso,tienda,sede,mod1,mod2,mod3,priv1,priv2,derecho,aoper,foto
-                        DataRow nrow = dtg.NewRow();
-                        nrow["nom_user"] = textBox1.Text;
-                        nrow["pwd_user"] = textBox2.Text;
-                        nrow["nombre"] = textBox3.Text;
-                        nrow["nivel"] = textBox5.Text;
-                        nrow["bloqueado"] = checkBox1.Checked;
-                        nrow["local"] = textBox6.Text;
-                        nrow["ruc"] = textBox4.Text;
-                        nrow["fecha"] = DateTime.Now;
-                        dtg.Rows.Add(nrow);
+                        conn.Close();
                     }
-                    catch (MySqlException ex)
+                    else
                     {
-                        MessageBox.Show(ex.Message, "Error en ingresar usuario",MessageBoxButtons.OK,MessageBoxIcon.Warning);
-                        iserror = "si";
+                        MessageBox.Show("No se estableció conexión con el servidor", "Atención - no se puede continuar");
+                        Application.Exit();
+                        return;
                     }
-                    conn.Close();
-                }
-                else
-                {
-                    MessageBox.Show("No se estableció conexión con el servidor", "Atención - no se puede continuar");
-                    Application.Exit();
-                    return;
                 }
             }
             if (modo == "EDITAR")
             {
-                string parte = "";
-                if (chk_res.Checked == true) parte = "pwd_user=@contra,";
-                string consulta = "update usuarios set " + parte +
-                        "nombre=@nombre,nivel=@niv,bloqueado=@bloq,fecha=date(now()),local=@loca,ruc=@ruc,verapp=@ver " +
-                        "where nom_user=@usuario";  // falta usuario actual que se logueo
-                MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
-                conn.Open();
-                if (conn.State == ConnectionState.Open)
+                var mes = MessageBox.Show("Realmente desea MODIFICAR el usuario?", "Confirme por favor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (mes == DialogResult.Yes)
                 {
-                    MySqlCommand mycom = new MySqlCommand(consulta, conn);
-                    if (chk_res.Checked == true) mycom.Parameters.AddWithValue("@contra", lib.md5("123456"));
-                    mycom.Parameters.AddWithValue("@nombre", textBox3.Text);
-                    mycom.Parameters.AddWithValue("@niv", textBox5.Text);
-                    mycom.Parameters.AddWithValue("@bloq", checkBox1.Checked);
-                    mycom.Parameters.AddWithValue("@loca", textBox6.Text);
-                    mycom.Parameters.AddWithValue("@ruc", textBox4.Text);
-                    mycom.Parameters.AddWithValue("@ver", verapp);
-                    mycom.Parameters.AddWithValue("@usuario", textBox1.Text);
-                    try
+                    string parte = "";
+                    if (chk_res.Checked == true) parte = "pwd_user=@contra,";
+                    string consulta = "update usuarios set " + parte +
+                            "nombre=@nombre,nivel=@niv,tipuser=@tipu,bloqueado=@bloq,userm=@asd,fechm=now(),local=@loca,verapp=@ver " +
+                            "where nom_user=@usuario";  // falta usuario actual que se logueo
+                    MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
+                    conn.Open();
+                    if (conn.State == ConnectionState.Open)
                     {
-                        mycom.ExecuteNonQuery();
-                        string resulta = lib.ult_mov(nomform, nomtab, asd);
-                        if (resulta != "OK")                                        // actualizamos la tabla usuarios
+                        MySqlCommand mycom = new MySqlCommand(consulta, conn);
+                        if (chk_res.Checked == true) mycom.Parameters.AddWithValue("@contra", lib.md5("123456"));
+                        mycom.Parameters.AddWithValue("@nombre", textBox3.Text);
+                        mycom.Parameters.AddWithValue("@niv", textBox5.Text);
+                        mycom.Parameters.AddWithValue("@tipu", textBox4.Text);
+                        mycom.Parameters.AddWithValue("@bloq", checkBox1.Checked);
+                        mycom.Parameters.AddWithValue("@loca", textBox6.Text);
+                        mycom.Parameters.AddWithValue("@ver", verapp);
+                        mycom.Parameters.AddWithValue("@usuario", textBox1.Text);
+                        mycom.Parameters.AddWithValue("@asd", asd);
+                        try
                         {
-                            MessageBox.Show(resulta, "Error en actualización de tabla usuarios", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            Application.Exit();
-                            return;
-                        }
-                        if(chk_permisos.Checked == true)
-                        {
-                            if (confper("reini", textBox1.Text) == false)
+                            mycom.ExecuteNonQuery();
+                            string resulta = lib.ult_mov(nomform, nomtab, asd);
+                            if (resulta != "OK")                                        // actualizamos la tabla usuarios
                             {
-                                MessageBox.Show("No fue posible re-inicializar los permisos del" + Environment.NewLine +
-                                    "usuario, deberá hacerlo manualmente"
-                                    , "Error en tabla de permisos", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                MessageBox.Show(resulta, "Error en actualización de tabla usuarios", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                Application.Exit();
                                 return;
                             }
-                        }
-                        else
-                        {
-                            if (confper("edita", textBox1.Text) == false)
+                            if (chk_permisos.Checked == true)
                             {
-                                MessageBox.Show("No fue posible actualizar los permisos del" + Environment.NewLine +
-                                    "usuario, deberá hacerlo manualmente"
-                                    , "Error en tabla de permisos", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                                return;
-                            }
-                        }
-                        // actualizamos el tdg
-                        if (tx_rind.Text.Trim() != "")
-                        {
-                            dtg.Rows[int.Parse(tx_rind.Text)]["nombre"] = textBox3.Text;
-                            dtg.Rows[int.Parse(tx_rind.Text)]["nivel"] = textBox5.Text;
-                            dtg.Rows[int.Parse(tx_rind.Text)]["bloqueado"] = checkBox1.Checked;
-                            dtg.Rows[int.Parse(tx_rind.Text)]["local"] = textBox6.Text;
-                            dtg.Rows[int.Parse(tx_rind.Text)]["ruc"] = textBox4.Text;
-                        }
-                        else
-                        {
-                            for (int i = dtg.Rows.Count - 1; i >= 0; i--)
-                            {
-                                DataRow drX = dtg.Rows[i];
-                                if (drX["nom_user"].ToString() == textBox1.Text.ToString())
+                                if (confper("reini", textBox1.Text) == false)
                                 {
-                                    dtg.Rows[i]["nombre"] = textBox3.Text;
-                                    dtg.Rows[i]["nivel"] = textBox5.Text;
-                                    dtg.Rows[i]["bloqueado"] = checkBox1.Checked;
-                                    dtg.Rows[i]["local"] = textBox6.Text;
-                                    dtg.Rows[i]["ruc"] = textBox4.Text;
+                                    MessageBox.Show("No fue posible re-inicializar los permisos del" + Environment.NewLine +
+                                        "usuario, deberá hacerlo manualmente"
+                                        , "Error en tabla de permisos", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    return;
                                 }
                             }
+                            else
+                            {
+                                if (confper("edita", textBox1.Text) == false)
+                                {
+                                    MessageBox.Show("No fue posible actualizar los permisos del" + Environment.NewLine +
+                                        "usuario, deberá hacerlo manualmente"
+                                        , "Error en tabla de permisos", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    return;
+                                }
+                            }
+                            // actualizamos el tdg
+                            if (tx_rind.Text.Trim() != "")
+                            {
+                                dtg.Rows[int.Parse(tx_rind.Text)]["nombre"] = textBox3.Text;
+                                dtg.Rows[int.Parse(tx_rind.Text)]["nivel"] = textBox5.Text;
+                                dtg.Rows[int.Parse(tx_rind.Text)]["bloqueado"] = checkBox1.Checked;
+                                dtg.Rows[int.Parse(tx_rind.Text)]["local"] = textBox6.Text;
+                                //dtg.Rows[int.Parse(tx_rind.Text)]["ruc"] = textBox4.Text;
+                            }
+                            else
+                            {
+                                for (int i = dtg.Rows.Count - 1; i >= 0; i--)
+                                {
+                                    DataRow drX = dtg.Rows[i];
+                                    if (drX["nom_user"].ToString() == textBox1.Text.ToString())
+                                    {
+                                        dtg.Rows[i]["nombre"] = textBox3.Text;
+                                        dtg.Rows[i]["nivel"] = textBox5.Text;
+                                        dtg.Rows[i]["bloqueado"] = checkBox1.Checked;
+                                        dtg.Rows[i]["local"] = textBox6.Text;
+                                        //dtg.Rows[i]["ruc"] = textBox4.Text;
+                                    }
+                                }
+                            }
+                            dtg.AcceptChanges();    //
                         }
-                        dtg.AcceptChanges();    //
+                        catch (MySqlException ex)
+                        {
+                            MessageBox.Show(ex.Message, "Error de Editar usuario", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            iserror = "si";
+                        }
+                        conn.Close();
                     }
-                    catch (MySqlException ex)
+                    else
                     {
-                        MessageBox.Show(ex.Message, "Error de Editar usuario",MessageBoxButtons.OK,MessageBoxIcon.Warning);
-                        iserror = "si";
+                        MessageBox.Show("No se estableció conexión con el servidor", "Atención - no se puede continuar");
+                        Application.Exit();
+                        return;
                     }
-                    conn.Close();
-                }
-                else
-                {
-                    MessageBox.Show("No se estableció conexión con el servidor", "Atención - no se puede continuar");
-                    Application.Exit();
-                    return;
                 }
             }
             if (modo == "ANULAR")       // opción para borrar
@@ -678,9 +651,11 @@ namespace TransCarga
                         MessageBox.Show("Confirma que desea BORRAR el usuario?", " Atención ", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                         if (drb == DialogResult.Yes)
                         {
-                            consulta = "delete from usuarios where nom_user=@cam0";
+                            //consulta = "delete from usuarios where nom_user=@cam0";
+                            consulta = "call borusuar(@cu,@ta)";
                             micon = new MySqlCommand(consulta, conn);
-                            micon.Parameters.AddWithValue("@cam0", textBox1.Text);
+                            micon.Parameters.AddWithValue("@cu", textBox1.Text);
+                            micon.Parameters.AddWithValue("@ta", 0);
                             try
                             {
                                 micon.ExecuteNonQuery();
@@ -701,7 +676,7 @@ namespace TransCarga
                                 }
                             }
                             dtg.AcceptChanges();    // al borrar el dtg automaticamente se borra en la grilla porque es su datasource
-                            // ahora borramos sus permisos
+                            /* ahora borramos sus permisos
                             consulta = "delete from permisos where usuario=@cam0";
                             micon = new MySqlCommand(consulta, conn);
                             micon.Parameters.AddWithValue("@cam0", textBox1.Text);
@@ -714,6 +689,7 @@ namespace TransCarga
                                 MessageBox.Show(ex.Message, "Error al ejecutar el borrado de permisos");
                                 iserror = "si";
                             }
+                            */
                         }
                     }
                 }
@@ -742,50 +718,22 @@ namespace TransCarga
         {
             if (Tx_modo.Text != "NUEVO" && tx_idr.Text != "")
             {
-                //string aca = tx_idr.Text;
-                //limpia_chk();
-                //limpia_combos();
-                //limpiar(this);
-                //tx_idr.Text = aca;
                 jalaoc("tx_idr");               // jalamos los datos del registro
             }
         }
         private void textBox1_Leave(object sender, EventArgs e)
         {
-            /*  validamos segun el modo
-            if (textBox1.Text != "" && Tx_modo.Text=="NUEVO")
+            if (textBox1.Text.Trim() != "")
             {
-                MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
-                conn.Open();
-                if (conn.State != ConnectionState.Open)
+                foreach(DataGridViewRow row in advancedDataGridView1.Rows)
                 {
-                    MessageBox.Show("No se pudo conectar con el servidor", "Error de conexión");
-                    Application.Exit();
-                    return;
+                    if (row.Cells[1].Value != null && row.Cells[1].Value.ToString() == textBox1.Text.Trim())
+                    {
+                        tx_rind.Text = row.Cells["id"].RowIndex.ToString(); // advancedDataGridView1.CurrentRow.Index.ToString();
+                        jalaoc("tx_idr");
+                    }
                 }
-                string consulta = "select count(nom_user) as cant from usuarios where nom_user=@usuario";
-                MySqlCommand mycomand = new MySqlCommand(consulta, conn);
-                mycomand.Parameters.AddWithValue("@usuario", this.textBox1.Text);
-                int cant = System.Convert.ToInt16(mycomand.ExecuteScalar());
-                if (cant > 0)
-                {
-                    MessageBox.Show("Usuario YA existe!", "Error",MessageBoxButtons.OK,MessageBoxIcon.Error);
-                    this.textBox1.Text = "";
-                    return;        
-                }
-                conn.Close();
             }
-            if (textBox1.Text != "" && Tx_modo.Text != "NUEVO")
-            {
-                DataRow[] linea = dtg.Select("nom_user like '%" + textBox1.Text + "%'");
-                foreach(DataRow row in linea)
-                {
-                    textBox2.Text = row[1].ToString();
-                    textBox3.Text = row[2].ToString();
-                }
-                
-            }
-            */
         }
         #endregion leaves;
 
@@ -908,10 +856,6 @@ namespace TransCarga
             chk_res.Enabled = false;
             chk_permisos.Enabled = false;
             this.textBox1.Focus();
-            //limpiar(this);
-            //totfilgrid = dataGridView1.Rows.Count - 1;
-            //printPreviewDialog1.Document = printDocument1;
-            //printPreviewDialog1.ShowDialog();
         }
         private void Bt_anul_Click(object sender, EventArgs e)
         {
@@ -987,7 +931,7 @@ namespace TransCarga
         }
         #endregion botones;
         // permisos para habilitar los botones de comando
-        private void permisos()
+        /*private void permisos()
         {
             string consulta = "select formulario,nivel,coment,btn1,btn2,btn3,btn4,btn5,btn6 from setupform";
             DataTable dt = new DataTable();
@@ -1130,6 +1074,7 @@ namespace TransCarga
             }
             conn.Close();
         }
+        */
         // configurador de permisos
         private bool confper(string tarea, string user)
         {
@@ -1204,8 +1149,11 @@ namespace TransCarga
                     if (textBox5.Text == cn_sup) parter = rtusup;       // superusuario
                     if (textBox5.Text == cn_est) parter = rtuest;       // estandar
                     if (textBox5.Text == cn_mir) parter = rtusmi;       // solo mira
-                    consulta = "delete from permisos where usuario='" + textBox1.Text.Trim() + "'";
+                    //consulta = "delete from permisos where usuario='" + textBox1.Text.Trim() + "'";
+                    consulta = "call borusuar(@cu,@ta)";
                     micon = new MySqlCommand(consulta, conn);
+                    micon.Parameters.AddWithValue("@cu", textBox1.Text);
+                    micon.Parameters.AddWithValue("@ta", 2);    // borra solo permisos
                     micon.ExecuteNonQuery();
                     for (int i = 0; i < dt.Rows.Count; i++)
                     {
@@ -1233,7 +1181,6 @@ namespace TransCarga
             {
                 DataRow row = ((DataTable)comboBox1.DataSource).Rows[comboBox1.SelectedIndex];
                 textBox4.Text = (string)row["idcodice"];
-                //int Id = (int)row["idcodice"];
             }
         }
         private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)     // nivel de acceso
@@ -1241,7 +1188,7 @@ namespace TransCarga
             if(comboBox2.SelectedIndex > -1)
             {
                 DataRow row = ((DataTable)comboBox2.DataSource).Rows[comboBox2.SelectedIndex];
-                textBox5.Text = (string)row["codigo"];
+                textBox5.Text = (string)row["idcodice"];
             }
         }
         private void comboBox3_SelectedIndexChanged(object sender, EventArgs e)     // local del usuario

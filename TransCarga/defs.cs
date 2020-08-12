@@ -11,6 +11,7 @@ namespace TransCarga
     {
         static string nomform = "defs"; // nombre del formulario
         string asd = TransCarga.Program.vg_user;   // usuario conectado al sistema
+        string verapp = System.Diagnostics.FileVersionInfo.GetVersionInfo(Application.ExecutablePath).FileVersion;
         string colback = TransCarga.Program.colbac;   // color de fondo del form
         string colpage = TransCarga.Program.colpag;   // color de los pageframes
         string colgrid = TransCarga.Program.colgri;   // color fondo del grillas 
@@ -101,13 +102,11 @@ namespace TransCarga
         }
         private void grilla()                   // arma la grilla
         {
-            // id,nom_user,nombre,pwd_user,bloqueado,nivel,tipuser,acceso,local,tienda,sede,ruc,
-            // mod1,mod2,mod3,priv1,priv2,derecho,aoper,fecha,foto
             Font tiplg = new Font("Arial",7, FontStyle.Bold);
             advancedDataGridView1.Font = tiplg;
             advancedDataGridView1.DefaultCellStyle.Font = tiplg;
             advancedDataGridView1.RowTemplate.Height = 15;
-            advancedDataGridView1.DefaultCellStyle.BackColor = Color.MediumAquamarine;
+            //advancedDataGridView1.DefaultCellStyle.BackColor = Color.MediumAquamarine;
             advancedDataGridView1.DataSource = dtg;
             // id 
             advancedDataGridView1.Columns[0].Visible = false;
@@ -197,14 +196,6 @@ namespace TransCarga
         }
         public void jalaoc(string campo)        // jala datos de usuarios por id o nom_user
         {
-            if (campo == "tx_idr")
-            {
-
-            }
-            if (campo == "tx_corre")
-            {
-
-            }
             //textBox1.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[].Value.ToString();  // 
             textBox1.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[2].Value.ToString();  // idcodice
             textBox2.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[3].Value.ToString();  // codigo 2
@@ -380,16 +371,29 @@ namespace TransCarga
         private void button1_Click(object sender, EventArgs e)
         {
             // validamos que los campos no esten vacíos
-            if (this.textBox1.Text == "")
+            if (textBox1.Text.Trim() == "")
             {
                 MessageBox.Show("Seleccione un Id Código", " Error! ");
                 textBox1.Focus();
                 return;
             }
-            if (this.textBox2.Text == "")
+            if (textBox2.Text.Trim() == "")
             {
                 //MessageBox.Show("Seleccione el código 2", " Error! ");
+                //textBox2.Focus();
                 //return;
+            }
+            if (textBox3.Text.Trim() == "")
+            {
+                MessageBox.Show("Ingrese una descripción", " Dato obligatorio! ");
+                textBox3.Focus();
+                return;
+            }
+            if (textBox5.Text.Trim() == "")
+            {
+                MessageBox.Show("Ingrese una descripción corta", " Dato obligatorio! ");
+                textBox5.Focus();
+                return;
             }
             if (this.comboBox1.Text == "")
             {
@@ -400,8 +404,6 @@ namespace TransCarga
             // grabamos, actualizamos, etc
             string modo = this.Tx_modo.Text;
             string iserror = "no";
-            string asd = TransCarga.Program.vg_user;
-            string verapp = System.Diagnostics.FileVersionInfo.GetVersionInfo(Application.ExecutablePath).FileVersion;
             if (modo == "NUEVO")
             {
                 if (textBox4.Text.Trim() == "")
@@ -430,6 +432,7 @@ namespace TransCarga
                 conn.Open();
                 if (conn.State == ConnectionState.Open)
                 {
+                    string idtu = "0";
                     MySqlCommand mycomand = new MySqlCommand(consulta, conn);
                     mycomand.Parameters.AddWithValue("@idt", textBox4.Text);
                     mycomand.Parameters.AddWithValue("@idc", textBox1.Text);
@@ -440,13 +443,17 @@ namespace TransCarga
                     try
                     {
                         mycomand.ExecuteNonQuery();
-                        //string resulta = lib.ult_mov(nomform, nomtab, asd);
-                        //if (resulta != "OK")                                    // actualizamos la tabla usuarios
-                        //{
-                        //    MessageBox.Show(resulta, "Error en actualización de tabla definiciones", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        //    Application.Exit();
-                        //    return;
-                        //}
+                        mycomand = new MySqlCommand("select last_insert_id()", conn);
+                        MySqlDataReader dr0 = mycomand.ExecuteReader();
+                        if (dr0.Read()) idtu = dr0.GetString(0);
+                        dr0.Close();
+                        string resulta = lib.ult_mov(nomform, nomtab, asd);
+                        if (resulta != "OK")                                    // actualizamos la tabla usuarios
+                        {
+                            MessageBox.Show(resulta, "Error en actualización de tabla definiciones", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            Application.Exit();
+                            return;
+                        }
                     }
                     catch (MySqlException ex)
                     {
@@ -457,8 +464,7 @@ namespace TransCarga
                     // insertamos en el datatable
                     DataRow dr = dtg.NewRow();
                     // id,idtabella,idcodice,codigo,descrizione,descrizionerid,numero
-                    string cid = "0";
-                    dr[0] = cid;
+                    dr[0] = idtu;
                     dr[1] = textBox4.Text;
                     dr[2] = textBox1.Text;
                     dr[3] = textBox2.Text;
@@ -492,13 +498,13 @@ namespace TransCarga
                     try
                     {
                         mycom.ExecuteNonQuery();
-                        //string resulta = lib.ult_mov(nomform, nomtab, asd);
-                        //if (resulta != "OK")                                        // actualizamos la tabla usuarios
-                        //{
-                        //    MessageBox.Show(resulta, "Error en actualización de tabla usuarios", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        //    Application.Exit();
-                        //    return;
-                        //}
+                        string resulta = lib.ult_mov(nomform, nomtab, asd);
+                        if (resulta != "OK")                                        // actualizamos la tabla usuarios
+                        {
+                            MessageBox.Show(resulta, "Error en actualización de tabla usuarios", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            Application.Exit();
+                            return;
+                        }
                     }
                     catch (MySqlException ex)
                     {
@@ -549,11 +555,6 @@ namespace TransCarga
         {
             if (Tx_modo.Text != "NUEVO" && tx_idr.Text != "")
             {
-                //string aca = tx_idr.Text;
-                //limpia_chk();
-                //limpia_combos();
-                //limpiar(this);
-                //tx_idr.Text = aca;
                 jalaoc("tx_idr");               // jalamos los datos del registro
             }
         }
@@ -577,7 +578,7 @@ namespace TransCarga
                 if (cant > 0)
                 {
                     MessageBox.Show("Código YA existe!", "Error",MessageBoxButtons.OK,MessageBoxIcon.Error);
-                    this.textBox1.Text = "";
+                    textBox1.Text = "";
                     return;        
                 }
                 conn.Close();

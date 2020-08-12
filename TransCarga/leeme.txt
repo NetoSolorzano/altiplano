@@ -1,0 +1,9 @@
+﻿OBSERVACIONES SOBRE FUNCIONAMIENTO GENERAL
+------------------------------------------ al 11/08/2020
+Campos: diriplan4,diripwan4 (todas las tablas) => van las direcciones desde donde se escribio el registro
+Campos: diriplan4,diripwan4 (tabla usuarios) => van las direcciones desde donde se conecto la ultima vez
+
+form users:
+- la opcion de ANULAR usuarios los borra siempre y cuando no tengan operaciones efectuadas, solo se bloquea
+  si ya tiene oporaciones
+

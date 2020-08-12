@@ -97,12 +97,12 @@ namespace TransCarga
         string asd = TransCarga.Program.vg_user;                             // usuario conectado al sistema
         string verapp = System.Diagnostics.FileVersionInfo.GetVersionInfo(Application.ExecutablePath).FileVersion;
         // conexion a la base de datos
-        static string serv = ConfigurationManager.AppSettings["serv"].ToString();
+        //static string serv = ConfigurationManager.AppSettings["serv"].ToString();
         static string port = ConfigurationManager.AppSettings["port"].ToString();
-        static string usua = ConfigurationManager.AppSettings["user"].ToString();
-        static string cont = ConfigurationManager.AppSettings["pass"].ToString();
+        //static string usua = ConfigurationManager.AppSettings["user"].ToString();
+        //static string cont = ConfigurationManager.AppSettings["pass"].ToString();
         static string data = ConfigurationManager.AppSettings["data"].ToString();
-        string DB_CONN_STR = "server=" + serv + ";uid=" + usua + ";pwd=" + cont + ";database=" + data + ";";
+        string DB_CONN_STR = "server=" + login.serv + ";uid=" + login.usua + ";pwd=" + login.cont + ";database=" + data + ";";
         //
         public string ult_mov(string formu, string tabla, string usuar)     // ultimo movimiento del usuario
         {
@@ -111,10 +111,12 @@ namespace TransCarga
             conl.Open();
             if (conl.State == ConnectionState.Open)   // conl.State == ConnectionState.Open
             {
-                MySqlCommand ult_mov = new MySqlCommand("call ult_mov_usuario(@nfo,@tab,@usu)", conl);
+                MySqlCommand ult_mov = new MySqlCommand("call actividadBd(@nfo,@tab,@usu,@uipl,@uipw)", conl);
                 ult_mov.Parameters.AddWithValue("@nfo", formu);
                 ult_mov.Parameters.AddWithValue("@tab", tabla);
                 ult_mov.Parameters.AddWithValue("@usu", usuar);
+                ult_mov.Parameters.AddWithValue("@uipl", iplan());
+                ult_mov.Parameters.AddWithValue("@uipw", ipwan());
                 try
                 {
                     ult_mov.ExecuteNonQuery();
@@ -157,7 +159,8 @@ namespace TransCarga
         }
         public string ipwan()                                               // retorna la IP wan del cliente
         {
-
+            string externalip = new WebClient().DownloadString("http://icanhazip.com");
+            /*
             // check IP using DynDNS's service
             WebRequest request = WebRequest.Create("http://checkip.dyndns.org");
             WebResponse response = request.GetResponse();
@@ -173,6 +176,8 @@ namespace TransCarga
             return ipAddress.
                 Replace("<html><head><title>Current IP Check</title></head><body>Current IP Address: ", string.Empty).
                 Replace("</body></html>", string.Empty);
+            */
+            return externalip;
         }
         public string nbname()                                              // retorna el nombre de la pc cliente
         {

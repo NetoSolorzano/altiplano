@@ -19,7 +19,6 @@ namespace TransCarga
         public static string colsfc = "";       // grids color seleccion contenido
         public static string colstr = "";       // strip color
         public static string colpnc = "";       // panel cabecera color
-        public static string m70 = "";          // acceso directo a modulo almacen fisico
         public static string cliente = "";      // cliente del sistema
         public static string almuser = "";     // valor almacen del usuario
         public static string retorna1 = "";
