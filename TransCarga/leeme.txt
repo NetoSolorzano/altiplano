@@ -13,4 +13,5 @@ form proveed:
 - pendiente de agregar objetos como rubro proveedor, pagina web, representante, etc.
 form vehiculos:
 - en este form van todos los vehiculos de la organizacion, propios o terceros
+- el ruc del propietario debe estar inscrito en proveedores
 - 
