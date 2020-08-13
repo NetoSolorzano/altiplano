@@ -32,6 +32,7 @@ namespace TransCarga
         string img_grab = "";
         string img_anul = "";
         string vEstAnu = "";            // estado de serie anulada
+        string vtd_ruc = "";
         libreria lib = new libreria();
         // string de conexion
         //static string serv = ConfigurationManager.AppSettings["serv"].ToString();
@@ -217,7 +218,7 @@ namespace TransCarga
             {
                 MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
                 conn.Open();
-                string consulta = "select campo,param,valor from enlaces where formulario in (@nofo,@nofa)";
+                string consulta = "select formulario,campo,param,valor from enlaces where formulario in (@nofo,@nofa)";
                 MySqlCommand micon = new MySqlCommand(consulta, conn);
                 micon.Parameters.AddWithValue("@nofo", "main");
                 micon.Parameters.AddWithValue("@nofa", nomform);
@@ -242,7 +243,8 @@ namespace TransCarga
 
                     }
                     if (row["formulario"].ToString() == "main" && row["campo"].ToString() == "estado" && row["param"].ToString() == "anulado") vEstAnu = row["valor"].ToString().Trim();
-            }
+                    if (row["formulario"].ToString() == "proveed" && row["campo"].ToString() == "documento" && row["param"].ToString() == "ruc") vtd_ruc = row["valor"].ToString().Trim();
+                }
                 da.Dispose();
                 dt.Dispose();
                 conn.Close();
@@ -294,7 +296,7 @@ namespace TransCarga
             MySqlDataAdapter datpu = new MySqlDataAdapter(cmbtpu);
             datpu.Fill(dttpu);
             cmb_tipo.DataSource = dttpu;
-            cmb_tipo.DisplayMember = "descrizione";
+            cmb_tipo.DisplayMember = "descrizionerid";
             cmb_tipo.ValueMember = "idcodice";
             // datos vehiculos
             string datgri = "select a.id,a.rucpro,c.razonsocial,a.coment,a.tipo,b.descrizionerid,a.status,a.placa,a.marca," +
@@ -685,39 +687,28 @@ namespace TransCarga
                 jalaoc("tx_idr");               // jalamos los datos del registro
             }
         }
-        private void ubigeo_Leave(object sender, EventArgs e)
+        private void tx_ruc_Leave(object sender, EventArgs e)
         {
-            try
+            if (tx_ruc.Text.Trim() != "")
             {
-                MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
-                conn.Open();
-                if (conn.State == ConnectionState.Open)
+                if (lib.valiruc(tx_ruc.Text,vtd_ruc) == false)
                 {
-                    String consulta = "select count(id) from ubigeos where concat(depart,provin,distri) = @cod";
-                    MySqlCommand micon = new MySqlCommand(consulta, conn);
-                    micon.Parameters.AddWithValue("@cod", tx_confv.Text);
-                    MySqlDataReader dr = micon.ExecuteReader();
-                    if (dr.Read())
-                    {
-                        if(dr.GetInt16(0) < 1)
-                        {
-                            MessageBox.Show("Código de ubigeo NO existe!", "Error en ingreso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                            tx_confv.Text = "";
-                            tx_confv.Focus();
-                        }
-                    }
-                    dr.Close();
-                    micon.Dispose();
-                    conn.Close();
+                    MessageBox.Show("Ruc no válido!", "Atención, debe corregir", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    tx_ruc.Text = "";
+                    tx_ruc.Focus();
                     return;
                 }
+                else
+                {
+                    tx_propiet.Text = lib.nomsn("FOR",vtd_ruc,tx_ruc.Text);
+                }
             }
-            catch(Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Error fatal");
-                Application.Exit();
-                return;
-            }
+        }
+        private void tx_placa_Leave(object sender, EventArgs e)
+        {
+            // nuevo -> placa No debe existir
+            // editar -> placa Si debe existir y jalar datos
+
         }
         #endregion leaves;
 
@@ -794,20 +785,18 @@ namespace TransCarga
             escribe(this);
             Tx_modo.Text = "NUEVO";
             button1.Image = Image.FromFile(img_grab);
-            tx_placa.Focus();
+            tx_ruc.Focus();
             limpiar(this);
+            limpiaPag(tabreg);
             limpia_otros();
             limpia_combos();
+            limpia_chk();
         }
         private void Bt_edit_Click(object sender, EventArgs e)
         {
             advancedDataGridView1.Enabled = true;
-            string codu = "";
-            string idr = "";
             if (advancedDataGridView1.CurrentRow.Index > -1)
             {
-                codu = advancedDataGridView1.CurrentRow.Cells[1].Value.ToString();
-                idr = advancedDataGridView1.CurrentRow.Cells[0].Value.ToString();
                 tx_rind.Text = advancedDataGridView1.CurrentRow.Index.ToString();
             }
             tabControl1.SelectedTab = tabgrilla;
@@ -815,8 +804,10 @@ namespace TransCarga
             Tx_modo.Text = "EDITAR";
             button1.Image = Image.FromFile(img_grab);
             limpiar(this);
+            limpiaPag(tabreg);
             limpia_otros();
             limpia_combos();
+            limpia_chk();
             jalaoc("tx_idr");
         }
         private void Bt_close_Click(object sender, EventArgs e)
@@ -832,29 +823,15 @@ namespace TransCarga
         }
         private void Bt_anul_Click(object sender, EventArgs e)
         {
-            advancedDataGridView1.Enabled = true;
-            string codu = "";
-            string idr = "";
-            if (advancedDataGridView1.CurrentRow.Index > -1)
-            {
-                codu = advancedDataGridView1.CurrentRow.Cells[1].Value.ToString();
-                idr = advancedDataGridView1.CurrentRow.Cells[0].Value.ToString();
-                tx_rind.Text = advancedDataGridView1.CurrentRow.Index.ToString();
-            }
-            tabControl1.SelectedTab = tabreg;
-            escribe(this);
-            Tx_modo.Text = "ANULAR";
-            button1.Image = Image.FromFile(img_anul);
-            limpiar(this);
-            limpia_otros();
-            limpia_combos();
-            jalaoc("tx_idr");
+            //
         }
         private void Bt_first_Click(object sender, EventArgs e)
         {
             limpiar(this);
             limpia_chk();
             limpia_combos();
+            limpiaPag(tabreg);
+            limpia_otros();
             //--
             tx_idr.Text = lib.gofirts(nomtab);
             tx_idr_Leave(null, null);
@@ -862,9 +839,11 @@ namespace TransCarga
         private void Bt_back_Click(object sender, EventArgs e)
         {
             string aca = tx_idr.Text;
+            limpiar(this);
             limpia_chk();
             limpia_combos();
-            limpiar(this);
+            limpiaPag(tabreg);
+            limpia_otros();
             //--
             tx_idr.Text = lib.goback(nomtab, aca);
             tx_idr_Leave(null, null);
@@ -872,9 +851,11 @@ namespace TransCarga
         private void Bt_next_Click(object sender, EventArgs e)
         {
             string aca = tx_idr.Text;
+            limpiar(this);
             limpia_chk();
             limpia_combos();
-            limpiar(this);
+            limpiaPag(tabreg);
+            limpia_otros();
             //--
             tx_idr.Text = lib.gonext(nomtab, aca);
             tx_idr_Leave(null, null);
@@ -884,6 +865,8 @@ namespace TransCarga
             limpiar(this);
             limpia_chk();
             limpia_combos();
+            limpiaPag(tabreg);
+            limpia_otros();
             //--
             tx_idr.Text = lib.golast(nomtab);
             tx_idr_Leave(null, null);
@@ -893,29 +876,12 @@ namespace TransCarga
         #endregion botones_de_comando  ;
 
         #region comboboxes
-        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)     // razon social
-        {
-            if(comboBox1.SelectedIndex > -1)
-            {
-                DataRow row = ((DataTable)comboBox1.DataSource).Rows[comboBox1.SelectedIndex];
-                tx_ruc.Text = (string)row["idcodice"];
-                //int Id = (int)row["idcodice"];
-            }
-        }
         private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (cmb_tipo.SelectedIndex > -1)
             {
                 DataRow row = ((DataTable)cmb_tipo.DataSource).Rows[cmb_tipo.SelectedIndex];
                 tx_tipo.Text = (string)row["idcodice"];
-            }
-        }
-        private void comboBox3_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (comboBox3.SelectedIndex > -1)
-            {
-                DataRow row = ((DataTable)comboBox3.DataSource).Rows[comboBox3.SelectedIndex];
-                tx_propiet.Text = (string)row["idcodice"];
             }
         }
         #endregion comboboxes
@@ -925,7 +891,7 @@ namespace TransCarga
         {
             dtg.DefaultView.RowFilter = advancedDataGridView1.FilterString;
         }
-        private void advancedDataGridView1_CellEnter(object sender, DataGridViewCellEventArgs e)            // almacena valor previo al ingresar a la celda
+        private void advancedDataGridView1_CellEnter(object sender, DataGridViewCellEventArgs e)            // 
         {
             advancedDataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Tag = advancedDataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString();
         }
@@ -933,14 +899,15 @@ namespace TransCarga
         {
             if(e.ColumnIndex == 1)
             {
-                //string codu = "";
-                string idr = "";
+                string idr;
                 idr = advancedDataGridView1.CurrentRow.Cells[0].Value.ToString();
                 tx_rind.Text = advancedDataGridView1.CurrentRow.Index.ToString();
                 tabControl1.SelectedTab = tabreg;
                 limpiar(this);
                 limpia_otros();
                 limpia_combos();
+                limpiaPag(tabreg);
+                limpia_otros();
                 tx_idr.Text = idr;
                 jalaoc("tx_idr");
             }

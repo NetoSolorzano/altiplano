@@ -56,6 +56,10 @@
             this.tabgrilla = new System.Windows.Forms.TabPage();
             this.advancedDataGridView1 = new ADGV.AdvancedDataGridView();
             this.tabreg = new System.Windows.Forms.TabPage();
+            this.label4 = new System.Windows.Forms.Label();
+            this.groupBox5 = new System.Windows.Forms.GroupBox();
+            this.groupBox6 = new System.Windows.Forms.GroupBox();
+            this.tx_coment = new System.Windows.Forms.TextBox();
             this.groupBox19 = new System.Windows.Forms.GroupBox();
             this.groupBox20 = new System.Windows.Forms.GroupBox();
             this.tx_ruc = new TransCarga.NumericTextBox();
@@ -102,15 +106,12 @@
             this.tx_modelo = new System.Windows.Forms.TextBox();
             this.tx_marca = new System.Windows.Forms.TextBox();
             this.button1 = new System.Windows.Forms.Button();
-            this.label4 = new System.Windows.Forms.Label();
-            this.groupBox5 = new System.Windows.Forms.GroupBox();
-            this.groupBox6 = new System.Windows.Forms.GroupBox();
-            this.tx_coment = new System.Windows.Forms.TextBox();
             this.toolStrip1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabgrilla.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.advancedDataGridView1)).BeginInit();
             this.tabreg.SuspendLayout();
+            this.groupBox5.SuspendLayout();
             this.groupBox19.SuspendLayout();
             this.groupBox21.SuspendLayout();
             this.groupBox13.SuspendLayout();
@@ -121,7 +122,6 @@
             this.groupBox9.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox1.SuspendLayout();
-            this.groupBox5.SuspendLayout();
             this.SuspendLayout();
             // 
             // toolStrip1
@@ -443,6 +443,45 @@
             this.tabreg.TabIndex = 1;
             this.tabreg.Text = "Registro";
             // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.label4.Location = new System.Drawing.Point(84, 303);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(60, 13);
+            this.label4.TabIndex = 217;
+            this.label4.Text = "Comentario";
+            this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // groupBox5
+            // 
+            this.groupBox5.BackColor = System.Drawing.Color.White;
+            this.groupBox5.Controls.Add(this.groupBox6);
+            this.groupBox5.Location = new System.Drawing.Point(84, 324);
+            this.groupBox5.Name = "groupBox5";
+            this.groupBox5.Size = new System.Drawing.Size(469, 1);
+            this.groupBox5.TabIndex = 216;
+            this.groupBox5.TabStop = false;
+            // 
+            // groupBox6
+            // 
+            this.groupBox6.Location = new System.Drawing.Point(0, -26);
+            this.groupBox6.Name = "groupBox6";
+            this.groupBox6.Size = new System.Drawing.Size(164, 1);
+            this.groupBox6.TabIndex = 113;
+            this.groupBox6.TabStop = false;
+            // 
+            // tx_coment
+            // 
+            this.tx_coment.BackColor = System.Drawing.SystemColors.Window;
+            this.tx_coment.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_coment.Location = new System.Drawing.Point(167, 288);
+            this.tx_coment.Multiline = true;
+            this.tx_coment.Name = "tx_coment";
+            this.tx_coment.Size = new System.Drawing.Size(385, 37);
+            this.tx_coment.TabIndex = 11;
+            // 
             // groupBox19
             // 
             this.groupBox19.BackColor = System.Drawing.Color.White;
@@ -468,6 +507,7 @@
             this.tx_ruc.Name = "tx_ruc";
             this.tx_ruc.Size = new System.Drawing.Size(96, 20);
             this.tx_ruc.TabIndex = 1;
+            this.tx_ruc.Leave += new System.EventHandler(this.tx_ruc_Leave);
             // 
             // tx_propiet
             // 
@@ -476,7 +516,6 @@
             this.tx_propiet.ReadOnly = true;
             this.tx_propiet.Size = new System.Drawing.Size(372, 20);
             this.tx_propiet.TabIndex = 214;
-            this.tx_propiet.Visible = false;
             // 
             // label11
             // 
@@ -769,6 +808,7 @@
             this.tx_placa.Name = "tx_placa";
             this.tx_placa.Size = new System.Drawing.Size(93, 18);
             this.tx_placa.TabIndex = 3;
+            this.tx_placa.Leave += new System.EventHandler(this.tx_placa_Leave);
             // 
             // tx_motor
             // 
@@ -787,7 +827,6 @@
             this.tx_confv.Name = "tx_confv";
             this.tx_confv.Size = new System.Drawing.Size(149, 18);
             this.tx_confv.TabIndex = 6;
-            this.tx_confv.Leave += new System.EventHandler(this.ubigeo_Leave);
             // 
             // tx_soat
             // 
@@ -886,45 +925,6 @@
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label4.Location = new System.Drawing.Point(84, 303);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(60, 13);
-            this.label4.TabIndex = 217;
-            this.label4.Text = "Comentario";
-            this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // groupBox5
-            // 
-            this.groupBox5.BackColor = System.Drawing.Color.White;
-            this.groupBox5.Controls.Add(this.groupBox6);
-            this.groupBox5.Location = new System.Drawing.Point(84, 324);
-            this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(469, 1);
-            this.groupBox5.TabIndex = 216;
-            this.groupBox5.TabStop = false;
-            // 
-            // groupBox6
-            // 
-            this.groupBox6.Location = new System.Drawing.Point(0, -26);
-            this.groupBox6.Name = "groupBox6";
-            this.groupBox6.Size = new System.Drawing.Size(164, 1);
-            this.groupBox6.TabIndex = 113;
-            this.groupBox6.TabStop = false;
-            // 
-            // tx_coment
-            // 
-            this.tx_coment.BackColor = System.Drawing.SystemColors.Window;
-            this.tx_coment.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_coment.Location = new System.Drawing.Point(167, 288);
-            this.tx_coment.Multiline = true;
-            this.tx_coment.Name = "tx_coment";
-            this.tx_coment.Size = new System.Drawing.Size(385, 37);
-            this.tx_coment.TabIndex = 11;
-            // 
             // vehiculos
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -952,6 +952,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.advancedDataGridView1)).EndInit();
             this.tabreg.ResumeLayout(false);
             this.tabreg.PerformLayout();
+            this.groupBox5.ResumeLayout(false);
             this.groupBox19.ResumeLayout(false);
             this.groupBox21.ResumeLayout(false);
             this.groupBox13.ResumeLayout(false);
@@ -962,7 +963,6 @@
             this.groupBox9.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
-            this.groupBox5.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
