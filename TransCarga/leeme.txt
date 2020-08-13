@@ -8,4 +8,9 @@ form users:
   si ya tiene oporaciones
 form clients:
 - el código para enlazar a conectorSolorsoft esta hecho y funcionando
-
+form proveed:
+- el código para enlazar a conectorSolorsoft esta hecho y funcionando
+- pendiente de agregar objetos como rubro proveedor, pagina web, representante, etc.
+form vehiculos:
+- en este form van todos los vehiculos de la organizacion, propios o terceros
+- 

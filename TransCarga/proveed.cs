@@ -7,9 +7,9 @@ using MySql.Data.MySqlClient;
 
 namespace TransCarga
 {
-    public partial class clients : Form
+    public partial class proveed : Form
     {
-        static string nomform = "clients"; // nombre del formulario
+        static string nomform = "proveed"; // nombre del formulario
         string asd = TransCarga.Program.vg_user;   // usuario conectado al sistema
         string colback = TransCarga.Program.colbac;   // color de fondo
         string colpage = TransCarga.Program.colpag;   // color de los pageframes
@@ -54,11 +54,11 @@ namespace TransCarga
         DataTable dtg = new DataTable();
         DataTable dtu = new DataTable();
 
-        public clients()
+        public proveed()
         {
             InitializeComponent();
         }
-        private void clients_KeyDown(object sender, KeyEventArgs e)
+        private void proveed_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter) SendKeys.Send("{TAB}");
             //if (Control.ModifierKeys == Keys.Control && e.KeyCode == Keys.N) Bt_add.PerformClick();
@@ -68,7 +68,7 @@ namespace TransCarga
             //if (Control.ModifierKeys == Keys.Control && e.KeyCode == Keys.O) Bt_ver.PerformClick();
             //if (Control.ModifierKeys == Keys.Control && e.KeyCode == Keys.S) Bt_close.PerformClick();
         }
-        private void clients_Load(object sender, EventArgs e)
+        private void proveed_Load(object sender, EventArgs e)
         {
             /*
             ToolTip toolTipNombre = new ToolTip();           // Create the ToolTip and associate with the Form container.
@@ -97,7 +97,7 @@ namespace TransCarga
         private void init()
         {
             this.BackColor = Color.FromName(colback);
-            this.toolStrip1.BackColor = Color.FromName(colstrp);
+            toolStrip1.BackColor = Color.FromName(colstrp);
             Bt_add.Image = Image.FromFile(img_btN);
             Bt_edit.Image = Image.FromFile(img_btE);
             Bt_anul.Image = Image.FromFile(img_btA);
@@ -192,7 +192,7 @@ namespace TransCarga
                 {
                     string consulta = "select tipdoc,RUC,RazonSocial,Direcc1,Direcc2,depart,Provincia,Localidad,NumeroTel1,NumeroTel2,EMail,pais,ubigeo," +
                         "codigo,estado,idcategoria,id " +
-                        "from anag_cli where id=@ida";
+                        "from anag_for where id=@ida";
                     MySqlCommand micon = new MySqlCommand(consulta, conn);
                     micon.Parameters.AddWithValue("@ida", tx_idr.Text);
                     MySqlDataReader dr = micon.ExecuteReader();
@@ -543,7 +543,7 @@ namespace TransCarga
             {
                 if (tx_idr.Text.Trim() == "")
                 {
-                    var aa = MessageBox.Show("Confirma que desea crear al cliente?", "Confirme por favor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                    var aa = MessageBox.Show("Confirma que desea crear al proveedor?", "Confirme por favor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                     if (aa == DialogResult.Yes)
                     {
                         if (graba() == true)
@@ -648,7 +648,7 @@ namespace TransCarga
                     micon.Parameters.AddWithValue("@iplan", iplan);
                     micon.Parameters.AddWithValue("@ipwan", ipwan);
                     micon.Parameters.AddWithValue("@nbnam", Environment.MachineName);
-                    micon.Parameters.AddWithValue("@cate", "CLI");                  // en la base de datos hay un trigger que actualiza el campo "codigo" con
+                    micon.Parameters.AddWithValue("@cate", "FOR");                  // en la base de datos hay un trigger que actualiza el campo "codigo" con
                     micon.ExecuteNonQuery();                                        // la letra "C" + id del registro, C=cliente
                     //
                     string lectura = "select last_insert_id()";
@@ -716,7 +716,7 @@ namespace TransCarga
                 }
                 catch (MySqlException ex)
                 {
-                    MessageBox.Show(ex.Message, "Error en modificar el cliente");
+                    MessageBox.Show(ex.Message, "Error en modificar el proveedor");
                     Application.Exit();
                     return;
                 }
@@ -926,7 +926,7 @@ namespace TransCarga
                 string encuentra = "no";
                 if (Tx_modo.Text == "NUEVO")
                 {
-                    if (string.IsNullOrEmpty(lib.nomsn("CLI", textBox2.Text, textBox3.Text)))
+                    if (string.IsNullOrEmpty(lib.nomsn("FOR", textBox2.Text, textBox3.Text)))
                     {
                         if (textBox2.Text == vtc_ruc)
                         {
@@ -965,14 +965,14 @@ namespace TransCarga
                     }
                     else
                     {
-                        MessageBox.Show("Ya existe el cliente!", "Atención corrija", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                        MessageBox.Show("Ya existe el proveedor!", "Atención corrija", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                         textBox3.Text = "";
                         //
                     }
                 }
                 else
                 {
-                    if (string.IsNullOrEmpty(lib.nomsn("CLI", textBox2.Text, textBox3.Text)))
+                    if (string.IsNullOrEmpty(lib.nomsn("FOR", textBox2.Text, textBox3.Text)))
                     {
                         MessageBox.Show("El cliente no existe!", "Atención corrija", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                         textBox3.Text = "";
@@ -988,7 +988,7 @@ namespace TransCarga
                             {
                                 string consulta = "select tipdoc,RUC,RazonSocial,Direcc1,Direcc2,depart,Provincia,Localidad,NumeroTel1,NumeroTel2,EMail,pais,ubigeo," +
                                     "codigo,estado,idcategoria,id " +
-                                    "from anag_cli where tipdoc=@tdo and ruc=@ndo";
+                                    "from anag_for where tipdoc=@tdo and ruc=@ndo";
                                 MySqlCommand micon = new MySqlCommand(consulta, conn);
                                 micon.Parameters.AddWithValue("@tdo", textBox2.Text);
                                 micon.Parameters.AddWithValue("@ndo", textBox3.Text);
@@ -1038,7 +1038,7 @@ namespace TransCarga
         }
         #endregion leaves;
 
-        #region botones_de_comando_y_clients  
+        #region botones_de_comando_y_proveed  
         public void toolboton()
         {
             DataTable mdtb = new DataTable();
@@ -1140,7 +1140,7 @@ namespace TransCarga
             this.button1.Image = Image.FromFile("print48");
             this.textBox1.Focus();
         }
-        private void Bt_anul_Click(object sender, EventArgs e)          // pone todos los clients en N
+        private void Bt_anul_Click(object sender, EventArgs e)          // pone todos los proveed en N
         {
             // no se anula, solo bloquea
         }
@@ -1150,7 +1150,7 @@ namespace TransCarga
             limpia_chk();
             limpia_combos();
             limpia_otros();
-            tx_idr.Text = lib.gofirts("anag_cli");    // nomtab
+            tx_idr.Text = lib.gofirts("anag_for");    // nomtab
             tx_idr_Leave(null, null);
         }
         private void Bt_back_Click(object sender, EventArgs e)
@@ -1182,11 +1182,11 @@ namespace TransCarga
             limpia_chk();
             limpia_combos();
             limpia_otros();
-            tx_idr.Text = lib.golast("anag_cli");     // nomtab
+            tx_idr.Text = lib.golast("anag_for");     // nomtab
             tx_idr_Leave(null, null);
         }
         #endregion botones;
-        // clients para habilitar los botones de comando
+        // proveed para habilitar los botones de comando
         #endregion botones_de_comando  ;
 
         #region comboboxes

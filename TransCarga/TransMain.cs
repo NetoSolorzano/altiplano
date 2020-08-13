@@ -244,8 +244,8 @@ namespace TransCarga
                         if (row["param"].ToString() == "imgpc4") imgpc4 = row["valor"].ToString().Trim();         // imagen4 del menu de facturacion opcion4
                         if (row["param"].ToString() == "imgpc5") imgpc5 = row["valor"].ToString().Trim();         // imagen5 del menu de facturacion opcion4
                         if (row["param"].ToString() == "imgma1") imgma1 = row["valor"].ToString().Trim();         // imagen1 de maestras - clientes
-                        if (row["param"].ToString() == "imgma2") imgma2 = row["valor"].ToString().Trim();         // imagen2 de maestras - articulos 
-                        if (row["param"].ToString() == "imgma3") imgma3 = row["valor"].ToString().Trim();         // imagen3 de maestras - adicionales 
+                        if (row["param"].ToString() == "imgma2") imgma2 = row["valor"].ToString().Trim();         // imagen2 de maestras - proveedores 
+                        if (row["param"].ToString() == "imgma3") imgma3 = row["valor"].ToString().Trim();         // imagen3 de maestras - vehiculos 
                         if (row["param"].ToString() == "imgpe1") imgpe1 = row["valor"].ToString().Trim();         // imagen1 de pedidos - registro
                         if (row["param"].ToString() == "imgpe2") imgpe2 = row["valor"].ToString().Trim();         // imagen1 de pedidos - reportes
                         if (row["param"].ToString() == "imgvc1") imgvc1 = row["valor"].ToString().Trim();         // imagen1 de ventas contratos
@@ -558,7 +558,8 @@ namespace TransCarga
             Image img_ma3 = Image.FromFile(imgma3);
             menuStrip1.Items.Clear();
             menuStrip1.Items.Add("Clientes", img_ma1, ma_clientes_Click);               // clientes
-            menuStrip1.Items.Add("Camiones", img_ma2, ma_articulos_Click);              // camiones propios y terceros
+            menuStrip1.Items.Add("Proveedores", img_ma2, ma_proveed_Click);               // proveedores
+            menuStrip1.Items.Add("Vehículos", img_ma3, ma_camiones_Click);              // camiones propios y terceros
             menuStrip1.Items.Add("........", img_ma3, ma_artadic_Click);                // adicionales para los contratos clientes
             menuStrip1.Visible = true;
         }
@@ -573,10 +574,20 @@ namespace TransCarga
             fmc.Show();
             fmc.BringToFront();
         }
-        private void ma_articulos_Click(object sender, EventArgs e)
+        private void ma_proveed_Click(object sender, EventArgs e)
         {
-            /*
-            articulos fma = new articulos();
+            proveed fpr = new proveed();
+            fpr.TopLevel = false;
+            fpr.Parent = this;
+            pn_centro.Controls.Add(fpr);
+            fpr.Location = new Point((pn_centro.Width - fpr.Width) / 2, (pn_centro.Height - fpr.Height) / 2);
+            fpr.Anchor = AnchorStyles.None;
+            fpr.Show();
+            fpr.BringToFront();
+        }
+        private void ma_camiones_Click(object sender, EventArgs e)
+        {
+            vehiculos fma = new vehiculos();
             fma.TopLevel = false;
             fma.Parent = this;
             pn_centro.Controls.Add(fma);
@@ -584,7 +595,6 @@ namespace TransCarga
             fma.Anchor = AnchorStyles.None;
             fma.Show();
             fma.BringToFront();
-            */
         }
         private void ma_artadic_Click(object sender, EventArgs e)
         {

@@ -1,6 +1,6 @@
 ﻿namespace TransCarga
 {
-    partial class clients
+    partial class proveed
     {
         /// <summary>
         /// Required designer variable.
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(clients));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(proveed));
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.Bt_add = new System.Windows.Forms.ToolStripButton();
@@ -701,9 +701,9 @@
             this.label3.ForeColor = System.Drawing.SystemColors.ControlText;
             this.label3.Location = new System.Drawing.Point(16, 129);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(44, 13);
+            this.label3.Size = new System.Drawing.Size(70, 13);
             this.label3.TabIndex = 257;
-            this.label3.Text = "Nombre";
+            this.label3.Text = "Razón Social";
             // 
             // textBox4
             // 
@@ -799,9 +799,9 @@
             this.label7.ForeColor = System.Drawing.SystemColors.ControlText;
             this.label7.Location = new System.Drawing.Point(15, 101);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(75, 13);
+            this.label7.Size = new System.Drawing.Size(68, 13);
             this.label7.TabIndex = 250;
-            this.label7.Text = "Código Cliente";
+            this.label7.Text = "Código Prov.";
             // 
             // groupBox1
             // 
@@ -874,13 +874,14 @@
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
-            // clients
+            // proveed
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.BackColor = System.Drawing.Color.LightSteelBlue;
             this.ClientSize = new System.Drawing.Size(770, 408);
+            this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.tx_mld);
             this.Controls.Add(this.groupBox23);
             this.Controls.Add(this.label12);
@@ -917,7 +918,6 @@
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.label7);
-            this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.textBox3);
             this.Controls.Add(this.textBox2);
@@ -930,11 +930,11 @@
             this.KeyPreview = true;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "clients";
-            this.Text = "Maestra de Clientes";
+            this.Name = "proveed";
+            this.Text = "Maestra de Proveedores";
             this.TransparencyKey = System.Drawing.Color.Fuchsia;
-            this.Load += new System.EventHandler(this.clients_Load);
-            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.clients_KeyDown);
+            this.Load += new System.EventHandler(this.proveed_Load);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.proveed_KeyDown);
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
             this.groupBox23.ResumeLayout(false);

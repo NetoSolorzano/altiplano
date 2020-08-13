@@ -104,6 +104,12 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="proveed.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="proveed.designer.cs">
+      <DependentUpon>proveed.cs</DependentUpon>
+    </Compile>
     <Compile Include="sernum.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -121,6 +127,12 @@
     </Compile>
     <Compile Include="users.designer.cs">
       <DependentUpon>users.cs</DependentUpon>
+    </Compile>
+    <Compile Include="vehiculos.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="vehiculos.designer.cs">
+      <DependentUpon>vehiculos.cs</DependentUpon>
     </Compile>
     <EmbeddedResource Include="clients.resx">
       <DependentUpon>clients.cs</DependentUpon>
@@ -153,6 +165,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="proveed.resx">
+      <DependentUpon>proveed.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="sernum.resx">
       <DependentUpon>sernum.cs</DependentUpon>
     </EmbeddedResource>
@@ -161,6 +176,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="users.resx">
       <DependentUpon>users.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="vehiculos.resx">
+      <DependentUpon>vehiculos.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
