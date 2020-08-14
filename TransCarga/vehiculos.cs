@@ -261,25 +261,31 @@ namespace TransCarga
                 return;
             }
         }
-        public void jalaoc(string campo)        // jala datos de definiciones
+        public void jalaoc(string campo)        // jala datos de grilla
         {
             // a.id,a.rucpro,c.razonsocial,a.coment,a.tipo,b.descrizionerid,a.status,a.placa,a.marca,
             // a.modelo,a.confve,a.chasis,a.motor,a.autor1,a.soat
-            tx_ruc.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[1].Value.ToString();  // ruc propiet
-            tx_propiet.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[2].Value.ToString();    // nombre p
-            tx_coment.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[3].Value.ToString();     // comentario
-            tx_tipo.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[4].Value.ToString();       // tipo vehiculo
-            cmb_tipo.SelectedValue = tx_tipo.Text;                                                          // tipo de vehiculo
-            chk_habil.Checked = (advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[6].Value.ToString() != vEstAnu) ? true : false;
-            tx_placa.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[7].Value.ToString();      // placa
-            tx_marca.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[8].Value.ToString();      // marca
-            tx_modelo.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[9].Value.ToString();     // modelo
-            tx_motor.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[12].Value.ToString();     // motor
-            tx_autor1.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[13].Value.ToString();    // autorizacion
-            tx_soat.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[14].Value.ToString();      // motor
-            tx_confv.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[10].Value.ToString();     // conf.vehicular
-            tx_chasis.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[11].Value.ToString();     // chasis
-            
+            if (campo == "tx_rind")
+            {
+                tx_ruc.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[1].Value.ToString();  // ruc propiet
+                tx_propiet.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[2].Value.ToString();    // nombre p
+                tx_coment.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[3].Value.ToString();     // comentario
+                tx_tipo.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[4].Value.ToString();       // tipo vehiculo
+                cmb_tipo.SelectedValue = tx_tipo.Text;                                                          // tipo de vehiculo
+                chk_habil.Checked = (advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[6].Value.ToString() != vEstAnu) ? true : false;
+                tx_placa.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[7].Value.ToString();      // placa
+                tx_marca.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[8].Value.ToString();      // marca
+                tx_modelo.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[9].Value.ToString();     // modelo
+                tx_motor.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[12].Value.ToString();     // motor
+                tx_autor1.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[13].Value.ToString();    // autorizacion
+                tx_soat.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[14].Value.ToString();      // motor
+                tx_confv.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[10].Value.ToString();     // conf.vehicular
+                tx_chasis.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[11].Value.ToString();     // chasis
+            }
+            if (campo == "tx_idr")
+            {
+                // ... no lo soo
+            }
         }
         public void dataload()                  // jala datos para los combos y la grilla
         {
@@ -353,7 +359,56 @@ namespace TransCarga
             }
             return retorna;
         }
-
+        private void vali_placa()
+        {
+            // nuevo -> placa No debe existir en la grilla
+            // editar -> placa Si debe existir y jalar datos de la grilla
+            if (tx_placa.Text.Trim() != "")
+            {
+                DataRow[] rowb = dtg.Select("placa = '" + tx_placa.Text + "'");
+                if (Tx_modo.Text == "NUEVO")
+                {
+                    if (rowb.Length > 0)
+                    {
+                        MessageBox.Show("Ya existe la placa ingresada", "Atención - rectifique", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        tx_placa.Text = "";
+                        tx_placa.Focus();
+                        return;
+                    }
+                }
+                if (Tx_modo.Text == "EDITAR")
+                {
+                    if (rowb.Length < 1)
+                    {
+                        MessageBox.Show("NO existe la placa ingresada", "Atención - rectifique", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        tx_placa.Text = "";
+                        tx_placa.Focus();
+                        return;
+                    }
+                    else
+                    {
+                        tx_placa.ReadOnly = true;
+                        DataRow row = rowb[0];
+                        tx_idr.Text = row[0].ToString();
+                        //jalaoc("tx_idr");
+                        tx_ruc.Text = row[1].ToString();
+                        tx_propiet.Text = row[2].ToString();
+                        tx_coment.Text = row[3].ToString();
+                        tx_tipo.Text = row[4].ToString();
+                        cmb_tipo.SelectedValue = tx_tipo.Text;
+                        chk_habil.Checked = (row[6].ToString() != vEstAnu) ? true : false;
+                        tx_placa.Text = row[7].ToString();
+                        tx_marca.Text = row[8].ToString();
+                        tx_modelo.Text = row[9].ToString();
+                        tx_motor.Text = row[12].ToString();
+                        tx_autor1.Text = row[13].ToString();
+                        tx_soat.Text = row[14].ToString();
+                        tx_confv.Text = row[10].ToString();
+                        tx_chasis.Text = row[11].ToString();
+                    }
+                }
+            }
+        }
         #region limpiadores_modos
         public void sololee(Form lfrm)
         {
@@ -689,7 +744,7 @@ namespace TransCarga
         {
             if (Tx_modo.Text != "NUEVO" && tx_idr.Text != "")
             {
-                jalaoc("tx_idr");               // jalamos los datos del registro
+                //jalaoc("tx_idr");               // jalamos los datos del registro
             }
         }
         private void tx_ruc_Leave(object sender, EventArgs e)
@@ -711,47 +766,23 @@ namespace TransCarga
         }
         private void tx_placa_Leave(object sender, EventArgs e)
         {
-            // nuevo -> placa No debe existir en la grilla
-            // editar -> placa Si debe existir y jalar datos de la grilla
-            if(tx_placa.Text.Trim() != "")
+            if(tx_placa.ReadOnly == false && tx_placa.Text.Trim() != "")
             {
-                try
-                {
-                    DataRow[] rowb = dtg.Select("placa = '" + tx_placa.Text + "'");
-                    if (Tx_modo.Text == "NUEVO")
-                    {
-                        if (rowb.Length > 0)
-                        {
-                            MessageBox.Show("Ya existe la placa ingresada", "Atención - rectifique", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                            tx_placa.Text = "";
-                            tx_placa.Focus();
-                            return;
-                        }
-                    }
-                    if (Tx_modo.Text == "EDITAR")
-                    {
-                        if (rowb.Length < 1)
-                        {
-                            MessageBox.Show("NO existe la placa ingresada", "Atención - rectifique", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                            tx_placa.Text = "";
-                            tx_placa.Focus();
-                            return;
-                        }
-                        else
-                        {
-                            tx_rind.Text = rowb[0].ToString();
-                            jalaoc("tx_rind");
-                        }
-                    }
-                }
-                catch(Exception ex)
-                {
-                    MessageBox.Show(ex.Message,"Error en obtener datos de placa", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    Application.Exit();
-                    return;
-                }
+                vali_placa();
             }
         }
+        private void tabreg_Enter(object sender, EventArgs e)
+        {
+            if(Tx_modo.Text == "EDITAR" && tx_rind.Text.Trim() == "" && tx_placa.Text.Trim() == "")
+            {
+                tx_placa.ReadOnly = false;
+            }
+            else
+            {
+                tx_placa.ReadOnly = true;
+            }
+        }
+
         #endregion leaves;
 
         #region botones_de_comando_y_permisos  
@@ -827,12 +858,13 @@ namespace TransCarga
             escribe(this);
             Tx_modo.Text = "NUEVO";
             button1.Image = Image.FromFile(img_grab);
-            tx_ruc.Focus();
             limpiar(this);
             limpiaPag(tabreg);
             limpia_otros();
             limpia_combos();
             limpia_chk();
+            tx_placa.ReadOnly = false;
+            tx_placa.Focus();
         }
         private void Bt_edit_Click(object sender, EventArgs e)
         {
@@ -850,7 +882,7 @@ namespace TransCarga
             limpia_otros();
             limpia_combos();
             limpia_chk();
-            //jalaoc("tx_idr");
+            tx_placa.ReadOnly = true;
         }
         private void Bt_close_Click(object sender, EventArgs e)
         {
@@ -941,17 +973,19 @@ namespace TransCarga
         {
             if(e.ColumnIndex == 1)
             {
-                string idr;
+                //string idr;
                 //idr = advancedDataGridView1.CurrentRow.Cells[0].Value.ToString();
-                idr = advancedDataGridView1.CurrentRow.Index.ToString();
+                //idr = advancedDataGridView1.CurrentRow.Index.ToString();
                 tabControl1.SelectedTab = tabreg;
                 limpiar(this);
                 limpia_otros();
                 limpia_combos();
                 limpiaPag(tabreg);
                 limpia_otros();
-                tx_rind.Text = idr;
+                tx_rind.Text = advancedDataGridView1.CurrentRow.Index.ToString();
+                tx_idr.Text = advancedDataGridView1.CurrentRow.Cells[0].Value.ToString();
                 jalaoc("tx_rind");
+                tx_coment.Focus();
             }
         }
         private void advancedDataGridView1_CellValidating(object sender, DataGridViewCellValidatingEventArgs e) // valida cambios en valor de la celda

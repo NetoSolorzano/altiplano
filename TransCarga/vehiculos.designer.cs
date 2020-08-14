@@ -62,7 +62,6 @@
             this.tx_coment = new System.Windows.Forms.TextBox();
             this.groupBox19 = new System.Windows.Forms.GroupBox();
             this.groupBox20 = new System.Windows.Forms.GroupBox();
-            this.tx_ruc = new TransCarga.NumericTextBox();
             this.tx_propiet = new System.Windows.Forms.TextBox();
             this.label11 = new System.Windows.Forms.Label();
             this.groupBox21 = new System.Windows.Forms.GroupBox();
@@ -106,6 +105,7 @@
             this.tx_modelo = new System.Windows.Forms.TextBox();
             this.tx_marca = new System.Windows.Forms.TextBox();
             this.button1 = new System.Windows.Forms.Button();
+            this.tx_ruc = new TransCarga.NumericTextBox();
             this.toolStrip1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabgrilla.SuspendLayout();
@@ -442,6 +442,7 @@
             this.tabreg.Size = new System.Drawing.Size(654, 343);
             this.tabreg.TabIndex = 1;
             this.tabreg.Text = "Registro";
+            this.tabreg.Enter += new System.EventHandler(this.tabreg_Enter);
             // 
             // label4
             // 
@@ -499,15 +500,6 @@
             this.groupBox20.Size = new System.Drawing.Size(164, 1);
             this.groupBox20.TabIndex = 113;
             this.groupBox20.TabStop = false;
-            // 
-            // tx_ruc
-            // 
-            this.tx_ruc.AllowSpace = false;
-            this.tx_ruc.Location = new System.Drawing.Point(168, 56);
-            this.tx_ruc.Name = "tx_ruc";
-            this.tx_ruc.Size = new System.Drawing.Size(93, 20);
-            this.tx_ruc.TabIndex = 2;
-            this.tx_ruc.Leave += new System.EventHandler(this.tx_ruc_Leave);
             // 
             // tx_propiet
             // 
@@ -926,6 +918,15 @@
             this.button1.TabIndex = 13;
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // tx_ruc
+            // 
+            this.tx_ruc.AllowSpace = false;
+            this.tx_ruc.Location = new System.Drawing.Point(168, 56);
+            this.tx_ruc.Name = "tx_ruc";
+            this.tx_ruc.Size = new System.Drawing.Size(93, 20);
+            this.tx_ruc.TabIndex = 2;
+            this.tx_ruc.Leave += new System.EventHandler(this.tx_ruc_Leave);
             // 
             // vehiculos
             // 
