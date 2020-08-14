@@ -99,13 +99,17 @@ namespace TransCarga
             // tamaños maximos de caracteres
             tx_ruc.MaxLength = 11;
             tx_placa.MaxLength = 7;
+            tx_placa.CharacterCasing = CharacterCasing.Upper;
             tx_marca.MaxLength = 45;
+            tx_marca.CharacterCasing = CharacterCasing.Upper;
             tx_chasis.MaxLength = 45;
             tx_modelo.MaxLength = 45;
+            tx_modelo.CharacterCasing = CharacterCasing.Upper;
             tx_motor.MaxLength = 45;
             tx_autor1.MaxLength = 45;
             tx_soat.MaxLength = 45;
             tx_confv.MaxLength = 10;
+            tx_confv.CharacterCasing = CharacterCasing.Upper;
             tx_coment.MaxLength = 150;
         }
         private void grilla()                   // arma la grilla
@@ -218,10 +222,11 @@ namespace TransCarga
             {
                 MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
                 conn.Open();
-                string consulta = "select formulario,campo,param,valor from enlaces where formulario in (@nofo,@nofa)";
+                string consulta = "select formulario,campo,param,valor from enlaces where formulario in (@nofo,@nofa,@nofi)";
                 MySqlCommand micon = new MySqlCommand(consulta, conn);
                 micon.Parameters.AddWithValue("@nofo", "main");
                 micon.Parameters.AddWithValue("@nofa", nomform);
+                micon.Parameters.AddWithValue("@nofi", "proveed");
                 MySqlDataAdapter da = new MySqlDataAdapter(micon);
                 DataTable dt = new DataTable();
                 da.Fill(dt);
@@ -689,7 +694,7 @@ namespace TransCarga
         }
         private void tx_ruc_Leave(object sender, EventArgs e)
         {
-            if (tx_ruc.Text.Trim() != "")
+            if (tx_ruc.Text.Trim() != "" && Tx_modo.Text == "NUEVO")
             {
                 if (lib.valiruc(tx_ruc.Text,vtd_ruc) == false)
                 {
@@ -706,9 +711,46 @@ namespace TransCarga
         }
         private void tx_placa_Leave(object sender, EventArgs e)
         {
-            // nuevo -> placa No debe existir
-            // editar -> placa Si debe existir y jalar datos
-
+            // nuevo -> placa No debe existir en la grilla
+            // editar -> placa Si debe existir y jalar datos de la grilla
+            if(tx_placa.Text.Trim() != "")
+            {
+                try
+                {
+                    DataRow[] rowb = dtg.Select("placa = '" + tx_placa.Text + "'");
+                    if (Tx_modo.Text == "NUEVO")
+                    {
+                        if (rowb.Length > 0)
+                        {
+                            MessageBox.Show("Ya existe la placa ingresada", "Atención - rectifique", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            tx_placa.Text = "";
+                            tx_placa.Focus();
+                            return;
+                        }
+                    }
+                    if (Tx_modo.Text == "EDITAR")
+                    {
+                        if (rowb.Length < 1)
+                        {
+                            MessageBox.Show("NO existe la placa ingresada", "Atención - rectifique", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            tx_placa.Text = "";
+                            tx_placa.Focus();
+                            return;
+                        }
+                        else
+                        {
+                            tx_rind.Text = rowb[0].ToString();
+                            jalaoc("tx_rind");
+                        }
+                    }
+                }
+                catch(Exception ex)
+                {
+                    MessageBox.Show(ex.Message,"Error en obtener datos de placa", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Application.Exit();
+                    return;
+                }
+            }
         }
         #endregion leaves;
 
@@ -808,7 +850,7 @@ namespace TransCarga
             limpia_otros();
             limpia_combos();
             limpia_chk();
-            jalaoc("tx_idr");
+            //jalaoc("tx_idr");
         }
         private void Bt_close_Click(object sender, EventArgs e)
         {
@@ -900,16 +942,16 @@ namespace TransCarga
             if(e.ColumnIndex == 1)
             {
                 string idr;
-                idr = advancedDataGridView1.CurrentRow.Cells[0].Value.ToString();
-                tx_rind.Text = advancedDataGridView1.CurrentRow.Index.ToString();
+                //idr = advancedDataGridView1.CurrentRow.Cells[0].Value.ToString();
+                idr = advancedDataGridView1.CurrentRow.Index.ToString();
                 tabControl1.SelectedTab = tabreg;
                 limpiar(this);
                 limpia_otros();
                 limpia_combos();
                 limpiaPag(tabreg);
                 limpia_otros();
-                tx_idr.Text = idr;
-                jalaoc("tx_idr");
+                tx_rind.Text = idr;
+                jalaoc("tx_rind");
             }
         }
         private void advancedDataGridView1_CellValidating(object sender, DataGridViewCellValidatingEventArgs e) // valida cambios en valor de la celda
