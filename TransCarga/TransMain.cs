@@ -429,8 +429,7 @@ namespace TransCarga
         }
         private void vc_registro_Click(object sender, EventArgs e)          // Pre guías transportista
         {
-            /*
-            contratos fvc = new contratos();
+            preguiat fvc = new preguiat();
             fvc.TopLevel = false;
             fvc.Parent = this;
             pn_centro.Controls.Add(fvc);
@@ -438,7 +437,6 @@ namespace TransCarga
             fvc.Anchor = AnchorStyles.None;
             fvc.Show();
             fvc.BringToFront();
-            */
         }       
         private void vpc_registro_Click(object sender, EventArgs e)         // Guías Remisión Transportista
         {

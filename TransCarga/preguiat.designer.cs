@@ -37,8 +37,11 @@
             this.Bt_close = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
             this.Bt_edit = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
             this.Bt_anul = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.Bt_ver = new System.Windows.Forms.ToolStripButton();
+            this.Bt_print = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.Tx_modo = new System.Windows.Forms.ToolStripTextBox();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
@@ -56,69 +59,54 @@
             this.groupBox23 = new System.Windows.Forms.GroupBox();
             this.groupBox24 = new System.Windows.Forms.GroupBox();
             this.label12 = new System.Windows.Forms.Label();
-            this.textBox13 = new System.Windows.Forms.TextBox();
-            this.groupBox21 = new System.Windows.Forms.GroupBox();
-            this.groupBox22 = new System.Windows.Forms.GroupBox();
-            this.label11 = new System.Windows.Forms.Label();
-            this.textBox12 = new System.Windows.Forms.TextBox();
-            this.textBox11 = new System.Windows.Forms.TextBox();
-            this.groupBox19 = new System.Windows.Forms.GroupBox();
-            this.groupBox20 = new System.Windows.Forms.GroupBox();
-            this.label10 = new System.Windows.Forms.Label();
-            this.textBox10 = new System.Windows.Forms.TextBox();
+            this.tx_ubigO = new System.Windows.Forms.TextBox();
             this.groupBox17 = new System.Windows.Forms.GroupBox();
             this.groupBox18 = new System.Windows.Forms.GroupBox();
             this.label9 = new System.Windows.Forms.Label();
-            this.textBox9 = new System.Windows.Forms.TextBox();
+            this.tx_distO = new System.Windows.Forms.TextBox();
             this.groupBox15 = new System.Windows.Forms.GroupBox();
             this.groupBox16 = new System.Windows.Forms.GroupBox();
             this.label8 = new System.Windows.Forms.Label();
-            this.textBox8 = new System.Windows.Forms.TextBox();
+            this.tx_provO = new System.Windows.Forms.TextBox();
             this.groupBox13 = new System.Windows.Forms.GroupBox();
             this.groupBox14 = new System.Windows.Forms.GroupBox();
             this.label6 = new System.Windows.Forms.Label();
-            this.textBox7 = new System.Windows.Forms.TextBox();
+            this.tx_dptoO = new System.Windows.Forms.TextBox();
             this.groupBox11 = new System.Windows.Forms.GroupBox();
             this.groupBox12 = new System.Windows.Forms.GroupBox();
             this.label5 = new System.Windows.Forms.Label();
-            this.textBox6 = new System.Windows.Forms.TextBox();
-            this.groupBox9 = new System.Windows.Forms.GroupBox();
-            this.groupBox10 = new System.Windows.Forms.GroupBox();
-            this.label4 = new System.Windows.Forms.Label();
-            this.textBox5 = new System.Windows.Forms.TextBox();
+            this.tx_dirRem = new System.Windows.Forms.TextBox();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
             this.groupBox8 = new System.Windows.Forms.GroupBox();
             this.label3 = new System.Windows.Forms.Label();
-            this.textBox4 = new System.Windows.Forms.TextBox();
-            this.groupBox5 = new System.Windows.Forms.GroupBox();
-            this.groupBox6 = new System.Windows.Forms.GroupBox();
+            this.tx_nomRem = new System.Windows.Forms.TextBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.cmb_docRem = new System.Windows.Forms.ComboBox();
             this.tx_idr = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
-            this.label7 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
-            this.textBox3 = new System.Windows.Forms.TextBox();
-            this.textBox2 = new System.Windows.Forms.TextBox();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.tx_numDocRem = new System.Windows.Forms.TextBox();
+            this.tx_dat_tdRem = new System.Windows.Forms.TextBox();
             this.button1 = new System.Windows.Forms.Button();
+            this.toolStripSeparator13 = new System.Windows.Forms.ToolStripSeparator();
+            this.pn_usloc = new System.Windows.Forms.Panel();
+            this.tx_user = new System.Windows.Forms.TextBox();
+            this.tx_nomuser = new System.Windows.Forms.TextBox();
+            this.tx_locuser = new System.Windows.Forms.TextBox();
+            this.tx_fechact = new System.Windows.Forms.TextBox();
             this.toolStrip1.SuspendLayout();
             this.groupBox23.SuspendLayout();
-            this.groupBox21.SuspendLayout();
-            this.groupBox19.SuspendLayout();
             this.groupBox17.SuspendLayout();
             this.groupBox15.SuspendLayout();
             this.groupBox13.SuspendLayout();
             this.groupBox11.SuspendLayout();
-            this.groupBox9.SuspendLayout();
             this.groupBox7.SuspendLayout();
-            this.groupBox5.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox1.SuspendLayout();
+            this.pn_usloc.SuspendLayout();
             this.SuspendLayout();
             // 
             // toolStrip1
@@ -135,17 +123,21 @@
             this.Bt_close,
             this.toolStripSeparator7,
             this.Bt_edit,
-            this.toolStripSeparator1,
+            this.toolStripSeparator8,
             this.Bt_anul,
+            this.toolStripSeparator1,
+            this.Bt_ver,
+            this.toolStripSeparator13,
+            this.Bt_print,
             this.toolStripSeparator4,
             this.Tx_modo,
             this.toolStripSeparator3,
             this.Bt_ini,
             this.toolStripSeparator12,
             this.Bt_sig,
+            this.toolStripSeparator10,
             this.Bt_ret,
             this.toolStripSeparator9,
-            this.toolStripSeparator10,
             this.Bt_fin,
             this.toolStripSeparator11});
             this.toolStrip1.Location = new System.Drawing.Point(0, 373);
@@ -219,12 +211,12 @@
             this.Bt_edit.ToolTipText = "Editar";
             this.Bt_edit.Click += new System.EventHandler(this.Bt_edit_Click);
             // 
-            // toolStripSeparator1
+            // toolStripSeparator8
             // 
-            this.toolStripSeparator1.AutoSize = false;
-            this.toolStripSeparator1.ForeColor = System.Drawing.Color.Black;
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(3, 45);
+            this.toolStripSeparator8.AutoSize = false;
+            this.toolStripSeparator8.ForeColor = System.Drawing.Color.Black;
+            this.toolStripSeparator8.Name = "toolStripSeparator8";
+            this.toolStripSeparator8.Size = new System.Drawing.Size(3, 45);
             // 
             // Bt_anul
             // 
@@ -237,6 +229,35 @@
             this.Bt_anul.Text = "Bt_close";
             this.Bt_anul.ToolTipText = "Anular";
             this.Bt_anul.Click += new System.EventHandler(this.Bt_anul_Click);
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.AutoSize = false;
+            this.toolStripSeparator1.ForeColor = System.Drawing.Color.Black;
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(3, 45);
+            // 
+            // Bt_ver
+            // 
+            this.Bt_ver.AutoSize = false;
+            this.Bt_ver.BackColor = System.Drawing.SystemColors.Control;
+            this.Bt_ver.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.Bt_ver.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.Bt_ver.Name = "Bt_ver";
+            this.Bt_ver.Size = new System.Drawing.Size(32, 32);
+            this.Bt_ver.Text = "Bt_close";
+            this.Bt_ver.ToolTipText = "Anular";
+            // 
+            // Bt_print
+            // 
+            this.Bt_print.AutoSize = false;
+            this.Bt_print.BackColor = System.Drawing.SystemColors.Control;
+            this.Bt_print.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.Bt_print.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.Bt_print.Name = "Bt_print";
+            this.Bt_print.Size = new System.Drawing.Size(32, 32);
+            this.Bt_print.Text = "Bt_close";
+            this.Bt_print.ToolTipText = "Anular";
             // 
             // toolStripSeparator4
             // 
@@ -385,103 +406,16 @@
             this.label12.TabIndex = 243;
             this.label12.Text = "Ubigeo";
             // 
-            // textBox13
+            // tx_ubigO
             // 
-            this.textBox13.BackColor = System.Drawing.SystemColors.Window;
-            this.textBox13.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBox13.Location = new System.Drawing.Point(702, 183);
-            this.textBox13.MaxLength = 6;
-            this.textBox13.Name = "textBox13";
-            this.textBox13.Size = new System.Drawing.Size(54, 18);
-            this.textBox13.TabIndex = 9;
-            this.textBox13.Leave += new System.EventHandler(this.textBox13_Leave);
-            // 
-            // groupBox21
-            // 
-            this.groupBox21.BackColor = System.Drawing.Color.White;
-            this.groupBox21.Controls.Add(this.groupBox22);
-            this.groupBox21.Location = new System.Drawing.Point(342, 230);
-            this.groupBox21.Name = "groupBox21";
-            this.groupBox21.Size = new System.Drawing.Size(291, 1);
-            this.groupBox21.TabIndex = 272;
-            this.groupBox21.TabStop = false;
-            // 
-            // groupBox22
-            // 
-            this.groupBox22.Location = new System.Drawing.Point(0, -26);
-            this.groupBox22.Name = "groupBox22";
-            this.groupBox22.Size = new System.Drawing.Size(164, 1);
-            this.groupBox22.TabIndex = 113;
-            this.groupBox22.TabStop = false;
-            // 
-            // label11
-            // 
-            this.label11.AutoSize = true;
-            this.label11.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label11.Location = new System.Drawing.Point(344, 214);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(68, 13);
-            this.label11.TabIndex = 271;
-            this.label11.Text = "Correo Elect.";
-            // 
-            // textBox12
-            // 
-            this.textBox12.BackColor = System.Drawing.SystemColors.Window;
-            this.textBox12.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBox12.Location = new System.Drawing.Point(422, 212);
-            this.textBox12.MaxLength = 0;
-            this.textBox12.Name = "textBox12";
-            this.textBox12.Size = new System.Drawing.Size(211, 18);
-            this.textBox12.TabIndex = 12;
-            this.textBox12.Leave += new System.EventHandler(this.textBox12_Leave);
-            // 
-            // textBox11
-            // 
-            this.textBox11.BackColor = System.Drawing.SystemColors.Window;
-            this.textBox11.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBox11.Location = new System.Drawing.Point(195, 212);
-            this.textBox11.MaxLength = 0;
-            this.textBox11.Name = "textBox11";
-            this.textBox11.Size = new System.Drawing.Size(101, 18);
-            this.textBox11.TabIndex = 11;
-            // 
-            // groupBox19
-            // 
-            this.groupBox19.BackColor = System.Drawing.Color.White;
-            this.groupBox19.Controls.Add(this.groupBox20);
-            this.groupBox19.Location = new System.Drawing.Point(11, 230);
-            this.groupBox19.Name = "groupBox19";
-            this.groupBox19.Size = new System.Drawing.Size(286, 1);
-            this.groupBox19.TabIndex = 270;
-            this.groupBox19.TabStop = false;
-            // 
-            // groupBox20
-            // 
-            this.groupBox20.Location = new System.Drawing.Point(0, -26);
-            this.groupBox20.Name = "groupBox20";
-            this.groupBox20.Size = new System.Drawing.Size(164, 1);
-            this.groupBox20.TabIndex = 113;
-            this.groupBox20.TabStop = false;
-            // 
-            // label10
-            // 
-            this.label10.AutoSize = true;
-            this.label10.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label10.Location = new System.Drawing.Point(13, 214);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(54, 13);
-            this.label10.TabIndex = 269;
-            this.label10.Text = "Teléfonos";
-            // 
-            // textBox10
-            // 
-            this.textBox10.BackColor = System.Drawing.SystemColors.Window;
-            this.textBox10.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBox10.Location = new System.Drawing.Point(91, 212);
-            this.textBox10.MaxLength = 0;
-            this.textBox10.Name = "textBox10";
-            this.textBox10.Size = new System.Drawing.Size(101, 18);
-            this.textBox10.TabIndex = 10;
+            this.tx_ubigO.BackColor = System.Drawing.SystemColors.Window;
+            this.tx_ubigO.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_ubigO.Location = new System.Drawing.Point(702, 183);
+            this.tx_ubigO.MaxLength = 6;
+            this.tx_ubigO.Name = "tx_ubigO";
+            this.tx_ubigO.Size = new System.Drawing.Size(54, 18);
+            this.tx_ubigO.TabIndex = 9;
+            this.tx_ubigO.Leave += new System.EventHandler(this.textBox13_Leave);
             // 
             // groupBox17
             // 
@@ -511,16 +445,16 @@
             this.label9.TabIndex = 267;
             this.label9.Text = "Distrito";
             // 
-            // textBox9
+            // tx_distO
             // 
-            this.textBox9.BackColor = System.Drawing.SystemColors.Window;
-            this.textBox9.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBox9.Location = new System.Drawing.Point(498, 183);
-            this.textBox9.MaxLength = 0;
-            this.textBox9.Name = "textBox9";
-            this.textBox9.Size = new System.Drawing.Size(134, 18);
-            this.textBox9.TabIndex = 8;
-            this.textBox9.Leave += new System.EventHandler(this.textBox9_Leave);
+            this.tx_distO.BackColor = System.Drawing.SystemColors.Window;
+            this.tx_distO.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_distO.Location = new System.Drawing.Point(498, 183);
+            this.tx_distO.MaxLength = 0;
+            this.tx_distO.Name = "tx_distO";
+            this.tx_distO.Size = new System.Drawing.Size(134, 18);
+            this.tx_distO.TabIndex = 8;
+            this.tx_distO.Leave += new System.EventHandler(this.textBox9_Leave);
             // 
             // groupBox15
             // 
@@ -550,16 +484,16 @@
             this.label8.TabIndex = 265;
             this.label8.Text = "Provincia";
             // 
-            // textBox8
+            // tx_provO
             // 
-            this.textBox8.BackColor = System.Drawing.SystemColors.Window;
-            this.textBox8.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBox8.Location = new System.Drawing.Point(296, 183);
-            this.textBox8.MaxLength = 0;
-            this.textBox8.Name = "textBox8";
-            this.textBox8.Size = new System.Drawing.Size(122, 18);
-            this.textBox8.TabIndex = 7;
-            this.textBox8.Leave += new System.EventHandler(this.textBox8_Leave);
+            this.tx_provO.BackColor = System.Drawing.SystemColors.Window;
+            this.tx_provO.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_provO.Location = new System.Drawing.Point(296, 183);
+            this.tx_provO.MaxLength = 0;
+            this.tx_provO.Name = "tx_provO";
+            this.tx_provO.Size = new System.Drawing.Size(122, 18);
+            this.tx_provO.TabIndex = 7;
+            this.tx_provO.Leave += new System.EventHandler(this.textBox8_Leave);
             // 
             // groupBox13
             // 
@@ -589,16 +523,16 @@
             this.label6.TabIndex = 263;
             this.label6.Text = "Departamento";
             // 
-            // textBox7
+            // tx_dptoO
             // 
-            this.textBox7.BackColor = System.Drawing.SystemColors.Window;
-            this.textBox7.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBox7.Location = new System.Drawing.Point(92, 183);
-            this.textBox7.MaxLength = 0;
-            this.textBox7.Name = "textBox7";
-            this.textBox7.Size = new System.Drawing.Size(101, 18);
-            this.textBox7.TabIndex = 6;
-            this.textBox7.Leave += new System.EventHandler(this.textBox7_Leave);
+            this.tx_dptoO.BackColor = System.Drawing.SystemColors.Window;
+            this.tx_dptoO.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_dptoO.Location = new System.Drawing.Point(92, 183);
+            this.tx_dptoO.MaxLength = 0;
+            this.tx_dptoO.Name = "tx_dptoO";
+            this.tx_dptoO.Size = new System.Drawing.Size(101, 18);
+            this.tx_dptoO.TabIndex = 6;
+            this.tx_dptoO.Leave += new System.EventHandler(this.textBox7_Leave);
             // 
             // groupBox11
             // 
@@ -628,54 +562,15 @@
             this.label5.TabIndex = 261;
             this.label5.Text = "Dirección";
             // 
-            // textBox6
+            // tx_dirRem
             // 
-            this.textBox6.BackColor = System.Drawing.SystemColors.Window;
-            this.textBox6.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBox6.Location = new System.Drawing.Point(92, 155);
-            this.textBox6.MaxLength = 0;
-            this.textBox6.Name = "textBox6";
-            this.textBox6.Size = new System.Drawing.Size(540, 18);
-            this.textBox6.TabIndex = 5;
-            // 
-            // groupBox9
-            // 
-            this.groupBox9.BackColor = System.Drawing.Color.White;
-            this.groupBox9.Controls.Add(this.groupBox10);
-            this.groupBox9.Location = new System.Drawing.Point(233, 88);
-            this.groupBox9.Name = "groupBox9";
-            this.groupBox9.Size = new System.Drawing.Size(188, 1);
-            this.groupBox9.TabIndex = 260;
-            this.groupBox9.TabStop = false;
-            // 
-            // groupBox10
-            // 
-            this.groupBox10.Location = new System.Drawing.Point(0, -26);
-            this.groupBox10.Name = "groupBox10";
-            this.groupBox10.Size = new System.Drawing.Size(164, 1);
-            this.groupBox10.TabIndex = 113;
-            this.groupBox10.TabStop = false;
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label4.Location = new System.Drawing.Point(238, 72);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(78, 13);
-            this.label4.TabIndex = 259;
-            this.label4.Text = "País de Origen";
-            this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // textBox5
-            // 
-            this.textBox5.BackColor = System.Drawing.SystemColors.Window;
-            this.textBox5.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBox5.Location = new System.Drawing.Point(320, 70);
-            this.textBox5.Name = "textBox5";
-            this.textBox5.Size = new System.Drawing.Size(101, 18);
-            this.textBox5.TabIndex = 1;
-            this.textBox5.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.tx_dirRem.BackColor = System.Drawing.SystemColors.Window;
+            this.tx_dirRem.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_dirRem.Location = new System.Drawing.Point(92, 155);
+            this.tx_dirRem.MaxLength = 0;
+            this.tx_dirRem.Name = "tx_dirRem";
+            this.tx_dirRem.Size = new System.Drawing.Size(540, 18);
+            this.tx_dirRem.TabIndex = 5;
             // 
             // groupBox7
             // 
@@ -705,33 +600,15 @@
             this.label3.TabIndex = 257;
             this.label3.Text = "Razón Social";
             // 
-            // textBox4
+            // tx_nomRem
             // 
-            this.textBox4.BackColor = System.Drawing.SystemColors.Window;
-            this.textBox4.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBox4.Location = new System.Drawing.Point(93, 127);
-            this.textBox4.MaxLength = 0;
-            this.textBox4.Name = "textBox4";
-            this.textBox4.Size = new System.Drawing.Size(539, 18);
-            this.textBox4.TabIndex = 4;
-            // 
-            // groupBox5
-            // 
-            this.groupBox5.BackColor = System.Drawing.Color.White;
-            this.groupBox5.Controls.Add(this.groupBox6);
-            this.groupBox5.Location = new System.Drawing.Point(13, 117);
-            this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(182, 1);
-            this.groupBox5.TabIndex = 256;
-            this.groupBox5.TabStop = false;
-            // 
-            // groupBox6
-            // 
-            this.groupBox6.Location = new System.Drawing.Point(0, -26);
-            this.groupBox6.Name = "groupBox6";
-            this.groupBox6.Size = new System.Drawing.Size(164, 1);
-            this.groupBox6.TabIndex = 113;
-            this.groupBox6.TabStop = false;
+            this.tx_nomRem.BackColor = System.Drawing.SystemColors.Window;
+            this.tx_nomRem.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_nomRem.Location = new System.Drawing.Point(93, 127);
+            this.tx_nomRem.MaxLength = 0;
+            this.tx_nomRem.Name = "tx_nomRem";
+            this.tx_nomRem.Size = new System.Drawing.Size(539, 18);
+            this.tx_nomRem.TabIndex = 4;
             // 
             // groupBox3
             // 
@@ -751,16 +628,16 @@
             this.groupBox4.TabIndex = 113;
             this.groupBox4.TabStop = false;
             // 
-            // comboBox1
+            // cmb_docRem
             // 
-            this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(320, 97);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(78, 21);
-            this.comboBox1.TabIndex = 2;
-            this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
-            this.comboBox1.Leave += new System.EventHandler(this.comboBox1_Leave);
+            this.cmb_docRem.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmb_docRem.FormattingEnabled = true;
+            this.cmb_docRem.Location = new System.Drawing.Point(320, 97);
+            this.cmb_docRem.Name = "cmb_docRem";
+            this.cmb_docRem.Size = new System.Drawing.Size(37, 21);
+            this.cmb_docRem.TabIndex = 2;
+            this.cmb_docRem.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
+            this.cmb_docRem.Leave += new System.EventHandler(this.comboBox1_Leave);
             // 
             // tx_idr
             // 
@@ -793,23 +670,13 @@
             this.label1.Text = "Tipo Documento";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label7.Location = new System.Drawing.Point(15, 101);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(68, 13);
-            this.label7.TabIndex = 250;
-            this.label7.Text = "Código Prov.";
-            // 
             // groupBox1
             // 
             this.groupBox1.BackColor = System.Drawing.Color.White;
             this.groupBox1.Controls.Add(this.groupBox2);
             this.groupBox1.Location = new System.Drawing.Point(233, 117);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(165, 1);
+            this.groupBox1.Size = new System.Drawing.Size(124, 1);
             this.groupBox1.TabIndex = 249;
             this.groupBox1.TabStop = false;
             // 
@@ -821,48 +688,26 @@
             this.groupBox2.TabIndex = 113;
             this.groupBox2.TabStop = false;
             // 
-            // checkBox1
+            // tx_numDocRem
             // 
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.ForeColor = System.Drawing.Color.Black;
-            this.checkBox1.Location = new System.Drawing.Point(93, 72);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(77, 17);
-            this.checkBox1.TabIndex = 232;
-            this.checkBox1.Text = "Bloqueado";
-            this.checkBox1.UseVisualStyleBackColor = true;
+            this.tx_numDocRem.BackColor = System.Drawing.SystemColors.Window;
+            this.tx_numDocRem.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_numDocRem.Location = new System.Drawing.Point(532, 99);
+            this.tx_numDocRem.MaxLength = 0;
+            this.tx_numDocRem.Name = "tx_numDocRem";
+            this.tx_numDocRem.Size = new System.Drawing.Size(101, 18);
+            this.tx_numDocRem.TabIndex = 3;
+            this.tx_numDocRem.Leave += new System.EventHandler(this.textBox3_Leave);
             // 
-            // textBox3
+            // tx_dat_tdRem
             // 
-            this.textBox3.BackColor = System.Drawing.SystemColors.Window;
-            this.textBox3.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBox3.Location = new System.Drawing.Point(532, 99);
-            this.textBox3.MaxLength = 0;
-            this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(101, 18);
-            this.textBox3.TabIndex = 3;
-            this.textBox3.Leave += new System.EventHandler(this.textBox3_Leave);
-            // 
-            // textBox2
-            // 
-            this.textBox2.BackColor = System.Drawing.SystemColors.Window;
-            this.textBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBox2.Location = new System.Drawing.Point(404, 99);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(26, 18);
-            this.textBox2.TabIndex = 234;
-            this.textBox2.Visible = false;
-            // 
-            // textBox1
-            // 
-            this.textBox1.BackColor = System.Drawing.SystemColors.Window;
-            this.textBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBox1.Location = new System.Drawing.Point(93, 99);
-            this.textBox1.MaxLength = 15;
-            this.textBox1.Name = "textBox1";
-            this.textBox1.ReadOnly = true;
-            this.textBox1.Size = new System.Drawing.Size(101, 18);
-            this.textBox1.TabIndex = 235;
+            this.tx_dat_tdRem.BackColor = System.Drawing.SystemColors.Window;
+            this.tx_dat_tdRem.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_dat_tdRem.Location = new System.Drawing.Point(372, 99);
+            this.tx_dat_tdRem.Name = "tx_dat_tdRem";
+            this.tx_dat_tdRem.Size = new System.Drawing.Size(26, 18);
+            this.tx_dat_tdRem.TabIndex = 234;
+            this.tx_dat_tdRem.Visible = false;
             // 
             // button1
             // 
@@ -874,6 +719,57 @@
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
+            // toolStripSeparator13
+            // 
+            this.toolStripSeparator13.AutoSize = false;
+            this.toolStripSeparator13.ForeColor = System.Drawing.Color.Black;
+            this.toolStripSeparator13.Name = "toolStripSeparator13";
+            this.toolStripSeparator13.Size = new System.Drawing.Size(3, 45);
+            // 
+            // pn_usloc
+            // 
+            this.pn_usloc.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.pn_usloc.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.pn_usloc.Controls.Add(this.tx_fechact);
+            this.pn_usloc.Controls.Add(this.tx_locuser);
+            this.pn_usloc.Controls.Add(this.tx_nomuser);
+            this.pn_usloc.Controls.Add(this.tx_user);
+            this.pn_usloc.Location = new System.Drawing.Point(0, 3);
+            this.pn_usloc.Name = "pn_usloc";
+            this.pn_usloc.Size = new System.Drawing.Size(770, 30);
+            this.pn_usloc.TabIndex = 275;
+            // 
+            // tx_user
+            // 
+            this.tx_user.Location = new System.Drawing.Point(2, 3);
+            this.tx_user.Name = "tx_user";
+            this.tx_user.Size = new System.Drawing.Size(135, 20);
+            this.tx_user.TabIndex = 0;
+            this.tx_user.Text = "Usuario: ";
+            // 
+            // tx_nomuser
+            // 
+            this.tx_nomuser.Location = new System.Drawing.Point(137, 3);
+            this.tx_nomuser.Name = "tx_nomuser";
+            this.tx_nomuser.Size = new System.Drawing.Size(316, 20);
+            this.tx_nomuser.TabIndex = 1;
+            // 
+            // tx_locuser
+            // 
+            this.tx_locuser.Location = new System.Drawing.Point(457, 3);
+            this.tx_locuser.Name = "tx_locuser";
+            this.tx_locuser.Size = new System.Drawing.Size(146, 20);
+            this.tx_locuser.TabIndex = 2;
+            this.tx_locuser.Text = "Local: ";
+            // 
+            // tx_fechact
+            // 
+            this.tx_fechact.Location = new System.Drawing.Point(606, 3);
+            this.tx_fechact.Name = "tx_fechact";
+            this.tx_fechact.Size = new System.Drawing.Size(158, 20);
+            this.tx_fechact.TabIndex = 3;
+            // 
             // preguiat
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -881,47 +777,34 @@
             this.AutoSize = true;
             this.BackColor = System.Drawing.Color.LightSteelBlue;
             this.ClientSize = new System.Drawing.Size(770, 408);
+            this.Controls.Add(this.pn_usloc);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.tx_mld);
             this.Controls.Add(this.groupBox23);
             this.Controls.Add(this.label12);
-            this.Controls.Add(this.textBox13);
-            this.Controls.Add(this.groupBox21);
-            this.Controls.Add(this.label11);
-            this.Controls.Add(this.textBox12);
-            this.Controls.Add(this.textBox11);
-            this.Controls.Add(this.groupBox19);
-            this.Controls.Add(this.label10);
-            this.Controls.Add(this.textBox10);
+            this.Controls.Add(this.tx_ubigO);
             this.Controls.Add(this.groupBox17);
             this.Controls.Add(this.label9);
-            this.Controls.Add(this.textBox9);
+            this.Controls.Add(this.tx_distO);
             this.Controls.Add(this.groupBox15);
             this.Controls.Add(this.label8);
-            this.Controls.Add(this.textBox8);
+            this.Controls.Add(this.tx_provO);
             this.Controls.Add(this.groupBox13);
             this.Controls.Add(this.label6);
-            this.Controls.Add(this.textBox7);
+            this.Controls.Add(this.tx_dptoO);
             this.Controls.Add(this.groupBox11);
             this.Controls.Add(this.label5);
-            this.Controls.Add(this.textBox6);
-            this.Controls.Add(this.groupBox9);
-            this.Controls.Add(this.label4);
-            this.Controls.Add(this.textBox5);
+            this.Controls.Add(this.tx_dirRem);
             this.Controls.Add(this.groupBox7);
             this.Controls.Add(this.label3);
-            this.Controls.Add(this.textBox4);
-            this.Controls.Add(this.groupBox5);
+            this.Controls.Add(this.tx_nomRem);
             this.Controls.Add(this.groupBox3);
-            this.Controls.Add(this.comboBox1);
+            this.Controls.Add(this.cmb_docRem);
             this.Controls.Add(this.tx_idr);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.label7);
-            this.Controls.Add(this.checkBox1);
-            this.Controls.Add(this.textBox3);
-            this.Controls.Add(this.textBox2);
-            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.tx_numDocRem);
+            this.Controls.Add(this.tx_dat_tdRem);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.toolStrip1);
             this.ForeColor = System.Drawing.SystemColors.ControlLight;
@@ -938,17 +821,15 @@
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
             this.groupBox23.ResumeLayout(false);
-            this.groupBox21.ResumeLayout(false);
-            this.groupBox19.ResumeLayout(false);
             this.groupBox17.ResumeLayout(false);
             this.groupBox15.ResumeLayout(false);
             this.groupBox13.ResumeLayout(false);
             this.groupBox11.ResumeLayout(false);
-            this.groupBox9.ResumeLayout(false);
             this.groupBox7.ResumeLayout(false);
-            this.groupBox5.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
+            this.pn_usloc.ResumeLayout(false);
+            this.pn_usloc.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -982,55 +863,46 @@
         private System.Windows.Forms.GroupBox groupBox23;
         private System.Windows.Forms.GroupBox groupBox24;
         private System.Windows.Forms.Label label12;
-        private System.Windows.Forms.TextBox textBox13;
-        private System.Windows.Forms.GroupBox groupBox21;
-        private System.Windows.Forms.GroupBox groupBox22;
-        private System.Windows.Forms.Label label11;
-        private System.Windows.Forms.TextBox textBox12;
-        private System.Windows.Forms.TextBox textBox11;
-        private System.Windows.Forms.GroupBox groupBox19;
-        private System.Windows.Forms.GroupBox groupBox20;
-        private System.Windows.Forms.Label label10;
-        private System.Windows.Forms.TextBox textBox10;
+        private System.Windows.Forms.TextBox tx_ubigO;
         private System.Windows.Forms.GroupBox groupBox17;
         private System.Windows.Forms.GroupBox groupBox18;
         private System.Windows.Forms.Label label9;
-        private System.Windows.Forms.TextBox textBox9;
+        private System.Windows.Forms.TextBox tx_distO;
         private System.Windows.Forms.GroupBox groupBox15;
         private System.Windows.Forms.GroupBox groupBox16;
         private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.TextBox textBox8;
+        private System.Windows.Forms.TextBox tx_provO;
         private System.Windows.Forms.GroupBox groupBox13;
         private System.Windows.Forms.GroupBox groupBox14;
         private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.TextBox textBox7;
+        private System.Windows.Forms.TextBox tx_dptoO;
         private System.Windows.Forms.GroupBox groupBox11;
         private System.Windows.Forms.GroupBox groupBox12;
         private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.TextBox textBox6;
-        private System.Windows.Forms.GroupBox groupBox9;
-        private System.Windows.Forms.GroupBox groupBox10;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.TextBox textBox5;
+        private System.Windows.Forms.TextBox tx_dirRem;
         private System.Windows.Forms.GroupBox groupBox7;
         private System.Windows.Forms.GroupBox groupBox8;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.TextBox textBox4;
-        private System.Windows.Forms.GroupBox groupBox5;
-        private System.Windows.Forms.GroupBox groupBox6;
+        private System.Windows.Forms.TextBox tx_nomRem;
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.GroupBox groupBox4;
-        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.ComboBox cmb_docRem;
         private System.Windows.Forms.TextBox tx_idr;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label7;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.CheckBox checkBox1;
-        private System.Windows.Forms.TextBox textBox3;
-        private System.Windows.Forms.TextBox textBox2;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox tx_numDocRem;
+        private System.Windows.Forms.TextBox tx_dat_tdRem;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
+        private System.Windows.Forms.ToolStripButton Bt_ver;
+        private System.Windows.Forms.ToolStripButton Bt_print;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator13;
+        private System.Windows.Forms.Panel pn_usloc;
+        private System.Windows.Forms.TextBox tx_fechact;
+        private System.Windows.Forms.TextBox tx_locuser;
+        private System.Windows.Forms.TextBox tx_nomuser;
+        private System.Windows.Forms.TextBox tx_user;
     }
 }
