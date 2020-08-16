@@ -1132,7 +1132,7 @@ namespace TransCarga
             if (conl.State == ConnectionState.Open)
             {
                 string consulta = "select b.descrizionerid from usuarios a " + 
-                    "left join desc_sds b on b.idcodice=a.local " +
+                    "left join desc_loc b on b.idcodice=a.local " +
                     "where a.nom_user=@asd";
                 MySqlCommand micon = new MySqlCommand(consulta, conl);
                 micon.Parameters.AddWithValue("@asd", codigo);
@@ -2796,6 +2796,33 @@ namespace TransCarga
             string retorna = "";
             string[] tabla = new string[] { "_", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "W", "X", "Y", "Z" };
             retorna = tabla[num];
+            return retorna;
+        }
+        public string[] retDPDubigeo(string ubigeo)
+        {
+            string[] retorna = { "","",""};
+            MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
+            conn.Open();
+            if (conn.State == ConnectionState.Open)
+            {
+                string aa = "SELECT nombre FROM ubigeos WHERE concat(depart, provin, distri)=concat(LEFT(@ubg, 2),'0000') " +
+                    "union all " +
+                    "SELECT nombre FROM ubigeos WHERE concat(depart, provin, distri)=concat(LEFT(@ubg, 4),'00') " +
+                    "union all " +
+                    "SELECT nombre FROM ubigeos WHERE concat(depart, provin, distri)=@ubg";
+                MySqlCommand micon = new MySqlCommand(aa, conn);
+                micon.Parameters.AddWithValue("@ubg", ubigeo);
+                MySqlDataReader dr = micon.ExecuteReader();
+                int i = 0;
+                while (dr.Read())
+                {
+                    retorna[i] = dr.GetString(0);
+                    i++;
+                }
+                dr.Dispose();
+                micon.Dispose();
+                conn.Close();
+            }
             return retorna;
         }
         public string[] conectorSolorsoft(string cual, string numDoc)
