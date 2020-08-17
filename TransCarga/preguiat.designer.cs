@@ -915,6 +915,7 @@
             this.tx_ubigDtt.Size = new System.Drawing.Size(33, 18);
             this.tx_ubigDtt.TabIndex = 308;
             this.tx_ubigDtt.Visible = false;
+            this.tx_ubigDtt.Leave += new System.EventHandler(this.tx_ubigDtt_Leave);
             // 
             // tx_mldD
             // 
@@ -935,6 +936,7 @@
             this.tx_disDrio.Name = "tx_disDrio";
             this.tx_disDrio.Size = new System.Drawing.Size(80, 18);
             this.tx_disDrio.TabIndex = 301;
+            this.tx_disDrio.Leave += new System.EventHandler(this.tx_disDrio_Leave);
             // 
             // tx_proDrio
             // 
@@ -945,6 +947,7 @@
             this.tx_proDrio.Name = "tx_proDrio";
             this.tx_proDrio.Size = new System.Drawing.Size(80, 18);
             this.tx_proDrio.TabIndex = 300;
+            this.tx_proDrio.Leave += new System.EventHandler(this.tx_proDio_Leave);
             // 
             // tx_dptoDrio
             // 
@@ -955,6 +958,7 @@
             this.tx_dptoDrio.Name = "tx_dptoDrio";
             this.tx_dptoDrio.Size = new System.Drawing.Size(80, 18);
             this.tx_dptoDrio.TabIndex = 299;
+            this.tx_dptoDrio.Leave += new System.EventHandler(this.tx_dptoDrio_Leave);
             // 
             // groupBox1
             // 

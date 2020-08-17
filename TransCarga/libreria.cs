@@ -1528,7 +1528,7 @@ namespace TransCarga
             }
             return retorna;
         }
-        public string[] dirloc(string sede)                                 // retorna la direccion de la sede de grael
+        public string[] dirloc(string sede)                                 // retorna la direccion de la sede
         {
             string []dires = new string[]{"","","",""};
             string consulta = "select deta1,deta2,deta3,deta4 from desc_sds where idcodice=@cod";
@@ -1724,6 +1724,42 @@ namespace TransCarga
                 Application.Exit();
             }
             return retorno;
+        }
+        public string[] datossn(string vista, string docu, string numero)   // retorna datos del socio, (nombre,direc, etc)
+        {
+            string[] retorna = new string[] { "", "", "", "", "", "" };
+            MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
+            conn.Open();
+            if (conn.State == ConnectionState.Open)
+            {
+                if (vista == "CLI")
+                {
+                    string consulta = "select tipdoc,RUC,RazonSocial,Direcc1,Direcc2,depart,Provincia,Localidad,NumeroTel1,NumeroTel2,EMail,pais,ubigeo," +
+                        "codigo,estado,idcategoria,id " +
+                        "from anag_cli where tipdoc=@tdo and ruc=@ndo";
+                    MySqlCommand micon = new MySqlCommand(consulta, conn);
+                    micon.Parameters.AddWithValue("@tdo", docu);
+                    micon.Parameters.AddWithValue("@ndo", numero);
+                    MySqlDataReader dr = micon.ExecuteReader();
+                    if (dr.Read())
+                    {
+                        retorna[0] = dr.GetString("RazonSocial");
+                        retorna[1] = dr.GetString("Direcc1").Trim() + " " + dr.GetString("Direcc2").Trim();
+                        retorna[2] = dr.GetString("depart");
+                        retorna[3] = dr.GetString("Provincia");
+                        retorna[4] = dr.GetString("Localidad");
+                        retorna[5] = dr.GetString("ubigeo");
+                    }
+                    dr.Dispose();
+                    micon.Dispose();
+                }
+                if (vista == "FOR")
+                {
+                    // falta ...
+                }
+            }
+            conn.Close();
+            return retorna;
         }
         public string serlocs(string loca)                                  // retorna la serie del local
         {
@@ -2798,7 +2834,7 @@ namespace TransCarga
             retorna = tabla[num];
             return retorna;
         }
-        public string[] retDPDubigeo(string ubigeo)
+        public string[] retDPDubigeo(string ubigeo)                         // retorna [] dep, pro y distrito del cod.ugigeo
         {
             string[] retorna = { "","",""};
             MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
@@ -2822,6 +2858,96 @@ namespace TransCarga
                 dr.Dispose();
                 micon.Dispose();
                 conn.Close();
+            }
+            return retorna;
+        }
+        public string retCodubigeo(string nomD, string nomP, string codUb)  // retorna codigo ubigeo del nombre
+        {
+            string retorna="";
+            MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
+            conn.Open();
+            if (conn.State == ConnectionState.Open)
+            {
+                if (nomD != "" && nomP == "" && codUb == "")
+                {
+                    string consulta = "select depart from ubigeos where trim(nombre)=@dep and depart<>'00' and provin='00' and distri='00'";
+                    MySqlCommand micon = new MySqlCommand(consulta, conn);
+                    micon.Parameters.AddWithValue("@dep", nomD.Trim());
+                    try
+                    {
+                        MySqlDataReader dr = micon.ExecuteReader();
+                        if (dr.HasRows == true)
+                        {
+                            while (dr.Read())
+                            {
+                                retorna = dr.GetString(0).Trim();
+                            }
+                        }
+                        dr.Close();
+                    }
+                    catch (MySqlException ex)
+                    {
+                        MessageBox.Show(ex.Message, "Error en obtener codigo de departamento", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        Application.Exit();
+                    }
+                }
+                if (nomD == "" && nomP != "" && codUb != "")
+                {
+                    string consulta = "select provin from ubigeos where trim(nombre)=@prov and depart=@dep and provin<>'00' and distri='00'";
+                    MySqlCommand micon = new MySqlCommand(consulta, conn);
+                    micon.Parameters.AddWithValue("@dep", codUb.Substring(0, 2));
+                    micon.Parameters.AddWithValue("@prov", nomP.Trim());
+                    try
+                    {
+                        MySqlDataReader dr = micon.ExecuteReader();
+                        if (dr.HasRows == true)
+                        {
+                            while (dr.Read())
+                            {
+                                if (codUb.Trim().Length == 6) retorna = codUb.Substring(0, 2) + dr.GetString(0).Trim() + codUb.Substring(4, 2);
+                                if (codUb.Trim().Length < 6) retorna = codUb.Substring(0, 2) + dr.GetString(0).Trim();
+                            }
+                        }
+                        dr.Close();
+                        micon.Dispose();
+                    }
+                    catch (MySqlException ex)
+                    {
+                        MessageBox.Show(ex.Message, "Error en obtener codigo de provincia", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        Application.Exit();
+                    }
+                }
+                if (nomD != "" && nomP == "" && codUb != "")
+                {
+                    string consulta = "select distri from ubigeos where trim(nombre)=@dist and depart=@dep and provin=@prov and distri<>'00'";
+                    MySqlCommand micon = new MySqlCommand(consulta, conn);
+                    micon.Parameters.AddWithValue("@dep", codUb.Substring(0, 2));
+                    micon.Parameters.AddWithValue("@prov", (codUb.Length > 2) ? codUb.Substring(2, 2) : "  ");
+                    micon.Parameters.AddWithValue("@dist", nomD.Trim());
+                    try
+                    {
+                        MySqlDataReader dr = micon.ExecuteReader();
+                        if (dr.HasRows == true)
+                        {
+                            while (dr.Read())
+                            {
+                                if (codUb.Trim().Length >= 4) retorna = codUb.Trim().Substring(0, 4) + dr.GetString(0).Trim();
+                            }
+                        }
+                        dr.Close();
+                        micon.Dispose();
+                    }
+                    catch (MySqlException ex)
+                    {
+                        MessageBox.Show(ex.Message, "Error en obtener codigo de distrito", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        Application.Exit();
+                    }
+                }
+                conn.Close();
+            }
+            else
+            {
+                MessageBox.Show("No se puede conectar al servidor!", "Error de conectividad", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
             return retorna;
         }

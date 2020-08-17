@@ -909,39 +909,9 @@ namespace TransCarga
         }
         private void textBox7_Leave(object sender, EventArgs e)         // departamento del remitente, jala provincia
         {
-            if(tx_dptoRtt.Text != "" && TransCarga.Program.vg_conSol == false)
+            if(tx_dptoRtt.Text.Trim() != "" && TransCarga.Program.vg_conSol == false)
             {
-                MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
-                conn.Open();
-                if (conn.State == ConnectionState.Open)
-                {
-                    string consulta = "select depart from ubigeos where trim(nombre)=@dep and depart<>'00' and provin='00' and distri='00'";
-                    MySqlCommand micon = new MySqlCommand(consulta, conn);
-                    micon.Parameters.AddWithValue("@dep", tx_dptoRtt.Text.Trim());
-                    try
-                    {
-                        MySqlDataReader dr = micon.ExecuteReader();
-                        if (dr.HasRows == true)
-                        {
-                            while (dr.Read())
-                            {
-                                tx_ubigRtt.Text = dr.GetString(0).Trim();
-                            }
-                        }
-                        dr.Close();
-                    }
-                    catch (MySqlException ex)
-                    {
-                        MessageBox.Show(ex.Message, "Error en obtener codigo de departamento", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        Application.Exit();
-                        return;
-                    }
-                    conn.Close();
-                }
-                else
-                {
-                    MessageBox.Show("No se puede conectar al servidor!", "Error de conectividad", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                }
+                tx_ubigRtt.Text = lib.retCodubigeo(tx_dptoRtt.Text.Trim(),"","");
                 autoprov();
             }
         }
@@ -949,39 +919,7 @@ namespace TransCarga
         {
             if(tx_provRtt.Text != "" && tx_dptoRtt.Text.Trim() != "" && TransCarga.Program.vg_conSol == false)
             {
-                MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
-                conn.Open();
-                if (conn.State == ConnectionState.Open)
-                {
-                    string consulta = "select provin from ubigeos where trim(nombre)=@prov and depart=@dep and provin<>'00' and distri='00'";
-                    MySqlCommand micon = new MySqlCommand(consulta, conn);
-                    micon.Parameters.AddWithValue("@dep", tx_ubigO.Text.Substring(0, 2));
-                    micon.Parameters.AddWithValue("@prov", tx_provRtt.Text.Trim());
-                    try
-                    {
-                        MySqlDataReader dr = micon.ExecuteReader();
-                        if (dr.HasRows == true)
-                        {
-                            while (dr.Read())
-                            {
-                                if (tx_ubigRtt.Text.Trim().Length == 6) tx_ubigO.Text = tx_ubigO.Text.Substring(0,2) + dr.GetString(0).Trim() + tx_ubigO.Text.Substring(4, 2);
-                                if (tx_ubigRtt.Text.Trim().Length < 6) tx_ubigO.Text = tx_ubigO.Text.Substring(0, 2) + dr.GetString(0).Trim();
-                            }
-                        }
-                        dr.Close();
-                    }
-                    catch (MySqlException ex)
-                    {
-                        MessageBox.Show(ex.Message, "Error en obtener codigo de provincia", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        Application.Exit();
-                        return;
-                    }
-                    conn.Close();
-                }
-                else
-                {
-                    MessageBox.Show("No se puede conectar al servidor!", "Error de conectividad", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                }
+                tx_ubigRtt.Text = lib.retCodubigeo("", tx_provRtt.Text.Trim(), tx_ubigRtt.Text.Trim());
                 autodist();
             }
         }
@@ -989,45 +927,14 @@ namespace TransCarga
         {
             if(tx_distRtt.Text.Trim() != "" && tx_provRtt.Text.Trim() != "" && tx_dptoRtt.Text.Trim() != "" && TransCarga.Program.vg_conSol == false)
             {
-                MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
-                conn.Open();
-                if (conn.State == ConnectionState.Open)
-                {
-                    string consulta = "select distri from ubigeos where trim(nombre)=@dist and depart=@dep and provin=@prov and distri<>'00'";
-                    MySqlCommand micon = new MySqlCommand(consulta, conn);
-                    micon.Parameters.AddWithValue("@dep", tx_ubigO.Text.Substring(0, 2));
-                    micon.Parameters.AddWithValue("@prov", (tx_ubigO.Text.Length > 2)? tx_ubigO.Text.Substring(2, 2):"  ");
-                    micon.Parameters.AddWithValue("@dist", tx_distRtt.Text.Trim());
-                    try
-                    {
-                        MySqlDataReader dr = micon.ExecuteReader();
-                        if (dr.HasRows == true)
-                        {
-                            while (dr.Read())
-                            {
-                                if(tx_ubigRtt.Text.Trim().Length >= 4) tx_ubigO.Text = tx_ubigO.Text.Trim().Substring(0,4) + dr.GetString(0).Trim();
-                            }
-                        }
-                        dr.Close();
-                    }
-                    catch (MySqlException ex)
-                    {
-                        MessageBox.Show(ex.Message, "Error en obtener codigo de distrito", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        Application.Exit();
-                        return;
-                    }
-                    conn.Close();
-                }
-                else
-                {
-                    MessageBox.Show("No se puede conectar al servidor!", "Error de conectividad", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                }
+                tx_ubigRtt.Text = lib.retCodubigeo(tx_distRtt.Text.Trim(),"",tx_ubigRtt.Text.Trim());
             }
         }
         private void textBox13_Leave(object sender, EventArgs e)        // ubigeo del remitente
         {
-            if(tx_ubigO.Text.Trim() != "" && TransCarga.Program.vg_conSol == false)
+            if(tx_ubigRtt.Text.Trim() != "" && tx_ubigRtt.Text.Length == 6 && TransCarga.Program.vg_conSol == false)
             {
+                /*
                 MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
                 conn.Open();
                 if (conn.State == ConnectionState.Open)
@@ -1066,11 +973,47 @@ namespace TransCarga
                 {
                     MessageBox.Show("No se puede conectar al servidor!", "Error de conectividad", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 }
+                */
+                string[] du_remit = lib.retDPDubigeo(tx_ubigRtt.Text);
+                tx_dptoRtt.Text = du_remit[0];
+                tx_provRtt.Text = du_remit[1];
+                tx_distRtt.Text = du_remit[2];
             }
         }
-        
-        
-        private void textBox3_Leave(object sender, EventArgs e)         // número de documento
+        private void tx_dptoDrio_Leave(object sender, EventArgs e)      // departamento del destinatario
+        {
+            if (tx_dptoDrio.Text.Trim() != "" && TransCarga.Program.vg_conSol == false)
+            {
+                tx_ubigDtt.Text = lib.retCodubigeo(tx_dptoDrio.Text.Trim(),"","");
+                autoprov();
+            }
+        }
+        private void tx_proDio_Leave(object sender, EventArgs e)      // provincia del destinatario
+        {
+            if (tx_proDrio.Text.Trim() != "" && tx_dptoDrio.Text.Trim() != "" && TransCarga.Program.vg_conSol == false)
+            {
+                tx_ubigDtt.Text = lib.retCodubigeo("", tx_proDrio.Text.Trim(), tx_ubigDtt.Text.Trim());
+                autodist();
+            }
+        }
+        private void tx_disDrio_Leave(object sender, EventArgs e)      // distrito del destinatario
+        {
+            if (tx_proDrio.Text.Trim() != "" && tx_dptoDrio.Text.Trim() != "" && tx_disDrio.Text.Trim() != "" && TransCarga.Program.vg_conSol == false)
+            {
+                tx_ubigDtt.Text = lib.retCodubigeo(tx_disDrio.Text.Trim(), "", tx_ubigDtt.Text.Trim());
+            }
+        }
+        private void tx_ubigDtt_Leave(object sender, EventArgs e)      // ubigeo destinatario
+        {
+            if (tx_ubigDtt.Text.Trim() != "" && tx_ubigDtt.Text.Length == 6 && TransCarga.Program.vg_conSol == false)
+            {
+                string[] du_desti = lib.retDPDubigeo(tx_ubigDtt.Text);
+                tx_dptoDrio.Text = du_desti[0];
+                tx_proDrio.Text = du_desti[1];
+                tx_disDrio.Text = du_desti[2];
+            }
+        }
+        private void textBox3_Leave(object sender, EventArgs e)         // número de documento remitente
         {
             if (tx_numDocRem.Text.Trim() != "" && tx_mld.Text.Trim() != "")
             {
@@ -1081,99 +1024,52 @@ namespace TransCarga
                     tx_numDocRem.Focus();
                     return;
                 }
+                if (tx_dat_tdRem.Text == vtc_ruc && lib.valiruc(tx_numDocRem.Text, vtc_ruc) == false)
+                {
+                    MessageBox.Show("Número de RUC inválido", "Atención - revise", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    tx_numDocRem.Focus();
+                    return;
+                }
                 string encuentra = "no";
                 if (Tx_modo.Text == "NUEVO")
                 {
-                    if (string.IsNullOrEmpty(lib.nomsn("FOR", tx_dat_tdRem.Text, tx_numDocRem.Text)))
+                    string[] datos = lib.datossn("CLI", tx_dat_tdRem.Text.Trim(), tx_numDocRem.Text.Trim());
+                    if (datos.Length > 0)
                     {
-                        if (tx_dat_tdRem.Text == vtc_ruc)
+                        tx_nomRem.Text = datos[0];
+                        tx_dirRem.Text = datos[1];
+                        tx_dptoRtt.Text = datos[2];
+                        tx_provRtt.Text = datos[3];
+                        tx_distRtt.Text = datos[4];
+                        tx_ubigRtt.Text = datos[5];
+                        encuentra = "si";
+                    }
+                    if (tx_dat_tdRem.Text == vtc_ruc)
+                    {
+                        if (encuentra == "no")
                         {
-                            if (lib.valiruc(tx_numDocRem.Text, vtc_ruc) == false)
+                            if (TransCarga.Program.vg_conSol == true) // conector solorsoft para ruc
                             {
-                                MessageBox.Show("Número de RUC inválido", "Atención - revise", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                                tx_numDocRem.Focus();
-                                return;
-                            }
-                            if (encuentra == "no")
-                            {
-                                if (TransCarga.Program.vg_conSol == true) // conector solorsoft para ruc
-                                {
-                                    string[] rl = lib.conectorSolorsoft("RUC", tx_numDocRem.Text);
-                                    tx_nomRem.Text = rl[0];      // razon social
-                                    tx_ubigO.Text = rl[1];     // ubigeo
-                                    tx_dirRem.Text = rl[2];      // direccion
-                                    tx_dptoRtt.Text = rl[3];      // departamento
-                                    tx_provRtt.Text = rl[4];      // provincia
-                                    tx_distRtt.Text = rl[5];      // distrito
-                                }
-                            }
-                        }
-                        if (tx_dat_tdRem.Text == vtc_dni)
-                        {
-                            if (encuentra == "no")
-                            {
-                                if (TransCarga.Program.vg_conSol == true) // conector solorsoft para dni
-                                {
-                                    string[] rl = lib.conectorSolorsoft("DNI", tx_numDocRem.Text);
-                                    tx_nomRem.Text = rl[0];      // nombre
-                                    tx_numDocRem.Text = rl[1];     // num dni
-                                }
+                                string[] rl = lib.conectorSolorsoft("RUC", tx_numDocRem.Text);
+                                tx_nomRem.Text = rl[0];      // razon social
+                                tx_ubigRtt.Text = rl[1];     // ubigeo
+                                tx_dirRem.Text = rl[2];      // direccion
+                                tx_dptoRtt.Text = rl[3];      // departamento
+                                tx_provRtt.Text = rl[4];      // provincia
+                                tx_distRtt.Text = rl[5];      // distrito
                             }
                         }
                     }
-                    else
+                    if (tx_dat_tdRem.Text == vtc_dni)
                     {
-                        MessageBox.Show("Ya existe el proveedor!", "Atención corrija", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                        tx_numDocRem.Text = "";
-                        //
-                    }
-                }
-                else
-                {
-                    if (string.IsNullOrEmpty(lib.nomsn("FOR", tx_dat_tdRem.Text, tx_numDocRem.Text)))
-                    {
-                        MessageBox.Show("El cliente no existe!", "Atención corrija", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                        tx_numDocRem.Text = "";
-                        //
-                    }
-                    else
-                    {
-                        try
+                        if (encuentra == "no")
                         {
-                            MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
-                            conn.Open();
-                            if (conn.State == ConnectionState.Open)
+                            if (TransCarga.Program.vg_conSol == true) // conector solorsoft para dni
                             {
-                                string consulta = "select tipdoc,RUC,RazonSocial,Direcc1,Direcc2,depart,Provincia,Localidad,NumeroTel1,NumeroTel2,EMail,pais,ubigeo," +
-                                    "codigo,estado,idcategoria,id " +
-                                    "from anag_for where tipdoc=@tdo and ruc=@ndo";
-                                MySqlCommand micon = new MySqlCommand(consulta, conn);
-                                micon.Parameters.AddWithValue("@tdo", tx_dat_tdRem.Text);
-                                micon.Parameters.AddWithValue("@ndo", tx_numDocRem.Text);
-                                MySqlDataReader dr = micon.ExecuteReader();
-                                if (dr.Read())
-                                {
-                                    tx_idr.Text = dr.GetString("id");
-                                    tx_nomRem.Text = dr.GetString("RazonSocial");
-                                    tx_dirRem.Text = dr.GetString("Direcc1").Trim() + " " + dr.GetString("Direcc2").Trim();
-                                    tx_dptoRtt.Text = dr.GetString("depart");
-                                    tx_provRtt.Text = dr.GetString("Provincia");
-                                    tx_distRtt.Text = dr.GetString("Localidad");
-                                    tx_ubigO.Text = dr.GetString("ubigeo");
-                                    //
-                                    cmb_docRem.SelectedValue = tx_dat_tdRem.Text;
-                                }
-                                //
-                                dr.Dispose();
-                                micon.Dispose();
+                                string[] rl = lib.conectorSolorsoft("DNI", tx_numDocRem.Text);
+                                tx_nomRem.Text = rl[0];      // nombre
+                                tx_numDocRem.Text = rl[1];     // num dni
                             }
-                            conn.Close();
-                        }
-                        catch (Exception ex)
-                        {
-                            MessageBox.Show(ex.Message, "Error Fatal");
-                            Application.Exit();
-                            return;
                         }
                     }
                 }
@@ -1181,6 +1077,72 @@ namespace TransCarga
             if (tx_numDocRem.Text.Trim() != "" && tx_mld.Text.Trim() == "")
             {
                 cmb_docRem.Focus();
+            }
+        }
+        private void tx_numDocDes_Leave(object sender, EventArgs e)     // numero documento destinatario
+        {
+            if (tx_numDocDes.Text.Trim() != "" && tx_mldD.Text.Trim() != "")
+            {
+                if (tx_numDocDes.Text.Trim().Length != Int16.Parse(tx_mldD.Text))
+                {
+                    MessageBox.Show("El número de caracteres para" + Environment.NewLine +
+                        "su tipo de documento debe ser: " + tx_mld.Text, "Error de validación", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+                    tx_numDocDes.Focus();
+                    return;
+                }
+                if (tx_dat_tDdest.Text == vtc_ruc && lib.valiruc(tx_numDocDes.Text, vtc_ruc) == false)
+                {
+                    MessageBox.Show("Número de RUC inválido", "Atención - revise", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    tx_numDocDes.Focus();
+                    return;
+                }
+                string encuentra = "no";
+                if (Tx_modo.Text == "NUEVO")
+                {
+                    string[] datos = lib.datossn("CLI", tx_dat_tDdest.Text.Trim(), tx_numDocDes.Text.Trim());
+                    if (datos.Length > 0)
+                    {
+                        tx_nomDrio.Text = datos[0];
+                        tx_dirDrio.Text = datos[1];
+                        tx_dptoDrio.Text = datos[2];
+                        tx_proDrio.Text = datos[3];
+                        tx_disDrio.Text = datos[4];
+                        tx_ubigDtt.Text = datos[5];
+                        encuentra = "si";
+                    }
+                    if (tx_dat_tDdest.Text == vtc_ruc)
+                    {
+                        if (encuentra == "no")
+                        {
+                            if (TransCarga.Program.vg_conSol == true) // conector solorsoft para ruc
+                            {
+                                string[] rl = lib.conectorSolorsoft("RUC", tx_numDocDes.Text);
+                                tx_nomDrio.Text = rl[0];      // razon social
+                                tx_ubigDtt.Text = rl[1];     // ubigeo
+                                tx_dirDrio.Text = rl[2];      // direccion
+                                tx_dptoDrio.Text = rl[3];      // departamento
+                                tx_proDrio.Text = rl[4];      // provincia
+                                tx_disDrio.Text = rl[5];      // distrito
+                            }
+                        }
+                    }
+                    if (tx_dat_tDdest.Text == vtc_dni)
+                    {
+                        if (encuentra == "no")
+                        {
+                            if (TransCarga.Program.vg_conSol == true) // conector solorsoft para dni
+                            {
+                                string[] rl = lib.conectorSolorsoft("DNI", tx_numDocDes.Text);
+                                tx_nomDrio.Text = rl[0];      // nombre
+                                //tx_numDocDes.Text = rl[1];     // num dni
+                            }
+                        }
+                    }
+                }
+            }
+            if (tx_numDocDes.Text.Trim() != "" && tx_mldD.Text.Trim() == "")
+            {
+                cmb_docDes.Focus();
             }
         }
         private void comboBox1_Leave(object sender, EventArgs e)
