@@ -455,7 +455,7 @@
             this.tx_distRtt.MaxLength = 0;
             this.tx_distRtt.Name = "tx_distRtt";
             this.tx_distRtt.Size = new System.Drawing.Size(80, 18);
-            this.tx_distRtt.TabIndex = 8;
+            this.tx_distRtt.TabIndex = 11;
             this.tx_distRtt.Leave += new System.EventHandler(this.textBox9_Leave);
             // 
             // tx_provRtt
@@ -466,7 +466,7 @@
             this.tx_provRtt.MaxLength = 0;
             this.tx_provRtt.Name = "tx_provRtt";
             this.tx_provRtt.Size = new System.Drawing.Size(80, 18);
-            this.tx_provRtt.TabIndex = 7;
+            this.tx_provRtt.TabIndex = 10;
             this.tx_provRtt.Leave += new System.EventHandler(this.textBox8_Leave);
             // 
             // tx_dptoRtt
@@ -477,7 +477,7 @@
             this.tx_dptoRtt.MaxLength = 0;
             this.tx_dptoRtt.Name = "tx_dptoRtt";
             this.tx_dptoRtt.Size = new System.Drawing.Size(80, 18);
-            this.tx_dptoRtt.TabIndex = 6;
+            this.tx_dptoRtt.TabIndex = 9;
             this.tx_dptoRtt.Leave += new System.EventHandler(this.textBox7_Leave);
             // 
             // groupBox11
@@ -516,7 +516,7 @@
             this.tx_dirRem.MaxLength = 0;
             this.tx_dirRem.Name = "tx_dirRem";
             this.tx_dirRem.Size = new System.Drawing.Size(396, 18);
-            this.tx_dirRem.TabIndex = 5;
+            this.tx_dirRem.TabIndex = 8;
             // 
             // groupBox7
             // 
@@ -554,7 +554,7 @@
             this.tx_nomRem.MaxLength = 0;
             this.tx_nomRem.Name = "tx_nomRem";
             this.tx_nomRem.Size = new System.Drawing.Size(491, 18);
-            this.tx_nomRem.TabIndex = 4;
+            this.tx_nomRem.TabIndex = 7;
             // 
             // cmb_docRem
             // 
@@ -563,9 +563,8 @@
             this.cmb_docRem.Location = new System.Drawing.Point(92, 103);
             this.cmb_docRem.Name = "cmb_docRem";
             this.cmb_docRem.Size = new System.Drawing.Size(48, 21);
-            this.cmb_docRem.TabIndex = 2;
-            this.cmb_docRem.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
-            this.cmb_docRem.Leave += new System.EventHandler(this.comboBox1_Leave);
+            this.cmb_docRem.TabIndex = 5;
+            this.cmb_docRem.SelectedIndexChanged += new System.EventHandler(this.cmb_docRem_SelectedIndexChanged);
             // 
             // tx_idr
             // 
@@ -585,7 +584,7 @@
             this.tx_numDocRem.MaxLength = 0;
             this.tx_numDocRem.Name = "tx_numDocRem";
             this.tx_numDocRem.Size = new System.Drawing.Size(101, 18);
-            this.tx_numDocRem.TabIndex = 3;
+            this.tx_numDocRem.TabIndex = 6;
             this.tx_numDocRem.Leave += new System.EventHandler(this.textBox3_Leave);
             // 
             // tx_dat_tdRem
@@ -604,7 +603,7 @@
             this.button1.Location = new System.Drawing.Point(670, 346);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(62, 56);
-            this.button1.TabIndex = 13;
+            this.button1.TabIndex = 24;
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
@@ -684,7 +683,8 @@
             this.cmb_origen.Location = new System.Drawing.Point(228, 32);
             this.cmb_origen.Name = "cmb_origen";
             this.cmb_origen.Size = new System.Drawing.Size(92, 21);
-            this.cmb_origen.TabIndex = 278;
+            this.cmb_origen.TabIndex = 3;
+            this.cmb_origen.SelectedIndexChanged += new System.EventHandler(this.cmb_origen_SelectedIndexChanged);
             // 
             // cmb_destino
             // 
@@ -693,7 +693,8 @@
             this.cmb_destino.Location = new System.Drawing.Point(228, 61);
             this.cmb_destino.Name = "cmb_destino";
             this.cmb_destino.Size = new System.Drawing.Size(92, 21);
-            this.cmb_destino.TabIndex = 279;
+            this.cmb_destino.TabIndex = 4;
+            this.cmb_destino.SelectedIndexChanged += new System.EventHandler(this.cmb_destino_SelectedIndexChanged);
             // 
             // tx_dirOrigen
             // 
@@ -806,7 +807,7 @@
             this.tx_numero.Location = new System.Drawing.Point(54, 42);
             this.tx_numero.Name = "tx_numero";
             this.tx_numero.Size = new System.Drawing.Size(73, 20);
-            this.tx_numero.TabIndex = 293;
+            this.tx_numero.TabIndex = 2;
             // 
             // tx_serie
             // 
@@ -815,7 +816,7 @@
             this.tx_serie.Location = new System.Drawing.Point(55, 14);
             this.tx_serie.Name = "tx_serie";
             this.tx_serie.Size = new System.Drawing.Size(44, 20);
-            this.tx_serie.TabIndex = 292;
+            this.tx_serie.TabIndex = 1;
             // 
             // label8
             // 
@@ -935,7 +936,7 @@
             this.tx_disDrio.MaxLength = 0;
             this.tx_disDrio.Name = "tx_disDrio";
             this.tx_disDrio.Size = new System.Drawing.Size(80, 18);
-            this.tx_disDrio.TabIndex = 301;
+            this.tx_disDrio.TabIndex = 18;
             this.tx_disDrio.Leave += new System.EventHandler(this.tx_disDrio_Leave);
             // 
             // tx_proDrio
@@ -946,7 +947,7 @@
             this.tx_proDrio.MaxLength = 0;
             this.tx_proDrio.Name = "tx_proDrio";
             this.tx_proDrio.Size = new System.Drawing.Size(80, 18);
-            this.tx_proDrio.TabIndex = 300;
+            this.tx_proDrio.TabIndex = 17;
             this.tx_proDrio.Leave += new System.EventHandler(this.tx_proDio_Leave);
             // 
             // tx_dptoDrio
@@ -957,7 +958,7 @@
             this.tx_dptoDrio.MaxLength = 0;
             this.tx_dptoDrio.Name = "tx_dptoDrio";
             this.tx_dptoDrio.Size = new System.Drawing.Size(80, 18);
-            this.tx_dptoDrio.TabIndex = 299;
+            this.tx_dptoDrio.TabIndex = 16;
             this.tx_dptoDrio.Leave += new System.EventHandler(this.tx_dptoDrio_Leave);
             // 
             // groupBox1
@@ -996,7 +997,7 @@
             this.tx_dirDrio.MaxLength = 0;
             this.tx_dirDrio.Name = "tx_dirDrio";
             this.tx_dirDrio.Size = new System.Drawing.Size(396, 18);
-            this.tx_dirDrio.TabIndex = 298;
+            this.tx_dirDrio.TabIndex = 15;
             // 
             // groupBox3
             // 
@@ -1034,7 +1035,7 @@
             this.tx_nomDrio.MaxLength = 0;
             this.tx_nomDrio.Name = "tx_nomDrio";
             this.tx_nomDrio.Size = new System.Drawing.Size(491, 18);
-            this.tx_nomDrio.TabIndex = 297;
+            this.tx_nomDrio.TabIndex = 14;
             // 
             // cmb_docDes
             // 
@@ -1043,7 +1044,8 @@
             this.cmb_docDes.Location = new System.Drawing.Point(91, 159);
             this.cmb_docDes.Name = "cmb_docDes";
             this.cmb_docDes.Size = new System.Drawing.Size(48, 21);
-            this.cmb_docDes.TabIndex = 295;
+            this.cmb_docDes.TabIndex = 12;
+            this.cmb_docDes.SelectedIndexChanged += new System.EventHandler(this.cmb_docDes_SelectedIndexChanged);
             // 
             // tx_numDocDes
             // 
@@ -1053,7 +1055,7 @@
             this.tx_numDocDes.MaxLength = 0;
             this.tx_numDocDes.Name = "tx_numDocDes";
             this.tx_numDocDes.Size = new System.Drawing.Size(101, 18);
-            this.tx_numDocDes.TabIndex = 296;
+            this.tx_numDocDes.TabIndex = 13;
             // 
             // tx_dat_tDdest
             // 
@@ -1101,7 +1103,7 @@
             this.tx_docsOr.MaxLength = 0;
             this.tx_docsOr.Name = "tx_docsOr";
             this.tx_docsOr.Size = new System.Drawing.Size(321, 18);
-            this.tx_docsOr.TabIndex = 309;
+            this.tx_docsOr.TabIndex = 19;
             // 
             // label9
             // 
@@ -1121,7 +1123,7 @@
             this.tx_consig.MaxLength = 0;
             this.tx_consig.Name = "tx_consig";
             this.tx_consig.Size = new System.Drawing.Size(242, 18);
-            this.tx_consig.TabIndex = 313;
+            this.tx_consig.TabIndex = 20;
             // 
             // dataGridView1
             // 
@@ -1134,7 +1136,7 @@
             this.dataGridView1.Location = new System.Drawing.Point(12, 243);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.Size = new System.Drawing.Size(593, 137);
-            this.dataGridView1.TabIndex = 314;
+            this.dataGridView1.TabIndex = 21;
             // 
             // Cant
             // 
@@ -1178,7 +1180,8 @@
             this.cmb_mon.Location = new System.Drawing.Point(10, 39);
             this.cmb_mon.Name = "cmb_mon";
             this.cmb_mon.Size = new System.Drawing.Size(40, 21);
-            this.cmb_mon.TabIndex = 294;
+            this.cmb_mon.TabIndex = 22;
+            this.cmb_mon.SelectedIndexChanged += new System.EventHandler(this.cmb_mon_SelectedIndexChanged);
             // 
             // tx_flete
             // 
@@ -1187,7 +1190,7 @@
             this.tx_flete.Location = new System.Drawing.Point(54, 39);
             this.tx_flete.Name = "tx_flete";
             this.tx_flete.Size = new System.Drawing.Size(73, 20);
-            this.tx_flete.TabIndex = 293;
+            this.tx_flete.TabIndex = 23;
             // 
             // label15
             // 

@@ -1145,14 +1145,9 @@ namespace TransCarga
                 cmb_docDes.Focus();
             }
         }
-        private void comboBox1_Leave(object sender, EventArgs e)
-        {
-            tx_numDocRem.Text = "";
-            tx_numDocRem.Focus();
-        }
         #endregion leaves;
 
-        #region botones_de_comando_y_proveed  
+        #region botones_de_comando
         public void toolboton()
         {
             DataTable mdtb = new DataTable();
@@ -1226,18 +1221,24 @@ namespace TransCarga
             limpiar(this);
             limpia_otros();
             limpia_combos();
+            limpia_chk();
+            //
+            tx_serie.Text = lib.serlocs(lib.locuser(asd));
+            tx_dat_locori.Text = lib.locuser(asd);
+            cmb_origen.SelectedValue = tx_dat_locori.Text;
+            tx_numero.Focus();
         }
         private void Bt_edit_Click(object sender, EventArgs e)
         {
-            //string codu = "";
-            //string idr = "";
             escribe(this);
             Tx_modo.Text = "EDITAR";
             button1.Image = Image.FromFile(img_grab);
             limpiar(this);
             limpia_otros();
             limpia_combos();
-            jalaoc("tx_idr");
+            limpia_chk();
+            //jalaoc("tx_idr");
+            tx_serie.Focus();
         }
         private void Bt_close_Click(object sender, EventArgs e)
         {
@@ -1251,7 +1252,10 @@ namespace TransCarga
         }
         private void Bt_anul_Click(object sender, EventArgs e)          // pone todos los proveed en N
         {
-            // no se anula, solo bloquea
+            sololee(this);
+            this.Tx_modo.Text = "ANULAR";
+            this.button1.Image = Image.FromFile("");
+            tx_serie.Focus();
         }
         private void Bt_first_Click(object sender, EventArgs e)
         {
@@ -1259,7 +1263,8 @@ namespace TransCarga
             limpia_chk();
             limpia_combos();
             limpia_otros();
-            tx_idr.Text = lib.gofirts("anag_for");    // nomtab
+            limpia_chk();
+            tx_idr.Text = lib.gofirts(nomtab);
             tx_idr_Leave(null, null);
         }
         private void Bt_back_Click(object sender, EventArgs e)
@@ -1291,7 +1296,7 @@ namespace TransCarga
             limpia_chk();
             limpia_combos();
             limpia_otros();
-            tx_idr.Text = lib.golast("anag_for");     // nomtab
+            tx_idr.Text = lib.golast(nomtab);
             tx_idr_Leave(null, null);
         }
         #endregion botones;
@@ -1299,20 +1304,31 @@ namespace TransCarga
         #endregion botones_de_comando  ;
 
         #region comboboxes
-        // selected index del combobox de usuarios
-        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        private void cmb_origen_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (cmb_docRem.SelectedIndex > -1)
-            {
-                DataRow row = ((DataTable)cmb_docRem.DataSource).Rows[cmb_docRem.SelectedIndex];
-                tx_dat_tdRem.Text = (string)row["idcodice"];
-                tx_mld.Text = (string)row["codigo"];
-            }
-            else
-            {
-                tx_dat_tdRem.Text = "";
-            }
+            tx_dirOrigen.Text = lib.dirloca(lib.locuser(asd));
         }
+        private void cmb_docRem_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            tx_dat_tdRem.Text = cmb_docRem.SelectedValue.ToString();
+        }
+        private void cmb_docDes_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            tx_dat_tDdest.Text = cmb_docDes.SelectedValue.ToString();
+        }
+        private void cmb_mon_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            tx_dat_mone.Text = cmb_mon.SelectedValue.ToString();
+        }
+
+        private void cmb_destino_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // direccion del pto de emision [tipdoc=preguia][serie][origen][destino]
+            // me quede aca !! 17/08/2020
+        }
+
+
+
         #endregion comboboxes
     }
 }
