@@ -33,6 +33,9 @@ namespace TransCarga
         string vtc_dni = "";            // variable tipo cliente natural
         string vtc_ruc = "";            // variable tipo cliente empresa
         string vtc_ext = "";            // variable tipo cliente extranjero
+        string codAnul = "";            // codigo de documento anulado
+        string codDInt = "";            // codigo tipo de documento interno para las pre guías
+        string codGene = "";            // codigo documento nuevo generado
         static libreria lib = new libreria();
         string verapp = System.Diagnostics.FileVersionInfo.GetVersionInfo(Application.ExecutablePath).FileVersion;
         //
@@ -48,7 +51,10 @@ namespace TransCarga
         static string data = ConfigurationManager.AppSettings["data"].ToString();
         string DB_CONN_STR = "server=" + login.serv + ";uid=" + login.usua + ";pwd=" + login.cont + ";database=" + data + ";";
         DataTable dtu = new DataTable();
-
+        DataTable dtd = new DataTable();
+        DataTable dttd0 = new DataTable();
+        DataTable dttd1 = new DataTable();
+        DataTable dtm = new DataTable();
         public preguiat()
         {
             InitializeComponent();
@@ -145,9 +151,10 @@ namespace TransCarga
             {
                 MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
                 conn.Open();
-                string consulta = "select formulario,campo,param,valor from enlaces where formulario in (@nofo,@nofa)";
+                string consulta = "select formulario,campo,param,valor from enlaces where formulario in (@nofo,@nofa,@nofi)";
                 MySqlCommand micon = new MySqlCommand(consulta, conn);
                 micon.Parameters.AddWithValue("@nofo", "main");
+                micon.Parameters.AddWithValue("@nofi", "clients");
                 micon.Parameters.AddWithValue("@nofa", nomform);
                 MySqlDataAdapter da = new MySqlDataAdapter(micon);
                 DataTable dt = new DataTable();
@@ -171,11 +178,23 @@ namespace TransCarga
                         if (row["param"].ToString() == "img_gra") img_grab = row["valor"].ToString().Trim();         // imagen del boton grabar nuevo
                         if (row["param"].ToString() == "img_anu") img_anul = row["valor"].ToString().Trim();         // imagen del boton grabar anular
                     }
+                    if (row["formulario"].ToString() == "main" && row["campo"].ToString() == "estado")
+                    {
+                        if (row["param"].ToString() == "anulado") codAnul = row["valor"].ToString().Trim();         // codigo doc anulado
+                        if (row["param"].ToString() == "generado") codGene = row["valor"].ToString().Trim();        // codigo doc generado
+                    }
+                    if (row["formulario"].ToString() == "clients" && row["campo"].ToString() == "documento")
+                    {
+                        if (row["param"].ToString() == "dni") vtc_dni = row["valor"].ToString().Trim();
+                        if (row["param"].ToString() == "ruc") vtc_ruc = row["valor"].ToString().Trim();
+                        if (row["param"].ToString() == "ext") vtc_ext = row["valor"].ToString().Trim();
+                    }
                     if (row["formulario"].ToString() == nomform && row["campo"].ToString() == "documento")
                     {
                         if (row["param"].ToString() == "dni") vtc_dni = row["valor"].ToString().Trim();
                         if (row["param"].ToString() == "ruc") vtc_ruc = row["valor"].ToString().Trim();
                         if (row["param"].ToString() == "ext") vtc_ext = row["valor"].ToString().Trim();
+                        if (row["param"].ToString() == "c_int") codDInt = row["valor"].ToString().Trim();           // codigo interno pre guias
                     }
                 }
                 da.Dispose();
@@ -281,33 +300,27 @@ namespace TransCarga
             cmb_origen.DisplayMember = "descrizionerid";
             cmb_origen.ValueMember = "idcodice";
             //
+            dtd.Clear();
+            dacu.Fill(dtd);
             cmb_destino.Items.Clear();
-            ccl = new MySqlCommand("select idcodice,descrizionerid from desc_loc where numero=@bloq", conn);
-            ccl.Parameters.AddWithValue("@bloq", 1);
-            dacu = new MySqlDataAdapter(ccl);
-            dtu.Clear();
-            dacu.Fill(dtu);
-            cmb_destino.DataSource = dtu;
+            cmb_destino.DataSource = dtd;
             cmb_destino.DisplayMember = "descrizionerid";
             cmb_destino.ValueMember = "idcodice";
             //  datos para los combobox de tipo de documento
             cmb_docRem.Items.Clear();
             MySqlCommand cdu = new MySqlCommand("select idcodice,descrizionerid,codigo from desc_doc where numero=@bloq", conn);
             cdu.Parameters.AddWithValue("@bloq", 1);
-            dacu = new MySqlDataAdapter(cdu);
-            dtu.Clear();
-            dacu.Fill(dtu);
-            cmb_docRem.DataSource = dtu;
+            MySqlDataAdapter datd = new MySqlDataAdapter(cdu);
+            dttd0.Clear();
+            datd.Fill(dttd0);
+            cmb_docRem.DataSource = dttd0;
             cmb_docRem.DisplayMember = "descrizionerid";
             cmb_docRem.ValueMember = "idcodice";
             //
+            dttd1.Clear();
             cmb_docDes.Items.Clear();
-            cdu = new MySqlCommand("select idcodice,descrizionerid,codigo from desc_doc where numero=@bloq", conn);
-            cdu.Parameters.AddWithValue("@bloq", 1);
-            dacu = new MySqlDataAdapter(cdu);
-            dtu.Clear();
-            dacu.Fill(dtu);
-            cmb_docDes.DataSource = dtu;
+            datd.Fill(dttd1);
+            cmb_docDes.DataSource = dttd1;
             cmb_docDes.DisplayMember = "descrizionerid";
             cmb_docDes.ValueMember = "idcodice";
             // datos para el combo de moneda
@@ -315,9 +328,9 @@ namespace TransCarga
             MySqlCommand cmo = new MySqlCommand("select idcodice,descrizionerid from desc_mon where numero=@bloq", conn);
             cmo.Parameters.AddWithValue("@bloq", 1);
             dacu = new MySqlDataAdapter(cmo);
-            dtu.Clear();
-            dacu.Fill(dtu);
-            cmb_mon.DataSource = dtu;
+            dtm.Clear();
+            dacu.Fill(dtm);
+            cmb_mon.DataSource = dtm;
             cmb_mon.DisplayMember = "descrizionerid";
             cmb_mon.ValueMember = "idcodice";
             //
@@ -495,6 +508,18 @@ namespace TransCarga
                     oControls.Enabled = true;
                 }
             }
+            tx_dirOrigen.ReadOnly = true;
+            tx_dirDestino.ReadOnly = true;
+            tx_nomRem.ReadOnly = true;
+            tx_dirRem.ReadOnly = true;
+            tx_dptoRtt.ReadOnly = true;
+            tx_provRtt.ReadOnly = true;
+            tx_distRtt.ReadOnly = true;
+            tx_nomDrio.ReadOnly = true;
+            tx_dirDrio.ReadOnly = true;
+            tx_dptoDrio.ReadOnly = true;
+            tx_proDrio.ReadOnly = true;
+            tx_disDrio.ReadOnly = true;
         }
         public static void limpiar(Form ofrm)
         {
@@ -1223,10 +1248,16 @@ namespace TransCarga
             limpia_combos();
             limpia_chk();
             //
-            tx_serie.Text = lib.serlocs(lib.locuser(asd));
-            tx_dat_locori.Text = lib.locuser(asd);
+            tx_serie.Text = lib.serlocs(lib.codloc(asd));
+            tx_dat_locori.Text = lib.codloc(asd);   // lib.locuser(asd);
             cmb_origen.SelectedValue = tx_dat_locori.Text;
-            tx_numero.Focus();
+            tx_dat_tdi.Text = codDInt;
+            tx_fechope.Text = DateTime.Today.ToString("dd/MM/yyyy");
+            tx_digit.Text = lib.nomuser(asd);
+            tx_dat_estad.Text = codGene;
+            tx_estado.Text = lib.nomstat(tx_dat_estad.Text);
+            tx_numero.ReadOnly = true;
+            cmb_destino.Focus();
         }
         private void Bt_edit_Click(object sender, EventArgs e)
         {
@@ -1238,6 +1269,7 @@ namespace TransCarga
             limpia_combos();
             limpia_chk();
             //jalaoc("tx_idr");
+            tx_dat_tdi.Text = codDInt;
             tx_serie.Focus();
         }
         private void Bt_close_Click(object sender, EventArgs e)
@@ -1306,28 +1338,55 @@ namespace TransCarga
         #region comboboxes
         private void cmb_origen_SelectedIndexChanged(object sender, EventArgs e)
         {
-            tx_dirOrigen.Text = lib.dirloca(lib.locuser(asd));
+            if (cmb_origen.SelectedIndex > -1)
+            {
+                tx_dat_locori.Text = cmb_origen.SelectedValue.ToString();
+                tx_dirOrigen.Text = lib.dirloca(lib.codloc(asd));
+            }
         }
         private void cmb_docRem_SelectedIndexChanged(object sender, EventArgs e)
         {
-            tx_dat_tdRem.Text = cmb_docRem.SelectedValue.ToString();
+            if (cmb_docRem.SelectedIndex > -1)
+            {
+                tx_dat_tdRem.Text = cmb_docRem.SelectedValue.ToString();
+                DataRow[] fila = dttd0.Select("idcodice='" + tx_dat_tdRem.Text + "'");
+                foreach (DataRow row in fila)
+                {
+                    tx_mld.Text = row[2].ToString();
+                }
+            }
         }
         private void cmb_docDes_SelectedIndexChanged(object sender, EventArgs e)
         {
-            tx_dat_tDdest.Text = cmb_docDes.SelectedValue.ToString();
+            if (cmb_docDes.SelectedIndex > -1)
+            {
+                tx_dat_tDdest.Text = cmb_docDes.SelectedValue.ToString();
+                DataRow[] fila = dttd1.Select("idcodice='" + tx_dat_tDdest.Text + "'");
+                foreach (DataRow row in fila)
+                {
+                    tx_mldD.Text = row[2].ToString();
+                }
+            }
         }
         private void cmb_mon_SelectedIndexChanged(object sender, EventArgs e)
         {
-            tx_dat_mone.Text = cmb_mon.SelectedValue.ToString();
+            if (cmb_mon.SelectedIndex > -1)
+            {
+                tx_dat_mone.Text = cmb_mon.SelectedValue.ToString();
+            }
         }
-
         private void cmb_destino_SelectedIndexChanged(object sender, EventArgs e)
         {
-            // direccion del pto de emision [tipdoc=preguia][serie][origen][destino]
-            // me quede aca !! 17/08/2020
+            if (cmb_destino.SelectedIndex > -1)
+            {
+                tx_dat_locdes.Text = cmb_destino.SelectedValue.ToString();
+                tx_dirDestino.Text = lib.dirloca(cmb_destino.SelectedValue.ToString());
+                // direccion del pto de emision [tipdoc=preguia][est_anulado][origen][destino]
+                //string newSer = lib.serOrgDes(tx_dat_tdi.Text, codAnul, tx_dat_locori.Text, tx_dat_locdes.Text);
+                //MessageBox.Show(newSer, "Nueva serie");
+            }
+
         }
-
-
 
         #endregion comboboxes
     }

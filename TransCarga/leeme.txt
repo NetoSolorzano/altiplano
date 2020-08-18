@@ -15,7 +15,7 @@ form vehiculos:
 - en este form van todos los vehiculos de la organizacion, propios o terceros
 - el ruc del propietario debe estar inscrito en proveedores
 form preguiat:
-- diseño del form ....
+- las pre guias no llevan contador en series, el tipo de documento esta en desc_tdi
 - al grabar la cabecera de la pre guia, por base datos se crea el registro en la tabla de control y 
   una fila en la tabla detalle de la pre guía
 

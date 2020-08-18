@@ -1013,6 +1013,45 @@ namespace TransCarga
 
             return retorno;
         }
+        public string serOrgDes(string tipdoc,string codanu,string codori, string coddes) // retorna serie del origen-destino
+        {
+            string retorno = "";
+            MySqlConnection conl = new MySqlConnection(DB_CONN_STR);
+            conl.Open();
+            if (conl.State == ConnectionState.Open)
+            {
+                string consulta = "select serie from series where tipdoc=@doc and status<>@sta and sede=@ori and destino=@des";
+                MySqlCommand micon = new MySqlCommand(consulta, conl);
+                micon.Parameters.AddWithValue("@sta", codanu);
+                micon.Parameters.AddWithValue("@doc", tipdoc);
+                micon.Parameters.AddWithValue("@ori", codori);
+                micon.Parameters.AddWithValue("@des", coddes);
+                try
+                {
+                    MySqlDataReader dr = micon.ExecuteReader();
+                    if (dr.Read())
+                    {
+                        retorno = dr.GetString(0);
+                    }
+                    dr.Close();
+                }
+                catch (MySqlException ex)
+                {
+                    MessageBox.Show(ex.Message, "Error en consulta de la serie");
+                    Application.Exit();
+                }
+                finally {
+                    micon.Dispose();
+                    conl.Close(); 
+                }
+            }
+            else
+            {
+                MessageBox.Show("Se perdió conexión con el servidor en librerías", "Error en conectividad");
+                Application.Exit();
+            }
+            return retorno;
+        }
         public string Right(string sValue, int iMaxLength)                  // devuelve los ultimos n caractares desde la derecha
         {
             if (string.IsNullOrEmpty(sValue))
@@ -1254,7 +1293,7 @@ namespace TransCarga
         public string nomstat(string codest)                                // retorna el nombre del estado
         {
             string retorna = "";
-            string consulta = "select descrizionerid from desc_sit " +
+            string consulta = "select descrizionerid from desc_est " +
                 "where idcodice=@cod";
             MySqlConnection conl = new MySqlConnection(DB_CONN_STR);
             conl.Open();
@@ -1528,10 +1567,10 @@ namespace TransCarga
             }
             return retorna;
         }
-        public string[] dirloc(string sede)                                 // retorna la direccion de la sede
+        public string[] dirloc(string sede)                                 // retorna direccion sede desde desc_tdi
         {
             string []dires = new string[]{"","","",""};
-            string consulta = "select deta1,deta2,deta3,deta4 from desc_sds where idcodice=@cod";
+            string consulta = "select deta1,deta2,deta3,deta4 from desc_loc where idcodice=@cod";
             MySqlConnection conl = new MySqlConnection(DB_CONN_STR);
             conl.Open();
             if (conl.State == ConnectionState.Open)
@@ -1556,11 +1595,11 @@ namespace TransCarga
             }
             return dires;
         }
-        public string dirloca(string sede)                                  // retorna la direccion de la sede en un solo string
+        public string dirloca(string sede)                                  // retorna direccion desde desc_tdi
         {
             string retorna = "";
             string consulta = "select concat(trim(deta1),' - ',trim(deta2),' - ',trim(deta3),' - ',trim(deta4)) " +
-                "from desc_sds where idcodice=@cod";
+                "from desc_loc where idcodice=@cod";
             MySqlConnection conl = new MySqlConnection(DB_CONN_STR);
             conl.Open();
             if (conl.State == ConnectionState.Open)
@@ -1573,6 +1612,7 @@ namespace TransCarga
                     retorna = dr.GetString(0);
                 }
                 dr.Close();
+                micon.Dispose();
                 conl.Close();
             }
             else
@@ -1764,7 +1804,7 @@ namespace TransCarga
         public string serlocs(string loca)                                  // retorna la serie del local
         {
             string retorna = "";
-            string consulta = "select flag1 from desc_sds where idcodice=@loc";
+            string consulta = "select codigo from desc_loc where idcodice=@loc";
             MySqlConnection conl = new MySqlConnection(DB_CONN_STR);
             conl.Open();
             if (conl.State == ConnectionState.Open)
