@@ -1595,7 +1595,7 @@ namespace TransCarga
             }
             return dires;
         }
-        public string dirloca(string sede)                                  // retorna direccion desde desc_tdi
+        public string dirloca(string sede)                                  // retorna direccion desde desc_loc
         {
             string retorna = "";
             string consulta = "select concat(trim(deta1),' - ',trim(deta2),' - ',trim(deta3),' - ',trim(deta4)) " +
