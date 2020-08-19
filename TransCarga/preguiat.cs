@@ -10,7 +10,6 @@ namespace TransCarga
     public partial class preguiat : Form
     {
         static string nomform = "preguiat";             // nombre del formulario
-        string asd = TransCarga.Program.vg_user;        // usuario conectado al sistema
         string colback = TransCarga.Program.colbac;   // color de fondo
         string colpage = TransCarga.Program.colpag;   // color de los pageframes
         string colgrid = TransCarga.Program.colgri;   // color de las grillas
@@ -20,7 +19,9 @@ namespace TransCarga
         string colstrp = TransCarga.Program.colstr;   // color del strip
         bool conectS = TransCarga.Program.vg_conSol;    // usa conector solorsoft? true=si; false=no
         static string nomtab = "cabpregr";              // cabecera de pre guias
-        public int totfilgrid, cta;      // variables para impresion
+
+        #region variables
+        int totfilgrid, cta;      // variables para impresion
         string img_btN = "";
         string img_btE = "";
         string img_btA = "";            // anula = bloquea
@@ -33,6 +34,7 @@ namespace TransCarga
         string img_btq = "";
         string img_grab = "";
         string img_anul = "";
+        string img_ver = "";
         string vtc_dni = "";            // variable tipo cliente natural
         string vtc_ruc = "";            // variable tipo cliente empresa
         string vtc_ext = "";            // variable tipo cliente extranjero
@@ -43,7 +45,13 @@ namespace TransCarga
         string gloDeta = "";            // glosa x defecto en el detalle
         static libreria lib = new libreria();
         string verapp = System.Diagnostics.FileVersionInfo.GetVersionInfo(Application.ExecutablePath).FileVersion;
-        //
+        // usuario, local, serie
+        string asd = TransCarga.Program.vg_user;        // usuario conectado al sistema
+        string v_clu = "";              // codigo del local del usuario
+        string v_slu = "";              // serie del local del usuario
+        string v_nbu = "";              // nombre del usuario
+        #endregion
+
         AutoCompleteStringCollection departamentos = new AutoCompleteStringCollection();// autocompletado departamentos
         AutoCompleteStringCollection provincias = new AutoCompleteStringCollection();   // autocompletado provincias
         AutoCompleteStringCollection distritos = new AutoCompleteStringCollection();    // autocompletado distritos
@@ -67,12 +75,12 @@ namespace TransCarga
         private void preguiat_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter) SendKeys.Send("{TAB}");
-            if (Control.ModifierKeys == Keys.Alt && e.KeyCode == Keys.N) Bt_add.PerformClick();
-            if (Control.ModifierKeys == Keys.Alt && e.KeyCode == Keys.E) Bt_edit.PerformClick();
-            if (Control.ModifierKeys == Keys.Alt && e.KeyCode == Keys.A) Bt_anul.PerformClick();
-            if (Control.ModifierKeys == Keys.Alt && e.KeyCode == Keys.O) Bt_ver.PerformClick();
-            if (Control.ModifierKeys == Keys.Alt && e.KeyCode == Keys.P) Bt_print.PerformClick();
-            if (Control.ModifierKeys == Keys.Alt && e.KeyCode == Keys.S) Bt_close.PerformClick();
+            if (Control.ModifierKeys == Keys.Control && e.KeyCode == Keys.N) Bt_add.PerformClick();
+            if (Control.ModifierKeys == Keys.Control && e.KeyCode == Keys.E) Bt_edit.PerformClick();
+            if (Control.ModifierKeys == Keys.Control && e.KeyCode == Keys.A) Bt_anul.PerformClick();
+            if (Control.ModifierKeys == Keys.Control && e.KeyCode == Keys.O) Bt_ver.PerformClick();
+            if (Control.ModifierKeys == Keys.Control && e.KeyCode == Keys.P) Bt_print.PerformClick();
+            if (Control.ModifierKeys == Keys.Control && e.KeyCode == Keys.S) Bt_close.PerformClick();
         }
         private void preguiat_Load(object sender, EventArgs e)
         {
@@ -85,6 +93,7 @@ namespace TransCarga
             toolTipNombre.ShowAlways = true;                 // Force the ToolTip text to be displayed whether or not the form is active.
             toolTipNombre.SetToolTip(toolStrip1, nomform);   // Set up the ToolTip text for the object
             */
+            this.Focus();
             jalainfo();
             init();
             dataload();
@@ -150,15 +159,13 @@ namespace TransCarga
             tx_proDrio.MaxLength = 25;
             tx_dptoDrio.MaxLength = 25;
             tx_docsOr.MaxLength = 100;          // documentos origen del traslado
-            /*
-            tx_nomRem.MaxLength = 100;           // nombre
-            tx_dirRem.MaxLength = 100;           // direccion
-            tx_ubigO.MaxLength = 6;            // ubigeo
-            */
+            tx_nomRem.MaxLength = 100;           // nombre remitente
+            tx_nomDrio.MaxLength = 100;           // nombre destinatario
             // grilla
             dataGridView1.Columns[0].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dataGridView1.Columns[3].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-
+            // formateo de campos
+            //tx_flete
         }
         private void initIngreso()
         {
@@ -171,16 +178,16 @@ namespace TransCarga
             tx_numero.Text = "";
             tx_totcant.Text = "";
             tx_totpes.Text = "";
-            tx_serie.Text = lib.serlocs(lib.codloc(asd));
+            tx_serie.Text = v_slu;
             tx_dat_tdi.Text = codDInt;
             tx_numero.ReadOnly = true;
-            tx_dat_locori.Text = lib.codloc(asd);
+            tx_dat_locori.Text = v_clu;
             cmb_origen.SelectedValue = tx_dat_locori.Text;
             cmb_origen_SelectionChangeCommitted(null, null);
             tx_dat_mone.Text = MonDeft;
             cmb_mon.SelectedValue = tx_dat_mone.Text;
             tx_fechope.Text = DateTime.Today.ToString("dd/MM/yyyy");
-            tx_digit.Text = lib.nomuser(asd);
+            tx_digit.Text = v_nbu;
             tx_dat_estad.Text = codGene;
             tx_estado.Text = lib.nomstat(tx_dat_estad.Text);
         }
@@ -201,26 +208,29 @@ namespace TransCarga
                 for (int t = 0; t < dt.Rows.Count; t++)
                 {
                     DataRow row = dt.Rows[t];
-                    if (row["formulario"].ToString() == "main" && row["campo"].ToString() == "imagenes")
+                    if (row["formulario"].ToString() == "main")
                     {
-                        if (row["param"].ToString() == "img_btN") img_btN = row["valor"].ToString().Trim();         // imagen del boton de accion NUEVO
-                        if (row["param"].ToString() == "img_btE") img_btE = row["valor"].ToString().Trim();         // imagen del boton de accion EDITAR
-                        if (row["param"].ToString() == "img_btA") img_btA = row["valor"].ToString().Trim();         // imagen del boton de accion ANULAR/BORRAR
-                        if (row["param"].ToString() == "img_btQ") img_btq = row["valor"].ToString().Trim();         // imagen del boton de accion SALIR
-                        if (row["param"].ToString() == "img_btP") img_btP = row["valor"].ToString().Trim();         // imagen del boton de accion IMPRIMIR
-                        if (row["param"].ToString() == "img_btV") img_btV = row["valor"].ToString().Trim();         // imagen del boton de accion visualizar
-                        // boton de vista preliminar .... esta por verse su utlidad
-                        if (row["param"].ToString() == "img_bti") img_bti = row["valor"].ToString().Trim();         // imagen del boton de accion IR AL INICIO
-                        if (row["param"].ToString() == "img_bts") img_bts = row["valor"].ToString().Trim();         // imagen del boton de accion SIGUIENTE
-                        if (row["param"].ToString() == "img_btr") img_btr = row["valor"].ToString().Trim();         // imagen del boton de accion RETROCEDE
-                        if (row["param"].ToString() == "img_btf") img_btf = row["valor"].ToString().Trim();         // imagen del boton de accion IR AL FINAL
-                        if (row["param"].ToString() == "img_gra") img_grab = row["valor"].ToString().Trim();         // imagen del boton grabar nuevo
-                        if (row["param"].ToString() == "img_anu") img_anul = row["valor"].ToString().Trim();         // imagen del boton grabar anular
-                    }
-                    if (row["formulario"].ToString() == "main" && row["campo"].ToString() == "estado")
-                    {
-                        if (row["param"].ToString() == "anulado") codAnul = row["valor"].ToString().Trim();         // codigo doc anulado
-                        if (row["param"].ToString() == "generado") codGene = row["valor"].ToString().Trim();        // codigo doc generado
+                        if (row["campo"].ToString() == "imagenes")
+                        {
+                            if (row["param"].ToString() == "img_btN") img_btN = row["valor"].ToString().Trim();         // imagen del boton de accion NUEVO
+                            if (row["param"].ToString() == "img_btE") img_btE = row["valor"].ToString().Trim();         // imagen del boton de accion EDITAR
+                            if (row["param"].ToString() == "img_btA") img_btA = row["valor"].ToString().Trim();         // imagen del boton de accion ANULAR/BORRAR
+                            if (row["param"].ToString() == "img_btQ") img_btq = row["valor"].ToString().Trim();         // imagen del boton de accion SALIR
+                            if (row["param"].ToString() == "img_btP") img_btP = row["valor"].ToString().Trim();         // imagen del boton de accion IMPRIMIR
+                            if (row["param"].ToString() == "img_btV") img_btV = row["valor"].ToString().Trim();         // imagen del boton de accion visualizar
+                            if (row["param"].ToString() == "img_bti") img_bti = row["valor"].ToString().Trim();         // imagen del boton de accion IR AL INICIO
+                            if (row["param"].ToString() == "img_bts") img_bts = row["valor"].ToString().Trim();         // imagen del boton de accion SIGUIENTE
+                            if (row["param"].ToString() == "img_btr") img_btr = row["valor"].ToString().Trim();         // imagen del boton de accion RETROCEDE
+                            if (row["param"].ToString() == "img_btf") img_btf = row["valor"].ToString().Trim();         // imagen del boton de accion IR AL FINAL
+                            if (row["param"].ToString() == "img_gra") img_grab = row["valor"].ToString().Trim();         // imagen del boton grabar nuevo
+                            if (row["param"].ToString() == "img_anu") img_anul = row["valor"].ToString().Trim();         // imagen del boton grabar anular
+                            if (row["param"].ToString() == "img_preview") img_ver = row["valor"].ToString().Trim();         // imagen del boton grabar visualizar
+                        }
+                        if (row["campo"].ToString() == "estado")
+                        {
+                            if (row["param"].ToString() == "anulado") codAnul = row["valor"].ToString().Trim();         // codigo doc anulado
+                            if (row["param"].ToString() == "generado") codGene = row["valor"].ToString().Trim();        // codigo doc generado
+                        }
                     }
                     if (row["formulario"].ToString() == "clients" && row["campo"].ToString() == "documento")
                     {
@@ -228,20 +238,25 @@ namespace TransCarga
                         if (row["param"].ToString() == "ruc") vtc_ruc = row["valor"].ToString().Trim();
                         if (row["param"].ToString() == "ext") vtc_ext = row["valor"].ToString().Trim();
                     }
-                    if (row["formulario"].ToString() == nomform && row["campo"].ToString() == "documento")
+                    if (row["formulario"].ToString() == nomform)
                     {
-                        if (row["param"].ToString() == "dni") vtc_dni = row["valor"].ToString().Trim();
-                        if (row["param"].ToString() == "ruc") vtc_ruc = row["valor"].ToString().Trim();
-                        if (row["param"].ToString() == "ext") vtc_ext = row["valor"].ToString().Trim();
-                        if (row["param"].ToString() == "c_int") codDInt = row["valor"].ToString().Trim();           // codigo interno pre guias
+                        if (row["campo"].ToString() == "documento")
+                        {
+                            if (row["param"].ToString() == "dni") vtc_dni = row["valor"].ToString().Trim();
+                            if (row["param"].ToString() == "ruc") vtc_ruc = row["valor"].ToString().Trim();
+                            if (row["param"].ToString() == "ext") vtc_ext = row["valor"].ToString().Trim();
+                            if (row["param"].ToString() == "c_int") codDInt = row["valor"].ToString().Trim();           // codigo interno pre guias
+                        }
+                        if (row["campo"].ToString() == "moneda" && row["param"].ToString() == "default") MonDeft = row["valor"].ToString().Trim();             // moneda por defecto
+                        if (row["campo"].ToString() == "detalle" && row["param"].ToString() == "glosa") gloDeta = row["valor"].ToString().Trim();             // glosa del detalle
                     }
-                    if (row["formulario"].ToString() == nomform && row["campo"].ToString() == "moneda" && 
-                        row["param"].ToString() == "default") MonDeft = row["valor"].ToString().Trim();             // moneda por defecto
-                    if (row["formulario"].ToString() == nomform && row["campo"].ToString() == "detalle" &&
-                        row["param"].ToString() == "glosa") gloDeta = row["valor"].ToString().Trim();             // glosa del detalle
                 }
                 da.Dispose();
                 dt.Dispose();
+                // jalamos datos del usuario y local
+                v_clu = lib.codloc(asd);                // codigo local usuario
+                v_slu = lib.serlocs(v_clu);             // serie local usuario
+                v_nbu = lib.nomuser(asd);               // nombre del usuario
                 conn.Close();
             }
             catch (MySqlException ex)
@@ -308,9 +323,9 @@ namespace TransCarga
                             tx_docsOr.Text = dr.GetString("docsremit");
                             tx_consig.Text = dr.GetString("clifinpre");
                             tx_dat_mone.Text = dr.GetString("tipmonpre");
-                            tx_flete.Text = dr.GetString("totpregui");
+                            tx_flete.Text = dr.GetDecimal("totpregui").ToString("#.##");
                             tx_totcant.Text = dr.GetString("cantotpre");
-                            tx_totpes.Text = dr.GetString("pestotpre");
+                            tx_totpes.Text = dr.GetDecimal("pestotpre").ToString("#.#");
                             tx_impreso.Text = dr.GetString("impreso");
                             tx_sergr.Text = dr.GetString("serguitra");
                             tx_numgr.Text = dr.GetString("numguitra");
@@ -807,7 +822,13 @@ namespace TransCarga
                 if (tx_numero.Text.Trim() == "")
                 {
                     tx_numero.Focus();
-                    MessageBox.Show("Ingrese el número de la pre gruía", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    MessageBox.Show("Ingrese el número de la pre guía", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    return;
+                }
+                if (tx_dat_estad.Text == codAnul)
+                {
+                    MessageBox.Show("La pre guía esta ANULADA", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    tx_numero.Focus();
                     return;
                 }
                 if ((tx_sergr.Text.Trim() == "" && tx_numgr.Text.Trim() == "") && tx_impreso.Text == "N")
@@ -1029,7 +1050,7 @@ namespace TransCarga
                                     micon.Parameters.AddWithValue("@can", dataGridView1.Rows[i].Cells[0].Value.ToString());
                                     micon.Parameters.AddWithValue("@uni", dataGridView1.Rows[i].Cells[1].Value.ToString());
                                     micon.Parameters.AddWithValue("@cod", "");
-                                    micon.Parameters.AddWithValue("@des", dataGridView1.Rows[i].Cells[2].Value.ToString());
+                                    micon.Parameters.AddWithValue("@des", gloDeta + dataGridView1.Rows[i].Cells[2].Value.ToString().Trim());
                                     micon.Parameters.AddWithValue("@pes", dataGridView1.Rows[i].Cells[3].Value.ToString());
                                     micon.Parameters.AddWithValue("@preu", "0");
                                     micon.Parameters.AddWithValue("@pret", "0");
@@ -1074,20 +1095,23 @@ namespace TransCarga
             {
                 try
                 {
-                    if (tx_impreso.Text == "N")
+                    if (tx_impreso.Text == "N")     // EDICION DE CABECERA Y CONTROL
                     {
-                        string actua = "update cabpregr set fechpregr=@fechop,tidodepre=@tdcdes,nudodepre=@ndcdes," +
-                            "nombdepre=@nomdes,diredepre=@dircde,ubigdepre=@ubicde,tidorepre=@tdcrem,nudorepre=@ndcrem," +
-                            "nombrepre=@nomrem,direrepre=@dircre,ubigrepre=@ubicre,locorigen=@locpgr,dirorigen=@dirpgr," +
-                            "ubiorigen=@ubopgr,locdestin=@ldcpgr,dirdestin=@didegr,ubidestin=@ubdegr,docsremit=@dooprg," +
-                            "obspregui=@obsprg,clifinpre=@conprg,cantotpre=@totcpr,pestotpre=@totppr,tipmonpre=@monppr," +
-                            "tipcampre=@tcprgr,subtotpre=@subpgr,igvpregui=@igvpgr,totpregui=@totpgr,totpagpre=@pagpgr," +
-                            "salpregui=@totpgr,estadoser=@estpgr," +
-                            "verApp=@verApp,userm=@asd,fechm=now(),diriplan4=@iplan,diripwan4=@ipwan,netbname=@nbnam " +
-                            "where id=@idr";
+                        string actua = "update cabpregr a, controlg b set " +
+                            "a.fechpregr=@fechop,a.tidodepre=@tdcdes,a.nudodepre=@ndcdes," +
+                            "a.nombdepre=@nomdes,a.diredepre=@dircde,a.ubigdepre=@ubicde,a.tidorepre=@tdcrem,a.nudorepre=@ndcrem," +
+                            "a.nombrepre=@nomrem,a.direrepre=@dircre,a.ubigrepre=@ubicre,a.locorigen=@locpgr,a.dirorigen=@dirpgr," +
+                            "a.ubiorigen=@ubopgr,a.locdestin=@ldcpgr,a.dirdestin=@didegr,a.ubidestin=@ubdegr,a.docsremit=@dooprg," +
+                            "a.obspregui=@obsprg,a.clifinpre=@conprg,a.cantotpre=@totcpr,a.pestotpre=@totppr,a.tipmonpre=@monppr," +
+                            "a.tipcampre=@tcprgr,a.subtotpre=@subpgr,a.igvpregui=@igvpgr,a.totpregui=@totpgr,a.totpagpre=@pagpgr," +
+                            "a.salpregui=@totpgr,a.estadoser=@estpgr," +
+                            "a.verApp=@verApp,a.userm=@asd,a.fechm=now(),a.diriplan4=@iplan,a.diripwan4=@ipwan,a.netbname=@nbnam," +
+                            "b.tidodepre=@tdcdes,b.nudodepre=@ndcdes,b.tidorepre=@tdcrem,b.nudorepre=@ndcrem," +
+                            "b.codmonpre=@monppr,b.totpregui=@totpgr,b.saldofina=@totpgr-b.totpagado " +
+                            "where a.id=@idr and b.serpregui=a.serpregui and b.numpregui=a.numpregui";
                         MySqlCommand micon = new MySqlCommand(actua, conn);
                         micon.Parameters.AddWithValue("@idr", tx_idr.Text);
-                        micon.Parameters.AddWithValue("@fechop", tx_fechope.Text);
+                        micon.Parameters.AddWithValue("@fechop", tx_fechope.Text.Substring(6, 4) + "-" + tx_fechope.Text.Substring(3, 2) + "-" + tx_fechope.Text.Substring(0, 2));
                         micon.Parameters.AddWithValue("@tdcdes", tx_dat_tDdest.Text);
                         micon.Parameters.AddWithValue("@ndcdes", tx_numDocDes.Text);
                         micon.Parameters.AddWithValue("@nomdes", tx_nomDrio.Text);
@@ -1110,19 +1134,55 @@ namespace TransCarga
                         micon.Parameters.AddWithValue("@totcpr", tx_totcant.Text);
                         micon.Parameters.AddWithValue("@totppr", tx_totpes.Text);
                         micon.Parameters.AddWithValue("@monppr", tx_dat_mone.Text);
-                        micon.Parameters.AddWithValue("@tcprgr", "");  // tipo de cambio
+                        micon.Parameters.AddWithValue("@tcprgr", "0.00");  // tipo de cambio
                         micon.Parameters.AddWithValue("@subpgr", "0"); // sub total de la pre guía
                         micon.Parameters.AddWithValue("@igvpgr", "0"); // igv
-                        micon.Parameters.AddWithValue("@totpgr", tx_flete.Text); // total inc. igv
                         micon.Parameters.AddWithValue("@pagpgr", "0");
                         micon.Parameters.AddWithValue("@totpgr", tx_flete.Text); // saldo de la pre guia = total pre guia
                         micon.Parameters.AddWithValue("@estpgr", tx_dat_estad.Text); // estado de la pre guía
                         micon.Parameters.AddWithValue("@verApp", verapp);
-                        micon.Parameters.AddWithValue("@asd", Program.vg_user);
+                        micon.Parameters.AddWithValue("@asd", asd);
                         micon.Parameters.AddWithValue("@iplan", lib.iplan());
                         micon.Parameters.AddWithValue("@ipwan", lib.ipwan());
                         micon.Parameters.AddWithValue("@nbnam", Environment.MachineName);
                         micon.ExecuteNonQuery();
+                        //
+                        // EDICION DEL DETALLE 
+                        //
+                        micon = new MySqlCommand("delete from detpregr where idc=@idr", conn);
+                        micon.Parameters.AddWithValue("@idr", tx_idr.Text);
+                        micon.ExecuteNonQuery();
+                        for (int i = 0; i < dataGridView1.Rows.Count - 1; i++)
+                        {
+                            if (dataGridView1.Rows[i].Cells[0].Value.ToString().Trim() != "")
+                            {
+                                string inserd2 = "insert into detpregr (idc,serpregui,numpregui," +
+                                    "cantprodi,unimedpro,codiprodi,descprodi,pesoprodi,precprodi,totaprodi," +
+                                    "estadoser,verApp,userc,fechc,diriplan4,diripwan4,netbname " +
+                                    ") values (@idr,@serpgr,@corpgr," +
+                                    "@can,@uni,@cod,@des,@pes,@preu,@pret," +
+                                    "@estpgr,@verApp,@asd,now(),@iplan,@ipwan,@nbnam)";
+                                micon = new MySqlCommand(inserd2, conn);
+                                micon.Parameters.AddWithValue("@idr", tx_idr.Text);
+                                micon.Parameters.AddWithValue("@serpgr", tx_serie.Text);
+                                micon.Parameters.AddWithValue("@corpgr", tx_numero.Text);
+                                micon.Parameters.AddWithValue("@can", dataGridView1.Rows[i].Cells[0].Value.ToString());
+                                micon.Parameters.AddWithValue("@uni", dataGridView1.Rows[i].Cells[1].Value.ToString());
+                                micon.Parameters.AddWithValue("@cod", "");
+                                micon.Parameters.AddWithValue("@des", dataGridView1.Rows[i].Cells[2].Value.ToString());
+                                micon.Parameters.AddWithValue("@pes", dataGridView1.Rows[i].Cells[3].Value.ToString());
+                                micon.Parameters.AddWithValue("@preu", "0");
+                                micon.Parameters.AddWithValue("@pret", "0");
+                                micon.Parameters.AddWithValue("@estpgr", tx_dat_estad.Text); // estado de la pre guía
+                                micon.Parameters.AddWithValue("@verApp", verapp);
+                                micon.Parameters.AddWithValue("@asd", asd);
+                                micon.Parameters.AddWithValue("@iplan", lib.iplan());
+                                micon.Parameters.AddWithValue("@ipwan", lib.ipwan());
+                                micon.Parameters.AddWithValue("@nbnam", Environment.MachineName);
+                                micon.ExecuteNonQuery();
+                            }
+                        }
+                        //
                         micon.Dispose();
                     }
                     if (tx_impreso.Text == "S")
@@ -1147,7 +1207,32 @@ namespace TransCarga
         }
         private void anula()
         {
-            // 
+            // en el caso de pre guias SOLO HAY ANULACION FISICA, anulacion interna (serie ANU) en otros documentos
+            using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
+            {
+                conn.Open();
+                if (conn.State == ConnectionState.Open)
+                {
+                    string canul = "update cabpregr, detpregr, controlg " +
+                        "set cabpregr.estadoser=@estser,cabpregr.usera=@asd,cabpregr.fecha=now(),cabpregr.diriplan4=@dil4," +
+                        "cabpregr.diripwan4=@diw4,cabpregr.netbname=@nbnp,cabpregr.verApp=@veap," +
+                        "detpregr.estadoser=@estser,detpregr.usera=@asd,detpregr.fecha=now(),detpregr.verApp=@veap," +
+                        "detpregr.diriplan4=@dil4,detpregr.diripwan4=@diw4,detpregr.netbname=@nbnp," +
+                        "controlg.estadoser=@estser " +
+                        "where cabpregr.id=detpregr.idc and cabpregr.id=controlg.numpregui and cabpregr.id=@idr";
+                    using (MySqlCommand micon = new MySqlCommand(canul, conn))
+                    {
+                        micon.Parameters.AddWithValue("@idr", tx_idr.Text);
+                        micon.Parameters.AddWithValue("@estser", codAnul);
+                        micon.Parameters.AddWithValue("@asd", asd);
+                        micon.Parameters.AddWithValue("@dil4", lib.iplan());
+                        micon.Parameters.AddWithValue("@diw4", lib.ipwan());
+                        micon.Parameters.AddWithValue("@nbnp", Environment.MachineName);
+                        micon.Parameters.AddWithValue("@veap", verapp);
+                        micon.ExecuteNonQuery();
+                    }
+                }
+            }
         }
         #endregion boton_form;
 
@@ -1243,7 +1328,7 @@ namespace TransCarga
                     return;
                 }
                 string encuentra = "no";
-                if (Tx_modo.Text == "NUEVO")
+                if (Tx_modo.Text == "NUEVO" || Tx_modo.Text == "EDITAR")
                 {
                     string[] datos = lib.datossn("CLI", tx_dat_tdRem.Text.Trim(), tx_numDocRem.Text.Trim());
                     if (datos.Length > 0)
@@ -1298,7 +1383,7 @@ namespace TransCarga
                 if (tx_numDocDes.Text.Trim().Length != Int16.Parse(tx_mldD.Text))
                 {
                     MessageBox.Show("El número de caracteres para" + Environment.NewLine +
-                        "su tipo de documento debe ser: " + tx_mld.Text, "Error de validación", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+                        "su tipo de documento debe ser: " + tx_mldD.Text, "Error de validación", MessageBoxButtons.OK, MessageBoxIcon.Hand);
                     tx_numDocDes.Focus();
                     return;
                 }
@@ -1309,7 +1394,7 @@ namespace TransCarga
                     return;
                 }
                 string encuentra = "no";
-                if (Tx_modo.Text == "NUEVO")
+                if (Tx_modo.Text == "NUEVO" || Tx_modo.Text == "EDITAR")
                 {
                     string[] datos = lib.datossn("CLI", tx_dat_tDdest.Text.Trim(), tx_numDocDes.Text.Trim());
                     if (datos.Length > 0)
@@ -1363,6 +1448,7 @@ namespace TransCarga
             tx_numero.Text = lib.Right("00000000" + tx_numero.Text, 8);
             tx_idr.Text = tx_numero.Text;
             jalaoc("tx_idr");
+            dataGridView1.Rows.Clear();
             jaladet(tx_idr.Text);
             if ((tx_sergr.Text.Trim() == "" && tx_numgr.Text.Trim() == "") && tx_impreso.Text == "N")
             {
@@ -1465,7 +1551,9 @@ namespace TransCarga
             escribe(this);
             Tx_modo.Text = "NUEVO";
             button1.Image = Image.FromFile(img_grab);
+            tx_serie.Text = "";
             initIngreso();  // limpiamos/preparamos todo para el ingreso
+            tx_numero.Text = "";
             cmb_destino.Focus();
         }
         private void Bt_edit_Click(object sender, EventArgs e)
@@ -1474,6 +1562,7 @@ namespace TransCarga
             Tx_modo.Text = "EDITAR";
             button1.Image = Image.FromFile(img_grab);
             initIngreso();
+            tx_numero.Text = "";
             tx_numero.ReadOnly = false;
             tx_serie.Focus();
         }
@@ -1493,6 +1582,19 @@ namespace TransCarga
             Tx_modo.Text = "ANULAR";
             button1.Image = Image.FromFile(img_anul);
             initIngreso();
+            gbox_serie.Enabled = true;
+            tx_serie.ReadOnly = false;
+            tx_numero.ReadOnly = false;
+            tx_serie.Focus();
+        }
+        private void Bt_ver_Click(object sender, EventArgs e)
+        {
+            sololee(this);
+            Tx_modo.Text = "VISUALIZAR";
+            button1.Image = Image.FromFile(img_ver);
+            initIngreso();
+            gbox_serie.Enabled = true;
+            tx_serie.ReadOnly = false;
             tx_numero.ReadOnly = false;
             tx_serie.Focus();
         }
@@ -1647,10 +1749,13 @@ namespace TransCarga
         }
         private void dataGridView1_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
         {
-            if (dataGridView1.Rows.Count > 1 && Tx_modo.Text == "NUEVO")
+            /*
+            if (dataGridView1.Rows.Count > 1 && ("NUEVO,EDITAR").Contains(Tx_modo.Text))
             {
-                dataGridView1.CurrentRow.Cells[2].Value = gloDeta + " ";
+                if (e.RowIndex > -1) dataGridView1.CurrentRow.Cells[2].Value = gloDeta + " ";
             }
+            */
+            // cambie de idea. Al momento de grabar y si es NUEVO se agrega la glosa a cada fila 
         }
         private void Column_KeyPress(object sender, KeyPressEventArgs e)
         {

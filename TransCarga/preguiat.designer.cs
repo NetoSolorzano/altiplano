@@ -92,7 +92,7 @@
             this.label13 = new System.Windows.Forms.Label();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
-            this.groupBox9 = new System.Windows.Forms.GroupBox();
+            this.gbox_serie = new System.Windows.Forms.GroupBox();
             this.tx_dat_tdi = new System.Windows.Forms.TextBox();
             this.label8 = new System.Windows.Forms.Label();
             this.label14 = new System.Windows.Forms.Label();
@@ -144,21 +144,21 @@
             this.tx_dat_estad = new System.Windows.Forms.TextBox();
             this.tx_sergr = new System.Windows.Forms.TextBox();
             this.tx_numgr = new System.Windows.Forms.TextBox();
+            this.label17 = new System.Windows.Forms.Label();
+            this.label18 = new System.Windows.Forms.Label();
+            this.groupBox17 = new System.Windows.Forms.GroupBox();
+            this.groupBox18 = new System.Windows.Forms.GroupBox();
             this.tx_totpes = new TransCarga.NumericTextBox();
             this.tx_totcant = new TransCarga.NumericTextBox();
             this.tx_flete = new TransCarga.NumericTextBox();
             this.tx_numero = new TransCarga.NumericTextBox();
             this.tx_serie = new TransCarga.NumericTextBox();
-            this.label17 = new System.Windows.Forms.Label();
-            this.label18 = new System.Windows.Forms.Label();
-            this.groupBox17 = new System.Windows.Forms.GroupBox();
-            this.groupBox18 = new System.Windows.Forms.GroupBox();
             this.toolStrip1.SuspendLayout();
             this.groupBox11.SuspendLayout();
             this.groupBox7.SuspendLayout();
             this.pn_usloc.SuspendLayout();
             this.groupBox5.SuspendLayout();
-            this.groupBox9.SuspendLayout();
+            this.gbox_serie.SuspendLayout();
             this.groupBox19.SuspendLayout();
             this.groupBox21.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -223,7 +223,7 @@
             this.Bt_add.Name = "Bt_add";
             this.Bt_add.Size = new System.Drawing.Size(32, 32);
             this.Bt_add.Text = "Bt_add";
-            this.Bt_add.ToolTipText = "Nuevo";
+            this.Bt_add.ToolTipText = "Nuevo (Ctrl N)";
             this.Bt_add.Click += new System.EventHandler(this.Bt_add_Click);
             // 
             // toolStripSeparator6
@@ -250,7 +250,7 @@
             this.Bt_close.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.Bt_close.Name = "Bt_close";
             this.Bt_close.Size = new System.Drawing.Size(32, 32);
-            this.Bt_close.ToolTipText = "Salir del formulario";
+            this.Bt_close.ToolTipText = "Salir (Ctrl S)";
             this.Bt_close.Click += new System.EventHandler(this.Bt_close_Click);
             // 
             // toolStripSeparator7
@@ -268,7 +268,7 @@
             this.Bt_edit.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.Bt_edit.Name = "Bt_edit";
             this.Bt_edit.Size = new System.Drawing.Size(32, 32);
-            this.Bt_edit.ToolTipText = "Editar";
+            this.Bt_edit.ToolTipText = "Editar (Ctrl E)";
             this.Bt_edit.Click += new System.EventHandler(this.Bt_edit_Click);
             // 
             // toolStripSeparator8
@@ -287,7 +287,7 @@
             this.Bt_anul.Name = "Bt_anul";
             this.Bt_anul.Size = new System.Drawing.Size(32, 32);
             this.Bt_anul.Text = "Bt_close";
-            this.Bt_anul.ToolTipText = "Anular";
+            this.Bt_anul.ToolTipText = "Anular (Ctrl A)";
             this.Bt_anul.Click += new System.EventHandler(this.Bt_anul_Click);
             // 
             // toolStripSeparator1
@@ -306,7 +306,8 @@
             this.Bt_ver.Name = "Bt_ver";
             this.Bt_ver.Size = new System.Drawing.Size(32, 32);
             this.Bt_ver.Text = "Bt_close";
-            this.Bt_ver.ToolTipText = "Visualizar";
+            this.Bt_ver.ToolTipText = "Visualizar (Ctrl O)";
+            this.Bt_ver.Click += new System.EventHandler(this.Bt_ver_Click);
             // 
             // toolStripSeparator13
             // 
@@ -324,7 +325,7 @@
             this.Bt_print.Name = "Bt_print";
             this.Bt_print.Size = new System.Drawing.Size(32, 32);
             this.Bt_print.Text = "Bt_close";
-            this.Bt_print.ToolTipText = "Imprime";
+            this.Bt_print.ToolTipText = "Imprime (Ctrl P)";
             // 
             // toolStripSeparator4
             // 
@@ -795,20 +796,20 @@
             this.groupBox6.TabIndex = 113;
             this.groupBox6.TabStop = false;
             // 
-            // groupBox9
+            // gbox_serie
             // 
-            this.groupBox9.BackColor = System.Drawing.Color.Transparent;
-            this.groupBox9.Controls.Add(this.tx_dat_tdi);
-            this.groupBox9.Controls.Add(this.tx_numero);
-            this.groupBox9.Controls.Add(this.tx_serie);
-            this.groupBox9.Controls.Add(this.label8);
-            this.groupBox9.Controls.Add(this.label14);
-            this.groupBox9.Controls.Add(this.groupBox10);
-            this.groupBox9.Location = new System.Drawing.Point(12, 24);
-            this.groupBox9.Name = "groupBox9";
-            this.groupBox9.Size = new System.Drawing.Size(133, 69);
-            this.groupBox9.TabIndex = 289;
-            this.groupBox9.TabStop = false;
+            this.gbox_serie.BackColor = System.Drawing.Color.Transparent;
+            this.gbox_serie.Controls.Add(this.tx_dat_tdi);
+            this.gbox_serie.Controls.Add(this.tx_numero);
+            this.gbox_serie.Controls.Add(this.tx_serie);
+            this.gbox_serie.Controls.Add(this.label8);
+            this.gbox_serie.Controls.Add(this.label14);
+            this.gbox_serie.Controls.Add(this.groupBox10);
+            this.gbox_serie.Location = new System.Drawing.Point(12, 24);
+            this.gbox_serie.Name = "gbox_serie";
+            this.gbox_serie.Size = new System.Drawing.Size(133, 69);
+            this.gbox_serie.TabIndex = 289;
+            this.gbox_serie.TabStop = false;
             // 
             // tx_dat_tdi
             // 
@@ -1276,7 +1277,7 @@
             // tx_impreso
             // 
             this.tx_impreso.BackColor = System.Drawing.SystemColors.Window;
-            this.tx_impreso.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_impreso.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tx_impreso.Location = new System.Drawing.Point(64, 386);
             this.tx_impreso.Name = "tx_impreso";
             this.tx_impreso.ReadOnly = true;
@@ -1315,60 +1316,6 @@
             this.tx_numgr.Size = new System.Drawing.Size(69, 18);
             this.tx_numgr.TabIndex = 327;
             this.tx_numgr.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // tx_totpes
-            // 
-            this.tx_totpes.AllowSpace = false;
-            this.tx_totpes.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_totpes.Location = new System.Drawing.Point(540, 385);
-            this.tx_totpes.Name = "tx_totpes";
-            this.tx_totpes.ReadOnly = true;
-            this.tx_totpes.Size = new System.Drawing.Size(41, 20);
-            this.tx_totpes.TabIndex = 26;
-            this.tx_totpes.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // tx_totcant
-            // 
-            this.tx_totcant.AllowSpace = false;
-            this.tx_totcant.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_totcant.Location = new System.Drawing.Point(400, 385);
-            this.tx_totcant.Name = "tx_totcant";
-            this.tx_totcant.ReadOnly = true;
-            this.tx_totcant.Size = new System.Drawing.Size(41, 20);
-            this.tx_totcant.TabIndex = 25;
-            this.tx_totcant.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // tx_flete
-            // 
-            this.tx_flete.AllowSpace = false;
-            this.tx_flete.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_flete.Location = new System.Drawing.Point(54, 39);
-            this.tx_flete.Name = "tx_flete";
-            this.tx_flete.Size = new System.Drawing.Size(73, 20);
-            this.tx_flete.TabIndex = 23;
-            this.tx_flete.Leave += new System.EventHandler(this.tx_flete_Leave);
-            // 
-            // tx_numero
-            // 
-            this.tx_numero.AllowSpace = false;
-            this.tx_numero.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_numero.Location = new System.Drawing.Point(54, 42);
-            this.tx_numero.Name = "tx_numero";
-            this.tx_numero.Size = new System.Drawing.Size(73, 20);
-            this.tx_numero.TabIndex = 2;
-            this.tx_numero.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.tx_numero.Leave += new System.EventHandler(this.tx_numero_Leave);
-            // 
-            // tx_serie
-            // 
-            this.tx_serie.AllowSpace = false;
-            this.tx_serie.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_serie.Location = new System.Drawing.Point(55, 14);
-            this.tx_serie.Name = "tx_serie";
-            this.tx_serie.Size = new System.Drawing.Size(44, 20);
-            this.tx_serie.TabIndex = 1;
-            this.tx_serie.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.tx_serie.Leave += new System.EventHandler(this.tx_serie_Leave);
             // 
             // label17
             // 
@@ -1409,6 +1356,61 @@
             this.groupBox18.Size = new System.Drawing.Size(164, 1);
             this.groupBox18.TabIndex = 113;
             this.groupBox18.TabStop = false;
+            // 
+            // tx_totpes
+            // 
+            this.tx_totpes.AllowSpace = false;
+            this.tx_totpes.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_totpes.Location = new System.Drawing.Point(540, 385);
+            this.tx_totpes.Name = "tx_totpes";
+            this.tx_totpes.ReadOnly = true;
+            this.tx_totpes.Size = new System.Drawing.Size(41, 20);
+            this.tx_totpes.TabIndex = 26;
+            this.tx_totpes.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // tx_totcant
+            // 
+            this.tx_totcant.AllowSpace = false;
+            this.tx_totcant.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_totcant.Location = new System.Drawing.Point(400, 385);
+            this.tx_totcant.Name = "tx_totcant";
+            this.tx_totcant.ReadOnly = true;
+            this.tx_totcant.Size = new System.Drawing.Size(41, 20);
+            this.tx_totcant.TabIndex = 25;
+            this.tx_totcant.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // tx_flete
+            // 
+            this.tx_flete.AllowSpace = false;
+            this.tx_flete.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_flete.Location = new System.Drawing.Point(54, 39);
+            this.tx_flete.Name = "tx_flete";
+            this.tx_flete.Size = new System.Drawing.Size(73, 20);
+            this.tx_flete.TabIndex = 23;
+            this.tx_flete.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.tx_flete.Leave += new System.EventHandler(this.tx_flete_Leave);
+            // 
+            // tx_numero
+            // 
+            this.tx_numero.AllowSpace = false;
+            this.tx_numero.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_numero.Location = new System.Drawing.Point(54, 42);
+            this.tx_numero.Name = "tx_numero";
+            this.tx_numero.Size = new System.Drawing.Size(73, 20);
+            this.tx_numero.TabIndex = 2;
+            this.tx_numero.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.tx_numero.Leave += new System.EventHandler(this.tx_numero_Leave);
+            // 
+            // tx_serie
+            // 
+            this.tx_serie.AllowSpace = false;
+            this.tx_serie.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_serie.Location = new System.Drawing.Point(55, 14);
+            this.tx_serie.Name = "tx_serie";
+            this.tx_serie.Size = new System.Drawing.Size(44, 20);
+            this.tx_serie.TabIndex = 1;
+            this.tx_serie.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.tx_serie.Leave += new System.EventHandler(this.tx_serie_Leave);
             // 
             // preguiat
             // 
@@ -1457,7 +1459,7 @@
             this.Controls.Add(this.tx_ubigD);
             this.Controls.Add(this.groupBox21);
             this.Controls.Add(this.groupBox19);
-            this.Controls.Add(this.groupBox9);
+            this.Controls.Add(this.gbox_serie);
             this.Controls.Add(this.groupBox5);
             this.Controls.Add(this.tx_digit);
             this.Controls.Add(this.label13);
@@ -1506,8 +1508,8 @@
             this.pn_usloc.ResumeLayout(false);
             this.pn_usloc.PerformLayout();
             this.groupBox5.ResumeLayout(false);
-            this.groupBox9.ResumeLayout(false);
-            this.groupBox9.PerformLayout();
+            this.gbox_serie.ResumeLayout(false);
+            this.gbox_serie.PerformLayout();
             this.groupBox19.ResumeLayout(false);
             this.groupBox21.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
@@ -1586,7 +1588,7 @@
         private System.Windows.Forms.Label label13;
         private System.Windows.Forms.GroupBox groupBox5;
         private System.Windows.Forms.GroupBox groupBox6;
-        private System.Windows.Forms.GroupBox groupBox9;
+        private System.Windows.Forms.GroupBox gbox_serie;
         private NumericTextBox tx_numero;
         private NumericTextBox tx_serie;
         private System.Windows.Forms.Label label8;
