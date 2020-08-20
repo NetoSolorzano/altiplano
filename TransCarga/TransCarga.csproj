@@ -134,6 +134,12 @@
     <Compile Include="users.designer.cs">
       <DependentUpon>users.cs</DependentUpon>
     </Compile>
+    <Compile Include="vclave.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="vclave.designer.cs">
+      <DependentUpon>vclave.cs</DependentUpon>
+    </Compile>
     <Compile Include="vehiculos.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -185,6 +191,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="users.resx">
       <DependentUpon>users.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="vclave.resx">
+      <DependentUpon>vclave.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="vehiculos.resx">
       <DependentUpon>vehiculos.cs</DependentUpon>

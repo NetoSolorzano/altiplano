@@ -2,6 +2,8 @@
 using System.Configuration;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Printing;
+using System.Linq;
 using System.Windows.Forms;
 using MySql.Data.MySqlClient;
 
@@ -21,7 +23,6 @@ namespace TransCarga
         static string nomtab = "cabpregr";              // cabecera de pre guias
 
         #region variables
-        int totfilgrid, cta;      // variables para impresion
         string img_btN = "";
         string img_btE = "";
         string img_btA = "";            // anula = bloquea
@@ -45,7 +46,9 @@ namespace TransCarga
         string gloDeta = "";            // glosa x defecto en el detalle
         static libreria lib = new libreria();
         string verapp = System.Diagnostics.FileVersionInfo.GetVersionInfo(Application.ExecutablePath).FileVersion;
-        // usuario, local, serie
+        string claveSeg = "";           // clave de seguridad del envío
+        string nomclie = Program.cliente;
+        string rucclie = Program.ruc;
         string asd = TransCarga.Program.vg_user;        // usuario conectado al sistema
         string v_clu = "";              // codigo del local del usuario
         string v_slu = "";              // serie del local del usuario
@@ -168,8 +171,8 @@ namespace TransCarga
             // grilla
             dataGridView1.Columns[0].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dataGridView1.Columns[3].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            // formateo de campos
-            //tx_flete
+            // todo desabilidado
+            sololee(this);
         }
         private void initIngreso()
         {
@@ -177,6 +180,7 @@ namespace TransCarga
             limpia_chk();
             limpia_otros();
             limpia_combos();
+            claveSeg = "";
             dataGridView1.Rows.Clear();
             tx_flete.Text = "";
             tx_numero.Text = "";
@@ -296,7 +300,7 @@ namespace TransCarga
                 {
                     string consulta = "select id,fechpregr,serpregui,numpregui,tidodepre,nudodepre,nombdepre,diredepre,ubigdepre," +
                         "tidorepre,nudorepre,nombrepre,direrepre,ubigrepre,locorigen,dirorigen,ubiorigen,locdestin," +
-                        "dirdestin,ubidestin,docsremit,obspregui,clifinpre,cantotpre,pestotpre,tipmonpre,tipcampre," +
+                        "dirdestin,ubidestin,docsremit,obspregui,clifinpre,cantotpre,pestotpre,tipmonpre,tipcampre,seguroE," +
                         "subtotpre,igvpregui,totpregui,totpagpre,salpregui,estadoser,impreso,serguitra,numguitra,userc,userm,usera " +
                         "from cabpregr " + parte;
                     MySqlCommand micon = new MySqlCommand(consulta, conn);
@@ -340,9 +344,11 @@ namespace TransCarga
                             tx_impreso.Text = dr.GetString("impreso");
                             tx_sergr.Text = dr.GetString("serguitra");
                             tx_numgr.Text = dr.GetString("numguitra");
+                            claveSeg = dr.GetString("seguroE");
                         }
                         tx_estado.Text = lib.nomstat(tx_dat_estad.Text);
                         cmb_origen.SelectedValue = tx_dat_locori.Text;
+                        cmb_origen_SelectionChangeCommitted(null, null);
                         cmb_destino.SelectedValue = tx_dat_locdes.Text;
                         cmb_destino_SelectionChangeCommitted(null, null);
                         cmb_docRem.SelectedValue = tx_dat_tdRem.Text;
@@ -389,14 +395,19 @@ namespace TransCarga
                     {
                         DataTable dt = new DataTable();
                         da.Fill(dt);
-                        DataGridViewRow fg = (DataGridViewRow)dataGridView1.Rows[0].Clone();
+                        //DataGridViewRow fg = (DataGridViewRow)dataGridView1.Rows[0].Clone();
                         foreach (DataRow row in dt.Rows)
                         {
-                            fg.Cells[0].Value = row[3].ToString();
-                            fg.Cells[1].Value = row[4].ToString();
-                            fg.Cells[2].Value = row[6].ToString();
-                            fg.Cells[3].Value = row[7].ToString();
-                            dataGridView1.Rows.Add(fg);
+                            //fg.Cells[0].Value = row[3].ToString();
+                            //fg.Cells[1].Value = row[4].ToString();
+                            //fg.Cells[2].Value = row[6].ToString();
+                            //fg.Cells[3].Value = row[7].ToString();
+                            //dataGridView1.Rows.Add(fg);
+                            dataGridView1.Rows.Add(
+                                row[3].ToString(),
+                                row[4].ToString(),
+                                row[6].ToString(),
+                                row[7].ToString());
                         }
                         dt.Dispose();
                     }
@@ -635,6 +646,10 @@ namespace TransCarga
                 {
                     oControls.Enabled = false;
                 }
+                if (oControls is CheckBox)
+                {
+                    oControls.Enabled = false;
+                }
             }
         }
         public void escribe(Form efrm)
@@ -658,6 +673,14 @@ namespace TransCarga
                     oControls.Enabled = true;
                 }
                 if (oControls is MaskedTextBox)
+                {
+                    oControls.Enabled = true;
+                }
+                if (oControls is GroupBox)
+                {
+                    oControls.Enabled = true;
+                }
+                if (oControls is CheckBox)
                 {
                     oControls.Enabled = true;
                 }
@@ -687,7 +710,7 @@ namespace TransCarga
         }
         public void limpia_chk()    
         {
-            //
+            chk_seguridad.Checked = false;
         }
         public void limpia_otros()
         {
@@ -814,7 +837,12 @@ namespace TransCarga
                     {
                         if (graba() == true)
                         {
-                            // veremos que mas hacemos aca
+                            var bb = MessageBox.Show("Desea imprimir la Pre Guía?" + Environment.NewLine +
+                                "El formato actual es " + vi_formato, "Confirme por favor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                            if (bb == DialogResult.Yes)
+                            {
+                                Bt_print.PerformClick();
+                            }
                         }
                     }
                     else
@@ -869,7 +897,7 @@ namespace TransCarga
                 {
                     // no tiene guía y SI esta impreso => NO se puede modificar y SI anular
                     sololee(this);
-                    MessageBox.Show("No se puede Modificar", "Tiene guía enlazada", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+                    MessageBox.Show("No se puede Modificar", "La Pre Guía esta impresa", MessageBoxButtons.OK, MessageBoxIcon.Hand);
                     tx_dat_tdRem.Focus();
                     return;
                 }
@@ -972,12 +1000,12 @@ namespace TransCarga
                         "fechpregr,serpregui,tidodepre,nudodepre,nombdepre,diredepre,ubigdepre," +
                         "tidorepre,nudorepre,nombrepre,direrepre,ubigrepre,locorigen,dirorigen,ubiorigen,locdestin," +
                         "dirdestin,ubidestin,docsremit,obspregui,clifinpre,cantotpre,pestotpre,tipmonpre,tipcampre," +
-                        "subtotpre,igvpregui,totpregui,totpagpre,salpregui,estadoser," +
+                        "subtotpre,igvpregui,totpregui,totpagpre,salpregui,estadoser,seguroE," +
                         "verApp,userc,fechc,diriplan4,diripwan4,netbname) " +
                         "values (@fechop,@serpgr,@tdcdes,@ndcdes,@nomdes,@dircde,@ubicde," +
                         "@tdcrem,@ndcrem,@nomrem,@dircre,@ubicre,@locpgr,@dirpgr,@ubopgr,@ldcpgr," +
                         "@didegr,@ubdegr,@dooprg,@obsprg,@conprg,@totcpr,@totppr,@monppr,@tcprgr," +
-                        "@subpgr,@igvpgr,@totpgr,@pagpgr,@totpgr,@estpgr," +
+                        "@subpgr,@igvpgr,@totpgr,@pagpgr,@totpgr,@estpgr,@clavse," +
                         "@verApp,@asd,now(),@iplan,@ipwan,@nbnam)";
                     MySqlCommand micon = new MySqlCommand(inserta, conn);
                     micon.Parameters.AddWithValue("@fechop", tx_fechope.Text.Substring(6,4) + "-" + tx_fechope.Text.Substring(3, 2) + "-" + tx_fechope.Text.Substring(0, 2));
@@ -1012,6 +1040,7 @@ namespace TransCarga
                     micon.Parameters.AddWithValue("@estpgr", tx_dat_estad.Text); // estado de la pre guía
                     //micon.Parameters.AddWithValue("@ubiori", tx_ubigO.Text);
                     //micon.Parameters.AddWithValue("@ubides", tx_ubigD.Text);
+                    micon.Parameters.AddWithValue("@clavse", claveSeg);
                     micon.Parameters.AddWithValue("@verApp", verapp);
                     micon.Parameters.AddWithValue("@asd", asd);
                     micon.Parameters.AddWithValue("@iplan", lib.iplan());
@@ -1025,7 +1054,7 @@ namespace TransCarga
                     if (dr.Read())
                     {
                         tx_idr.Text = dr.GetString(0);
-                        tx_numero.Text = dr.GetString(0);
+                        tx_numero.Text = lib.Right("00000000" + dr.GetString(0),8);
                         dr.Close();
                         dr.Dispose();
                         // actualiza la tabla detalle,
@@ -1116,7 +1145,7 @@ namespace TransCarga
                             "a.ubiorigen=@ubopgr,a.locdestin=@ldcpgr,a.dirdestin=@didegr,a.ubidestin=@ubdegr,a.docsremit=@dooprg," +
                             "a.obspregui=@obsprg,a.clifinpre=@conprg,a.cantotpre=@totcpr,a.pestotpre=@totppr,a.tipmonpre=@monppr," +
                             "a.tipcampre=@tcprgr,a.subtotpre=@subpgr,a.igvpregui=@igvpgr,a.totpregui=@totpgr,a.totpagpre=@pagpgr," +
-                            "a.salpregui=@totpgr,a.estadoser=@estpgr," +
+                            "a.salpregui=@totpgr,a.estadoser=@estpgr,a.seguroE=@clavse," +
                             "a.verApp=@verApp,a.userm=@asd,a.fechm=now(),a.diriplan4=@iplan,a.diripwan4=@ipwan,a.netbname=@nbnam," +
                             "b.tidodepre=@tdcdes,b.nudodepre=@ndcdes,b.tidorepre=@tdcrem,b.nudorepre=@ndcrem," +
                             "b.codmonpre=@monppr,b.totpregui=@totpgr,b.saldofina=@totpgr-b.totpagado " +
@@ -1152,6 +1181,7 @@ namespace TransCarga
                         micon.Parameters.AddWithValue("@pagpgr", "0");
                         micon.Parameters.AddWithValue("@totpgr", tx_flete.Text); // saldo de la pre guia = total pre guia
                         micon.Parameters.AddWithValue("@estpgr", tx_dat_estad.Text); // estado de la pre guía
+                        micon.Parameters.AddWithValue("@clavse", claveSeg);
                         micon.Parameters.AddWithValue("@verApp", verapp);
                         micon.Parameters.AddWithValue("@asd", asd);
                         micon.Parameters.AddWithValue("@iplan", lib.iplan());
@@ -1248,12 +1278,15 @@ namespace TransCarga
         }
         #endregion boton_form;
 
-        #region leaves
+        #region leaves y checks
         private void tx_idr_Leave(object sender, EventArgs e)
         {
             if (Tx_modo.Text != "NUEVO" && tx_idr.Text != "")
             {
+                dataGridView1.Rows.Clear();
                 jalaoc("tx_idr");
+                jaladet(tx_idr.Text);
+                chk_seguridad_CheckStateChanged(null,null);
             }
         }
         private void textBox7_Leave(object sender, EventArgs e)         // departamento del remitente, jala provincia
@@ -1456,30 +1489,34 @@ namespace TransCarga
         }
         private void tx_numero_Leave(object sender, EventArgs e)
         {
-            // en el caso de las pre guias el numero es el mismo que el ID del registro
-            tx_numero.Text = lib.Right("00000000" + tx_numero.Text, 8);
-            tx_idr.Text = tx_numero.Text;
-            jalaoc("tx_idr");
-            dataGridView1.Rows.Clear();
-            jaladet(tx_idr.Text);
-            if ((tx_sergr.Text.Trim() == "" && tx_numgr.Text.Trim() == "") && tx_impreso.Text == "N")
+            if (Tx_modo.Text != "NUEVO")
             {
-                // no tiene guía y no esta impreso => se puede modificar todo y SI anular
-            }
-            if ((tx_sergr.Text.Trim() == "" && tx_numgr.Text.Trim() == "") && tx_impreso.Text == "S")
-            {
-                // no tiene guía y SI esta impreso => NO se puede modificar y SI anular
-                sololee(this);
-            }
-            if ((tx_sergr.Text.Trim() != "" || tx_numgr.Text.Trim() != "") && tx_impreso.Text == "N")
-            {
-                // si tiene guía y no esta impreso => NO se puede modificar NO anular
-                sololee(this);
-            }
-            if ((tx_sergr.Text.Trim() != "" || tx_numgr.Text.Trim() != "") && tx_impreso.Text == "S")
-            {
-                // si tiene guía y si esta impreso => NO se puede modificar NO anular
-                sololee(this);
+                // en el caso de las pre guias el numero es el mismo que el ID del registro
+                tx_numero.Text = lib.Right("00000000" + tx_numero.Text, 8);
+                tx_idr.Text = tx_numero.Text;
+                jalaoc("tx_idr");
+                dataGridView1.Rows.Clear();
+                jaladet(tx_idr.Text);
+                chk_seguridad_CheckStateChanged(null, null);
+                if ((tx_sergr.Text.Trim() == "" && tx_numgr.Text.Trim() == "") && tx_impreso.Text == "N")
+                {
+                    // no tiene guía y no esta impreso => se puede modificar todo y SI anular
+                }
+                if ((tx_sergr.Text.Trim() == "" && tx_numgr.Text.Trim() == "") && tx_impreso.Text == "S")
+                {
+                    // no tiene guía y SI esta impreso => NO se puede modificar y SI anular
+                    sololee(this);
+                }
+                if ((tx_sergr.Text.Trim() != "" || tx_numgr.Text.Trim() != "") && tx_impreso.Text == "N")
+                {
+                    // si tiene guía y no esta impreso => NO se puede modificar NO anular
+                    sololee(this);
+                }
+                if ((tx_sergr.Text.Trim() != "" || tx_numgr.Text.Trim() != "") && tx_impreso.Text == "S")
+                {
+                    // si tiene guía y si esta impreso => NO se puede modificar NO anular
+                    sololee(this);
+                }
             }
         }
         private void tx_serie_Leave(object sender, EventArgs e)
@@ -1490,7 +1527,28 @@ namespace TransCarga
         {
             button1.Focus();
         }
-        #endregion leaves;
+        private void chk_seguridad_CheckStateChanged(object sender, EventArgs e)
+        {
+            if (chk_seguridad.Checked == false)
+            {
+                if (claveSeg != "") chk_seguridad.Checked = true;
+            }
+        }
+        private void chk_seguridad_Click(object sender, EventArgs e)
+        {
+            if (chk_seguridad.Checked == true)
+            {
+                string para1 = claveSeg;
+                vclave ayu1 = new vclave(para1);
+                var result = ayu1.ShowDialog();
+                if (result == DialogResult.Cancel)
+                {
+                    claveSeg = ayu1.ReturnValue1;
+                    if (claveSeg == "") chk_seguridad.Checked = false;
+                }
+            }
+        }
+        #endregion
 
         #region botones_de_comando
         public void toolboton()
@@ -1565,6 +1623,7 @@ namespace TransCarga
             button1.Image = Image.FromFile(img_grab);
             tx_serie.Text = "";
             initIngreso();  // limpiamos/preparamos todo para el ingreso
+            gbox_flete.Enabled = true;
             tx_numero.Text = "";
             cmb_destino.Focus();
         }
@@ -1591,11 +1650,11 @@ namespace TransCarga
                     MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (aa == DialogResult.Yes)
                 {
-                    if (vi_formato == "FIM002")            // Seleccion de formato ... A5
+                    if (vi_formato == "A5")            // Seleccion de formato ... A5
                     {
                         if (imprimeA5() == true) updateprint("S");
                     }
-                    if (vi_formato == "FIM003")            // Seleccion de formato ... Ticket
+                    if (vi_formato == "TK")            // Seleccion de formato ... Ticket
                     {
                         if (imprimeTK() == true) updateprint("S");
                     }
@@ -1603,11 +1662,11 @@ namespace TransCarga
             }
             else
             {
-                if (vi_formato == "FIM002")
+                if (vi_formato == "A5")
                 {
                     if (imprimeA5() == true) updateprint("S");
                 }
-                if (vi_formato == "FIM003")
+                if (vi_formato == "TK")
                 {
                     if (imprimeTK() == true) updateprint("S");
                 }
@@ -1805,27 +1864,17 @@ namespace TransCarga
         #endregion
 
         #region impresion
-        private void updateprint(string sn)  // actualiza el campo impreso de la GR = S
-        {   // S=si impreso || N=no impreso
-            using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
-            {
-                conn.Open();
-                string consulta = "update cabpregr set impreso=@sn where id=@idr";
-                using (MySqlCommand micon = new MySqlCommand(consulta, conn))
-                {
-                    micon.Parameters.AddWithValue("@sn", sn);
-                    micon.Parameters.AddWithValue("@idr", tx_idr.Text);
-                    micon.ExecuteNonQuery();
-                }
-            }
-        }
         private bool imprimeA5()
         {
             bool retorna = false;
             // jala los parametros de impresion
             try
             {
-                printDocument1.PrinterSettings.PrinterName = v_impA5;
+                //printDocument1.PrinterSettings.PrinterName = v_impA5;
+                //printDocument1.DefaultPageSettings.PaperSize = new System.Drawing.Printing.PaperSize("custom", 148, 210);
+                PrintDocument printDoc = new PrintDocument();
+                var paperSize = printDoc.PrinterSettings.PaperSizes.Cast<PaperSize>().FirstOrDefault(e => e.PaperName == "A5");
+                printDoc.PrinterSettings.DefaultPageSettings.PaperSize = paperSize;
                 printDocument1.Print();
                 retorna = true;
             }
@@ -1852,103 +1901,103 @@ namespace TransCarga
         }
         private void printDocument1_PrintPage(object sender, System.Drawing.Printing.PrintPageEventArgs e)
         {
-            if (printDocument1.PrinterSettings.PrinterName == "epson_guias") imprime_A5(null, null);
-            if (printDocument1.PrinterSettings.PrinterName == "tk_guias") imprime_TK(null, null);
+            if (vi_formato == "A5")
+            {
+                imprime_A5(sender, e);
+            }
+            if (vi_formato == "TK")
+            {
+                imprime_TK(sender, e);
+            }
         }
         private void imprime_A5(object sender, System.Drawing.Printing.PrintPageEventArgs e)
         {
-            float alfi = 15.0F;     // alto de cada fila
-            float alin = 135.0F;    // alto inicial
-            float posi = 80.0F;    // posición de impresión
+            float alfi = 20.0F;     // alto de cada fila
+            float alin = 50.0F;     // alto inicial
+            float posi = 80.0F;     // posición de impresión
             float coli = 20.0F;     // columna mas a la izquierda
-            float cold = 20.0F;
-            float colm = 60.0F;
-            PointF puntoF = new PointF(cold, alin);                         // serie y correlativo
-            string numguia = "PRE GUIA NRO. " + tx_serie.Text + "-" + tx_numero.Text;
+            float cold = 80.0F;
             Font lt_tit = new Font("Arial", 11);
-            e.Graphics.DrawString(numguia, lt_tit, Brushes.Black, puntoF, StringFormat.GenericTypographic);                      // titulo del reporte
-            posi = posi + alfi;                                         // avance de fila
+            Font lt_titB = new Font("Arial", 11, FontStyle.Bold);
+            PointF puntoF = new PointF(coli, alin);
+            e.Graphics.DrawString(nomclie, lt_titB, Brushes.Black, puntoF, StringFormat.GenericTypographic);                      // titulo del reporte
+            posi = posi + alfi;
+            string numguia = "PRE GUIA NRO. " + tx_serie.Text + "-" + tx_numero.Text;
+            float lt = (CentimeterToPixel(21F) - e.Graphics.MeasureString(numguia, lt_titB).Width) / 2;
+            puntoF = new PointF(lt, posi);
+            e.Graphics.DrawString(numguia, lt_titB, Brushes.Black, puntoF, StringFormat.GenericTypographic);                      // titulo del reporte
+            posi = posi + alfi*2;
             PointF ptoimp = new PointF(coli, posi);                     // fecha de emision
-            e.Graphics.DrawString(tx_fechope.Text, lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic); // etiqueta
-            ptoimp = new PointF(colm, posi);                            // fecha del traslado
-            e.Graphics.DrawString(tx_fechope.Text, lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic); // etiqueta
+            e.Graphics.DrawString("EMITIDO: " + tx_fechope.Text.Substring(0,10), lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
             posi = posi + alfi + 30.0F;                                         // avance de fila
             ptoimp = new PointF(coli, posi);                               // direccion partida
-            e.Graphics.DrawString(tx_dirOrigen.Text.Trim().PadRight(40).Substring(0, 40), lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
-            ptoimp = new PointF(colm + 150.0F, posi);                      // direccion llegada
-            e.Graphics.DrawString(tx_dirDestino.Text.Trim().PadRight(45).Substring(0, 45), lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
-            posi = posi + alfi;
-            ptoimp = new PointF(coli, posi);                               // direccion partida - distrito
-            posi = posi + alfi + 20.0F;                                         // avance de fila
+            e.Graphics.DrawString("PARTIDA: " + tx_dirOrigen.Text.Trim(), lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
+            posi = posi + alfi + 30.0F;
+            ptoimp = new PointF(coli, posi);                      // direccion llegada
+            e.Graphics.DrawString("DESTINO: " + tx_dirDestino.Text.Trim(), lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
+            posi = posi + alfi + 30.0F;
             ptoimp = new PointF(coli, posi);                                // remitente
-            e.Graphics.DrawString(tx_nomRem.Text.Trim(), lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
-            ptoimp = new PointF(colm + 150.0F, posi);                       // destinatario
-            e.Graphics.DrawString(tx_nomDrio.Text.Trim(), lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
+            e.Graphics.DrawString("REMITENTE: " + tx_nomRem.Text.Trim(), lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
             posi = posi + alfi;
+            ptoimp = new PointF(coli, posi);                       // destinatario
+            e.Graphics.DrawString("DESTINATARIO: " + tx_nomDrio.Text.Trim(), lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
+            posi = posi + alfi * 2;
+            /*
             // seleccion de impresion en ruc u otro tipo
             ptoimp = new PointF(coli + 50.0F, posi);
             e.Graphics.DrawString(tx_numDocRem.Text, lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
             ptoimp = new PointF(colm + 185.0F, posi);
             e.Graphics.DrawString(tx_numDocDes.Text, lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
             posi = 330.0F;             // avance de fila
+            */
             // detalle de la pre guia
             for (int fila = 0; fila < dataGridView1.Rows.Count - 1; fila++)
             {
-                ptoimp = new PointF(coli, posi);
+                ptoimp = new PointF(coli + 20.0F, posi);
                 e.Graphics.DrawString(dataGridView1.Rows[fila].Cells[0].Value.ToString(), lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
-                ptoimp = new PointF(coli + 80.0F, posi);
+                ptoimp = new PointF(cold, posi);
                 e.Graphics.DrawString(dataGridView1.Rows[fila].Cells[1].Value.ToString(), lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
-                ptoimp = new PointF(cold + 50.0F, posi);
+                ptoimp = new PointF(cold + 80.0F, posi);
                 e.Graphics.DrawString(dataGridView1.Rows[fila].Cells[2].Value.ToString(), lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
-                ptoimp = new PointF(cold + 90.0F, posi);
-                e.Graphics.DrawString(dataGridView1.Rows[fila].Cells[3].Value.ToString(), lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
+                ptoimp = new PointF(cold + 400.0F, posi);
+                e.Graphics.DrawString("KGs." + dataGridView1.Rows[fila].Cells[3].Value.ToString(), lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
                 posi = posi + alfi;             // avance de fila
             }
             // guias del cliente
             posi = posi + alfi;
-            ptoimp = new PointF(coli + 20.0F, posi);
-            e.Graphics.DrawString("S/G: " + tx_docsOr.Text, lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
+            ptoimp = new PointF(coli, posi);
+            e.Graphics.DrawString("Docs. de remisión: " + tx_docsOr.Text, lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
             // imprime el flete
-            posi = posi + alfi;
-            ptoimp = new PointF(cold + 10.0F, posi);
-            e.Graphics.DrawString("FLETE S/. " + tx_flete.Text, lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
+            posi = posi + alfi * 2;
+            string gtotal = "FLETE " + cmb_mon.Text + " " + tx_flete.Text;
+            lt = (CentimeterToPixel(21F) - e.Graphics.MeasureString(gtotal, lt_titB).Width) / 2;
+            ptoimp = new PointF(lt, posi);
+            e.Graphics.DrawString(gtotal, lt_titB, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
             posi = posi + alfi;
 
         }
         private void imprime_TK(object sender, System.Drawing.Printing.PrintPageEventArgs e)
         {
-            // DATOS PARA EL TICKET
-            string nomclie = Program.cliente;
-            string rucclie = Program.ruc;
             // TIPOS DE LETRA PARA EL DOCUMENTO FORMATO TICKET
             Font lt_gra = new Font("Arial", 13);                // grande
-            Font lt_tit = new Font("Lucida Console", 10);       // mediano
-            Font lt_med = new Font("Arial", 9);                // normal textos
+            Font lt_med = new Font("Arial", 9);                 // normal textos
             Font lt_peq = new Font("Arial", 8);                 // pequeño
             //
             float anchTik = 7.8F;                               // ancho del TK en centimetros
-            int coli = 5;                                      // columna inicial
+            int coli = 5;                                       // columna inicial
             float posi = 20;                                    // posicion x,y inicial
-            int alfi = 15;                                      // alto de cada fila
-            float ancho = 360.0F;                                // ancho de la impresion
-            int copias = 1;                                     // cantidad de copias del ticket
+            int alfi = 20;                                      // alto de cada fila
+            int copias = int.Parse(vi_copias);                  // cantidad de copias del ticket
+            SizeF cuad = new SizeF();
             for (int i = 1; i <= copias; i++)
             {
                 float lt = (CentimeterToPixel(anchTik) - e.Graphics.MeasureString(nomclie, lt_gra).Width) / 2;
-                PointF puntoF = new PointF(lt, posi);                        // serie y correlativo
-                e.Graphics.DrawString(nomclie, lt_gra, Brushes.Black, puntoF, StringFormat.GenericTypographic);     // nombre comercial
-                posi = posi + alfi + 5;
-                string tipdo = "PRE GUIA";                                  // tipo de documento
-                string serie = tx_serie.Text;                                // serie electrónica
-                string corre = tx_numero.Text;                                // numero del documento electrónico
-                string nota = tipdo + "-" + serie + "-" + corre;
-                string titdoc = "";
-                SizeF cuad = new SizeF();
-                titdoc = "PRE GUIA";
-                posi = posi + alfi + 8;
-                lt = (CentimeterToPixel(anchTik) - e.Graphics.MeasureString(titdoc, lt_gra).Width) / 2;
-                puntoF = new PointF(lt, posi);
-                e.Graphics.DrawString(titdoc, lt_gra, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                PointF puntoF = new PointF(coli, posi);
+                e.Graphics.DrawString(nomclie, lt_gra, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                //string tipdo = "PRE GUIA";
+                string serie = tx_serie.Text;
+                string corre = tx_numero.Text;
+                //string nota = tipdo + " " + serie + "-" + corre;
                 posi = posi + alfi + 8;
                 string titnum = "PRE-GUIA " + serie + " - " + corre;
                 lt = (CentimeterToPixel(anchTik) - e.Graphics.MeasureString(titnum, lt_gra).Width) / 2;
@@ -1956,31 +2005,46 @@ namespace TransCarga
                 e.Graphics.DrawString(titnum, lt_gra, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                 posi = posi + alfi + alfi;
                 puntoF = new PointF(coli, posi);
-                e.Graphics.DrawString("F. Emisión", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                e.Graphics.DrawString("EMITIDO: ", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                 puntoF = new PointF(coli + 65, posi);
                 e.Graphics.DrawString(":", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                 puntoF = new PointF(coli + 70, posi);
-                e.Graphics.DrawString(tx_fechope.Text, lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                e.Graphics.DrawString(tx_fechope.Text.Substring(0,10), lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                 posi = posi + alfi;
                 puntoF = new PointF(coli, posi);
-                e.Graphics.DrawString("Remitente", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
-                puntoF = new PointF(coli + 65, posi);
-                e.Graphics.DrawString(":", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
-                puntoF = new PointF(coli + 70, posi);
-                if (tx_nomRem.Text.Trim().Length > 39) cuad = new SizeF(CentimeterToPixel(anchTik) - (coli + 70), alfi * 2);
-                else cuad = new SizeF(CentimeterToPixel(anchTik) - (coli + 70), alfi * 1);
+                e.Graphics.DrawString("PARTIDA: ", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                posi = posi + alfi;
+                puntoF = new PointF(coli, posi);
+                e.Graphics.DrawString(tx_dirOrigen.Text, lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                posi = posi + alfi;
+                puntoF = new PointF(coli, posi);
+                e.Graphics.DrawString("DESTINO: ", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                posi = posi + alfi;
+                puntoF = new PointF(coli, posi);
+                e.Graphics.DrawString(tx_dirDestino.Text, lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                posi = posi + alfi * 2;
+                puntoF = new PointF(coli, posi);
+                e.Graphics.DrawString("REMITENTE: ", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                posi = posi + alfi;
+                puntoF = new PointF(coli, posi);
+                if (tx_nomRem.Text.Trim().Length > 39) cuad = new SizeF(CentimeterToPixel(anchTik), alfi * 2);
+                else cuad = new SizeF(CentimeterToPixel(anchTik), alfi * 1);
                 RectangleF recdom = new RectangleF(puntoF, cuad);
                 e.Graphics.DrawString(tx_nomRem.Text.Trim(), lt_peq, Brushes.Black, recdom, StringFormat.GenericTypographic);
                 if (tx_nomRem.Text.Trim().Length > 39) posi = posi + alfi + alfi;
                 else posi = posi + alfi;
                 puntoF = new PointF(coli, posi);
-                e.Graphics.DrawString("Destinat", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
-                puntoF = new PointF(coli + 65, posi);
-                e.Graphics.DrawString(":", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
-                puntoF = new PointF(coli + 70, posi);
-                e.Graphics.DrawString(tx_nomDrio.Text, lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                e.Graphics.DrawString("DESTINATARIO: ", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                 posi = posi + alfi;
                 puntoF = new PointF(coli, posi);
+                if (tx_nomDrio.Text.Trim().Length > 39) cuad = new SizeF(CentimeterToPixel(anchTik), alfi * 2);
+                else cuad = new SizeF(CentimeterToPixel(anchTik), alfi * 1);
+                recdom = new RectangleF(puntoF, cuad);
+                e.Graphics.DrawString(tx_nomDrio.Text.Trim(), lt_peq, Brushes.Black, recdom, StringFormat.GenericTypographic);
+                if (tx_nomRem.Text.Trim().Length > 39) posi = posi + alfi + alfi;
+                else posi = posi + alfi * 2;
+                puntoF = new PointF(coli, posi);
+                /*
                 e.Graphics.DrawString("Origen", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                 puntoF = new PointF(coli + 65, posi);
                 e.Graphics.DrawString(":", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
@@ -1999,41 +2063,39 @@ namespace TransCarga
                 puntoF = new PointF(coli + 70, posi);
                 e.Graphics.DrawString(cmb_destino.Text, lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic); 
                 posi = posi + alfi;
+                */
                 // **************** detalle del documento ****************//
+                e.Graphics.DrawString("DETALLE DEL ENVIO: ", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                posi = posi + alfi;
                 StringFormat alder = new StringFormat(StringFormatFlags.DirectionRightToLeft);
                 SizeF siz = new SizeF(70, 15);
                 RectangleF recto = new RectangleF(puntoF, siz);
                 for (int x=0; x < dataGridView1.Rows.Count - 1; x++)
                 {
-                    puntoF = new PointF(coli, posi);
-                    e.Graphics.DrawString(dataGridView1.Rows[x].Cells[0].Value.ToString(), lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                    puntoF = new PointF(coli + 20.0F, posi);
+                    e.Graphics.DrawString(dataGridView1.Rows[x].Cells[0].Value.ToString() 
+                        + " " + dataGridView1.Rows[x].Cells[1].Value.ToString(), lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                     posi = posi + alfi;
-                    puntoF = new PointF(coli, posi);
-                    e.Graphics.DrawString(dataGridView1.Rows[x].Cells[1].Value.ToString(), lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);
-                    posi = posi + alfi;
-                    puntoF = new PointF(coli, posi);
+                    puntoF = new PointF(coli + 20.0F, posi);
                     e.Graphics.DrawString(dataGridView1.Rows[x].Cells[2].Value.ToString(), lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                     posi = posi + alfi;
-                    puntoF = new PointF(coli, posi);
-                    e.Graphics.DrawString(dataGridView1.Rows[x].Cells[3].Value.ToString(), lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                    puntoF = new PointF(coli + 20.0F, posi);
+                    e.Graphics.DrawString("KGs. " + dataGridView1.Rows[x].Cells[3].Value.ToString(), lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                     puntoF = new PointF(coli + 90, posi);
                     posi = posi + alfi;
                 }
                 // pie del documento ;
                 posi = posi + alfi;
-                puntoF = new PointF(coli, posi);
-                e.Graphics.DrawString("IMPORTE FLETE " + cmb_mon.Text, lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);
-                puntoF = new PointF(coli + 190, posi);
-                recto = new RectangleF(puntoF, siz);
-                e.Graphics.DrawString(tx_flete.Text, lt_peq, Brushes.Black, recto, alder);
+                string flete = "FLETE " + cmb_mon.Text + " " + tx_flete.Text;
+                lt = (CentimeterToPixel(anchTik) - e.Graphics.MeasureString(flete, lt_gra).Width) / 2;
+                puntoF = new PointF(lt, posi);
+                e.Graphics.DrawString(flete, lt_gra, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                 posi = posi + alfi * 2;
-                puntoF = new PointF(coli, posi);
                 // leyenda 4
-                posi = posi + alfi + 5;
-                puntoF = new PointF(coli, posi);
-                SizeF leyen = new SizeF(CentimeterToPixel(anchTik) - 20, alfi * 3);
-                RectangleF recdesp2 = new RectangleF(puntoF, leyen);
-                e.Graphics.DrawString("Documento sin valor legal", lt_med, Brushes.Black, recdesp2, alder); 
+                string leyenda4 = "Documento sin valor legal";
+                lt = (CentimeterToPixel(anchTik) - e.Graphics.MeasureString(leyenda4, lt_med).Width) / 2;
+                puntoF = new PointF(lt, posi);
+                e.Graphics.DrawString(leyenda4, lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic); 
                 posi = posi + alfi;
                 string locyus = cmb_origen.Text + " - " + tx_user.Text;
                 puntoF = new PointF(coli, posi);
@@ -2046,11 +2108,22 @@ namespace TransCarga
                 puntoF = new PointF((CentimeterToPixel(anchTik) - e.Graphics.MeasureString(despedida, lt_med).Width) / 2, posi);
                 e.Graphics.DrawString(despedida, lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                 posi = posi + alfi + alfi;
-                puntoF = new PointF(coli, posi);
-                e.Graphics.DrawString(".", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
             }
         }
-
+        private void updateprint(string sn)  // actualiza el campo impreso de la GR = S
+        {   // S=si impreso || N=no impreso
+            using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
+            {
+                conn.Open();
+                string consulta = "update cabpregr set impreso=@sn where id=@idr";
+                using (MySqlCommand micon = new MySqlCommand(consulta, conn))
+                {
+                    micon.Parameters.AddWithValue("@sn", sn);
+                    micon.Parameters.AddWithValue("@idr", tx_idr.Text);
+                    micon.ExecuteNonQuery();
+                }
+            }
+        }
         int CentimeterToPixel(double Centimeter)
         {
             double pixel = -1;
