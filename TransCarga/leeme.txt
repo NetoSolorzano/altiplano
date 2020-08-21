@@ -19,4 +19,6 @@ form preguiat:
 - al grabar la cabecera de la pre guia, por base datos se crea el registro en la tabla de control y 
   una fila en la tabla detalle de la pre guía
 - permite poner clave de seguridad al envío
+form repsoper:
+- Reportes para todo el modulo de operaciones
 
