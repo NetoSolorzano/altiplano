@@ -558,7 +558,7 @@ namespace TransCarga
             menuStrip1.Items.Add("Clientes", img_ma1, ma_clientes_Click);               // clientes
             menuStrip1.Items.Add("Proveedores", img_ma2, ma_proveed_Click);               // proveedores
             menuStrip1.Items.Add("Vehículos", img_ma3, ma_camiones_Click);              // camiones propios y terceros
-            menuStrip1.Items.Add("........", img_ma3, ma_artadic_Click);                // adicionales para los contratos clientes
+            menuStrip1.Items.Add("RR.HH.", img_ma3, ma_rrhh_Click);                // adicionales para los contratos clientes
             menuStrip1.Visible = true;
         }
         private void ma_clientes_Click(object sender, EventArgs e)
@@ -594,7 +594,7 @@ namespace TransCarga
             fma.Show();
             fma.BringToFront();
         }
-        private void ma_artadic_Click(object sender, EventArgs e)
+        private void ma_rrhh_Click(object sender, EventArgs e)
         {
             /*
             adicionals fad = new adicionals();

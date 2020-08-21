@@ -72,10 +72,12 @@
             // 
             // pn_menu
             // 
+            this.pn_menu.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.pn_menu.Controls.Add(this.menuStrip1);
             this.pn_menu.Location = new System.Drawing.Point(-1, 25);
             this.pn_menu.Name = "pn_menu";
-            this.pn_menu.Size = new System.Drawing.Size(458, 28);
+            this.pn_menu.Size = new System.Drawing.Size(763, 28);
             this.pn_menu.TabIndex = 5;
             // 
             // menuStrip1
@@ -228,7 +230,7 @@
             this.bt_almacen.Name = "bt_almacen";
             this.bt_almacen.Size = new System.Drawing.Size(185, 50);
             this.bt_almacen.TabIndex = 6;
-            this.bt_almacen.Text = "Almacén";
+            this.bt_almacen.Text = "Alm. / Reparto";
             this.bt_almacen.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.bt_almacen.UseVisualStyleBackColor = true;
             this.bt_almacen.Click += new System.EventHandler(this.bt_almacen_Click);

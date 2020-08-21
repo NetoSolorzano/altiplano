@@ -605,6 +605,11 @@ namespace TransCarga
             }
             if (iserror == "no")
             {
+                string resulta = lib.ult_mov(nomform, nomtab, asd);
+                if (resulta != "OK")                                        // actualizamos la tabla usuarios
+                {
+                    MessageBox.Show(resulta, "Error en actualización de tabla usuarios", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
                 // debe limpiar los campos y actualizar la grilla
                 limpiar(this);
                 limpia_chk();

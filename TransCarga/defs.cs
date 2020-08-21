@@ -99,6 +99,15 @@ namespace TransCarga
             Bt_fin.Image = Image.FromFile(img_btf);
 
             textBox1.CharacterCasing = CharacterCasing.Upper;
+            textBox1.MaxLength = 6;
+            textBox2.MaxLength = 6;
+            textBox3.MaxLength = 45;
+            textBox5.MaxLength = 15;
+            tx_det1.MaxLength = 90;
+            tx_det2.MaxLength = 45;
+            tx_det3.MaxLength = 45;
+            tx_det4.MaxLength = 45;
+            tx_det5.MaxLength = 6;
         }
         private void grilla()                   // arma la grilla
         {
@@ -151,6 +160,12 @@ namespace TransCarga
             advancedDataGridView1.Columns[6].ReadOnly = true;
             advancedDataGridView1.Columns[6].Tag = "validaSI";
             advancedDataGridView1.Columns[6].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            // invisibles
+            advancedDataGridView1.Columns[7].Visible = true;            // detalle 1
+            advancedDataGridView1.Columns[8].Visible = true;            // detalle 2
+            advancedDataGridView1.Columns[9].Visible = true;            // detalle 3
+            advancedDataGridView1.Columns[10].Visible = true;            // detalle 4
+            advancedDataGridView1.Columns[11].Visible = true;            // detalle 5 / ubigeo
         }
         private void jalainfo()                 // obtiene datos de imagenes
         {
@@ -203,6 +218,11 @@ namespace TransCarga
             textBox5.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[5].Value.ToString();  // descrizionerid
             textBox4.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[1].Value.ToString();  // idtabella
             checkBox1.Checked = (advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[6].Value.ToString() == "1") ? true : false;
+            tx_det1.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[7].Value.ToString();  // detalle 1
+            tx_det2.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[8].Value.ToString();  // detalle 2
+            tx_det3.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[9].Value.ToString();  // detalle 3
+            tx_det4.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[10].Value.ToString();  // detalle 4
+            tx_det5.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[11].Value.ToString();  // detalle 5 / ubigeo
             comboBox1.SelectedValue = textBox4.Text;
         }
         public void dataload()                  // jala datos para los combos y la grilla
@@ -229,7 +249,8 @@ namespace TransCarga
             comboBox1.DisplayMember = "idtabella";
             comboBox1.ValueMember = "idtabella";
             // datos de las deficiones
-            string datgri = "select id,idtabella,idcodice,codigo,descrizione,descrizionerid,numero " +
+            string datgri = "select id,idtabella,idcodice,codigo,descrizione,descrizionerid,numero," +
+                "deta1,deta2,deta3,deta4,ubidir " +
                 "from descrittive order by idtabella,idcodice";
             MySqlCommand cdg = new MySqlCommand(datgri, conn);
             MySqlDataAdapter dag = new MySqlDataAdapter(cdg);
@@ -425,9 +446,12 @@ namespace TransCarga
                     }
                 }
                 string consulta = "insert into descrittive (" +
-                    "idtabella,idcodice,codigo,descrizione,descrizionerid,numero)" +
+                    "idtabella,idcodice,codigo,descrizione,descrizionerid,numero," +
+                    "deta1,deta2,deta3,deta4,ubidir," +
+                    "verApp,userc,fechc,diriplan4,diripwan4,netbname)" +
                     " values (" +
-                    "@idt,@idc,@cod,@des,@der,@num)";
+                    "@idt,@idc,@cod,@des,@der,@num,@det1,@det2,@det3,@det4,@det5," +
+                    "@veap,@asd,now(),@dipl,@dipw,@nbna)";
                 MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
                 conn.Open();
                 if (conn.State == ConnectionState.Open)
@@ -440,6 +464,16 @@ namespace TransCarga
                     mycomand.Parameters.AddWithValue("@des", textBox3.Text);
                     mycomand.Parameters.AddWithValue("@der", textBox5.Text);
                     mycomand.Parameters.AddWithValue("@num", (checkBox1.Checked == true)? "1":"0");
+                    mycomand.Parameters.AddWithValue("@det1", tx_det1.Text);
+                    mycomand.Parameters.AddWithValue("@det2", tx_det2.Text);
+                    mycomand.Parameters.AddWithValue("@det3", tx_det3.Text);
+                    mycomand.Parameters.AddWithValue("@det4", tx_det4.Text);
+                    mycomand.Parameters.AddWithValue("@det5", tx_det5.Text);
+                    mycomand.Parameters.AddWithValue("@veap", verapp);
+                    mycomand.Parameters.AddWithValue("@asd", asd);
+                    mycomand.Parameters.AddWithValue("@dipl", lib.iplan());
+                    mycomand.Parameters.AddWithValue("@dipw", lib.ipwan());
+                    mycomand.Parameters.AddWithValue("@nbna", Environment.MachineName);
                     try
                     {
                         mycomand.ExecuteNonQuery();
@@ -451,8 +485,6 @@ namespace TransCarga
                         if (resulta != "OK")                                    // actualizamos la tabla usuarios
                         {
                             MessageBox.Show(resulta, "Error en actualización de tabla definiciones", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            Application.Exit();
-                            return;
                         }
                     }
                     catch (MySqlException ex)
@@ -463,7 +495,7 @@ namespace TransCarga
                     conn.Close();
                     // insertamos en el datatable
                     DataRow dr = dtg.NewRow();
-                    // id,idtabella,idcodice,codigo,descrizione,descrizionerid,numero
+                    // id,idtabella,idcodice,codigo,descrizione,descrizionerid,numero,deta1,deta2,deta3,deta4,ubidir
                     dr[0] = idtu;
                     dr[1] = textBox4.Text;
                     dr[2] = textBox1.Text;
@@ -471,6 +503,11 @@ namespace TransCarga
                     dr[4] = textBox3.Text;
                     dr[5] = textBox5.Text;
                     dr[6] = (checkBox1.Checked == true) ? "1" : "0";
+                    dr[7] = tx_det1.Text;
+                    dr[8] = tx_det2.Text;
+                    dr[9] = tx_det3.Text;
+                    dr[10] = tx_det4.Text;
+                    dr[11] = tx_det5.Text;
                     dtg.Rows.Add(dr);
                 }
                 else
@@ -483,8 +520,10 @@ namespace TransCarga
             if (modo == "EDITAR")
             {
                 string consulta = "update descrittive set " +
-                        "descrizione=@des,descrizionerid=@der,numero=@num,codigo=@cod " +
-                        "where id=@idc";    // codigo=@cod,
+                        "descrizione=@des,descrizionerid=@der,numero=@num,codigo=@cod," +
+                        "deta1=@det1,deta2=@det2,deta3=@det3,deta4=@det4,ubidir=@det5," +
+                        "verApp=@veap,userm=@asd,fechm=now(),diriplan4=@dipl,diripwan4=@dipw,netbname=@nbna " +
+                        "where id=@idc";
                 MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
                 conn.Open();
                 if (conn.State == ConnectionState.Open)
@@ -494,6 +533,16 @@ namespace TransCarga
                     mycom.Parameters.AddWithValue("@des", textBox3.Text);
                     mycom.Parameters.AddWithValue("@der", textBox5.Text);
                     mycom.Parameters.AddWithValue("@num", (checkBox1.Checked == true) ? "1" : "0");
+                    mycom.Parameters.AddWithValue("@det1", tx_det1.Text);
+                    mycom.Parameters.AddWithValue("@det2", tx_det2.Text);
+                    mycom.Parameters.AddWithValue("@det3", tx_det3.Text);
+                    mycom.Parameters.AddWithValue("@det4", tx_det4.Text);
+                    mycom.Parameters.AddWithValue("@det5", tx_det5.Text);
+                    mycom.Parameters.AddWithValue("@veap", verapp);
+                    mycom.Parameters.AddWithValue("@asd", asd);
+                    mycom.Parameters.AddWithValue("@dipl", lib.iplan());
+                    mycom.Parameters.AddWithValue("@dipw", lib.ipwan());
+                    mycom.Parameters.AddWithValue("@nbna", Environment.MachineName);
                     mycom.Parameters.AddWithValue("@idc", tx_idr.Text);
                     try
                     {
@@ -502,8 +551,6 @@ namespace TransCarga
                         if (resulta != "OK")                                        // actualizamos la tabla usuarios
                         {
                             MessageBox.Show(resulta, "Error en actualización de tabla usuarios", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            Application.Exit();
-                            return;
                         }
                     }
                     catch (MySqlException ex)
@@ -524,6 +571,11 @@ namespace TransCarga
                             dtg.Rows[i][4] = textBox3.Text;
                             dtg.Rows[i][5] = textBox5.Text;
                             dtg.Rows[i][6] = (checkBox1.Checked == true) ? "1" : "0";
+                            dtg.Rows[i][7] = tx_det1.Text;
+                            dtg.Rows[i][8] = tx_det2.Text;
+                            dtg.Rows[i][9] = tx_det3.Text;
+                            dtg.Rows[i][10] = tx_det4.Text;
+                            dtg.Rows[i][11] = tx_det5.Text;
                         }
                     }
                 }
@@ -593,7 +645,12 @@ namespace TransCarga
                     textBox2.Text = row[3].ToString();
                     textBox3.Text = row[4].ToString();
                     textBox5.Text = row[5].ToString();
-                    checkBox1.Checked = (row[5].ToString() == "0") ? false : true;
+                    checkBox1.Checked = (row[6].ToString() == "0") ? false : true;
+                    tx_det1.Text = row[7].ToString();
+                    tx_det2.Text = row[8].ToString();
+                    tx_det3.Text = row[9].ToString();
+                    tx_det4.Text = row[10].ToString();
+                    tx_det5.Text = row[11].ToString();
                 }
                 if(contador == 0)
                 {
@@ -603,6 +660,11 @@ namespace TransCarga
                     textBox3.Text = "";
                     textBox5.Text = "";
                     checkBox1.Checked = false;
+                    tx_det1.Text = "";
+                    tx_det2.Text = "";
+                    tx_det3.Text = "";
+                    tx_det4.Text = "";
+                    tx_det5.Text = "";
                     return;
                 }
             }
