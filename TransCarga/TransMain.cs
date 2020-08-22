@@ -477,18 +477,14 @@ namespace TransCarga
             fsp.BringToFront();
             */
         }
-        private void vc_reportes_Click(object sender, EventArgs e)          // Reportes
+        private void vc_reportes_Click(object sender, EventArgs e)          // Reportes de operaciones
         {
-            /*
-            repsventas frv = new repsventas();
+            repsoper frv = new repsoper();
             frv.TopLevel = false;
             frv.Parent = this;
             pn_centro.Controls.Add(frv);
-            //frv.Location = new Point((pn_centro.Width - frv.Width) / 2, (pn_centro.Height - frv.Height) / 2);
-            //frv.Anchor = AnchorStyles.None;
             frv.Show();
             frv.BringToFront();
-            */
         }
         //
         private void bt_pedidos_Click(object sender, EventArgs e)       // Administración

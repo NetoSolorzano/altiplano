@@ -11,12 +11,16 @@ namespace TransCarga
     public partial class repsoper : Form
     {
         static string nomform = "repsoper";           // nombre del formulario
-        string asd = TransCarga.Program.vg_user;      // usuario conectado al sistema
         string colback = TransCarga.Program.colbac;   // color de fondo
         string colpage = TransCarga.Program.colpag;   // color de los pageframes
         string colgrid = TransCarga.Program.colgri;   // color de las grillas
+        string colfogr = TransCarga.Program.colfog;   // color fondo con grillas
+        string colsfon = TransCarga.Program.colsbg;   // color fondo seleccion
+        string colsfgr = TransCarga.Program.colsfc;   // color seleccion grilla
         string colstrp = TransCarga.Program.colstr;   // color del strip
-        static string nomtab = "contrat";         // 
+        static string nomtab = "cabpregr";         // 
+        #region variables
+        string asd = TransCarga.Program.vg_user;      // usuario conectado al sistema
         public int totfilgrid, cta;             // variables para impresion
         public string perAg = "";
         public string perMo = "";
@@ -32,10 +36,12 @@ namespace TransCarga
         string img_btq = "";
         string img_grab = "";
         string img_anul = "";
-        string img_imprime = "", img_preview = "";        // imagen del boton preview e imprimir reporte
+        string img_imprime = "";
+        string img_preview = "";        // imagen del boton preview e imprimir reporte
         string letpied = "";            // letra indentificadora de piedra en detalle 2
         string cliente = Program.cliente;    // razon social para los reportes
         int pageCount = 1, cuenta = 0;
+        #endregion
         libreria lib = new libreria();
         // string de conexion
         //static string serv = ConfigurationManager.AppSettings["serv"].ToString();
@@ -51,33 +57,7 @@ namespace TransCarga
         }
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)    // F1
         {
-            string para1 = "";
-            string para2 = "";
-            string para3 = "";
-            string para4 = "";
-            if (keyData == Keys.F1)
-            {
-                if (tx_nomclie.Focused == true && rb_listado.Checked == true) 
-                {
-                    /*
-                    para1 = "anag_cli";
-                    para2 = "todos";
-                    ayuda2 ayu2 = new ayuda2(para1, para2, para3, para4);
-                    var result = ayu2.ShowDialog();
-                    if (result == DialogResult.Cancel)
-                    {
-                        if (!string.IsNullOrEmpty(ayu2.ReturnValue1))
-                        {
-                            tx_doclie.Text = ayu2.ReturnValue1;
-                            tx_idclie.Text = ayu2.ReturnValue0;      // id del cliente
-                            tx_nomclie.Text = ayu2.ReturnValue2;
-                        }
-                    }
-                    */
-                }
-                return true;    // indicate that you handled this keystroke
-            }
-            // Call the base class
+            // en este form no usamos
             return base.ProcessCmdKey(ref msg, keyData);
         }
         private void repsoper_KeyDown(object sender, KeyEventArgs e)
@@ -95,6 +75,7 @@ namespace TransCarga
             toolTipNombre.ShowAlways = true;                 // Force the ToolTip text to be displayed whether or not the form is active.
             toolTipNombre.SetToolTip(toolStrip1, nomform);   // Set up the ToolTip text for the object
             */
+            jalainfo();
             init();
             toolboton();
             dataload("todos");
@@ -106,15 +87,28 @@ namespace TransCarga
         }
         private void init()
         {
-            BackColor = Color.FromName(colback);
-            toolStrip1.BackColor = Color.FromName(colstrp);
             tabControl1.BackColor = Color.FromName(TransCarga.Program.colgri);
 
-            jalainfo();
+            this.BackColor = Color.FromName(colback);
+            toolStrip1.BackColor = Color.FromName(colstrp);
+            dgv_resumen.DefaultCellStyle.BackColor = Color.FromName(colgrid);
+            dgv_resumen.DefaultCellStyle.BackColor = Color.FromName(colgrid);
+            dgv_resumen.DefaultCellStyle.ForeColor = Color.FromName(colfogr);
+            dgv_resumen.DefaultCellStyle.SelectionBackColor = Color.FromName(colsfon);
+            dgv_resumen.DefaultCellStyle.SelectionForeColor = Color.FromName(colsfgr);
+            //
+            dgv_vtas.DefaultCellStyle.BackColor = Color.FromName(colgrid);
+            dgv_vtas.DefaultCellStyle.BackColor = Color.FromName(colgrid);
+            dgv_vtas.DefaultCellStyle.ForeColor = Color.FromName(colfogr);
+            dgv_vtas.DefaultCellStyle.SelectionBackColor = Color.FromName(colsfon);
+            dgv_vtas.DefaultCellStyle.SelectionForeColor = Color.FromName(colsfgr);
+            //
             Bt_add.Image = Image.FromFile(img_btN);
             Bt_edit.Image = Image.FromFile(img_btE);
-            Bt_print.Image = Image.FromFile(img_btP);
             Bt_anul.Image = Image.FromFile(img_btA);
+            //Bt_ver.Image = Image.FromFile(img_btV);
+            Bt_print.Image = Image.FromFile(img_btP);
+            Bt_close.Image = Image.FromFile(img_btq);
             bt_exc.Image = Image.FromFile(img_btexc);
             Bt_close.Image = Image.FromFile(img_btq);
         }
@@ -181,78 +175,29 @@ namespace TransCarga
                 // seleccion de taller de produccion ... ok
                 const string contaller = "select descrizionerid,idcodice,codigo from desc_loc " +
                                        "where numero=1 order by idcodice";
-                MySqlCommand cmdtaller = new MySqlCommand(contaller, conn);
-                MySqlDataAdapter dataller = new MySqlDataAdapter(cmdtaller);
+                MySqlCommand cmd = new MySqlCommand(contaller, conn);
+                MySqlDataAdapter dataller = new MySqlDataAdapter(cmd);
                 DataTable dttaller = new DataTable();
                 dataller.Fill(dttaller);
-                foreach (DataRow row in dttaller.Rows)
-                {
-                    //cmb_pedtaller.Items.Add(row.ItemArray[1].ToString().PadRight(6).Substring(0, 6) + " - " + row.ItemArray[0].ToString());
-                    //cmb_pedtaller.ValueMember = row.ItemArray[1].ToString();
-                }
-                // seleccion del almacen de destino ... 
-                const string condest = "select descrizionerid,idcodice from desc_alm " +
+                cmb_vtasloc.DataSource = dttaller;
+                cmb_vtasloc.DisplayMember = "descrizionerid";
+                cmb_vtasloc.ValueMember = "idcodice";
+                // seleccion de estado de servicios
+                string conestad = "select descrizionerid,idcodice,codigo from desc_est " +
                                        "where numero=1 order by idcodice";
-                MySqlCommand cmddest = new MySqlCommand(condest, conn);
-                DataTable dtdest = new DataTable();
-                MySqlDataAdapter dadest = new MySqlDataAdapter(cmddest);
-                dadest.Fill(dtdest);
-                foreach (DataRow row in dtdest.Rows)
-                {
-                    /*
-                    cmb_destino.Items.Add(row.ItemArray[1].ToString() + " - " + row.ItemArray[0].ToString());
-                    cmb_destino.ValueMember = row.ItemArray[1].ToString();
-                    //
-                    cmb_dest_ing.Items.Add(row.ItemArray[1].ToString() + " - " + row.ItemArray[0].ToString());
-                    cmb_dest_ing.ValueMember = row.ItemArray[1].ToString();
-                    */
-                }
-                // seleccion del estado
-                const string conestado = "select descrizionerid,idcodice from desc_stp " +
-                                       "where numero=1 order by idcodice";
-                MySqlCommand cmdestado = new MySqlCommand(conestado, conn);
-                DataTable dtestado = new DataTable();
-                MySqlDataAdapter daestado = new MySqlDataAdapter(cmdestado);
-                daestado.Fill(dtestado);
-                foreach (DataRow row in dtestado.Rows)
-                {
-                    /*
-                    cmb_estado.Items.Add(row.ItemArray[1].ToString() + " - " + row.ItemArray[0].ToString());
-                    cmb_estado.ValueMember = row.ItemArray[1].ToString();
-                    //
-                    cmb_estad_ing.Items.Add(row.ItemArray[1].ToString() + " - " + row.ItemArray[0].ToString());
-                    cmb_estad_ing.ValueMember = row.ItemArray[1].ToString();
-                    */
-                }
-                // seleccion del estado del contrato
-                const string conestcont = "select descrizionerid,idcodice from desc_sta " +
-                                       "where numero=1 order by idcodice";
-                MySqlCommand cmdestcont = new MySqlCommand(conestcont, conn);
-                DataTable dtestcont = new DataTable();
-                MySqlDataAdapter daestcont = new MySqlDataAdapter(cmdestcont);
-                daestcont.Fill(dtestcont);
-                foreach (DataRow row in dtestcont.Rows)
-                {
-                    //cmb_conestado.Items.Add(row.ItemArray[1].ToString() + " - " + row.ItemArray[0].ToString());
-                    //cmb_conestado.ValueMember = row.ItemArray[1].ToString();
-                }
-                // seleccion del local de ventas
-                const string conlocven = "select descrizionerid,idcodice from desc_ven " +
-                                       "where numero=1 order by idcodice";
-                MySqlCommand cmdlocven = new MySqlCommand(conlocven, conn);
-                DataTable dtlocven = new DataTable();
-                MySqlDataAdapter dalocven = new MySqlDataAdapter(cmdlocven);
-                dalocven.Fill(dtlocven);
-                foreach (DataRow row in dtlocven.Rows)
-                {
-                    cmb_vtasloc.Items.Add(row.ItemArray[1].ToString() + " - " + row.ItemArray[0].ToString());
-                    cmb_vtasloc.ValueMember = row.ItemArray[1].ToString();
-                }
+                cmd = new MySqlCommand(conestad, conn);
+                MySqlDataAdapter daestad = new MySqlDataAdapter(cmd);
+                DataTable dtestad = new DataTable();
+                daestad.Fill(dtestad);
+                cmb_estad.DataSource = dtestad;
+                cmb_estad.DisplayMember = "descrizionerid";
+                cmb_estad.ValueMember = "idcodice";
+                //
+
             }
-            //
             conn.Close();
         }
-        private void grilla(string dgv)                             // arma la grilla salidas
+        private void grilla(string dgv)                             // FALTA 
         {
             switch (dgv)
             {
@@ -284,7 +229,7 @@ namespace TransCarga
                     break;
             }
         }
-        private void grillares()                                    // arma la grilla del resumen de contrato
+        private void grillares()                                    // FALTA arma la grilla del resumen
         {
             Font tiplg = new Font("Arial", 7, FontStyle.Bold);
             dgv_resumen.Font = tiplg;
@@ -473,13 +418,34 @@ namespace TransCarga
             dgv_resumen.Columns[21].DefaultCellStyle.BackColor = Color.Green;
             dgv_resumen.Columns[21].HeaderCell.Style.BackColor = Color.Green;
         }
-        //
-        private void bt_vtasfiltra_Click(object sender, EventArgs e)    // filtra y muestra ventas
+        private void bt_vtasfiltra_Click(object sender, EventArgs e)    // filtra y muestra reporte pre guias
         {
-            string consulta = "";
-            if (rb_listado.Checked == true && tx_nomclie.Text.Trim() != "")         // reporte de ventas por cliente
+            string consulta;
+            string parte = "";
+            if (tx_dat_vtasloc.Text != "") parte += " and a.locorigen=@loca";
+            if (tx_dat_estad.Text != "")
             {
-                consulta = "repvtasxclt";
+                if (chk_excluye.Checked == true) parte += " and a.estadoser<>@esta";
+                else parte += " and a.estadoser=@esta";
+
+            }
+            if (rb_listado.Checked == true)
+            {
+                consulta = "select a.id as ID,a.fechpregr as FECHA,a.serpregui as SERIE,a.numpregui as NUMERO,b.descrizionerid as DOC," +
+                    "a.nudodepre as NDOC,a.nombdepre as DESTINATARIO,a.diredepre as DIR_DESTINATARIO,a.ubigdepre as UBIG_D," +
+                    "c.descrizionerid as DOC,a.nudorepre as NDOC,a.nombrepre as REMITENTE,a.direrepre as DIR_REMITENTE,a.ubigrepre as UBIG_R," +
+                    "d.descrizionerid as LOCAL,a.dirorigen as DIR_PARTIDA,a.ubiorigen as UBIG_O,e.descrizionerid as DESTINO," +
+                    "a.dirdestin as DIR_DESTINO,a.ubidestin as UBIG_D,a.docsremit as DOCS_REMITENTE,a.obspregui as OBSERV," +
+                    "a.cantotpre as CANT,a.pestotpre as PESO,f.descrizionerid as MON,a.totpregui as FLETE,a.totpagpre as PAGADO," +
+                    "a.salpregui as SALDO,g.descrizionerid as ESTADO,a.impreso as IMPSO,a.serguitra as S_GUIA,a.numguitra as NUM_GUIA " +
+                    "from cabpregr a " +
+                    "left join desc_doc b on b.idcodice=a.tidodepre " +
+                    "left join desc_doc c on c.idcodice=a.tidorepre " +
+                    "left join desc_loc d on d.idcodice=a.locorigen " +
+                    "left join desc_loc e on e.idcodice=a.locdestin " +
+                    "left join desc_mon f on f.idcodice=a.tipmonpre " +
+                    "left join desc_est g on g.idcodice=a.estadoser " +
+                    "where a.fechpregr between @fecini and @fecfin" + parte;
                 try
                 {
                     MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
@@ -488,10 +454,10 @@ namespace TransCarga
                     {
                         dgv_vtas.DataSource = null;
                         MySqlCommand micon = new MySqlCommand(consulta, conn);
-                        micon.CommandType = CommandType.StoredProcedure;
-                        micon.Parameters.AddWithValue("@idclte", tx_idclie.Text.Trim());
                         micon.Parameters.AddWithValue("@fecini", dtp_vtasfini.Value.ToString("yyyy-MM-dd"));
                         micon.Parameters.AddWithValue("@fecfin", dtp_vtasfina.Value.ToString("yyyy-MM-dd"));
+                        if (tx_dat_vtasloc.Text != "") micon.Parameters.AddWithValue("@loca", tx_dat_vtasloc.Text);
+                        if (tx_dat_estad.Text != "") micon.Parameters.AddWithValue("@esta", tx_dat_estad.Text);
                         MySqlDataAdapter da = new MySqlDataAdapter(micon);
                         DataTable dt = new DataTable();
                         da.Fill(dt);
@@ -501,8 +467,14 @@ namespace TransCarga
                             grilla("dgv_vtas");
                         }
                         else dgv_vtas.DataSource = null;
-                        //dt.Dispose();
                         da.Dispose();
+                        micon.Dispose();
+                        //
+                        string resulta = lib.ult_mov(nomform, nomtab, asd);
+                        if (resulta != "OK")                                        // actualizamos la tabla usuarios
+                        {
+                            MessageBox.Show(resulta, "Error en actualización de tabla usuarios", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
                     }
                     else
                     {
@@ -521,7 +493,9 @@ namespace TransCarga
             }
             else
             {
-                consulta = "repventas";                          // CALL repventas('2019-07-01','2019-08-30','listado','');
+                consulta = "select * from controlg where ... ;" +
+                    "union; " +
+                    "select * from controlg where ... ;";
                 try
                 {
                     MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
@@ -564,8 +538,9 @@ namespace TransCarga
                 }
             }
         }
-        private void tx_codped_Leave(object sender, EventArgs e)    // valida existencia de contrato
+        private void tx_codped_Leave(object sender, EventArgs e)    // valida existencia de pre guia
         {
+            /*
             if(tx_codped.Text != "")
             {
                 lib.estcont(tx_codped.Text.Trim());
@@ -622,8 +597,9 @@ namespace TransCarga
                     return;
                 }
             }
+            */
         }
-        private void bt_resumen_Click(object sender, EventArgs e)   // genera resumen de contrato
+        private void bt_resumen_Click(object sender, EventArgs e)   // genera resumen de pre guia
         {
             if(tx_codped.Text != "")
             {
@@ -665,88 +641,26 @@ namespace TransCarga
         }
 
         #region combos
-        private void cmb_taller_SelectionChangeCommitted(object sender, EventArgs e)
-        {
-            //if (cmb_taller.SelectedValue != null) tx_dat_orig.Text = cmb_taller.SelectedValue.ToString();
-            //else tx_dat_orig.Text = cmb_taller.SelectedItem.ToString().PadRight(6).Substring(0, 6).Trim();
-        }
-        private void cmb_estado_SelectionChangeCommitted(object sender, EventArgs e)
-        {
-            //if (cmb_estado.SelectedValue != null) tx_dat_estad.Text = cmb_estado.SelectedValue.ToString();
-            //else tx_dat_estad.Text = cmb_estado.SelectedItem.ToString().PadRight(6).Substring(0, 6).Trim();
-        }
-        private void cmb_destino_SelectionChangeCommitted(object sender, EventArgs e)
-        {
-            //if (cmb_destino.SelectedValue != null) tx_dat_dest.Text = cmb_destino.SelectedValue.ToString();
-            //else tx_dat_dest.Text = cmb_destino.SelectedItem.ToString().PadRight(6).Substring(0, 6).Trim();
-        }
-        private void cmb_tall_ing_SelectionChangeCommitted(object sender, EventArgs e)
-        {
-            //if (cmb_tall_ing.SelectedValue != null) tx_dat_taling.Text = cmb_tall_ing.SelectedValue.ToString();
-            //else tx_dat_taling.Text = cmb_tall_ing.SelectedItem.ToString().PadRight(6).Substring(0, 6).Trim();
-        }
         private void cmb_estad_ing_SelectionChangeCommitted(object sender, EventArgs e)
         {
-            //if (cmb_estad_ing.SelectedValue != null) tx_dat_esting.Text = cmb_estad_ing.SelectedValue.ToString();
-            //else tx_dat_esting.Text = cmb_estad_ing.SelectedItem.ToString().PadRight(6).Substring(0, 6).Trim();
-        }
-        private void cmb_dest_ing_SelectionChangeCommitted(object sender, EventArgs e)
-        {
-            //if (cmb_dest_ing.SelectedValue != null) tx_dat_desing.Text = cmb_dest_ing.SelectedValue.ToString();
-            //else tx_dat_desing.Text = cmb_dest_ing.SelectedItem.ToString().PadRight(6).Substring(0, 6).Trim();
+            if (cmb_estad.SelectedValue != null) tx_dat_estad.Text = cmb_estad.SelectedValue.ToString();
+            else
+            {
+                tx_dat_estad.Text = "";    // cmb_estad.SelectedItem.ToString().PadRight(6).Substring(0, 6).Trim();
+                chk_excluye.Checked = false;
+            }
         }
         private void cmb_vtasloc_SelectionChangeCommitted(object sender, EventArgs e)
         {
             if (cmb_vtasloc.SelectedValue != null) tx_dat_vtasloc.Text = cmb_vtasloc.SelectedValue.ToString();
-            else tx_dat_vtasloc.Text = cmb_vtasloc.SelectedItem.ToString().PadRight(6).Substring(0, 6).Trim();
-        }
-        // 
-        private void cmb_estado_KeyDown(object sender, KeyEventArgs e)
-        {
-            if(e.KeyCode == Keys.Delete)
-            {
-                //cmb_estado.SelectedIndex = -1;
-                //tx_dat_estad.Text = "";
-            }
-        }
-        private void cmb_taller_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Delete)
-            {
-                //cmb_taller.SelectedIndex = -1;
-                //tx_dat_orig.Text = "";
-            }
-        }
-        private void cmb_destino_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Delete)
-            {
-                //cmb_destino.SelectedIndex = -1;
-                //tx_dat_dest.Text = "";
-            }
-        }
-        private void cmb_tall_ing_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Delete)
-            {
-                //cmb_tall_ing.SelectedIndex = -1;
-                //tx_dat_taling.Text = "";
-            }
+            else tx_dat_vtasloc.Text = ""; // cmb_vtasloc.SelectedItem.ToString().PadRight(6).Substring(0, 6).Trim();
         }
         private void cmb_estad_ing_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Delete)
             {
-                //cmb_estad_ing.SelectedIndex = -1;
-                //tx_dat_esting.Text = "";
-            }
-        }
-        private void cmb_dest_ing_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Delete)
-            {
-                //cmb_dest_ing.SelectedIndex = -1;
-                //tx_dat_desing.Text = "";
+                cmb_estad.SelectedIndex = -1;
+                tx_dat_estad.Text = "";
             }
         }
         private void cmb_vtasloc_KeyDown(object sender, KeyEventArgs e)
@@ -860,8 +774,9 @@ namespace TransCarga
         {
             Tx_modo.Text = "IMPRIMIR";
             tabControl1.Enabled = true;
-            //cmb_tall_ing.Enabled = false;
-            //cmb_estad_ing.Enabled = false;
+            cmb_estad.SelectedIndex = -1;
+            cmb_vtasloc.SelectedIndex = -1;
+            chk_excluye.Checked = false;
         }
         private void Bt_anul_Click(object sender, EventArgs e)
         {
@@ -874,6 +789,7 @@ namespace TransCarga
             if (tabControl1.Enabled == false) return;
             if (tabControl1.SelectedTab == tabres && dgv_resumen.Rows.Count > 0)
             {
+                /*
                 nombre = "resumen_contrato_" + tx_codped.Text.Trim() +"_" + DateTime.Now.Date.ToString("yyyy-MM-dd") + ".xlsx";
                 var aa = MessageBox.Show("Confirma que desea generar la hoja de calculo?",
                     "Archivo: " + nombre, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
@@ -886,17 +802,18 @@ namespace TransCarga
                     MessageBox.Show("Archivo generado con exito!");
                     this.Close();
                 }
+                */
             }
             if (tabControl1.SelectedTab == tabvtas && dgv_vtas.Rows.Count > 0)
             {
-                nombre = "Reportes_ventas_" + DateTime.Now.Date.ToString("yyyy-MM-dd") + ".xlsx";
+                nombre = "Reportes_PreGuias_" + DateTime.Now.Date.ToString("yyyy-MM-dd") + ".xlsx";
                 var aa = MessageBox.Show("Confirma que desea generar la hoja de calculo?",
                     "Archivo: " + nombre, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (aa == DialogResult.Yes)
                 {
                     var wb = new XLWorkbook();
                     DataTable dt = (DataTable)dgv_vtas.DataSource;
-                    wb.Worksheets.Add(dt, "Ventas");
+                    wb.Worksheets.Add(dt, "PreGuias");
                     wb.SaveAs(nombre);
                     MessageBox.Show("Archivo generado con exito!");
                     this.Close();
@@ -906,74 +823,34 @@ namespace TransCarga
         #endregion
 
         #region crystal
-        private void bt_pedidos_Click(object sender, EventArgs e)
-        {
-            setParaCrystal("pedidos");
-        }
         private void button2_Click(object sender, EventArgs e)      // resumen de contrato
         {
             setParaCrystal("resumen");
         }
-        private void button3_Click(object sender, EventArgs e)      // listado de contratos
-        {
-            setParaCrystal("contratos");
-        }
         private void button4_Click(object sender, EventArgs e)      // reporte de ventas
         {
-            if (tx_idclie.Text.Trim() == "") setParaCrystal("ventas");
-            if (tx_idclie.Text.Trim() != "" && tx_nomclie.Text.Trim() != "" && rb_listado.Checked == true) setParaCrystal("vtasxclte");
-        }
-        private void bt_ingresos_Click(object sender, EventArgs e)  // reportes de ingresos de pedidos
-        {
-            setParaCrystal("ingresos");
-        }
-        private void bt_salidas_Click(object sender, EventArgs e)
-        {
-            setParaCrystal("salidas");
+            if (rb_listado.Checked == true) setParaCrystal("vtasxclte");
+            else setParaCrystal("ventas");
         }
 
         private void setParaCrystal(string repo)                    // genera el set para el reporte de crystal
         {
             if (repo== "resumen")
             {
-                conClie datos = generareporte();                        // conClie = dataset de impresion de contrato   
-                frmvizcont visualizador = new frmvizcont(datos);        // POR ESO SE CREO ESTE FORM frmvizcont PARA MOSTRAR AHI. ES MEJOR ASI.  
-                visualizador.Show();
-            }
-            if (repo == "pedidos")
-            {
-                pedsclts datos = generarepedidos();
-                frmvizcpeds visualizador = new frmvizcpeds(datos);
-                visualizador.Show();
-            }
-            if (repo == "contratos")
-            {
-                conClie datos = generaliscont();
-                frmvizcont visualizador = new frmvizcont(datos);
-                visualizador.Show();
+                //conClie datos = generareporte();                        // conClie = dataset de impresion de contrato   
+                //frmvizcont visualizador = new frmvizcont(datos);        // POR ESO SE CREO ESTE FORM frmvizcont PARA MOSTRAR AHI. ES MEJOR ASI.  
+                //visualizador.Show();
             }
             if (repo == "ventas")
             {
-                conClie datos = generarepvtas();
-                frmvizcont visualizador = new frmvizcont(datos);
-                visualizador.Show();
+                //conClie datos = generarepvtas();
+                //frmvizcont visualizador = new frmvizcont(datos);
+                //visualizador.Show();
             }
             if (repo == "vtasxclte")
             {
                 conClie datos = generarepvtasxclte();
-                frmvizcont visualizador = new frmvizcont(datos);
-                visualizador.Show();
-            }
-            if (repo == "ingresos")
-            {
-                pedsclts datos = generarepingresos();
-                frmvizcpeds visualizador = new frmvizcpeds(datos);
-                visualizador.Show();
-            }
-            if (repo == "salidas")
-            {
-                pedsclts datos = generarepsalidas();
-                frmvizcpeds visualizador = new frmvizcpeds(datos);
+                frmvizoper visualizador = new frmvizoper(datos);
                 visualizador.Show();
             }
         }
@@ -984,35 +861,20 @@ namespace TransCarga
             cabrow.id = "0";
             cabrow.fecini = dtp_vtasfini.Value.ToString("dd/MM/yyyy");
             cabrow.fecfin = dtp_vtasfina.Value.ToString("dd/MM/yyyy");
-            cabrow.nudoclte = tx_doclie.Text.Trim();
-            cabrow.nomclie = tx_nomclie.Text.Trim();
             if (rb_listado.Checked == true) cabrow.modo = "listado";
             //if (rb_resumen.Checked == true) cabrow.modo = "resumen";
             repvtas.repvtas_cab.Addrepvtas_cabRow(cabrow);
             // detalle
             foreach (DataGridViewRow row in dgv_vtas.Rows)
             {
-                if (rb_listado.Checked == true)                      // 
+                if (rb_listado.Checked == true) 
                 {
                     if (row.Cells["item"].Value != null && row.Cells["item"].Value.ToString().Trim() != "")
                     {
                         conClie.repvtas_detRow detrow = repvtas.repvtas_det.Newrepvtas_detRow();
-                        detrow.id = "0";    //String.Format("{0:dd/MM/yyyy}",row.Cells["fecha"].Value.ToString()); //.ToString("dd/MM/yyyy"); ... ninguno de estos funciono
+                        detrow.id = "0";
                         detrow.tienda = row.Cells["tienda"].Value.ToString();
                         detrow.fecha = row.Cells["fecha"].Value.ToString().Substring(0,2) + "/" + row.Cells["fecha"].Value.ToString().Substring(3, 2) + "/" + row.Cells["fecha"].Value.ToString().Substring(6, 4); 
-                        detrow.contrato = row.Cells["contratoh"].Value.ToString();
-                        detrow.cant = row.Cells["cant"].Value.ToString().Trim();
-                        detrow.codigo = row.Cells["item"].Value.ToString();
-                        detrow.nombre = row.Cells["nombre"].Value.ToString().Trim();
-                        detrow.medidas = row.Cells["medidas"].Value.ToString().Trim();
-                        detrow.madera =  row.Cells["madera"].Value.ToString().Trim();
-                        detrow.precio = row.Cells["precio"].Value.ToString().Trim();
-                        detrow.total = double.Parse(row.Cells["total"].Value.ToString());
-                        detrow.estcont = row.Cells["status"].Value.ToString().Trim();
-                        if (row.Cells["fesal"].Value.ToString().Trim() == "") detrow.fecsal = row.Cells["fesal"].Value.ToString().Trim(); // salida de almacen con reserva
-                        else detrow.fecsal = row.Cells["fesal"].Value.ToString().Substring(8, 2) + "/" + row.Cells["fesal"].Value.ToString().Substring(5, 2) + "/" + row.Cells["fesal"].Value.ToString().Substring(0, 4);
-                        if (row.Cells["fecent"].Value.ToString().Trim() == "") detrow.fecent = row.Cells["fecent"].Value.ToString().Trim(); // fecha del pedido
-                        else detrow.fecent = row.Cells["fecent"].Value.ToString().Substring(0,10);  //.Substring(8, 2) + "/" + row.Cells["fecent"].Value.ToString().Substring(5, 2) + "/" + row.Cells["fecent"].Value.ToString().Substring(0, 4);
                         repvtas.repvtas_det.Addrepvtas_detRow(detrow);
                     }
                 }
@@ -1040,16 +902,10 @@ namespace TransCarga
                         conClie.repvtas_detRow detrow = repvtas.repvtas_det.Newrepvtas_detRow();
                         detrow.id = "0";
                         detrow.tienda = row.Cells["tienda"].Value.ToString();
-                        detrow.codigo = row.Cells["item"].Value.ToString();
-                        detrow.nombre = row.Cells["nombre"].Value.ToString().Trim();
-                        detrow.cant = row.Cells["cant"].Value.ToString().Trim();
-                        detrow.madera = row.Cells["madera"].Value.ToString().Trim();
-                        detrow.medidas = row.Cells["medidas"].Value.ToString().Trim();
-                        detrow.total = double.Parse(row.Cells["total"].Value.ToString());
                         repvtas.repvtas_det.Addrepvtas_detRow(detrow);
                     }
                 }
-                if (rb_listado.Checked == true)                      // tienda,b.fecha,a.contratoh,cliente,a.cant,a.item,a.nombre,a.medidas,a.madera,a.precio,a.total,PEDIDO,STOCK
+                if (rb_listado.Checked == true)
                 {
                     if (row.Cells["item"].Value != null && row.Cells["item"].Value.ToString().Trim() != "")
                     {
@@ -1057,28 +913,18 @@ namespace TransCarga
                         detrow.id = "0";
                         detrow.tienda = row.Cells["tienda"].Value.ToString();
                         detrow.fecha = row.Cells["fecha"].Value.ToString().Substring(0,10);
-                        detrow.contrato = row.Cells["contratoh"].Value.ToString();
-                        detrow.cliente = row.Cells["cliente"].Value.ToString();
-                        detrow.cant = row.Cells["cant"].Value.ToString().Trim();
-                        detrow.codigo = row.Cells["item"].Value.ToString();
-                        detrow.nombre = row.Cells["nombre"].Value.ToString().Trim();
-                        detrow.medidas = row.Cells["medidas"].Value.ToString().Trim();
-                        detrow.madera = row.Cells["madera"].Value.ToString().Trim();
-                        detrow.precio = row.Cells["precio"].Value.ToString().Trim();
-                        detrow.total = double.Parse(row.Cells["total"].Value.ToString());
-                        detrow.pedido = row.Cells["PEDIDO"].Value.ToString().Trim();
-                        detrow.fecsal = row.Cells["DESPACHO"].Value.ToString().Trim();
-                        detrow.stock = row.Cells["RESERVA"].Value.ToString().Trim();
                         repvtas.repvtas_det.Addrepvtas_detRow(detrow);
                     }
                 }
             }
             return repvtas;
         }
-        private conClie generareporte()                             // procedimiento para meter los datos del formulario hacia las tablas del dataset del reporte en crystal
+        private conClie generareporte()
         {
             conClie rescont = new conClie();                                    // dataset
+            /*
             conClie.rescont_cabRow rowcabeza = rescont.rescont_cab.Newrescont_cabRow();
+            
             rowcabeza.id = "0";
             rowcabeza.contrato = tx_codped.Text;
             rowcabeza.doccli = tx_docu.Text;
@@ -1120,142 +966,8 @@ namespace TransCarga
                     rescont.rescont_det.Addrescont_detRow(rowdetalle);
                 }
             }
+            */
             return rescont;
-        }
-        private pedsclts generarepedidos()
-        {
-            pedsclts pedset = new pedsclts();
-            pedsclts.cab_lispedidosRow rowcab = pedset.cab_lispedidos.Newcab_lispedidosRow();
-            rowcab.id = "0";
-            rowcab.fecfin = dtp_pedfini.Value.ToString("dd/MM/yyyy");
-            rowcab.fecini = dtp_pedfina.Value.ToString("dd/MM/yyyy");
-            rowcab.taller = cmb_pedtaller.Text.Trim();
-            rowcab.situacion = (rb_ped_todos.Checked == true)? "TODOS":(rb_ped_xllegar.Checked == true)? "X LLEGAR":"INGRESADOS";
-            rowcab.tipofechas = (rb_ped_fped.Checked == true)? rb_ped_fped.Text:rb_ped_fentrega.Text;
-            pedset.cab_lispedidos.Addcab_lispedidosRow(rowcab);
-            // 
-            foreach (DataGridViewRow row in dgv_pedidos.Rows)
-            {
-                if (row.Cells["codped"].Value != null && row.Cells["codped"].Value.ToString().Trim() != "")
-                {
-                    pedsclts.det_lispedidosRow rowdet = pedset.det_lispedidos.Newdet_lispedidosRow();
-                    rowdet.id = "0";
-                    rowdet.lugar = row.Cells["destino"].Value.ToString();
-                    rowdet.pedido = row.Cells["codped"].Value.ToString();
-                    rowdet.cliente = row.Cells["cliente"].Value.ToString();
-                    rowdet.codigo = row.Cells["item"].Value.ToString();
-                    rowdet.nombre = row.Cells["nombre"].Value.ToString().Trim() + " - " + row.Cells["coment"].Value.ToString().Trim();
-                    rowdet.coment = "";
-                    rowdet.medidas = row.Cells["medidas"].Value.ToString();
-                    rowdet.madera = row.Cells["madera"].Value.ToString();
-                    rowdet.cant = row.Cells["cant"].Value.ToString();
-                    rowdet.taller = row.Cells["taller"].Value.ToString();
-                    rowdet.estado = row.Cells["estado"].Value.ToString();
-                    rowdet.fecped = row.Cells["fecped"].Value.ToString().Substring(0,10);
-                    rowdet.fecing = row.Cells["fecing"].Value.ToString().PadRight(10).Substring(0, 10);
-                    rowdet.fecsal = row.Cells["fecent"].Value.ToString().PadRight(10).Substring(0, 10);
-                    rowdet.fececon = row.Cells["feencon"].Value.ToString().PadRight(10).Substring(0, 10);
-                    rowdet.origen = row.Cells["origen"].Value.ToString();
-                    pedset.det_lispedidos.Adddet_lispedidosRow(rowdet);
-                }
-            }
-            return pedset;
-        }
-
-        private pedsclts generarepingresos()
-        {   // a.idmovim,a.fechain,tipo,a.pedido,a.origen,a.destino,a.cant,a.articulo,nomad,med1,tipoes,madera,cliente,nomitem
-            pedsclts pedset = new pedsclts();
-            pedsclts.cab_repingRow rowcab = pedset.cab_reping.Newcab_repingRow();
-            rowcab.id = "0";
-            rowcab.fini = dtp_fini_sal.Value.ToString().Substring(0, 10);
-            rowcab.fina = dtp_final_sal.Value.ToString().Substring(0, 10);
-            pedset.cab_reping.Addcab_repingRow(rowcab);
-            //
-            foreach(DataGridViewRow row in dgv_ingresos.Rows)
-            {
-                if (row.Cells["pedido"].Value != null && row.Cells["pedido"].Value.ToString().Trim() != "")
-                {
-                    pedsclts.det_repingRow rowdet = pedset.det_reping.Newdet_repingRow();
-                    rowdet.id = "0";
-                    rowdet.fecha = row.Cells["fechain"].Value.ToString().Substring(0, 10);
-                    rowdet.tipo = row.Cells["tipo"].Value.ToString();
-                    rowdet.pedido = row.Cells["pedido"].Value.ToString();
-                    rowdet.origen = row.Cells["origen"].Value.ToString();
-                    rowdet.destino = row.Cells["destino"].Value.ToString();
-                    rowdet.cant = row.Cells["cant"].Value.ToString();
-                    rowdet.articulo = row.Cells["articulo"].Value.ToString();
-                    rowdet.nonmad = row.Cells["nomad"].Value.ToString();
-                    rowdet.medidas = row.Cells["med1"].Value.ToString();
-                    rowdet.tipoes = row.Cells["tipoes"].Value.ToString();
-                    rowdet.madera = row.Cells["madera"].Value.ToString();
-                    rowdet.cliente = row.Cells["cliente"].Value.ToString();
-                    rowdet.nomitem = row.Cells["nomitem"].Value.ToString();
-                    pedset.det_reping.Adddet_repingRow(rowdet);
-                }
-            }
-            return pedset;
-        }
-        private pedsclts generarepsalidas()                         // salidas de pedidos de clientes (entregas)
-        {
-            //a.fecha,a.tipo,a.pedido,cliente,a.uantes,a.uactual,a.coment,b.item,b.cant,b.medidas,b.madera
-            pedsclts pedset = new pedsclts();
-            pedsclts.cab_repsalRow rowcab = pedset.cab_repsal.Newcab_repsalRow();
-            rowcab.id = "0";
-            rowcab.fini = dtp_fini_sal.Value.ToString().Substring(0, 10);
-            rowcab.fina = dtp_final_sal.Value.ToString().Substring(0, 10);
-            pedset.cab_repsal.Addcab_repsalRow(rowcab);
-            //
-            foreach(DataGridViewRow row in dgv_salidas.Rows)
-            {
-                if (row.Cells["tipo"].Value != null && row.Cells["tipo"].Value.ToString().Trim() != "")
-                {
-                    pedsclts.det_repsalRow rowdet = pedset.det_repsal.Newdet_repsalRow();
-                    rowdet.id = "0";
-                    rowdet.fecha = row.Cells["fecha"].Value.ToString().Substring(0, 10);
-                    rowdet.tipo = row.Cells["tipo"].Value.ToString();
-                    rowdet.pedido = row.Cells["pedido"].Value.ToString();
-                    rowdet.cliente = row.Cells["cliente"].Value.ToString();
-                    rowdet.uantes = row.Cells["uantes"].Value.ToString();
-                    rowdet.uactual = row.Cells["uactual"].Value.ToString();
-                    rowdet.coment = row.Cells["coment"].Value.ToString();
-                    rowdet.item = row.Cells["item"].Value.ToString();
-                    rowdet.cant = row.Cells["cant"].Value.ToString();
-                    rowdet.medidas = row.Cells["medidas"].Value.ToString();
-                    rowdet.madera = row.Cells["madera"].Value.ToString();
-                    pedset.det_repsal.Adddet_repsalRow(rowdet);
-                }
-            }
-            return pedset;
-        }
-        private conClie generaliscont()                             // procedimiento para generar los datos del listado de contratos en el dataset
-        {
-            conClie liscont = new conClie();
-            conClie.liscont_cabRow rowcabeza = liscont.liscont_cab.Newliscont_cabRow();
-            rowcabeza.id = "0";
-            rowcabeza.fechini = dtp_confini.Value.ToString("dd/MM/yyyy");   // yyyy-MM-dd
-            rowcabeza.fechfin = dtp_confina.Value.ToString("dd/MM/yyyy");   // 
-            rowcabeza.estado = tx_dat_conestado.Text.Trim();
-            rowcabeza.ran = (rb_fcont.Checked == true) ? "C" : "E";
-            liscont.liscont_cab.Addliscont_cabRow(rowcabeza);
-            //
-            foreach(DataGridViewRow row in dgv_contratos.Rows)
-            {
-                if (row.Cells["fecha"].Value != null && row.Cells["fecha"].Value.ToString().Trim() != "")
-                {
-                    conClie.liscont_detRow rowdetalle = liscont.liscont_det.Newliscont_detRow();
-                    rowdetalle.id = "0";
-                    rowdetalle.fecha = row.Cells[0].Value.ToString().PadRight(10).Substring(0,10);
-                    rowdetalle.tienda = row.Cells[1].Value.ToString();
-                    rowdetalle.contrato = row.Cells[2].Value.ToString();
-                    rowdetalle.cliente = row.Cells[3].Value.ToString();
-                    rowdetalle.coment = row.Cells[4].Value.ToString();
-                    rowdetalle.fentrega = row.Cells[5].Value.ToString().PadRight(10).Substring(0,10);
-                    rowdetalle.fenreal = row.Cells[6].Value.ToString().PadRight(10).Substring(0,10);
-                    rowdetalle.estado = row.Cells[7].Value.ToString();
-                    liscont.liscont_det.Addliscont_detRow(rowdetalle);
-                }
-            }
-            return liscont;
         }
         #endregion
     }

@@ -42,6 +42,15 @@
     <Reference Include="ClosedXML, Version=0.95.3.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ClosedXML.0.95.3\lib\net40\ClosedXML.dll</HintPath>
     </Reference>
+    <Reference Include="CrystalDecisions.CrystalReports.Design, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
+    <Reference Include="CrystalDecisions.CrystalReports.Engine, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
+    <Reference Include="CrystalDecisions.CrystalReports.TemplateEngine, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="CrystalDecisions.Data.AdoDotNetInterop, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
+    <Reference Include="CrystalDecisions.ReportSource, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
+    <Reference Include="CrystalDecisions.Shared, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
+    <Reference Include="CrystalDecisions.Windows.Forms, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
     <Reference Include="DocumentFormat.OpenXml, Version=2.7.2.0, Culture=neutral, PublicKeyToken=8fb06cb64d019a17, processorArchitecture=MSIL">
       <HintPath>..\packages\DocumentFormat.OpenXml.2.7.2\lib\net40\DocumentFormat.OpenXml.dll</HintPath>
     </Reference>
@@ -73,6 +82,14 @@
     <Compile Include="clients.designer.cs">
       <DependentUpon>clients.cs</DependentUpon>
     </Compile>
+    <Compile Include="conClie.cs">
+      <DependentUpon>conClie.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="conClie.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>conClie.xsd</DependentUpon>
+    </Compile>
     <Compile Include="defs.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -90,6 +107,12 @@
     </Compile>
     <Compile Include="facelec.designer.cs">
       <DependentUpon>facelec.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmvizoper.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmvizoper.designer.cs">
+      <DependentUpon>frmvizoper.cs</DependentUpon>
     </Compile>
     <Compile Include="libreria.cs">
       <SubType>Component</SubType>
@@ -174,6 +197,9 @@
     <EmbeddedResource Include="facelec.resx">
       <DependentUpon>facelec.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="frmvizoper.resx">
+      <DependentUpon>frmvizoper.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="login.resx">
       <DependentUpon>login.cs</DependentUpon>
     </EmbeddedResource>
@@ -217,6 +243,17 @@
     <EmbeddedResource Include="vehiculos.resx">
       <DependentUpon>vehiculos.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include="conClie.xsc">
+      <DependentUpon>conClie.xsd</DependentUpon>
+    </None>
+    <None Include="conClie.xsd">
+      <SubType>Designer</SubType>
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>conClie.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="conClie.xss">
+      <DependentUpon>conClie.xsd</DependentUpon>
+    </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

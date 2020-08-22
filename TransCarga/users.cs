@@ -269,7 +269,7 @@ namespace TransCarga
             // DATOS DEL COMBOBOX3  LOCAL
             this.comboBox3.Items.Clear();
             ComboItem citem_sds = new ComboItem();
-            const string conssed = "select descrizionerid,idcodice from desc_alm " +
+            const string conssed = "select descrizionerid,idcodice from desc_loc " +
                 "where numero=1";
             MySqlCommand cmd3 = new MySqlCommand(conssed, conn);
             DataTable dt3 = new DataTable();

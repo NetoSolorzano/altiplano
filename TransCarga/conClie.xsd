@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="conClie" targetNamespace="http://tempuri.org/conClie.xsd" xmlns:mstns="http://tempuri.org/conClie.xsd" xmlns="http://tempuri.org/conClie.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:msprop="urn:schemas-microsoft-com:xml-msprop" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:annotation>
+    <xs:appinfo source="urn:schemas-microsoft-com:xml-msdatasource">
+      <DataSource DefaultConnectionIndex="0" FunctionsComponentName="QueriesTableAdapter" Modifier="AutoLayout, AnsiClass, Class, Public" SchemaSerializationMode="IncludeSchema" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
+        <Connections />
+        <Tables />
+        <Sources />
+      </DataSource>
+    </xs:appinfo>
+  </xs:annotation>
+  <xs:element name="conClie" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:EnableTableAdapterManager="true" msprop:Generator_DataSetName="conClie" msprop:Generator_UserDSName="conClie">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="repvtas_cab" msprop:Generator_TableClassName="repvtas_cabDataTable" msprop:Generator_TableVarName="tablerepvtas_cab" msprop:Generator_RowChangedName="repvtas_cabRowChanged" msprop:Generator_TablePropName="repvtas_cab" msprop:Generator_RowDeletingName="repvtas_cabRowDeleting" msprop:Generator_RowChangingName="repvtas_cabRowChanging" msprop:Generator_RowEvHandlerName="repvtas_cabRowChangeEventHandler" msprop:Generator_RowDeletedName="repvtas_cabRowDeleted" msprop:Generator_RowClassName="repvtas_cabRow" msprop:Generator_UserTableName="repvtas_cab" msprop:Generator_RowEvArgName="repvtas_cabRowChangeEvent">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="id" msprop:Generator_ColumnVarNameInTable="columnid" msprop:Generator_ColumnPropNameInRow="id" msprop:Generator_ColumnPropNameInTable="idColumn" msprop:Generator_UserColumnName="id" type="xs:string" minOccurs="0" />
+              <xs:element name="fecini" msprop:Generator_ColumnVarNameInTable="columnfecini" msprop:Generator_ColumnPropNameInRow="fecini" msprop:Generator_ColumnPropNameInTable="feciniColumn" msprop:Generator_UserColumnName="fecini" type="xs:string" minOccurs="0" />
+              <xs:element name="fecfin" msprop:Generator_ColumnVarNameInTable="columnfecfin" msprop:Generator_ColumnPropNameInRow="fecfin" msprop:Generator_ColumnPropNameInTable="fecfinColumn" msprop:Generator_UserColumnName="fecfin" type="xs:string" minOccurs="0" />
+              <xs:element name="nudoclte" msprop:Generator_ColumnVarNameInTable="columnnudoclte" msprop:Generator_ColumnPropNameInRow="nudoclte" msprop:Generator_ColumnPropNameInTable="nudoclteColumn" msprop:Generator_UserColumnName="nudoclte" type="xs:string" minOccurs="0" />
+              <xs:element name="nomclie" msprop:Generator_ColumnVarNameInTable="columnnomclie" msprop:Generator_ColumnPropNameInRow="nomclie" msprop:Generator_ColumnPropNameInTable="nomclieColumn" msprop:Generator_UserColumnName="nomclie" type="xs:string" minOccurs="0" />
+              <xs:element name="modo" msprop:Generator_ColumnVarNameInTable="columnmodo" msprop:Generator_ColumnPropNameInRow="modo" msprop:Generator_ColumnPropNameInTable="modoColumn" msprop:Generator_UserColumnName="modo" type="xs:string" minOccurs="0" />
+              <xs:element name="tienda" msprop:Generator_ColumnVarNameInTable="columntienda" msprop:Generator_ColumnPropNameInRow="tienda" msprop:Generator_ColumnPropNameInTable="tiendaColumn" msprop:Generator_UserColumnName="tienda" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="repvtas_det" msprop:Generator_TableClassName="repvtas_detDataTable" msprop:Generator_TableVarName="tablerepvtas_det" msprop:Generator_RowChangedName="repvtas_detRowChanged" msprop:Generator_TablePropName="repvtas_det" msprop:Generator_RowDeletingName="repvtas_detRowDeleting" msprop:Generator_RowChangingName="repvtas_detRowChanging" msprop:Generator_RowEvHandlerName="repvtas_detRowChangeEventHandler" msprop:Generator_RowDeletedName="repvtas_detRowDeleted" msprop:Generator_RowClassName="repvtas_detRow" msprop:Generator_UserTableName="repvtas_det" msprop:Generator_RowEvArgName="repvtas_detRowChangeEvent">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="id" msprop:Generator_ColumnVarNameInTable="columnid" msprop:Generator_ColumnPropNameInRow="id" msprop:Generator_ColumnPropNameInTable="idColumn" msprop:Generator_UserColumnName="id" type="xs:string" minOccurs="0" />
+              <xs:element name="tienda" msprop:Generator_ColumnVarNameInTable="columntienda" msprop:Generator_ColumnPropNameInRow="tienda" msprop:Generator_ColumnPropNameInTable="tiendaColumn" msprop:Generator_UserColumnName="tienda" type="xs:string" minOccurs="0" />
+              <xs:element name="fecha" msprop:Generator_ColumnVarNameInTable="columnfecha" msprop:Generator_ColumnPropNameInRow="fecha" msprop:Generator_ColumnPropNameInTable="fechaColumn" msprop:Generator_UserColumnName="fecha" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
