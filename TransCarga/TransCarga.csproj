@@ -114,6 +114,12 @@
     <Compile Include="frmvizoper.designer.cs">
       <DependentUpon>frmvizoper.cs</DependentUpon>
     </Compile>
+    <Compile Include="guiati.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="guiati.designer.cs">
+      <DependentUpon>guiati.cs</DependentUpon>
+    </Compile>
     <Compile Include="libreria.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -193,6 +199,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="frmvizoper.resx">
       <DependentUpon>frmvizoper.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="guiati.resx">
+      <DependentUpon>guiati.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="login.resx">
       <DependentUpon>login.cs</DependentUpon>
