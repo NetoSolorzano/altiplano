@@ -143,12 +143,6 @@
     <Compile Include="proveed.designer.cs">
       <DependentUpon>proveed.cs</DependentUpon>
     </Compile>
-    <Compile Include="repOper.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="repOper.designer.cs">
-      <DependentUpon>repOper.cs</DependentUpon>
-    </Compile>
     <Compile Include="repsoper.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -221,9 +215,6 @@
     </Compile>
     <EmbeddedResource Include="proveed.resx">
       <DependentUpon>proveed.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="repOper.resx">
-      <DependentUpon>repOper.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="repsoper.resx">
       <DependentUpon>repsoper.cs</DependentUpon>

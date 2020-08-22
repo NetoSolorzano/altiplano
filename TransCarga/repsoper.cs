@@ -18,7 +18,8 @@ namespace TransCarga
         string colsfon = TransCarga.Program.colsbg;   // color fondo seleccion
         string colsfgr = TransCarga.Program.colsfc;   // color seleccion grilla
         string colstrp = TransCarga.Program.colstr;   // color del strip
-        static string nomtab = "cabpregr";         // 
+        static string nomtab = "cabpregr";            // 
+        DataTable dt = new DataTable();
         #region variables
         string asd = TransCarga.Program.vg_user;      // usuario conectado al sistema
         public int totfilgrid, cta;             // variables para impresion
@@ -192,12 +193,22 @@ namespace TransCarga
                 cmb_estad.DataSource = dtestad;
                 cmb_estad.DisplayMember = "descrizionerid";
                 cmb_estad.ValueMember = "idcodice";
+                // seleccion del tipo de documento cliente
+                const string contidoc = "select descrizionerid,idcodice,codigo from desc_doc " +
+                                       "where numero=1 order by idcodice";
+                cmd = new MySqlCommand(contidoc, conn);
+                MySqlDataAdapter datad = new MySqlDataAdapter(cmd);
+                DataTable dttd = new DataTable();
+                datad.Fill(dttd);
+                cmb_tidoc.DataSource = dttd;
+                cmb_tidoc.DisplayMember = "descrizionerid";
+                cmb_tidoc.ValueMember = "idcodice";
                 //
-
+                datad.Dispose();
             }
             conn.Close();
         }
-        private void grilla(string dgv)                             // FALTA 
+        private void grilla(string dgv)                             // 
         {
             switch (dgv)
             {
@@ -235,188 +246,40 @@ namespace TransCarga
             dgv_resumen.Font = tiplg;
             dgv_resumen.DefaultCellStyle.Font = tiplg;
             dgv_resumen.RowTemplate.Height = 15;
-            dgv_resumen.EnableHeadersVisualStyles = false;
-            //dgv_resumen.DefaultCellStyle.BackColor = Color.MediumAquamarine;
+            dgv_vtas.DefaultCellStyle.BackColor = Color.MediumAquamarine;
             dgv_resumen.AllowUserToAddRows = false;
-            if (dgv_resumen.DataSource == null) dgv_resumen.ColumnCount = 22;
-            // id,codigo,nombre,madera,CanC,sep_id,sep_fecha,sep_almac,canS,ent_id,ent_fecha,canE,
-            // codped,ped_fecha,canP,ing_id,ing_fecha,canI,sal_id,sal_fecha,canA
-            // id
-            dgv_resumen.Columns[0].Visible = false;
-            // codigo
-            dgv_resumen.Columns[1].Visible = true;
-            dgv_resumen.Columns[1].HeaderText = "Código";    // titulo de la columna
-            dgv_resumen.Columns[1].Width = 140;                // ancho
-            dgv_resumen.Columns[1].ReadOnly = true;           // lectura o no
-            dgv_resumen.Columns[1].Tag = "validaNO";
-            dgv_resumen.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-            // nombre
-            dgv_resumen.Columns[2].Visible = true;            // columna visible o no
-            dgv_resumen.Columns[2].HeaderText = "Nombre";    // titulo de la columna
-            dgv_resumen.Columns[2].Width = 200;                // ancho
-            dgv_resumen.Columns[2].ReadOnly = true;           // lectura o no
-            dgv_resumen.Columns[2].Tag = "validaNO";
-            dgv_resumen.Columns[2].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-            // madera
-            dgv_resumen.Columns[3].Visible = true;
-            dgv_resumen.Columns[3].HeaderText = "Madera";    // titulo de la columna
-            dgv_resumen.Columns[3].Width = 60;                // ancho
-            dgv_resumen.Columns[3].ReadOnly = true;           // lectura o no
-            dgv_resumen.Columns[3].Tag = "validaNO";
-            //dgv_resumen.Columns[2].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-            // cantidad contrato
-            dgv_resumen.Columns[4].Visible = true;
-            dgv_resumen.Columns[4].HeaderText = "Cant";
-            dgv_resumen.Columns[4].Width = 50;
-            dgv_resumen.Columns[4].ReadOnly = true;          // las celdas de esta columna pueden cambiarse
-            dgv_resumen.Columns[4].Tag = "validaNO";          // las celdas de esta columna se SI se validan
-            //dgv_resumen.Columns[3].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-            // SEPARACION - Id
-            dgv_resumen.Columns[5].Visible = true;
-            dgv_resumen.Columns[5].HeaderText = "Id";
-            dgv_resumen.Columns[5].Width = 50;
-            dgv_resumen.Columns[5].ReadOnly = true;          // las celdas de esta columna pueden cambiarse
-            dgv_resumen.Columns[5].Tag = "validaNO";          // las celdas de esta columna se validan
-            dgv_resumen.Columns[5].DefaultCellStyle.BackColor = Color.Aquamarine;
-            dgv_resumen.Columns[5].HeaderCell.Style.BackColor = Color.Aquamarine;
-            //dgv_resumen.Columns[4].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-            // SEPARACION - Fecha
-            dgv_resumen.Columns[6].Visible = true;
-            dgv_resumen.Columns[6].HeaderText = "RESERVA Fecha";
-            dgv_resumen.Columns[6].Width = 70;
-            dgv_resumen.Columns[6].ReadOnly = true;
-            dgv_resumen.Columns[6].Tag = "validaNO";          // las celdas de esta columna se NO se validan
-            dgv_resumen.Columns[6].DefaultCellStyle.BackColor = Color.Aquamarine;
-            dgv_resumen.Columns[6].HeaderCell.Style.BackColor = Color.Aquamarine;
-            //dgv_resumen.Columns[5].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-            // SEPARACION - Almacen
-            dgv_resumen.Columns[7].Visible = true;
-            dgv_resumen.Columns[7].HeaderText = "Almacen";
-            dgv_resumen.Columns[7].Width = 70;
-            dgv_resumen.Columns[7].ReadOnly = true;
-            dgv_resumen.Columns[7].Tag = "validaNO";          // las celdas de esta columna SI se validan
-            dgv_resumen.Columns[7].DefaultCellStyle.BackColor = Color.Aquamarine;
-            dgv_resumen.Columns[7].HeaderCell.Style.BackColor = Color.Aquamarine;
-            //dgv_resumen.Columns[6].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-            // SEPARACION - Cant
-            dgv_resumen.Columns[8].Visible = true;
-            dgv_resumen.Columns[8].HeaderText = "Cant";
-            dgv_resumen.Columns[8].Width = 50;
-            dgv_resumen.Columns[8].ReadOnly = true;
-            dgv_resumen.Columns[8].Tag = "validaNO";          // las celdas de esta columna SI se validan
-            dgv_resumen.Columns[8].DefaultCellStyle.BackColor = Color.Aquamarine;
-            dgv_resumen.Columns[8].HeaderCell.Style.BackColor = Color.Aquamarine;
-            //dgv_resumen.Columns[7].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-            // ENTREGAS - Id
-            dgv_resumen.Columns[9].Visible = true;
-            dgv_resumen.Columns[9].HeaderText = "Id";
-            dgv_resumen.Columns[9].Width = 50;
-            dgv_resumen.Columns[9].ReadOnly = true;
-            dgv_resumen.Columns[9].Tag = "validaNO";          // las celdas de esta columna SI se validan
-            dgv_resumen.Columns[9].DefaultCellStyle.BackColor = Color.Beige;
-            dgv_resumen.Columns[9].HeaderCell.Style.BackColor = Color.Beige;
-            //dgv_resumen.Columns[8].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-            // ENTREGAS - Fecha
-            dgv_resumen.Columns[10].Visible = true;
-            dgv_resumen.Columns[10].HeaderText = "ENTREGA Fecha";
-            dgv_resumen.Columns[10].Width = 70;
-            dgv_resumen.Columns[10].ReadOnly = true;
-            dgv_resumen.Columns[10].Tag = "validaNO";          // las celdas de esta columna SI se validan
-            dgv_resumen.Columns[10].DefaultCellStyle.BackColor = Color.Beige;
-            dgv_resumen.Columns[10].HeaderCell.Style.BackColor = Color.Beige;
-            //dgv_resumen.Columns[9].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-            // ENTREGAS - Cant
-            dgv_resumen.Columns[11].Visible = true;
-            dgv_resumen.Columns[11].HeaderText = "Cant";
-            dgv_resumen.Columns[11].Width = 50;
-            dgv_resumen.Columns[11].ReadOnly = true;
-            dgv_resumen.Columns[11].Tag = "validaNO";          // las celdas de esta columna SI se validan
-            dgv_resumen.Columns[11].DefaultCellStyle.BackColor = Color.Beige;
-            dgv_resumen.Columns[11].HeaderCell.Style.BackColor = Color.Beige;
-            //dgv_resumen.Columns[10].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-            // PEDIDOS - taller
-            dgv_resumen.Columns[12].Visible = true;
-            dgv_resumen.Columns[12].HeaderText = "Taller";
-            dgv_resumen.Columns[12].Width = 50;
-            dgv_resumen.Columns[12].ReadOnly = true;
-            dgv_resumen.Columns[12].Tag = "validaNO";          // las celdas de esta columna SI se validan
-            dgv_resumen.Columns[12].DisplayIndex = 12;
-            dgv_resumen.Columns[12].DefaultCellStyle.BackColor = Color.Coral;
-            dgv_resumen.Columns[12].HeaderCell.Style.BackColor = Color.Coral;
-            // PEDIDOS - Pedido
-            dgv_resumen.Columns[13].Visible = true;
-            dgv_resumen.Columns[13].HeaderText = "Pedido";
-            dgv_resumen.Columns[13].Width = 70;
-            dgv_resumen.Columns[13].ReadOnly = true;
-            dgv_resumen.Columns[13].Tag = "validaNO";          // las celdas de esta columna SI se validan
-            dgv_resumen.Columns[13].DefaultCellStyle.BackColor = Color.Coral;
-            dgv_resumen.Columns[13].HeaderCell.Style.BackColor = Color.Coral;
-            //dgv_resumen.Columns[11].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-            // PEDIDOS - Fecha
-            dgv_resumen.Columns[14].Visible = true;
-            dgv_resumen.Columns[14].HeaderText = "PEDIDOS Fecha";
-            dgv_resumen.Columns[14].Width = 70;
-            dgv_resumen.Columns[14].ReadOnly = true;
-            dgv_resumen.Columns[14].Tag = "validaNO";          // las celdas de esta columna SI se validan
-            dgv_resumen.Columns[14].DefaultCellStyle.BackColor = Color.Coral;
-            dgv_resumen.Columns[14].HeaderCell.Style.BackColor = Color.Coral;
-            //dgv_resumen.Columns[12].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-            // PEDIDOS - Cant
-            dgv_resumen.Columns[15].Visible = true;
-            dgv_resumen.Columns[15].HeaderText = "Cant";
-            dgv_resumen.Columns[15].Width = 50;
-            dgv_resumen.Columns[15].ReadOnly = true;
-            dgv_resumen.Columns[15].Tag = "validaNO";          // las celdas de esta columna SI se validan
-            dgv_resumen.Columns[15].DefaultCellStyle.BackColor = Color.Coral;
-            dgv_resumen.Columns[15].HeaderCell.Style.BackColor = Color.Coral;
-            // INGRESOS - Id4
-            dgv_resumen.Columns[16].Visible = true;
-            dgv_resumen.Columns[16].HeaderText = " Id";
-            dgv_resumen.Columns[16].Width = 50;
-            dgv_resumen.Columns[16].ReadOnly = true;
-            dgv_resumen.Columns[16].Tag = "validaNO";          // las celdas de esta columna SI se validan
-            dgv_resumen.Columns[16].DefaultCellStyle.BackColor = Color.DeepSkyBlue;
-            dgv_resumen.Columns[16].HeaderCell.Style.BackColor = Color.DeepSkyBlue;
-            // INGRESOS - Fecha
-            dgv_resumen.Columns[17].Visible = true;
-            dgv_resumen.Columns[17].HeaderText = "INGRESOS Fecha";
-            dgv_resumen.Columns[17].Width = 70;
-            dgv_resumen.Columns[17].ReadOnly = true;
-            dgv_resumen.Columns[17].Tag = "validaNO";          // las celdas de esta columna SI se validan
-            dgv_resumen.Columns[17].DefaultCellStyle.BackColor = Color.DeepSkyBlue;
-            dgv_resumen.Columns[17].HeaderCell.Style.BackColor = Color.DeepSkyBlue;
-            // INGRESOS - Cant
-            dgv_resumen.Columns[18].Visible = true;
-            dgv_resumen.Columns[18].HeaderText = "Cant";
-            dgv_resumen.Columns[18].Width = 50;
-            dgv_resumen.Columns[18].ReadOnly = true;
-            dgv_resumen.Columns[18].Tag = "validaNO";          // las celdas de esta columna SI se validan
-            dgv_resumen.Columns[18].DefaultCellStyle.BackColor = Color.DeepSkyBlue;
-            dgv_resumen.Columns[18].HeaderCell.Style.BackColor = Color.DeepSkyBlue;
-            // ENTREGAS - Id
-            dgv_resumen.Columns[19].Visible = true;
-            dgv_resumen.Columns[19].HeaderText = " Id";
-            dgv_resumen.Columns[19].Width = 50;
-            dgv_resumen.Columns[19].ReadOnly = true;
-            dgv_resumen.Columns[19].Tag = "validaNO";          // las celdas de esta columna SI se validan
-            dgv_resumen.Columns[19].DefaultCellStyle.BackColor = Color.Green;
-            dgv_resumen.Columns[19].HeaderCell.Style.BackColor = Color.Green;
-            // ENTREGAS - Fecha
-            dgv_resumen.Columns[20].Visible = true;
-            dgv_resumen.Columns[20].HeaderText = "SALIDAS Fecha";
-            dgv_resumen.Columns[20].Width = 70;
-            dgv_resumen.Columns[20].ReadOnly = true;
-            dgv_resumen.Columns[20].Tag = "validaNO";          // las celdas de esta columna SI se validan
-            dgv_resumen.Columns[20].DefaultCellStyle.BackColor = Color.Green;
-            dgv_resumen.Columns[20].HeaderCell.Style.BackColor = Color.Green;
-            // ENTREGAS - Cant
-            dgv_resumen.Columns[21].Visible = true;
-            dgv_resumen.Columns[21].HeaderText = "Cant";
-            dgv_resumen.Columns[21].Width = 50;
-            dgv_resumen.Columns[21].ReadOnly = true;
-            dgv_resumen.Columns[21].Tag = "validaNO";          // las celdas de esta columna SI se validan
-            dgv_resumen.Columns[21].DefaultCellStyle.BackColor = Color.Green;
-            dgv_resumen.Columns[21].HeaderCell.Style.BackColor = Color.Green;
+            //dgv_resumen.EnableHeadersVisualStyles = false;
+            dgv_resumen.Width = 1015;
+            if (dgv_resumen.DataSource == null) dgv_resumen.ColumnCount = 11;
+            for (int i = 0; i < dgv_resumen.Columns.Count; i++)
+            {
+                dgv_resumen.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                _ = decimal.TryParse(dgv_resumen.Rows[0].Cells[i].Value.ToString(), out decimal vd);
+                if (vd != 0) dgv_resumen.Columns[i].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+            }
+            int b = 0;
+            for (int i = 0; i < dgv_resumen.Columns.Count; i++)
+            {
+                int a = dgv_resumen.Columns[i].Width;
+                b += a;
+                dgv_resumen.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+                dgv_resumen.Columns[i].Width = a;
+            }
+            if (b < dgv_resumen.Width) dgv_resumen.Width = b + 60;
+        }
+        private void sumaGrilla(string grilla)
+        {
+            switch (grilla)
+            {
+                case "grillares":
+                    object sumfletes, sumsaldos;
+                    sumfletes = dt.Compute("Sum(TOT_PRE)", string.Empty);
+                    sumsaldos = dt.Compute("Sum(SALDO)", string.Empty);
+                    tx_valor.Text = sumfletes.ToString();
+                    tx_pendien.Text = sumsaldos.ToString();
+                    tx_nser.Text = dt.Rows.Count.ToString();
+                    break;
+            }
         }
         private void bt_vtasfiltra_Click(object sender, EventArgs e)    // filtra y muestra reporte pre guias
         {
@@ -540,35 +403,32 @@ namespace TransCarga
         }
         private void tx_codped_Leave(object sender, EventArgs e)    // valida existencia de pre guia
         {
-            /*
-            if(tx_codped.Text != "")
+            if(tx_codped.Text != "" && tx_dat_tido.Text != "")
             {
-                lib.estcont(tx_codped.Text.Trim());
                 try
                 {
                     MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
                     conn.Open();
                     if (conn.State == ConnectionState.Open)
                     {
-                        string consu = "select a.id,a.fecha,a.tipoes,a.cliente,a.valor,a.status,b.ruc,b.razonsocial,a.entrega " +
-                            "from contrat a left join anag_cli b on b.idanagrafica=a.cliente " +
-                            "where a.contrato=@ped";
+                        string consu = "select b.id,b.ruc,b.razonsocial,b.estado,b.tiposocio " +
+                            "from anag_cli b " +
+                            "where b.tipdoc=@td and ruc=@nd";
                         MySqlCommand micon = new MySqlCommand(consu, conn);
-                        micon.Parameters.AddWithValue("@ped", tx_codped.Text);
+                        micon.Parameters.AddWithValue("@td", tx_dat_tido.Text);
+                        micon.Parameters.AddWithValue("@nd", tx_codped.Text.Trim());
                         MySqlDataReader dr = micon.ExecuteReader();
                         if (dr.Read())
                         {
                             if(dr[0] == null)
                             {
-                                MessageBox.Show("No existe el contrato!", "Atención verifique", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+                                MessageBox.Show("No existe el cliente", "Atención verifique", MessageBoxButtons.OK, MessageBoxIcon.Hand);
                                 tx_codped.Text = "";
-                                tx_cliente.Text = "";
                                 tx_docu.Text = "";
-                                tx_fecha.Text = "";
+                                tx_cliente.Text = "";
                                 tx_valor.Text = "";
-                                tx_tiend.Text = "";
-                                tx_estad.Text = "";
-                                tx_fent.Text = "";
+                                tx_pendien.Text = "";
+                                tx_nser.Text = "";
                                 tx_codped.Focus();
                                 dr.Close();
                                 conn.Close();
@@ -576,17 +436,12 @@ namespace TransCarga
                             }
                             else
                             {
-                                tx_cliente.Text = dr.GetString(7);
-                                tx_docu.Text = dr.GetString(6);
-                                tx_fecha.Text = dr.GetString(1).Substring(0,10);
-                                tx_valor.Text = dr.GetString(4);
-                                tx_tiend.Text = dr.GetString(2);
-                                tx_estad.Text = dr.GetString(5);
-                                if (dr[8] != null && dr[8] != DBNull.Value && dr.GetString(8).Trim() != "") tx_fent.Text = dr.GetString(8).Substring(0, 10);
-                                else tx_fent.Text = "";
+                                tx_cliente.Text = dr.GetString(2);
+                                tx_docu.Text = dr.GetString(1);
                                 dr.Close();
                             }
                         }
+                        micon.Dispose();
                     }
                     conn.Close();
                 }
@@ -597,14 +452,13 @@ namespace TransCarga
                     return;
                 }
             }
-            */
         }
         private void bt_resumen_Click(object sender, EventArgs e)   // genera resumen de pre guia
         {
-            if(tx_codped.Text != "")
+            if(tx_codped.Text != "" && tx_dat_tido.Text != "")
             {
                 tx_codped_Leave(null, null);
-                string consulta = "res_cont";
+                string consulta = "res_serv_clte";
                 try
                 {
                     MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
@@ -614,9 +468,9 @@ namespace TransCarga
                         dgv_resumen.DataSource = null;
                         MySqlCommand micon = new MySqlCommand(consulta, conn);
                         micon.CommandType = CommandType.StoredProcedure;
-                        micon.Parameters.AddWithValue("@cont", tx_codped.Text);
+                        micon.Parameters.AddWithValue("@tido", tx_dat_tido.Text);
+                        micon.Parameters.AddWithValue("@nudo", tx_codped.Text.Trim());
                         MySqlDataAdapter da = new MySqlDataAdapter(micon);
-                        DataTable dt = new DataTable();
                         da.Fill(dt);
                         dgv_resumen.DataSource = dt;
                         dt.Dispose();
@@ -638,6 +492,7 @@ namespace TransCarga
                     return;
                 }
             }
+            sumaGrilla("grillares");
         }
 
         #region combos
@@ -670,6 +525,11 @@ namespace TransCarga
                 cmb_vtasloc.SelectedIndex = -1;
                 tx_dat_vtasloc.Text = "";
             }
+        }
+        private void cmb_tidoc_SelectionChangeCommitted(object sender, EventArgs e)
+        {
+            if (cmb_tidoc.SelectedValue != null) tx_dat_tido.Text = cmb_tidoc.SelectedValue.ToString();
+            else tx_dat_tido.Text = "";
         }
         #endregion
 
@@ -776,6 +636,7 @@ namespace TransCarga
             tabControl1.Enabled = true;
             cmb_estad.SelectedIndex = -1;
             cmb_vtasloc.SelectedIndex = -1;
+            cmb_tidoc.SelectedIndex = -1;
             chk_excluye.Checked = false;
         }
         private void Bt_anul_Click(object sender, EventArgs e)
@@ -789,8 +650,7 @@ namespace TransCarga
             if (tabControl1.Enabled == false) return;
             if (tabControl1.SelectedTab == tabres && dgv_resumen.Rows.Count > 0)
             {
-                /*
-                nombre = "resumen_contrato_" + tx_codped.Text.Trim() +"_" + DateTime.Now.Date.ToString("yyyy-MM-dd") + ".xlsx";
+                nombre = "resumen_cliente_" + tx_codped.Text.Trim() +"_" + DateTime.Now.Date.ToString("yyyy-MM-dd") + ".xlsx";
                 var aa = MessageBox.Show("Confirma que desea generar la hoja de calculo?",
                     "Archivo: " + nombre, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (aa == DialogResult.Yes)
@@ -802,7 +662,6 @@ namespace TransCarga
                     MessageBox.Show("Archivo generado con exito!");
                     this.Close();
                 }
-                */
             }
             if (tabControl1.SelectedTab == tabvtas && dgv_vtas.Rows.Count > 0)
             {
