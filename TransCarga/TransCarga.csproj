@@ -149,6 +149,7 @@
     <Compile Include="proveed.designer.cs">
       <DependentUpon>proveed.cs</DependentUpon>
     </Compile>
+    <Compile Include="publico.cs" />
     <Compile Include="repsoper.cs">
       <SubType>Form</SubType>
     </Compile>

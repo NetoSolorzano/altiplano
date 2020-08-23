@@ -20,7 +20,7 @@ namespace TransCarga
         string colsfgr = TransCarga.Program.colsfc;   // color seleccion grilla
         string colstrp = TransCarga.Program.colstr;   // color del strip
         bool conectS = TransCarga.Program.vg_conSol;    // usa conector solorsoft? true=si; false=no
-        static string nomtab = "cabpregr";              // cabecera de pre guias
+        static string nomtab = "cabguiai";              // cabecera de guias INDIVIDUALES
 
         #region variables
         string img_btN = "";
@@ -45,6 +45,7 @@ namespace TransCarga
         string MonDeft = "";            // moneda por defecto
         string gloDeta = "";            // glosa x defecto en el detalle
         static libreria lib = new libreria();
+        publico lp = new publico();     // libreria de clases
         string verapp = System.Diagnostics.FileVersionInfo.GetVersionInfo(Application.ExecutablePath).FileVersion;
         string claveSeg = "";           // clave de seguridad del envío
         string nomclie = Program.cliente;
@@ -119,7 +120,9 @@ namespace TransCarga
             dataGridView1.DefaultCellStyle.ForeColor = Color.FromName(colfogr);
             dataGridView1.DefaultCellStyle.SelectionBackColor = Color.FromName(colsfon);
             dataGridView1.DefaultCellStyle.SelectionForeColor = Color.FromName(colsfgr);
-
+            gbox_planilla.BackColor = Color.FromName(colpage);
+            gbox_docvta.BackColor = Color.FromName(colpage);
+            //
             tx_user.Text += asd;
             tx_nomuser.Text = lib.nomuser(asd);
             tx_locuser.Text += lib.locuser(asd);
@@ -155,28 +158,32 @@ namespace TransCarga
             tx_disDrio.AutoCompleteSource = AutoCompleteSource.CustomSource;    // distritos
             tx_disDrio.AutoCompleteCustomSource = distritos;                    // distritos
             // longitudes maximas de campos
+            tx_pregr_num.MaxLength = 8;
             tx_serie.MaxLength = 4;         // serie pre guia
             tx_numero.MaxLength = 8;        // numero pre guia
             tx_dirRem.MaxLength = 100;
+            tx_nomRem.MaxLength = 100;           // nombre remitente
             tx_distRtt.MaxLength = 25;
             tx_provRtt.MaxLength = 25;
             tx_dptoRtt.MaxLength = 25;
+            tx_nomDrio.MaxLength = 100;           // nombre destinatario
             tx_dirDrio.MaxLength = 100;
             tx_disDrio.MaxLength = 25;
             tx_proDrio.MaxLength = 25;
             tx_dptoDrio.MaxLength = 25;
             tx_docsOr.MaxLength = 100;          // documentos origen del traslado
-            tx_nomRem.MaxLength = 100;           // nombre remitente
-            tx_nomDrio.MaxLength = 100;           // nombre destinatario
+            tx_consig.MaxLength = 100;
+            tx_obser1.MaxLength = 150;
+            
             // grilla
             dataGridView1.Columns[0].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dataGridView1.Columns[3].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             // todo desabilidado
-            sololee(this);
+            sololee();
         }
         private void initIngreso()
         {
-            limpiar(this);
+            limpiar();
             limpia_chk();
             limpia_otros();
             limpia_combos();
@@ -280,7 +287,7 @@ namespace TransCarga
                 return;
             }
         }
-        private void jalaoc(string campo)        // jala pre guia desde el campo tx_idr
+        private void jalaoc(string campo)        // jala guia individual
         {
             try
             {
@@ -291,7 +298,7 @@ namespace TransCarga
                 }
                 if (campo == "sernum")
                 {
-                    parte = "where serpregui=@ser and numpregui=@num";
+                    parte = "where sergui=@ser and numgui=@num";
                 }
                 MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
                 conn.Open();
@@ -301,7 +308,7 @@ namespace TransCarga
                         "tidorepre,nudorepre,nombrepre,direrepre,ubigrepre,locorigen,dirorigen,ubiorigen,locdestin," +
                         "dirdestin,ubidestin,docsremit,obspregui,clifinpre,cantotpre,pestotpre,tipmonpre,tipcampre,seguroE," +
                         "subtotpre,igvpregui,totpregui,totpagpre,salpregui,estadoser,impreso,serguitra,numguitra,userc,userm,usera " +
-                        "from cabpregr " + parte;
+                        "from cabguiai " + parte;
                     MySqlCommand micon = new MySqlCommand(consulta, conn);
                     if (campo == "tx_idr") micon.Parameters.AddWithValue("@ida", tx_idr.Text);
                     if (campo == "sernum")
@@ -343,6 +350,9 @@ namespace TransCarga
                             tx_impreso.Text = dr.GetString("impreso");
                             tx_pregr_num.Text = dr.GetString("numguitra");
                             claveSeg = dr.GetString("seguroE");
+                            // falta jalar los datos de la planilla de carga
+                            // ....
+                            // falta jalar los datos de facturacion
                         }
                         tx_estado.Text = lib.nomstat(tx_dat_estad.Text);
                         cmb_origen.SelectedValue = tx_dat_locori.Text;
@@ -381,8 +391,8 @@ namespace TransCarga
         }
         private void jaladet(string idr)         // jala el detalle
         {
-            string jalad = "select id,serpregui,numpregui,cantprodi,unimedpro,codiprodi,descprodi,pesoprodi,precprodi,totaprodi " +
-                "from detpregr where idc=@idr";
+            string jalad = "select id,sergui,numgui,cantprodi,unimedpro,codiprodi,descprodi,pesoprodi,precprodi,totaprodi " +
+                "from detguiai where idc=@idr";
             using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
             {
                 conn.Open();
@@ -393,14 +403,8 @@ namespace TransCarga
                     {
                         DataTable dt = new DataTable();
                         da.Fill(dt);
-                        //DataGridViewRow fg = (DataGridViewRow)dataGridView1.Rows[0].Clone();
                         foreach (DataRow row in dt.Rows)
                         {
-                            //fg.Cells[0].Value = row[3].ToString();
-                            //fg.Cells[1].Value = row[4].ToString();
-                            //fg.Cells[2].Value = row[6].ToString();
-                            //fg.Cells[3].Value = row[7].ToString();
-                            //dataGridView1.Rows.Add(fg);
                             dataGridView1.Rows.Add(
                                 row[3].ToString(),
                                 row[4].ToString(),
@@ -616,73 +620,13 @@ namespace TransCarga
         #endregion autocompletados
 
         #region limpiadores_modos
-        public void sololee(Form lfrm)
+        private void sololee()
         {
-            foreach (Control oControls in lfrm.Controls)
-            {
-                if (oControls is TextBox)
-                {
-                    oControls.Enabled = false;
-                }
-                if (oControls is ComboBox)
-                {
-                    oControls.Enabled = false;
-                }
-                if (oControls is RadioButton)
-                {
-                    oControls.Enabled = false;
-                }
-                if (oControls is DateTimePicker)
-                {
-                    oControls.Enabled = false;
-                }
-                if (oControls is MaskedTextBox)
-                {
-                    oControls.Enabled = false;
-                }
-                if (oControls is GroupBox)
-                {
-                    oControls.Enabled = false;
-                }
-                if (oControls is CheckBox)
-                {
-                    oControls.Enabled = false;
-                }
-            }
+            lp.sololee(this);
         }
-        public void escribe(Form efrm)
+        private void escribe()
         {
-            foreach (Control oControls in efrm.Controls)
-            {
-                if (oControls is TextBox)
-                {
-                    oControls.Enabled = true;
-                }
-                if (oControls is ComboBox)
-                {
-                    oControls.Enabled = true;
-                }
-                if (oControls is RadioButton)
-                {
-                    oControls.Enabled = true;
-                }
-                if (oControls is DateTimePicker)
-                {
-                    oControls.Enabled = true;
-                }
-                if (oControls is MaskedTextBox)
-                {
-                    oControls.Enabled = true;
-                }
-                if (oControls is GroupBox)
-                {
-                    oControls.Enabled = true;
-                }
-                if (oControls is CheckBox)
-                {
-                    oControls.Enabled = true;
-                }
-            }
+            lp.escribe(this);
             tx_dirOrigen.ReadOnly = true;
             tx_dirDestino.ReadOnly = true;
             tx_nomRem.ReadOnly = true;
@@ -695,50 +639,24 @@ namespace TransCarga
             tx_dptoDrio.ReadOnly = true;
             tx_proDrio.ReadOnly = true;
             tx_disDrio.ReadOnly = true;
+            gbox_planilla.Enabled = false;
+            gbox_docvta.Enabled = false;
         }
-        public static void limpiar(Form ofrm)
+        private void limpiar()
         {
-            foreach (Control oControls in ofrm.Controls)
-            {
-                if (oControls is TextBox)
-                {
-                    oControls.Text = "";
-                }
-            }
+            lp.limpiar(this);
         }
-        public void limpia_chk()    
+        private void limpia_chk()    
         {
-            chk_seguridad.Checked = false;
+            lp.limpia_chk(this);
         }
-        public void limpia_otros()
+        private void limpia_otros()
         {
-            //this.checkBox1.Checked = false;
+            //
         }
-        public void limpia_combos()
+        private void limpia_combos()
         {
-            cmb_origen.SelectedIndex = -1;
-            cmb_destino.SelectedIndex = -1;
-            cmb_docRem.SelectedIndex = -1;
-            cmb_docDes.SelectedIndex = -1;
-            cmb_mon.SelectedIndex = -1;
-        }
-        public void limpiapag(TabPage pag)
-        {
-            foreach (Control oControls in pag.Controls)
-            {
-                if (oControls is TextBox)
-                {
-                    oControls.Text = "";
-                }
-                if(oControls is CheckBox)
-                {
-                    //checkBox1.Checked = false;
-                }
-                if(oControls is ComboBox)
-                {
-                    cmb_docRem.SelectedIndex = -1;
-                }
-            }
+            lp.limpia_cmb(this);
         }
         #endregion limpiadores_modos;
 

@@ -67,7 +67,7 @@
             this.pn_phor.Controls.Add(this.pn_user);
             this.pn_phor.Location = new System.Drawing.Point(190, 1);
             this.pn_phor.Name = "pn_phor";
-            this.pn_phor.Size = new System.Drawing.Size(817, 53);
+            this.pn_phor.Size = new System.Drawing.Size(945, 53);
             this.pn_phor.TabIndex = 0;
             // 
             // pn_menu
@@ -77,7 +77,7 @@
             this.pn_menu.Controls.Add(this.menuStrip1);
             this.pn_menu.Location = new System.Drawing.Point(-1, 25);
             this.pn_menu.Name = "pn_menu";
-            this.pn_menu.Size = new System.Drawing.Size(763, 28);
+            this.pn_menu.Size = new System.Drawing.Size(891, 28);
             this.pn_menu.TabIndex = 5;
             // 
             // menuStrip1
@@ -98,7 +98,7 @@
             this.bt_solorsoft.FlatAppearance.BorderColor = System.Drawing.Color.White;
             this.bt_solorsoft.FlatAppearance.BorderSize = 0;
             this.bt_solorsoft.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.bt_solorsoft.Location = new System.Drawing.Point(768, 4);
+            this.bt_solorsoft.Location = new System.Drawing.Point(896, 4);
             this.bt_solorsoft.Name = "bt_solorsoft";
             this.bt_solorsoft.Size = new System.Drawing.Size(45, 39);
             this.bt_solorsoft.TabIndex = 0;
@@ -118,7 +118,7 @@
             this.pn_user.Controls.Add(this.label1);
             this.pn_user.Location = new System.Drawing.Point(-1, 0);
             this.pn_user.Name = "pn_user";
-            this.pn_user.Size = new System.Drawing.Size(763, 25);
+            this.pn_user.Size = new System.Drawing.Size(891, 25);
             this.pn_user.TabIndex = 2;
             // 
             // tx_nuser
@@ -184,7 +184,7 @@
             this.pn_pver.Controls.Add(this.bt_salir);
             this.pn_pver.Location = new System.Drawing.Point(1, 1);
             this.pn_pver.Name = "pn_pver";
-            this.pn_pver.Size = new System.Drawing.Size(189, 718);
+            this.pn_pver.Size = new System.Drawing.Size(189, 822);
             this.pn_pver.TabIndex = 1;
             // 
             // bt_pedidos
@@ -301,7 +301,7 @@
             this.bt_salir.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.bt_salir.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.bt_salir.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.bt_salir.Location = new System.Drawing.Point(2, 666);
+            this.bt_salir.Location = new System.Drawing.Point(2, 770);
             this.bt_salir.Name = "bt_salir";
             this.bt_salir.Size = new System.Drawing.Size(185, 50);
             this.bt_salir.TabIndex = 2;
@@ -317,14 +317,14 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.pn_centro.Location = new System.Drawing.Point(191, 55);
             this.pn_centro.Name = "pn_centro";
-            this.pn_centro.Size = new System.Drawing.Size(816, 664);
+            this.pn_centro.Size = new System.Drawing.Size(944, 768);
             this.pn_centro.TabIndex = 2;
             // 
             // TransMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1008, 721);
+            this.ClientSize = new System.Drawing.Size(1136, 825);
             this.Controls.Add(this.pn_centro);
             this.Controls.Add(this.pn_pver);
             this.Controls.Add(this.pn_phor);

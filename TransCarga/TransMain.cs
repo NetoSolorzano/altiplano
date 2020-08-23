@@ -440,8 +440,7 @@ namespace TransCarga
         }       
         private void vpc_registro_Click(object sender, EventArgs e)         // Guías Remisión Transportista
         {
-            /*
-            pedsclients fpc = new pedsclients();
+            guiati fpc = new guiati();
             fpc.TopLevel = false;
             fpc.Parent = this;
             pn_centro.Controls.Add(fpc);
@@ -449,7 +448,6 @@ namespace TransCarga
             fpc.Anchor = AnchorStyles.None;
             fpc.Show();
             fpc.BringToFront();
-            */
         }      
         private void vic_registro_Click(object sender, EventArgs e)         // Guías Remisión Remitente
         {

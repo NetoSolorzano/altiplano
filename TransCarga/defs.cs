@@ -237,8 +237,8 @@ namespace TransCarga
             }
             tabControl1.SelectedTab = tabreg;
             // DATOS DEL COMBOBOX1  idtabella
-            this.comboBox1.Items.Clear();
-            ComboItem citem_tpu = new ComboItem();
+            comboBox1.Items.Clear();
+            //ComboItem citem_tpu = new ComboItem();
             const string contpu = "select ' ',idtabella from descrittive " +
                 "group by idtabella";
             MySqlCommand cmbtpu = new MySqlCommand(contpu, conn);
@@ -250,7 +250,7 @@ namespace TransCarga
             comboBox1.ValueMember = "idtabella";
             // datos de las deficiones
             string datgri = "select id,idtabella,idcodice,codigo,descrizione,descrizionerid,numero," +
-                "deta1,deta2,deta3,deta4,ubidir " +
+                "deta1,deta2,deta3,deta4,ubidir,marca1,marca2,marca3 " +
                 "from descrittive order by idtabella,idcodice";
             MySqlCommand cdg = new MySqlCommand(datgri, conn);
             MySqlDataAdapter dag = new MySqlDataAdapter(cdg);
@@ -295,7 +295,40 @@ namespace TransCarga
             }
             return retorna;
         }
-
+        private void mascara(object sender, EventArgs e)    // cambia etiquetas según la definicion
+        {
+            lb_idcodice.Text = "Id Código";
+            lb_codigo.Text = "Código2";
+            lb_descriz.Text = "Descripción";
+            lb_descrizrid.Text = "Descrip. Corta";
+            lb_det1.Text = "Det. 1 (90 digi)";
+            lb_det2.Text = "Det. 2 (45 digi)";
+            lb_det3.Text = "Det. 3 (45 digi)";
+            lb_det4.Text = "Det. 4 (45 digi)";
+            lb_ubigeo.Text = "Det. 5 (6 digi)";
+            chk_marc1.Text = "Marca1";
+            chk_marc2.Text = "Marca2";
+            chk_marc3.Text = "Marca3";
+            switch (textBox4.Text)
+            {
+                case "LOC":
+                    lb_idcodice.Text = "Id Código";
+                    lb_codigo.Text = "Código2";
+                    lb_descriz.Text = "Descripción";
+                    lb_descrizrid.Text = "Descrip. Corta";
+                    lb_det1.Text = "Dirección";
+                    lb_det2.Text = "Departamt";
+                    lb_det3.Text = "Provincia";
+                    lb_det4.Text = "Distrito";
+                    lb_ubigeo.Text = "Ubigeo";
+                    chk_marc1.Text = "Usa Pre Guías";
+                    chk_marc2.Text = "Marca2";
+                    chk_marc3.Text = "Marca3";
+                    break;
+                case "xxx":
+                    break;
+            }
+        }
         #region limpiadores_modos
         public void sololee(Form lfrm)
         {
@@ -377,14 +410,17 @@ namespace TransCarga
         public void limpia_chk()    
         {
             checkBox1.Checked = false;
+            chk_marc1.Checked = false;
+            chk_marc2.Checked = false;
+            chk_marc3.Checked = false;
         }
         public void limpia_otros()
         {
-            this.checkBox1.Checked = false;
+            //
         }
         public void limpia_combos()
         {
-            this.comboBox1.SelectedIndex = -1;
+            comboBox1.SelectedIndex = -1;
         }
         #endregion limpiadores_modos;
 
@@ -447,10 +483,10 @@ namespace TransCarga
                 }
                 string consulta = "insert into descrittive (" +
                     "idtabella,idcodice,codigo,descrizione,descrizionerid,numero," +
-                    "deta1,deta2,deta3,deta4,ubidir," +
+                    "deta1,deta2,deta3,deta4,ubidir,marca1,marca2,marca3," +
                     "verApp,userc,fechc,diriplan4,diripwan4,netbname)" +
                     " values (" +
-                    "@idt,@idc,@cod,@des,@der,@num,@det1,@det2,@det3,@det4,@det5," +
+                    "@idt,@idc,@cod,@des,@der,@num,@det1,@det2,@det3,@det4,@det5,@mar1,@mar2,@mar3," +
                     "@veap,@asd,now(),@dipl,@dipw,@nbna)";
                 MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
                 conn.Open();
@@ -469,6 +505,9 @@ namespace TransCarga
                     mycomand.Parameters.AddWithValue("@det3", tx_det3.Text);
                     mycomand.Parameters.AddWithValue("@det4", tx_det4.Text);
                     mycomand.Parameters.AddWithValue("@det5", tx_det5.Text);
+                    mycomand.Parameters.AddWithValue("@mar1", (chk_marc1.Checked == true) ? "1" : "0");
+                    mycomand.Parameters.AddWithValue("@mar2", (chk_marc2.Checked == true) ? "1" : "0");
+                    mycomand.Parameters.AddWithValue("@mar3", (chk_marc3.Checked == true) ? "1" : "0");
                     mycomand.Parameters.AddWithValue("@veap", verapp);
                     mycomand.Parameters.AddWithValue("@asd", asd);
                     mycomand.Parameters.AddWithValue("@dipl", lib.iplan());
@@ -495,7 +534,7 @@ namespace TransCarga
                     conn.Close();
                     // insertamos en el datatable
                     DataRow dr = dtg.NewRow();
-                    // id,idtabella,idcodice,codigo,descrizione,descrizionerid,numero,deta1,deta2,deta3,deta4,ubidir
+                    // id,idtabella,idcodice,codigo,descrizione,descrizionerid,numero,deta1,deta2,deta3,deta4,ubidir,marca1,marca2,marca3
                     dr[0] = idtu;
                     dr[1] = textBox4.Text;
                     dr[2] = textBox1.Text;
@@ -508,6 +547,9 @@ namespace TransCarga
                     dr[9] = tx_det3.Text;
                     dr[10] = tx_det4.Text;
                     dr[11] = tx_det5.Text;
+                    dr[12] = (chk_marc1.Checked == true) ? "1" : "0";
+                    dr[13] = (chk_marc2.Checked == true) ? "1" : "0";
+                    dr[14] = (chk_marc3.Checked == true) ? "1" : "0";
                     dtg.Rows.Add(dr);
                 }
                 else
@@ -522,6 +564,7 @@ namespace TransCarga
                 string consulta = "update descrittive set " +
                         "descrizione=@des,descrizionerid=@der,numero=@num,codigo=@cod," +
                         "deta1=@det1,deta2=@det2,deta3=@det3,deta4=@det4,ubidir=@det5," +
+                        "marca1=@mar1,marca2=@mar2,marca3=@mar3," +
                         "verApp=@veap,userm=@asd,fechm=now(),diriplan4=@dipl,diripwan4=@dipw,netbname=@nbna " +
                         "where id=@idc";
                 MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
@@ -538,6 +581,9 @@ namespace TransCarga
                     mycom.Parameters.AddWithValue("@det3", tx_det3.Text);
                     mycom.Parameters.AddWithValue("@det4", tx_det4.Text);
                     mycom.Parameters.AddWithValue("@det5", tx_det5.Text);
+                    mycom.Parameters.AddWithValue("@mar1", (chk_marc1.Checked == true) ? "1" : "0");
+                    mycom.Parameters.AddWithValue("@mar2", (chk_marc2.Checked == true) ? "1" : "0");
+                    mycom.Parameters.AddWithValue("@mar3", (chk_marc3.Checked == true) ? "1" : "0");
                     mycom.Parameters.AddWithValue("@veap", verapp);
                     mycom.Parameters.AddWithValue("@asd", asd);
                     mycom.Parameters.AddWithValue("@dipl", lib.iplan());
@@ -576,6 +622,9 @@ namespace TransCarga
                             dtg.Rows[i][9] = tx_det3.Text;
                             dtg.Rows[i][10] = tx_det4.Text;
                             dtg.Rows[i][11] = tx_det5.Text;
+                            dtg.Rows[i][12] = (chk_marc1.Checked == true) ? "1" : "0";
+                            dtg.Rows[i][13] = (chk_marc2.Checked == true) ? "1" : "0";
+                            dtg.Rows[i][14] = (chk_marc3.Checked == true) ? "1" : "0";
                         }
                     }
                 }
@@ -596,6 +645,8 @@ namespace TransCarga
                 limpiar(this);
                 limpiatab(tabreg);
                 limpia_otros();
+                limpia_chk();
+                //limpia_combos();
                 textBox1.Focus();
                 //dataload();
             }
@@ -615,6 +666,15 @@ namespace TransCarga
             //  validamos segun el modo
             if (textBox1.Text != "" && Tx_modo.Text=="NUEVO")
             {
+                // buscar en la grilla
+                DataRow[] ss = dtg.Select("idcodice='" + textBox1.Text.Trim() + "'");
+                if (ss.Length > 0)
+                {
+                    MessageBox.Show("Código YA existe!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    textBox1.Text = "";
+                    return;
+                }
+                /*
                 MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
                 conn.Open();
                 if (conn.State != ConnectionState.Open)
@@ -634,6 +694,7 @@ namespace TransCarga
                     return;        
                 }
                 conn.Close();
+                */
             }
             if (textBox1.Text != "" && Tx_modo.Text != "NUEVO")
             {
@@ -651,6 +712,9 @@ namespace TransCarga
                     tx_det3.Text = row[9].ToString();
                     tx_det4.Text = row[10].ToString();
                     tx_det5.Text = row[11].ToString();
+                    chk_marc1.Checked = (row[12].ToString() == "0") ? false : true;
+                    chk_marc2.Checked = (row[13].ToString() == "0") ? false : true;
+                    chk_marc3.Checked = (row[14].ToString() == "0") ? false : true;
                 }
                 if(contador == 0)
                 {
@@ -665,6 +729,9 @@ namespace TransCarga
                     tx_det3.Text = "";
                     tx_det4.Text = "";
                     tx_det5.Text = "";
+                    chk_marc1.Checked = false;
+                    chk_marc2.Checked = false;
+                    chk_marc3.Checked = false;
                     return;
                 }
             }
@@ -742,17 +809,19 @@ namespace TransCarga
             advancedDataGridView1.Enabled = true;
             tabControl1.SelectedTab = tabreg;
             escribe(this);
-            this.Tx_modo.Text = "NUEVO";
-            this.button1.Image = Image.FromFile(img_grab);
-            this.textBox1.Focus();
+            Tx_modo.Text = "NUEVO";
+            button1.Image = Image.FromFile(img_grab);
+            textBox1.Focus();
             limpiar(this);
             limpiatab(tabreg);
+            limpia_chk();
             limpia_otros();
             limpia_combos();
         }
         private void Bt_edit_Click(object sender, EventArgs e)
         {
             advancedDataGridView1.Enabled = true;
+            /*
             string codu = "";
             string idr = "";
             if (advancedDataGridView1.CurrentRow.Index > -1)
@@ -761,17 +830,20 @@ namespace TransCarga
                 idr = advancedDataGridView1.CurrentRow.Cells[0].Value.ToString();
                 tx_rind.Text = advancedDataGridView1.CurrentRow.Index.ToString();
             }
-            tabControl1.SelectedTab = tabgrilla;
+            */
             escribe(this);
             Tx_modo.Text = "EDITAR";
             button1.Image = Image.FromFile(img_grab);
-            var qa = tx_rind.Text;
+            //var qa = tx_rind.Text;
+            tabControl1.SelectedTab = tabgrilla;
             limpiar(this);
             limpiatab(tabreg);
-            tx_rind.Text = qa;
+            //tx_rind.Text = qa;
             limpia_otros();
             limpia_combos();
-            jalaoc("tx_idr");
+            limpia_chk();
+            //jalaoc("tx_idr");
+            advancedDataGridView1.Focus();
         }
         private void Bt_close_Click(object sender, EventArgs e)
         {
@@ -780,9 +852,9 @@ namespace TransCarga
         private void Bt_print_Click(object sender, EventArgs e)
         {
             sololee(this);
-            this.Tx_modo.Text = "IMPRIMIR";
-            this.button1.Image = Image.FromFile("print48");
-            this.textBox1.Focus();
+            Tx_modo.Text = "IMPRIMIR";
+            button1.Image = Image.FromFile("print48");
+            textBox1.Focus();
         }
         private void Bt_anul_Click(object sender, EventArgs e)
         {
@@ -850,14 +922,23 @@ namespace TransCarga
         #endregion botones_de_comando  ;
 
         #region comboboxes
-        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)     // razon social
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)     // definición
         {
-            if(comboBox1.SelectedIndex > -1)
+            // lo cambie por el changecommitted
+        }
+        private void comboBox1_SelectionChangeCommitted(object sender, EventArgs e)
+        {
+            if (comboBox1.SelectedIndex > -1)
             {
                 DataRow row = ((DataTable)comboBox1.DataSource).Rows[comboBox1.SelectedIndex];
                 textBox4.Text = (string)row["idtabella"];
-                //int Id = (int)row["idcodice"];
             }
+            //limpia_combos();
+            var xx = textBox4.Text;
+            limpiatab(tabreg);
+            limpia_chk();
+            limpia_otros();
+            textBox4.Text = xx;
         }
         #endregion comboboxes
 
