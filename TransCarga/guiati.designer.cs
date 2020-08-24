@@ -100,8 +100,6 @@
             this.groupBox15 = new System.Windows.Forms.GroupBox();
             this.label17 = new System.Windows.Forms.Label();
             this.tx_pregr_num = new System.Windows.Forms.TextBox();
-            this.tx_numero = new TransCarga.NumericTextBox();
-            this.tx_serie = new TransCarga.NumericTextBox();
             this.label8 = new System.Windows.Forms.Label();
             this.label14 = new System.Windows.Forms.Label();
             this.groupBox10 = new System.Windows.Forms.GroupBox();
@@ -141,7 +139,6 @@
             this.gbox_flete = new System.Windows.Forms.GroupBox();
             this.tx_dat_mone = new System.Windows.Forms.TextBox();
             this.cmb_mon = new System.Windows.Forms.ComboBox();
-            this.tx_flete = new TransCarga.NumericTextBox();
             this.label15 = new System.Windows.Forms.Label();
             this.groupBox16 = new System.Windows.Forms.GroupBox();
             this.tx_dat_locori = new System.Windows.Forms.TextBox();
@@ -155,8 +152,6 @@
             this.groupBox17 = new System.Windows.Forms.GroupBox();
             this.groupBox18 = new System.Windows.Forms.GroupBox();
             this.chk_seguridad = new System.Windows.Forms.CheckBox();
-            this.tx_totpes = new TransCarga.NumericTextBox();
-            this.tx_totcant = new TransCarga.NumericTextBox();
             this.groupBox27 = new System.Windows.Forms.GroupBox();
             this.groupBox28 = new System.Windows.Forms.GroupBox();
             this.label19 = new System.Windows.Forms.Label();
@@ -164,6 +159,16 @@
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.label28 = new System.Windows.Forms.Label();
             this.gbox_planilla = new System.Windows.Forms.GroupBox();
+            this.tx_pla_propiet = new System.Windows.Forms.TextBox();
+            this.tx_pla_ruc = new System.Windows.Forms.TextBox();
+            this.tx_pla_nomcho = new System.Windows.Forms.TextBox();
+            this.tx_pla_brevet = new System.Windows.Forms.TextBox();
+            this.tx_pla_plani = new System.Windows.Forms.TextBox();
+            this.tx_pla_fech = new System.Windows.Forms.TextBox();
+            this.tx_pla_confv = new System.Windows.Forms.TextBox();
+            this.tx_pla_autor = new System.Windows.Forms.TextBox();
+            this.tx_pla_carret = new System.Windows.Forms.TextBox();
+            this.tx_pla_placa = new System.Windows.Forms.TextBox();
             this.label30 = new System.Windows.Forms.Label();
             this.label22 = new System.Windows.Forms.Label();
             this.label20 = new System.Windows.Forms.Label();
@@ -176,16 +181,11 @@
             this.label29 = new System.Windows.Forms.Label();
             this.label31 = new System.Windows.Forms.Label();
             this.label34 = new System.Windows.Forms.Label();
-            this.tx_pla_placa = new System.Windows.Forms.TextBox();
-            this.tx_pla_carret = new System.Windows.Forms.TextBox();
-            this.tx_pla_autor = new System.Windows.Forms.TextBox();
-            this.tx_pla_confv = new System.Windows.Forms.TextBox();
-            this.tx_pla_fech = new System.Windows.Forms.TextBox();
-            this.tx_pla_plani = new System.Windows.Forms.TextBox();
-            this.tx_pla_brevet = new System.Windows.Forms.TextBox();
-            this.tx_pla_nomcho = new System.Windows.Forms.TextBox();
-            this.tx_pla_ruc = new System.Windows.Forms.TextBox();
-            this.tx_pla_propiet = new System.Windows.Forms.TextBox();
+            this.tx_totpes = new TransCarga.NumericTextBox();
+            this.tx_totcant = new TransCarga.NumericTextBox();
+            this.tx_flete = new TransCarga.NumericTextBox();
+            this.tx_numero = new TransCarga.NumericTextBox();
+            this.tx_serie = new TransCarga.NumericTextBox();
             this.toolStrip1.SuspendLayout();
             this.groupBox11.SuspendLayout();
             this.groupBox7.SuspendLayout();
@@ -924,28 +924,7 @@
             this.tx_pregr_num.Size = new System.Drawing.Size(73, 18);
             this.tx_pregr_num.TabIndex = 328;
             this.tx_pregr_num.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // tx_numero
-            // 
-            this.tx_numero.AllowSpace = false;
-            this.tx_numero.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_numero.Location = new System.Drawing.Point(54, 56);
-            this.tx_numero.Name = "tx_numero";
-            this.tx_numero.Size = new System.Drawing.Size(73, 20);
-            this.tx_numero.TabIndex = 2;
-            this.tx_numero.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.tx_numero.Leave += new System.EventHandler(this.tx_numero_Leave);
-            // 
-            // tx_serie
-            // 
-            this.tx_serie.AllowSpace = false;
-            this.tx_serie.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_serie.Location = new System.Drawing.Point(55, 32);
-            this.tx_serie.Name = "tx_serie";
-            this.tx_serie.Size = new System.Drawing.Size(44, 20);
-            this.tx_serie.TabIndex = 1;
-            this.tx_serie.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.tx_serie.Leave += new System.EventHandler(this.tx_serie_Leave);
+            this.tx_pregr_num.Leave += new System.EventHandler(this.tx_pregr_num_Leave);
             // 
             // label8
             // 
@@ -1170,7 +1149,7 @@
             // 
             this.cmb_docDes.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmb_docDes.FormattingEnabled = true;
-            this.cmb_docDes.Location = new System.Drawing.Point(91, 159);
+            this.cmb_docDes.Location = new System.Drawing.Point(92, 159);
             this.cmb_docDes.Name = "cmb_docDes";
             this.cmb_docDes.Size = new System.Drawing.Size(48, 21);
             this.cmb_docDes.TabIndex = 12;
@@ -1180,7 +1159,7 @@
             // 
             this.tx_numDocDes.BackColor = System.Drawing.SystemColors.Window;
             this.tx_numDocDes.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_numDocDes.Location = new System.Drawing.Point(139, 162);
+            this.tx_numDocDes.Location = new System.Drawing.Point(140, 162);
             this.tx_numDocDes.MaxLength = 0;
             this.tx_numDocDes.Name = "tx_numDocDes";
             this.tx_numDocDes.Size = new System.Drawing.Size(101, 18);
@@ -1328,17 +1307,6 @@
             this.cmb_mon.TabIndex = 22;
             this.cmb_mon.SelectedIndexChanged += new System.EventHandler(this.cmb_mon_SelectedIndexChanged);
             // 
-            // tx_flete
-            // 
-            this.tx_flete.AllowSpace = false;
-            this.tx_flete.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_flete.Location = new System.Drawing.Point(54, 39);
-            this.tx_flete.Name = "tx_flete";
-            this.tx_flete.Size = new System.Drawing.Size(73, 20);
-            this.tx_flete.TabIndex = 23;
-            this.tx_flete.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.tx_flete.Leave += new System.EventHandler(this.tx_flete_Leave);
-            // 
             // label15
             // 
             this.label15.AutoSize = true;
@@ -1475,28 +1443,6 @@
             this.chk_seguridad.CheckStateChanged += new System.EventHandler(this.chk_seguridad_CheckStateChanged);
             this.chk_seguridad.Click += new System.EventHandler(this.chk_seguridad_Click);
             // 
-            // tx_totpes
-            // 
-            this.tx_totpes.AllowSpace = false;
-            this.tx_totpes.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_totpes.Location = new System.Drawing.Point(533, 409);
-            this.tx_totpes.Name = "tx_totpes";
-            this.tx_totpes.ReadOnly = true;
-            this.tx_totpes.Size = new System.Drawing.Size(41, 20);
-            this.tx_totpes.TabIndex = 26;
-            this.tx_totpes.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // tx_totcant
-            // 
-            this.tx_totcant.AllowSpace = false;
-            this.tx_totcant.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_totcant.Location = new System.Drawing.Point(395, 409);
-            this.tx_totcant.Name = "tx_totcant";
-            this.tx_totcant.ReadOnly = true;
-            this.tx_totcant.Size = new System.Drawing.Size(41, 20);
-            this.tx_totcant.TabIndex = 25;
-            this.tx_totcant.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
             // groupBox27
             // 
             this.groupBox27.BackColor = System.Drawing.Color.White;
@@ -1582,6 +1528,96 @@
             this.gbox_planilla.Size = new System.Drawing.Size(746, 54);
             this.gbox_planilla.TabIndex = 345;
             this.gbox_planilla.TabStop = false;
+            // 
+            // tx_pla_propiet
+            // 
+            this.tx_pla_propiet.Location = new System.Drawing.Point(596, 31);
+            this.tx_pla_propiet.Name = "tx_pla_propiet";
+            this.tx_pla_propiet.ReadOnly = true;
+            this.tx_pla_propiet.Size = new System.Drawing.Size(142, 20);
+            this.tx_pla_propiet.TabIndex = 9;
+            this.tx_pla_propiet.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // tx_pla_ruc
+            // 
+            this.tx_pla_ruc.Location = new System.Drawing.Point(509, 31);
+            this.tx_pla_ruc.Name = "tx_pla_ruc";
+            this.tx_pla_ruc.ReadOnly = true;
+            this.tx_pla_ruc.Size = new System.Drawing.Size(87, 20);
+            this.tx_pla_ruc.TabIndex = 8;
+            this.tx_pla_ruc.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // tx_pla_nomcho
+            // 
+            this.tx_pla_nomcho.Location = new System.Drawing.Point(284, 31);
+            this.tx_pla_nomcho.Name = "tx_pla_nomcho";
+            this.tx_pla_nomcho.ReadOnly = true;
+            this.tx_pla_nomcho.Size = new System.Drawing.Size(144, 20);
+            this.tx_pla_nomcho.TabIndex = 7;
+            this.tx_pla_nomcho.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // tx_pla_brevet
+            // 
+            this.tx_pla_brevet.Location = new System.Drawing.Point(191, 31);
+            this.tx_pla_brevet.Name = "tx_pla_brevet";
+            this.tx_pla_brevet.ReadOnly = true;
+            this.tx_pla_brevet.Size = new System.Drawing.Size(93, 20);
+            this.tx_pla_brevet.TabIndex = 6;
+            this.tx_pla_brevet.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // tx_pla_plani
+            // 
+            this.tx_pla_plani.Location = new System.Drawing.Point(48, 31);
+            this.tx_pla_plani.Name = "tx_pla_plani";
+            this.tx_pla_plani.ReadOnly = true;
+            this.tx_pla_plani.Size = new System.Drawing.Size(69, 20);
+            this.tx_pla_plani.TabIndex = 5;
+            this.tx_pla_plani.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // tx_pla_fech
+            // 
+            this.tx_pla_fech.Location = new System.Drawing.Point(48, 9);
+            this.tx_pla_fech.Name = "tx_pla_fech";
+            this.tx_pla_fech.ReadOnly = true;
+            this.tx_pla_fech.Size = new System.Drawing.Size(69, 20);
+            this.tx_pla_fech.TabIndex = 0;
+            this.tx_pla_fech.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // tx_pla_confv
+            // 
+            this.tx_pla_confv.Location = new System.Drawing.Point(692, 9);
+            this.tx_pla_confv.Name = "tx_pla_confv";
+            this.tx_pla_confv.ReadOnly = true;
+            this.tx_pla_confv.Size = new System.Drawing.Size(46, 20);
+            this.tx_pla_confv.TabIndex = 4;
+            this.tx_pla_confv.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // tx_pla_autor
+            // 
+            this.tx_pla_autor.Location = new System.Drawing.Point(521, 9);
+            this.tx_pla_autor.Name = "tx_pla_autor";
+            this.tx_pla_autor.ReadOnly = true;
+            this.tx_pla_autor.Size = new System.Drawing.Size(69, 20);
+            this.tx_pla_autor.TabIndex = 3;
+            this.tx_pla_autor.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // tx_pla_carret
+            // 
+            this.tx_pla_carret.Location = new System.Drawing.Point(355, 9);
+            this.tx_pla_carret.Name = "tx_pla_carret";
+            this.tx_pla_carret.ReadOnly = true;
+            this.tx_pla_carret.Size = new System.Drawing.Size(69, 20);
+            this.tx_pla_carret.TabIndex = 2;
+            this.tx_pla_carret.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // tx_pla_placa
+            // 
+            this.tx_pla_placa.Location = new System.Drawing.Point(215, 9);
+            this.tx_pla_placa.Name = "tx_pla_placa";
+            this.tx_pla_placa.ReadOnly = true;
+            this.tx_pla_placa.Size = new System.Drawing.Size(69, 20);
+            this.tx_pla_placa.TabIndex = 1;
+            this.tx_pla_placa.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // label30
             // 
@@ -1715,95 +1751,60 @@
             this.label34.Text = "Importe";
             this.label34.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // tx_pla_placa
+            // tx_totpes
             // 
-            this.tx_pla_placa.Location = new System.Drawing.Point(215, 9);
-            this.tx_pla_placa.Name = "tx_pla_placa";
-            this.tx_pla_placa.ReadOnly = true;
-            this.tx_pla_placa.Size = new System.Drawing.Size(69, 20);
-            this.tx_pla_placa.TabIndex = 1;
-            this.tx_pla_placa.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.tx_totpes.AllowSpace = false;
+            this.tx_totpes.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_totpes.Location = new System.Drawing.Point(533, 409);
+            this.tx_totpes.Name = "tx_totpes";
+            this.tx_totpes.ReadOnly = true;
+            this.tx_totpes.Size = new System.Drawing.Size(41, 20);
+            this.tx_totpes.TabIndex = 26;
+            this.tx_totpes.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
-            // tx_pla_carret
+            // tx_totcant
             // 
-            this.tx_pla_carret.Location = new System.Drawing.Point(355, 9);
-            this.tx_pla_carret.Name = "tx_pla_carret";
-            this.tx_pla_carret.ReadOnly = true;
-            this.tx_pla_carret.Size = new System.Drawing.Size(69, 20);
-            this.tx_pla_carret.TabIndex = 2;
-            this.tx_pla_carret.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.tx_totcant.AllowSpace = false;
+            this.tx_totcant.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_totcant.Location = new System.Drawing.Point(395, 409);
+            this.tx_totcant.Name = "tx_totcant";
+            this.tx_totcant.ReadOnly = true;
+            this.tx_totcant.Size = new System.Drawing.Size(41, 20);
+            this.tx_totcant.TabIndex = 25;
+            this.tx_totcant.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
-            // tx_pla_autor
+            // tx_flete
             // 
-            this.tx_pla_autor.Location = new System.Drawing.Point(521, 9);
-            this.tx_pla_autor.Name = "tx_pla_autor";
-            this.tx_pla_autor.ReadOnly = true;
-            this.tx_pla_autor.Size = new System.Drawing.Size(69, 20);
-            this.tx_pla_autor.TabIndex = 3;
-            this.tx_pla_autor.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.tx_flete.AllowSpace = false;
+            this.tx_flete.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_flete.Location = new System.Drawing.Point(54, 39);
+            this.tx_flete.Name = "tx_flete";
+            this.tx_flete.Size = new System.Drawing.Size(73, 20);
+            this.tx_flete.TabIndex = 23;
+            this.tx_flete.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.tx_flete.Leave += new System.EventHandler(this.tx_flete_Leave);
             // 
-            // tx_pla_confv
+            // tx_numero
             // 
-            this.tx_pla_confv.Location = new System.Drawing.Point(692, 9);
-            this.tx_pla_confv.Name = "tx_pla_confv";
-            this.tx_pla_confv.ReadOnly = true;
-            this.tx_pla_confv.Size = new System.Drawing.Size(46, 20);
-            this.tx_pla_confv.TabIndex = 4;
-            this.tx_pla_confv.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.tx_numero.AllowSpace = false;
+            this.tx_numero.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_numero.Location = new System.Drawing.Point(54, 56);
+            this.tx_numero.Name = "tx_numero";
+            this.tx_numero.Size = new System.Drawing.Size(73, 20);
+            this.tx_numero.TabIndex = 2;
+            this.tx_numero.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.tx_numero.Leave += new System.EventHandler(this.tx_numero_Leave);
             // 
-            // tx_pla_fech
+            // tx_serie
             // 
-            this.tx_pla_fech.Location = new System.Drawing.Point(48, 9);
-            this.tx_pla_fech.Name = "tx_pla_fech";
-            this.tx_pla_fech.ReadOnly = true;
-            this.tx_pla_fech.Size = new System.Drawing.Size(69, 20);
-            this.tx_pla_fech.TabIndex = 0;
-            this.tx_pla_fech.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // tx_pla_plani
-            // 
-            this.tx_pla_plani.Location = new System.Drawing.Point(48, 31);
-            this.tx_pla_plani.Name = "tx_pla_plani";
-            this.tx_pla_plani.ReadOnly = true;
-            this.tx_pla_plani.Size = new System.Drawing.Size(69, 20);
-            this.tx_pla_plani.TabIndex = 5;
-            this.tx_pla_plani.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // tx_pla_brevet
-            // 
-            this.tx_pla_brevet.Location = new System.Drawing.Point(191, 31);
-            this.tx_pla_brevet.Name = "tx_pla_brevet";
-            this.tx_pla_brevet.ReadOnly = true;
-            this.tx_pla_brevet.Size = new System.Drawing.Size(93, 20);
-            this.tx_pla_brevet.TabIndex = 6;
-            this.tx_pla_brevet.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // tx_pla_nomcho
-            // 
-            this.tx_pla_nomcho.Location = new System.Drawing.Point(284, 31);
-            this.tx_pla_nomcho.Name = "tx_pla_nomcho";
-            this.tx_pla_nomcho.ReadOnly = true;
-            this.tx_pla_nomcho.Size = new System.Drawing.Size(144, 20);
-            this.tx_pla_nomcho.TabIndex = 7;
-            this.tx_pla_nomcho.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // tx_pla_ruc
-            // 
-            this.tx_pla_ruc.Location = new System.Drawing.Point(509, 31);
-            this.tx_pla_ruc.Name = "tx_pla_ruc";
-            this.tx_pla_ruc.ReadOnly = true;
-            this.tx_pla_ruc.Size = new System.Drawing.Size(87, 20);
-            this.tx_pla_ruc.TabIndex = 8;
-            this.tx_pla_ruc.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // tx_pla_propiet
-            // 
-            this.tx_pla_propiet.Location = new System.Drawing.Point(596, 31);
-            this.tx_pla_propiet.Name = "tx_pla_propiet";
-            this.tx_pla_propiet.ReadOnly = true;
-            this.tx_pla_propiet.Size = new System.Drawing.Size(142, 20);
-            this.tx_pla_propiet.TabIndex = 9;
-            this.tx_pla_propiet.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.tx_serie.AllowSpace = false;
+            this.tx_serie.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_serie.Location = new System.Drawing.Point(55, 32);
+            this.tx_serie.Name = "tx_serie";
+            this.tx_serie.Size = new System.Drawing.Size(44, 20);
+            this.tx_serie.TabIndex = 1;
+            this.tx_serie.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.tx_serie.Leave += new System.EventHandler(this.tx_serie_Leave);
             // 
             // guiati
             // 

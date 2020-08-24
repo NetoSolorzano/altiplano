@@ -23,6 +23,8 @@ form repsoper:
 - Reportes para todo el modulo de operaciones
 - Falta considerar MONEDA y TIPO DE CAMBIO EN ESTOS REPORTES ..................................... FALTA
 form guiati: (guias transportista individuales)
-- Se tiene que configurar que locales trabajan con Pre guias y que locales no. 
-- Los locales donde no manejan pre guías las guiasti generan la pre-guias automaticamente
-- Los locales donde SI se manejan pre-guias es obligatorio jalar los datos de ellas
+- Se tiene que configurar que locales trabajan con Pre guias y que locales no. (Definiciones) ...... ok
+- En boton NUEVO del form saber si trabaja con pre guias o no ...................................... ok
+- Los locales donde no manejan pre guías las guiasti generan la cuenta de control automaticamente 
+- Los locales donde SI se manejan pre-guias es obligatorio jalar los datos de ellas (boton NUEVO)
+- 

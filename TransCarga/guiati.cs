@@ -304,11 +304,13 @@ namespace TransCarga
                 conn.Open();
                 if (conn.State == ConnectionState.Open)
                 {
-                    string consulta = "select id,fechpregr,serpregui,numpregui,tidodepre,nudodepre,nombdepre,diredepre,ubigdepre," +
-                        "tidorepre,nudorepre,nombrepre,direrepre,ubigrepre,locorigen,dirorigen,ubiorigen,locdestin," +
-                        "dirdestin,ubidestin,docsremit,obspregui,clifinpre,cantotpre,pestotpre,tipmonpre,tipcampre,seguroE," +
-                        "subtotpre,igvpregui,totpregui,totpagpre,salpregui,estadoser,impreso,serguitra,numguitra,userc,userm,usera " +
-                        "from cabguiai " + parte;
+                    string consulta = "select a.id,a.fechpregr,a.sergui,a.numgui,a.tidodepre,a.nudodepre,a.nombdepre,a.diredepre,a.ubigdepre," +
+                        "a.tidorepre,a.nudorepre,a.nombrepre,a.direrepre,a.ubigrepre,a.locorigen,a.dirorigen,a.ubiorigen,a.locdestin," +
+                        "a.dirdestin,a.ubidestin,a.docsremit,a.obspregui,a.clifinpre,a.cantotpre,a.pestotpre,a.tipmonpre,a.tipcampre,a.seguroE," +
+                        "a.subtotpre,a.igvpregui,a.totpregui,a.totpagpre,a.salpregui,a.estadoser,a.impreso,a.serguitra,a.numguitra,a.userc,a.userm,a.usera," +
+                        "b.fecplacar,b.serplacar,b.numplacar,b.placamcar,b.chocamcar,b.fecdocvta,b.tipdocvta,b.serdocvta,b.numdocvta,b.codmonvta,b.totdocvta," +
+                        "b.codmonpag,b.totpagado,b.saldofina,b.feculpago,b.estadoser " +
+                        "from cabguiai a left join controlg b on b.serguitra=a.sergui and b.numguitra=a.numgui " + parte;
                     MySqlCommand micon = new MySqlCommand(consulta, conn);
                     if (campo == "tx_idr") micon.Parameters.AddWithValue("@ida", tx_idr.Text);
                     if (campo == "sernum")
@@ -389,6 +391,80 @@ namespace TransCarga
                 return;
             }
         }
+        private void jalapg(string numpre)      // jala datos de la pre guia
+        {
+            using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
+            {
+                conn.Open();
+                string jala = "select a.estadoser,a.locorigen,a.ubiorigen,a.locdestin,a.ubidestin," +
+                    "a.tidodepre,a.nudodepre,a.nombdepre,a.diredepre,a.ubigdepre," +
+                    "a.tidorepre,a.nudorepre,a.nombrepre,a.direrepre,a.ubigrepre," +
+                    "a.docsremit,a.obspregui,a.clifinpre,a.tipmonpre,a.seguroE,a.totpregui " +
+                    "from cabpregr a where a.numpregui=@num";
+                using (MySqlCommand micon = new MySqlCommand(jala, conn))
+                {
+                    micon.Parameters.AddWithValue("@num", numpre);
+                    MySqlDataReader dr = micon.ExecuteReader();
+                    if (dr.Read())
+                    {
+                        tx_dat_estad.Text = dr.GetString("estadoser");
+                        tx_dat_locori.Text = dr.GetString("locorigen");
+                        tx_dat_locdes.Text = dr.GetString("locdestin");
+                        tx_ubigO.Text = dr.GetString("ubiorigen");
+                        tx_ubigD.Text = dr.GetString("ubidestin");
+                        tx_dat_tdRem.Text = dr.GetString("tidorepre");
+                        tx_numDocRem.Text = dr.GetString("nudorepre");
+                        tx_nomRem.Text = dr.GetString("nombrepre");
+                        tx_dirRem.Text = dr.GetString("direrepre");
+                        tx_ubigRtt.Text = dr.GetString("ubigrepre");
+                        tx_dat_tDdest.Text = dr.GetString("tidodepre");
+                        tx_numDocDes.Text = dr.GetString("nudodepre");
+                        tx_nomDrio.Text = dr.GetString("nombdepre");
+                        tx_dirDrio.Text = dr.GetString("diredepre");
+                        tx_ubigDtt.Text = dr.GetString("ubigdepre");
+                        tx_docsOr.Text = dr.GetString("docsremit");
+                        tx_obser1.Text = dr.GetString("obspregui");
+                        tx_consig.Text = dr.GetString("clifinpre");
+                        tx_dat_mone.Text = dr.GetString("tipmonpre");
+                        tx_flete.Text = dr.GetDecimal("totpregui").ToString("#.##");
+                        claveSeg = dr.GetString("seguroE");
+                    }
+                    dr.Dispose();
+                }
+                string jalad = "select cantprodi,unimedpro,codiprodi,descprodi,pesoprodi,precprodi,totaprodi " +
+                    "from detpregr where numpregui = @num";
+                using (MySqlCommand micon = new MySqlCommand(jalad, conn))
+                {
+                    micon.Parameters.AddWithValue("@num", numpre);
+                    MySqlDataReader dr = micon.ExecuteReader();
+                    while (dr.Read())
+                    {
+                        dataGridView1.Rows.Add(
+                            dr.GetString(0),
+                            dr.GetString(1),
+                            dr.GetString(3),
+                            dr.GetString(4)
+                            );
+                    }
+                    dr.Dispose();
+                }
+                cmb_origen.SelectedValue = tx_dat_locori.Text;
+                cmb_origen_SelectionChangeCommitted(null, null);
+                cmb_destino.SelectedValue = tx_dat_locdes.Text;
+                cmb_destino_SelectionChangeCommitted(null, null);
+                cmb_docRem.SelectedValue = tx_dat_tdRem.Text;
+                string[] du_remit = lib.retDPDubigeo(tx_ubigRtt.Text);
+                tx_dptoRtt.Text = du_remit[0];
+                tx_provRtt.Text = du_remit[1];
+                tx_distRtt.Text = du_remit[2];
+                cmb_docDes.SelectedValue = tx_dat_tDdest.Text;
+                string[] du_desti = lib.retDPDubigeo(tx_ubigDtt.Text);
+                tx_dptoDrio.Text = du_desti[0];
+                tx_proDrio.Text = du_desti[1];
+                tx_disDrio.Text = du_desti[2];
+                cmb_mon.SelectedValue = tx_dat_mone.Text;
+            }
+        }
         private void jaladet(string idr)         // jala el detalle
         {
             string jalad = "select id,sergui,numgui,cantprodi,unimedpro,codiprodi,descprodi,pesoprodi,precprodi,totaprodi " +
@@ -428,7 +504,7 @@ namespace TransCarga
             }
             //  datos para los combos de locales origen y destino
             cmb_origen.Items.Clear();
-            MySqlCommand ccl = new MySqlCommand("select idcodice,descrizionerid,ubidir from desc_loc where numero=@bloq",conn);
+            MySqlCommand ccl = new MySqlCommand("select idcodice,descrizionerid,ubidir,marca1 from desc_loc where numero=@bloq",conn);
             ccl.Parameters.AddWithValue("@bloq", 1);
             MySqlDataAdapter dacu = new MySqlDataAdapter(ccl);
             dtu.Clear();
@@ -663,6 +739,7 @@ namespace TransCarga
         #region boton_form GRABA EDITA ANULA
         private void button1_Click(object sender, EventArgs e)
         {
+            #region validaciones
             if (tx_serie.Text.Trim() == "")
             {
                 tx_serie.Focus();
@@ -673,9 +750,21 @@ namespace TransCarga
                 cmb_origen.Focus();
                 return;
             }
+            if (tx_ubigO.Text.Trim() == "")
+            {
+                MessageBox.Show("Ingrese ubigeo correcto", " Error en origen! ");
+                tx_ubigO.Focus();
+                return;
+            }
             if (tx_dat_locdes.Text.Trim() == "")
             {
                 cmb_destino.Focus();
+                return;
+            }
+            if (tx_ubigD.Text.Trim() == "")
+            {
+                MessageBox.Show("Ingrese ubigeo correcto", " Error en destino! ");
+                tx_ubigD.Focus();
                 return;
             }
             if (tx_dat_mone.Text.Trim() == "")
@@ -702,38 +791,61 @@ namespace TransCarga
                 dataGridView1.Focus();
                 return;
             }
-            /*
             if (tx_dat_tdRem.Text.Trim() == "")
             {
-                MessageBox.Show("Seleccione el tipo de documento", " Error! ");
+                MessageBox.Show("Seleccione el tipo de documento", " Error en Remitente ");
                 tx_dat_tdRem.Focus();
                 return;
             }
             if (tx_numDocRem.Text.Trim() == "")
             {
-                MessageBox.Show("Ingrese el número de documento", " Error! ");
+                MessageBox.Show("Ingrese el número de documento", " Error en Remitente ");
                 tx_numDocRem.Focus();
                 return;
             }
             if (tx_nomRem.Text.Trim() == "")
             {
-                MessageBox.Show("Ingrese el nombre o razón social", " Error! ");
+                MessageBox.Show("Ingrese el nombre o razón social", " Error en Remitente ");
                 tx_nomRem.Focus();
                 return;
             }
             if (tx_dirRem.Text.Trim() == "")
             {
-                MessageBox.Show("Ingrese la dirección", " Error! ");
+                MessageBox.Show("Ingrese la dirección", " Error en Remitente ");
                 tx_dirRem.Focus();
                 return;
             }
-            if (tx_ubigO.Text.Trim() == "")
+            if (tx_dat_tDdest.Text.Trim() == "")
             {
-                MessageBox.Show("Ingrese ubigeo correcto", " Error! ");
-                tx_ubigO.Focus();
+                MessageBox.Show("Seleccione el tipo de documento", " Error en Destinatario ");
+                tx_dat_tDdest.Focus();
                 return;
             }
-            */
+            if (tx_numDocDes.Text.Trim() == "")
+            {
+                MessageBox.Show("Ingrese el número de documento", " Error en Destinatario ");
+                tx_numDocDes.Focus();
+                return;
+            }
+            if (tx_nomDrio.Text.Trim() == "")
+            {
+                MessageBox.Show("Ingrese el nombre o razón social", " Error en Destinatario ");
+                tx_nomDrio.Focus();
+                return;
+            }
+            if (tx_dirDrio.Text.Trim() == "")
+            {
+                MessageBox.Show("Ingrese la dirección", " Error en Destinatario ");
+                tx_dirDrio.Focus();
+                return;
+            }
+            if (tx_docsOr.Text.Trim() == "")
+            {
+                MessageBox.Show("Registre los documentos origen", " Faltan datos ");
+                tx_docsOr.Focus();
+                return;
+            }
+            #endregion
             // grabamos, actualizamos, etc
             string modo = Tx_modo.Text;
             string iserror = "no";
@@ -753,7 +865,7 @@ namespace TransCarga
                     {
                         if (graba() == true)
                         {
-                            var bb = MessageBox.Show("Desea imprimir la Pre Guía?" + Environment.NewLine +
+                            var bb = MessageBox.Show("Desea imprimir la Guía?" + Environment.NewLine +
                                 "El formato actual es " + vi_formato, "Confirme por favor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                             if (bb == DialogResult.Yes)
                             {
@@ -778,24 +890,30 @@ namespace TransCarga
                 if (tx_numero.Text.Trim() == "")
                 {
                     tx_numero.Focus();
-                    MessageBox.Show("Ingrese el número de la pre guía", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    MessageBox.Show("Ingrese el número de la guía", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                     return;
                 }
                 if (tx_dat_estad.Text == codAnul)
                 {
-                    MessageBox.Show("La pre guía esta ANULADA", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    MessageBox.Show("La guía esta ANULADA", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                     tx_numero.Focus();
                     return;
                 }
                 if ((tx_pregr_num.Text.Trim() == "") && tx_impreso.Text == "N")
                 {
-                    // no tiene guía y no esta impreso => se puede modificar todo y SI anular
+                    // SI ESTA IMPRESO NO SE PUEDE MODIFICAR, SOLO ANULAR
+                    // no tiene pre guía y no esta impreso => se puede modificar todo y SI anular
+                    // si tiene pre guía y no esta impreso => se modifica parcial y SI anular
+                    // si tiene planilla y no esta impreso => NO modifica parcial y NO anular
+                    // no tiene planilla y no esta impreso => se modifica parcial y NO anular
+                    // si tiene doc.venta y no esta impreso => NO modifica y NO anula
+                    // si tiene cobranza y no esta impreso => NO modifica y NO anula
                     if (tx_idr.Text.Trim() != "")
                     {
                         var aa = MessageBox.Show("Confirma que desea modificar la Pre-guía?", "Confirme por favor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                         if (aa == DialogResult.Yes)
                         {
-                            edita();
+                            edita();    // modificacion total
                         }
                         else
                         {
@@ -812,15 +930,15 @@ namespace TransCarga
                 if ((tx_pregr_num.Text.Trim() == "") && tx_impreso.Text == "S")
                 {
                     // no tiene guía y SI esta impreso => NO se puede modificar y SI anular
-                    sololee(this);
-                    MessageBox.Show("No se puede Modificar", "La Pre Guía esta impresa", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+                    sololee();
+                    MessageBox.Show("No se puede Modificar", "La Guía esta impresa", MessageBoxButtons.OK, MessageBoxIcon.Hand);
                     tx_dat_tdRem.Focus();
                     return;
                 }
                 if ((tx_pregr_num.Text.Trim() != "") && tx_impreso.Text == "N")
                 {
                     // si tiene guía y no esta impreso => NO se puede modificar NO anular
-                    sololee(this);
+                    sololee();
                     MessageBox.Show("No se puede Modificar", "Tiene guía enlazada", MessageBoxButtons.OK, MessageBoxIcon.Hand);
                     tx_dat_tdRem.Focus();
                     return;
@@ -828,7 +946,7 @@ namespace TransCarga
                 if ((tx_pregr_num.Text.Trim() != "") && tx_impreso.Text == "S")
                 {
                     // si tiene guía y si esta impreso => NO se puede modificar NO anular
-                    sololee(this);
+                    sololee();
                     MessageBox.Show("No se puede Modificar", "Tiene guía enlazada", MessageBoxButtons.OK, MessageBoxIcon.Hand);
                     tx_dat_tdRem.Focus();
                     return;
@@ -863,7 +981,7 @@ namespace TransCarga
                 if ((tx_pregr_num.Text.Trim() == "") && tx_impreso.Text == "S")
                 {
                     // no tiene guía y SI esta impreso => NO se puede modificar y SI anular
-                    sololee(this);
+                    sololee();
                     if (tx_idr.Text.Trim() != "")
                     {
                         var aa = MessageBox.Show("Confirma que desea ANULAR la Pre-guía?", "Confirme por favor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
@@ -882,7 +1000,7 @@ namespace TransCarga
                 if ((tx_pregr_num.Text.Trim() != "") && tx_impreso.Text == "N")
                 {
                     // si tiene guía y no esta impreso => NO se puede modificar NO anular
-                    sololee(this);
+                    sololee();
                     MessageBox.Show("No se puede Anular", "Tiene guía enlazada", MessageBoxButtons.OK, MessageBoxIcon.Hand);
                     tx_dat_tdRem.Focus();
                     return;
@@ -890,7 +1008,7 @@ namespace TransCarga
                 if ((tx_pregr_num.Text.Trim() != "") && tx_impreso.Text == "S")
                 {
                     // si tiene guía y si esta impreso => NO se puede modificar NO anular
-                    sololee(this);
+                    sololee();
                     MessageBox.Show("No se puede Anular", "Tiene guía enlazada", MessageBoxButtons.OK, MessageBoxIcon.Hand);
                     tx_dat_tdRem.Focus();
                     return;
@@ -917,7 +1035,7 @@ namespace TransCarga
             {
                 try
                 {
-                    string inserta = "insert into cabpregr (" +
+                    string inserta = "insert into  (" +
                         "fechpregr,serpregui,tidodepre,nudodepre,nombdepre,diredepre,ubigdepre," +
                         "tidorepre,nudorepre,nombrepre,direrepre,ubigrepre,locorigen,dirorigen,ubiorigen,locdestin," +
                         "dirdestin,ubidestin,docsremit,obspregui,clifinpre,cantotpre,pestotpre,tipmonpre,tipcampre," +
@@ -979,7 +1097,7 @@ namespace TransCarga
                         dr.Close();
                         dr.Dispose();
                         // actualiza la tabla detalle,
-                        string actua = "update detpregr set cantprodi=@can,unimedpro=@uni,codiprodi=@cod,descprodi=@des," +
+                        string actua = "update ??? set cantprodi=@can,unimedpro=@uni,codiprodi=@cod,descprodi=@des," +
                             "pesoprodi=@pes,precprodi=@preu,totaprodi=@pret " +
                             "where idc=@idr";
                         micon = new MySqlCommand(actua, conn);
@@ -999,7 +1117,7 @@ namespace TransCarga
                             {
                                 if (dataGridView1.Rows[i].Cells[0].Value.ToString().Trim() != "")
                                 {
-                                    string inserd2 = "insert into detpregr (idc,serpregui,numpregui," +
+                                    string inserd2 = "insert into ?? (idc,serpregui,numpregui," +
                                         "cantprodi,unimedpro,codiprodi,descprodi,pesoprodi,precprodi,totaprodi," +
                                         "estadoser,verApp,userc,fechc,diriplan4,diripwan4,netbname " +
                                         ") values (@idr,@serpgr,@corpgr," +
@@ -1059,7 +1177,7 @@ namespace TransCarga
                 {
                     if (tx_impreso.Text == "N")     // EDICION DE CABECERA Y CONTROL
                     {
-                        string actua = "update cabpregr a, controlg b set " +
+                        string actua = "update ??? a, controlg b set " +
                             "a.fechpregr=@fechop,a.tidodepre=@tdcdes,a.nudodepre=@ndcdes," +
                             "a.nombdepre=@nomdes,a.diredepre=@dircde,a.ubigdepre=@ubicde,a.tidorepre=@tdcrem,a.nudorepre=@ndcrem," +
                             "a.nombrepre=@nomrem,a.direrepre=@dircre,a.ubigrepre=@ubicre,a.locorigen=@locpgr,a.dirorigen=@dirpgr," +
@@ -1176,7 +1294,7 @@ namespace TransCarga
                 conn.Open();
                 if (conn.State == ConnectionState.Open)
                 {
-                    string canul = "update cabpregr, detpregr, controlg " +
+                    string canul = "update ????, detpregr, controlg " +
                         "set cabpregr.estadoser=@estser,cabpregr.usera=@asd,cabpregr.fecha=now(),cabpregr.diriplan4=@dil4," +
                         "cabpregr.diripwan4=@diw4,cabpregr.netbname=@nbnp,cabpregr.verApp=@veap," +
                         "detpregr.estadoser=@estser,detpregr.usera=@asd,detpregr.fecha=now(),detpregr.verApp=@veap," +
@@ -1426,23 +1544,66 @@ namespace TransCarga
                 if ((tx_pregr_num.Text.Trim() == "") && tx_impreso.Text == "S")
                 {
                     // no tiene guía y SI esta impreso => NO se puede modificar y SI anular
-                    sololee(this);
+                    sololee();
                 }
                 if ((tx_pregr_num.Text.Trim() != "") && tx_impreso.Text == "N")
                 {
                     // si tiene guía y no esta impreso => NO se puede modificar NO anular
-                    sololee(this);
+                    sololee();
                 }
                 if ((tx_pregr_num.Text.Trim() != "") && tx_impreso.Text == "S")
                 {
                     // si tiene guía y si esta impreso => NO se puede modificar NO anular
-                    sololee(this);
+                    sololee();
                 }
             }
         }
         private void tx_serie_Leave(object sender, EventArgs e)
         {
             tx_serie.Text = lib.Right("0000" + tx_serie.Text, 4);
+        }
+        private void tx_pregr_num_Leave(object sender, EventArgs e)     // numero pre guía
+        {
+            if (Tx_modo.Text == "NUEVO" && tx_pregr_num.Text.Trim() != "" && tx_pregr_num.ReadOnly == false)
+            {
+                tx_pregr_num.Text = lib.Right("00000000" + tx_pregr_num.Text, 8);
+                jalapg(tx_pregr_num.Text);
+                if (tx_dat_estad.Text == codAnul)
+                {
+                    MessageBox.Show("La Pre Guía esta ANULADA", "No puede continuar", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    limpiar();
+                    limpia_chk();
+                    limpia_combos();
+                    limpia_otros();
+                    tx_pregr_num.Focus();
+                }
+                else
+                {
+                    if (tx_numDocRem.Text.Trim() == "")
+                    {
+                        cmb_docRem.Enabled = true;
+                        tx_numDocRem.Enabled = true;
+                        tx_dirRem.Enabled = true;
+                        tx_dptoRtt.Enabled = true;
+                        tx_provRtt.Enabled = true;
+                        tx_distRtt.Enabled = true;
+                        tx_ubigRtt.Enabled = true;
+                    }
+                    if (tx_numDocDes.Text.Trim() == "")
+                    {
+                        cmb_docDes.Enabled = true;
+                        tx_numDocDes.Enabled = true;
+                        tx_dirDrio.Enabled = true;
+                        tx_dptoDrio.Enabled = true;
+                        tx_proDrio.Enabled = true;
+                        tx_disDrio.Enabled = true;
+                        tx_ubigDtt.Enabled = true;
+                    }
+                    if (claveSeg == "") chk_seguridad.Enabled = true;
+                    dataGridView1_RowLeave(null, null);
+                    dataGridView1.ReadOnly = true;
+                }
+            }
         }
         private void tx_flete_Leave(object sender, EventArgs e)
         {
@@ -1539,18 +1700,37 @@ namespace TransCarga
         #region botones
         private void Bt_add_Click(object sender, EventArgs e)
         {
-            escribe(this);
             Tx_modo.Text = "NUEVO";
             button1.Image = Image.FromFile(img_grab);
-            tx_serie.Text = "";
-            initIngreso();  // limpiamos/preparamos todo para el ingreso
-            gbox_flete.Enabled = true;
-            tx_numero.Text = "";
-            cmb_destino.Focus();
+            // local usa o no pre-guias
+            DataRow[] fila = dtu.Select("idcodice='" + v_clu + "'");
+            if(fila.Length > 0)
+            {
+                if (fila[0][3].ToString() == "1")
+                {
+                    sololee();
+                    gbox_serie.Enabled = true;
+                    tx_pregr_num.Enabled = true;
+                    tx_pregr_num.ReadOnly = false;
+                    tx_serie.ReadOnly = true;
+                    tx_numero.ReadOnly = true;
+                    initIngreso();  // limpiamos/preparamos todo para el ingreso
+                    tx_pregr_num.Focus();
+                }
+                if (fila[0][3].ToString() == "0")
+                {
+                    escribe();
+                    tx_serie.Text = "";
+                    initIngreso();  // limpiamos/preparamos todo para el ingreso
+                    gbox_flete.Enabled = true;
+                    tx_numero.Text = "";
+                    cmb_destino.Focus();
+                }
+            }
         }
         private void Bt_edit_Click(object sender, EventArgs e)
         {
-            escribe(this);
+            escribe();
             Tx_modo.Text = "EDITAR";
             button1.Image = Image.FromFile(img_grab);
             initIngreso();
@@ -1571,6 +1751,10 @@ namespace TransCarga
                     MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (aa == DialogResult.Yes)
                 {
+                    if (vi_formato == "A4")            // Seleccion de formato ... A4
+                    {
+                        if (imprimeA4() == true) updateprint("S");
+                    }
                     if (vi_formato == "A5")            // Seleccion de formato ... A5
                     {
                         if (imprimeA5() == true) updateprint("S");
@@ -1583,6 +1767,10 @@ namespace TransCarga
             }
             else
             {
+                if (vi_formato == "A4")            // Seleccion de formato ... A4
+                {
+                    if (imprimeA4() == true) updateprint("S");
+                }
                 if (vi_formato == "A5")
                 {
                     if (imprimeA5() == true) updateprint("S");
@@ -1596,7 +1784,7 @@ namespace TransCarga
         }
         private void Bt_anul_Click(object sender, EventArgs e)
         {
-            sololee(this);
+            sololee();
             Tx_modo.Text = "ANULAR";
             button1.Image = Image.FromFile(img_anul);
             initIngreso();
@@ -1607,7 +1795,7 @@ namespace TransCarga
         }
         private void Bt_ver_Click(object sender, EventArgs e)
         {
-            sololee(this);
+            sololee();
             Tx_modo.Text = "VISUALIZAR";
             button1.Image = Image.FromFile(img_ver);
             initIngreso();
@@ -1618,7 +1806,7 @@ namespace TransCarga
         }
         private void Bt_first_Click(object sender, EventArgs e)
         {
-            limpiar(this);
+            limpiar();
             limpia_chk();
             limpia_combos();
             limpia_otros();
@@ -1631,7 +1819,7 @@ namespace TransCarga
             if(tx_idr.Text.Trim() != "")
             {
                 int aca = int.Parse(tx_idr.Text) - 1;
-                limpiar(this);
+                limpiar();
                 limpia_chk();
                 limpia_combos();
                 limpia_otros();
@@ -1642,7 +1830,7 @@ namespace TransCarga
         private void Bt_next_Click(object sender, EventArgs e)
         {
             int aca = int.Parse(tx_idr.Text) + 1;
-            limpiar(this);
+            limpiar();
             limpia_chk();
             limpia_combos();
             limpia_otros();
@@ -1651,7 +1839,7 @@ namespace TransCarga
         }
         private void Bt_last_Click(object sender, EventArgs e)
         {
-            limpiar(this);
+            limpiar();
             limpia_chk();
             limpia_combos();
             limpia_otros();
@@ -1785,6 +1973,12 @@ namespace TransCarga
         #endregion
 
         #region impresion
+        private bool imprimeA4()
+        {
+            bool retorna = false;
+
+            return retorna;
+        }
         private bool imprimeA5()
         {
             bool retorna = false;
@@ -1822,6 +2016,10 @@ namespace TransCarga
         }
         private void printDocument1_PrintPage(object sender, System.Drawing.Printing.PrintPageEventArgs e)
         {
+            if (vi_formato == "A4")
+            {
+                imprime_A4(sender, e);
+            }
             if (vi_formato == "A5")
             {
                 imprime_A5(sender, e);
@@ -1830,6 +2028,10 @@ namespace TransCarga
             {
                 imprime_TK(sender, e);
             }
+        }
+        private void imprime_A4(object sender, System.Drawing.Printing.PrintPageEventArgs e)
+        {
+
         }
         private void imprime_A5(object sender, System.Drawing.Printing.PrintPageEventArgs e)
         {
@@ -1844,7 +2046,7 @@ namespace TransCarga
             e.Graphics.DrawString(nomclie, lt_titB, Brushes.Black, puntoF, StringFormat.GenericTypographic);                      // titulo del reporte
             posi = posi + alfi;
             string numguia = "PRE GUIA NRO. " + tx_serie.Text + "-" + tx_numero.Text;
-            float lt = (CentimeterToPixel(21F) - e.Graphics.MeasureString(numguia, lt_titB).Width) / 2;
+            float lt = (lp.CentimeterToPixel(this,21F) - e.Graphics.MeasureString(numguia, lt_titB).Width) / 2;
             puntoF = new PointF(lt, posi);
             e.Graphics.DrawString(numguia, lt_titB, Brushes.Black, puntoF, StringFormat.GenericTypographic);                      // titulo del reporte
             posi = posi + alfi*2;
@@ -1891,7 +2093,7 @@ namespace TransCarga
             // imprime el flete
             posi = posi + alfi * 2;
             string gtotal = "FLETE " + cmb_mon.Text + " " + tx_flete.Text;
-            lt = (CentimeterToPixel(21F) - e.Graphics.MeasureString(gtotal, lt_titB).Width) / 2;
+            lt = (lp.CentimeterToPixel(this,21F) - e.Graphics.MeasureString(gtotal, lt_titB).Width) / 2;
             ptoimp = new PointF(lt, posi);
             e.Graphics.DrawString(gtotal, lt_titB, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
             posi = posi + alfi;
@@ -1912,7 +2114,7 @@ namespace TransCarga
             SizeF cuad = new SizeF();
             for (int i = 1; i <= copias; i++)
             {
-                float lt = (CentimeterToPixel(anchTik) - e.Graphics.MeasureString(nomclie, lt_gra).Width) / 2;
+                float lt = (lp.CentimeterToPixel(this,anchTik) - e.Graphics.MeasureString(nomclie, lt_gra).Width) / 2;
                 PointF puntoF = new PointF(coli, posi);
                 e.Graphics.DrawString(nomclie, lt_gra, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                 //string tipdo = "PRE GUIA";
@@ -1921,7 +2123,7 @@ namespace TransCarga
                 //string nota = tipdo + " " + serie + "-" + corre;
                 posi = posi + alfi + 8;
                 string titnum = "PRE-GUIA " + serie + " - " + corre;
-                lt = (CentimeterToPixel(anchTik) - e.Graphics.MeasureString(titnum, lt_gra).Width) / 2;
+                lt = (lp.CentimeterToPixel(this,anchTik) - e.Graphics.MeasureString(titnum, lt_gra).Width) / 2;
                 puntoF = new PointF(lt, posi);
                 e.Graphics.DrawString(titnum, lt_gra, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                 posi = posi + alfi + alfi;
@@ -1948,8 +2150,8 @@ namespace TransCarga
                 e.Graphics.DrawString("REMITENTE: ", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                 posi = posi + alfi;
                 puntoF = new PointF(coli, posi);
-                if (tx_nomRem.Text.Trim().Length > 39) cuad = new SizeF(CentimeterToPixel(anchTik), alfi * 2);
-                else cuad = new SizeF(CentimeterToPixel(anchTik), alfi * 1);
+                if (tx_nomRem.Text.Trim().Length > 39) cuad = new SizeF(lp.CentimeterToPixel(this,anchTik), alfi * 2);
+                else cuad = new SizeF(lp.CentimeterToPixel(this,anchTik), alfi * 1);
                 RectangleF recdom = new RectangleF(puntoF, cuad);
                 e.Graphics.DrawString(tx_nomRem.Text.Trim(), lt_peq, Brushes.Black, recdom, StringFormat.GenericTypographic);
                 if (tx_nomRem.Text.Trim().Length > 39) posi = posi + alfi + alfi;
@@ -1958,8 +2160,8 @@ namespace TransCarga
                 e.Graphics.DrawString("DESTINATARIO: ", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                 posi = posi + alfi;
                 puntoF = new PointF(coli, posi);
-                if (tx_nomDrio.Text.Trim().Length > 39) cuad = new SizeF(CentimeterToPixel(anchTik), alfi * 2);
-                else cuad = new SizeF(CentimeterToPixel(anchTik), alfi * 1);
+                if (tx_nomDrio.Text.Trim().Length > 39) cuad = new SizeF(lp.CentimeterToPixel(this,anchTik), alfi * 2);
+                else cuad = new SizeF(lp.CentimeterToPixel(this,anchTik), alfi * 1);
                 recdom = new RectangleF(puntoF, cuad);
                 e.Graphics.DrawString(tx_nomDrio.Text.Trim(), lt_peq, Brushes.Black, recdom, StringFormat.GenericTypographic);
                 if (tx_nomRem.Text.Trim().Length > 39) posi = posi + alfi + alfi;
@@ -2008,13 +2210,13 @@ namespace TransCarga
                 // pie del documento ;
                 posi = posi + alfi;
                 string flete = "FLETE " + cmb_mon.Text + " " + tx_flete.Text;
-                lt = (CentimeterToPixel(anchTik) - e.Graphics.MeasureString(flete, lt_gra).Width) / 2;
+                lt = (lp.CentimeterToPixel(this,anchTik) - e.Graphics.MeasureString(flete, lt_gra).Width) / 2;
                 puntoF = new PointF(lt, posi);
                 e.Graphics.DrawString(flete, lt_gra, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                 posi = posi + alfi * 2;
                 // leyenda 4
                 string leyenda4 = "Documento sin valor legal";
-                lt = (CentimeterToPixel(anchTik) - e.Graphics.MeasureString(leyenda4, lt_med).Width) / 2;
+                lt = (lp.CentimeterToPixel(this,anchTik) - e.Graphics.MeasureString(leyenda4, lt_med).Width) / 2;
                 puntoF = new PointF(lt, posi);
                 e.Graphics.DrawString(leyenda4, lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic); 
                 posi = posi + alfi;
@@ -2026,7 +2228,7 @@ namespace TransCarga
                 e.Graphics.DrawString("Imp. " + DateTime.Now, lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                 posi = posi + alfi + alfi;
                 string despedida ="www.solorsoft.com/transcarga";
-                puntoF = new PointF((CentimeterToPixel(anchTik) - e.Graphics.MeasureString(despedida, lt_med).Width) / 2, posi);
+                puntoF = new PointF((lp.CentimeterToPixel(this,anchTik) - e.Graphics.MeasureString(despedida, lt_med).Width) / 2, posi);
                 e.Graphics.DrawString(despedida, lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                 posi = posi + alfi + alfi;
             }
@@ -2036,7 +2238,7 @@ namespace TransCarga
             using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
             {
                 conn.Open();
-                string consulta = "update cabpregr set impreso=@sn where id=@idr";
+                string consulta = "update ??? set impreso=@sn where id=@idr";
                 using (MySqlCommand micon = new MySqlCommand(consulta, conn))
                 {
                     micon.Parameters.AddWithValue("@sn", sn);
@@ -2044,15 +2246,6 @@ namespace TransCarga
                     micon.ExecuteNonQuery();
                 }
             }
-        }
-        int CentimeterToPixel(double Centimeter)
-        {
-            double pixel = -1;
-            using (Graphics g = this.CreateGraphics())
-            {
-                pixel = Centimeter * g.DpiY / 2.54d;
-            }
-            return (int)pixel;
         }
         #endregion
     }
