@@ -44,21 +44,24 @@ namespace TransCarga
         string codGene = "";            // codigo documento nuevo generado
         string MonDeft = "";            // moneda por defecto
         string gloDeta = "";            // glosa x defecto en el detalle
-        static libreria lib = new libreria();
-        publico lp = new publico();     // libreria de clases
+        static libreria lib = new libreria();   // libreria de procedimientos
+        publico lp = new publico();             // libreria de clases
         string verapp = System.Diagnostics.FileVersionInfo.GetVersionInfo(Application.ExecutablePath).FileVersion;
-        string claveSeg = "";           // clave de seguridad del envío
-        string nomclie = Program.cliente;
-        string rucclie = Program.ruc;
-        string asd = TransCarga.Program.vg_user;        // usuario conectado al sistema
-        string v_clu = "";              // codigo del local del usuario
-        string v_slu = "";              // serie del local del usuario
-        string v_nbu = "";              // nombre del usuario
-        string vi_formato = "";         // formato de impresion del documento
-        string vi_copias = "";          // cant copias impresion
-        string v_impA5 = "";            // nombre de la impresora matricial
-        string v_impTK = "";            // nombre de la ticketera
-        string vtc_flete = "";          // la guía va con el flete impreso ?? SI || NO
+        string claveSeg = "";                       // clave de seguridad del envío
+        string nomclie = Program.cliente;           // cliente usuario del sistema
+        string rucclie = Program.ruc;               // ruc del cliente usuario del sistema
+        string asd = TransCarga.Program.vg_user;    // usuario conectado al sistema
+        string v_clu = "";                          // codigo del local del usuario
+        string v_slu = "";                          // serie del local del usuario
+        string v_nbu = "";                          // nombre del usuario
+        string vi_formato = "";                     // formato de impresion del documento
+        string vi_copias = "";                      // cant copias impresion
+        string v_impA5 = "";                        // nombre de la impresora matricial
+        string v_impTK = "";                        // nombre de la ticketera
+        string vtc_flete = "";                      // la guía va con el flete impreso ?? SI || NO
+        string v_cid = "";                          // codigo interno de tipo de documento
+        string v_fra1 = "";                         // frase de si va o no con clave
+        string v_fra2 = "";                         // frase 
         #endregion
 
         AutoCompleteStringCollection departamentos = new AutoCompleteStringCollection();// autocompletado departamentos
@@ -257,10 +260,10 @@ namespace TransCarga
                     {
                         if (row["campo"].ToString() == "documento")
                         {
-                            if (row["param"].ToString() == "dni") vtc_dni = row["valor"].ToString().Trim();
-                            if (row["param"].ToString() == "ruc") vtc_ruc = row["valor"].ToString().Trim();
-                            if (row["param"].ToString() == "ext") vtc_ext = row["valor"].ToString().Trim();
-                            if (row["param"].ToString() == "flete") vtc_flete = row["valor"].ToString().Trim();           // codigo interno pre guias
+                            if (row["param"].ToString() == "flete") vtc_flete = row["valor"].ToString().Trim();           // imprime precio del flete ?
+                            if (row["param"].ToString() == "c_int") v_cid = row["valor"].ToString().Trim();               // codigo interno pre guias
+                            if (row["param"].ToString() == "frase1") v_fra1 = row["valor"].ToString().Trim();               // frase de si va con clave la guia
+                            if (row["param"].ToString() == "frase2") v_fra2 = row["valor"].ToString().Trim();               // frase otro dato
                         }
                         if (row["campo"].ToString() == "impresion")
                         {
@@ -295,22 +298,23 @@ namespace TransCarga
                 string parte = "";
                 if (campo == "tx_idr")
                 {
-                    parte = "where id=@ida";
+                    parte = "where a.id=@ida";
                 }
                 if (campo == "sernum")
                 {
-                    parte = "where sergui=@ser and numgui=@num";
+                    parte = "where a.sergui=@ser and a.numgui=@num";
                 }
                 MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
                 conn.Open();
                 if (conn.State == ConnectionState.Open)
                 {
-                    string consulta = "select a.id,a.fechpregr,a.sergui,a.numgui,a.tidodepre,a.nudodepre,a.nombdepre,a.diredepre,a.ubigdepre," +
-                        "a.tidorepre,a.nudorepre,a.nombrepre,a.direrepre,a.ubigrepre,a.locorigen,a.dirorigen,a.ubiorigen,a.locdestin," +
-                        "a.dirdestin,a.ubidestin,a.docsremit,a.obspregui,a.clifinpre,a.cantotpre,a.pestotpre,a.tipmonpre,a.tipcampre,a.seguroE," +
-                        "a.subtotpre,a.igvpregui,a.totpregui,a.totpagpre,a.salpregui,a.estadoser,a.impreso,a.serguitra,a.numguitra,a.userc,a.userm,a.usera," +
-                        "b.fecplacar,b.serplacar,b.numplacar,b.placamcar,b.chocamcar,b.fecdocvta,b.tipdocvta,b.serdocvta,b.numdocvta,b.codmonvta,b.totdocvta," +
-                        "b.codmonpag,b.totpagado,b.saldofina,b.feculpago,b.estadoser " +
+                    string consulta = "select a.id,a.fechopegr,a.sergui,a.numgui,a.numpregui,a.tidodegri,a.nudodegri,a.nombdegri,a.diredegri," +
+                        "a.ubigdegri,a.tidoregri,a.nudoregri,a.nombregri,a.direregri,a.ubigregri,a.locorigen,a.dirorigen,a.ubiorigen," +
+                        "a.locdestin,a.dirdestin,a.ubidestin,a.docsremit,a.obspregri,a.clifingri,a.cantotgri,a.pestotgri," +
+                        "a.tipmongri,a.tipcamgri,a.subtotgri,a.igvgri,a.totgri,a.totpag,a.salgri,a.estadoser,a.impreso," +
+                        "a.frase1,a.frase2,a.fleteimp,a.tipintrem,a.tipintdes,a.tippagpre,a.seguroE,a.userc,a.userm,a.usera," +
+                        "b.fecplacar,b.serplacar,b.numplacar,b.placamcar,b.chocamcar,b.fecdocvta,b.tipdocvta,b.serdocvta,b.numdocvta,b.codmonvta," +
+                        "b.totdocvta,b.codmonpag,b.totpagado,b.saldofina,b.feculpago,b.estadoser " +
                         "from cabguiai a left join controlg b on b.serguitra=a.sergui and b.numguitra=a.numgui " + parte;
                     MySqlCommand micon = new MySqlCommand(consulta, conn);
                     if (campo == "tx_idr") micon.Parameters.AddWithValue("@ida", tx_idr.Text);
@@ -325,33 +329,34 @@ namespace TransCarga
                         if (dr.Read())
                         {
                             tx_idr.Text = dr.GetString("id");
-                            tx_fechope.Text = dr.GetString("fechpregr");
+                            tx_fechope.Text = dr.GetString("fechopegr");
                             tx_digit.Text = dr.GetString("userc") + " " + dr.GetString("userm") + " " + dr.GetString("usera");
                             tx_dat_estad.Text = dr.GetString("estadoser");
-                            tx_serie.Text = dr.GetString("serpregui");
-                            tx_numero.Text = dr.GetString("numpregui");
+                            tx_serie.Text = dr.GetString("sergui");
+                            tx_numero.Text = dr.GetString("numgui");
                             tx_dat_locori.Text = dr.GetString("locorigen");
                             tx_dat_locdes.Text = dr.GetString("locdestin");
                             tx_ubigO.Text = dr.GetString("ubiorigen");
                             tx_ubigD.Text = dr.GetString("ubidestin");
-                            tx_dat_tdRem.Text = dr.GetString("tidorepre");
-                            tx_numDocRem.Text = dr.GetString("nudorepre");
-                            tx_nomRem.Text = dr.GetString("nombrepre");
-                            tx_dirRem.Text = dr.GetString("direrepre");
-                            tx_ubigRtt.Text = dr.GetString("ubigrepre");
-                            tx_dat_tDdest.Text = dr.GetString("tidodepre");
-                            tx_numDocDes.Text = dr.GetString("nudodepre");
-                            tx_nomDrio.Text = dr.GetString("nombdepre");
-                            tx_dirDrio.Text = dr.GetString("diredepre");
-                            tx_ubigDtt.Text = dr.GetString("ubigdepre");
+                            tx_dat_tdRem.Text = dr.GetString("tidoregri");
+                            tx_numDocRem.Text = dr.GetString("nudoregri");
+                            tx_nomRem.Text = dr.GetString("nombregri");
+                            tx_dirRem.Text = dr.GetString("direregri");
+                            tx_ubigRtt.Text = dr.GetString("ubigregri");
+                            tx_dat_tDdest.Text = dr.GetString("tidodegri");
+                            tx_numDocDes.Text = dr.GetString("nudodegri");
+                            tx_nomDrio.Text = dr.GetString("nombdegri");
+                            tx_dirDrio.Text = dr.GetString("diredegri");
+                            tx_ubigDtt.Text = dr.GetString("ubigdegri");
                             tx_docsOr.Text = dr.GetString("docsremit");
-                            tx_consig.Text = dr.GetString("clifinpre");
-                            tx_dat_mone.Text = dr.GetString("tipmonpre");
-                            tx_flete.Text = dr.GetDecimal("totpregui").ToString("#.##");
-                            tx_totcant.Text = dr.GetString("cantotpre");
-                            tx_totpes.Text = dr.GetDecimal("pestotpre").ToString("#.#");
+                            tx_obser1.Text = dr.GetString("obspregri");
+                            tx_consig.Text = dr.GetString("clifingri");
+                            tx_dat_mone.Text = dr.GetString("tipmongri");
+                            tx_flete.Text = dr.GetDecimal("totgri").ToString("#.##");
+                            tx_totcant.Text = dr.GetString("cantotgri");
+                            tx_totpes.Text = dr.GetDecimal("pestotgri").ToString("#.#");
                             tx_impreso.Text = dr.GetString("impreso");
-                            tx_pregr_num.Text = dr.GetString("numguitra");
+                            tx_pregr_num.Text = dr.GetString("numpregui");
                             claveSeg = dr.GetString("seguroE");
                             // falta jalar los datos de la planilla de carga
                             // ....
@@ -866,6 +871,12 @@ namespace TransCarga
                     {
                         if (graba() == true)
                         {
+                            // actualizamos la tabla seguimiento de usuarios
+                            string resulta = lib.ult_mov(nomform, nomtab, asd);
+                            if (resulta != "OK")
+                            {
+                                MessageBox.Show(resulta, "Error en actualización de seguimiento", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
                             var bb = MessageBox.Show("Desea imprimir la Guía?" + Environment.NewLine +
                                 "El formato actual es " + vi_formato, "Confirme por favor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                             if (bb == DialogResult.Yes)
@@ -1034,36 +1045,54 @@ namespace TransCarga
             conn.Open();
             if(conn.State == ConnectionState.Open)
             {
-                try
+                // asunto de la serie para la zona
+                // la zona se jala del desc_loc del destino
+                // 
+                // EL NUMERO DE GUIA SIEMPRE DEBE SER AUTOMÁTICO
+                //
+                string todo = "corre_serie";
+                using (MySqlCommand micon = new MySqlCommand(todo, conn))
                 {
-                    // asunto de la serie para la zona
-                    // la zona se jala del desc_loc del destino
-                    // 
-                    // EL NUMERO DE GUIA SIEMPRE DEBE SER AUTOMÁTICO
-                    //
-                    string inserta = "insert into  (" +
-                        "fechopegr,sergui,numgui,numpregui,tidodegri,nudodegri,nombdegri,diredegri,ubigdegri," +
-                        "tidoregri,nudoregri,nombregri,direregri,ubigregri,locorigen,dirorigen,ubiorigen," +
-                        "locdestin,dirdestin,ubidestin,docsremit,obspregri,clifingri,cantotgri,pestotgri," +
-                        "tipmongri,tipcamgri,subtotgri,igvgri,totgri,totpag,salgri,estadoser,frase1pre,frase2pre," +
-                        "impreso,fleteimp,tipintrem,tipintdes,tippagpre,seguroE,numplagri,plaplagri,carplagri," +
-                        "autplagri,confvegri,breplagri,proplagri," +
-                        "verApp,userc,fechc,diriplan4,diripwan4,netbname) " +
-                        "values (@fechop,@serpgr,  @tdcdes,@ndcdes,@nomdes,@dircde,@ubicde," +
-                        "@tdcrem,@ndcrem,@nomrem,@dircre,@ubicre,@locpgr,@dirpgr,@ubopgr,@ldcpgr," +
-                        "@didegr,@ubdegr,@dooprg,@obsprg,@conprg,@totcpr,@totppr,@monppr,@tcprgr," +
-                        "@subpgr,@igvpgr,@totpgr,@pagpgr,@totpgr,@estpgr,@clavse," +
-                        "@verApp,@asd,now(),@iplan,@ipwan,@nbnam)";
-                    MySqlCommand micon = new MySqlCommand(inserta, conn);
-                    micon.Parameters.AddWithValue("@fechop", tx_fechope.Text.Substring(6,4) + "-" + tx_fechope.Text.Substring(3, 2) + "-" + tx_fechope.Text.Substring(0, 2));
-                    micon.Parameters.AddWithValue("@serpgr", tx_serie.Text);
+                    micon.CommandType = CommandType.StoredProcedure;
+                    micon.Parameters.AddWithValue("td", v_cid);
+                    micon.Parameters.AddWithValue("ser", tx_serie.Text);
+                    using (MySqlDataReader dr0 = micon.ExecuteReader())
+                    {
+                        if (dr0.Read())
+                        {
+                            if (dr0[0] != null && dr0.GetString(0) != "")
+                            {
+                                tx_numero.Text = lib.Right("00000000" + dr0.GetString(0), 8);
+                            }
+                        }
+                    }
+                }
+                string inserta = "insert into cabguiai (" +
+                    "fechopegr,sergui,numgui,numpregui,tidodegri,nudodegri,nombdegri,diredegri,ubigdegri," +
+                    "tidoregri,nudoregri,nombregri,direregri,ubigregri,locorigen,dirorigen,ubiorigen," +
+                    "locdestin,dirdestin,ubidestin,docsremit,obspregri,clifingri,cantotgri,pestotgri," +
+                    "tipmongri,tipcamgri,subtotgri,igvgri,totgri,totpag,salgri,estadoser," +
+                    "frase1,frase2,fleteimp,tipintrem,tipintdes,tippagpre,seguroE," +
+                    "verApp,userc,fechc,diriplan4,diripwan4,netbname) " +
+                    "values (@fechop,@sergr,@numgr,@npregr,@tdcdes,@ndcdes,@nomdes,@dircde,@ubicde," +
+                    "@tdcrem,@ndcrem,@nomrem,@dircre,@ubicre,@locpgr,@dirpgr,@ubopgr," +
+                    "@ldcpgr,@didegr,@ubdegr,@dooprg,@obsprg,@conprg,@totcpr,@totppr," +
+                    "@monppr,@tcprgr,@subpgr,@igvpgr,@totpgr,@pagpgr,@totpgr,@estpgr," +
+                    "@frase1,@frase2,@fleimp,@ticlre,@ticlde,@tipacc,@clavse," +
+                    "@verApp,@asd,now(),@iplan,@ipwan,@nbnam)";
+                using (MySqlCommand micon = new MySqlCommand(inserta, conn))
+                {
+                    micon.Parameters.AddWithValue("@fechop", tx_fechope.Text.Substring(6, 4) + "-" + tx_fechope.Text.Substring(3, 2) + "-" + tx_fechope.Text.Substring(0, 2));
+                    micon.Parameters.AddWithValue("@sergr", tx_serie.Text);
+                    micon.Parameters.AddWithValue("@numgr", tx_numero.Text);
+                    micon.Parameters.AddWithValue("@npregr", tx_pregr_num.Text);
                     micon.Parameters.AddWithValue("@tdcdes", tx_dat_tDdest.Text);
                     micon.Parameters.AddWithValue("@ndcdes", tx_numDocDes.Text);
                     micon.Parameters.AddWithValue("@nomdes", tx_nomDrio.Text);
                     micon.Parameters.AddWithValue("@dircde", tx_dirDrio.Text);
                     micon.Parameters.AddWithValue("@ubicde", tx_ubigDtt.Text);
                     micon.Parameters.AddWithValue("@tdcrem", tx_dat_tdRem.Text);
-                    micon.Parameters.AddWithValue("@ndcrem", tx_numDocRem.Text); 
+                    micon.Parameters.AddWithValue("@ndcrem", tx_numDocRem.Text);
                     micon.Parameters.AddWithValue("@nomrem", tx_nomRem.Text);
                     micon.Parameters.AddWithValue("@dircre", tx_dirRem.Text);
                     micon.Parameters.AddWithValue("@ubicre", tx_ubigRtt.Text);
@@ -1074,7 +1103,7 @@ namespace TransCarga
                     micon.Parameters.AddWithValue("@didegr", tx_dirDestino.Text);
                     micon.Parameters.AddWithValue("@ubdegr", tx_ubigD.Text);
                     micon.Parameters.AddWithValue("@dooprg", tx_docsOr.Text);
-                    micon.Parameters.AddWithValue("@obsprg", "");  // observaciones de la pre guia ... no hay
+                    micon.Parameters.AddWithValue("@obsprg", tx_obser1.Text);
                     micon.Parameters.AddWithValue("@conprg", tx_consig.Text);
                     micon.Parameters.AddWithValue("@totcpr", tx_totcant.Text);
                     micon.Parameters.AddWithValue("@totppr", tx_totpes.Text);
@@ -1085,8 +1114,12 @@ namespace TransCarga
                     micon.Parameters.AddWithValue("@totpgr", tx_flete.Text); // total inc. igv
                     micon.Parameters.AddWithValue("@pagpgr", "0");
                     micon.Parameters.AddWithValue("@estpgr", tx_dat_estad.Text); // estado de la pre guía
-                    //micon.Parameters.AddWithValue("@ubiori", tx_ubigO.Text);
-                    //micon.Parameters.AddWithValue("@ubides", tx_ubigD.Text);
+                    micon.Parameters.AddWithValue("@frase1", (claveSeg == "") ? "" : v_fra1);
+                    micon.Parameters.AddWithValue("@frase2", v_fra2);
+                    micon.Parameters.AddWithValue("@fleimp", (chk_flete.Checked == true) ? "S" : "N");
+                    micon.Parameters.AddWithValue("@ticlre", tx_dat_tcr.Text);   // tipo de cliente remitente, credito o contado
+                    micon.Parameters.AddWithValue("@ticlde", tx_dat_tcd.Text);   // tipo de cliente destinatario, credito o contado
+                    micon.Parameters.AddWithValue("@tipacc", "");       // guía a credito o contra entrega
                     micon.Parameters.AddWithValue("@clavse", claveSeg);
                     micon.Parameters.AddWithValue("@verApp", verapp);
                     micon.Parameters.AddWithValue("@asd", asd);
@@ -1094,76 +1127,54 @@ namespace TransCarga
                     micon.Parameters.AddWithValue("@ipwan", lib.ipwan());
                     micon.Parameters.AddWithValue("@nbnam", Environment.MachineName);
                     micon.ExecuteNonQuery();
-                    //
-                    string lectura = "select last_insert_id()";
-                    micon = new MySqlCommand(lectura, conn);
-                    MySqlDataReader dr = micon.ExecuteReader();
-                    if (dr.Read())
-                    {
-                        tx_idr.Text = dr.GetString(0);
-                        tx_numero.Text = lib.Right("00000000" + dr.GetString(0),8);
-                        dr.Close();
-                        dr.Dispose();
-                        // actualiza la tabla detalle,
-                        string actua = "update ??? set cantprodi=@can,unimedpro=@uni,codiprodi=@cod,descprodi=@des," +
-                            "pesoprodi=@pes,precprodi=@preu,totaprodi=@pret " +
-                            "where idc=@idr";
-                        micon = new MySqlCommand(actua, conn);
-                        micon.Parameters.AddWithValue("@idr", tx_idr.Text);
-                        micon.Parameters.AddWithValue("@can", dataGridView1.Rows[0].Cells[0].Value.ToString());
-                        micon.Parameters.AddWithValue("@uni", dataGridView1.Rows[0].Cells[1].Value.ToString());
-                        micon.Parameters.AddWithValue("@cod", "");
-                        micon.Parameters.AddWithValue("@des", dataGridView1.Rows[0].Cells[2].Value.ToString());
-                        micon.Parameters.AddWithValue("@pes", dataGridView1.Rows[0].Cells[3].Value.ToString());
-                        micon.Parameters.AddWithValue("@preu", "0");
-                        micon.Parameters.AddWithValue("@pret", "0");
-                        micon.ExecuteNonQuery();
-                        //
-                        if (dataGridView1.Rows.Count > 2)
-                        {
-                            for(int i = 1; i < dataGridView1.Rows.Count - 1; i++)
-                            {
-                                if (dataGridView1.Rows[i].Cells[0].Value.ToString().Trim() != "")
-                                {
-                                    string inserd2 = "insert into ?? (idc,serpregui,numpregui," +
-                                        "cantprodi,unimedpro,codiprodi,descprodi,pesoprodi,precprodi,totaprodi," +
-                                        "estadoser,verApp,userc,fechc,diriplan4,diripwan4,netbname " +
-                                        ") values (@idr,@serpgr,@corpgr," +
-                                        "@can,@uni,@cod,@des,@pes,@preu,@pret," +
-                                        "@estpgr,@verApp,@asd,now(),@iplan,@ipwan,@nbnam)";
-                                    micon = new MySqlCommand(inserd2, conn);
-                                    micon.Parameters.AddWithValue("@idr", tx_idr.Text);
-                                    micon.Parameters.AddWithValue("@serpgr", tx_serie.Text);
-                                    micon.Parameters.AddWithValue("@corpgr", tx_numero.Text);
-                                    micon.Parameters.AddWithValue("@can", dataGridView1.Rows[i].Cells[0].Value.ToString());
-                                    micon.Parameters.AddWithValue("@uni", dataGridView1.Rows[i].Cells[1].Value.ToString());
-                                    micon.Parameters.AddWithValue("@cod", "");
-                                    micon.Parameters.AddWithValue("@des", gloDeta + dataGridView1.Rows[i].Cells[2].Value.ToString().Trim());
-                                    micon.Parameters.AddWithValue("@pes", dataGridView1.Rows[i].Cells[3].Value.ToString());
-                                    micon.Parameters.AddWithValue("@preu", "0");
-                                    micon.Parameters.AddWithValue("@pret", "0");
-                                    micon.Parameters.AddWithValue("@estpgr", tx_dat_estad.Text); // estado de la pre guía
-                                    micon.Parameters.AddWithValue("@verApp", verapp);
-                                    micon.Parameters.AddWithValue("@asd", Program.vg_user);
-                                    micon.Parameters.AddWithValue("@iplan", lib.iplan());
-                                    micon.Parameters.AddWithValue("@ipwan", lib.ipwan());
-                                    micon.Parameters.AddWithValue("@nbnam", Environment.MachineName);
-                                    micon.ExecuteNonQuery();
-                                }
-                            }
-                            micon.Dispose();
-                        }
-                        retorna = true;
-                    }
-                    dr.Close();
-                    conn.Close();
                 }
-                catch(MySqlException ex)
+                using (MySqlCommand micon = new MySqlCommand("select last_insert_id()", conn))
                 {
-                    MessageBox.Show(ex.Message, "Error en insertar pre guía");
-                    conn.Close();
-                    Application.Exit();
-                    return retorna;
+                    using (MySqlDataReader dr = micon.ExecuteReader())
+                    {
+                        if (dr.Read())
+                        {
+                            tx_idr.Text = dr.GetString(0);
+                        }
+                    }
+                }
+                // detalle
+                if (dataGridView1.Rows.Count > 0)
+                {
+                    for (int i = 0; i < dataGridView1.Rows.Count - 1; i++)
+                    {
+                        if (dataGridView1.Rows[i].Cells[0].Value.ToString().Trim() != "")
+                        {
+                            string inserd2 = "insert into detguiai (idc,sergui,numgui," +
+                                "cantprodi,unimedpro,codiprodi,descprodi,pesoprodi,precprodi,totaprodi," +
+                                "estadoser,verApp,userc,fechc,diriplan4,diripwan4,netbname " +
+                                ") values (@idr,@serpgr,@corpgr," +
+                                "@can,@uni,@cod,@des,@pes,@preu,@pret," +
+                                "@estpgr,@verApp,@asd,now(),@iplan,@ipwan,@nbnam)";
+                            using (MySqlCommand micon = new MySqlCommand(inserd2, conn))
+                            {
+                                micon.Parameters.AddWithValue("@idr", tx_idr.Text);
+                                micon.Parameters.AddWithValue("@serpgr", tx_serie.Text);
+                                micon.Parameters.AddWithValue("@corpgr", tx_numero.Text);
+                                micon.Parameters.AddWithValue("@can", dataGridView1.Rows[i].Cells[0].Value.ToString());
+                                micon.Parameters.AddWithValue("@uni", dataGridView1.Rows[i].Cells[1].Value.ToString());
+                                micon.Parameters.AddWithValue("@cod", "");
+                                micon.Parameters.AddWithValue("@des", gloDeta + dataGridView1.Rows[i].Cells[2].Value.ToString().Trim());
+                                micon.Parameters.AddWithValue("@pes", dataGridView1.Rows[i].Cells[3].Value.ToString());
+                                micon.Parameters.AddWithValue("@preu", "0");
+                                micon.Parameters.AddWithValue("@pret", "0");
+                                micon.Parameters.AddWithValue("@estpgr", tx_dat_estad.Text);
+                                micon.Parameters.AddWithValue("@verApp", verapp);
+                                micon.Parameters.AddWithValue("@asd", asd);
+                                micon.Parameters.AddWithValue("@iplan", lib.iplan());
+                                micon.Parameters.AddWithValue("@ipwan", lib.ipwan());
+                                micon.Parameters.AddWithValue("@nbnam", Environment.MachineName);
+                                micon.ExecuteNonQuery();
+                                //
+                                retorna = true;         // no hubo errores!
+                            }
+                        }
+                    }
                 }
             }
             else
@@ -1609,6 +1620,9 @@ namespace TransCarga
                     {
                         chk_seguridad.Checked = true;
                     }
+                    tx_docsOr.Enabled = true;
+                    tx_consig.Enabled = true;
+                    tx_obser1.Enabled = true;
                     dataGridView1_RowLeave(null, null);
                     dataGridView1.ReadOnly = true;
                 }
@@ -1935,11 +1949,35 @@ namespace TransCarga
             {
                 tx_dat_locdes.Text = cmb_destino.SelectedValue.ToString();
                 tx_dirDestino.Text = lib.dirloca(tx_dat_locdes.Text);
-                // direccion del pto de emision [tipdoc=preguia][est_anulado][origen][destino]
-                //string newSer = lib.serOrgDes(tx_dat_tdi.Text, codAnul, tx_dat_locori.Text, tx_dat_locdes.Text);
-                //MessageBox.Show(newSer, "Nueva serie");
+                if (Tx_modo.Text == "NUEVO")
+                {
+                    // vamos por la serie
+                    string consul = "SELECT tipdoc,serie,actual,final,format,glosaser,dir_pe,ubigeo," +
+                        "imp_ini,imp_fec,imp_det,imp_dtr,imp_pie " +
+                        "FROM series WHERE STATUS<> @ean and " +
+                        "tipdoc = @td AND sede = @ori AND zona = (SELECT zona FROM desc_loc WHERE idcodice = @des)";
+                    using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
+                    {
+                        conn.Open();
+                        using (MySqlCommand micon = new MySqlCommand(consul, conn))
+                        {
+                            micon.Parameters.AddWithValue("@ean", codAnul);
+                            micon.Parameters.AddWithValue("@td", v_cid);
+                            micon.Parameters.AddWithValue("@ori", tx_dat_locori.Text);
+                            micon.Parameters.AddWithValue("@des", tx_dat_locdes.Text);
+                            using (MySqlDataReader dr = micon.ExecuteReader())
+                            {
+                                if (dr.Read())
+                                {
+                                    tx_serie.Text = dr.GetString(1);
+                                    // no se donde pongo el resto
+                                    // direccion del pto de emision [tipdoc=preguia][est_anulado][origen][destino]
+                                }
+                            }
+                        }
+                    }
+                }
             }
-            // lo de arriba viene del selectedindexhcnaged
             if (tx_dat_locdes.Text.Trim() != "")
             {
                 DataRow[] fila = dtd.Select("idcodice='" + tx_dat_locdes.Text + "'");
@@ -2029,6 +2067,7 @@ namespace TransCarga
             }
             catch(Exception ex)
             {
+                MessageBox.Show(ex.Message, "Error en impresión A5");
                 retorna = false;
             }
             return retorna;
@@ -2044,6 +2083,7 @@ namespace TransCarga
             }
             catch (Exception ex)
             {
+                MessageBox.Show(ex.Message,"Error en imprimir TK");
                 retorna = false;
             }
             return retorna;

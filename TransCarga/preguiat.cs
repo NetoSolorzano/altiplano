@@ -1885,6 +1885,7 @@ namespace TransCarga
             }
             catch(Exception ex)
             {
+                MessageBox.Show(ex.Message,"Error en impresion A5");
                 retorna = false;
             }
             return retorna;
@@ -1900,6 +1901,7 @@ namespace TransCarga
             }
             catch (Exception ex)
             {
+                MessageBox.Show(ex.Message, "Error en imprimir TK");
                 retorna = false;
             }
             return retorna;

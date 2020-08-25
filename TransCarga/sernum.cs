@@ -38,6 +38,7 @@ namespace TransCarga
         string vEstAnu = "";            // estado de serie anulada
         AutoCompleteStringCollection forimp = new AutoCompleteStringCollection();
         libreria lib = new libreria();
+        publico lp = new publico(); 
         // string de conexion
         //static string serv = ConfigurationManager.AppSettings["serv"].ToString();
         static string port = ConfigurationManager.AppSettings["port"].ToString();
@@ -73,8 +74,8 @@ namespace TransCarga
             */
             init();
             toolboton();
-            limpiar(this);
-            sololee(this);
+            limpiar();
+            sololee();
             dataload();
             grilla();
             this.KeyPreview = true;
@@ -189,8 +190,13 @@ namespace TransCarga
             advancedDataGridView1.Columns[17].ReadOnly = true;
             advancedDataGridView1.Columns[17].Tag = "validaNO";
             advancedDataGridView1.Columns[17].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-            // zona
-            advancedDataGridView1.Columns[18].Visible = false;
+            // codigo de zona
+            advancedDataGridView1.Columns[18].Visible = true;
+            advancedDataGridView1.Columns[18].HeaderText = "Zona";
+            advancedDataGridView1.Columns[18].Width = 60;
+            advancedDataGridView1.Columns[18].ReadOnly = false;
+            advancedDataGridView1.Columns[18].Tag = "validaSI";
+            advancedDataGridView1.Columns[18].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
             // glosaser
             advancedDataGridView1.Columns[19].Visible = true;
             advancedDataGridView1.Columns[19].HeaderText = "Glosa";
@@ -281,6 +287,8 @@ namespace TransCarga
             textBox8.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[25].Value.ToString();   // dir_pe
             textBox9.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[26].Value.ToString();   // ubigeo
             textBox10.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[6].Value.ToString();   // final
+            tx_dat_zdes.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[18].Value.ToString();   // codigo zona
+            cmb_zdes.SelectedValue = tx_dat_zdes.Text;
             checkBox1.Checked = (advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[8].Value.ToString() != vEstAnu) ? true : false;
         }
         public void dataload()                  // jala datos para los combos y la grilla
@@ -298,35 +306,54 @@ namespace TransCarga
             comboBox1.Items.Clear();
             const string contpu = "select idcodice,descrizione from descrittive " +
                 "where idtabella='RAZ' order by idcodice";
-            MySqlCommand cmbtpu = new MySqlCommand(contpu, conn);
+            MySqlCommand micom = new MySqlCommand(contpu, conn);
             DataTable dttpu = new DataTable();
-            MySqlDataAdapter datpu = new MySqlDataAdapter(cmbtpu);
-            datpu.Fill(dttpu);
-            comboBox1.DataSource = dttpu;
-            comboBox1.DisplayMember = "descrizione";
-            comboBox1.ValueMember = "idcodice";
+            using (MySqlDataAdapter datpu = new MySqlDataAdapter(micom))
+            {
+                datpu.Fill(dttpu);
+                comboBox1.DataSource = dttpu;
+                comboBox1.DisplayMember = "descrizione";
+                comboBox1.ValueMember = "idcodice";
+            }
             // DATOS DEL COMBOBOX2  tipo documento
             comboBox2.Items.Clear();
             const string selcmb2 = "select idcodice,descrizione from descrittive " +
                 "where idtabella='TDV' order by idcodice";
-            MySqlCommand comcmb2 = new MySqlCommand(selcmb2, conn);
+            micom = new MySqlCommand(selcmb2, conn);
             DataTable dtcmb2 = new DataTable();
-            MySqlDataAdapter dacmb2 = new MySqlDataAdapter(comcmb2);
-            dacmb2.Fill(dtcmb2);
-            comboBox2.DataSource = dtcmb2;
-            comboBox2.DisplayMember = "descrizione";
-            comboBox2.ValueMember = "idcodice";
+            using (MySqlDataAdapter dacmb2 = new MySqlDataAdapter(micom))
+            {
+                dacmb2.Fill(dtcmb2);
+                comboBox2.DataSource = dtcmb2;
+                comboBox2.DisplayMember = "descrizione";
+                comboBox2.ValueMember = "idcodice";
+            }
             // DATOS DEL COMBOBOX3   
             comboBox3.Items.Clear();
             const string selcmb3 = "select idcodice,descrizione from descrittive " +
                 "where idtabella='LOC' order by idcodice";
-            MySqlCommand comcmb3 = new MySqlCommand(selcmb3, conn);
+            micom = new MySqlCommand(selcmb3, conn);
             DataTable dtcmb3 = new DataTable();
-            MySqlDataAdapter dacmb3 = new MySqlDataAdapter(comcmb3);
-            dacmb3.Fill(dtcmb3);
-            comboBox3.DataSource = dtcmb3;
-            comboBox3.DisplayMember = "descrizione";
-            comboBox3.ValueMember = "idcodice";
+            using (MySqlDataAdapter dacmb3 = new MySqlDataAdapter(micom))
+            {
+                dacmb3.Fill(dtcmb3);
+                comboBox3.DataSource = dtcmb3;
+                comboBox3.DisplayMember = "descrizione";
+                comboBox3.ValueMember = "idcodice";
+            }
+            // datos combo zona
+            cmb_zdes.Items.Clear();
+            string conzona = "select idcodice,descrizione from descrittive " +
+                "where idtabella='ZON' order by idcodice";
+            micom = new MySqlCommand(conzona, conn);
+            DataTable dtzona = new DataTable();
+            using (MySqlDataAdapter dazona = new MySqlDataAdapter(micom))
+            {
+                dazona.Fill(dtzona);
+                cmb_zdes.DataSource = dtzona;
+                cmb_zdes.DisplayMember = "descrizione";
+                cmb_zdes.ValueMember = "idcodice";
+            }
             // datos de los formatos de impresion
             autoforimp();
             // datos de las series
@@ -338,10 +365,12 @@ namespace TransCarga
                 "left join desc_tdv c on c.idcodice=a.tipdoc " +
                 "order by a.sede,a.tipdoc,a.serie";
             MySqlCommand cdg = new MySqlCommand(datgri, conn);
-            MySqlDataAdapter dag = new MySqlDataAdapter(cdg);
-            dtg.Clear();
-            dag.Fill(dtg);
-            //
+            using (MySqlDataAdapter dag = new MySqlDataAdapter(cdg))
+            {
+                dtg.Clear();
+                dag.Fill(dtg);
+            }
+            micom.Dispose();
             conn.Close();
         }
         string[] equivinter(string titulo)        // equivalencia entre titulo de columna y tabla 
@@ -357,9 +386,9 @@ namespace TransCarga
                     retorna[0] = "";
                     retorna[1] = "";
                     break;
-                case "????":
-                    retorna[0] = "";
-                    retorna[1] = "";
+                case "Zona":
+                    retorna[0] = "desc_zon";
+                    retorna[1] = "idcodice";
                     break;
                 case "LOCAL":
                     retorna[0] = "desc_alm";
@@ -382,95 +411,33 @@ namespace TransCarga
         }
 
         #region limpiadores_modos
-        public void sololee(Form lfrm)
+        public void sololee()
         {
-            foreach (Control oControls in lfrm.Controls)
-            {
-                if (oControls is TextBox)
-                {
-                    oControls.Enabled = false;
-                }
-                if (oControls is ComboBox)
-                {
-                    oControls.Enabled = false;
-                }
-                if (oControls is RadioButton)
-                {
-                    oControls.Enabled = false;
-                }
-                if (oControls is DateTimePicker)
-                {
-                    oControls.Enabled = false;
-                }
-                if (oControls is MaskedTextBox)
-                {
-                    oControls.Enabled = false;
-                }
-                if (oControls is GroupBox)
-                {
-                    oControls.Enabled = false;
-                }
-            }
+            lp.sololee(this);
         }
-        public void escribe(Form efrm)
+        public void escribe()
         {
-            foreach (Control oControls in efrm.Controls)
-            {
-                if (oControls is TextBox)
-                {
-                    oControls.Enabled = true;
-                }
-                if (oControls is ComboBox)
-                {
-                    oControls.Enabled = true;
-                }
-                if (oControls is RadioButton)
-                {
-                    oControls.Enabled = true;
-                }
-                if (oControls is DateTimePicker)
-                {
-                    oControls.Enabled = true;
-                }
-                if (oControls is MaskedTextBox)
-                {
-                    oControls.Enabled = true;
-                }
-            }
+            lp.escribe(this);
         }
-        private void limpiar(Form ofrm)
+        private void limpiar()
         {
-            foreach (Control oControls in ofrm.Controls)
-            {
-                if (oControls is TextBox)
-                {
-                    oControls.Text = "";
-                }
-            }
+            lp.limpiar(this);
         }
         private void limpiaPag(TabPage pag)
         {
-            foreach (Control oControls in pag.Controls)
-            {
-                if (oControls is TextBox)
-                {
-                    oControls.Text = "";
-                }
-            }
+            lp.limpiapag(pag);
         }
         public void limpia_chk()    
         {
-            checkBox1.Checked = false;
+            lp.limpia_chk(this);
         }
         public void limpia_otros()
         {
-            checkBox1.Checked = false;
+            //checkBox1.Checked = false;
         }
         public void limpia_combos()
         {
-            comboBox1.SelectedIndex = -1;
-            comboBox2.SelectedIndex = -1;
-            comboBox3.SelectedIndex = -1;
+            lp.limpia_cmb(this);
         }
         #endregion limpiadores_modos;
 
@@ -524,9 +491,9 @@ namespace TransCarga
                 {
                     iserror = "no";
                     string consulta = "insert into series (rsocial,tipdoc,serie,actual,coment,sede,format,glosaser,dir_pe,ubigeo," +
-                        "inicial,final,userc,fechc,verApp,diriplan4,diripwan4,status)" +
+                        "inicial,final,userc,fechc,verApp,diriplan4,diripwan4,status,zona)" +
                         " values (@raz,@tip,@ser,@act,@com,@sed,@for,@glo,@dir,@ubi," +
-                        "@nini,@nfin,@asd,now(),@vapp,@dil4,@diw4,@est)";
+                        "@nini,@nfin,@asd,now(),@vapp,@dil4,@diw4,@est,@zona)";
                     MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
                     conn.Open();
                     if (conn.State == ConnectionState.Open)
@@ -545,6 +512,7 @@ namespace TransCarga
                         mycomand.Parameters.AddWithValue("@ubi", textBox9.Text);
                         mycomand.Parameters.AddWithValue("@nini", textBox2.Text);
                         mycomand.Parameters.AddWithValue("@nfin", textBox10.Text);
+                        mycomand.Parameters.AddWithValue("@zona", tx_dat_zdes.Text);
                         mycomand.Parameters.AddWithValue("@asd", asd);
                         mycomand.Parameters.AddWithValue("@vapp", verapp);
                         mycomand.Parameters.AddWithValue("@dil4", lib.iplan());
@@ -573,6 +541,7 @@ namespace TransCarga
                             drs[8] = (checkBox1.Checked == true) ? "" : vEstAnu;
                             drs[15] = comboBox3.Text;
                             drs[17] = textBox6.Text;
+                            drs[18] = tx_dat_zdes.Text;
                             drs[19] = textBox7.Text;
                             drs[25] = textBox8.Text;
                             drs[26] = textBox9.Text;
@@ -611,7 +580,7 @@ namespace TransCarga
                     iserror = "no";
                     string consulta = "update series set " +
                             "rsocial=@raz,tipdoc=@tip,serie=@ser,actual=@act,coment=@com,sede=@sed,format=@for,glosaser=@glo,status=@est," +
-                            "dir_pe=@dir,ubigeo=@ubi,final=@nfin,userm=@asd,fechm=now(),verApp=@vapp,diriplan4=@dil4,diripwan4=@diw4 " +
+                            "dir_pe=@dir,ubigeo=@ubi,final=@nfin,userm=@asd,fechm=now(),verApp=@vapp,diriplan4=@dil4,diripwan4=@diw4,zona=@zona " +
                             "where id=@idc";
                     MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
                     conn.Open();
@@ -631,6 +600,7 @@ namespace TransCarga
                         mycom.Parameters.AddWithValue("@dir", textBox8.Text);
                         mycom.Parameters.AddWithValue("@ubi", textBox9.Text);
                         mycom.Parameters.AddWithValue("@nfin", textBox10.Text);
+                        mycom.Parameters.AddWithValue("@zona", tx_dat_zdes.Text);
                         mycom.Parameters.AddWithValue("@asd", asd);
                         mycom.Parameters.AddWithValue("@vapp", verapp);
                         mycom.Parameters.AddWithValue("@dil4", lib.iplan());
@@ -662,6 +632,7 @@ namespace TransCarga
                                     dtg.Rows[i][8] = (checkBox1.Checked == true) ? "" : vEstAnu;
                                     dtg.Rows[i][15] = comboBox3.Text;
                                     dtg.Rows[i][17] = textBox6.Text;
+                                    dtg.Rows[i][18] = tx_dat_zdes.Text;
                                     dtg.Rows[i][19] = textBox7.Text;
                                     dtg.Rows[i][25] = textBox8.Text;
                                     dtg.Rows[i][26] = textBox9.Text;
@@ -700,7 +671,7 @@ namespace TransCarga
             if (iserror == "no")
             {
                 // debe limpiar los campos y actualizar la grilla
-                limpiar(this);
+                limpiar();
                 limpiaPag(tabreg);
                 limpia_otros();
                 limpia_chk();
@@ -824,11 +795,11 @@ namespace TransCarga
         {
             advancedDataGridView1.Enabled = true;
             tabControl1.SelectedTab = tabreg;
-            escribe(this);
+            escribe();
             Tx_modo.Text = "NUEVO";
             button1.Image = Image.FromFile(img_grab);
             textBox1.Focus();
-            limpiar(this);
+            limpiar();
             limpia_otros();
             limpia_combos();
         }
@@ -844,10 +815,10 @@ namespace TransCarga
                 tx_rind.Text = advancedDataGridView1.CurrentRow.Index.ToString();
             }
             tabControl1.SelectedTab = tabgrilla;
-            escribe(this);
+            escribe();
             Tx_modo.Text = "EDITAR";
             button1.Image = Image.FromFile(img_grab);
-            limpiar(this);
+            limpiar();
             limpia_otros();
             limpia_combos();
             jalaoc("tx_idr");
@@ -858,7 +829,7 @@ namespace TransCarga
         }
         private void Bt_print_Click(object sender, EventArgs e)
         {
-            sololee(this);
+            sololee();
             this.Tx_modo.Text = "IMPRIMIR";
             this.button1.Image = Image.FromFile("print48");
             this.textBox1.Focus();
@@ -875,17 +846,17 @@ namespace TransCarga
                 tx_rind.Text = advancedDataGridView1.CurrentRow.Index.ToString();
             }
             tabControl1.SelectedTab = tabreg;
-            escribe(this);
+            escribe();
             Tx_modo.Text = "ANULAR";
             button1.Image = Image.FromFile(img_anul);
-            limpiar(this);
+            limpiar();
             limpia_otros();
             limpia_combos();
             jalaoc("tx_idr");
         }
         private void Bt_first_Click(object sender, EventArgs e)
         {
-            limpiar(this);
+            limpiar();
             limpia_chk();
             limpia_combos();
             //--
@@ -897,7 +868,7 @@ namespace TransCarga
             string aca = tx_idr.Text;
             limpia_chk();
             limpia_combos();
-            limpiar(this);
+            limpiar();
             //--
             tx_idr.Text = lib.goback(nomtab, aca);
             tx_idr_Leave(null, null);
@@ -907,14 +878,14 @@ namespace TransCarga
             string aca = tx_idr.Text;
             limpia_chk();
             limpia_combos();
-            limpiar(this);
+            limpiar();
             //--
             tx_idr.Text = lib.gonext(nomtab, aca);
             tx_idr_Leave(null, null);
         }
         private void Bt_last_Click(object sender, EventArgs e)
         {
-            limpiar(this);
+            limpiar();
             limpia_chk();
             limpia_combos();
             //--
@@ -951,6 +922,13 @@ namespace TransCarga
                 textBox5.Text = (string)row["idcodice"];
             }
         }
+        private void cmb_zdes_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (cmb_zdes.SelectedIndex > -1)
+            {
+                tx_dat_zdes.Text = cmb_zdes.SelectedValue.ToString();
+            }
+        }
         #endregion comboboxes
 
         #region advancedatagridview
@@ -971,7 +949,7 @@ namespace TransCarga
                 idr = advancedDataGridView1.CurrentRow.Cells[0].Value.ToString();
                 tx_rind.Text = advancedDataGridView1.CurrentRow.Index.ToString();
                 tabControl1.SelectedTab = tabreg;
-                limpiar(this);
+                limpiar();
                 limpia_otros();
                 limpia_combos();
                 tx_idr.Text = idr;

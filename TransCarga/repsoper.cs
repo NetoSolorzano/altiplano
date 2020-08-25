@@ -41,7 +41,7 @@ namespace TransCarga
         string img_preview = "";        // imagen del boton preview e imprimir reporte
         string letpied = "";            // letra indentificadora de piedra en detalle 2
         string cliente = Program.cliente;    // razon social para los reportes
-        int pageCount = 1, cuenta = 0;
+        //int pageCount = 1, cuenta = 0;
         #endregion
         libreria lib = new libreria();
         // string de conexion

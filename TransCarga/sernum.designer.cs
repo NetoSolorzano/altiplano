@@ -107,6 +107,11 @@
             this.textBox3 = new System.Windows.Forms.TextBox();
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.button1 = new System.Windows.Forms.Button();
+            this.label12 = new System.Windows.Forms.Label();
+            this.groupBox23 = new System.Windows.Forms.GroupBox();
+            this.groupBox24 = new System.Windows.Forms.GroupBox();
+            this.cmb_zdes = new System.Windows.Forms.ComboBox();
+            this.tx_dat_zdes = new System.Windows.Forms.TextBox();
             this.toolStrip1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabgrilla.SuspendLayout();
@@ -123,6 +128,7 @@
             this.groupBox5.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox1.SuspendLayout();
+            this.groupBox23.SuspendLayout();
             this.SuspendLayout();
             // 
             // toolStrip1
@@ -398,6 +404,10 @@
             // tabreg
             // 
             this.tabreg.BackColor = System.Drawing.Color.LightGray;
+            this.tabreg.Controls.Add(this.tx_dat_zdes);
+            this.tabreg.Controls.Add(this.label12);
+            this.tabreg.Controls.Add(this.groupBox23);
+            this.tabreg.Controls.Add(this.cmb_zdes);
             this.tabreg.Controls.Add(this.label11);
             this.tabreg.Controls.Add(this.groupBox21);
             this.tabreg.Controls.Add(this.textBox10);
@@ -462,7 +472,7 @@
             this.groupBox21.Controls.Add(this.groupBox22);
             this.groupBox21.Location = new System.Drawing.Point(379, 129);
             this.groupBox21.Name = "groupBox21";
-            this.groupBox21.Size = new System.Drawing.Size(180, 1);
+            this.groupBox21.Size = new System.Drawing.Size(182, 1);
             this.groupBox21.TabIndex = 212;
             this.groupBox21.TabStop = false;
             // 
@@ -478,10 +488,10 @@
             // 
             this.textBox10.BackColor = System.Drawing.SystemColors.Window;
             this.textBox10.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBox10.Location = new System.Drawing.Point(466, 112);
+            this.textBox10.Location = new System.Drawing.Point(467, 112);
             this.textBox10.Name = "textBox10";
             this.textBox10.Size = new System.Drawing.Size(94, 18);
-            this.textBox10.TabIndex = 5;
+            this.textBox10.TabIndex = 6;
             // 
             // groupBox19
             // 
@@ -726,7 +736,7 @@
             this.groupBox5.Controls.Add(this.groupBox6);
             this.groupBox5.Location = new System.Drawing.Point(81, 182);
             this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(233, 1);
+            this.groupBox5.Size = new System.Drawing.Size(203, 1);
             this.groupBox5.TabIndex = 174;
             this.groupBox5.TabStop = false;
             // 
@@ -782,7 +792,7 @@
             this.textBox1.MaxLength = 10;
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(49, 18);
-            this.textBox1.TabIndex = 3;
+            this.textBox1.TabIndex = 4;
             // 
             // textBox6
             // 
@@ -791,7 +801,7 @@
             this.textBox6.Location = new System.Drawing.Point(168, 189);
             this.textBox6.Name = "textBox6";
             this.textBox6.Size = new System.Drawing.Size(49, 18);
-            this.textBox6.TabIndex = 8;
+            this.textBox6.TabIndex = 10;
             // 
             // textBox9
             // 
@@ -800,7 +810,7 @@
             this.textBox9.Location = new System.Drawing.Point(168, 264);
             this.textBox9.Name = "textBox9";
             this.textBox9.Size = new System.Drawing.Size(49, 18);
-            this.textBox9.TabIndex = 11;
+            this.textBox9.TabIndex = 13;
             this.textBox9.Leave += new System.EventHandler(this.ubigeo_Leave);
             // 
             // textBox8
@@ -810,7 +820,7 @@
             this.textBox8.Location = new System.Drawing.Point(168, 239);
             this.textBox8.Name = "textBox8";
             this.textBox8.Size = new System.Drawing.Size(393, 18);
-            this.textBox8.TabIndex = 10;
+            this.textBox8.TabIndex = 12;
             // 
             // textBox7
             // 
@@ -819,7 +829,7 @@
             this.textBox7.Location = new System.Drawing.Point(168, 214);
             this.textBox7.Name = "textBox7";
             this.textBox7.Size = new System.Drawing.Size(393, 18);
-            this.textBox7.TabIndex = 9;
+            this.textBox7.TabIndex = 11;
             // 
             // comboBox3
             // 
@@ -831,8 +841,8 @@
             this.comboBox3.ItemHeight = 13;
             this.comboBox3.Location = new System.Drawing.Point(168, 161);
             this.comboBox3.Name = "comboBox3";
-            this.comboBox3.Size = new System.Drawing.Size(145, 21);
-            this.comboBox3.TabIndex = 7;
+            this.comboBox3.Size = new System.Drawing.Size(116, 21);
+            this.comboBox3.TabIndex = 8;
             this.comboBox3.SelectedIndexChanged += new System.EventHandler(this.comboBox3_SelectedIndexChanged);
             // 
             // comboBox2
@@ -861,9 +871,9 @@
             // 
             this.textBox5.BackColor = System.Drawing.SystemColors.Window;
             this.textBox5.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBox5.Location = new System.Drawing.Point(330, 166);
+            this.textBox5.Location = new System.Drawing.Point(289, 164);
             this.textBox5.Name = "textBox5";
-            this.textBox5.Size = new System.Drawing.Size(49, 18);
+            this.textBox5.Size = new System.Drawing.Size(26, 18);
             this.textBox5.TabIndex = 189;
             this.textBox5.Visible = false;
             // 
@@ -906,7 +916,7 @@
             this.checkBox1.Location = new System.Drawing.Point(387, 63);
             this.checkBox1.Name = "checkBox1";
             this.checkBox1.Size = new System.Drawing.Size(73, 17);
-            this.checkBox1.TabIndex = 167;
+            this.checkBox1.TabIndex = 3;
             this.checkBox1.Text = "Habilitado";
             this.checkBox1.UseVisualStyleBackColor = true;
             // 
@@ -925,7 +935,7 @@
             this.textBox3.Location = new System.Drawing.Point(168, 136);
             this.textBox3.Name = "textBox3";
             this.textBox3.Size = new System.Drawing.Size(393, 18);
-            this.textBox3.TabIndex = 6;
+            this.textBox3.TabIndex = 7;
             // 
             // textBox2
             // 
@@ -934,7 +944,7 @@
             this.textBox2.Location = new System.Drawing.Point(168, 111);
             this.textBox2.Name = "textBox2";
             this.textBox2.Size = new System.Drawing.Size(94, 18);
-            this.textBox2.TabIndex = 4;
+            this.textBox2.TabIndex = 5;
             // 
             // button1
             // 
@@ -942,9 +952,62 @@
             this.button1.Location = new System.Drawing.Point(575, 268);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(62, 56);
-            this.button1.TabIndex = 12;
+            this.button1.TabIndex = 14;
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.label12.Location = new System.Drawing.Point(358, 167);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(71, 13);
+            this.label12.TabIndex = 216;
+            this.label12.Text = "Zona Destino";
+            this.label12.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // groupBox23
+            // 
+            this.groupBox23.BackColor = System.Drawing.Color.White;
+            this.groupBox23.Controls.Add(this.groupBox24);
+            this.groupBox23.Location = new System.Drawing.Point(358, 182);
+            this.groupBox23.Name = "groupBox23";
+            this.groupBox23.Size = new System.Drawing.Size(203, 1);
+            this.groupBox23.TabIndex = 215;
+            this.groupBox23.TabStop = false;
+            // 
+            // groupBox24
+            // 
+            this.groupBox24.Location = new System.Drawing.Point(0, -26);
+            this.groupBox24.Name = "groupBox24";
+            this.groupBox24.Size = new System.Drawing.Size(164, 1);
+            this.groupBox24.TabIndex = 113;
+            this.groupBox24.TabStop = false;
+            // 
+            // cmb_zdes
+            // 
+            this.cmb_zdes.BackColor = System.Drawing.SystemColors.Window;
+            this.cmb_zdes.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmb_zdes.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.cmb_zdes.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cmb_zdes.FormattingEnabled = true;
+            this.cmb_zdes.ItemHeight = 13;
+            this.cmb_zdes.Location = new System.Drawing.Point(445, 161);
+            this.cmb_zdes.Name = "cmb_zdes";
+            this.cmb_zdes.Size = new System.Drawing.Size(116, 21);
+            this.cmb_zdes.TabIndex = 9;
+            this.cmb_zdes.SelectedIndexChanged += new System.EventHandler(this.cmb_zdes_SelectedIndexChanged);
+            // 
+            // tx_dat_zdes
+            // 
+            this.tx_dat_zdes.BackColor = System.Drawing.SystemColors.Window;
+            this.tx_dat_zdes.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_dat_zdes.Location = new System.Drawing.Point(325, 164);
+            this.tx_dat_zdes.Name = "tx_dat_zdes";
+            this.tx_dat_zdes.Size = new System.Drawing.Size(32, 18);
+            this.tx_dat_zdes.TabIndex = 217;
+            this.tx_dat_zdes.Visible = false;
             // 
             // sernum
             // 
@@ -984,6 +1047,7 @@
             this.groupBox5.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
+            this.groupBox23.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -1067,5 +1131,10 @@
         private System.Windows.Forms.GroupBox groupBox21;
         private System.Windows.Forms.GroupBox groupBox22;
         private System.Windows.Forms.TextBox textBox10;
+        private System.Windows.Forms.TextBox tx_dat_zdes;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.GroupBox groupBox23;
+        private System.Windows.Forms.GroupBox groupBox24;
+        private System.Windows.Forms.ComboBox cmb_zdes;
     }
 }
