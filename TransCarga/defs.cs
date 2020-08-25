@@ -108,6 +108,7 @@ namespace TransCarga
             tx_det3.MaxLength = 45;
             tx_det4.MaxLength = 45;
             tx_det5.MaxLength = 6;
+            tx_enla1.MaxLength = 6;
         }
         private void grilla()                   // arma la grilla
         {
@@ -161,11 +162,15 @@ namespace TransCarga
             advancedDataGridView1.Columns[6].Tag = "validaSI";
             advancedDataGridView1.Columns[6].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
             // invisibles
-            advancedDataGridView1.Columns[7].Visible = true;            // detalle 1
-            advancedDataGridView1.Columns[8].Visible = true;            // detalle 2
-            advancedDataGridView1.Columns[9].Visible = true;            // detalle 3
-            advancedDataGridView1.Columns[10].Visible = true;            // detalle 4
-            advancedDataGridView1.Columns[11].Visible = true;            // detalle 5 / ubigeo
+            advancedDataGridView1.Columns[7].Visible = false;            // detalle 1
+            advancedDataGridView1.Columns[8].Visible = false;            // detalle 2
+            advancedDataGridView1.Columns[9].Visible = false;            // detalle 3
+            advancedDataGridView1.Columns[10].Visible = false;            // detalle 4
+            advancedDataGridView1.Columns[11].Visible = false;            // detalle 5 / ubigeo
+            advancedDataGridView1.Columns[12].Visible = false;            // marca1
+            advancedDataGridView1.Columns[13].Visible = false;            // marca2
+            advancedDataGridView1.Columns[14].Visible = false;            // marca3
+            advancedDataGridView1.Columns[15].Visible = false;            // enlace1
         }
         private void jalainfo()                 // obtiene datos de imagenes
         {
@@ -223,6 +228,10 @@ namespace TransCarga
             tx_det3.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[9].Value.ToString();  // detalle 3
             tx_det4.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[10].Value.ToString();  // detalle 4
             tx_det5.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[11].Value.ToString();  // detalle 5 / ubigeo
+            chk_marc1.Checked = (advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[12].Value.ToString() == "1") ? true : false;
+            chk_marc2.Checked = (advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[13].Value.ToString() == "1") ? true : false;
+            chk_marc3.Checked = (advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[14].Value.ToString() == "1") ? true : false;
+            tx_enla1.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[15].Value.ToString();  // enlace1
             comboBox1.SelectedValue = textBox4.Text;
         }
         public void dataload()                  // jala datos para los combos y la grilla
@@ -250,7 +259,7 @@ namespace TransCarga
             comboBox1.ValueMember = "idtabella";
             // datos de las deficiones
             string datgri = "select id,idtabella,idcodice,codigo,descrizione,descrizionerid,numero," +
-                "deta1,deta2,deta3,deta4,ubidir,marca1,marca2,marca3 " +
+                "deta1,deta2,deta3,deta4,ubidir,marca1,marca2,marca3,enlace1 " +
                 "from descrittive order by idtabella,idcodice";
             MySqlCommand cdg = new MySqlCommand(datgri, conn);
             MySqlDataAdapter dag = new MySqlDataAdapter(cdg);
@@ -309,6 +318,7 @@ namespace TransCarga
             chk_marc1.Text = "Marca1";
             chk_marc2.Text = "Marca2";
             chk_marc3.Text = "Marca3";
+            lb_enla1.Text = "Enlace 1";
             switch (textBox4.Text)
             {
                 case "LOC":
@@ -324,6 +334,7 @@ namespace TransCarga
                     chk_marc1.Text = "Usa Pre Guías";
                     chk_marc2.Text = "Marca2";
                     chk_marc3.Text = "Marca3";
+                    lb_enla1.Text = "Zona destino";
                     break;
                 case "xxx":
                     break;
@@ -483,10 +494,10 @@ namespace TransCarga
                 }
                 string consulta = "insert into descrittive (" +
                     "idtabella,idcodice,codigo,descrizione,descrizionerid,numero," +
-                    "deta1,deta2,deta3,deta4,ubidir,marca1,marca2,marca3," +
+                    "deta1,deta2,deta3,deta4,ubidir,marca1,marca2,marca3,enlace1," +
                     "verApp,userc,fechc,diriplan4,diripwan4,netbname)" +
                     " values (" +
-                    "@idt,@idc,@cod,@des,@der,@num,@det1,@det2,@det3,@det4,@det5,@mar1,@mar2,@mar3," +
+                    "@idt,@idc,@cod,@des,@der,@num,@det1,@det2,@det3,@det4,@det5,@mar1,@mar2,@mar3,@enl1," +
                     "@veap,@asd,now(),@dipl,@dipw,@nbna)";
                 MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
                 conn.Open();
@@ -508,6 +519,7 @@ namespace TransCarga
                     mycomand.Parameters.AddWithValue("@mar1", (chk_marc1.Checked == true) ? "1" : "0");
                     mycomand.Parameters.AddWithValue("@mar2", (chk_marc2.Checked == true) ? "1" : "0");
                     mycomand.Parameters.AddWithValue("@mar3", (chk_marc3.Checked == true) ? "1" : "0");
+                    mycomand.Parameters.AddWithValue("@enl1", tx_enla1.Text);
                     mycomand.Parameters.AddWithValue("@veap", verapp);
                     mycomand.Parameters.AddWithValue("@asd", asd);
                     mycomand.Parameters.AddWithValue("@dipl", lib.iplan());
@@ -550,6 +562,7 @@ namespace TransCarga
                     dr[12] = (chk_marc1.Checked == true) ? "1" : "0";
                     dr[13] = (chk_marc2.Checked == true) ? "1" : "0";
                     dr[14] = (chk_marc3.Checked == true) ? "1" : "0";
+                    dr[15] = tx_enla1.Text;
                     dtg.Rows.Add(dr);
                 }
                 else
@@ -564,7 +577,7 @@ namespace TransCarga
                 string consulta = "update descrittive set " +
                         "descrizione=@des,descrizionerid=@der,numero=@num,codigo=@cod," +
                         "deta1=@det1,deta2=@det2,deta3=@det3,deta4=@det4,ubidir=@det5," +
-                        "marca1=@mar1,marca2=@mar2,marca3=@mar3," +
+                        "marca1=@mar1,marca2=@mar2,marca3=@mar3,enlace1=@enl1," +
                         "verApp=@veap,userm=@asd,fechm=now(),diriplan4=@dipl,diripwan4=@dipw,netbname=@nbna " +
                         "where id=@idc";
                 MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
@@ -584,6 +597,7 @@ namespace TransCarga
                     mycom.Parameters.AddWithValue("@mar1", (chk_marc1.Checked == true) ? "1" : "0");
                     mycom.Parameters.AddWithValue("@mar2", (chk_marc2.Checked == true) ? "1" : "0");
                     mycom.Parameters.AddWithValue("@mar3", (chk_marc3.Checked == true) ? "1" : "0");
+                    mycom.Parameters.AddWithValue("@enl1", tx_enla1.Text);
                     mycom.Parameters.AddWithValue("@veap", verapp);
                     mycom.Parameters.AddWithValue("@asd", asd);
                     mycom.Parameters.AddWithValue("@dipl", lib.iplan());
@@ -625,6 +639,7 @@ namespace TransCarga
                             dtg.Rows[i][12] = (chk_marc1.Checked == true) ? "1" : "0";
                             dtg.Rows[i][13] = (chk_marc2.Checked == true) ? "1" : "0";
                             dtg.Rows[i][14] = (chk_marc3.Checked == true) ? "1" : "0";
+                            dtg.Rows[i][15] = tx_enla1.Text;
                         }
                     }
                 }
@@ -674,27 +689,6 @@ namespace TransCarga
                     textBox1.Text = "";
                     return;
                 }
-                /*
-                MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
-                conn.Open();
-                if (conn.State != ConnectionState.Open)
-                {
-                    MessageBox.Show("No se pudo conectar con el servidor", "Error de conexión");
-                    Application.Exit();
-                    return;
-                }
-                string consulta = "select count(idcodice) as cant from descrittive where idcodice=@uso";
-                MySqlCommand mycomand = new MySqlCommand(consulta, conn);
-                mycomand.Parameters.AddWithValue("@uso", this.textBox1.Text);
-                int cant = System.Convert.ToInt16(mycomand.ExecuteScalar());
-                if (cant > 0)
-                {
-                    MessageBox.Show("Código YA existe!", "Error",MessageBoxButtons.OK,MessageBoxIcon.Error);
-                    textBox1.Text = "";
-                    return;        
-                }
-                conn.Close();
-                */
             }
             if (textBox1.Text != "" && Tx_modo.Text != "NUEVO")
             {
@@ -715,6 +709,7 @@ namespace TransCarga
                     chk_marc1.Checked = (row[12].ToString() == "0") ? false : true;
                     chk_marc2.Checked = (row[13].ToString() == "0") ? false : true;
                     chk_marc3.Checked = (row[14].ToString() == "0") ? false : true;
+                    tx_enla1.Text = row[15].ToString();
                 }
                 if(contador == 0)
                 {
@@ -732,6 +727,7 @@ namespace TransCarga
                     chk_marc1.Checked = false;
                     chk_marc2.Checked = false;
                     chk_marc3.Checked = false;
+                    tx_enla1.Text = "";
                     return;
                 }
             }

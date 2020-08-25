@@ -58,6 +58,7 @@ namespace TransCarga
         string vi_copias = "";          // cant copias impresion
         string v_impA5 = "";            // nombre de la impresora matricial
         string v_impTK = "";            // nombre de la ticketera
+        string vtc_flete = "";          // la guía va con el flete impreso ?? SI || NO
         #endregion
 
         AutoCompleteStringCollection departamentos = new AutoCompleteStringCollection();// autocompletado departamentos
@@ -259,7 +260,7 @@ namespace TransCarga
                             if (row["param"].ToString() == "dni") vtc_dni = row["valor"].ToString().Trim();
                             if (row["param"].ToString() == "ruc") vtc_ruc = row["valor"].ToString().Trim();
                             if (row["param"].ToString() == "ext") vtc_ext = row["valor"].ToString().Trim();
-                            //if (row["param"].ToString() == "c_int") codDInt = row["valor"].ToString().Trim();           // codigo interno pre guias
+                            if (row["param"].ToString() == "flete") vtc_flete = row["valor"].ToString().Trim();           // codigo interno pre guias
                         }
                         if (row["campo"].ToString() == "impresion")
                         {
@@ -431,7 +432,7 @@ namespace TransCarga
                     }
                     dr.Dispose();
                 }
-                string jalad = "select cantprodi,unimedpro,codiprodi,descprodi,pesoprodi,precprodi,totaprodi " +
+                string jalad = "select cantprodi,unimedpro,codiprodi,descprodi,round(pesoprodi,1),precprodi,totaprodi " +
                     "from detpregr where numpregui = @num";
                 using (MySqlCommand micon = new MySqlCommand(jalad, conn))
                 {
@@ -1035,13 +1036,20 @@ namespace TransCarga
             {
                 try
                 {
+                    // asunto de la serie para la zona
+                    // la zona se jala del desc_loc del destino
+                    // 
+                    // EL NUMERO DE GUIA SIEMPRE DEBE SER AUTOMÁTICO
+                    //
                     string inserta = "insert into  (" +
-                        "fechpregr,serpregui,tidodepre,nudodepre,nombdepre,diredepre,ubigdepre," +
-                        "tidorepre,nudorepre,nombrepre,direrepre,ubigrepre,locorigen,dirorigen,ubiorigen,locdestin," +
-                        "dirdestin,ubidestin,docsremit,obspregui,clifinpre,cantotpre,pestotpre,tipmonpre,tipcampre," +
-                        "subtotpre,igvpregui,totpregui,totpagpre,salpregui,estadoser,seguroE," +
+                        "fechopegr,sergui,numgui,numpregui,tidodegri,nudodegri,nombdegri,diredegri,ubigdegri," +
+                        "tidoregri,nudoregri,nombregri,direregri,ubigregri,locorigen,dirorigen,ubiorigen," +
+                        "locdestin,dirdestin,ubidestin,docsremit,obspregri,clifingri,cantotgri,pestotgri," +
+                        "tipmongri,tipcamgri,subtotgri,igvgri,totgri,totpag,salgri,estadoser,frase1pre,frase2pre," +
+                        "impreso,fleteimp,tipintrem,tipintdes,tippagpre,seguroE,numplagri,plaplagri,carplagri," +
+                        "autplagri,confvegri,breplagri,proplagri," +
                         "verApp,userc,fechc,diriplan4,diripwan4,netbname) " +
-                        "values (@fechop,@serpgr,@tdcdes,@ndcdes,@nomdes,@dircde,@ubicde," +
+                        "values (@fechop,@serpgr,  @tdcdes,@ndcdes,@nomdes,@dircde,@ubicde," +
                         "@tdcrem,@ndcrem,@nomrem,@dircre,@ubicre,@locpgr,@dirpgr,@ubopgr,@ldcpgr," +
                         "@didegr,@ubdegr,@dooprg,@obsprg,@conprg,@totcpr,@totppr,@monppr,@tcprgr," +
                         "@subpgr,@igvpgr,@totpgr,@pagpgr,@totpgr,@estpgr,@clavse," +
@@ -1571,10 +1579,7 @@ namespace TransCarga
                 if (tx_dat_estad.Text == codAnul)
                 {
                     MessageBox.Show("La Pre Guía esta ANULADA", "No puede continuar", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    limpiar();
-                    limpia_chk();
-                    limpia_combos();
-                    limpia_otros();
+                    initIngreso();
                     tx_pregr_num.Focus();
                 }
                 else
@@ -1600,6 +1605,10 @@ namespace TransCarga
                         tx_ubigDtt.Enabled = true;
                     }
                     if (claveSeg == "") chk_seguridad.Enabled = true;
+                    else
+                    {
+                        chk_seguridad.Checked = true;
+                    }
                     dataGridView1_RowLeave(null, null);
                     dataGridView1.ReadOnly = true;
                 }
@@ -1727,6 +1736,14 @@ namespace TransCarga
                     cmb_destino.Focus();
                 }
             }
+            // Guía va con flete impreso?
+            chk_flete.Enabled = true;
+            if (vtc_flete == "SI") chk_flete.Checked = true;
+            else chk_flete.Checked = false;
+            Bt_ini.Enabled = false;
+            Bt_sig.Enabled = false;
+            Bt_ret.Enabled = false;
+            Bt_fin.Enabled = false;
         }
         private void Bt_edit_Click(object sender, EventArgs e)
         {
@@ -1734,9 +1751,15 @@ namespace TransCarga
             Tx_modo.Text = "EDITAR";
             button1.Image = Image.FromFile(img_grab);
             initIngreso();
+            tx_pregr_num.Text = "";
             tx_numero.Text = "";
             tx_numero.ReadOnly = false;
             tx_serie.Focus();
+            //
+            Bt_ini.Enabled = true;
+            Bt_sig.Enabled = true;
+            Bt_ret.Enabled = true;
+            Bt_fin.Enabled = true;
         }
         private void Bt_close_Click(object sender, EventArgs e)
         {
@@ -1792,6 +1815,11 @@ namespace TransCarga
             tx_serie.ReadOnly = false;
             tx_numero.ReadOnly = false;
             tx_serie.Focus();
+            //
+            Bt_ini.Enabled = true;
+            Bt_sig.Enabled = true;
+            Bt_ret.Enabled = true;
+            Bt_fin.Enabled = true;
         }
         private void Bt_ver_Click(object sender, EventArgs e)
         {
@@ -1803,6 +1831,11 @@ namespace TransCarga
             tx_serie.ReadOnly = false;
             tx_numero.ReadOnly = false;
             tx_serie.Focus();
+            //
+            Bt_ini.Enabled = true;
+            Bt_sig.Enabled = true;
+            Bt_ret.Enabled = true;
+            Bt_fin.Enabled = true;
         }
         private void Bt_first_Click(object sender, EventArgs e)
         {
@@ -1932,7 +1965,8 @@ namespace TransCarga
                 }
             }
             tx_totcant.Text = totcant.ToString();
-            tx_totpes.Text = totpes.ToString();
+            tx_totpes.Text = totpes.ToString("0.00");
+            tx_tfil.Text = (dataGridView1.Rows.Count - 1).ToString();
         }
         private void dataGridView1_EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
         {

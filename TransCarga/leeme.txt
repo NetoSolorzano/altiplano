@@ -22,6 +22,13 @@ form preguiat:
 form repsoper:
 - Reportes para todo el modulo de operaciones
 - Falta considerar MONEDA y TIPO DE CAMBIO EN ESTOS REPORTES ..................................... FALTA
+form defs:
+- Se crea defininion de zonas "ZON" ............................................................... OK
+- En locales se debe especificar la zona del local ................................................ OK
+form sernum:
+- Agregar zona destino al tipo documento .......................................................... 
+form series:
+- Se debe especificar la zona destino de la serie
 form guiati: (guias transportista individuales)
 - Se tiene que configurar que locales trabajan con Pre guias y que locales no. (Definiciones) ...... ok
 - En boton NUEVO del form saber si trabaja con pre guias o no ...................................... ok

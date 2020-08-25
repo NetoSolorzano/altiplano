@@ -56,6 +56,9 @@
             this.tabgrilla = new System.Windows.Forms.TabPage();
             this.advancedDataGridView1 = new ADGV.AdvancedDataGridView();
             this.tabreg = new System.Windows.Forms.TabPage();
+            this.chk_marc3 = new System.Windows.Forms.CheckBox();
+            this.chk_marc2 = new System.Windows.Forms.CheckBox();
+            this.chk_marc1 = new System.Windows.Forms.CheckBox();
             this.groupBox27 = new System.Windows.Forms.GroupBox();
             this.groupBox28 = new System.Windows.Forms.GroupBox();
             this.groupBox29 = new System.Windows.Forms.GroupBox();
@@ -111,9 +114,12 @@
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.button1 = new System.Windows.Forms.Button();
-            this.chk_marc1 = new System.Windows.Forms.CheckBox();
-            this.chk_marc2 = new System.Windows.Forms.CheckBox();
-            this.chk_marc3 = new System.Windows.Forms.CheckBox();
+            this.groupBox31 = new System.Windows.Forms.GroupBox();
+            this.groupBox32 = new System.Windows.Forms.GroupBox();
+            this.groupBox33 = new System.Windows.Forms.GroupBox();
+            this.groupBox34 = new System.Windows.Forms.GroupBox();
+            this.tx_enla1 = new System.Windows.Forms.TextBox();
+            this.lb_enla1 = new System.Windows.Forms.Label();
             this.toolStrip1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabgrilla.SuspendLayout();
@@ -134,6 +140,8 @@
             this.groupBox3.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox11.SuspendLayout();
+            this.groupBox31.SuspendLayout();
+            this.groupBox33.SuspendLayout();
             this.SuspendLayout();
             // 
             // toolStrip1
@@ -409,6 +417,10 @@
             // tabreg
             // 
             this.tabreg.BackColor = System.Drawing.Color.Silver;
+            this.tabreg.Controls.Add(this.groupBox31);
+            this.tabreg.Controls.Add(this.groupBox33);
+            this.tabreg.Controls.Add(this.tx_enla1);
+            this.tabreg.Controls.Add(this.lb_enla1);
             this.tabreg.Controls.Add(this.chk_marc3);
             this.tabreg.Controls.Add(this.chk_marc2);
             this.tabreg.Controls.Add(this.chk_marc1);
@@ -459,6 +471,39 @@
             this.tabreg.Size = new System.Drawing.Size(654, 343);
             this.tabreg.TabIndex = 1;
             this.tabreg.Text = "Registro";
+            // 
+            // chk_marc3
+            // 
+            this.chk_marc3.AutoSize = true;
+            this.chk_marc3.ForeColor = System.Drawing.Color.Black;
+            this.chk_marc3.Location = new System.Drawing.Point(344, 315);
+            this.chk_marc3.Name = "chk_marc3";
+            this.chk_marc3.Size = new System.Drawing.Size(62, 17);
+            this.chk_marc3.TabIndex = 14;
+            this.chk_marc3.Text = "Marca3";
+            this.chk_marc3.UseVisualStyleBackColor = true;
+            // 
+            // chk_marc2
+            // 
+            this.chk_marc2.AutoSize = true;
+            this.chk_marc2.ForeColor = System.Drawing.Color.Black;
+            this.chk_marc2.Location = new System.Drawing.Point(214, 315);
+            this.chk_marc2.Name = "chk_marc2";
+            this.chk_marc2.Size = new System.Drawing.Size(62, 17);
+            this.chk_marc2.TabIndex = 13;
+            this.chk_marc2.Text = "Marca2";
+            this.chk_marc2.UseVisualStyleBackColor = true;
+            // 
+            // chk_marc1
+            // 
+            this.chk_marc1.AutoSize = true;
+            this.chk_marc1.ForeColor = System.Drawing.Color.Black;
+            this.chk_marc1.Location = new System.Drawing.Point(84, 315);
+            this.chk_marc1.Name = "chk_marc1";
+            this.chk_marc1.Size = new System.Drawing.Size(62, 17);
+            this.chk_marc1.TabIndex = 12;
+            this.chk_marc1.Text = "Marca1";
+            this.chk_marc1.UseVisualStyleBackColor = true;
             // 
             // groupBox27
             // 
@@ -654,7 +699,7 @@
             // 
             this.lb_ubigeo.AutoSize = true;
             this.lb_ubigeo.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.lb_ubigeo.Location = new System.Drawing.Point(82, 260);
+            this.lb_ubigeo.Location = new System.Drawing.Point(82, 261);
             this.lb_ubigeo.Name = "lb_ubigeo";
             this.lb_ubigeo.Size = new System.Drawing.Size(70, 13);
             this.lb_ubigeo.TabIndex = 200;
@@ -694,7 +739,7 @@
             // 
             this.lb_det3.AutoSize = true;
             this.lb_det3.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.lb_det3.Location = new System.Drawing.Point(82, 212);
+            this.lb_det3.Location = new System.Drawing.Point(82, 211);
             this.lb_det3.Name = "lb_det3";
             this.lb_det3.Size = new System.Drawing.Size(76, 13);
             this.lb_det3.TabIndex = 196;
@@ -714,7 +759,7 @@
             // 
             this.lb_det2.AutoSize = true;
             this.lb_det2.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.lb_det2.Location = new System.Drawing.Point(82, 188);
+            this.lb_det2.Location = new System.Drawing.Point(82, 186);
             this.lb_det2.Name = "lb_det2";
             this.lb_det2.Size = new System.Drawing.Size(76, 13);
             this.lb_det2.TabIndex = 194;
@@ -734,7 +779,7 @@
             // 
             this.lb_det1.AutoSize = true;
             this.lb_det1.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.lb_det1.Location = new System.Drawing.Point(82, 164);
+            this.lb_det1.Location = new System.Drawing.Point(82, 161);
             this.lb_det1.Name = "lb_det1";
             this.lb_det1.Size = new System.Drawing.Size(76, 13);
             this.lb_det1.TabIndex = 192;
@@ -745,7 +790,7 @@
             // 
             this.lb_descrizrid.AutoSize = true;
             this.lb_descrizrid.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.lb_descrizrid.Location = new System.Drawing.Point(82, 137);
+            this.lb_descrizrid.Location = new System.Drawing.Point(82, 136);
             this.lb_descrizrid.Name = "lb_descrizrid";
             this.lb_descrizrid.Size = new System.Drawing.Size(74, 13);
             this.lb_descrizrid.TabIndex = 191;
@@ -814,7 +859,7 @@
             // 
             this.label3.AutoSize = true;
             this.label3.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label3.Location = new System.Drawing.Point(82, 37);
+            this.label3.Location = new System.Drawing.Point(82, 36);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(46, 13);
             this.label3.TabIndex = 180;
@@ -825,7 +870,7 @@
             // 
             this.lb_descriz.AutoSize = true;
             this.lb_descriz.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.lb_descriz.Location = new System.Drawing.Point(82, 112);
+            this.lb_descriz.Location = new System.Drawing.Point(82, 111);
             this.lb_descriz.Name = "lb_descriz";
             this.lb_descriz.Size = new System.Drawing.Size(63, 13);
             this.lb_descriz.TabIndex = 179;
@@ -836,7 +881,7 @@
             // 
             this.lb_codigo.AutoSize = true;
             this.lb_codigo.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.lb_codigo.Location = new System.Drawing.Point(82, 87);
+            this.lb_codigo.Location = new System.Drawing.Point(82, 86);
             this.lb_codigo.Name = "lb_codigo";
             this.lb_codigo.Size = new System.Drawing.Size(49, 13);
             this.lb_codigo.TabIndex = 178;
@@ -847,7 +892,7 @@
             // 
             this.lb_idcodice.AutoSize = true;
             this.lb_idcodice.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.lb_idcodice.Location = new System.Drawing.Point(82, 62);
+            this.lb_idcodice.Location = new System.Drawing.Point(82, 61);
             this.lb_idcodice.Name = "lb_idcodice";
             this.lb_idcodice.Size = new System.Drawing.Size(54, 13);
             this.lb_idcodice.TabIndex = 177;
@@ -978,45 +1023,68 @@
             // button1
             // 
             this.button1.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.button1.Location = new System.Drawing.Point(498, 241);
+            this.button1.Location = new System.Drawing.Point(559, 260);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(62, 56);
-            this.button1.TabIndex = 11;
+            this.button1.TabIndex = 15;
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
-            // chk_marc1
+            // groupBox31
             // 
-            this.chk_marc1.AutoSize = true;
-            this.chk_marc1.ForeColor = System.Drawing.Color.Black;
-            this.chk_marc1.Location = new System.Drawing.Point(84, 296);
-            this.chk_marc1.Name = "chk_marc1";
-            this.chk_marc1.Size = new System.Drawing.Size(62, 17);
-            this.chk_marc1.TabIndex = 212;
-            this.chk_marc1.Text = "Marca1";
-            this.chk_marc1.UseVisualStyleBackColor = true;
+            this.groupBox31.BackColor = System.Drawing.Color.White;
+            this.groupBox31.Controls.Add(this.groupBox32);
+            this.groupBox31.Location = new System.Drawing.Point(81, 302);
+            this.groupBox31.Name = "groupBox31";
+            this.groupBox31.Size = new System.Drawing.Size(155, 1);
+            this.groupBox31.TabIndex = 218;
+            this.groupBox31.TabStop = false;
             // 
-            // chk_marc2
+            // groupBox32
             // 
-            this.chk_marc2.AutoSize = true;
-            this.chk_marc2.ForeColor = System.Drawing.Color.Black;
-            this.chk_marc2.Location = new System.Drawing.Point(214, 296);
-            this.chk_marc2.Name = "chk_marc2";
-            this.chk_marc2.Size = new System.Drawing.Size(62, 17);
-            this.chk_marc2.TabIndex = 213;
-            this.chk_marc2.Text = "Marca2";
-            this.chk_marc2.UseVisualStyleBackColor = true;
+            this.groupBox32.Location = new System.Drawing.Point(0, -26);
+            this.groupBox32.Name = "groupBox32";
+            this.groupBox32.Size = new System.Drawing.Size(164, 1);
+            this.groupBox32.TabIndex = 113;
+            this.groupBox32.TabStop = false;
             // 
-            // chk_marc3
+            // groupBox33
             // 
-            this.chk_marc3.AutoSize = true;
-            this.chk_marc3.ForeColor = System.Drawing.Color.Black;
-            this.chk_marc3.Location = new System.Drawing.Point(344, 296);
-            this.chk_marc3.Name = "chk_marc3";
-            this.chk_marc3.Size = new System.Drawing.Size(62, 17);
-            this.chk_marc3.TabIndex = 214;
-            this.chk_marc3.Text = "Marca3";
-            this.chk_marc3.UseVisualStyleBackColor = true;
+            this.groupBox33.BackColor = System.Drawing.Color.White;
+            this.groupBox33.Controls.Add(this.groupBox34);
+            this.groupBox33.Location = new System.Drawing.Point(81, 302);
+            this.groupBox33.Name = "groupBox33";
+            this.groupBox33.Size = new System.Drawing.Size(122, 1);
+            this.groupBox33.TabIndex = 217;
+            this.groupBox33.TabStop = false;
+            // 
+            // groupBox34
+            // 
+            this.groupBox34.Location = new System.Drawing.Point(0, -26);
+            this.groupBox34.Name = "groupBox34";
+            this.groupBox34.Size = new System.Drawing.Size(164, 1);
+            this.groupBox34.TabIndex = 113;
+            this.groupBox34.TabStop = false;
+            // 
+            // tx_enla1
+            // 
+            this.tx_enla1.BackColor = System.Drawing.SystemColors.Window;
+            this.tx_enla1.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_enla1.Location = new System.Drawing.Point(167, 285);
+            this.tx_enla1.Name = "tx_enla1";
+            this.tx_enla1.Size = new System.Drawing.Size(70, 18);
+            this.tx_enla1.TabIndex = 11;
+            // 
+            // lb_enla1
+            // 
+            this.lb_enla1.AutoSize = true;
+            this.lb_enla1.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.lb_enla1.Location = new System.Drawing.Point(82, 286);
+            this.lb_enla1.Name = "lb_enla1";
+            this.lb_enla1.Size = new System.Drawing.Size(52, 13);
+            this.lb_enla1.TabIndex = 216;
+            this.lb_enla1.Text = "Enlance1";
+            this.lb_enla1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // defs
             // 
@@ -1060,6 +1128,8 @@
             this.groupBox3.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
             this.groupBox11.ResumeLayout(false);
+            this.groupBox31.ResumeLayout(false);
+            this.groupBox33.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -1150,5 +1220,11 @@
         private System.Windows.Forms.CheckBox chk_marc3;
         private System.Windows.Forms.CheckBox chk_marc2;
         private System.Windows.Forms.CheckBox chk_marc1;
+        private System.Windows.Forms.GroupBox groupBox31;
+        private System.Windows.Forms.GroupBox groupBox32;
+        private System.Windows.Forms.GroupBox groupBox33;
+        private System.Windows.Forms.GroupBox groupBox34;
+        private System.Windows.Forms.TextBox tx_enla1;
+        private System.Windows.Forms.Label lb_enla1;
     }
 }

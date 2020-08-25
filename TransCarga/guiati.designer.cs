@@ -156,7 +156,7 @@
             this.groupBox28 = new System.Windows.Forms.GroupBox();
             this.label19 = new System.Windows.Forms.Label();
             this.tx_obser1 = new System.Windows.Forms.TextBox();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.chk_flete = new System.Windows.Forms.CheckBox();
             this.label28 = new System.Windows.Forms.Label();
             this.gbox_planilla = new System.Windows.Forms.GroupBox();
             this.tx_pla_propiet = new System.Windows.Forms.TextBox();
@@ -181,6 +181,7 @@
             this.label29 = new System.Windows.Forms.Label();
             this.label31 = new System.Windows.Forms.Label();
             this.label34 = new System.Windows.Forms.Label();
+            this.tx_tfil = new TransCarga.NumericTextBox();
             this.tx_totpes = new TransCarga.NumericTextBox();
             this.tx_totcant = new TransCarga.NumericTextBox();
             this.tx_flete = new TransCarga.NumericTextBox();
@@ -725,7 +726,7 @@
             this.cmb_origen.FormattingEnabled = true;
             this.cmb_origen.Location = new System.Drawing.Point(228, 32);
             this.cmb_origen.Name = "cmb_origen";
-            this.cmb_origen.Size = new System.Drawing.Size(92, 21);
+            this.cmb_origen.Size = new System.Drawing.Size(98, 21);
             this.cmb_origen.TabIndex = 31;
             this.cmb_origen.SelectionChangeCommitted += new System.EventHandler(this.cmb_origen_SelectionChangeCommitted);
             // 
@@ -735,7 +736,7 @@
             this.cmb_destino.FormattingEnabled = true;
             this.cmb_destino.Location = new System.Drawing.Point(228, 61);
             this.cmb_destino.Name = "cmb_destino";
-            this.cmb_destino.Size = new System.Drawing.Size(92, 21);
+            this.cmb_destino.Size = new System.Drawing.Size(98, 21);
             this.cmb_destino.TabIndex = 4;
             this.cmb_destino.SelectionChangeCommitted += new System.EventHandler(this.cmb_destino_SelectionChangeCommitted);
             // 
@@ -1350,7 +1351,7 @@
             // 
             this.label12.AutoSize = true;
             this.label12.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label12.Location = new System.Drawing.Point(305, 413);
+            this.label12.Location = new System.Drawing.Point(309, 413);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(89, 13);
             this.label12.TabIndex = 319;
@@ -1481,22 +1482,22 @@
             this.tx_obser1.Size = new System.Drawing.Size(642, 18);
             this.tx_obser1.TabIndex = 332;
             // 
-            // checkBox1
+            // chk_flete
             // 
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.ForeColor = System.Drawing.Color.Black;
-            this.checkBox1.Location = new System.Drawing.Point(649, 268);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(85, 17);
-            this.checkBox1.TabIndex = 335;
-            this.checkBox1.Text = "Imprime flete";
-            this.checkBox1.UseVisualStyleBackColor = true;
+            this.chk_flete.AutoSize = true;
+            this.chk_flete.ForeColor = System.Drawing.Color.Black;
+            this.chk_flete.Location = new System.Drawing.Point(649, 268);
+            this.chk_flete.Name = "chk_flete";
+            this.chk_flete.Size = new System.Drawing.Size(85, 17);
+            this.chk_flete.TabIndex = 335;
+            this.chk_flete.Text = "Imprime flete";
+            this.chk_flete.UseVisualStyleBackColor = true;
             // 
             // label28
             // 
             this.label28.AutoSize = true;
             this.label28.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label28.Location = new System.Drawing.Point(142, 413);
+            this.label28.Location = new System.Drawing.Point(198, 413);
             this.label28.Name = "label28";
             this.label28.Size = new System.Drawing.Size(55, 13);
             this.label28.TabIndex = 344;
@@ -1603,7 +1604,7 @@
             // 
             // tx_pla_carret
             // 
-            this.tx_pla_carret.Location = new System.Drawing.Point(355, 9);
+            this.tx_pla_carret.Location = new System.Drawing.Point(359, 9);
             this.tx_pla_carret.Name = "tx_pla_carret";
             this.tx_pla_carret.ReadOnly = true;
             this.tx_pla_carret.Size = new System.Drawing.Size(69, 20);
@@ -1667,7 +1668,7 @@
             // 
             this.label21.AutoSize = true;
             this.label21.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label21.Location = new System.Drawing.Point(312, 13);
+            this.label21.Location = new System.Drawing.Point(316, 13);
             this.label21.Name = "label21";
             this.label21.Size = new System.Drawing.Size(41, 13);
             this.label21.TabIndex = 356;
@@ -1751,6 +1752,17 @@
             this.label34.Text = "Importe";
             this.label34.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
+            // tx_tfil
+            // 
+            this.tx_tfil.AllowSpace = false;
+            this.tx_tfil.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_tfil.Location = new System.Drawing.Point(255, 409);
+            this.tx_tfil.Name = "tx_tfil";
+            this.tx_tfil.ReadOnly = true;
+            this.tx_tfil.Size = new System.Drawing.Size(41, 20);
+            this.tx_tfil.TabIndex = 347;
+            this.tx_tfil.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
             // tx_totpes
             // 
             this.tx_totpes.AllowSpace = false;
@@ -1766,7 +1778,7 @@
             // 
             this.tx_totcant.AllowSpace = false;
             this.tx_totcant.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_totcant.Location = new System.Drawing.Point(395, 409);
+            this.tx_totcant.Location = new System.Drawing.Point(399, 409);
             this.tx_totcant.Name = "tx_totcant";
             this.tx_totcant.ReadOnly = true;
             this.tx_totcant.Size = new System.Drawing.Size(41, 20);
@@ -1813,9 +1825,11 @@
             this.AutoSize = true;
             this.BackColor = System.Drawing.Color.LightSteelBlue;
             this.ClientSize = new System.Drawing.Size(770, 590);
+            this.Controls.Add(this.groupBox5);
+            this.Controls.Add(this.tx_tfil);
             this.Controls.Add(this.gbox_docvta);
             this.Controls.Add(this.label28);
-            this.Controls.Add(this.checkBox1);
+            this.Controls.Add(this.chk_flete);
             this.Controls.Add(this.groupBox27);
             this.Controls.Add(this.label19);
             this.Controls.Add(this.tx_obser1);
@@ -1857,7 +1871,6 @@
             this.Controls.Add(this.groupBox21);
             this.Controls.Add(this.groupBox19);
             this.Controls.Add(this.gbox_serie);
-            this.Controls.Add(this.groupBox5);
             this.Controls.Add(this.tx_digit);
             this.Controls.Add(this.label13);
             this.Controls.Add(this.tx_fechope);
@@ -2063,7 +2076,7 @@
         private System.Windows.Forms.GroupBox groupBox28;
         private System.Windows.Forms.Label label19;
         private System.Windows.Forms.TextBox tx_obser1;
-        private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.CheckBox chk_flete;
         private System.Windows.Forms.Label label28;
         private System.Windows.Forms.GroupBox gbox_planilla;
         private System.Windows.Forms.Label label22;
@@ -2088,5 +2101,6 @@
         private System.Windows.Forms.TextBox tx_pla_propiet;
         private System.Windows.Forms.TextBox tx_pla_ruc;
         private System.Windows.Forms.TextBox tx_pla_nomcho;
+        private NumericTextBox tx_tfil;
     }
 }
