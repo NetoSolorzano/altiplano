@@ -31,6 +31,8 @@ form guiati: (guias transportista individuales)
   ******* EL NUMERO DE GUIA SIEMPRE DEBE SER AUTOMÁTICO *************
 - Se tiene que configurar que locales trabajan con Pre guias y que locales no. (Definiciones) ...... ok
 - En boton NUEVO del form saber si trabaja con pre guias o no ...................................... ok
-- Los locales donde no manejan pre guías las guiasti generan la cuenta de control automaticamente 
+- Los locales donde no manejan pre guías las guiasti generan la cuenta de control automaticamente .. ok
+- No debe permitir modificar guía si tiene doc.vta y / planilla 
 - Los locales donde SI se manejan pre-guias es obligatorio jalar los datos de ellas (boton NUEVO)
-- 
+- Al anular una guía considerar fisico o interno, como sería si es interno? ANU ....................
+- Configurar las impresiones en A5, considerar los ptos. iniciales, altura, etc.
