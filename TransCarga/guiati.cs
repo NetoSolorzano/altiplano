@@ -62,6 +62,7 @@ namespace TransCarga
         string v_cid = "";                          // codigo interno de tipo de documento
         string v_fra1 = "";                         // frase de si va o no con clave
         string v_fra2 = "";                         // frase 
+        string v_sanu = "";                         // serie anulacion interna ANU
         #endregion
 
         AutoCompleteStringCollection departamentos = new AutoCompleteStringCollection();// autocompletado departamentos
@@ -264,6 +265,7 @@ namespace TransCarga
                             if (row["param"].ToString() == "c_int") v_cid = row["valor"].ToString().Trim();               // codigo interno pre guias
                             if (row["param"].ToString() == "frase1") v_fra1 = row["valor"].ToString().Trim();               // frase de si va con clave la guia
                             if (row["param"].ToString() == "frase2") v_fra2 = row["valor"].ToString().Trim();               // frase otro dato
+                            if (row["param"].ToString() == "serieAnu") v_sanu = row["valor"].ToString().Trim();               // serie anulacion interna
                         }
                         if (row["campo"].ToString() == "impresion")
                         {
@@ -970,15 +972,15 @@ namespace TransCarga
                 if (tx_numero.Text.Trim() == "")
                 {
                     tx_numero.Focus();
-                    MessageBox.Show("Ingrese el número de la pre gruía", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    MessageBox.Show("Ingrese el número de la guía", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                     return;
                 }
-                if ((tx_pregr_num.Text.Trim() == "") && tx_impreso.Text == "N")
+                if ((tx_pla_plani.Text.Trim() == "") && tx_impreso.Text == "N")
                 {
-                    // no tiene guía y no esta impreso => se puede modificar todo y SI anular
+                    // no tiene planilla y no esta impreso => se puede modificar todo y SI anular
                     if (tx_idr.Text.Trim() != "")
                     {
-                        var aa = MessageBox.Show("Confirma que desea ANULAR la Pre-guía?", "Confirme por favor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                        var aa = MessageBox.Show("Confirma que desea ANULAR la guía?", "Confirme por favor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                         if (aa == DialogResult.Yes)
                         {
                             anula();
@@ -991,13 +993,13 @@ namespace TransCarga
                         }
                     }
                 }
-                if ((tx_pregr_num.Text.Trim() == "") && tx_impreso.Text == "S")
+                if ((tx_pla_plani.Text.Trim() == "") && tx_impreso.Text == "S")
                 {
-                    // no tiene guía y SI esta impreso => NO se puede modificar y SI anular
+                    // no tiene planilla y SI esta impreso => NO se puede modificar y SI anular
                     sololee();
                     if (tx_idr.Text.Trim() != "")
                     {
-                        var aa = MessageBox.Show("Confirma que desea ANULAR la Pre-guía?", "Confirme por favor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                        var aa = MessageBox.Show("Confirma que desea ANULAR la guía?", "Confirme por favor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                         if (aa == DialogResult.Yes)
                         {
                             anula();
@@ -1010,19 +1012,19 @@ namespace TransCarga
                         }
                     }
                 }
-                if ((tx_pregr_num.Text.Trim() != "") && tx_impreso.Text == "N")
+                if ((tx_pla_plani.Text.Trim() != "") && tx_impreso.Text == "N")
                 {
-                    // si tiene guía y no esta impreso => NO se puede modificar NO anular
+                    // si tiene planilla y no esta impreso => NO se puede modificar NO anular
                     sololee();
-                    MessageBox.Show("No se puede Anular", "Tiene guía enlazada", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+                    MessageBox.Show("No se puede Anular", "Tiene planilla de carga", MessageBoxButtons.OK, MessageBoxIcon.Hand);
                     tx_dat_tdRem.Focus();
                     return;
                 }
-                if ((tx_pregr_num.Text.Trim() != "") && tx_impreso.Text == "S")
+                if ((tx_pla_plani.Text.Trim() != "") && tx_impreso.Text == "S")
                 {
                     // si tiene guía y si esta impreso => NO se puede modificar NO anular
                     sololee();
-                    MessageBox.Show("No se puede Anular", "Tiene guía enlazada", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+                    MessageBox.Show("No se puede Anular", "Tiene planilla de carga", MessageBoxButtons.OK, MessageBoxIcon.Hand);
                     tx_dat_tdRem.Focus();
                     return;
                 }
@@ -1334,12 +1336,18 @@ namespace TransCarga
             // en el caso guias y otros documentos HAY 2: ANULACION FISICA y ANULACION INTERNA (serie ANU)
             // Anulacion fisica se "anula" el numero del documento en sistema y en fisico se tacha, marca anulado 
             // Anulación interna (ANU) el numero se recupera tanto en fisico como en sistema, el anulado internamente pasa a ser serie ANU
+            var aa = MessageBox.Show("Anulación interna para recuperar el número?" + Environment.NewLine +
+                "Se cambia la serie a ANU", "Atención, confirme por favor",
+                MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            string parte = " ";
+            if (aa == DialogResult.OK) parte = ",sergui=@coad ";
             using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
             {
                 conn.Open();
                 if (conn.State == ConnectionState.Open)
                 {
-                    string canul = " " +
+                    string canul = "update cabguiai set estadoser=@estser,usera=@asd,fecha=now()," +
+                        "verApp=@veap,diriplan4=@dil4,diripwan4=@diw4,netbname=@nbnp" + parte +
                         "where id=@idr";
                     using (MySqlCommand micon = new MySqlCommand(canul, conn))
                     {
@@ -1350,6 +1358,7 @@ namespace TransCarga
                         micon.Parameters.AddWithValue("@diw4", lib.ipwan());
                         micon.Parameters.AddWithValue("@nbnp", Environment.MachineName);
                         micon.Parameters.AddWithValue("@veap", verapp);
+                        if (aa == DialogResult.OK) micon.Parameters.AddWithValue("@coad", v_sanu);
                         micon.ExecuteNonQuery();
                     }
                 }
