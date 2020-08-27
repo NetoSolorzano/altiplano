@@ -40,10 +40,22 @@ namespace TransCarga
         string vtc_ruc = "";            // variable tipo cliente empresa
         string vtc_ext = "";            // variable tipo cliente extranjero
         string codAnul = "";            // codigo de documento anulado
-        //string codDInt = "";            // codigo tipo de documento interno para las pre guías
         string codGene = "";            // codigo documento nuevo generado
         string MonDeft = "";            // moneda por defecto
         string gloDeta = "";            // glosa x defecto en el detalle
+        string v_clu = "";              // codigo del local del usuario
+        string v_slu = "";              // serie del local del usuario
+        string v_nbu = "";              // nombre del usuario
+        string vi_formato = "";         // formato de impresion del documento
+        string vi_copias = "";          // cant copias impresion
+        string v_impA5 = "";            // nombre de la impresora matricial
+        string v_impTK = "";            // nombre de la ticketera
+        string vtc_flete = "";          // la guía va con el flete impreso ?? SI || NO
+        string v_cid = "";              // codigo interno de tipo de documento
+        string v_fra1 = "";             // frase de si va o no con clave
+        string v_fra2 = "";             // frase 
+        string v_sanu = "";             // serie anulacion interna ANU
+        //
         static libreria lib = new libreria();   // libreria de procedimientos
         publico lp = new publico();             // libreria de clases
         string verapp = System.Diagnostics.FileVersionInfo.GetVersionInfo(Application.ExecutablePath).FileVersion;
@@ -51,18 +63,6 @@ namespace TransCarga
         string nomclie = Program.cliente;           // cliente usuario del sistema
         string rucclie = Program.ruc;               // ruc del cliente usuario del sistema
         string asd = TransCarga.Program.vg_user;    // usuario conectado al sistema
-        string v_clu = "";                          // codigo del local del usuario
-        string v_slu = "";                          // serie del local del usuario
-        string v_nbu = "";                          // nombre del usuario
-        string vi_formato = "";                     // formato de impresion del documento
-        string vi_copias = "";                      // cant copias impresion
-        string v_impA5 = "";                        // nombre de la impresora matricial
-        string v_impTK = "";                        // nombre de la ticketera
-        string vtc_flete = "";                      // la guía va con el flete impreso ?? SI || NO
-        string v_cid = "";                          // codigo interno de tipo de documento
-        string v_fra1 = "";                         // frase de si va o no con clave
-        string v_fra2 = "";                         // frase 
-        string v_sanu = "";                         // serie anulacion interna ANU
         #endregion
 
         AutoCompleteStringCollection departamentos = new AutoCompleteStringCollection();// autocompletado departamentos
@@ -115,6 +115,11 @@ namespace TransCarga
             autodepa();                                     // autocompleta departamentos
             autoprov();                                     // autocompleta provincias
             autodist();                                     // autocompleta distritos
+            if (valiVars() == false)
+            {
+                Application.Exit();
+                return;
+            }
         }
         private void init()
         {
@@ -590,6 +595,102 @@ namespace TransCarga
                     }
                 }
             }
+            return retorna;
+        }
+        private bool valiVars()                 // valida existencia de datos en variables del form
+        {
+            bool retorna = true;
+            if (vtc_dni == "")           // variable tipo cliente natural
+            {
+                lib.messagebox("Tipo de cliente Natural");
+                retorna = false;
+            }
+            if (vtc_ruc == "")          // variable tipo cliente empresa
+            {
+                lib.messagebox("Tipo de cliente Empresa");
+                retorna = false;
+            }
+            if (vtc_ext == "")          // variable tipo cliente extranjero
+            {
+                lib.messagebox("Tipo de cliente Extranjero");
+                retorna = false;
+            }
+            if (codAnul == "")          // codigo de documento anulado
+            {
+                lib.messagebox("Código de GR indivual ANULADA");
+                retorna = false;
+            }
+            if (codGene == "")          // codigo documento nuevo generado
+            {
+                lib.messagebox("Código de GR indivual GENERADA/NUEVA");
+                retorna = false;
+            }
+            if (MonDeft == "")          // moneda por defecto
+            {
+                lib.messagebox("Moneda por defecto");
+                retorna = false;
+            }
+            if (gloDeta == "")          // glosa x defecto en el detalle
+            {
+                lib.messagebox("Glosa por defecto en detalle");
+                retorna = false;
+            }
+            if (v_clu == "")            // codigo del local del usuario
+            {
+                lib.messagebox("Código local del usuario");
+                retorna = false;
+            }
+            if (v_slu == "")            // serie del local del usuario
+            {
+                lib.messagebox("Serie general local del usuario");
+                retorna = false;
+            }
+            if (v_nbu == "")            // nombre del usuario
+            {
+                lib.messagebox("Nombre del usuario");
+                retorna = false;
+            }
+            if (vi_formato == "")       // formato de impresion del documento
+            {
+                lib.messagebox("formato de impresion de la GR interna");
+                retorna = false;
+            }
+            if (vi_copias == "")        // cant copias impresion
+            {
+                lib.messagebox("# copias impresas de la GR interna");
+                retorna = false;
+            }
+            if (v_impA5 == "")          // nombre de la impresora matricial
+            {
+                lib.messagebox("Nombre de impresora matricial");
+                retorna = false;
+            }
+            if (v_impTK == "")           // nombre de la ticketera
+            {
+                lib.messagebox("Nombre de impresora de Tickets");
+                retorna = false;
+            }
+            if (vtc_flete == "")         // la guía va con el flete impreso ?? SI || NO
+            {
+                lib.messagebox("GR interna imprime valor del flete");
+                retorna = false;
+            }
+            if (v_cid == "")             // codigo interno de tipo de documento
+            {
+                lib.messagebox("Código interno tipo de documento");
+                retorna = false;
+            }
+            if (v_fra1 == "")            // frase de si va o no con clave
+            {
+                lib.messagebox("Frase impresa en GR sobre clave");
+                retorna = false;
+            }
+            if (v_sanu == "")           // serie de anulacion del documento
+            {
+                lib.messagebox("Serie de Anulación interna");
+                retorna = false;
+            }
+
             return retorna;
         }
 

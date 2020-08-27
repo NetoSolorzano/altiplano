@@ -2606,7 +2606,6 @@ namespace TransCarga
                 Application.Exit();
             }
         }
-
         public void almacen(string accion, string serie, string corre, string almac)         // actualiza almacen - descarga stock
         {   // accion = "entra" || "sale" .... ojo, todas las descargas desde notas
             MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
@@ -3060,6 +3059,10 @@ namespace TransCarga
                 }
             }
             return retorna;
+        }
+        public void messagebox(string texto)                                // messagebox de alerta sobre variables
+        {
+            MessageBox.Show(texto, "FALTA CONFIGURAR", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
     }
 
