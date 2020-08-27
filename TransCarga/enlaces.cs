@@ -368,28 +368,29 @@ namespace TransCarga
             if (modo == "EDITAR")
             {
                 string consulta = "update enlaces set " +
-                        " " +
-                        "where idcodice=@idc";
+                        "valor=@nval " +
+                        "where id=@idc";
                 MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
                 conn.Open();
                 if (conn.State == ConnectionState.Open)
                 {
                     MySqlCommand mycom = new MySqlCommand(consulta, conn);
                     mycom.Parameters.AddWithValue("@idc", tx_idr.Text);
+                    mycom.Parameters.AddWithValue("@nval", textBox4.Text);
                     try
                     {
                         mycom.ExecuteNonQuery();
-                        //string resulta = lib.ult_mov(nomform, nomtab, asd);
-                        //if (resulta != "OK")                                        // actualizamos la tabla usuarios
-                        //{
-                        //    MessageBox.Show(resulta, "Error en actualización de tabla usuarios", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        //    Application.Exit();
-                        //    return;
-                        //}
+                        string resulta = lib.ult_mov(nomform, nomtab, asd);
+                        if (resulta != "OK")                                        // actualizamos la tabla usuarios
+                        {
+                            MessageBox.Show(resulta, "Error en actualización de tabla usuarios", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            Application.Exit();
+                            return;
+                        }
                     }
                     catch (MySqlException ex)
                     {
-                        MessageBox.Show(ex.Message, "Error de Editar definición",MessageBoxButtons.OK,MessageBoxIcon.Warning);
+                        MessageBox.Show(ex.Message, "Error de Editar enlace",MessageBoxButtons.OK,MessageBoxIcon.Warning);
                         iserror = "si";
                     }
                     conn.Close();
@@ -665,6 +666,7 @@ namespace TransCarga
                 limpiar(this);
                 limpia_otros();
                 limpia_combos();
+                tx_idr.Text = idr;
                 jalaoc("tx_idr");
             }
         }
