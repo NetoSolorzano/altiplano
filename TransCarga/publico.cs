@@ -130,6 +130,26 @@ namespace TransCarga
                 }
             }
         }
+        public void limpiagbox(GroupBox gbox)
+        {
+            foreach(Control oControls in gbox.Controls)
+            {
+                if (oControls is TextBox)
+                {
+                    oControls.Text = "";
+                }
+                if (oControls is CheckBox)
+                {
+                    CheckBox chk = oControls as CheckBox;
+                    chk.Checked = false;
+                }
+                if (oControls is ComboBox)
+                {
+                    ComboBox cmb = oControls as ComboBox;
+                    cmb.SelectedIndex = -1;
+                }
+            }
+        }
         // varios
         public int CentimeterToPixel(Form oForm, double Centimeter)
         {

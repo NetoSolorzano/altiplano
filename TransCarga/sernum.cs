@@ -273,23 +273,32 @@ namespace TransCarga
         }
         public void jalaoc(string campo)        // jala datos de definiciones
         {
-            textBox4.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[1].Value.ToString();  // rsocial
-            comboBox1.SelectedValue = textBox4.Text;
-            textCmb2.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[27].Value.ToString();  // tipdoc
-            comboBox2.SelectedValue = textCmb2.Text;
-            textBox1.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[3].Value.ToString();  // serie
-            textBox2.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[5].Value.ToString();  // actual
-            textBox3.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[7].Value.ToString();   // coment
-            textBox5.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[28].Value.ToString();   // sede
-            comboBox3.SelectedValue = textBox5.Text;
-            textBox6.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[17].Value.ToString();   // format
-            textBox7.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[19].Value.ToString();   // glosaser
-            textBox8.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[25].Value.ToString();   // dir_pe
-            textBox9.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[26].Value.ToString();   // ubigeo
-            textBox10.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[6].Value.ToString();   // final
-            tx_dat_zdes.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[18].Value.ToString();   // codigo zona
-            cmb_zdes.SelectedValue = tx_dat_zdes.Text;
-            checkBox1.Checked = (advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[8].Value.ToString() != vEstAnu) ? true : false;
+            if (!string.IsNullOrEmpty(tx_rind.Text))
+            {
+                textBox4.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[1].Value.ToString();  // rsocial
+                comboBox1.SelectedValue = textBox4.Text;
+                textCmb2.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[27].Value.ToString();  // tipdoc
+                comboBox2.SelectedValue = textCmb2.Text;
+                textBox1.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[3].Value.ToString();  // serie
+                textBox2.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[5].Value.ToString();  // actual
+                textBox10.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[6].Value.ToString();   // final
+                textBox3.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[7].Value.ToString();   // coment
+                checkBox1.Checked = (advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[8].Value.ToString() != vEstAnu) ? true : false;
+                textBox5.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[28].Value.ToString();   // sede
+                comboBox3.SelectedValue = textBox5.Text;
+                textBox6.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[17].Value.ToString();   // format
+                tx_dat_zdes.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[18].Value.ToString();   // codigo zona
+                textBox7.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[19].Value.ToString();   // glosaser
+                textBox8.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[25].Value.ToString();   // dir_pe
+                textBox9.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[26].Value.ToString();   // ubigeo
+                cmb_zdes.SelectedValue = tx_dat_zdes.Text;
+                // datos impresion
+                tx_y_inicial.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[20].Value.ToString();   // alto inicial
+                tx_x_fecha.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[21].Value.ToString();   // punto X fecha
+                tx_x_detall.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[22].Value.ToString();   // punto X detalle
+                tx_x_detrac.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[23].Value.ToString();   // punto X detraccion
+                tx_x_pie.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[24].Value.ToString();   // punto X pie 
+            }
         }
         public void dataload()                  // jala datos para los combos y la grilla
         {
@@ -491,9 +500,9 @@ namespace TransCarga
                 {
                     iserror = "no";
                     string consulta = "insert into series (rsocial,tipdoc,serie,actual,coment,sede,format,glosaser,dir_pe,ubigeo," +
-                        "inicial,final,userc,fechc,verApp,diriplan4,diripwan4,status,zona)" +
+                        "inicial,final,userc,fechc,verApp,diriplan4,diripwan4,netbname,status,zona,imp_ini,imp_fec,imp_det,imp_dtr,imp_pie)" +
                         " values (@raz,@tip,@ser,@act,@com,@sed,@for,@glo,@dir,@ubi," +
-                        "@nini,@nfin,@asd,now(),@vapp,@dil4,@diw4,@est,@zona)";
+                        "@nini,@nfin,@asd,now(),@vapp,@dil4,@diw4,@nbn,@est,@zona,@imp_ini,@imp_fec,@imp_det,@imp_dtr,@imp_pie)";
                     MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
                     conn.Open();
                     if (conn.State == ConnectionState.Open)
@@ -517,6 +526,12 @@ namespace TransCarga
                         mycomand.Parameters.AddWithValue("@vapp", verapp);
                         mycomand.Parameters.AddWithValue("@dil4", lib.iplan());
                         mycomand.Parameters.AddWithValue("@diw4", lib.ipwan());
+                        mycomand.Parameters.AddWithValue("@nbn", Environment.MachineName);
+                        mycomand.Parameters.AddWithValue("@imp_ini", tx_y_inicial.Text);
+                        mycomand.Parameters.AddWithValue("@imp_fec", tx_x_fecha.Text);
+                        mycomand.Parameters.AddWithValue("@imp_det", tx_x_detall.Text);
+                        mycomand.Parameters.AddWithValue("@imp_dtr", tx_x_detrac.Text);
+                        mycomand.Parameters.AddWithValue("@imp_pie", tx_x_pie.Text);
                         try
                         {
                             mycomand.ExecuteNonQuery();
@@ -528,25 +543,31 @@ namespace TransCarga
                             mycomand.Dispose();
                             // insertamos en el datatable
                             DataRow drs = dtg.NewRow();
-                            //id,rsocial,tipdoc,serie,inicial,actual,final,coment,status,userc,fechc,userm,fechm,usera,fecha,
-                            //sede,destino,format,zona,glosaser,imp_ini,imp_fec,imp_det,imp_dtr,imp_pie,dir_pe,ubigeo
+                            //a.id,a.rsocial,c.descrizionerid,a.serie,a.inicial,a.actual,a.final,a.coment,a.status," +
+                            //a.userc,a.fechc,a.userm,a.fechm,a.usera,a.fecha,b.descrizionerid,a.destino,a.format,a.zona,a.glosaser," +
+                            //a.imp_ini,a.imp_fec,a.imp_det,a.imp_dtr,a.imp_pie,a.dir_pe,a.ubigeo,a.tipdoc,a.sede
                             drs[0] = idtu;
-                            drs[1] = textBox4.Text;
-                            drs[2] = comboBox2.Text;
-                            drs[3] = textBox1.Text;
-                            drs[4] = textBox2.Text;
-                            drs[5] = textBox2.Text;
-                            drs[6] = textBox10.Text;
-                            drs[7] = textBox3.Text;
-                            drs[8] = (checkBox1.Checked == true) ? "" : vEstAnu;
-                            drs[15] = comboBox3.Text;
-                            drs[17] = textBox6.Text;
-                            drs[18] = tx_dat_zdes.Text;
-                            drs[19] = textBox7.Text;
-                            drs[25] = textBox8.Text;
-                            drs[26] = textBox9.Text;
-                            drs[27] = textCmb2.Text;
-                            drs[28] = textBox5.Text;
+                            drs[1] = textBox4.Text;     // codigo razon social
+                            drs[2] = comboBox2.Text;    // nombre tipo documento
+                            drs[3] = textBox1.Text;     // serie
+                            drs[4] = textBox2.Text;     // actual
+                            drs[5] = textBox2.Text;     // actual
+                            drs[6] = textBox10.Text;    // final
+                            drs[7] = textBox3.Text;     // comentario
+                            drs[8] = (checkBox1.Checked == true) ? "" : vEstAnu;    // habilitado
+                            drs[15] = comboBox3.Text;   // nombre sede local
+                            drs[17] = textBox6.Text;    // formato imp.
+                            drs[18] = tx_dat_zdes.Text; // codigo destino
+                            drs[19] = textBox7.Text;    // glosa
+                            drs[25] = textBox8.Text;    // direccion pto. emi
+                            drs[26] = textBox9.Text;    // ubigeo
+                            drs[27] = textCmb2.Text;    // tipo documento
+                            drs[28] = textBox5.Text;    // codigo sede
+                            drs[20] = tx_y_inicial.Text;// punto Y inicial
+                            drs[21] = tx_x_fecha.Text;  // punto X fecha
+                            drs[22] = tx_x_detall.Text; // punto x detalle
+                            drs[23] = tx_x_detrac.Text; // punto x detraccion
+                            drs[24] = tx_x_pie.Text;    // punto x pie
                             dtg.Rows.Add(drs);
                             //
                             string resulta = lib.ult_mov(nomform, nomtab, asd);
@@ -580,7 +601,8 @@ namespace TransCarga
                     iserror = "no";
                     string consulta = "update series set " +
                             "rsocial=@raz,tipdoc=@tip,serie=@ser,actual=@act,coment=@com,sede=@sed,format=@for,glosaser=@glo,status=@est," +
-                            "dir_pe=@dir,ubigeo=@ubi,final=@nfin,userm=@asd,fechm=now(),verApp=@vapp,diriplan4=@dil4,diripwan4=@diw4,zona=@zona " +
+                            "dir_pe=@dir,ubigeo=@ubi,final=@nfin,userm=@asd,fechm=now(),verApp=@vapp,diriplan4=@dil4,diripwan4=@diw4,zona=@zona," +
+                            "imp_ini=@imp_ini,imp_fec=@imp_fec,imp_det=@imp_det,imp_dtr=@imp_dtr,imp_pie=@imp_pie " +
                             "where id=@idc";
                     MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
                     conn.Open();
@@ -605,6 +627,11 @@ namespace TransCarga
                         mycom.Parameters.AddWithValue("@vapp", verapp);
                         mycom.Parameters.AddWithValue("@dil4", lib.iplan());
                         mycom.Parameters.AddWithValue("@diw4", lib.ipwan());
+                        mycom.Parameters.AddWithValue("@imp_ini", tx_y_inicial.Text);
+                        mycom.Parameters.AddWithValue("@imp_fec", tx_x_fecha.Text);
+                        mycom.Parameters.AddWithValue("@imp_det", tx_x_detall.Text);
+                        mycom.Parameters.AddWithValue("@imp_dtr", tx_x_detrac.Text);
+                        mycom.Parameters.AddWithValue("@imp_pie", tx_x_pie.Text);
                         try
                         {
                             mycom.ExecuteNonQuery();
@@ -638,6 +665,11 @@ namespace TransCarga
                                     dtg.Rows[i][26] = textBox9.Text;
                                     dtg.Rows[i][27] = textCmb2.Text;
                                     dtg.Rows[i][28] = textBox5.Text;
+                                    dtg.Rows[i][20] = tx_y_inicial.Text;// punto Y inicial
+                                    dtg.Rows[i][21] = tx_x_fecha.Text;  // punto X fecha
+                                    dtg.Rows[i][22] = tx_x_detall.Text; // punto x detalle
+                                    dtg.Rows[i][23] = tx_x_detrac.Text; // punto x detraccion
+                                    dtg.Rows[i][24] = tx_x_pie.Text;    // punto x pie
                                 }
                             }
                             string resulta = lib.ult_mov(nomform, nomtab, asd);
@@ -673,6 +705,7 @@ namespace TransCarga
                 // debe limpiar los campos y actualizar la grilla
                 limpiar();
                 limpiaPag(tabreg);
+                lp.limpiagbox(gbox_imp);
                 limpia_otros();
                 limpia_chk();
                 limpia_combos();
@@ -800,6 +833,8 @@ namespace TransCarga
             button1.Image = Image.FromFile(img_grab);
             textBox1.Focus();
             limpiar();
+            limpiaPag(tabreg);
+            lp.limpiagbox(gbox_imp);
             limpia_otros();
             limpia_combos();
         }
@@ -807,20 +842,23 @@ namespace TransCarga
         {
             advancedDataGridView1.Enabled = true;
             string codu = "";
-            string idr = "";
+            string idr="",rin="";
             if (advancedDataGridView1.CurrentRow.Index > -1)
             {
                 codu = advancedDataGridView1.CurrentRow.Cells[1].Value.ToString();
                 idr = advancedDataGridView1.CurrentRow.Cells[0].Value.ToString();
-                tx_rind.Text = advancedDataGridView1.CurrentRow.Index.ToString();
+                rin = advancedDataGridView1.CurrentRow.Index.ToString();
             }
             tabControl1.SelectedTab = tabgrilla;
             escribe();
             Tx_modo.Text = "EDITAR";
             button1.Image = Image.FromFile(img_grab);
             limpiar();
+            limpiaPag(tabreg);
+            lp.limpiagbox(gbox_imp);
             limpia_otros();
             limpia_combos();
+            tx_rind.Text = rin;
             jalaoc("tx_idr");
         }
         private void Bt_close_Click(object sender, EventArgs e)
@@ -850,6 +888,8 @@ namespace TransCarga
             Tx_modo.Text = "ANULAR";
             button1.Image = Image.FromFile(img_anul);
             limpiar();
+            limpiaPag(tabreg);
+            lp.limpiagbox(gbox_imp);
             limpia_otros();
             limpia_combos();
             jalaoc("tx_idr");
@@ -857,6 +897,8 @@ namespace TransCarga
         private void Bt_first_Click(object sender, EventArgs e)
         {
             limpiar();
+            limpiaPag(tabreg);
+            lp.limpiagbox(gbox_imp);
             limpia_chk();
             limpia_combos();
             //--
@@ -869,6 +911,8 @@ namespace TransCarga
             limpia_chk();
             limpia_combos();
             limpiar();
+            limpiaPag(tabreg);
+            lp.limpiagbox(gbox_imp);
             //--
             tx_idr.Text = lib.goback(nomtab, aca);
             tx_idr_Leave(null, null);
@@ -879,6 +923,8 @@ namespace TransCarga
             limpia_chk();
             limpia_combos();
             limpiar();
+            limpiaPag(tabreg);
+            lp.limpiagbox(gbox_imp);
             //--
             tx_idr.Text = lib.gonext(nomtab, aca);
             tx_idr_Leave(null, null);
@@ -886,6 +932,8 @@ namespace TransCarga
         private void Bt_last_Click(object sender, EventArgs e)
         {
             limpiar();
+            limpiaPag(tabreg);
+            lp.limpiagbox(gbox_imp);
             limpia_chk();
             limpia_combos();
             //--
@@ -945,14 +993,15 @@ namespace TransCarga
             if(e.ColumnIndex == 1)
             {
                 //string codu = "";
-                string idr = "";
+                string idr,rin;
                 idr = advancedDataGridView1.CurrentRow.Cells[0].Value.ToString();
-                tx_rind.Text = advancedDataGridView1.CurrentRow.Index.ToString();
+                rin = advancedDataGridView1.CurrentRow.Index.ToString();
                 tabControl1.SelectedTab = tabreg;
                 limpiar();
                 limpia_otros();
                 limpia_combos();
                 tx_idr.Text = idr;
+                tx_rind.Text = rin;
                 jalaoc("tx_idr");
             }
         }
