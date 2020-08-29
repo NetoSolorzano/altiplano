@@ -35,6 +35,7 @@ namespace TransCarga
         string img_grab = "";
         string img_anul = "";
         libreria lib = new libreria();
+        publico lp = new publico();
         // string de conexion
         //static string serv = ConfigurationManager.AppSettings["serv"].ToString();
         static string port = ConfigurationManager.AppSettings["port"].ToString();
@@ -69,8 +70,8 @@ namespace TransCarga
             toolTipNombre.SetToolTip(toolStrip1, nomform);   // Set up the ToolTip text for the object
             init();
             toolboton();
-            limpiar(this);
-            sololee(this);
+            limpiar();
+            sololee();
             dataload();
             grilla();
             this.KeyPreview = true;
@@ -188,20 +189,18 @@ namespace TransCarga
         }
         public void jalaoc(string campo)        // jala datos de usuarios por id o nom_user
         {
-            if (campo == "tx_idr")
+            if (campo == "tx_idr" && tx_rind.Text != "")
             {
-
+                textBox1.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[1].Value.ToString();  // formulario
+                textBox2.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[2].Value.ToString();  // campo
+                textBox3.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[3].Value.ToString();  // descrip
+                textBox4.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[4].Value.ToString();  // valor
+                textBox5.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[5].Value.ToString();  // parametro
             }
             if (campo == "tx_corre")
             {
 
             }
-            //textBox1.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[].Value.ToString();  // 
-            textBox1.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[1].Value.ToString();  // formulario
-            textBox2.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[2].Value.ToString();  // campo
-            textBox3.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[3].Value.ToString();  // descrip
-            textBox4.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[4].Value.ToString();  // valor
-            textBox5.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[5].Value.ToString();  // parametro
         }
         public void dataload()                  // jala datos para los combos y la grilla
         {
@@ -215,7 +214,8 @@ namespace TransCarga
             }
             tabControl1.SelectedTab = tabreg;
             // datos de las deficiones
-            string datgri = "select id,formulario,campo,descrip,valor,param FROM enlaces;";
+            string datgri = "select id,formulario,campo,descrip,valor,param " +
+                "FROM enlaces order by formulario,campo";
             MySqlCommand cdg = new MySqlCommand(datgri, conn);
             MySqlDataAdapter dag = new MySqlDataAdapter(cdg);
             dtg.Clear();
@@ -261,83 +261,33 @@ namespace TransCarga
         }
 
         #region limpiadores_modos
-        public void sololee(Form lfrm)
+        private void sololee()
         {
-            foreach (Control oControls in lfrm.Controls)
-            {
-                if (oControls is TextBox)
-                {
-                    oControls.Enabled = false;
-                }
-                if (oControls is ComboBox)
-                {
-                    oControls.Enabled = false;
-                }
-                if (oControls is RadioButton)
-                {
-                    oControls.Enabled = false;
-                }
-                if (oControls is DateTimePicker)
-                {
-                    oControls.Enabled = false;
-                }
-                if (oControls is MaskedTextBox)
-                {
-                    oControls.Enabled = false;
-                }
-                if (oControls is GroupBox)
-                {
-                    oControls.Enabled = false;
-                }
-            }
+            lp.sololee(this);
         }
-        public void escribe(Form efrm)
+        private void escribe()
         {
-            foreach (Control oControls in efrm.Controls)
-            {
-                if (oControls is TextBox)
-                {
-                    oControls.Enabled = true;
-                }
-                if (oControls is ComboBox)
-                {
-                    oControls.Enabled = true;
-                }
-                if (oControls is RadioButton)
-                {
-                    oControls.Enabled = true;
-                }
-                if (oControls is DateTimePicker)
-                {
-                    oControls.Enabled = true;
-                }
-                if (oControls is MaskedTextBox)
-                {
-                    oControls.Enabled = true;
-                }
-            }
+            lp.escribe(this);
         }
-        public static void limpiar(Form ofrm)
+        private void limpiar()
         {
-            foreach (Control oControls in ofrm.Controls)
-            {
-                if (oControls is TextBox)
-                {
-                    oControls.Text = "";
-                }
-            }
+            lp.limpiar(this);
         }
-        public void limpia_chk()    
+        private void limpia_chk()
         {
-            checkBox1.Checked = false;
+            lp.limpia_chk(this);
         }
-        public void limpia_otros()
+        private void limpia_otros()
         {
-            this.checkBox1.Checked = false;
+            //
         }
-        public void limpia_combos()
+        private void limpia_combos()
         {
-            //this.comboBox1.SelectedIndex = -1;
+            lp.limpia_cmb(this);
+        }
+        private void limpia_pag()
+        {
+            lp.limpiapag(tabreg);
         }
         #endregion limpiadores_modos;
 
@@ -368,7 +318,7 @@ namespace TransCarga
             if (modo == "EDITAR")
             {
                 string consulta = "update enlaces set " +
-                        "valor=@nval " +
+                        "valor=@nval,descrip=@ndes " +
                         "where id=@idc";
                 MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
                 conn.Open();
@@ -377,6 +327,7 @@ namespace TransCarga
                     MySqlCommand mycom = new MySqlCommand(consulta, conn);
                     mycom.Parameters.AddWithValue("@idc", tx_idr.Text);
                     mycom.Parameters.AddWithValue("@nval", textBox4.Text);
+                    mycom.Parameters.AddWithValue("@ndes", textBox3.Text);
                     try
                     {
                         mycom.ExecuteNonQuery();
@@ -387,6 +338,15 @@ namespace TransCarga
                             Application.Exit();
                             return;
                         }
+                        // actualizamos la grilla
+                        for(int i=0; i<dtg.Rows.Count; i++)
+                        {
+                            if (dtg.Rows[i][0].ToString() == tx_idr.Text)
+                            {
+                                dtg.Rows[i][3] = textBox3.Text;
+                                dtg.Rows[i][4] = textBox4.Text;
+                            }
+                        }
                     }
                     catch (MySqlException ex)
                     {
@@ -394,7 +354,6 @@ namespace TransCarga
                         iserror = "si";
                     }
                     conn.Close();
-                    //permisos();
                 }
                 else
                 {
@@ -410,10 +369,10 @@ namespace TransCarga
             if (iserror == "no")
             {
                 // debe limpiar los campos y actualizar la grilla
-                limpiar(this);
+                limpiar();
+                limpia_pag();
                 limpia_otros();
-                this.textBox1.Focus();
-                //dataload();
+                textBox1.Focus();
             }
         }
         #endregion boton_form;
@@ -538,34 +497,28 @@ namespace TransCarga
         #region botones
         private void Bt_add_Click(object sender, EventArgs e)
         {
-            advancedDataGridView1.Enabled = true;
-            tabControl1.SelectedTab = tabreg;
-            escribe(this);
-            this.Tx_modo.Text = "NUEVO";
-            this.button1.Image = Image.FromFile(img_grab);
-            this.textBox1.Focus();
-            limpiar(this);
-            limpia_otros();
-            limpia_combos();
+            // no 
         }
         private void Bt_edit_Click(object sender, EventArgs e)
         {
             advancedDataGridView1.Enabled = true;
-            string codu = "";
-            string idr = "";
+            string rin = "";
             if (advancedDataGridView1.CurrentRow.Index > -1)
             {
-                codu = advancedDataGridView1.CurrentRow.Cells[1].Value.ToString();
-                idr = advancedDataGridView1.CurrentRow.Cells[0].Value.ToString();
-                tx_rind.Text = advancedDataGridView1.CurrentRow.Index.ToString();
+                rin = advancedDataGridView1.CurrentRow.Index.ToString();
             }
             tabControl1.SelectedTab = tabgrilla;
-            escribe(this);
+            escribe();
             Tx_modo.Text = "EDITAR";
             button1.Image = Image.FromFile(img_grab);
-            limpiar(this);
+            limpiar();
             limpia_otros();
             limpia_combos();
+            limpia_pag();
+            textBox1.ReadOnly = true;
+            textBox2.ReadOnly = true;
+            textBox5.ReadOnly = true;
+            tx_idr.Text = rin;
             jalaoc("tx_idr");
         }
         private void Bt_close_Click(object sender, EventArgs e)
@@ -574,34 +527,15 @@ namespace TransCarga
         }
         private void Bt_print_Click(object sender, EventArgs e)
         {
-            sololee(this);
-            this.Tx_modo.Text = "IMPRIMIR";
-            this.button1.Image = Image.FromFile("print48");
-            this.textBox1.Focus();
+            // no
         }
         private void Bt_anul_Click(object sender, EventArgs e)
         {
-            advancedDataGridView1.Enabled = true;
-            string codu = "";
-            string idr = "";
-            if (advancedDataGridView1.CurrentRow.Index > -1)
-            {
-                codu = advancedDataGridView1.CurrentRow.Cells[1].Value.ToString();
-                idr = advancedDataGridView1.CurrentRow.Cells[0].Value.ToString();
-                tx_rind.Text = advancedDataGridView1.CurrentRow.Index.ToString();
-            }
-            tabControl1.SelectedTab = tabreg;
-            escribe(this);
-            Tx_modo.Text = "ANULAR";
-            button1.Image = Image.FromFile(img_anul);
-            limpiar(this);
-            limpia_otros();
-            limpia_combos();
-            jalaoc("tx_idr");
+            // no
         }
         private void Bt_first_Click(object sender, EventArgs e)
         {
-            limpiar(this);
+            limpiar();
             limpia_chk();
             limpia_combos();
             //--
@@ -613,7 +547,7 @@ namespace TransCarga
             string aca = tx_idr.Text;
             limpia_chk();
             limpia_combos();
-            limpiar(this);
+            limpiar();
             //--
             tx_idr.Text = lib.goback(nomtab, aca);
             tx_idr_Leave(null, null);
@@ -623,14 +557,14 @@ namespace TransCarga
             string aca = tx_idr.Text;
             limpia_chk();
             limpia_combos();
-            limpiar(this);
+            limpiar();
             //--
             tx_idr.Text = lib.gonext(nomtab, aca);
             tx_idr_Leave(null, null);
         }
         private void Bt_last_Click(object sender, EventArgs e)
         {
-            limpiar(this);
+            limpiar();
             limpia_chk();
             limpia_combos();
             //--
@@ -663,7 +597,7 @@ namespace TransCarga
                 idr = advancedDataGridView1.CurrentRow.Cells[0].Value.ToString();
                 tx_rind.Text = advancedDataGridView1.CurrentRow.Index.ToString();
                 tabControl1.SelectedTab = tabreg;
-                limpiar(this);
+                limpiar();
                 limpia_otros();
                 limpia_combos();
                 tx_idr.Text = idr;

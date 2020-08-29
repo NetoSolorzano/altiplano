@@ -5,6 +5,8 @@ using System.Drawing;
 using System.Drawing.Printing;
 using System.Linq;
 using System.Windows.Forms;
+using CrystalDecisions.Windows.Forms;
+using CrystalDecisions.CrystalReports.Engine;
 using MySql.Data.MySqlClient;
 
 namespace TransCarga
@@ -55,6 +57,7 @@ namespace TransCarga
         string v_fra1 = "";             // frase de si va o no con clave
         string v_fra2 = "";             // frase 
         string v_sanu = "";             // serie anulacion interna ANU
+        string v_CR_gr_ind = "";        // nombre del formato GR individual en CR
         //
         static libreria lib = new libreria();   // libreria de procedimientos
         publico lp = new publico();             // libreria de clases
@@ -278,6 +281,7 @@ namespace TransCarga
                             if (row["param"].ToString() == "copias") vi_copias = row["valor"].ToString().Trim();
                             if (row["param"].ToString() == "impMatris") v_impA5 = row["valor"].ToString().Trim();
                             if (row["param"].ToString() == "impTK") v_impTK = row["valor"].ToString().Trim();
+                            if (row["param"].ToString() == "nomGRi_cr") v_CR_gr_ind = row["valor"].ToString().Trim();
                         }
                         if (row["campo"].ToString() == "moneda" && row["param"].ToString() == "default") MonDeft = row["valor"].ToString().Trim();             // moneda por defecto
                         if (row["campo"].ToString() == "detalle" && row["param"].ToString() == "glosa") gloDeta = row["valor"].ToString().Trim();             // glosa del detalle
@@ -705,7 +709,11 @@ namespace TransCarga
                 lib.messagebox("Serie de Anulación interna");
                 retorna = false;
             }
-
+            if (v_CR_gr_ind == "")
+            {
+                lib.messagebox("Nombre formato GR en CR");
+                retorna = false;
+            }
             return retorna;
         }
 
@@ -2236,7 +2244,8 @@ namespace TransCarga
         private bool imprimeA5()
         {
             bool retorna = false;
-            // jala los parametros de impresion
+            llenaDataSet();                         // metemos los datos al dataset de la impresion
+            /* / jala los parametros de impresion
             try
             {
                 PrintDocument printDoc = new PrintDocument();
@@ -2253,6 +2262,7 @@ namespace TransCarga
                 MessageBox.Show(ex.Message, "Error en impresión A5");
                 retorna = false;
             }
+            */
             return retorna;
         }
         private bool imprimeTK()
@@ -2373,6 +2383,101 @@ namespace TransCarga
                     micon.ExecuteNonQuery();
                 }
             }
+        }
+        #endregion
+
+        #region crystal
+        private void llenaDataSet()
+        {
+            conClie data = generaReporte();
+            //gr_ind_transp repo = new gr_ind_transp();
+            //repo.SetDataSource(data);
+            //repo.PrintOptions.PrinterName = v_impA5;
+            //repo.PrintToPrinter(int.Parse(vi_copias),false,1,1);
+            ReportDocument repo = new ReportDocument();
+            repo.Load(v_CR_gr_ind);
+            repo.SetDataSource(data);
+            repo.PrintOptions.PrinterName = v_impA5;
+            repo.PrintToPrinter(int.Parse(vi_copias),false,1,1);
+        }
+        private conClie generaReporte()
+        {
+            conClie guiaT = new conClie();
+            conClie.gr_ind_cabRow rowcabeza = guiaT.gr_ind_cab.Newgr_ind_cabRow();
+            //
+            // CABECERA
+            rowcabeza.id = tx_idr.Text;
+            rowcabeza.estadoser = tx_estado.Text;
+            rowcabeza.sergui = tx_serie.Text;
+            rowcabeza.numgui = tx_numero.Text;
+            rowcabeza.numpregui = tx_pregr_num.Text;
+            rowcabeza.fechope = tx_fechope.Text;
+            rowcabeza.frase1 = "";  // no hay campo
+            rowcabeza.frase2 = "";  // no hay campo
+            // origen - destino
+            rowcabeza.nomDestino = cmb_destino.Text;
+            rowcabeza.direDestino = tx_dirDestino.Text;
+            rowcabeza.dptoDestino = ""; // no hay campo
+            rowcabeza.provDestino = "";
+            rowcabeza.distDestino = ""; // no hay campo
+            rowcabeza.nomOrigen = cmb_origen.Text;
+            rowcabeza.direOrigen = tx_dirOrigen.Text;
+            rowcabeza.dptoOrigen = "";  // no hay campo
+            rowcabeza.provOrigen = "";
+            rowcabeza.distOrigen = "";  // no hay campo
+            // remitente
+            rowcabeza.docRemit = cmb_docRem.Text;
+            rowcabeza.numRemit = tx_numDocRem.Text;
+            rowcabeza.nomRemit = tx_nomRem.Text;
+            rowcabeza.direRemit = tx_dirRem.Text;
+            rowcabeza.dptoRemit = tx_dptoRtt.Text;
+            rowcabeza.provRemit = tx_provRtt.Text;
+            rowcabeza.distRemit = tx_distRtt.Text;
+            // destinatario
+            rowcabeza.docDestinat = cmb_docDes.Text;
+            rowcabeza.numDestinat = tx_numDocDes.Text;
+            rowcabeza.nomDestinat = tx_nomDrio.Text;
+            rowcabeza.direDestinat = tx_dirDrio.Text;
+            rowcabeza.distDestinat = tx_disDrio.Text;
+            rowcabeza.provDestinat = tx_proDrio.Text;
+            rowcabeza.dptoDestinat = tx_dptoDrio.Text;
+            // importes
+            rowcabeza.nomMoneda = cmb_mon.Text;
+            rowcabeza.igv = "";         // no hay campo
+            rowcabeza.subtotal = "";    // no hay campo
+            rowcabeza.total = tx_flete.Text;
+            rowcabeza.docscarga = tx_docsOr.Text;
+            rowcabeza.consignat = tx_consig.Text;
+            // pie
+            rowcabeza.autoriz = tx_pla_autor.Text;
+            rowcabeza.brevAyuda = "";   // falta este campo
+            rowcabeza.brevChofer = tx_pla_brevet.Text;
+            rowcabeza.nomChofer = tx_pla_nomcho.Text;
+            rowcabeza.placa = tx_pla_placa.Text;
+            rowcabeza.camion = tx_pla_placa.Text;
+            rowcabeza.confvehi = tx_pla_confv.Text;
+            rowcabeza.rucPropiet = tx_pla_ruc.Text;
+            rowcabeza.nomPropiet = tx_pla_propiet.Text;
+            //
+            guiaT.gr_ind_cab.Addgr_ind_cabRow(rowcabeza);
+            //
+            // DETALLE  
+            for (int i=0; i<dataGridView1.Rows.Count -1; i++)   // foreach (DataGridViewRow row in dataGridView1.Rows)
+            {   
+                conClie.gr_ind_detRow rowdetalle = guiaT.gr_ind_det.Newgr_ind_detRow();
+
+                rowdetalle.fila = "";       // no estamos usando
+                rowdetalle.cant = dataGridView1.Rows[i].Cells[0].Value.ToString();
+                rowdetalle.codigo = "";     // no estamos usando
+                rowdetalle.umed = dataGridView1.Rows[i].Cells[1].Value.ToString();
+                rowdetalle.descrip = dataGridView1.Rows[i].Cells[2].Value.ToString();
+                rowdetalle.precio = "";     // no estamos usando
+                rowdetalle.total = "";      // no estamos usando
+                rowdetalle.peso = dataGridView1.Rows[i].Cells[3].Value.ToString();
+                guiaT.gr_ind_det.Addgr_ind_detRow(rowdetalle);
+            }
+            //
+            return guiaT;
         }
         #endregion
     }

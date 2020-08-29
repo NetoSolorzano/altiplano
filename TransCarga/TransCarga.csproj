@@ -76,6 +76,12 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="bin\Debug\formatos\gr_ind_trans_1.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>gr_ind_trans_1.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="clients.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -186,6 +192,10 @@
     <Compile Include="vehiculos.designer.cs">
       <DependentUpon>vehiculos.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="bin\Debug\formatos\gr_ind_trans_1.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>gr_ind_trans_1.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="clients.resx">
       <DependentUpon>clients.cs</DependentUpon>
     </EmbeddedResource>
@@ -272,6 +282,9 @@
   <ItemGroup>
     <Content Include="leeme.txt" />
     <Content Include="solorsoft.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
