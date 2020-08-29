@@ -58,6 +58,7 @@ namespace TransCarga
         string v_fra2 = "";             // frase 
         string v_sanu = "";             // serie anulacion interna ANU
         string v_CR_gr_ind = "";        // nombre del formato GR individual en CR
+        string v_mfildet = "";          // maximo numero de filas en el detalle, coord. con el formato
         //
         static libreria lib = new libreria();   // libreria de procedimientos
         publico lp = new publico();             // libreria de clases
@@ -278,6 +279,7 @@ namespace TransCarga
                         if (row["campo"].ToString() == "impresion")
                         {
                             if (row["param"].ToString() == "formato") vi_formato = row["valor"].ToString().Trim();
+                            if (row["param"].ToString() == "filasDet") v_mfildet = row["valor"].ToString().Trim();       // maxima cant de filas de detalle
                             if (row["param"].ToString() == "copias") vi_copias = row["valor"].ToString().Trim();
                             if (row["param"].ToString() == "impMatris") v_impA5 = row["valor"].ToString().Trim();
                             if (row["param"].ToString() == "impTK") v_impTK = row["valor"].ToString().Trim();
@@ -712,6 +714,11 @@ namespace TransCarga
             if (v_CR_gr_ind == "")
             {
                 lib.messagebox("Nombre formato GR en CR");
+                retorna = false;
+            }
+            if (v_mfildet == "")
+            {
+                lib.messagebox("Max. filas de detalle");
                 retorna = false;
             }
             return retorna;
@@ -2195,6 +2202,16 @@ namespace TransCarga
             tx_totcant.Text = totcant.ToString();
             tx_totpes.Text = totpes.ToString("0.00");
             tx_tfil.Text = (dataGridView1.Rows.Count - 1).ToString();
+            if (int.Parse(tx_tfil.Text) == int.Parse(v_mfildet))
+            {
+                MessageBox.Show("Número máximo de filas de detalle", "El formato no permite mas", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                dataGridView1.AllowUserToAddRows = false;
+                tx_tfil.Text = (dataGridView1.Rows.Count -1).ToString();
+            }
+            else
+            {
+                dataGridView1.AllowUserToAddRows = true;
+            }
         }
         private void dataGridView1_EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
         {
