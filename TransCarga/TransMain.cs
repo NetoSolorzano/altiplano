@@ -464,16 +464,14 @@ namespace TransCarga
         }
         private void vsc_registro_Click(object sender, EventArgs e)         // Planilla de carga
         {
-            /*
-            salpedclts fsp = new salpedclts();
+            planicarga fsp = new planicarga();
             fsp.TopLevel = false;
             fsp.Parent = this;
             pn_centro.Controls.Add(fsp);
-            //fsp.Location = new Point((pn_centro.Width - fsp.Width) / 2, (pn_centro.Height - fsp.Height) / 2);
+            //fsp.Location = new Point((pn_centro.Width - fsp.Width) / 2, (pn_centro.Height));
             fsp.Anchor = AnchorStyles.None;
             fsp.Show();
             fsp.BringToFront();
-            */
         }
         private void vc_reportes_Click(object sender, EventArgs e)          // Reportes de operaciones
         {

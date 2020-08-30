@@ -2,10 +2,7 @@
 using System.Configuration;
 using System.Data;
 using System.Drawing;
-using System.Drawing.Printing;
-using System.Linq;
 using System.Windows.Forms;
-using CrystalDecisions.Windows.Forms;
 using CrystalDecisions.CrystalReports.Engine;
 using MySql.Data.MySqlClient;
 
@@ -2186,6 +2183,7 @@ namespace TransCarga
         #region datagridview
         private void dataGridView1_RowLeave(object sender, DataGridViewCellEventArgs e)
         {
+            int totfil = 0;
             int totcant = 0;
             decimal totpes = 0;
             for (int i = 0; i < dataGridView1.Rows.Count; i++)
@@ -2193,6 +2191,7 @@ namespace TransCarga
                 if (dataGridView1.Rows[i].Cells[0].Value != null)
                 {
                     totcant = totcant + int.Parse(dataGridView1.Rows[i].Cells[0].Value.ToString());
+                    totfil += 1;
                 }
                 if (dataGridView1.Rows[i].Cells[3].Value != null)
                 {
@@ -2201,12 +2200,11 @@ namespace TransCarga
             }
             tx_totcant.Text = totcant.ToString();
             tx_totpes.Text = totpes.ToString("0.00");
-            tx_tfil.Text = (dataGridView1.Rows.Count - 1).ToString();
+            tx_tfil.Text = totfil.ToString();
             if (int.Parse(tx_tfil.Text) == int.Parse(v_mfildet))
             {
                 MessageBox.Show("Número máximo de filas de detalle", "El formato no permite mas", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 dataGridView1.AllowUserToAddRows = false;
-                tx_tfil.Text = (dataGridView1.Rows.Count -1).ToString();
             }
             else
             {
@@ -2216,7 +2214,7 @@ namespace TransCarga
         private void dataGridView1_EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
         {
             e.Control.KeyPress -= new KeyPressEventHandler(Column_KeyPress);
-            if (dataGridView1.CurrentCell.ColumnIndex == 0 || dataGridView1.CurrentCell.ColumnIndex == 3)
+            if (dataGridView1.CurrentCell.ColumnIndex == 0 || dataGridView1.CurrentCell.ColumnIndex == 3)   // columnas de solo números
             {
                 TextBox tb = e.Control as TextBox;
                 if (tb != null)
@@ -2224,7 +2222,7 @@ namespace TransCarga
                     tb.KeyPress += new KeyPressEventHandler(Column_KeyPress);
                 }
             }
-            if (dataGridView1.CurrentCell.ColumnIndex == 1 || dataGridView1.CurrentCell.ColumnIndex == 2)
+            if (dataGridView1.CurrentCell.ColumnIndex == 1 || dataGridView1.CurrentCell.ColumnIndex == 2)   // columnas en MAYUSCULAS
             {
                 if (e.Control is TextBox)
                 {

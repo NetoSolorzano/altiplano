@@ -141,6 +141,12 @@
     <Compile Include="permisos.designer.cs">
       <DependentUpon>permisos.cs</DependentUpon>
     </Compile>
+    <Compile Include="planicarga.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="planicarga.designer.cs">
+      <DependentUpon>planicarga.cs</DependentUpon>
+    </Compile>
     <Compile Include="preguiat.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -167,6 +173,12 @@
     </Compile>
     <Compile Include="sernum.designer.cs">
       <DependentUpon>sernum.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TC_form.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TC_form.designer.cs">
+      <DependentUpon>TC_form.cs</DependentUpon>
     </Compile>
     <Compile Include="TransMain.cs">
       <SubType>Form</SubType>
@@ -220,6 +232,9 @@
     <EmbeddedResource Include="permisos.resx">
       <DependentUpon>permisos.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="planicarga.resx">
+      <DependentUpon>planicarga.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="preguiat.resx">
       <DependentUpon>preguiat.cs</DependentUpon>
     </EmbeddedResource>
@@ -241,6 +256,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="sernum.resx">
       <DependentUpon>sernum.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TC_form.resx">
+      <DependentUpon>TC_form.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="TransMain.resx">
       <DependentUpon>TransMain.cs</DependentUpon>
