@@ -140,7 +140,7 @@ namespace TransCarga
         {
             dataGridView1.Rows.Clear();
             dataGridView1.Columns.Clear();
-            //dataGridView1.DataSource = dtu;
+            //a.fila,a.numpreg,a.serguia,a.numguia,a.totcant,a.totpeso,b.descrizionerid as MON,a.totflet
             if (dataGridView1.DataSource == null) dataGridView1.ColumnCount = 1;
             //
             for (int i = 0; i < dataGridView1.Columns.Count; i++)
@@ -354,40 +354,10 @@ namespace TransCarga
                 return;
             }
         }
-        private void jalapg(string numpre)      // jala datos de la pre guia
-        {
-            using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
-            {
-                conn.Open();
-                string jala = "select ..";
-                using (MySqlCommand micon = new MySqlCommand(jala, conn))
-                {
-                    micon.Parameters.AddWithValue("@num", numpre);
-                    MySqlDataReader dr = micon.ExecuteReader();
-                    if (dr.Read())
-                    {
-                        tx_dat_estad.Text = dr.GetString("estadoser");
-                        // ...
-                    }
-                    dr.Dispose();
-                }
-                string jalad = "select ... = @num";
-                using (MySqlCommand micon = new MySqlCommand(jalad, conn))
-                {
-                    micon.Parameters.AddWithValue("@num", numpre);
-                    MySqlDataReader dr = micon.ExecuteReader();
-                    while (dr.Read())
-                    {
-                        //dataGridView1.Rows.Add(dr.GetString(0),...);
-                    }
-                    dr.Dispose();
-                }
-                // ...
-            }
-        }
         private void jaladet(string idr)         // jala el detalle
         {
-            string jalad = "select ... where idc=@idr";
+            string jalad = "select a.idc,a.serplacar,a.numplacar,a.fila,a.numpreg,a.serguia,a.numguia,a.totcant,a.totpeso,b.descrizionerid as MON,a.totflet,a.estadoser " +
+                "from detplacar a left join desc_mon b on b.idcodice=a.codmone where a.idc=@idr";
             using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
             {
                 conn.Open();
@@ -400,7 +370,16 @@ namespace TransCarga
                         da.Fill(dt);
                         foreach (DataRow row in dt.Rows)
                         {
-                            //dataGridView1.Rows.Add(...,);
+                            dataGridView1.Rows.Add(
+                                row[3].ToString(),
+                                row[4].ToString(),
+                                row[5].ToString(),
+                                row[6].ToString(),
+                                row[7].ToString(),
+                                row[8].ToString(),
+                                row[9].ToString(),
+                                row[10].ToString()
+                                );
                         }
                         dt.Dispose();
                     }
@@ -418,23 +397,48 @@ namespace TransCarga
                 return;
             }
             //  datos para los combos de locales origen y destino
+            cmb_origen.Items.Clear();
+            MySqlCommand ccl = new MySqlCommand("select idcodice,descrizionerid,ubidir,marca1 from desc_loc where numero=@bloq", conn);
+            ccl.Parameters.AddWithValue("@bloq", 1);
+            MySqlDataAdapter dacu = new MySqlDataAdapter(ccl);
+            dtu.Clear();
+            dacu.Fill(dtu);
+            cmb_origen.DataSource = dtu;
+            cmb_origen.DisplayMember = "descrizionerid";
+            cmb_origen.ValueMember = "idcodice";
             //
-            //  datos para los combobox de tipo de documento
-            //
+            dtd.Clear();
+            dacu.Fill(dtd);
+            cmb_destino.Items.Clear();
+            cmb_destino.DataSource = dtd;
+            cmb_destino.DisplayMember = "descrizionerid";
+            cmb_destino.ValueMember = "idcodice";
             // datos para el combo de moneda
-            //
+            cmb_mon.Items.Clear();
+            MySqlCommand cmo = new MySqlCommand("select idcodice,descrizionerid from desc_mon where numero=@bloq", conn);
+            cmo.Parameters.AddWithValue("@bloq", 1);
+            dacu = new MySqlDataAdapter(cmo);
+            dtm.Clear();
+            dacu.Fill(dtm);
+            cmb_mon.DataSource = dtm;
+            cmb_mon.DisplayMember = "descrizionerid";
+            cmb_mon.ValueMember = "idcodice";
             conn.Close();
         }
-        private bool valiGri()                  // valida filas completas en la grilla
+        private bool valiGri()                  // valida filas completas en la grilla - 8 columnas
         {
             bool retorna = false;
-            /*
             for (int i = 0; i < dataGridView1.Rows.Count; i++)
             {
                 if (dataGridView1.Rows[i].Cells[0].Value == null &&
                     dataGridView1.Rows[i].Cells[1].Value == null &&
                     dataGridView1.Rows[i].Cells[2].Value == null &&
-                    dataGridView1.Rows[i].Cells[3].Value == null)
+                    dataGridView1.Rows[i].Cells[3].Value == null &&
+                    dataGridView1.Rows[i].Cells[4].Value == null &&
+                    dataGridView1.Rows[i].Cells[5].Value == null &&
+                    dataGridView1.Rows[i].Cells[6].Value == null &&
+                    dataGridView1.Rows[i].Cells[7].Value == null &&
+                    dataGridView1.Rows[i].Cells[8].Value == null)
                 {
                     // no hay problema
                 }
@@ -443,9 +447,13 @@ namespace TransCarga
                     if (dataGridView1.Rows[i].Cells[0].Value == null ||
                         dataGridView1.Rows[i].Cells[1].Value == null ||
                         dataGridView1.Rows[i].Cells[2].Value == null ||
-                        dataGridView1.Rows[i].Cells[3].Value == null)
+                        dataGridView1.Rows[i].Cells[3].Value == null ||
+                        dataGridView1.Rows[i].Cells[4].Value == null ||
+                        dataGridView1.Rows[i].Cells[5].Value == null ||
+                        dataGridView1.Rows[i].Cells[6].Value == null ||
+                        dataGridView1.Rows[i].Cells[7].Value == null ||
+                        dataGridView1.Rows[i].Cells[8].Value == null)
                     {
-                        //MessageBox.Show("Complete las filas del detalle", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         retorna = false;
                     }
                     else
@@ -454,27 +462,11 @@ namespace TransCarga
                     }
                 }
             }
-            */
             return retorna;
         }
         private bool valiVars()                 // valida existencia de datos en variables del form
         {
             bool retorna = true;
-            if (vtc_dni == "")           // variable tipo cliente natural
-            {
-                lib.messagebox("Tipo de cliente Natural");
-                retorna = false;
-            }
-            if (vtc_ruc == "")          // variable tipo cliente empresa
-            {
-                lib.messagebox("Tipo de cliente Empresa");
-                retorna = false;
-            }
-            if (vtc_ext == "")          // variable tipo cliente extranjero
-            {
-                lib.messagebox("Tipo de cliente Extranjero");
-                retorna = false;
-            }
             if (codAnul == "")          // codigo de documento anulado
             {
                 lib.messagebox("Código de GR indivual ANULADA");
@@ -520,7 +512,7 @@ namespace TransCarga
                 lib.messagebox("Nombre de impresora de Tickets");
                 retorna = false;
             }
-            if (vtc_flete == "")         // la guía va con el flete impreso ?? SI || NO
+            if (vtc_flete == "")         // el detalle va con flete impreso ?? SI || NO
             {
                 lib.messagebox("GR interna imprime valor del flete");
                 retorna = false;
@@ -553,48 +545,6 @@ namespace TransCarga
             return retorna;
         }
 
-        #region autocompletados
-        private void autodepa()                 // se jala en el load
-        {
-            MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
-            conn.Open();
-            if (conn.State == ConnectionState.Open)
-            {
-                string consulta = "select nombre from ubigeos where depart<>'00' and provin='00' and distri='00'";
-                MySqlCommand micon = new MySqlCommand(consulta, conn);
-                try
-                {
-                    MySqlDataReader dr = micon.ExecuteReader();
-                    if (dr.HasRows == true)
-                    {
-                        while (dr.Read())
-                        {
-                            departamentos.Add(dr["nombre"].ToString());
-                        }
-                    }
-                    dr.Close();
-                }
-                catch (MySqlException ex)
-                {
-                    MessageBox.Show(ex.Message, "Error en obtener relación de departamentos", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    Application.Exit();
-                    return;
-                }
-                conn.Close();
-            }
-            else
-            {
-                MessageBox.Show("No se puede conectar al servidor!", "Error de conectividad", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-            }
-        }
-        private void autoprov()                 // se jala despues de ingresado el departamento
-        {
-        }
-        private void autodist()                 // se jala despues de ingresado la provincia
-        {
-        }
-        #endregion autocompletados
-
         #region limpiadores_modos
         private void sololee()
         {
@@ -603,7 +553,6 @@ namespace TransCarga
         private void escribe()
         {
             lp.escribe(this);
-            //
         }
         private void limpiar()
         {
@@ -627,7 +576,48 @@ namespace TransCarga
         private void button1_Click(object sender, EventArgs e)
         {
             #region validaciones
-            //...
+            if(tx_serie.Text.Trim() == "")
+            {
+                MessageBox.Show("Ingrese la serie de la planilla", "Complete la información", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                tx_serie.Focus();
+                return;
+            }
+            if (tx_numero.Text.Trim() == "")
+            {
+                MessageBox.Show("Ingrese el número de la planilla", "Complete la información", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                tx_numero.Focus();
+                return;
+            }
+            if (tx_pla_fech.Text.Trim() == "")
+            {
+                MessageBox.Show("Ingrese la fecha de la planilla", "Complete la información", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                tx_pla_fech.Focus();
+                return;
+            }
+            if (tx_dat_locori.Text == "")
+            {
+                MessageBox.Show("Seleccione el local de origen", "Complete la información", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                cmb_origen.Focus();
+                return;
+            }
+            if (tx_dat_locdes.Text == "")
+            {
+                MessageBox.Show("Seleccione el local de destino", "Complete la información", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                cmb_destino.Focus();
+                return;
+            }
+            if (tx_pla_ruc.Text.Trim() == "" || tx_car3ro_ruc.Text == "")
+            {
+                MessageBox.Show("Ingrese el ruc del transportista", "Complete la información", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                if(rb_propio.Checked == true) tx_pla_ruc.Focus();
+                if(rb_3ro.Checked == true) tx_pla_ruc.Focus();
+                if (rb_bus.Checked == true) tx_car3ro_ruc.Focus();
+                return;
+            }
+            if (rb_propio.Checked == true)
+            {
+                // validamos todo propio y tercero alquilado ... ME QUEDE ACA
+            }
             #endregion
             // grabamos, actualizamos, etc
             string modo = Tx_modo.Text;
@@ -643,7 +633,7 @@ namespace TransCarga
                 }
                 if (tx_idr.Text.Trim() == "")
                 {
-                    var aa = MessageBox.Show("Confirma que desea crear la guía?", "Confirme por favor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                    var aa = MessageBox.Show("Confirma que desea crear la planilla?", "Confirme por favor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                     if (aa == DialogResult.Yes)
                     {
                         if (graba() == true)
@@ -654,7 +644,7 @@ namespace TransCarga
                             {
                                 MessageBox.Show(resulta, "Error en actualización de seguimiento", MessageBoxButtons.OK, MessageBoxIcon.Error);
                             }
-                            var bb = MessageBox.Show("Desea imprimir la Guía?" + Environment.NewLine +
+                            var bb = MessageBox.Show("Desea imprimir la planilla?" + Environment.NewLine +
                                 "El formato actual es " + vi_formato, "Confirme por favor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                             if (bb == DialogResult.Yes)
                             {
