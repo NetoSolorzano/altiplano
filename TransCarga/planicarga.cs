@@ -831,12 +831,12 @@ namespace TransCarga
                         if (dr.Read())
                         {
                             // numplacar numeracion automatica estilo pre guias
+                            tx_numero.Text = lib.Right("0000000" + dr.GetString(0), 8);
                             tx_idr.Text = dr.GetString(0);
                         }
                     }
                 }
                 // detalle
-                /*
                 if (dataGridView1.Rows.Count > 0)
                 {
                     int fila = 1;
@@ -845,29 +845,39 @@ namespace TransCarga
                         if (dataGridView1.Rows[i].Cells[0].Value.ToString().Trim() != "")
                         {
 
-                            string inserd2 = "update detguiai set " +
-                                "cantprodi=@can,unimedpro=@uni,codiprodi=@cod,descprodi=@des,pesoprodi=@pes,precprodi=@preu,totaprodi=@pret " +
-                                "where idc=@idr and fila=@fila";
+                            string inserd2 = "insert into detplacar (idc,serplacar,numplacar,fila,numpreg,serguia,numguia,totcant,totpeso,totflet,codmone,estadoser," +
+                                "verApp,userc,fechc,diriplan4,diripwan4,netbname) " +
+                                "values (@idr,@serpl,@numpl,@fila,@numpr,@sergu,@numgu,@totca,@totpe,@totfl,@codmo,@estad," +
+                                "@verApp,@asd,now(),@iplan,@ipwan,@nbnam)";
                             using (MySqlCommand micon = new MySqlCommand(inserd2, conn))
                             {
                                 micon.Parameters.AddWithValue("@idr", tx_idr.Text);
+                                micon.Parameters.AddWithValue("@serpl", tx_serie.Text);
+                                micon.Parameters.AddWithValue("@numpl", tx_numero.Text);
                                 micon.Parameters.AddWithValue("@fila", fila);
-                                micon.Parameters.AddWithValue("@can", dataGridView1.Rows[i].Cells[0].Value.ToString());
-                                micon.Parameters.AddWithValue("@uni", dataGridView1.Rows[i].Cells[1].Value.ToString());
-                                micon.Parameters.AddWithValue("@cod", "");
-                                micon.Parameters.AddWithValue("@des", gloDeta + dataGridView1.Rows[i].Cells[2].Value.ToString().Trim());
-                                micon.Parameters.AddWithValue("@pes", dataGridView1.Rows[i].Cells[3].Value.ToString());
-                                micon.Parameters.AddWithValue("@preu", "0");
-                                micon.Parameters.AddWithValue("@pret", "0");
+                                micon.Parameters.AddWithValue("@numpr", dataGridView1.Rows[i].Cells[4].Value.ToString());
+                                micon.Parameters.AddWithValue("@sergu", dataGridView1.Rows[i].Cells[5].Value.ToString());
+                                micon.Parameters.AddWithValue("@numgu", dataGridView1.Rows[i].Cells[6].Value.ToString());
+                                micon.Parameters.AddWithValue("@totca", dataGridView1.Rows[i].Cells[7].Value.ToString());
+                                micon.Parameters.AddWithValue("@totpe", dataGridView1.Rows[i].Cells[8].Value.ToString());
+                                micon.Parameters.AddWithValue("@totfl", dataGridView1.Rows[i].Cells[10].Value.ToString());
+                                micon.Parameters.AddWithValue("@codmo", tx_dat_mone.Text);
+                                micon.Parameters.AddWithValue("@estad", dataGridView1.Rows[i].Cells[11].Value.ToString());
+                                micon.Parameters.AddWithValue("@verApp", verapp);
+                                micon.Parameters.AddWithValue("@asd", asd);
+                                micon.Parameters.AddWithValue("@iplan", lib.iplan());
+                                micon.Parameters.AddWithValue("@ipwan", lib.ipwan());
+                                micon.Parameters.AddWithValue("@nbnam", Environment.MachineName);
+
                                 micon.ExecuteNonQuery();
                                 fila += 1;
-                                //
+                                //a.idc,a.serplacar,a.numplacar,a.fila,a.numpreg,a.serguia,a.numguia,a.totcant,a.totpeso,b.descrizionerid as MON,a.totflet,a.estadoser
+                                //   0 ,       1   ,     2     ,    3 ,    4    ,    5    ,    6    ,    7    ,    8    ,      9                ,   10    ,    11
                                 retorna = true;         // no hubo errores!
                             }
                         }
                     }
                 }
-                */
             }
             else
             {
@@ -886,9 +896,9 @@ namespace TransCarga
             {
                 try
                 {
-                    if (true)     // EDICION DE CABECERA
-                    {   // tx_impreso.Text == "N"
-                        string actua = "update ??? a set " +
+                    if (tx_dat_estad.Text == codGene)     // solo edita estado GENERADO, otro estado no se edita
+                    {
+                        string actua = "update  a set " +
                             "a.fechopegr=@fechop,a.tidodegri=@tdcdes,a.nudodegri=@ndcdes," +
                             "a.nombdegri=@nomdes,a.diredegri=@dircde,a.ubigdegri=@ubicde,a.tidoregri=@tdcrem,a.nudoregri=@ndcrem," + 
                             "a.nombregri=@nomrem,a.direregri=@dircre,a.ubigregri=@ubicre,a.locorigen=@locpgr,a.dirorigen=@dirpgr," +

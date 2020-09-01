@@ -195,7 +195,7 @@
             this.toolStripSeparator9,
             this.Bt_fin,
             this.toolStripSeparator11});
-            this.toolStrip1.Location = new System.Drawing.Point(0, 555);
+            this.toolStrip1.Location = new System.Drawing.Point(0, 611);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(770, 35);
             this.toolStrip1.TabIndex = 33;
@@ -438,7 +438,7 @@
             // button1
             // 
             this.button1.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.button1.Location = new System.Drawing.Point(663, 374);
+            this.button1.Location = new System.Drawing.Point(663, 417);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(62, 56);
             this.button1.TabIndex = 24;
@@ -454,7 +454,7 @@
             this.pn_usloc.Controls.Add(this.tx_locuser);
             this.pn_usloc.Controls.Add(this.tx_nomuser);
             this.pn_usloc.Controls.Add(this.tx_user);
-            this.pn_usloc.Location = new System.Drawing.Point(0, 523);
+            this.pn_usloc.Location = new System.Drawing.Point(0, 579);
             this.pn_usloc.Name = "pn_usloc";
             this.pn_usloc.Size = new System.Drawing.Size(770, 30);
             this.pn_usloc.TabIndex = 275;
@@ -733,16 +733,16 @@
             // dataGridView1
             // 
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Location = new System.Drawing.Point(18, 197);
+            this.dataGridView1.Location = new System.Drawing.Point(18, 198);
             this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.Size = new System.Drawing.Size(587, 270);
+            this.dataGridView1.Size = new System.Drawing.Size(577, 323);
             this.dataGridView1.TabIndex = 328;
             // 
             // tx_tfil
             // 
             this.tx_tfil.AllowSpace = false;
             this.tx_tfil.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_tfil.Location = new System.Drawing.Point(171, 473);
+            this.tx_tfil.Location = new System.Drawing.Point(171, 527);
             this.tx_tfil.Name = "tx_tfil";
             this.tx_tfil.ReadOnly = true;
             this.tx_tfil.Size = new System.Drawing.Size(41, 20);
@@ -753,7 +753,7 @@
             // 
             this.label28.AutoSize = true;
             this.label28.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label28.Location = new System.Drawing.Point(114, 477);
+            this.label28.Location = new System.Drawing.Point(114, 531);
             this.label28.Name = "label28";
             this.label28.Size = new System.Drawing.Size(55, 13);
             this.label28.TabIndex = 354;
@@ -764,7 +764,7 @@
             // 
             this.label18.AutoSize = true;
             this.label18.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label18.Location = new System.Drawing.Point(675, 477);
+            this.label18.Location = new System.Drawing.Point(675, 531);
             this.label18.Name = "label18";
             this.label18.Size = new System.Drawing.Size(50, 13);
             this.label18.TabIndex = 353;
@@ -775,7 +775,7 @@
             // 
             this.tx_impreso.BackColor = System.Drawing.SystemColors.Window;
             this.tx_impreso.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_impreso.Location = new System.Drawing.Point(727, 474);
+            this.tx_impreso.Location = new System.Drawing.Point(727, 527);
             this.tx_impreso.Name = "tx_impreso";
             this.tx_impreso.ReadOnly = true;
             this.tx_impreso.Size = new System.Drawing.Size(26, 18);
@@ -786,7 +786,7 @@
             // 
             this.tx_totpes.AllowSpace = false;
             this.tx_totpes.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_totpes.Location = new System.Drawing.Point(449, 473);
+            this.tx_totpes.Location = new System.Drawing.Point(449, 527);
             this.tx_totpes.Name = "tx_totpes";
             this.tx_totpes.ReadOnly = true;
             this.tx_totpes.Size = new System.Drawing.Size(41, 20);
@@ -797,7 +797,7 @@
             // 
             this.label16.AutoSize = true;
             this.label16.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label16.Location = new System.Drawing.Point(371, 477);
+            this.label16.Location = new System.Drawing.Point(371, 531);
             this.label16.Name = "label16";
             this.label16.Size = new System.Drawing.Size(77, 13);
             this.label16.TabIndex = 351;
@@ -808,7 +808,7 @@
             // 
             this.tx_totcant.AllowSpace = false;
             this.tx_totcant.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_totcant.Location = new System.Drawing.Point(315, 473);
+            this.tx_totcant.Location = new System.Drawing.Point(315, 527);
             this.tx_totcant.Name = "tx_totcant";
             this.tx_totcant.ReadOnly = true;
             this.tx_totcant.Size = new System.Drawing.Size(41, 20);
@@ -819,7 +819,7 @@
             // 
             this.label12.AutoSize = true;
             this.label12.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label12.Location = new System.Drawing.Point(225, 477);
+            this.label12.Location = new System.Drawing.Point(225, 531);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(89, 13);
             this.label12.TabIndex = 350;
@@ -1110,7 +1110,7 @@
             // 
             this.groupBox27.BackColor = System.Drawing.Color.White;
             this.groupBox27.Controls.Add(this.groupBox28);
-            this.groupBox27.Location = new System.Drawing.Point(16, 516);
+            this.groupBox27.Location = new System.Drawing.Point(16, 570);
             this.groupBox27.Name = "groupBox27";
             this.groupBox27.Size = new System.Drawing.Size(738, 1);
             this.groupBox27.TabIndex = 386;
@@ -1128,7 +1128,7 @@
             // 
             this.label19.AutoSize = true;
             this.label19.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label19.Location = new System.Drawing.Point(16, 500);
+            this.label19.Location = new System.Drawing.Point(16, 554);
             this.label19.Name = "label19";
             this.label19.Size = new System.Drawing.Size(78, 13);
             this.label19.TabIndex = 385;
@@ -1138,7 +1138,7 @@
             // 
             this.tx_obser1.BackColor = System.Drawing.SystemColors.Window;
             this.tx_obser1.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_obser1.Location = new System.Drawing.Point(95, 498);
+            this.tx_obser1.Location = new System.Drawing.Point(95, 552);
             this.tx_obser1.MaxLength = 0;
             this.tx_obser1.Name = "tx_obser1";
             this.tx_obser1.Size = new System.Drawing.Size(642, 18);
@@ -1251,9 +1251,9 @@
             this.gbox_flete.Controls.Add(this.tx_flete);
             this.gbox_flete.Controls.Add(this.label15);
             this.gbox_flete.Controls.Add(this.groupBox16);
-            this.gbox_flete.Location = new System.Drawing.Point(611, 238);
+            this.gbox_flete.Location = new System.Drawing.Point(601, 238);
             this.gbox_flete.Name = "gbox_flete";
-            this.gbox_flete.Size = new System.Drawing.Size(155, 119);
+            this.gbox_flete.Size = new System.Drawing.Size(152, 119);
             this.gbox_flete.TabIndex = 395;
             this.gbox_flete.TabStop = false;
             // 
@@ -1261,7 +1261,7 @@
             // 
             this.label6.AutoSize = true;
             this.label6.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label6.Location = new System.Drawing.Point(10, 95);
+            this.label6.Location = new System.Drawing.Point(5, 95);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(56, 13);
             this.label6.TabIndex = 324;
@@ -1272,7 +1272,7 @@
             // 
             this.tx_salxcob.AllowSpace = false;
             this.tx_salxcob.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_salxcob.Location = new System.Drawing.Point(76, 92);
+            this.tx_salxcob.Location = new System.Drawing.Point(70, 92);
             this.tx_salxcob.Name = "tx_salxcob";
             this.tx_salxcob.Size = new System.Drawing.Size(73, 20);
             this.tx_salxcob.TabIndex = 323;
@@ -1282,7 +1282,7 @@
             // 
             this.label5.AutoSize = true;
             this.label5.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label5.Location = new System.Drawing.Point(10, 71);
+            this.label5.Location = new System.Drawing.Point(5, 71);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(44, 13);
             this.label5.TabIndex = 322;
@@ -1293,7 +1293,7 @@
             // 
             this.tx_pagado.AllowSpace = false;
             this.tx_pagado.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_pagado.Location = new System.Drawing.Point(76, 68);
+            this.tx_pagado.Location = new System.Drawing.Point(70, 68);
             this.tx_pagado.Name = "tx_pagado";
             this.tx_pagado.Size = new System.Drawing.Size(73, 20);
             this.tx_pagado.TabIndex = 321;
@@ -1303,7 +1303,7 @@
             // 
             this.label3.AutoSize = true;
             this.label3.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label3.Location = new System.Drawing.Point(10, 47);
+            this.label3.Location = new System.Drawing.Point(5, 47);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(59, 13);
             this.label3.TabIndex = 320;
@@ -1324,7 +1324,7 @@
             // 
             this.cmb_mon.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmb_mon.FormattingEnabled = true;
-            this.cmb_mon.Location = new System.Drawing.Point(109, 14);
+            this.cmb_mon.Location = new System.Drawing.Point(106, 14);
             this.cmb_mon.Name = "cmb_mon";
             this.cmb_mon.Size = new System.Drawing.Size(40, 21);
             this.cmb_mon.TabIndex = 22;
@@ -1333,7 +1333,7 @@
             // 
             this.tx_flete.AllowSpace = false;
             this.tx_flete.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_flete.Location = new System.Drawing.Point(76, 44);
+            this.tx_flete.Location = new System.Drawing.Point(70, 44);
             this.tx_flete.Name = "tx_flete";
             this.tx_flete.Size = new System.Drawing.Size(73, 20);
             this.tx_flete.TabIndex = 23;
@@ -1362,7 +1362,7 @@
             // 
             this.tx_dat_detflete.BackColor = System.Drawing.SystemColors.Window;
             this.tx_dat_detflete.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_dat_detflete.Location = new System.Drawing.Point(18, 472);
+            this.tx_dat_detflete.Location = new System.Drawing.Point(18, 526);
             this.tx_dat_detflete.Name = "tx_dat_detflete";
             this.tx_dat_detflete.Size = new System.Drawing.Size(32, 18);
             this.tx_dat_detflete.TabIndex = 396;
@@ -1375,7 +1375,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.BackColor = System.Drawing.Color.LightSteelBlue;
-            this.ClientSize = new System.Drawing.Size(770, 590);
+            this.ClientSize = new System.Drawing.Size(770, 646);
             this.Controls.Add(this.tx_dat_detflete);
             this.Controls.Add(this.gbox_flete);
             this.Controls.Add(this.tx_dat_locdes);
