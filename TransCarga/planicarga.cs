@@ -10,16 +10,16 @@ namespace TransCarga
 {
     public partial class planicarga : Form
     {
-        static string nomform = "planicarga";             // nombre del formulario
-        string colback = TransCarga.Program.colbac;   // color de fondo
-        string colpage = TransCarga.Program.colpag;   // color de los pageframes
-        string colgrid = TransCarga.Program.colgri;   // color de las grillas
-        string colfogr = TransCarga.Program.colfog;   // color fondo con grillas
-        string colsfon = TransCarga.Program.colsbg;   // color fondo seleccion
-        string colsfgr = TransCarga.Program.colsfc;   // color seleccion grilla
-        string colstrp = TransCarga.Program.colstr;   // color del strip
+        static string nomform = "planicarga";           // nombre del formulario
+        string colback = TransCarga.Program.colbac;     // color de fondo
+        string colpage = TransCarga.Program.colpag;     // color de los pageframes
+        string colgrid = TransCarga.Program.colgri;     // color de las grillas
+        string colfogr = TransCarga.Program.colfog;     // color fondo con grillas
+        string colsfon = TransCarga.Program.colsbg;     // color fondo seleccion
+        string colsfgr = TransCarga.Program.colsfc;     // color seleccion grilla
+        string colstrp = TransCarga.Program.colstr;     // color del strip
         bool conectS = TransCarga.Program.vg_conSol;    // usa conector solorsoft? true=si; false=no
-        static string nomtab = "cabguiai";              // cabecera de guias INDIVIDUALES
+        static string nomtab = "cabplacar";
 
         #region variables
         string img_btN = "";
@@ -35,13 +35,8 @@ namespace TransCarga
         string img_grab = "";
         string img_anul = "";
         string img_ver = "";
-        string vtc_dni = "";            // variable tipo cliente natural
-        string vtc_ruc = "";            // variable tipo cliente empresa
-        string vtc_ext = "";            // variable tipo cliente extranjero
         string codAnul = "";            // codigo de documento anulado
         string codGene = "";            // codigo documento nuevo generado
-        string MonDeft = "";            // moneda por defecto
-        string gloDeta = "";            // glosa x defecto en el detalle
         string v_clu = "";              // codigo del local del usuario
         string v_slu = "";              // serie del local del usuario
         string v_nbu = "";              // nombre del usuario
@@ -49,32 +44,24 @@ namespace TransCarga
         string vi_copias = "";          // cant copias impresion
         string v_impA5 = "";            // nombre de la impresora matricial
         string v_impTK = "";            // nombre de la ticketera
-        string vtc_flete = "";          // la guía va con el flete impreso ?? SI || NO
+        string vtc_flete = "";          // el detalle va con el flete impreso ?? SI || NO
         string v_cid = "";              // codigo interno de tipo de documento
         string v_fra1 = "";             // frase de si va o no con clave
         string v_fra2 = "";             // frase 
         string v_sanu = "";             // serie anulacion interna ANU
-        string v_CR_gr_ind = "";        // nombre del formato GR individual en CR
+        string v_CR_gr_ind = "";        // nombre del formato en CR
         string v_mfildet = "";          // maximo numero de filas en el detalle, coord. con el formato
         //
         static libreria lib = new libreria();   // libreria de procedimientos
         publico lp = new publico();             // libreria de clases
         string verapp = System.Diagnostics.FileVersionInfo.GetVersionInfo(Application.ExecutablePath).FileVersion;
-        string claveSeg = "";                       // clave de seguridad del envío
         string nomclie = Program.cliente;           // cliente usuario del sistema
         string rucclie = Program.ruc;               // ruc del cliente usuario del sistema
         string asd = TransCarga.Program.vg_user;    // usuario conectado al sistema
         #endregion
 
-        AutoCompleteStringCollection departamentos = new AutoCompleteStringCollection();// autocompletado departamentos
-        AutoCompleteStringCollection provincias = new AutoCompleteStringCollection();   // autocompletado provincias
-        AutoCompleteStringCollection distritos = new AutoCompleteStringCollection();    // autocompletado distritos
-
         // string de conexion
-        //static string serv = ConfigurationManager.AppSettings["serv"].ToString();
         static string port = ConfigurationManager.AppSettings["port"].ToString();
-        //static string usua = ConfigurationManager.AppSettings["user"].ToString();
-        //static string cont = ConfigurationManager.AppSettings["pass"].ToString();
         static string data = ConfigurationManager.AppSettings["data"].ToString();
         string DB_CONN_STR = "server=" + login.serv + ";uid=" + login.usua + ";pwd=" + login.cont + ";database=" + data + ";";
         DataTable dtu = new DataTable();
@@ -104,9 +91,6 @@ namespace TransCarga
             dataload();
             toolboton();
             this.KeyPreview = true;
-            autodepa();                                     // autocompleta departamentos
-            autoprov();                                     // autocompleta provincias
-            autodist();                                     // autocompleta distritos
             if (valiVars() == false)
             {
                 Application.Exit();
@@ -133,14 +117,47 @@ namespace TransCarga
             Bt_sig.Image = Image.FromFile(img_bts);
             Bt_ret.Image = Image.FromFile(img_btr);
             Bt_fin.Image = Image.FromFile(img_btf);
-            // autocompletados
-            // ...
             // longitudes maximas de campos
-            // ...
+            tx_car3ro_ruc.MaxLength = 11;
+            tx_car_3ro_nombre.MaxLength = 100;
+            tx_serie.MaxLength = 4;
+            tx_numero.MaxLength = 8;
+            tx_pla_placa.MaxLength = 7;
+            tx_pla_carret.MaxLength = 7;
+            tx_pla_brevet.MaxLength = 10;
+            tx_pla_autor.MaxLength = 10;
+            tx_pla_confv.MaxLength = 10;
+            tx_pla_nomcho.MaxLength = 100;
+            tx_pla_propiet.MaxLength = 100;
+            tx_pla_ruc.MaxLength = 11;
+            tx_obser1.MaxLength = 150;
             // grilla
-            // ...
+            armagrilla();
             // todo desabilidado
             sololee();
+        }
+        private void armagrilla()
+        {
+            dataGridView1.Rows.Clear();
+            dataGridView1.Columns.Clear();
+            //dataGridView1.DataSource = dtu;
+            if (dataGridView1.DataSource == null) dataGridView1.ColumnCount = 1;
+            //
+            for (int i = 0; i < dataGridView1.Columns.Count; i++)
+            {
+                dataGridView1.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                _ = decimal.TryParse(dataGridView1.Rows[0].Cells[i].Value.ToString(), out decimal vd);
+                if (vd != 0) dataGridView1.Columns[i].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+            }
+            int b = 0;
+            for (int i = 0; i < dataGridView1.Columns.Count; i++)
+            {
+                int a = dataGridView1.Columns[i].Width;
+                b += a;
+                dataGridView1.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+                dataGridView1.Columns[i].Width = a;
+            }
+            if (b < dataGridView1.Width) dataGridView1.Width = b + 60;
         }
         private void initIngreso()
         {
@@ -148,7 +165,6 @@ namespace TransCarga
             limpia_chk();
             limpia_otros();
             limpia_combos();
-            claveSeg = "";
             tx_fechope.Text = DateTime.Today.ToString("dd/MM/yyyy");
             tx_digit.Text = v_nbu;
             tx_dat_estad.Text = codGene;
@@ -195,12 +211,6 @@ namespace TransCarga
                             if (row["param"].ToString() == "generado") codGene = row["valor"].ToString().Trim();        // codigo doc generado
                         }
                     }
-                    if (row["formulario"].ToString() == "clients" && row["campo"].ToString() == "documento")
-                    {
-                        if (row["param"].ToString() == "dni") vtc_dni = row["valor"].ToString().Trim();
-                        if (row["param"].ToString() == "ruc") vtc_ruc = row["valor"].ToString().Trim();
-                        if (row["param"].ToString() == "ext") vtc_ext = row["valor"].ToString().Trim();
-                    }
                     if (row["formulario"].ToString() == nomform)
                     {
                         if (row["campo"].ToString() == "documento")
@@ -220,8 +230,6 @@ namespace TransCarga
                             if (row["param"].ToString() == "impTK") v_impTK = row["valor"].ToString().Trim();
                             if (row["param"].ToString() == "nomGRi_cr") v_CR_gr_ind = row["valor"].ToString().Trim();
                         }
-                        //if (row["campo"].ToString() == "moneda" && row["param"].ToString() == "default") MonDeft = row["valor"].ToString().Trim();             // moneda por defecto
-                        //if (row["campo"].ToString() == "detalle" && row["param"].ToString() == "glosa") gloDeta = row["valor"].ToString().Trim();             // glosa del detalle
                     }
                 }
                 da.Dispose();
@@ -239,7 +247,7 @@ namespace TransCarga
                 return;
             }
         }
-        private void jalaoc(string campo)        // jala guia individual
+        private void jalaoc(string campo)        // jala planilla de carga
         {
             try
             {
@@ -250,20 +258,22 @@ namespace TransCarga
                 }
                 if (campo == "sernum")
                 {
-                    parte = "where a.sergui=@ser and a.numgui=@num";
+                    parte = "where a.serplacar=@ser and a.numplacar=@num";
                 }
                 MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
                 conn.Open();
                 if (conn.State == ConnectionState.Open)
                 {
-                    string consulta = " " + parte;
+                    string consulta = "select id,fechope,serplacar,numplacar,locorigen,locdestin,obsplacar,cantfilas,cantotpla,pestotpla,tipmonpla," +
+                        "tipcampla,subtotpla,igvplacar,totplacar,totpagado,salxpagar,estadoser,impreso,fleteimp,platracto,placarret,autorizac," +
+                        "confvehic,brevchofe,nomchofe,brevayuda,nomayuda,rucpropie,tipoplani,userc,userm,usera,anag_for.razonsocial " +
+                        "FROM cabplacar left join anag_for on cabplacar.rucpropie=anag_for.ruc and anag_for.estado=0 " + parte;
                     MySqlCommand micon = new MySqlCommand(consulta, conn);
-                    micon.Parameters.AddWithValue("@tdep", vtc_ruc);
                     if (campo == "tx_idr") micon.Parameters.AddWithValue("@ida", tx_idr.Text);
                     if (campo == "sernum")
                     {
-                        //micon.Parameters.AddWithValue("@ser", tx_serie.Text);
-                        //micon.Parameters.AddWithValue("@num", tx_numero.Text);
+                        micon.Parameters.AddWithValue("@ser", tx_serie.Text);
+                        micon.Parameters.AddWithValue("@num", tx_numero.Text);
                     }
                     MySqlDataReader dr = micon.ExecuteReader();
                     if (dr != null)
@@ -271,14 +281,60 @@ namespace TransCarga
                         if (dr.Read())
                         {
                             tx_idr.Text = dr.GetString("id");
-                            tx_fechope.Text = dr.GetString("fechopegr").Substring(0,10);
+                            tx_fechope.Text = dr.GetString("fechope").Substring(0,10);
                             tx_digit.Text = dr.GetString("userc") + " " + dr.GetString("userm") + " " + dr.GetString("usera");
+                            //
+                            switch (dr.GetString("tipoplani"))
+                            {
+                                case "1":   // propio
+                                    rb_propio.Checked = true;
+                                    splitContainer1.Panel1.Width = splitContainer1.Width;
+                                    break;
+                                case "2":   // tercero
+                                    rb_3ro.Checked = true;
+                                    splitContainer1.Panel1.Width = splitContainer1.Width;
+                                    break;
+                                case "3":   // agencia bus carga
+                                    rb_bus.Checked = true;
+                                    splitContainer1.Panel2.Width = splitContainer1.Width;
+                                    break;
+                                case "4":   // courier
+
+                                    break;
+                            }
+                            //
                             tx_dat_estad.Text = dr.GetString("estadoser");
-                            claveSeg = dr.GetString("seguroE");
-                            // ....
+                            tx_serie.Text = dr.GetString("serplacar");
+                            tx_numero.Text = dr.GetString("numplacar");
+                            tx_pla_fech.Text = dr.GetString("fechope").Substring(0, 10);
+                            tx_dat_locori.Text = dr.GetString("locorigen");
+                            tx_dat_locdes.Text = dr.GetString("locdestin");
+                            tx_obser1.Text = dr.GetString("obsplacar");
+                            tx_tfil.Text = dr.GetString("cantfilas");
+                            tx_totcant.Text = dr.GetString("cantotpla");
+                            tx_totpes.Text = dr.GetString("pestotpla");
+                            tx_dat_mone.Text = dr.GetString("tipmonpla");
+                            tx_flete.Text = dr.GetString("totplacar");
+                            tx_dat_detflete.Text = dr.GetString("fleteimp");    // determina si en el detalle se muestra e imprime el valor del flete de la guia
+                            //
+                            tx_pla_placa.Text = dr.GetString("platracto");
+                            tx_pla_carret.Text = dr.GetString("placarret");
+                            tx_pla_brevet.Text = dr.GetString("brevchofe");
+                            tx_pla_nomcho.Text = dr.GetString("nomchofe");
+                            tx_pla_ayud.Text = dr.GetString("brevayuda");
+                            tx_pla_nomayu.Text = dr.GetString("nomayuda");
+                            tx_pla_autor.Text = dr.GetString("autorizac");
+                            tx_pla_confv.Text = dr.GetString("confvehic");
+                            tx_pla_propiet.Text = dr.GetString("razonsocial"); // falta en consulta
+                            tx_pla_ruc.Text = dr.GetString("rucpropie");
+                            //
+                            tx_car3ro_ruc.Text = dr.GetString("rucpropie");
+                            tx_car_3ro_nombre.Text = dr.GetString("razonsocial");  // falta en consulta
                         }
                         tx_estado.Text = lib.nomstat(tx_dat_estad.Text);
-                        // ...
+                        cmb_destino.SelectedValue = tx_dat_locdes.Text;
+                        cmb_origen.SelectedValue = tx_dat_locori.Text;
+                        cmb_mon.SelectedValue = tx_dat_mone.Text;
                     }
                     else
                     {
@@ -312,7 +368,6 @@ namespace TransCarga
                     {
                         tx_dat_estad.Text = dr.GetString("estadoser");
                         // ...
-                        claveSeg = dr.GetString("seguroE");
                     }
                     dr.Dispose();
                 }
@@ -1122,22 +1177,7 @@ namespace TransCarga
         #region datagridview
         private void dataGridView1_EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
         {
-            e.Control.KeyPress -= new KeyPressEventHandler(Column_KeyPress);
-            //if (dataGridView1.CurrentCell.ColumnIndex == 0 || dataGridView1.CurrentCell.ColumnIndex == 3)   // columnas de solo números
-            {
-                TextBox tb = e.Control as TextBox;
-                if (tb != null)
-                {
-                    tb.KeyPress += new KeyPressEventHandler(Column_KeyPress);
-                }
-            }
-            //if (dataGridView1.CurrentCell.ColumnIndex == 1 || dataGridView1.CurrentCell.ColumnIndex == 2)   // columnas en MAYUSCULAS
-            {
-                if (e.Control is TextBox)
-                {
-                    ((TextBox)(e.Control)).CharacterCasing = CharacterCasing.Upper;
-                }
-            }
+
         }
         private void Column_KeyPress(object sender, KeyPressEventArgs e)
         {

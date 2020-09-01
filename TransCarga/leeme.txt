@@ -38,3 +38,5 @@ form guiati: (guias transportista individuales)
 - Al anular una guía considerar fisico o interno, como sería si es interno? ANU .................... ok
 - Configurar las impresiones en Crystal reports para todas las guias remision ...................... ok
 - Crear el .rpt MODELO de la guía individual ....................................................... ok
+form planicarga: (planilla de carga)
+- Desarrollo del form 
