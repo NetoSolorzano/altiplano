@@ -616,7 +616,37 @@ namespace TransCarga
             }
             if (rb_propio.Checked == true)
             {
-                // validamos todo propio y tercero alquilado ... ME QUEDE ACA
+                // validacion se hace desde funcion en B.D.: ayudante 
+                if (tx_pla_autor.Text == "")        // autorizacion circulacion
+                {
+                    MessageBox.Show("Falta la autorización de circulación", "Complete la información", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    tx_pla_autor.Focus();
+                    return;
+                }
+                if (tx_pla_brevet.Text == "")       // brevete chofer
+                {
+                    MessageBox.Show("Falta el brevete del chofer", "Complete la información", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    tx_pla_brevet.Focus();
+                    return;
+                }
+                if (tx_pla_confv.Text == "")        // conf. vehicular
+                {
+                    MessageBox.Show("Falta la configuración vehicular", "Complete la información", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    tx_pla_confv.Focus();
+                    return;
+                }
+                if (tx_pla_nomcho.Text == "")       // nombre chofer
+                {
+                    MessageBox.Show("Falta el nombre del chofer", "Complete la información", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    tx_pla_nomcho.Focus();
+                    return;
+                }
+                if (tx_pla_placa.Text == "")        // placa trompa
+                {
+                    MessageBox.Show("Ingrese la placa del camión", "Complete la información", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    tx_pla_placa.Focus();
+                    return;
+                }
             }
             #endregion
             // grabamos, actualizamos, etc
@@ -638,18 +668,16 @@ namespace TransCarga
                     {
                         if (graba() == true)
                         {
-                            // actualizamos la tabla seguimiento de usuarios
-                            string resulta = lib.ult_mov(nomform, nomtab, asd);
-                            if (resulta != "OK")
-                            {
-                                MessageBox.Show(resulta, "Error en actualización de seguimiento", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            }
                             var bb = MessageBox.Show("Desea imprimir la planilla?" + Environment.NewLine +
                                 "El formato actual es " + vi_formato, "Confirme por favor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                             if (bb == DialogResult.Yes)
                             {
                                 Bt_print.PerformClick();
                             }
+                        }
+                        else
+                        {
+                            iserror = "si";
                         }
                     }
                     else
@@ -666,20 +694,25 @@ namespace TransCarga
             }
             if (modo == "EDITAR")
             {
-                // ...
-                if (true/*(tx_pregr_num.Text.Trim() == "") && tx_impreso.Text == "N"*/)
+                if (tx_dat_estad.Text == codAnul)
+                {
+                    MessageBox.Show("La planilla esta anulada", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+                if (true)   // de momento no validamos mas
                 {
                     if (tx_idr.Text.Trim() != "")
                     {
-                        var aa = MessageBox.Show("Confirma que desea modificar la Pre-guía?", "Confirme por favor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                        var aa = MessageBox.Show("Confirma que desea modificar la planilla?", "Confirme por favor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                         if (aa == DialogResult.Yes)
                         {
-                            edita();    // modificacion total
-                            // actualizamos la tabla seguimiento de usuarios
-                            string resulta = lib.ult_mov(nomform, nomtab, asd);
-                            if (resulta != "OK")
+                            if (edita() == true)
                             {
-                                MessageBox.Show(resulta, "Error en actualización de seguimiento", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                // 
+                            }
+                            else
+                            {
+                                iserror = "si";
                             }
                         }
                         else
@@ -690,28 +723,30 @@ namespace TransCarga
                     }
                     else
                     {
-                        MessageBox.Show("La Pre-guía ya debe existir para editar", "Debe ser edición", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+                        MessageBox.Show("La Planilla ya debe existir para editar", "Debe ser edición", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
                         return;
                     }
                 }
             }
             if (modo == "ANULAR")
             {
-                //...
-                //if ((tx_pla_plani.Text.Trim() == "") && tx_impreso.Text == "N")
+                // EN ESTE FORM, LA ANULACION ES FISICA PORQUE SU NUMERACION ES AUTOMATICA
+                // si se anula, se tiene que desenlazar en todas sus guías y en control
+
+                if (true)   // (tx_pla_plani.Text.Trim() == "") && tx_impreso.Text == "N"
                 {
-                    // no tiene planilla y no esta impreso => se puede modificar todo y SI anular
                     if (tx_idr.Text.Trim() != "")
                     {
-                        var aa = MessageBox.Show("Confirma que desea ANULAR la guía?", "Confirme por favor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                        var aa = MessageBox.Show("Confirma que desea ANULAR la planilla?", "Confirme por favor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                         if (aa == DialogResult.Yes)
                         {
-                            anula();
-                            // actualizamos la tabla seguimiento de usuarios
-                            string resulta = lib.ult_mov(nomform, nomtab, asd);
-                            if (resulta != "OK")
+                            if (anula() == true)
                             {
-                                MessageBox.Show(resulta, "Error en actualización de seguimiento", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                // todo bien
+                            }
+                            else
+                            {
+                                iserror = "si";
                             }
                         }
                         else
@@ -740,32 +775,48 @@ namespace TransCarga
             conn.Open();
             if(conn.State == ConnectionState.Open)
             {
-                string todo = "corre_serie";
-                using (MySqlCommand micon = new MySqlCommand(todo, conn))
-                {
-                    micon.CommandType = CommandType.StoredProcedure;
-                    micon.Parameters.AddWithValue("td", v_cid);
-                    //micon.Parameters.AddWithValue("ser", tx_serie.Text);
-                    using (MySqlDataReader dr0 = micon.ExecuteReader())
-                    {
-                        if (dr0.Read())
-                        {
-                            if (dr0[0] != null && dr0.GetString(0) != "")
-                            {
-                                //tx_numero.Text = lib.Right("00000000" + dr0.GetString(0), 8);
-                            }
-                        }
-                    }
-                }
-                string inserta = "insert into ??? (" +
-                    "..." +
+                int vtip = 0;
+                if (rb_propio.Checked == true) vtip = 1;
+                if (rb_3ro.Checked == true) vtip = 2;
+                if (rb_bus.Checked == true) vtip = 3;
+                string inserta = "insert into cabplacar (" +
+                    "fechope,serplacar,locorigen,locdestin,obsplacar,cantfilas,cantotpla,pestotpla,tipmonpla,tipcampla,subtotpla," +
+                    "igvplacar,totplacar,totpagado,salxpagar,estadoser,fleteimp,platracto,placarret,autorizac,confvehic,brevchofe," +
+                    "brevayuda,rucpropie,tipoplani," +
                     "verApp,userc,fechc,diriplan4,diripwan4,netbname) " +
-                    "values (..." +
+                    "values (@fecho,@serpl,@locor,@locde,@obspl,@cantf,@canto,@pesto,@tipmo,@tipca,@subto," +
+                    "@igvpl,@totpl,@totpa,@salxp,@estad,@fleim,@platr,@placa,@autor,@confv,@brevc," +
+                    "@breva,@rucpr,@tipop," +
                     "@verApp,@asd,now(),@iplan,@ipwan,@nbnam)";
                 using (MySqlCommand micon = new MySqlCommand(inserta, conn))
                 {
-                    micon.Parameters.AddWithValue("@fechop", tx_fechope.Text.Substring(6, 4) + "-" + tx_fechope.Text.Substring(3, 2) + "-" + tx_fechope.Text.Substring(0, 2));
-                    // ...
+                    micon.Parameters.AddWithValue("@fecho", tx_fechope.Text.Substring(6, 4) + "-" + tx_fechope.Text.Substring(3, 2) + "-" + tx_fechope.Text.Substring(0, 2));
+                    micon.Parameters.AddWithValue("@serpl", tx_serie.Text);
+                    micon.Parameters.AddWithValue("@locor", tx_dat_locori.Text);
+                    micon.Parameters.AddWithValue("@locde", tx_dat_locdes.Text);
+                    micon.Parameters.AddWithValue("@obspl", tx_obser1.Text);
+                    micon.Parameters.AddWithValue("@cantf", tx_tfil.Text);      // cantidad filas detalle
+                    micon.Parameters.AddWithValue("@canto", tx_totcant.Text);   // cant total de bultos
+                    micon.Parameters.AddWithValue("@pesto", tx_totpes.Text);    // peso total
+                    micon.Parameters.AddWithValue("@tipmo", tx_dat_mone.Text);
+                    micon.Parameters.AddWithValue("@tipca", "0.00");
+                    micon.Parameters.AddWithValue("@subto", "0.00");
+                    micon.Parameters.AddWithValue("@igvpl", "0.00");
+                    micon.Parameters.AddWithValue("@totpl", tx_flete.Text);
+                    micon.Parameters.AddWithValue("@totpa", tx_pagado.Text);
+                    micon.Parameters.AddWithValue("@salxp", tx_salxcob.Text);   // saldo por cobrar al momento de grabar la planilla
+                    micon.Parameters.AddWithValue("@estad", tx_dat_estad.Text);
+                    micon.Parameters.AddWithValue("@fleim", tx_dat_detflete.Text);      // variable si detalle lleva valores flete guias
+                    micon.Parameters.AddWithValue("@platr", tx_pla_placa.Text);
+                    micon.Parameters.AddWithValue("@placa", tx_pla_carret.Text);
+                    micon.Parameters.AddWithValue("@autor", tx_pla_autor.Text);
+                    micon.Parameters.AddWithValue("@confv", tx_pla_confv.Text);
+                    micon.Parameters.AddWithValue("@brevc", tx_pla_brevet.Text);
+                    micon.Parameters.AddWithValue("", tx_pla_nomcho.Text);           // nombre del chofer
+                    micon.Parameters.AddWithValue("@breva", tx_pla_ayud.Text);
+                    micon.Parameters.AddWithValue("", tx_pla_nomayu.Text);           // nombre del ayudante
+                    micon.Parameters.AddWithValue("@rucpr", (tx_pla_ruc.Text.Trim() == "")? tx_car3ro_ruc.Text : tx_pla_ruc.Text);
+                    micon.Parameters.AddWithValue("@tipop", vtip);              // tipo planilla, tipo transporte/transportista
                     micon.Parameters.AddWithValue("@verApp", verapp);
                     micon.Parameters.AddWithValue("@asd", asd);
                     micon.Parameters.AddWithValue("@iplan", lib.iplan());
@@ -779,6 +830,7 @@ namespace TransCarga
                     {
                         if (dr.Read())
                         {
+                            // numplacar numeracion automatica estilo pre guias
                             tx_idr.Text = dr.GetString(0);
                         }
                     }

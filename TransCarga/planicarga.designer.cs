@@ -134,17 +134,17 @@
             this.tx_dat_locdes = new System.Windows.Forms.TextBox();
             this.tx_dat_locori = new System.Windows.Forms.TextBox();
             this.gbox_flete = new System.Windows.Forms.GroupBox();
+            this.label6 = new System.Windows.Forms.Label();
+            this.tx_salxcob = new TransCarga.NumericTextBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.tx_pagado = new TransCarga.NumericTextBox();
+            this.label3 = new System.Windows.Forms.Label();
             this.tx_dat_mone = new System.Windows.Forms.TextBox();
             this.cmb_mon = new System.Windows.Forms.ComboBox();
             this.tx_flete = new TransCarga.NumericTextBox();
             this.label15 = new System.Windows.Forms.Label();
             this.groupBox16 = new System.Windows.Forms.GroupBox();
             this.tx_dat_detflete = new System.Windows.Forms.TextBox();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
-            this.numericTextBox1 = new TransCarga.NumericTextBox();
-            this.label6 = new System.Windows.Forms.Label();
-            this.numericTextBox2 = new TransCarga.NumericTextBox();
             this.toolStrip1.SuspendLayout();
             this.pn_usloc.SuspendLayout();
             this.groupBox5.SuspendLayout();
@@ -1242,9 +1242,9 @@
             // 
             this.gbox_flete.BackColor = System.Drawing.Color.Transparent;
             this.gbox_flete.Controls.Add(this.label6);
-            this.gbox_flete.Controls.Add(this.numericTextBox2);
+            this.gbox_flete.Controls.Add(this.tx_salxcob);
             this.gbox_flete.Controls.Add(this.label5);
-            this.gbox_flete.Controls.Add(this.numericTextBox1);
+            this.gbox_flete.Controls.Add(this.tx_pagado);
             this.gbox_flete.Controls.Add(this.label3);
             this.gbox_flete.Controls.Add(this.tx_dat_mone);
             this.gbox_flete.Controls.Add(this.cmb_mon);
@@ -1256,6 +1256,59 @@
             this.gbox_flete.Size = new System.Drawing.Size(155, 119);
             this.gbox_flete.TabIndex = 395;
             this.gbox_flete.TabStop = false;
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.label6.Location = new System.Drawing.Point(10, 95);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(56, 13);
+            this.label6.TabIndex = 324;
+            this.label6.Text = "Por cobrar";
+            this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // tx_salxcob
+            // 
+            this.tx_salxcob.AllowSpace = false;
+            this.tx_salxcob.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_salxcob.Location = new System.Drawing.Point(76, 92);
+            this.tx_salxcob.Name = "tx_salxcob";
+            this.tx_salxcob.Size = new System.Drawing.Size(73, 20);
+            this.tx_salxcob.TabIndex = 323;
+            this.tx_salxcob.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.label5.Location = new System.Drawing.Point(10, 71);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(44, 13);
+            this.label5.TabIndex = 322;
+            this.label5.Text = "Pagado";
+            this.label5.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // tx_pagado
+            // 
+            this.tx_pagado.AllowSpace = false;
+            this.tx_pagado.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_pagado.Location = new System.Drawing.Point(76, 68);
+            this.tx_pagado.Name = "tx_pagado";
+            this.tx_pagado.Size = new System.Drawing.Size(73, 20);
+            this.tx_pagado.TabIndex = 321;
+            this.tx_pagado.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.label3.Location = new System.Drawing.Point(10, 47);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(59, 13);
+            this.label3.TabIndex = 320;
+            this.label3.Text = "Total fletes";
+            this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // tx_dat_mone
             // 
@@ -1315,59 +1368,6 @@
             this.tx_dat_detflete.TabIndex = 396;
             this.tx_dat_detflete.Tag = "muestra e imprime flete en detalle";
             this.tx_dat_detflete.Visible = false;
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label3.Location = new System.Drawing.Point(10, 47);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(59, 13);
-            this.label3.TabIndex = 320;
-            this.label3.Text = "Total fletes";
-            this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label5.Location = new System.Drawing.Point(10, 71);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(44, 13);
-            this.label5.TabIndex = 322;
-            this.label5.Text = "Pagado";
-            this.label5.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // numericTextBox1
-            // 
-            this.numericTextBox1.AllowSpace = false;
-            this.numericTextBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.numericTextBox1.Location = new System.Drawing.Point(76, 68);
-            this.numericTextBox1.Name = "numericTextBox1";
-            this.numericTextBox1.Size = new System.Drawing.Size(73, 20);
-            this.numericTextBox1.TabIndex = 321;
-            this.numericTextBox1.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label6.Location = new System.Drawing.Point(10, 95);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(56, 13);
-            this.label6.TabIndex = 324;
-            this.label6.Text = "Por cobrar";
-            this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // numericTextBox2
-            // 
-            this.numericTextBox2.AllowSpace = false;
-            this.numericTextBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.numericTextBox2.Location = new System.Drawing.Point(76, 92);
-            this.numericTextBox2.Name = "numericTextBox2";
-            this.numericTextBox2.Size = new System.Drawing.Size(73, 20);
-            this.numericTextBox2.TabIndex = 323;
-            this.numericTextBox2.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // planicarga
             // 
@@ -1567,8 +1567,8 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label6;
-        private NumericTextBox numericTextBox2;
+        private NumericTextBox tx_salxcob;
         private System.Windows.Forms.Label label5;
-        private NumericTextBox numericTextBox1;
+        private NumericTextBox tx_pagado;
     }
 }
