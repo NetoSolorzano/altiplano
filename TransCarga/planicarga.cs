@@ -140,24 +140,71 @@ namespace TransCarga
         {
             dataGridView1.Rows.Clear();
             dataGridView1.Columns.Clear();
-            //a.fila,a.numpreg,a.serguia,a.numguia,a.totcant,a.totpeso,b.descrizionerid as MON,a.totflet
-            if (dataGridView1.DataSource == null) dataGridView1.ColumnCount = 1;
-            //
-            for (int i = 0; i < dataGridView1.Columns.Count; i++)
+            if (Tx_modo.Text != "EDITAR")
             {
-                dataGridView1.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-                _ = decimal.TryParse(dataGridView1.Rows[0].Cells[i].Value.ToString(), out decimal vd);
-                if (vd != 0) dataGridView1.Columns[i].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+                dataGridView1.ColumnCount = 9;
+                dataGridView1.Columns[0].Name = "fila";
+                dataGridView1.Columns[0].HeaderText = "fila";
+                dataGridView1.Columns[0].ReadOnly = true;
+                dataGridView1.Columns[0].Width = 50;
+                dataGridView1.Columns[1].Name = "numpreg";
+                dataGridView1.Columns[1].HeaderText = "numpreg";
+                dataGridView1.Columns[1].ReadOnly = true;
+                dataGridView1.Columns[1].Width = 70;
+                dataGridView1.Columns[2].Name = "serguia";
+                dataGridView1.Columns[2].HeaderText = "serguia";
+                dataGridView1.Columns[2].ReadOnly = true;
+                dataGridView1.Columns[2].Width = 50;
+                dataGridView1.Columns[3].Name = "numguia";
+                dataGridView1.Columns[3].HeaderText = "numguia";
+                dataGridView1.Columns[3].ReadOnly = true;
+                dataGridView1.Columns[3].Width = 70;
+                dataGridView1.Columns[4].Name = "totcant";
+                dataGridView1.Columns[4].HeaderText = "totcant";
+                dataGridView1.Columns[4].ReadOnly = true;
+                dataGridView1.Columns[4].Width = 50;
+                dataGridView1.Columns[5].Name = "totpeso";
+                dataGridView1.Columns[5].HeaderText = "totpeso";
+                dataGridView1.Columns[5].ReadOnly = true;
+                dataGridView1.Columns[5].Width = 60;
+                dataGridView1.Columns[6].Name = "MON";
+                dataGridView1.Columns[6].HeaderText = "MON";
+                dataGridView1.Columns[6].ReadOnly = true;
+                dataGridView1.Columns[6].Width = 40;
+                dataGridView1.Columns[7].Name = "totflet";
+                dataGridView1.Columns[7].HeaderText = "totflet";
+                dataGridView1.Columns[7].ReadOnly = true;
+                dataGridView1.Columns[7].Width = 70;
             }
-            int b = 0;
-            for (int i = 0; i < dataGridView1.Columns.Count; i++)
+            if (Tx_modo.Text == "EDITAR")
             {
-                int a = dataGridView1.Columns[i].Width;
-                b += a;
-                dataGridView1.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-                dataGridView1.Columns[i].Width = a;
+                //a.fila,a.numpreg,a.serguia,a.numguia,a.totcant,a.totpeso,b.descrizionerid as MON,a.totflet
+                if (dataGridView1.DataSource == null) dataGridView1.ColumnCount = 0;
+                //
+                for (int i = 0; i < dataGridView1.Columns.Count; i++)
+                {
+                    dataGridView1.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                    _ = decimal.TryParse(dataGridView1.Rows[0].Cells[i].Value.ToString(), out decimal vd);
+                    if (vd != 0) dataGridView1.Columns[i].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+                }
+                int b = 0;
+                for (int i = 0; i < dataGridView1.Columns.Count; i++)
+                {
+                    int a = dataGridView1.Columns[i].Width;
+                    b += a;
+                    dataGridView1.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+                    dataGridView1.Columns[i].Width = a;
+                }
+                if (b < dataGridView1.Width) dataGridView1.Width = b + 60;
+
+                DataGridViewCheckBoxColumn marca = new DataGridViewCheckBoxColumn();
+                marca.Name = "Borra";
+                marca.HeaderText = "Borra";
+                marca.Width = 50;
+                marca.ReadOnly = false;
+                marca.FillWeight = 20;
+                dataGridView1.Columns.Add(marca);
             }
-            if (b < dataGridView1.Width) dataGridView1.Width = b + 60;
         }
         private void initIngreso()
         {
@@ -544,6 +591,30 @@ namespace TransCarga
             }
             return retorna;
         }
+        private string[] ValPlaCarr(string pc,string codigo)    // pc=P ó C, codigo=placa de trompa o carreta
+        {
+            string[] retorna = { "", "" };      // cofig.vehicular, autorizacion
+            using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
+            {
+                conn.Open();
+                string parte0="", parte1="";
+                if (pc == "P")
+                { 
+                    parte0 = "placa = @codigo";
+                    parte1 = "tipo = @";    // variable codigo placa
+                }
+                if (pc == "C")
+                {
+                    parte0 = "placa = @codigo";
+                    parte1 = "tipo = @";    // variable codigo carreta
+                }
+
+                string consulta = "select confve,autor1 from vehiculos where " + parte0 +
+                    "and " + parte1;
+            }
+
+                return retorna;
+        }
 
         #region limpiadores_modos
         private void sololee()
@@ -553,6 +624,10 @@ namespace TransCarga
         private void escribe()
         {
             lp.escribe(this);
+            tx_pla_propiet.ReadOnly = true;
+            tx_car_3ro_nombre.ReadOnly = true;
+            tx_pla_confv.ReadOnly = true;
+            tx_pla_autor.ReadOnly = true;
         }
         private void limpiar()
         {
@@ -888,8 +963,9 @@ namespace TransCarga
             conn.Close();
             return retorna;
         }
-        private void edita()
+        private bool edita()
         {
+            bool retorna = false;
             MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
             conn.Open();
             if (conn.State == ConnectionState.Open)
@@ -898,23 +974,45 @@ namespace TransCarga
                 {
                     if (tx_dat_estad.Text == codGene)     // solo edita estado GENERADO, otro estado no se edita
                     {
-                        string actua = "update  a set " +
-                            "a.fechopegr=@fechop,a.tidodegri=@tdcdes,a.nudodegri=@ndcdes," +
-                            "a.nombdegri=@nomdes,a.diredegri=@dircde,a.ubigdegri=@ubicde,a.tidoregri=@tdcrem,a.nudoregri=@ndcrem," + 
-                            "a.nombregri=@nomrem,a.direregri=@dircre,a.ubigregri=@ubicre,a.locorigen=@locpgr,a.dirorigen=@dirpgr," +
-                            "a.ubiorigen=@ubopgr,a.locdestin=@ldcpgr,a.dirdestin=@didegr,a.ubidestin=@ubdegr,a.docsremit=@dooprg," +
-                            "a.obspregri=@obsprg,a.clifingri=@conprg,a.cantotgri=@totcpr,a.pestotgri=@totppr,a.tipmongri=@monppr," +
-                            "a.tipcamgri=@tcprgr,a.subtotgri=@subpgr,a.igvgri=@igvpgr,a.totgri=@totpgr,a.totpag=@pagpgr," +
-                            "a.salgri=@totpgr,a.estadoser=@estpgr,a.seguroE=@clavse,a.cantfilas=@canfil," +
-                            "a.verApp=@verApp,a.userm=@asd,a.fechm=now(),a.diriplan4=@iplan,a.diripwan4=@ipwan,a.netbname=@nbnam " +
-                            "where a.id=@idr";
+                        int vtip = 0;
+                        if (rb_propio.Checked == true) vtip = 1;
+                        if (rb_3ro.Checked == true) vtip = 2;
+                        if (rb_bus.Checked == true) vtip = 3;
+                        string actua = "update cabplacar set " +
+                            "fechope=@fecho,locorigen=@locor,locdestin=@locde,obsplacar=@obspl,cantfilas=@cantf,cantotpla=@canto,pestotpla=@pesto,tipmonpla=@tipmo," +
+                            "tipcampla=@tipca,subtotpla=@subto,igvplacar=@igvpl,totplacar=@totpl,totpagado=@totpa,salxpagar=@salxp,estadoser=@estad,fleteimp=@fleim," +
+                            "platracto=@platr,placarret=@placa,autorizac=@autor,confvehic=@confv,brevchofe=@brevc,brevayuda=@breva,rucpropie=@rucpr,tipoplani=@tipop," +
+                            "verApp=@verApp,userm=@asd,fechm=now(),diriplan4=@iplan,diripwan4=@ipwan,netbname=@nbnam " +
+                            "where serplacar=@serpl and numplacar=@numpl";
                         MySqlCommand micon = new MySqlCommand(actua, conn);
-                        micon.Parameters.AddWithValue("@idr", tx_idr.Text);
-                        micon.Parameters.AddWithValue("@fechop", tx_fechope.Text.Substring(6, 4) + "-" + tx_fechope.Text.Substring(3, 2) + "-" + tx_fechope.Text.Substring(0, 2));
-                        micon.Parameters.AddWithValue("@tcprgr", "0.00");  // tipo de cambio
-                        micon.Parameters.AddWithValue("@subpgr", "0"); // sub total de la pre guía
-                        micon.Parameters.AddWithValue("@igvpgr", "0"); // igv
-                        micon.Parameters.AddWithValue("@pagpgr", "0");
+                        micon.Parameters.AddWithValue("@fecho", tx_fechope.Text.Substring(6, 4) + "-" + tx_fechope.Text.Substring(3, 2) + "-" + tx_fechope.Text.Substring(0, 2));
+                        micon.Parameters.AddWithValue("@serpl", tx_serie.Text);
+                        micon.Parameters.AddWithValue("@numpl", tx_numero.Text);
+                        micon.Parameters.AddWithValue("@locor", tx_dat_locori.Text);
+                        micon.Parameters.AddWithValue("@locde", tx_dat_locdes.Text);
+                        micon.Parameters.AddWithValue("@obspl", tx_obser1.Text);
+                        micon.Parameters.AddWithValue("@cantf", tx_tfil.Text);      // cantidad filas detalle
+                        micon.Parameters.AddWithValue("@canto", tx_totcant.Text);   // cant total de bultos
+                        micon.Parameters.AddWithValue("@pesto", tx_totpes.Text);    // peso total
+                        micon.Parameters.AddWithValue("@tipmo", tx_dat_mone.Text);
+                        micon.Parameters.AddWithValue("@tipca", "0.00");
+                        micon.Parameters.AddWithValue("@subto", "0.00");
+                        micon.Parameters.AddWithValue("@igvpl", "0.00");
+                        micon.Parameters.AddWithValue("@totpl", tx_flete.Text);
+                        micon.Parameters.AddWithValue("@totpa", tx_pagado.Text);
+                        micon.Parameters.AddWithValue("@salxp", tx_salxcob.Text);   // saldo por cobrar al momento de grabar la planilla
+                        micon.Parameters.AddWithValue("@estad", tx_dat_estad.Text);
+                        micon.Parameters.AddWithValue("@fleim", tx_dat_detflete.Text);      // variable si detalle lleva valores flete guias
+                        micon.Parameters.AddWithValue("@platr", tx_pla_placa.Text);
+                        micon.Parameters.AddWithValue("@placa", tx_pla_carret.Text);
+                        micon.Parameters.AddWithValue("@autor", tx_pla_autor.Text);
+                        micon.Parameters.AddWithValue("@confv", tx_pla_confv.Text);
+                        micon.Parameters.AddWithValue("@brevc", tx_pla_brevet.Text);
+                        micon.Parameters.AddWithValue("", tx_pla_nomcho.Text);           // nombre del chofer
+                        micon.Parameters.AddWithValue("@breva", tx_pla_ayud.Text);
+                        micon.Parameters.AddWithValue("", tx_pla_nomayu.Text);           // nombre del ayudante
+                        micon.Parameters.AddWithValue("@rucpr", (tx_pla_ruc.Text.Trim() == "") ? tx_car3ro_ruc.Text : tx_pla_ruc.Text);
+                        micon.Parameters.AddWithValue("@tipop", vtip);              // tipo planilla, tipo transporte/transportista
                         micon.Parameters.AddWithValue("@verApp", verapp);
                         micon.Parameters.AddWithValue("@asd", asd);
                         micon.Parameters.AddWithValue("@iplan", lib.iplan());
@@ -923,73 +1021,89 @@ namespace TransCarga
                         micon.ExecuteNonQuery();
                         //
                         // EDICION DEL DETALLE 
-                        //
+                        /*
                         micon = new MySqlCommand("borraseguro", conn);
                         micon.CommandType = CommandType.StoredProcedure;
-                        micon.Parameters.AddWithValue("@tabla", "detguiai");
+                        micon.Parameters.AddWithValue("@tabla", "detplacar");
                         micon.Parameters.AddWithValue("@vidr", "0");
                         micon.Parameters.AddWithValue("@vidc", tx_idr.Text);
                         micon.ExecuteNonQuery();
-                        //for (int i = 0; i < dataGridView1.Rows.Count - 1; i++)
+                        */
+                        int fila = 0;
+                        for (int i = 0; i < dataGridView1.Rows.Count - 1; i++)
                         {
-                            //if (dataGridView1.Rows[i].Cells[0].Value.ToString().Trim() != "")
+                            if (dataGridView1.Rows[i].Cells[0].Value.ToString().Trim() != "")   // nuevo
                             {
-                                string inserd2 = "insert into detguiai (idc,fila,sergui,numgui," +
-                                    "cantprodi,unimedpro,codiprodi,descprodi,pesoprodi,precprodi,totaprodi," +
-                                    "estadoser,verApp,userm,fechm,diriplan4,diripwan4,netbname" +
-                                    ") values (@idr,@fila,@serpgr,@corpgr," +
-                                    "@can,@uni,@cod,@des,@pes,@preu,@pret," +
-                                    "@estpgr,@verApp,@asd,now(),@iplan,@ipwan,@nbnam)";
+                                string inserd2 = "insert into detplacar (idc,serplacar,numplacar,fila,numpreg,serguia,numguia,totcant,totpeso,totflet,codmone,estadoser," +
+                                "verApp,userc,fechc,diriplan4,diripwan4,netbname) " +
+                                "values (@idr,@serpl,@numpl,@fila,@numpr,@sergu,@numgu,@totca,@totpe,@totfl,@codmo,@estad," +
+                                "@verApp,@asd,now(),@iplan,@ipwan,@nbnam)";
                                 micon = new MySqlCommand(inserd2, conn);
                                 micon.Parameters.AddWithValue("@idr", tx_idr.Text);
-                                micon.Parameters.AddWithValue("@cod", "");
-                                micon.Parameters.AddWithValue("@preu", "0");
-                                micon.Parameters.AddWithValue("@pret", "0");
-                                micon.Parameters.AddWithValue("@estpgr", tx_dat_estad.Text); // estado de la pre guía
+                                micon.Parameters.AddWithValue("@serpl", tx_serie.Text);
+                                micon.Parameters.AddWithValue("@numpl", tx_numero.Text);
+                                micon.Parameters.AddWithValue("@fila", fila);
+                                micon.Parameters.AddWithValue("@numpr", dataGridView1.Rows[i].Cells[4].Value.ToString());
+                                micon.Parameters.AddWithValue("@sergu", dataGridView1.Rows[i].Cells[5].Value.ToString());
+                                micon.Parameters.AddWithValue("@numgu", dataGridView1.Rows[i].Cells[6].Value.ToString());
+                                micon.Parameters.AddWithValue("@totca", dataGridView1.Rows[i].Cells[7].Value.ToString());
+                                micon.Parameters.AddWithValue("@totpe", dataGridView1.Rows[i].Cells[8].Value.ToString());
+                                micon.Parameters.AddWithValue("@totfl", dataGridView1.Rows[i].Cells[10].Value.ToString());
+                                micon.Parameters.AddWithValue("@codmo", tx_dat_mone.Text);
+                                micon.Parameters.AddWithValue("@estad", dataGridView1.Rows[i].Cells[11].Value.ToString());
                                 micon.Parameters.AddWithValue("@verApp", verapp);
                                 micon.Parameters.AddWithValue("@asd", asd);
                                 micon.Parameters.AddWithValue("@iplan", lib.iplan());
                                 micon.Parameters.AddWithValue("@ipwan", lib.ipwan());
                                 micon.Parameters.AddWithValue("@nbnam", Environment.MachineName);
                                 micon.ExecuteNonQuery();
+                                //fila += 1;
+                            }
+                            if (dataGridView1.Rows[i].Cells["borra"].Value.ToString() != "")  // borra 
+                            {
+                                // saca la guia de detplacar
+                                // borra los campos en cabguiai
+                                // borra los campos en controlg
+
                             }
                         }
+                        for (int i = 0; i < dataGridView1.Rows.Count - 1; i++)
+                        {
+                            // actualiza contador fila en detplacar
+                        }
                         //
+                        retorna = true;
                         micon.Dispose();
                     }
                     conn.Close();
                 }
                 catch (MySqlException ex)
                 {
-                    MessageBox.Show(ex.Message, "Error en modificar la guía individual");
+                    MessageBox.Show(ex.Message, "Error en modificar la planilla");
                     Application.Exit();
-                    return;
+                    return retorna;
                 }
             }
             else
             {
                 MessageBox.Show("No fue posible conectarse al servidor de datos");
                 Application.Exit();
-                return;
+                return retorna;
             }
+            return retorna;
         }
-        private void anula()
+        private bool anula()
         {
-            // en el caso guias y otros documentos HAY 2: ANULACION FISICA y ANULACION INTERNA (serie ANU)
-            // Anulacion fisica se "anula" el numero del documento en sistema y en fisico se tacha, marca anulado 
-            // Anulación interna (ANU) el numero se recupera tanto en fisico como en sistema, el anulado internamente pasa a ser serie ANU
-            var aa = MessageBox.Show("Anulación interna para recuperar el número?" + Environment.NewLine +
-                "Se cambia la serie a ANU", "Atención, confirme por favor",
-                MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-            string parte = " ";
-            if (aa == DialogResult.OK) parte = ",sergui=@coad ";
+            bool retorna = false;
+            // cambia estado a ANULADO en cabecera
+            // el trigger before_update debe cambiar estado ANULADO en detalle
             using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
             {
                 conn.Open();
                 if (conn.State == ConnectionState.Open)
                 {
-                    string canul = "update cabguiai set estadoser=@estser,usera=@asd,fecha=now()," +
-                        "verApp=@veap,diriplan4=@dil4,diripwan4=@diw4,netbname=@nbnp" + parte +
+                    string canul = "update ??? set estadoser=@estser,usera=@asd,fecha=now()," +
+                        "verApp=@veap,diriplan4=@dil4,diripwan4=@diw4,netbname=@nbnp " +
                         "where id=@idr";
                     using (MySqlCommand micon = new MySqlCommand(canul, conn))
                     {
@@ -1000,11 +1114,12 @@ namespace TransCarga
                         micon.Parameters.AddWithValue("@diw4", lib.ipwan());
                         micon.Parameters.AddWithValue("@nbnp", Environment.MachineName);
                         micon.Parameters.AddWithValue("@veap", verapp);
-                        if (aa == DialogResult.OK) micon.Parameters.AddWithValue("@coad", v_sanu);
                         micon.ExecuteNonQuery();
+                        retorna = true;
                     }
                 }
             }
+            return retorna;
         }
         #endregion boton_form;
 
@@ -1015,6 +1130,88 @@ namespace TransCarga
             {
                 jalaoc("tx_idr");
                 jaladet(tx_idr.Text);
+            }
+        }
+        private void rb_propio_Click(object sender, EventArgs e)
+        {
+            splitContainer1.SplitterDistance = 560;
+            splitContainer1.Panel2.Enabled = false;
+            splitContainer1.Panel1.Enabled = true;
+            tx_pla_ruc.Text = rucclie;
+            tx_pla_propiet.Text = nomclie;
+            splitContainer1.Panel1.Focus();
+        }
+        private void rb_3ro_Click(object sender, EventArgs e)
+        {
+            splitContainer1.SplitterDistance = 560;
+            splitContainer1.Panel2.Enabled = false;
+            splitContainer1.Panel1.Enabled = true;
+            splitContainer1.Panel1.Focus();
+        }
+        private void rb_bus_Click(object sender, EventArgs e)
+        {
+            splitContainer1.SplitterDistance = 40;
+            splitContainer1.Panel1.Enabled = false;
+            splitContainer1.Panel2.Enabled = true;
+            splitContainer1.Panel2.Focus();
+        }
+        private void brev_chof_Leave(object sender, EventArgs e)
+        {
+            if (rb_propio.Checked == true)
+            {
+                // aca se debe validar en RR.HH..... cuando  haya modulo
+            }
+        }
+        private void brev_ayud_Leave(object sender, EventArgs e)
+        {
+            if (rb_propio.Checked == true)
+            {
+                // aca se debe validar en RR.HH..... cuando  haya modulo
+            }
+        }
+        private void ruc_transp_Leave(object sender, EventArgs e)
+        {
+            if (rb_3ro.Checked == true || rb_bus.Checked == true)
+            {
+                // validamos que el ruc ingresado se encuentre en la anag_for
+                using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
+                {
+                    conn.Open();
+                    string cruc = (tx_pla_ruc.Text.Trim() == "") ? tx_car3ro_ruc.Text : tx_pla_ruc.Text;
+                    string consulta = "select razonsocial from anag_for where ruc=@ruc";
+                    using (MySqlCommand micon = new MySqlCommand(consulta, conn))
+                    {
+                        micon.Parameters.AddWithValue("@ruc", cruc);
+                        MySqlDataReader dr = micon.ExecuteReader();
+                        if (dr.HasRows)
+                        {
+                            if (dr.Read())
+                            {
+                                if (rb_3ro.Checked == true) tx_pla_propiet.Text = dr.GetString(0);
+                                else tx_car_3ro_nombre.Text = dr.GetString(0);
+                            }
+                        }
+                        dr.Dispose();
+                    }
+                }
+            }
+        }
+        private void placa_Leave(object sender, EventArgs e)
+        {
+            // valida existencia en vehiculos como trompa
+            // si existe pone la conf. vehicular y autorizacion
+            if (rb_propio.Checked == true)
+            {
+                
+            }
+        }
+        private void carreta_Leave(object sender, EventArgs e)
+        {
+            // valida existencia en vehiculos como CARRETA
+            // si existe CONCATENA la conf. vehicular
+            if (rb_propio.Checked == true)
+            {
+
             }
         }
         //...
@@ -1090,27 +1287,18 @@ namespace TransCarga
         {
             Tx_modo.Text = "NUEVO";
             button1.Image = Image.FromFile(img_grab);
-            // local usa o no pre-guias
-            DataRow[] fila = dtu.Select("idcodice='" + v_clu + "'");
-            if(fila.Length > 0)
-            {
-                if (fila[0][3].ToString() == "1")
-                {
-                    sololee();
-                    initIngreso();  // limpiamos/preparamos todo para el ingreso
-
-                }
-                if (fila[0][3].ToString() == "0")
-                {
-                    escribe();
-                    initIngreso();  // limpiamos/preparamos todo para el ingreso
-                }
-            }
-            // Guía va con flete impreso?
             Bt_ini.Enabled = false;
             Bt_sig.Enabled = false;
             Bt_ret.Enabled = false;
             Bt_fin.Enabled = false;
+            //
+            initIngreso();
+            escribe();
+            gbox_flete.Enabled = false;
+            tx_serie.ReadOnly = true;
+            tx_numero.ReadOnly = true;
+            tx_pla_fech.Text = DateTime.Today.ToString().Substring(0,10);
+            cmb_origen.Focus();
         }
         private void Bt_edit_Click(object sender, EventArgs e)
         {
@@ -1223,21 +1411,69 @@ namespace TransCarga
         #endregion botones_de_comando  ;
 
         #region comboboxes
-            // ...
+        private void cmb_mon_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (cmb_mon.SelectedIndex > -1)
+            {
+                tx_dat_mone.Text = cmb_mon.SelectedValue.ToString();
+            }
+        }
+        private void cmb_origen_SelectionChangeCommitted(object sender, EventArgs e)
+        {
+            if (cmb_origen.SelectedIndex > -1)
+            {
+                tx_dat_locori.Text = cmb_origen.SelectedValue.ToString();
+                //tx_dirOrigen.Text = lib.dirloca(lib.codloc(asd));
+            }
+            if (tx_dat_locori.Text.Trim() != "")
+            {
+                DataRow[] fila = dtu.Select("idcodice='" + tx_dat_locori.Text + "'");
+                //tx_ubigO.Text = fila[0][2].ToString();
+            }
+        }
+        private void cmb_destino_SelectionChangeCommitted(object sender, EventArgs e)
+        {
+            if (cmb_destino.SelectedIndex > -1)
+            {
+                tx_dat_locdes.Text = cmb_destino.SelectedValue.ToString();
+                //tx_dirDestino.Text = lib.dirloca(tx_dat_locdes.Text);
+                if (Tx_modo.Text == "NUEVO")
+                {
+                    // vamos por la serie
+                    string consul = "SELECT tipdoc,serie,actual,final,format,glosaser,dir_pe,ubigeo," +
+                        "imp_ini,imp_fec,imp_det,imp_dtr,imp_pie " +
+                        "FROM series WHERE STATUS<> @ean and " +
+                        "tipdoc = @td AND sede = @ori AND zona = (SELECT zona FROM desc_loc WHERE idcodice = @des)";
+                    using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
+                    {
+                        conn.Open();
+                        using (MySqlCommand micon = new MySqlCommand(consul, conn))
+                        {
+                            micon.Parameters.AddWithValue("@ean", codAnul);
+                            micon.Parameters.AddWithValue("@td", v_cid);
+                            micon.Parameters.AddWithValue("@ori", tx_dat_locori.Text);
+                            micon.Parameters.AddWithValue("@des", tx_dat_locdes.Text);
+                            using (MySqlDataReader dr = micon.ExecuteReader())
+                            {
+                                if (dr.Read())
+                                {
+                                    tx_serie.Text = dr.GetString(1);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            if (tx_dat_locdes.Text.Trim() != "")
+            {
+                DataRow[] fila = dtd.Select("idcodice='" + tx_dat_locdes.Text + "'");
+                //tx_ubigD.Text = fila[0][2].ToString();
+            }
+        }
         #endregion comboboxes
 
         #region datagridview
-        private void dataGridView1_EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
-        {
-
-        }
-        private void Column_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
-            {
-                e.Handled = true;
-            }
-        }
+        //
         #endregion
 
         #region impresion
@@ -1364,5 +1600,7 @@ namespace TransCarga
             return guiaT;
         }
         #endregion
+
+        
     }
 }
