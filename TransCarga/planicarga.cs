@@ -51,6 +51,8 @@ namespace TransCarga
         string v_sanu = "";             // serie anulacion interna ANU
         string v_CR_gr_ind = "";        // nombre del formato en CR
         string v_mfildet = "";          // maximo numero de filas en el detalle, coord. con el formato
+        string v_trompa = "";           // codigo interno placa de tracto/camion
+        string v_carret = "";           // código interno placa de carreta/furgon
         //
         static libreria lib = new libreria();   // libreria de procedimientos
         publico lp = new publico();             // libreria de clases
@@ -101,6 +103,12 @@ namespace TransCarga
         {
             this.BackColor = Color.FromName(colback);
             toolStrip1.BackColor = Color.FromName(colstrp);
+            splitContainer1.Panel1.BackColor = Color.FromName(colpage);
+            splitContainer1.Panel2.BackColor = Color.Khaki;
+            dataGridView1.DefaultCellStyle.BackColor = Color.FromName(colgrid);
+            dataGridView1.DefaultCellStyle.ForeColor = Color.FromName(colfogr);
+            dataGridView1.DefaultCellStyle.SelectionBackColor = Color.FromName(colsfon);
+            dataGridView1.DefaultCellStyle.SelectionForeColor = Color.FromName(colsfgr);
             //
             tx_user.Text += asd;
             tx_nomuser.Text = lib.nomuser(asd);
@@ -131,6 +139,9 @@ namespace TransCarga
             tx_pla_propiet.MaxLength = 100;
             tx_pla_ruc.MaxLength = 11;
             tx_obser1.MaxLength = 150;
+            // campos en mayusculas
+            tx_pla_placa.CharacterCasing = CharacterCasing.Upper;
+            tx_pla_carret.CharacterCasing = CharacterCasing.Upper;
             // grilla
             armagrilla();
             // todo desabilidado
@@ -153,11 +164,11 @@ namespace TransCarga
                 dataGridView1.Columns[1].Width = 70;
                 dataGridView1.Columns[2].Name = "serguia";
                 dataGridView1.Columns[2].HeaderText = "serguia";
-                dataGridView1.Columns[2].ReadOnly = true;
+                dataGridView1.Columns[2].ReadOnly = false;
                 dataGridView1.Columns[2].Width = 50;
                 dataGridView1.Columns[3].Name = "numguia";
                 dataGridView1.Columns[3].HeaderText = "numguia";
-                dataGridView1.Columns[3].ReadOnly = true;
+                dataGridView1.Columns[3].ReadOnly = false;
                 dataGridView1.Columns[3].Width = 70;
                 dataGridView1.Columns[4].Name = "totcant";
                 dataGridView1.Columns[4].HeaderText = "totcant";
@@ -276,6 +287,11 @@ namespace TransCarga
                             if (row["param"].ToString() == "impMatris") v_impA5 = row["valor"].ToString().Trim();
                             if (row["param"].ToString() == "impTK") v_impTK = row["valor"].ToString().Trim();
                             if (row["param"].ToString() == "nomGRi_cr") v_CR_gr_ind = row["valor"].ToString().Trim();
+                        }
+                        if (row["campo"].ToString() == "carguero")
+                        {
+                            if (row["param"].ToString() == "codTrackto") v_trompa = row["valor"].ToString().Trim();
+                            if (row["param"].ToString() == "codCarreta") v_carret = row["valor"].ToString().Trim();
                         }
                     }
                 }
@@ -601,19 +617,29 @@ namespace TransCarga
                 if (pc == "P")
                 { 
                     parte0 = "placa = @codigo";
-                    parte1 = "tipo = @";    // variable codigo placa
+                    parte1 = "tipo = @tipo";    // variable codigo placa
                 }
                 if (pc == "C")
                 {
                     parte0 = "placa = @codigo";
-                    parte1 = "tipo = @";    // variable codigo carreta
+                    parte1 = "tipo = @tipo";    // variable codigo carreta
                 }
 
-                string consulta = "select confve,autor1 from vehiculos where " + parte0 +
-                    "and " + parte1;
+                string consulta = "select confve,autor1 from vehiculos where " + parte0 + " and " + parte1;
+                using (MySqlCommand micon = new MySqlCommand(consulta,conn))
+                {
+                    micon.Parameters.AddWithValue("@codigo", codigo);
+                    micon.Parameters.AddWithValue("@tipo", (pc == "P")? v_trompa : v_carret);
+                    MySqlDataReader dr = micon.ExecuteReader();
+                    while (dr.Read())
+                    {
+                        retorna[0] = dr.GetString(0);
+                        retorna[1] = dr.GetString(1);
+                    }
+                    dr.Dispose();
+                }
             }
-
-                return retorna;
+            return retorna;
         }
 
         #region limpiadores_modos
@@ -1135,8 +1161,13 @@ namespace TransCarga
         private void rb_propio_Click(object sender, EventArgs e)
         {
             splitContainer1.SplitterDistance = 560;
-            splitContainer1.Panel2.Enabled = false;
+            splitContainer1.Enabled = true;
             splitContainer1.Panel1.Enabled = true;
+            tx_car3ro_ruc.Text = "";
+            tx_car_3ro_nombre.Text = "";
+            tx_pla_ruc.Text = "";
+            tx_pla_propiet.Text = "";
+            splitContainer1.Panel2.Enabled = false;
             tx_pla_ruc.Text = rucclie;
             tx_pla_propiet.Text = nomclie;
             splitContainer1.Panel1.Focus();
@@ -1144,14 +1175,30 @@ namespace TransCarga
         private void rb_3ro_Click(object sender, EventArgs e)
         {
             splitContainer1.SplitterDistance = 560;
-            splitContainer1.Panel2.Enabled = false;
+            splitContainer1.Enabled = true;
             splitContainer1.Panel1.Enabled = true;
+            tx_car3ro_ruc.Text = "";
+            tx_car_3ro_nombre.Text = "";
+            tx_pla_ruc.Text = "";
+            tx_pla_propiet.Text = "";
+            splitContainer1.Panel2.Enabled = false;
             splitContainer1.Panel1.Focus();
         }
         private void rb_bus_Click(object sender, EventArgs e)
         {
-            splitContainer1.SplitterDistance = 40;
+            splitContainer1.SplitterDistance = 30;
+            splitContainer1.Enabled = true;
             splitContainer1.Panel1.Enabled = false;
+            tx_pla_brevet.Text = "";
+            tx_pla_nomcho.Text = "";
+            tx_pla_ayud.Text = "";
+            tx_pla_nomayu.Text = "";
+            tx_pla_ruc.Text = "";
+            tx_pla_propiet.Text = "";
+            tx_pla_placa.Text = "";
+            tx_pla_carret.Text = "";
+            tx_pla_confv.Text = "";
+            tx_pla_autor.Text = "";
             splitContainer1.Panel2.Enabled = true;
             splitContainer1.Panel2.Focus();
         }
@@ -1200,18 +1247,42 @@ namespace TransCarga
         {
             // valida existencia en vehiculos como trompa
             // si existe pone la conf. vehicular y autorizacion
-            if (rb_propio.Checked == true)
+            if (rb_propio.Checked == true && tx_pla_placa.Text.Trim() != "")
             {
-                
+                string[] datos = ValPlaCarr("P", tx_pla_placa.Text);
+                if (datos[0].Length < 1)
+                {
+                    MessageBox.Show("No existe la placa", "Error en ingreso", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    tx_pla_placa.Text = "";
+                    tx_pla_placa.Focus();
+                    return;
+                }
+                else
+                {
+                    tx_pla_confv.Text = datos[0];
+                    tx_pla_autor.Text = datos[1];
+                }
             }
         }
         private void carreta_Leave(object sender, EventArgs e)
         {
             // valida existencia en vehiculos como CARRETA
             // si existe CONCATENA la conf. vehicular
-            if (rb_propio.Checked == true)
+            if (rb_propio.Checked == true && tx_pla_carret.Text.Trim() != "")
             {
-
+                string[] datos = ValPlaCarr("C", tx_pla_carret.Text);
+                if (datos[0].Length < 1)
+                {
+                    MessageBox.Show("No existe la carreta", "Error en ingreso", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    tx_pla_carret.Text = "";
+                    tx_pla_carret.Focus();
+                    return;
+                }
+                else
+                {
+                    tx_pla_confv.Text = tx_pla_confv.Text.Trim()  + " " + datos[0].Trim();
+                    //tx_pla_autor.Text = datos[1];
+                }
             }
         }
         //...
@@ -1298,6 +1369,7 @@ namespace TransCarga
             tx_serie.ReadOnly = true;
             tx_numero.ReadOnly = true;
             tx_pla_fech.Text = DateTime.Today.ToString().Substring(0,10);
+            rb_propio.PerformClick();
             cmb_origen.Focus();
         }
         private void Bt_edit_Click(object sender, EventArgs e)
@@ -1472,10 +1544,6 @@ namespace TransCarga
         }
         #endregion comboboxes
 
-        #region datagridview
-        //
-        #endregion
-
         #region impresion
         private bool imprimeA4()
         {
@@ -1599,8 +1667,82 @@ namespace TransCarga
             // ...
             return guiaT;
         }
+
         #endregion
 
-        
+        #region datagridview
+        private void dataGridView1_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
+        {
+            if (e.ColumnIndex == 1 && e.FormattedValue.ToString().Trim() != "") // pre guia
+            {
+                // las planillas de carga solo se llenan con guias individuales
+            }
+            if (e.ColumnIndex == 3 && e.FormattedValue.ToString().Trim() != "") // numero gúia
+            {
+                string completo = "";
+                //a.fila,a.numpreg,a.serguia,a.numguia,a.totcant,a.totpeso,b.descrizionerid as MON,a.totflet
+                if (e.FormattedValue.ToString().Trim().Length > 0)
+                {
+                    //MessageBox.Show("Son 8 dígitos!", "Alerta");
+                    //e.Cancel = true;
+                    completo = lib.Right("0000000" + e.FormattedValue, 8);
+                    dataGridView1.Rows[e.RowIndex].Cells[3].Value = completo;
+                }
+                if (completo.Length == 8 && dataGridView1.Rows[e.RowIndex].Cells[2].Value.ToString().Trim().Length == 4)
+                {
+                    using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
+                    {
+                        conn.Open();
+                        string consulta = "select a.numpregui,a.cantotgri,a.pestotgri,b.descrizionerid as MON,a.totgri " +
+                            "from cabguiai a left join desc_mon b on b.idcodice=a.tipmongri where a.sergui=@ser and a.numgui=@num";
+                        using (MySqlCommand micon = new MySqlCommand(consulta, conn))
+                        {
+                            micon.Parameters.AddWithValue("@ser", dataGridView1.Rows[e.RowIndex].Cells[2].Value.ToString().Trim());
+                            micon.Parameters.AddWithValue("@num", completo);
+                            MySqlDataReader dr = micon.ExecuteReader();
+                            if (dr.HasRows)
+                            {
+                                if (dr.Read())
+                                {
+                                    dataGridView1.Rows[e.RowIndex].Cells[1].Value = e.RowIndex + 1;
+                                    dataGridView1.Rows[e.RowIndex].Cells[1].Value = dr.GetString(0);
+                                    dataGridView1.Rows[e.RowIndex].Cells[4].Value = dr.GetString(1);
+                                    dataGridView1.Rows[e.RowIndex].Cells[5].Value = dr.GetString(2);
+                                    dataGridView1.Rows[e.RowIndex].Cells[6].Value = dr.GetString(3);
+                                    dataGridView1.Rows[e.RowIndex].Cells[7].Value = dr.GetString(4);
+                                }
+                            }
+                            else
+                            {
+                                MessageBox.Show("La Guía ingresada no existe", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                e.Cancel = true;
+                            }
+                            dr.Dispose();
+                        }
+                    }
+                }
+            }
+        }
+        private void dataGridView1_KeyDown(object sender, KeyEventArgs e)       // cursor celda de la derecha
+        {
+            e.SuppressKeyPress = true;
+            int iColumn = dataGridView1.CurrentCell.ColumnIndex;
+            int iRow = dataGridView1.CurrentCell.RowIndex;
+            if (iColumn == dataGridView1.ColumnCount - 1)
+            {
+                if (dataGridView1.RowCount > (iRow + 1))
+                {
+                    dataGridView1.CurrentCell = dataGridView1[1, iRow + 1];
+                }
+                else
+                {
+                    //focus next control
+                }
+            }
+            else
+                dataGridView1.CurrentCell = dataGridView1[iColumn + 1, iRow];
+        }
+        #endregion
+
     }
 }

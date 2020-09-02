@@ -717,6 +717,8 @@
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.Size = new System.Drawing.Size(565, 323);
             this.dataGridView1.TabIndex = 328;
+            this.dataGridView1.CellValidating += new System.Windows.Forms.DataGridViewCellValidatingEventHandler(this.dataGridView1_CellValidating);
+            this.dataGridView1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dataGridView1_KeyDown);
             // 
             // label28
             // 
@@ -852,19 +854,18 @@
             // 
             // splitContainer1.Panel2
             // 
-            this.splitContainer1.Panel2.BackColor = System.Drawing.Color.CornflowerBlue;
+            this.splitContainer1.Panel2.BackColor = System.Drawing.Color.Khaki;
             this.splitContainer1.Panel2.Controls.Add(this.tx_car_3ro_nombre);
             this.splitContainer1.Panel2.Controls.Add(this.tx_car3ro_ruc);
             this.splitContainer1.Panel2.Controls.Add(this.label1);
             this.splitContainer1.Size = new System.Drawing.Size(586, 107);
-            this.splitContainer1.SplitterDistance = 520;
+            this.splitContainer1.SplitterDistance = 25;
             this.splitContainer1.TabIndex = 383;
             // 
             // tx_pla_nomayu
             // 
             this.tx_pla_nomayu.Location = new System.Drawing.Point(156, 30);
             this.tx_pla_nomayu.Name = "tx_pla_nomayu";
-            this.tx_pla_nomayu.ReadOnly = true;
             this.tx_pla_nomayu.Size = new System.Drawing.Size(309, 20);
             this.tx_pla_nomayu.TabIndex = 379;
             this.tx_pla_nomayu.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -873,7 +874,6 @@
             // 
             this.tx_pla_ayud.Location = new System.Drawing.Point(60, 30);
             this.tx_pla_ayud.Name = "tx_pla_ayud";
-            this.tx_pla_ayud.ReadOnly = true;
             this.tx_pla_ayud.Size = new System.Drawing.Size(93, 20);
             this.tx_pla_ayud.TabIndex = 378;
             this.tx_pla_ayud.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -894,7 +894,6 @@
             // 
             this.tx_pla_autor.Location = new System.Drawing.Point(452, 78);
             this.tx_pla_autor.Name = "tx_pla_autor";
-            this.tx_pla_autor.ReadOnly = true;
             this.tx_pla_autor.Size = new System.Drawing.Size(69, 20);
             this.tx_pla_autor.TabIndex = 385;
             this.tx_pla_autor.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -914,7 +913,6 @@
             // 
             this.tx_pla_confv.Location = new System.Drawing.Point(332, 78);
             this.tx_pla_confv.Name = "tx_pla_confv";
-            this.tx_pla_confv.ReadOnly = true;
             this.tx_pla_confv.Size = new System.Drawing.Size(42, 20);
             this.tx_pla_confv.TabIndex = 384;
             this.tx_pla_confv.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -934,7 +932,6 @@
             // 
             this.tx_pla_carret.Location = new System.Drawing.Point(179, 78);
             this.tx_pla_carret.Name = "tx_pla_carret";
-            this.tx_pla_carret.ReadOnly = true;
             this.tx_pla_carret.Size = new System.Drawing.Size(69, 20);
             this.tx_pla_carret.TabIndex = 383;
             this.tx_pla_carret.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -955,7 +952,6 @@
             // 
             this.tx_pla_placa.Location = new System.Drawing.Point(60, 78);
             this.tx_pla_placa.Name = "tx_pla_placa";
-            this.tx_pla_placa.ReadOnly = true;
             this.tx_pla_placa.Size = new System.Drawing.Size(69, 20);
             this.tx_pla_placa.TabIndex = 382;
             this.tx_pla_placa.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -976,7 +972,6 @@
             // 
             this.tx_pla_propiet.Location = new System.Drawing.Point(156, 54);
             this.tx_pla_propiet.Name = "tx_pla_propiet";
-            this.tx_pla_propiet.ReadOnly = true;
             this.tx_pla_propiet.Size = new System.Drawing.Size(309, 20);
             this.tx_pla_propiet.TabIndex = 381;
             this.tx_pla_propiet.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -985,7 +980,6 @@
             // 
             this.tx_pla_ruc.Location = new System.Drawing.Point(60, 54);
             this.tx_pla_ruc.Name = "tx_pla_ruc";
-            this.tx_pla_ruc.ReadOnly = true;
             this.tx_pla_ruc.Size = new System.Drawing.Size(93, 20);
             this.tx_pla_ruc.TabIndex = 380;
             this.tx_pla_ruc.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -995,7 +989,6 @@
             // 
             this.tx_pla_nomcho.Location = new System.Drawing.Point(156, 6);
             this.tx_pla_nomcho.Name = "tx_pla_nomcho";
-            this.tx_pla_nomcho.ReadOnly = true;
             this.tx_pla_nomcho.Size = new System.Drawing.Size(309, 20);
             this.tx_pla_nomcho.TabIndex = 377;
             this.tx_pla_nomcho.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -1004,7 +997,6 @@
             // 
             this.tx_pla_brevet.Location = new System.Drawing.Point(60, 6);
             this.tx_pla_brevet.Name = "tx_pla_brevet";
-            this.tx_pla_brevet.ReadOnly = true;
             this.tx_pla_brevet.Size = new System.Drawing.Size(93, 20);
             this.tx_pla_brevet.TabIndex = 376;
             this.tx_pla_brevet.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -1034,28 +1026,31 @@
             // 
             // tx_car_3ro_nombre
             // 
-            this.tx_car_3ro_nombre.Location = new System.Drawing.Point(5, 48);
+            this.tx_car_3ro_nombre.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tx_car_3ro_nombre.Location = new System.Drawing.Point(66, 48);
             this.tx_car_3ro_nombre.Name = "tx_car_3ro_nombre";
-            this.tx_car_3ro_nombre.ReadOnly = true;
-            this.tx_car_3ro_nombre.Size = new System.Drawing.Size(310, 20);
+            this.tx_car_3ro_nombre.Size = new System.Drawing.Size(415, 20);
             this.tx_car_3ro_nombre.TabIndex = 387;
             this.tx_car_3ro_nombre.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // tx_car3ro_ruc
             // 
-            this.tx_car3ro_ruc.Location = new System.Drawing.Point(77, 14);
+            this.tx_car3ro_ruc.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.tx_car3ro_ruc.Location = new System.Drawing.Point(252, 14);
             this.tx_car3ro_ruc.Name = "tx_car3ro_ruc";
-            this.tx_car3ro_ruc.ReadOnly = true;
-            this.tx_car3ro_ruc.Size = new System.Drawing.Size(87, 20);
+            this.tx_car3ro_ruc.Size = new System.Drawing.Size(64, 20);
             this.tx_car3ro_ruc.TabIndex = 386;
             this.tx_car3ro_ruc.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.tx_car3ro_ruc.Leave += new System.EventHandler(this.ruc_transp_Leave);
             // 
             // label1
             // 
+            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.label1.AutoSize = true;
             this.label1.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label1.Location = new System.Drawing.Point(19, 18);
+            this.label1.Location = new System.Drawing.Point(202, 18);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(48, 13);
             this.label1.TabIndex = 383;

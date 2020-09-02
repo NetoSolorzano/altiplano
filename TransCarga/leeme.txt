@@ -39,4 +39,5 @@ form guiati: (guias transportista individuales)
 - Configurar las impresiones en Crystal reports para todas las guias remision ...................... ok
 - Crear el .rpt MODELO de la guía individual ....................................................... ok
 form planicarga: (planilla de carga)
-- Desarrollo del form 
+- Desarrollo del form ..............................................................................
+
