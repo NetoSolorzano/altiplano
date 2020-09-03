@@ -715,9 +715,12 @@
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView1.Location = new System.Drawing.Point(18, 198);
             this.dataGridView1.Name = "dataGridView1";
+            this.dataGridView1.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.dataGridView1.Size = new System.Drawing.Size(565, 323);
             this.dataGridView1.TabIndex = 328;
+            this.dataGridView1.CellEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellEnter);
             this.dataGridView1.CellValidating += new System.Windows.Forms.DataGridViewCellValidatingEventHandler(this.dataGridView1_CellValidating);
+            this.dataGridView1.RowLeave += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_RowLeave);
             this.dataGridView1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dataGridView1_KeyDown);
             // 
             // label28
@@ -741,6 +744,7 @@
             this.label18.TabIndex = 353;
             this.label18.Text = "Impreso?";
             this.label18.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.label18.Visible = false;
             // 
             // tx_impreso
             // 
@@ -752,6 +756,7 @@
             this.tx_impreso.Size = new System.Drawing.Size(26, 18);
             this.tx_impreso.TabIndex = 352;
             this.tx_impreso.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.tx_impreso.Visible = false;
             // 
             // label16
             // 
@@ -859,7 +864,7 @@
             this.splitContainer1.Panel2.Controls.Add(this.tx_car3ro_ruc);
             this.splitContainer1.Panel2.Controls.Add(this.label1);
             this.splitContainer1.Size = new System.Drawing.Size(586, 107);
-            this.splitContainer1.SplitterDistance = 25;
+            this.splitContainer1.SplitterDistance = 392;
             this.splitContainer1.TabIndex = 383;
             // 
             // tx_pla_nomayu
@@ -1030,16 +1035,16 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tx_car_3ro_nombre.Location = new System.Drawing.Point(66, 48);
             this.tx_car_3ro_nombre.Name = "tx_car_3ro_nombre";
-            this.tx_car_3ro_nombre.Size = new System.Drawing.Size(415, 20);
+            this.tx_car_3ro_nombre.Size = new System.Drawing.Size(48, 20);
             this.tx_car_3ro_nombre.TabIndex = 387;
             this.tx_car_3ro_nombre.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // tx_car3ro_ruc
             // 
             this.tx_car3ro_ruc.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.tx_car3ro_ruc.Location = new System.Drawing.Point(252, 14);
+            this.tx_car3ro_ruc.Location = new System.Drawing.Point(61, 14);
             this.tx_car3ro_ruc.Name = "tx_car3ro_ruc";
-            this.tx_car3ro_ruc.Size = new System.Drawing.Size(64, 20);
+            this.tx_car3ro_ruc.Size = new System.Drawing.Size(100, 20);
             this.tx_car3ro_ruc.TabIndex = 386;
             this.tx_car3ro_ruc.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.tx_car3ro_ruc.Leave += new System.EventHandler(this.ruc_transp_Leave);
@@ -1050,7 +1055,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.label1.AutoSize = true;
             this.label1.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label1.Location = new System.Drawing.Point(202, 18);
+            this.label1.Location = new System.Drawing.Point(194, 18);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(48, 13);
             this.label1.TabIndex = 383;
@@ -1299,6 +1304,7 @@
             this.tx_salxcob.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tx_salxcob.Location = new System.Drawing.Point(70, 92);
             this.tx_salxcob.Name = "tx_salxcob";
+            this.tx_salxcob.ReadOnly = true;
             this.tx_salxcob.Size = new System.Drawing.Size(73, 20);
             this.tx_salxcob.TabIndex = 323;
             this.tx_salxcob.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -1309,6 +1315,7 @@
             this.tx_pagado.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tx_pagado.Location = new System.Drawing.Point(70, 68);
             this.tx_pagado.Name = "tx_pagado";
+            this.tx_pagado.ReadOnly = true;
             this.tx_pagado.Size = new System.Drawing.Size(73, 20);
             this.tx_pagado.TabIndex = 321;
             this.tx_pagado.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -1319,6 +1326,7 @@
             this.tx_flete.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tx_flete.Location = new System.Drawing.Point(70, 44);
             this.tx_flete.Name = "tx_flete";
+            this.tx_flete.ReadOnly = true;
             this.tx_flete.Size = new System.Drawing.Size(73, 20);
             this.tx_flete.TabIndex = 23;
             this.tx_flete.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;

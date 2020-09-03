@@ -150,6 +150,43 @@ namespace TransCarga
                 }
             }
         }
+        public void limpiasplit(SplitContainer split)
+        {
+            foreach(Control oControls in split.Panel1.Controls)
+            {
+                if (oControls is TextBox)
+                {
+                    oControls.Text = "";
+                }
+                if (oControls is CheckBox)
+                {
+                    CheckBox chk = oControls as CheckBox;
+                    chk.Checked = false;
+                }
+                if (oControls is ComboBox)
+                {
+                    ComboBox cmb = oControls as ComboBox;
+                    cmb.SelectedIndex = -1;
+                }
+            }
+            foreach (Control oControls in split.Panel2.Controls)
+            {
+                if (oControls is TextBox)
+                {
+                    oControls.Text = "";
+                }
+                if (oControls is CheckBox)
+                {
+                    CheckBox chk = oControls as CheckBox;
+                    chk.Checked = false;
+                }
+                if (oControls is ComboBox)
+                {
+                    ComboBox cmb = oControls as ComboBox;
+                    cmb.SelectedIndex = -1;
+                }
+            }
+        }
         // varios
         public int CentimeterToPixel(Form oForm, double Centimeter)
         {
