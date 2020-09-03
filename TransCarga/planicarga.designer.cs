@@ -832,7 +832,7 @@
             // 
             // splitContainer1.Panel1
             // 
-            this.splitContainer1.Panel1.BackColor = System.Drawing.Color.MediumPurple;
+            this.splitContainer1.Panel1.BackColor = System.Drawing.Color.LightSteelBlue;
             this.splitContainer1.Panel1.Controls.Add(this.tx_pla_nomayu);
             this.splitContainer1.Panel1.Controls.Add(this.tx_pla_ayud);
             this.splitContainer1.Panel1.Controls.Add(this.label2);
@@ -854,7 +854,7 @@
             // 
             // splitContainer1.Panel2
             // 
-            this.splitContainer1.Panel2.BackColor = System.Drawing.Color.Khaki;
+            this.splitContainer1.Panel2.BackColor = System.Drawing.Color.LightSteelBlue;
             this.splitContainer1.Panel2.Controls.Add(this.tx_car_3ro_nombre);
             this.splitContainer1.Panel2.Controls.Add(this.tx_car3ro_ruc);
             this.splitContainer1.Panel2.Controls.Add(this.label1);

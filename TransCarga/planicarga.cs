@@ -106,9 +106,9 @@ namespace TransCarga
             splitContainer1.Panel1.BackColor = Color.FromName(colpage);
             splitContainer1.Panel2.BackColor = Color.Khaki;
             dataGridView1.DefaultCellStyle.BackColor = Color.FromName(colgrid);
-            dataGridView1.DefaultCellStyle.ForeColor = Color.FromName(colfogr);
-            dataGridView1.DefaultCellStyle.SelectionBackColor = Color.FromName(colsfon);
-            dataGridView1.DefaultCellStyle.SelectionForeColor = Color.FromName(colsfgr);
+            //dataGridView1.DefaultCellStyle.ForeColor = Color.FromName(colfogr);
+            //dataGridView1.DefaultCellStyle.SelectionBackColor = Color.FromName(colsfon);
+            //dataGridView1.DefaultCellStyle.SelectionForeColor = Color.FromName(colsfgr);
             //
             tx_user.Text += asd;
             tx_nomuser.Text = lib.nomuser(asd);
@@ -155,37 +155,43 @@ namespace TransCarga
             {
                 dataGridView1.ColumnCount = 9;
                 dataGridView1.Columns[0].Name = "fila";
-                dataGridView1.Columns[0].HeaderText = "fila";
+                dataGridView1.Columns[0].HeaderText = "Fila";
                 dataGridView1.Columns[0].ReadOnly = true;
                 dataGridView1.Columns[0].Width = 50;
+                dataGridView1.Columns[0].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
                 dataGridView1.Columns[1].Name = "numpreg";
-                dataGridView1.Columns[1].HeaderText = "numpreg";
+                dataGridView1.Columns[1].HeaderText = "Pre-GR";
                 dataGridView1.Columns[1].ReadOnly = true;
                 dataGridView1.Columns[1].Width = 70;
                 dataGridView1.Columns[2].Name = "serguia";
-                dataGridView1.Columns[2].HeaderText = "serguia";
+                dataGridView1.Columns[2].HeaderText = "Ser.GR";
                 dataGridView1.Columns[2].ReadOnly = false;
                 dataGridView1.Columns[2].Width = 50;
+                dataGridView1.Columns[2].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
                 dataGridView1.Columns[3].Name = "numguia";
-                dataGridView1.Columns[3].HeaderText = "numguia";
+                dataGridView1.Columns[3].HeaderText = "Num.GR";
                 dataGridView1.Columns[3].ReadOnly = false;
                 dataGridView1.Columns[3].Width = 70;
                 dataGridView1.Columns[4].Name = "totcant";
-                dataGridView1.Columns[4].HeaderText = "totcant";
+                dataGridView1.Columns[4].HeaderText = "Bultos";
                 dataGridView1.Columns[4].ReadOnly = true;
                 dataGridView1.Columns[4].Width = 50;
+                dataGridView1.Columns[4].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
                 dataGridView1.Columns[5].Name = "totpeso";
-                dataGridView1.Columns[5].HeaderText = "totpeso";
+                dataGridView1.Columns[5].HeaderText = "Peso";
                 dataGridView1.Columns[5].ReadOnly = true;
                 dataGridView1.Columns[5].Width = 60;
+                dataGridView1.Columns[5].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
                 dataGridView1.Columns[6].Name = "MON";
-                dataGridView1.Columns[6].HeaderText = "MON";
+                dataGridView1.Columns[6].HeaderText = "Mon";
                 dataGridView1.Columns[6].ReadOnly = true;
                 dataGridView1.Columns[6].Width = 40;
+                dataGridView1.Columns[6].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
                 dataGridView1.Columns[7].Name = "totflet";
-                dataGridView1.Columns[7].HeaderText = "totflet";
+                dataGridView1.Columns[7].HeaderText = "Flete";
                 dataGridView1.Columns[7].ReadOnly = true;
                 dataGridView1.Columns[7].Width = 70;
+                dataGridView1.Columns[7].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
             }
             if (Tx_modo.Text == "EDITAR")
             {
@@ -1680,13 +1686,10 @@ namespace TransCarga
             if (e.ColumnIndex == 3 && e.FormattedValue.ToString().Trim() != "") // numero gúia
             {
                 string completo = "";
-                //a.fila,a.numpreg,a.serguia,a.numguia,a.totcant,a.totpeso,b.descrizionerid as MON,a.totflet
                 if (e.FormattedValue.ToString().Trim().Length > 0)
                 {
-                    //MessageBox.Show("Son 8 dígitos!", "Alerta");
-                    //e.Cancel = true;
                     completo = lib.Right("0000000" + e.FormattedValue, 8);
-                    dataGridView1.Rows[e.RowIndex].Cells[3].Value = completo;
+                    if (dataGridView1.EditingControl != null) dataGridView1.EditingControl.Text = completo;
                 }
                 if (completo.Length == 8 && dataGridView1.Rows[e.RowIndex].Cells[2].Value.ToString().Trim().Length == 4)
                 {
@@ -1702,9 +1705,10 @@ namespace TransCarga
                             MySqlDataReader dr = micon.ExecuteReader();
                             if (dr.HasRows)
                             {
+                                //a.fila,a.numpreg,a.serguia,a.numguia,a.totcant,a.totpeso,b.descrizionerid as MON,a.totflet
                                 if (dr.Read())
                                 {
-                                    dataGridView1.Rows[e.RowIndex].Cells[1].Value = e.RowIndex + 1;
+                                    dataGridView1.Rows[e.RowIndex].Cells[0].Value = e.RowIndex + 1;
                                     dataGridView1.Rows[e.RowIndex].Cells[1].Value = dr.GetString(0);
                                     dataGridView1.Rows[e.RowIndex].Cells[4].Value = dr.GetString(1);
                                     dataGridView1.Rows[e.RowIndex].Cells[5].Value = dr.GetString(2);
@@ -1725,22 +1729,18 @@ namespace TransCarga
         }
         private void dataGridView1_KeyDown(object sender, KeyEventArgs e)       // cursor celda de la derecha
         {
-            e.SuppressKeyPress = true;
-            int iColumn = dataGridView1.CurrentCell.ColumnIndex;
-            int iRow = dataGridView1.CurrentCell.RowIndex;
-            if (iColumn == dataGridView1.ColumnCount - 1)
+           if (e.KeyCode == Keys.Enter)
             {
-                if (dataGridView1.RowCount > (iRow + 1))
+                if (dataGridView1.CurrentCell.ColumnIndex == 2)
                 {
-                    dataGridView1.CurrentCell = dataGridView1[1, iRow + 1];
+                    e.SuppressKeyPress = true;
+                    SendKeys.Send("{TAB}");
                 }
-                else
+                if (dataGridView1.CurrentCell.ColumnIndex == 3)
                 {
-                    //focus next control
+                    dataGridView1.CurrentRow.Cells[2].Selected = true;
                 }
             }
-            else
-                dataGridView1.CurrentCell = dataGridView1[iColumn + 1, iRow];
         }
         #endregion
 
