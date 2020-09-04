@@ -152,7 +152,7 @@ namespace TransCarga
         {
             dataGridView1.Rows.Clear();
             dataGridView1.Columns.Clear();
-            dataGridView1.ColumnCount = 11;
+            dataGridView1.ColumnCount = 13;
             dataGridView1.Columns[0].Name = "fila";
             dataGridView1.Columns[0].HeaderText = "Fila";
             dataGridView1.Columns[0].ReadOnly = true;
@@ -194,6 +194,8 @@ namespace TransCarga
             dataGridView1.Columns[8].Visible = false;   // valor pagado de la guia
             dataGridView1.Columns[9].Visible = false;   // valor por cobrar de la guia
             dataGridView1.Columns[10].Visible = false;  // codigo moneda
+            dataGridView1.Columns[11].Visible = false;  // marca para edicion
+            dataGridView1.Columns[12].Visible = false;  // id de la fila
             if (Tx_modo.Text == "EDITAR")
             {
                 DataGridViewCheckBoxColumn marca = new DataGridViewCheckBoxColumn();
@@ -416,7 +418,8 @@ namespace TransCarga
         }
         private void jaladet(string idr)         // jala el detalle
         {
-            string jalad = "select a.idc,a.serplacar,a.numplacar,a.fila,a.numpreg,a.serguia,a.numguia,a.totcant,a.totpeso,b.descrizionerid as MON,a.totflet,a.estadoser,a.codmone " +
+            string jalad = "select a.idc,a.serplacar,a.numplacar,a.fila,a.numpreg,a.serguia,a.numguia,a.totcant,a.totpeso,b.descrizionerid as MON,a.totflet," +
+                "a.estadoser,a.codmone,'X' as marca,a.id " +
                 "from detplacar a left join desc_mon b on b.idcodice=a.codmone where a.idc=@idr";
             using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
             {
@@ -430,19 +433,43 @@ namespace TransCarga
                         da.Fill(dt);
                         foreach (DataRow row in dt.Rows)
                         {
-                            dataGridView1.Rows.Add(
-                                row[3].ToString(),
-                                row[4].ToString(),
-                                row[5].ToString(),
-                                row[6].ToString(),
-                                row[7].ToString(),
-                                row[8].ToString(),
-                                row[9].ToString(),
-                                row[10].ToString(),
-                                "0",
-                                "0",
-                                row[12].ToString()
-                                );
+                            if (Tx_modo.Text != "EDITAR")
+                            {
+                                dataGridView1.Rows.Add(
+                                    row[3].ToString(),
+                                    row[4].ToString(),
+                                    row[5].ToString(),
+                                    row[6].ToString(),
+                                    row[7].ToString(),
+                                    row[8].ToString(),
+                                    row[9].ToString(),
+                                    row[10].ToString(),
+                                    "0",
+                                    "0",
+                                    row[12].ToString(),
+                                    row[13].ToString(),
+                                    row[14].ToString()
+                                    );
+                            }
+                            else
+                            {
+                                dataGridView1.Rows.Add(
+                                    row[3].ToString(),
+                                    row[4].ToString(),
+                                    row[5].ToString(),
+                                    row[6].ToString(),
+                                    row[7].ToString(),
+                                    row[8].ToString(),
+                                    row[9].ToString(),
+                                    row[10].ToString(),
+                                    "0",
+                                    "0",
+                                    row[12].ToString(),
+                                    row[13].ToString(),
+                                    row[14].ToString(),
+                                    false
+                                    );
+                            }
                         }
                         dt.Dispose();
                     }
@@ -1025,24 +1052,24 @@ namespace TransCarga
             {
                 try
                 {
-                    if (tx_dat_estad.Text == codGene)     // solo edita estado GENERADO, otro estado no se edita
-                    {
-                        int vtip = 0;
-                        if (rb_propio.Checked == true) vtip = 1;
+                    if (tx_dat_estad.Text == codGene)               // solo edita estado GENERADO, otro estado no se edita
+                    {                                               // El estado cambia solo cuando: SE CIERRA MANUALMENTE ó CUANDO SE RECEPCIONA LA PLANILLA
+                        int vtip = 0;                               // los datos que NO SE EDITAN son: serie,numero,origen y destino
+                        if (rb_propio.Checked == true) vtip = 1;    // los totales peso, flete, pagado, etc... si cambian con la edicion
                         if (rb_3ro.Checked == true) vtip = 2;
-                        if (rb_bus.Checked == true) vtip = 3;
+                        if (rb_bus.Checked == true) vtip = 3;   // locorigen=@locor,locdestin=@locde,estadoser=@estad,
                         string actua = "update cabplacar set " +
-                            "fechope=@fecho,locorigen=@locor,locdestin=@locde,obsplacar=@obspl,cantfilas=@cantf,cantotpla=@canto,pestotpla=@pesto,tipmonpla=@tipmo," +
-                            "tipcampla=@tipca,subtotpla=@subto,igvplacar=@igvpl,totplacar=@totpl,totpagado=@totpa,salxpagar=@salxp,estadoser=@estad,fleteimp=@fleim," +
+                            "fechope=@fecho,obsplacar=@obspl,cantfilas=@cantf,cantotpla=@canto,pestotpla=@pesto,tipmonpla=@tipmo," +
+                            "tipcampla=@tipca,subtotpla=@subto,igvplacar=@igvpl,totplacar=@totpl,totpagado=@totpa,salxpagar=@salxp,fleteimp=@fleim," +
                             "platracto=@platr,placarret=@placa,autorizac=@autor,confvehic=@confv,brevchofe=@brevc,brevayuda=@breva,rucpropie=@rucpr,tipoplani=@tipop," +
-                            "verApp=@verApp,userm=@asd,fechm=now(),diriplan4=@iplan,diripwan4=@ipwan,netbname=@nbnam " +
+                            "verApp=@verApp,userm=@asd,fechm=now(),diriplan4=@iplan,diripwan4=@ipwan,netbname=@nbnam,nomchofe=@nocho,nomayuda=@noayu " +
                             "where serplacar=@serpl and numplacar=@numpl";
                         MySqlCommand micon = new MySqlCommand(actua, conn);
                         micon.Parameters.AddWithValue("@fecho", tx_fechope.Text.Substring(6, 4) + "-" + tx_fechope.Text.Substring(3, 2) + "-" + tx_fechope.Text.Substring(0, 2));
                         micon.Parameters.AddWithValue("@serpl", tx_serie.Text);
                         micon.Parameters.AddWithValue("@numpl", tx_numero.Text);
-                        micon.Parameters.AddWithValue("@locor", tx_dat_locori.Text);
-                        micon.Parameters.AddWithValue("@locde", tx_dat_locdes.Text);
+                        //micon.Parameters.AddWithValue("@locor", tx_dat_locori.Text);
+                        //micon.Parameters.AddWithValue("@locde", tx_dat_locdes.Text);
                         micon.Parameters.AddWithValue("@obspl", tx_obser1.Text);
                         micon.Parameters.AddWithValue("@cantf", tx_tfil.Text);      // cantidad filas detalle
                         micon.Parameters.AddWithValue("@canto", tx_totcant.Text);   // cant total de bultos
@@ -1054,16 +1081,16 @@ namespace TransCarga
                         micon.Parameters.AddWithValue("@totpl", tx_flete.Text);
                         micon.Parameters.AddWithValue("@totpa", tx_pagado.Text);
                         micon.Parameters.AddWithValue("@salxp", tx_salxcob.Text);   // saldo por cobrar al momento de grabar la planilla
-                        micon.Parameters.AddWithValue("@estad", tx_dat_estad.Text);
+                        //micon.Parameters.AddWithValue("@estad", tx_dat_estad.Text);
                         micon.Parameters.AddWithValue("@fleim", tx_dat_detflete.Text);      // variable si detalle lleva valores flete guias
                         micon.Parameters.AddWithValue("@platr", tx_pla_placa.Text);
                         micon.Parameters.AddWithValue("@placa", tx_pla_carret.Text);
                         micon.Parameters.AddWithValue("@autor", tx_pla_autor.Text);
                         micon.Parameters.AddWithValue("@confv", tx_pla_confv.Text);
                         micon.Parameters.AddWithValue("@brevc", tx_pla_brevet.Text);
-                        micon.Parameters.AddWithValue("", tx_pla_nomcho.Text);           // nombre del chofer
+                        micon.Parameters.AddWithValue("@nocho", tx_pla_nomcho.Text);           // nombre del chofer
                         micon.Parameters.AddWithValue("@breva", tx_pla_ayud.Text);
-                        micon.Parameters.AddWithValue("", tx_pla_nomayu.Text);           // nombre del ayudante
+                        micon.Parameters.AddWithValue("@noayu", tx_pla_nomayu.Text);           // nombre del ayudante
                         micon.Parameters.AddWithValue("@rucpr", (tx_pla_ruc.Text.Trim() == "") ? tx_car3ro_ruc.Text : tx_pla_ruc.Text);
                         micon.Parameters.AddWithValue("@tipop", vtip);              // tipo planilla, tipo transporte/transportista
                         micon.Parameters.AddWithValue("@verApp", verapp);
@@ -1075,17 +1102,38 @@ namespace TransCarga
                         //
                         // EDICION DEL DETALLE 
                         /*
-                        micon = new MySqlCommand("borraseguro", conn);
-                        micon.CommandType = CommandType.StoredProcedure;
-                        micon.Parameters.AddWithValue("@tabla", "detplacar");
-                        micon.Parameters.AddWithValue("@vidr", "0");
-                        micon.Parameters.AddWithValue("@vidc", tx_idr.Text);
-                        micon.ExecuteNonQuery();
+                            Las filas marcadas SE BORRAN
+                            Las filas NUEVAS SE INSERTAN
+                            Las filas cambiasas NO HACE CASO O NO PERMITE EL CAMBIO, solo se permite borrar o agregar filas
                         */
                         int fila = 0;
                         for (int i = 0; i < dataGridView1.Rows.Count - 1; i++)
                         {
-                            if (dataGridView1.Rows[i].Cells[0].Value.ToString().Trim() != "")   // nuevo
+                            if (dataGridView1.Rows[i].Cells[13].Value.ToString() == "true")   // fila marcada para borrar
+                            {
+                                // saca la guia de detplacar
+                                string consulta = "call borraseguro(@tabla,@idr,@idc)";
+                                using (MySqlCommand comed = new MySqlCommand(consulta, conn))
+                                {
+                                    comed.CommandType = CommandType.StoredProcedure;
+                                    comed.Parameters.AddWithValue("@tabla", "detplacar");
+                                    comed.Parameters.AddWithValue("@idr", int.Parse(dataGridView1.Rows[i].Cells[12].Value.ToString()));
+                                    comed.Parameters.AddWithValue("@idc", 0);
+                                    try
+                                    {
+                                        comed.ExecuteNonQuery();
+                                        // trigger borra los campos en cabguiai
+                                        // trigger borra los campos en controlg
+                                    }
+                                    catch (MySqlException ex)
+                                    {
+                                        MessageBox.Show("Ocurrió un error en el proceso de borrar la guía de la planilla" + Environment.NewLine +
+                                            "y / o en la actualización posterior en Guías y Control " + Environment.NewLine +
+                                            ex.Message, "Alerta proceso no concluido!");
+                                    }
+                                }
+                            }
+                            if (dataGridView1.Rows[i].Cells[11].Value.ToString() != "X")   // fila nueva, se inserta
                             {
                                 string inserd2 = "insert into detplacar (idc,serplacar,numplacar,fila,numpreg,serguia,numguia,totcant,totpeso,totflet,codmone,estadoser," +
                                 "verApp,userc,fechc,diriplan4,diripwan4,netbname) " +
@@ -1110,21 +1158,24 @@ namespace TransCarga
                                 micon.Parameters.AddWithValue("@ipwan", lib.ipwan());
                                 micon.Parameters.AddWithValue("@nbnam", Environment.MachineName);
                                 micon.ExecuteNonQuery();
-                                //fila += 1;
-                            }
-                            if (dataGridView1.Rows[i].Cells["borra"].Value.ToString() != "")  // borra 
-                            {
-                                // saca la guia de detplacar
-                                // borra los campos en cabguiai
-                                // borra los campos en controlg
-
                             }
                         }
                         for (int i = 0; i < dataGridView1.Rows.Count - 1; i++)
                         {
-                            // actualiza contador fila en detplacar
+                            if (dataGridView1.Rows[i].Cells[13].Value.ToString() == "false")
+                            {
+                                // actualiza contador fila en detplacar
+                                fila += 1;
+                                string consulta = "update detplacar set fila=@fi where serguia=@ser and numguia=@num";
+                                using (MySqlCommand comup = new MySqlCommand(consulta , conn))
+                                {
+                                    comup.Parameters.AddWithValue("@fi", fila);
+                                    comup.Parameters.AddWithValue("@ser", dataGridView1.Rows[i].Cells[5].Value.ToString());
+                                    comup.Parameters.AddWithValue("@num", dataGridView1.Rows[i].Cells[6].Value.ToString());
+                                    comup.ExecuteNonQuery();
+                                }
+                            }
                         }
-                        //
                         retorna = true;
                         micon.Dispose();
                     }
@@ -1807,7 +1858,7 @@ namespace TransCarga
                 }
             }
         }
-        private void dataGridView1_KeyDown(object sender, KeyEventArgs e)       // cursor a la derecha o siguiente fila
+        private void dataGridView1_KeyDown(object sender, KeyEventArgs e)       // cursor a la derecha o siguiente fila ... NO FUNCA
         {
            if (e.KeyCode == Keys.Enter)
             {
@@ -1831,20 +1882,44 @@ namespace TransCarga
             //a.fila,a.numpreg,a.serguia,a.numguia,a.totcant,a.totpeso,b.descrizionerid as MON,a.totflet,a.totpag,a.salgri
             for (int i = 0; i < dataGridView1.Rows.Count; i++)
             {
-                if (dataGridView1.Rows[i].Cells[4].Value != null)
+                if (Tx_modo.Text == "EDITAR")
                 {
-                    totcant = totcant + int.Parse(dataGridView1.Rows[i].Cells[4].Value.ToString());
-                    totfil += 1;
+                    if (dataGridView1.Rows[i].Cells[13].Value == null)   // dataGridView1.Rows[i].Cells[13].Value.ToString() == "false"
+                    {
+                        if (dataGridView1.Rows[i].Cells[4].Value != null)
+                        {
+                            totcant = totcant + int.Parse(dataGridView1.Rows[i].Cells[4].Value.ToString());
+                            totfil += 1;
+                        }
+                        if (dataGridView1.Rows[i].Cells[5].Value != null)
+                        {
+                            totpes = totpes + decimal.Parse(dataGridView1.Rows[i].Cells[5].Value.ToString());
+                        }
+                        if (dataGridView1.Rows[i].Cells[7].Value != null)
+                        {
+                            totfle = totfle + decimal.Parse(dataGridView1.Rows[i].Cells[7].Value.ToString());
+                            totpag = totpag + decimal.Parse(dataGridView1.Rows[i].Cells[8].Value.ToString());
+                            totsal = totsal + decimal.Parse(dataGridView1.Rows[i].Cells[9].Value.ToString());
+                        }
+                    }
                 }
-                if (dataGridView1.Rows[i].Cells[5].Value != null)
+                else
                 {
-                    totpes = totpes + decimal.Parse(dataGridView1.Rows[i].Cells[5].Value.ToString());
-                }
-                if (dataGridView1.Rows[i].Cells[7].Value != null)
-                {
-                    totfle = totfle + decimal.Parse(dataGridView1.Rows[i].Cells[7].Value.ToString());
-                    totpag = totpag + decimal.Parse(dataGridView1.Rows[i].Cells[8].Value.ToString());
-                    totsal = totsal + decimal.Parse(dataGridView1.Rows[i].Cells[9].Value.ToString());
+                    if (dataGridView1.Rows[i].Cells[4].Value != null)
+                    {
+                        totcant = totcant + int.Parse(dataGridView1.Rows[i].Cells[4].Value.ToString());
+                        totfil += 1;
+                    }
+                    if (dataGridView1.Rows[i].Cells[5].Value != null)
+                    {
+                        totpes = totpes + decimal.Parse(dataGridView1.Rows[i].Cells[5].Value.ToString());
+                    }
+                    if (dataGridView1.Rows[i].Cells[7].Value != null)
+                    {
+                        totfle = totfle + decimal.Parse(dataGridView1.Rows[i].Cells[7].Value.ToString());
+                        totpag = totpag + decimal.Parse(dataGridView1.Rows[i].Cells[8].Value.ToString());
+                        totsal = totsal + decimal.Parse(dataGridView1.Rows[i].Cells[9].Value.ToString());
+                    }
                 }
             }
             tx_totcant.Text = totcant.ToString();
