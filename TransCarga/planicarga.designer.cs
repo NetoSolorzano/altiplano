@@ -690,6 +690,7 @@
             this.tx_numero.Size = new System.Drawing.Size(73, 20);
             this.tx_numero.TabIndex = 2;
             this.tx_numero.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.tx_numero.Leave += new System.EventHandler(this.tx_numero_Leave);
             // 
             // tx_serie
             // 
@@ -700,6 +701,7 @@
             this.tx_serie.Size = new System.Drawing.Size(44, 20);
             this.tx_serie.TabIndex = 1;
             this.tx_serie.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.tx_serie.Leave += new System.EventHandler(this.tx_serie_Leave);
             // 
             // label8
             // 

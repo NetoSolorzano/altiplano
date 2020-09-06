@@ -39,5 +39,8 @@ form guiati: (guias transportista individuales)
 - Configurar las impresiones en Crystal reports para todas las guias remision ...................... ok
 - Crear el .rpt MODELO de la guía individual ....................................................... ok
 form planicarga: (planilla de carga)
-- Desarrollo del form ..............................................................................
+- Desarrollo del form .............................................................................. ok
+- La EDICION de una planilla, NO recalcula el flete, pagado y saldo x pagar de las guías pre existentes en la planilla.
+  Los saldos y flete de cada guía se calculan SOLO AL MOMENTO DE REGISTRAR UNA GUIA EN LA PLANILLA.
+- 
 
