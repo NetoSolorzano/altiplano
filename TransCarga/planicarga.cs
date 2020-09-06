@@ -1259,6 +1259,7 @@ namespace TransCarga
                                 micon.ExecuteNonQuery();
                             }
                         }
+                        /*
                         for (int i = 0; i < dataGridView1.Rows.Count - 1; i++)
                         {
                             if (dataGridView1.Rows[i].Cells[13].Value == null)
@@ -1274,6 +1275,18 @@ namespace TransCarga
                                     comup.ExecuteNonQuery();
                                 }
                             }
+                        }
+                        */
+                        // actualiza contador fila en detplacar
+                        fila += 1;
+                        string conupd = "UPDATE detplacar SET fila = (@rownum:= 1 + @rownum) " +
+                            "WHERE serplacar = @ser AND numplacar = @num + (@rownum:= 0) ORDER BY id";
+                        using (MySqlCommand comup = new MySqlCommand(conupd, conn))
+                        {
+                            comup.Parameters.AddWithValue("@fi", fila);
+                            comup.Parameters.AddWithValue("@ser", tx_serie.Text);
+                            comup.Parameters.AddWithValue("@num", tx_numero.Text);
+                            comup.ExecuteNonQuery();
                         }
                         retorna = true;
                         micon.Dispose();
@@ -1300,6 +1313,7 @@ namespace TransCarga
             bool retorna = false;
             // cambia estado a ANULADO en cabecera
             // el trigger before_update debe cambiar estado ANULADO en detalle
+            // el trigger ..... debe borrar los campos de enlace en cabguiai y controlg
             using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
             {
                 conn.Open();
