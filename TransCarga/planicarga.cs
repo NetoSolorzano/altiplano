@@ -54,6 +54,7 @@ namespace TransCarga
         string v_trompa = "";           // codigo interno placa de tracto/camion
         string v_carret = "";           // código interno placa de carreta/furgon
         string v_mondef = "";           // moneda por defecto del form
+        string vint_A0 = "";            // variable INTERNA para amarrar el codigo anulacion cliente con A0
         //
         static libreria lib = new libreria();   // libreria de procedimientos
         publico lp = new publico();             // libreria de clases
@@ -225,9 +226,10 @@ namespace TransCarga
             {
                 MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
                 conn.Open();
-                string consulta = "select formulario,campo,param,valor from enlaces where formulario in (@nofo,@nofa,@nofi)";
+                string consulta = "select formulario,campo,param,valor from enlaces where formulario in (@nofo,@nfin,@nofi,@nofa)";
                 MySqlCommand micon = new MySqlCommand(consulta, conn);
                 micon.Parameters.AddWithValue("@nofo", "main");
+                micon.Parameters.AddWithValue("@nfin", "interno");
                 micon.Parameters.AddWithValue("@nofi", "clients");
                 micon.Parameters.AddWithValue("@nofa", nomform);
                 MySqlDataAdapter da = new MySqlDataAdapter(micon);
@@ -285,6 +287,10 @@ namespace TransCarga
                             if (row["param"].ToString() == "codCarreta") v_carret = row["valor"].ToString().Trim();
                         }
                         if (row["campo"].ToString() == "moneda" && row["param"].ToString() == "default") v_mondef = row["valor"].ToString().Trim();
+                    }
+                    if (row["formulario"].ToString() == "interno")  // variables configuracion interna, campos especiales de base de datos
+                    {
+                        if (row["campo"].ToString() == "anulado" && row["param"].ToString() == "A0") vint_A0 = row["valor"].ToString().Trim();
                     }
                 }
                 da.Dispose();
@@ -396,7 +402,7 @@ namespace TransCarga
                         if (tx_dat_estad.Text != codGene)
                         {
                             sololee();
-                            MessageBox.Show("Este documento no puede ser editado", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            MessageBox.Show("Este documento no puede ser editado/anulado", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         }
                         else
                         {
@@ -632,6 +638,11 @@ namespace TransCarga
             if (v_mfildet == "")
             {
                 lib.messagebox("Max. filas de detalle");
+                retorna = false;
+            }
+            if (vint_A0 == "")
+            {
+                lib.messagebox("Cód. Interno enlace Anulado: A0");
                 retorna = false;
             }
             return retorna;
@@ -959,7 +970,7 @@ namespace TransCarga
                 // EN ESTE FORM, LA ANULACION ES FISICA PORQUE SU NUMERACION ES AUTOMATICA
                 // si se anula, se tiene que desenlazar en todas sus guías y en control
 
-                if (true)   // (tx_pla_plani.Text.Trim() == "") && tx_impreso.Text == "N"
+                if (tx_dat_estad.Text != codAnul)   // (tx_pla_plani.Text.Trim() == "") && tx_impreso.Text == "N"
                 {
                     if (tx_idr.Text.Trim() != "")
                     {
@@ -1312,15 +1323,15 @@ namespace TransCarga
         {
             bool retorna = false;
             // cambia estado a ANULADO en cabecera
-            // el trigger before_update debe cambiar estado ANULADO en detalle
-            // el trigger ..... debe borrar los campos de enlace en cabguiai y controlg
+            // el trigger after_update debe cambiar estado ANULADO en detalle
+            // el trigger after_update debe borrar los campos de enlace en cabguiai y controlg
             using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
             {
                 conn.Open();
                 if (conn.State == ConnectionState.Open)
                 {
-                    string canul = "update ??? set estadoser=@estser,usera=@asd,fecha=now()," +
-                        "verApp=@veap,diriplan4=@dil4,diripwan4=@diw4,netbname=@nbnp " +
+                    string canul = "update cabplacar set estadoser=@estser,usera=@asd,fecha=now()," +
+                        "verApp=@veap,diriplan4=@dil4,diripwan4=@diw4,netbname=@nbnp,estintreg=@eirA0 " +
                         "where id=@idr";
                     using (MySqlCommand micon = new MySqlCommand(canul, conn))
                     {
@@ -1331,6 +1342,7 @@ namespace TransCarga
                         micon.Parameters.AddWithValue("@diw4", lib.ipwan());
                         micon.Parameters.AddWithValue("@nbnp", Environment.MachineName);
                         micon.Parameters.AddWithValue("@veap", verapp);
+                        micon.Parameters.AddWithValue("@eirA0", (vint_A0 == codAnul) ? "A0" : "");  // codigo anulacion interna en DB A0
                         micon.ExecuteNonQuery();
                         retorna = true;
                     }
@@ -1578,6 +1590,7 @@ namespace TransCarga
             dataGridView1.Rows.Clear();
             initIngreso();
             escribe();
+            splitContainer1.Enabled = true;
             tx_serie.ReadOnly = true;
             tx_numero.ReadOnly = true;
             tx_pla_fech.Text = DateTime.Today.ToString().Substring(0,10);
@@ -1604,7 +1617,7 @@ namespace TransCarga
             dataGridView1.Columns.Clear();
             dataGridView1.Rows.Clear();
             initIngreso();
-            //armagrilla();
+            splitContainer1.Enabled = true;
             escribe();
             tx_serie.ReadOnly = false;      // cambia a true una ves jalado los datos
             tx_numero.ReadOnly = false;     // cambia a true una ves jalado los datos
@@ -1649,12 +1662,20 @@ namespace TransCarga
             sololee();
             Tx_modo.Text = "ANULAR";
             button1.Image = Image.FromFile(img_anul);
-            initIngreso();
-            //
             Bt_ini.Enabled = true;
             Bt_sig.Enabled = true;
             Bt_ret.Enabled = true;
             Bt_fin.Enabled = true;
+            //
+            dataGridView1.Columns.Clear();
+            dataGridView1.Rows.Clear();
+            initIngreso();
+            splitContainer1.Enabled = false;
+            gbox_serie.Enabled = true;
+            tx_pla_fech.ReadOnly = true;
+            tx_serie.ReadOnly = false;
+            tx_numero.ReadOnly = false;
+            tx_serie.Focus();
         }
         private void Bt_ver_Click(object sender, EventArgs e)
         {

@@ -41,9 +41,13 @@ namespace TransCarga
         string img_preview = "";        // imagen del boton preview e imprimir reporte
         string letpied = "";            // letra indentificadora de piedra en detalle 2
         string cliente = Program.cliente;    // razon social para los reportes
+        string codAnul = "";            // codigo de documento anulado
+        string nomAnul = "";            // texto nombre del estado anulado
+        string codGene = "";            // codigo documento nuevo generado
         //int pageCount = 1, cuenta = 0;
         #endregion
         libreria lib = new libreria();
+        DataTable dtestad = new DataTable();
         // string de conexion
         //static string serv = ConfigurationManager.AppSettings["serv"].ToString();
         static string port = ConfigurationManager.AppSettings["port"].ToString();
@@ -76,10 +80,10 @@ namespace TransCarga
             toolTipNombre.ShowAlways = true;                 // Force the ToolTip text to be displayed whether or not the form is active.
             toolTipNombre.SetToolTip(toolStrip1, nomform);   // Set up the ToolTip text for the object
             */
+            dataload("todos");
             jalainfo();
             init();
             toolboton();
-            dataload("todos");
             KeyPreview = true;
             tabControl1.Enabled = false;
             //
@@ -143,6 +147,13 @@ namespace TransCarga
                         if (row["param"].ToString() == "img_imprime") img_imprime = row["valor"].ToString().Trim();  // imagen del boton IMPRIMIR REPORTE
                         if (row["param"].ToString() == "img_pre") img_preview = row["valor"].ToString().Trim();  // imagen del boton VISTA PRELIMINAR
                     }
+                    if (row["campo"].ToString() == "estado" && row["formulario"].ToString() == "main")
+                    {
+                        if (row["param"].ToString() == "anulado") codAnul = row["valor"].ToString().Trim();         // codigo doc anulado
+                        if (row["param"].ToString() == "generado") codGene = row["valor"].ToString().Trim();        // codigo doc generado
+                        DataRow[] fila = dtestad.Select("idcodice='" + codAnul + "'");
+                        nomAnul = fila[0][0].ToString();
+                    }
                     if (row["formulario"].ToString() == "xxx")
                     {
                         if (row["campo"].ToString() == "tipoped" && row["param"].ToString() == "almacen") tipede = row["valor"].ToString().Trim();         // tipo de pedido por defecto en almacen
@@ -188,7 +199,6 @@ namespace TransCarga
                                        "where numero=1 order by idcodice";
                 cmd = new MySqlCommand(conestad, conn);
                 MySqlDataAdapter daestad = new MySqlDataAdapter(cmd);
-                DataTable dtestad = new DataTable();
                 daestad.Fill(dtestad);
                 cmb_estad.DataSource = dtestad;
                 cmb_estad.DisplayMember = "descrizionerid";
@@ -273,8 +283,8 @@ namespace TransCarga
             {
                 case "grillares":
                     object sumfletes, sumsaldos;
-                    sumfletes = dt.Compute("Sum(TOT_PRE)", string.Empty);
-                    sumsaldos = dt.Compute("Sum(SALDO)", string.Empty);
+                    sumfletes = dt.Compute("Sum(TOT_PRE)", "ESTADO <> '" + nomAnul + "'");   // string.Empty
+                    sumsaldos = dt.Compute("Sum(SALDO)", "ESTADO <> '" + nomAnul + "'");      // string.Empty
                     tx_valor.Text = sumfletes.ToString();
                     tx_pendien.Text = sumsaldos.ToString();
                     tx_nser.Text = dt.Rows.Count.ToString();

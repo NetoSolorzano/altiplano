@@ -56,6 +56,7 @@ namespace TransCarga
         string v_sanu = "";             // serie anulacion interna ANU
         string v_CR_gr_ind = "";        // nombre del formato GR individual en CR
         string v_mfildet = "";          // maximo numero de filas en el detalle, coord. con el formato
+        string vint_A0 = "";            // variable codigo anulacion interna por BD
         //
         static libreria lib = new libreria();   // libreria de procedimientos
         publico lp = new publico();             // libreria de clases
@@ -200,6 +201,7 @@ namespace TransCarga
             limpia_combos();
             claveSeg = "";
             dataGridView1.Rows.Clear();
+            dataGridView1.ReadOnly = false;
             tx_flete.Text = "";
             tx_numero.Text = "";
             tx_totcant.Text = "";
@@ -222,9 +224,10 @@ namespace TransCarga
             {
                 MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
                 conn.Open();
-                string consulta = "select formulario,campo,param,valor from enlaces where formulario in (@nofo,@nofa,@nofi)";
+                string consulta = "select formulario,campo,param,valor from enlaces where formulario in (@nofo,@nfin,@nofa,@nofi)";
                 MySqlCommand micon = new MySqlCommand(consulta, conn);
                 micon.Parameters.AddWithValue("@nofo", "main");
+                micon.Parameters.AddWithValue("@nfin", "interno");
                 micon.Parameters.AddWithValue("@nofi", "clients");
                 micon.Parameters.AddWithValue("@nofa", nomform);
                 MySqlDataAdapter da = new MySqlDataAdapter(micon);
@@ -285,6 +288,10 @@ namespace TransCarga
                         if (row["campo"].ToString() == "moneda" && row["param"].ToString() == "default") MonDeft = row["valor"].ToString().Trim();             // moneda por defecto
                         if (row["campo"].ToString() == "detalle" && row["param"].ToString() == "glosa") gloDeta = row["valor"].ToString().Trim();             // glosa del detalle
                     }
+                    if (row["formulario"].ToString() == "interno")              // codigo enlace interno de anulacion del cliente con en BD A0
+                    {
+                        if (row["campo"].ToString() == "anulado" && row["param"].ToString() == "A0") vint_A0 = row["valor"].ToString().Trim();
+                    }
                 }
                 da.Dispose();
                 dt.Dispose();
@@ -303,7 +310,7 @@ namespace TransCarga
         }
         private void jalaoc(string campo)        // jala guia individual
         {
-            try
+            //try
             {
                 string parte = "";
                 if (campo == "tx_idr")
@@ -326,7 +333,7 @@ namespace TransCarga
                         "a.serplagri,a.numplagri,a.plaplagri,a.carplagri,a.autplagri,a.confvegri,a.breplagri,a.proplagri," +
                         "ifnull(b.chocamcar,'') as chocamcar,ifnull(b.fecplacar,'') as fecplacar,ifnull(b.fecdocvta,'') as fecdocvta,ifnull(b.tipdocvta,'') as tipdocvta," +
                         "ifnull(b.serdocvta,'') as serdocvta,ifnull(b.numdocvta,'') as numdocvta,ifnull(b.codmonvta,'') as codmonvta," +
-                        "ifnull(b.totdocvta,'') as totdocvta,ifnull(b.codmonpag,'') as codmonpag,ifnull(b.totpagado,'') as totpagado,ifnull(b.saldofina,'') as saldofina," +
+                        "ifnull(b.totdocvta,0) as totdocvta,ifnull(b.codmonpag,'') as codmonpag,ifnull(b.totpagado,0) as totpagado,ifnull(b.saldofina,0) as saldofina," +
                         "ifnull(b.feculpago,'') as feculpago,ifnull(b.estadoser,'') as estadoser,ifnull(c.razonsocial,'') as razonsocial " +
                         "from cabguiai a left join controlg b on b.serguitra=a.sergui and b.numguitra=a.numgui " + 
                         "left join anag_for c on c.ruc=a.proplagri and c.tipdoc=@tdep " + parte;
@@ -368,6 +375,8 @@ namespace TransCarga
                             tx_consig.Text = dr.GetString("clifingri");
                             tx_dat_mone.Text = dr.GetString("tipmongri");
                             tx_flete.Text = dr.GetDecimal("totgri").ToString("#.##");
+                            tx_pagado.Text = dr.GetDecimal("totpag").ToString("#.##");
+                            tx_salxcob.Text = dr.GetDecimal("salgri").ToString("#.##");
                             tx_totcant.Text = dr.GetString("cantotgri");
                             tx_totpes.Text = dr.GetDecimal("pestotgri").ToString("#.#");
                             tx_impreso.Text = dr.GetString("impreso");
@@ -385,43 +394,62 @@ namespace TransCarga
                             tx_pla_nomcho.Text = dr.GetString("chocamcar");
                             tx_pla_ruc.Text = dr.GetString("proplagri");
                             tx_pla_propiet.Text = dr.GetString("razonsocial");
-                            // ....
-                            // falta jalar los datos de facturacion
+                            //
+                            tx_fecDV.Text = dr.GetString("fecdocvta");  //.Substring(0,10);
+                            tx_DV.Text = dr.GetString("tipdocvta") + "-" + dr.GetString("serdocvta") + "-" + dr.GetString("numdocvta");
+                            //tx_clteDV.Text = dr.GetString("");
+                            DataRow[] row = dtm.Select("idcodice='" + dr.GetString("codmonvta") + "'");
+                            lb_impDV.Text = lb_impDV.Text + ((row.Length > 0)? row[0][1].ToString() : "");
+                            tx_impDV.Text = dr.GetDecimal("totdocvta").ToString("#.##");
+                            //
+                            tx_estado.Text = lib.nomstat(tx_dat_estad.Text);
+                            cmb_origen.SelectedValue = tx_dat_locori.Text;
+                            cmb_origen_SelectionChangeCommitted(null, null);
+                            cmb_destino.SelectedValue = tx_dat_locdes.Text;
+                            cmb_destino_SelectionChangeCommitted(null, null);
+                            cmb_docRem.SelectedValue = tx_dat_tdRem.Text;
+                            string[] du_remit = lib.retDPDubigeo(tx_ubigRtt.Text);
+                            tx_dptoRtt.Text = du_remit[0];
+                            tx_provRtt.Text = du_remit[1];
+                            tx_distRtt.Text = du_remit[2];
+                            cmb_docDes.SelectedValue = tx_dat_tDdest.Text;
+                            string[] du_desti = lib.retDPDubigeo(tx_ubigDtt.Text);
+                            tx_dptoDrio.Text = du_desti[0];
+                            tx_proDrio.Text = du_desti[1];
+                            tx_disDrio.Text = du_desti[2];
+                            cmb_mon.SelectedValue = tx_dat_mone.Text;
                         }
-                        tx_estado.Text = lib.nomstat(tx_dat_estad.Text);
-                        cmb_origen.SelectedValue = tx_dat_locori.Text;
-                        cmb_origen_SelectionChangeCommitted(null, null);
-                        cmb_destino.SelectedValue = tx_dat_locdes.Text;
-                        cmb_destino_SelectionChangeCommitted(null, null);
-                        cmb_docRem.SelectedValue = tx_dat_tdRem.Text;
-                        string[] du_remit = lib.retDPDubigeo(tx_ubigRtt.Text);
-                        tx_dptoRtt.Text = du_remit[0];
-                        tx_provRtt.Text = du_remit[1];
-                        tx_distRtt.Text = du_remit[2];
-                        cmb_docDes.SelectedValue = tx_dat_tDdest.Text;
-                        string[] du_desti = lib.retDPDubigeo(tx_ubigDtt.Text);
-                        tx_dptoDrio.Text = du_desti[0];
-                        tx_proDrio.Text = du_desti[1];
-                        tx_disDrio.Text = du_desti[2];
-                        cmb_mon.SelectedValue = tx_dat_mone.Text;
+                        else
+                        {
+                            MessageBox.Show("No existe el número de guía!", "Atención - dato incorrecto",
+                            MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                            tx_numero.Text = "";
+                            tx_numero.Focus();
+                            return;
+                        }
                     }
                     else
                     {
-                        MessageBox.Show("No existe el número buscado!", "Atención - data incorrecto",
+                        MessageBox.Show("No existe el número buscado!", "Atención - dato incorrecto",
                             MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                     }
-                    //
                     dr.Dispose();
                     micon.Dispose();
+                    //
+                    if (Tx_modo.Text == "EDITAR" && (tx_pla_plani.Text != "" || tx_DV.Text != ""))
+                    {
+                        sololee();
+                        dataGridView1.ReadOnly = true;
+                    }
                 }
                 conn.Close();
             }
-            catch(Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Error Fatal en codigo");
-                Application.Exit();
-                return;
-            }
+            //catch(Exception ex)
+            //{
+            //    MessageBox.Show(ex.Message, "Error Fatal en codigo");
+            //    Application.Exit();
+            //    return;
+            //}
         }
         private void jalapg(string numpre)      // jala datos de la pre guia
         {
@@ -716,6 +744,11 @@ namespace TransCarga
             if (v_mfildet == "")
             {
                 lib.messagebox("Max. filas de detalle");
+                retorna = false;
+            }
+            if (vint_A0 == "")
+            {
+                lib.messagebox("Código interno enlace anulación BD - A0");
                 retorna = false;
             }
             return retorna;
@@ -1042,6 +1075,11 @@ namespace TransCarga
                     tx_numero.Focus();
                     return;
                 }
+                if (tx_numDocRem.Enabled == false)
+                {
+                    MessageBox.Show("La guía no se puede modificar", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    return;
+                }
                 if ((tx_pregr_num.Text.Trim() == "") && tx_impreso.Text == "N")
                 {
                     // SI ESTA IMPRESO NO SE PUEDE MODIFICAR, SOLO ANULAR
@@ -1351,18 +1389,6 @@ namespace TransCarga
                 {
                     if (tx_impreso.Text == "N")     // EDICION DE CABECERA
                     {
-                        /*string actua = "update ??? a, controlg b set " +
-                            "a.fechpregr=@fechop,a.tidodepre=@tdcdes,a.nudodepre=@ndcdes," +
-                            "a.nombdepre=@nomdes,a.diredepre=@dircde,a.ubigdepre=@ubicde,a.tidorepre=@tdcrem,a.nudorepre=@ndcrem," +
-                            "a.nombrepre=@nomrem,a.direrepre=@dircre,a.ubigrepre=@ubicre,a.locorigen=@locpgr,a.dirorigen=@dirpgr," +
-                            "a.ubiorigen=@ubopgr,a.locdestin=@ldcpgr,a.dirdestin=@didegr,a.ubidestin=@ubdegr,a.docsremit=@dooprg," +
-                            "a.obspregui=@obsprg,a.clifinpre=@conprg,a.cantotpre=@totcpr,a.pestotpre=@totppr,a.tipmonpre=@monppr," +
-                            "a.tipcampre=@tcprgr,a.subtotpre=@subpgr,a.igvpregui=@igvpgr,a.totpregui=@totpgr,a.totpagpre=@pagpgr," +
-                            "a.salpregui=@totpgr,a.estadoser=@estpgr,a.seguroE=@clavse," +
-                            "a.verApp=@verApp,a.userm=@asd,a.fechm=now(),a.diriplan4=@iplan,a.diripwan4=@ipwan,a.netbname=@nbnam," +
-                            "b.tidodepre=@tdcdes,b.nudodepre=@ndcdes,b.tidorepre=@tdcrem,b.nudorepre=@ndcrem," +
-                            "b.codmonpre=@monppr,b.totpregui=@totpgr,b.saldofina=@totpgr-b.totpagado " +
-                            "where a.id=@idr and b.serpregui=a.serpregui and b.numpregui=a.numpregui"; */
                         string actua = "update cabguiai a set " +
                             "a.fechopegr=@fechop,a.tidodegri=@tdcdes,a.nudodegri=@ndcdes," +
                             "a.nombdegri=@nomdes,a.diredegri=@dircde,a.ubigdegri=@ubicde,a.tidoregri=@tdcrem,a.nudoregri=@ndcrem," + 
@@ -1480,18 +1506,19 @@ namespace TransCarga
             // en el caso guias y otros documentos HAY 2: ANULACION FISICA y ANULACION INTERNA (serie ANU)
             // Anulacion fisica se "anula" el numero del documento en sistema y en fisico se tacha, marca anulado 
             // Anulación interna (ANU) el numero se recupera tanto en fisico como en sistema, el anulado internamente pasa a ser serie ANU
+            // se borran todos los enlaces en cualquier tipo de anulacion
             var aa = MessageBox.Show("Anulación interna para recuperar el número?" + Environment.NewLine +
                 "Se cambia la serie a ANU", "Atención, confirme por favor",
                 MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             string parte = " ";
-            if (aa == DialogResult.OK) parte = ",sergui=@coad ";
+            if (aa == DialogResult.Yes) parte = ",sergui=@coad ";
             using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
             {
                 conn.Open();
                 if (conn.State == ConnectionState.Open)
                 {
                     string canul = "update cabguiai set estadoser=@estser,usera=@asd,fecha=now()," +
-                        "verApp=@veap,diriplan4=@dil4,diripwan4=@diw4,netbname=@nbnp" + parte +
+                        "verApp=@veap,diriplan4=@dil4,diripwan4=@diw4,netbname=@nbnp,estintreg=@eiar" + parte +
                         "where id=@idr";
                     using (MySqlCommand micon = new MySqlCommand(canul, conn))
                     {
@@ -1502,7 +1529,8 @@ namespace TransCarga
                         micon.Parameters.AddWithValue("@diw4", lib.ipwan());
                         micon.Parameters.AddWithValue("@nbnp", Environment.MachineName);
                         micon.Parameters.AddWithValue("@veap", verapp);
-                        if (aa == DialogResult.OK) micon.Parameters.AddWithValue("@coad", v_sanu);
+                        micon.Parameters.AddWithValue("@eiar", (vint_A0 == codAnul) ? "A0" : "");  // codigo anulacion interna en DB A0
+                        if (aa == DialogResult.Yes) micon.Parameters.AddWithValue("@coad", v_sanu);
                         micon.ExecuteNonQuery();
                     }
                 }

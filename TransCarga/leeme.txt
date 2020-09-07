@@ -19,9 +19,13 @@ form preguiat:
 - al grabar la cabecera de la pre guia, por base datos se crea el registro en la tabla de control y 
   una fila en la tabla detalle de la pre guía
 - permite poner clave de seguridad al envío
-form repsoper:
-- Reportes para todo el modulo de operaciones
-- Falta considerar MONEDA y TIPO DE CAMBIO EN ESTOS REPORTES ..................................... FALTA
+form repsoper: (Reportes para todo el modulo de operaciones)
+- Falta considerar MONEDA y TIPO DE CAMBIO EN ESTOS REPORTES  
+- No debe considerar en sumas a los registros anulados ............................................
+- Mejorar el reporte resumen por cliente ..........................................................
+- Mejorar reporte de pre guías
+- Hacer el reporte de guias transp. individuales
+- Hacer el reporte de planillas de carga 
 form defs:
 - Se crea defininion de zonas "ZON" ............................................................... OK
 - En locales se debe especificar la zona del local ................................................ OK
@@ -33,7 +37,8 @@ form guiati: (guias transportista individuales)
 - Se tiene que configurar que locales trabajan con Pre guias y que locales no. (Definiciones) ...... ok
 - En boton NUEVO del form saber si trabaja con pre guias o no ...................................... ok
 - Los locales donde no manejan pre guías las guiasti generan la cuenta de control automaticamente .. ok
-- No debe permitir modificar guía si tiene doc.vta y / planilla ....................................
+- No debe permitir modificar guía si tiene doc.vta ................................................. 
+- No debe permitir modificar guía si tiene planilla .................................... ........... ok
 - Los locales donde SI se manejan pre-guias es obligatorio jalar los datos de ellas (boton NUEVO) .. ok
 - Al anular una guía considerar fisico o interno, como sería si es interno? ANU .................... ok
 - Configurar las impresiones en Crystal reports para todas las guias remision ...................... ok
@@ -42,5 +47,5 @@ form planicarga: (planilla de carga)
 - Desarrollo del form .............................................................................. ok
 - La EDICION de una planilla, NO recalcula el flete, pagado y saldo x pagar de las guías pre existentes en la planilla.
   Los saldos y flete de cada guía se calculan SOLO AL MOMENTO DE REGISTRAR UNA GUIA EN LA PLANILLA.
-- 
+ 
 
