@@ -58,7 +58,7 @@
             this.groupBox1.Location = new System.Drawing.Point(271, 166);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(284, 75);
-            this.groupBox1.TabIndex = 27;
+            this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             // 
             // label2
@@ -77,7 +77,7 @@
             this.Tx_pwd.Location = new System.Drawing.Point(66, 46);
             this.Tx_pwd.Name = "Tx_pwd";
             this.Tx_pwd.Size = new System.Drawing.Size(166, 20);
-            this.Tx_pwd.TabIndex = 1;
+            this.Tx_pwd.TabIndex = 2;
             this.Tx_pwd.Text = "CLAVE";
             this.Tx_pwd.TextChanged += new System.EventHandler(this.Tx_pwd_TextChanged);
             this.Tx_pwd.Enter += new System.EventHandler(this.Tx_pwd_Enter);
@@ -89,7 +89,7 @@
             this.Tx_user.Location = new System.Drawing.Point(66, 17);
             this.Tx_user.Name = "Tx_user";
             this.Tx_user.Size = new System.Drawing.Size(166, 20);
-            this.Tx_user.TabIndex = 0;
+            this.Tx_user.TabIndex = 1;
             this.Tx_user.Text = "USUARIO";
             this.Tx_user.Enter += new System.EventHandler(this.Tx_user_Enter);
             this.Tx_user.Leave += new System.EventHandler(this.Tx_user_Leave);
@@ -99,7 +99,7 @@
             this.tx_newcon.Location = new System.Drawing.Point(147, 3);
             this.tx_newcon.Name = "tx_newcon";
             this.tx_newcon.Size = new System.Drawing.Size(134, 20);
-            this.tx_newcon.TabIndex = 18;
+            this.tx_newcon.TabIndex = 5;
             this.tx_newcon.UseSystemPasswordChar = true;
             // 
             // panel1
@@ -118,7 +118,7 @@
             this.checkBox1.Location = new System.Drawing.Point(26, 5);
             this.checkBox1.Name = "checkBox1";
             this.checkBox1.Size = new System.Drawing.Size(117, 17);
-            this.checkBox1.TabIndex = 29;
+            this.checkBox1.TabIndex = 4;
             this.checkBox1.Text = "Cambia contraseña";
             this.checkBox1.UseVisualStyleBackColor = true;
             this.checkBox1.CheckStateChanged += new System.EventHandler(this.checkBox1_CheckStateChanged);
@@ -153,7 +153,7 @@
             this.Button2.Location = new System.Drawing.Point(537, -1);
             this.Button2.Name = "Button2";
             this.Button2.Size = new System.Drawing.Size(37, 37);
-            this.Button2.TabIndex = 26;
+            this.Button2.TabIndex = 6;
             this.Button2.UseVisualStyleBackColor = false;
             this.Button2.Click += new System.EventHandler(this.Button2_Click);
             // 
@@ -165,7 +165,7 @@
             this.Button1.Location = new System.Drawing.Point(319, 284);
             this.Button1.Name = "Button1";
             this.Button1.Size = new System.Drawing.Size(196, 34);
-            this.Button1.TabIndex = 0;
+            this.Button1.TabIndex = 3;
             this.Button1.Text = "INGRESAR";
             this.Button1.UseVisualStyleBackColor = false;
             this.Button1.Click += new System.EventHandler(this.Button1_Click);
@@ -197,7 +197,6 @@
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "login";
-            this.Opacity = 0.9D;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "SolorSoft TransCarga";
             this.Load += new System.EventHandler(this.login_Load);

@@ -480,6 +480,11 @@ namespace TransCarga
             frv.Parent = this;
             pn_centro.Controls.Add(frv);
             frv.Show();
+            if (frv.Parent.Width < frv.Width)
+            {
+                //frv.Parent.Width = frv.Width + 10;
+                this.Width = this.Width + (this.Width - frv.Width) + 20;
+            }
             frv.BringToFront();
         }
         //

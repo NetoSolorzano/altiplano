@@ -19,7 +19,6 @@ namespace TransCarga
         string colsfgr = TransCarga.Program.colsfc;   // color seleccion grilla
         string colstrp = TransCarga.Program.colstr;   // color del strip
         static string nomtab = "cabpregr";            // 
-        DataTable dt = new DataTable();
         #region variables
         string asd = TransCarga.Program.vg_user;      // usuario conectado al sistema
         public int totfilgrid, cta;             // variables para impresion
@@ -47,7 +46,10 @@ namespace TransCarga
         //int pageCount = 1, cuenta = 0;
         #endregion
         libreria lib = new libreria();
+
+        DataTable dt = new DataTable();
         DataTable dtestad = new DataTable();
+        DataTable dttaller = new DataTable();
         // string de conexion
         //static string serv = ConfigurationManager.AppSettings["serv"].ToString();
         static string port = ConfigurationManager.AppSettings["port"].ToString();
@@ -93,20 +95,19 @@ namespace TransCarga
         private void init()
         {
             tabControl1.BackColor = Color.FromName(TransCarga.Program.colgri);
-
             this.BackColor = Color.FromName(colback);
             toolStrip1.BackColor = Color.FromName(colstrp);
             dgv_resumen.DefaultCellStyle.BackColor = Color.FromName(colgrid);
-            dgv_resumen.DefaultCellStyle.BackColor = Color.FromName(colgrid);
-            dgv_resumen.DefaultCellStyle.ForeColor = Color.FromName(colfogr);
-            dgv_resumen.DefaultCellStyle.SelectionBackColor = Color.FromName(colsfon);
-            dgv_resumen.DefaultCellStyle.SelectionForeColor = Color.FromName(colsfgr);
+            //dgv_resumen.DefaultCellStyle.ForeColor = Color.FromName(colfogr);
+            //dgv_resumen.DefaultCellStyle.SelectionBackColor = Color.FromName(colsfon);
+            //dgv_resumen.DefaultCellStyle.SelectionForeColor = Color.FromName(colsfgr);
             //
             dgv_vtas.DefaultCellStyle.BackColor = Color.FromName(colgrid);
-            dgv_vtas.DefaultCellStyle.BackColor = Color.FromName(colgrid);
-            dgv_vtas.DefaultCellStyle.ForeColor = Color.FromName(colfogr);
-            dgv_vtas.DefaultCellStyle.SelectionBackColor = Color.FromName(colsfon);
-            dgv_vtas.DefaultCellStyle.SelectionForeColor = Color.FromName(colsfgr);
+            //dgv_vtas.DefaultCellStyle.ForeColor = Color.FromName(colfogr);
+            //dgv_vtas.DefaultCellStyle.SelectionBackColor = Color.FromName(colsfon);
+            //dgv_vtas.DefaultCellStyle.SelectionForeColor = Color.FromName(colsfgr);
+            //
+            dgv_guias.DefaultCellStyle.BackColor = Color.FromName(colgrid);
             //
             Bt_add.Image = Image.FromFile(img_btN);
             Bt_edit.Image = Image.FromFile(img_btE);
@@ -189,11 +190,15 @@ namespace TransCarga
                                        "where numero=1 order by idcodice";
                 MySqlCommand cmd = new MySqlCommand(contaller, conn);
                 MySqlDataAdapter dataller = new MySqlDataAdapter(cmd);
-                DataTable dttaller = new DataTable();
+                
                 dataller.Fill(dttaller);
                 cmb_vtasloc.DataSource = dttaller;
                 cmb_vtasloc.DisplayMember = "descrizionerid";
                 cmb_vtasloc.ValueMember = "idcodice";
+                // PANEL GUIAS
+                cmb_sede_guias.DataSource = dttaller;
+                cmb_sede_guias.DisplayMember = "descrizionerid";
+                cmb_sede_guias.ValueMember = "idcodice";
                 // seleccion de estado de servicios
                 string conestad = "select descrizionerid,idcodice,codigo from desc_est " +
                                        "where numero=1 order by idcodice";
@@ -203,6 +208,10 @@ namespace TransCarga
                 cmb_estad.DataSource = dtestad;
                 cmb_estad.DisplayMember = "descrizionerid";
                 cmb_estad.ValueMember = "idcodice";
+                // PANEL GUIAS
+                cmb_estad_guias.DataSource = dtestad;
+                cmb_estad_guias.DisplayMember = "descrizionerid";
+                cmb_estad_guias.ValueMember = "idcodice";
                 // seleccion del tipo de documento cliente
                 const string contidoc = "select descrizionerid,idcodice,codigo from desc_doc " +
                                        "where numero=1 order by idcodice";
@@ -247,6 +256,7 @@ namespace TransCarga
                         dgv_vtas.Columns[i].Width = a;
                     }
                     if (b < dgv_vtas.Width) dgv_vtas.Width = b + 60;
+                    dgv_vtas.ReadOnly = true;
                     break;
             }
         }
@@ -276,18 +286,21 @@ namespace TransCarga
                 dgv_resumen.Columns[i].Width = a;
             }
             if (b < dgv_resumen.Width) dgv_resumen.Width = b + 60;
+            dgv_resumen.ReadOnly = true;
         }
         private void sumaGrilla(string grilla)
         {
             switch (grilla)
             {
                 case "grillares":
-                    object sumfletes, sumsaldos;
-                    sumfletes = dt.Compute("Sum(TOT_PRE)", "ESTADO <> '" + nomAnul + "'");   // string.Empty
-                    sumsaldos = dt.Compute("Sum(SALDO)", "ESTADO <> '" + nomAnul + "'");      // string.Empty
-                    tx_valor.Text = sumfletes.ToString();
+                    //object sumPRE, sumGR, sumsaldos;
+                    Decimal sumPRE = decimal.Parse(dt.Compute("Sum(TOT_PRE)", "ESTADO <> '" + nomAnul + "' and TOT_GUIA = 0").ToString());   // string.Empty
+                    Decimal sumGR = decimal.Parse(dt.Compute("Sum(TOT_GUIA)", "ESTADO <> '" + nomAnul + "' and TOT_PRE < TOT_GUIA").ToString());
+                    Decimal sumsaldos = decimal.Parse(dt.Compute("Sum(SALDO)", "ESTADO <> '" + nomAnul + "'").ToString());      // string.Empty
+                    tx_valor.Text = (sumPRE + sumGR).ToString();
                     tx_pendien.Text = sumsaldos.ToString();
-                    tx_nser.Text = dt.Rows.Count.ToString();
+                    //tx_nser.Text = dt.Rows.Count.ToString();
+                    tx_nser.Text = dt.Select("ESTADO <> '" + nomAnul + "'").Length.ToString();
                     break;
             }
         }
@@ -839,5 +852,84 @@ namespace TransCarga
             return rescont;
         }
         #endregion
+
+        #region leaves y enter
+        private void tabvtas_Enter(object sender, EventArgs e)
+        {
+            cmb_vtasloc.Focus();
+        }
+        private void tabres_Enter(object sender, EventArgs e)
+        {
+            cmb_tidoc.Focus();
+        }
+        #endregion
+
+        #region advancedatagridview
+        private void advancedDataGridView1_FilterStringChanged(object sender, EventArgs e)                  // filtro de las columnas
+        {
+            DataTable dtg = (DataTable)dgv_vtas.DataSource;
+            dtg.DefaultView.RowFilter = dgv_vtas.FilterString;
+        }
+        private void advancedDataGridView1_CellEnter(object sender, DataGridViewCellEventArgs e)            // no usamos
+        {
+            //advancedDataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Tag = advancedDataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString();
+        }
+        private void advancedDataGridView1_CellDoubleClick(object sender, DataGridViewCellEventArgs e)      // no usamos
+        {
+            /*if(e.ColumnIndex == 1)
+            {
+                //string codu = "";
+                string idr = "";
+                idr = advancedDataGridView1.CurrentRow.Cells[0].Value.ToString();
+                tx_rind.Text = advancedDataGridView1.CurrentRow.Index.ToString();
+                tabControl1.SelectedTab = tabreg;
+                limpiar(this);
+                limpia_otros();
+                limpia_combos();
+                tx_idr.Text = idr;
+                jalaoc("tx_idr");
+            }*/
+        }
+        private void advancedDataGridView1_CellValidating(object sender, DataGridViewCellValidatingEventArgs e) // no usamos
+        {
+            /*if (e.RowIndex > -1 && e.ColumnIndex > 0 
+                && advancedDataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString() != e.FormattedValue.ToString())
+            {
+                string campo = advancedDataGridView1.Columns[e.ColumnIndex].Name.ToString();
+                string[] noeta = equivinter(advancedDataGridView1.Columns[e.ColumnIndex].HeaderText.ToString());    // retorna la tabla segun el titulo de la columna
+
+                var aaa = MessageBox.Show("Confirma que desea cambiar el valor?",
+                    "Columna: " + advancedDataGridView1.Columns[e.ColumnIndex].HeaderText.ToString(),
+                    MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (aaa == DialogResult.Yes)
+                {
+                    if(advancedDataGridView1.Columns[e.ColumnIndex].Tag.ToString() == "validaSI")   // la columna se valida?
+                    {
+                        // valida si el dato ingresado es valido en la columna
+                        if (lib.validac(noeta[0], noeta[1], e.FormattedValue.ToString()) == true)
+                        {
+                            // llama a libreria con los datos para el update - tabla,id,campo,nuevo valor
+                            lib.actuac(nomtab, campo, e.FormattedValue.ToString(),advancedDataGridView1.Rows[e.RowIndex].Cells[0].Value.ToString());
+                        }
+                        else
+                        {
+                            MessageBox.Show("El valor no es válido para la columna", "Atención - Corrija");
+                            e.Cancel = true;
+                        }
+                    }
+                    else
+                    {
+                        // llama a libreria con los datos para el update - tabla,id,campo,nuevo valor
+                        lib.actuac(nomtab, campo, e.FormattedValue.ToString(), advancedDataGridView1.Rows[e.RowIndex].Cells[0].Value.ToString());
+                    }
+                }
+                else
+                {
+                    e.Cancel = true;
+                }
+            }*/
+        }
+        #endregion
+
     }
 }
