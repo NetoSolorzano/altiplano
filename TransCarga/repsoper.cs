@@ -109,6 +109,8 @@ namespace TransCarga
             //
             dgv_guias.DefaultCellStyle.BackColor = Color.FromName(colgrid);
             //
+            dgv_plan.DefaultCellStyle.BackColor = Color.FromName(colgrid);
+            //
             Bt_add.Image = Image.FromFile(img_btN);
             Bt_edit.Image = Image.FromFile(img_btE);
             Bt_anul.Image = Image.FromFile(img_btA);
@@ -185,12 +187,12 @@ namespace TransCarga
             }
             if (quien == "todos")
             {
-                // seleccion de taller de produccion ... ok
+                // ***************** seleccion de la sede 
                 const string contaller = "select descrizionerid,idcodice,codigo from desc_loc " +
                                        "where numero=1 order by idcodice";
                 MySqlCommand cmd = new MySqlCommand(contaller, conn);
                 MySqlDataAdapter dataller = new MySqlDataAdapter(cmd);
-                
+                // panel PRE GUIAS
                 dataller.Fill(dttaller);
                 cmb_vtasloc.DataSource = dttaller;
                 cmb_vtasloc.DisplayMember = "descrizionerid";
@@ -199,12 +201,17 @@ namespace TransCarga
                 cmb_sede_guias.DataSource = dttaller;
                 cmb_sede_guias.DisplayMember = "descrizionerid";
                 cmb_sede_guias.ValueMember = "idcodice";
-                // seleccion de estado de servicios
+                // PANEL PLANILLA CARGA
+                cmb_sede_plan.DataSource = dttaller;
+                cmb_sede_plan.DisplayMember = "descrizionerid"; ;
+                cmb_sede_plan.ValueMember = "idcodice";
+                // ***************** seleccion de estado de servicios
                 string conestad = "select descrizionerid,idcodice,codigo from desc_est " +
                                        "where numero=1 order by idcodice";
                 cmd = new MySqlCommand(conestad, conn);
                 MySqlDataAdapter daestad = new MySqlDataAdapter(cmd);
                 daestad.Fill(dtestad);
+                // PANEL GUIAS
                 cmb_estad.DataSource = dtestad;
                 cmb_estad.DisplayMember = "descrizionerid";
                 cmb_estad.ValueMember = "idcodice";
@@ -212,7 +219,11 @@ namespace TransCarga
                 cmb_estad_guias.DataSource = dtestad;
                 cmb_estad_guias.DisplayMember = "descrizionerid";
                 cmb_estad_guias.ValueMember = "idcodice";
-                // seleccion del tipo de documento cliente
+                // PANEL PLANILLA CARGA
+                cmb_estad_plan.DataSource = dtestad;
+                cmb_estad_plan.DisplayMember = "descrizionerid";
+                cmb_estad_plan.ValueMember = "idcodice";
+                // ***************** seleccion del tipo de documento cliente
                 const string contidoc = "select descrizionerid,idcodice,codigo from desc_doc " +
                                        "where numero=1 order by idcodice";
                 cmd = new MySqlCommand(contidoc, conn);
@@ -229,14 +240,15 @@ namespace TransCarga
         }
         private void grilla(string dgv)                             // 
         {
+            Font tiplg = new Font("Arial", 7, FontStyle.Bold);
+            int b;
             switch (dgv)
             {
                 case "dgv_vtas":
-                    Font tiplg = new Font("Arial", 7, FontStyle.Bold);
                     dgv_vtas.Font = tiplg;
                     dgv_vtas.DefaultCellStyle.Font = tiplg;
                     dgv_vtas.RowTemplate.Height = 15;
-                    dgv_vtas.DefaultCellStyle.BackColor = Color.MediumAquamarine;
+                    //dgv_vtas.DefaultCellStyle.BackColor = Color.MediumAquamarine;
                     dgv_vtas.AllowUserToAddRows = false;
                     dgv_vtas.Width = 1015;
                     if (dgv_vtas.DataSource == null) dgv_vtas.ColumnCount = 11;
@@ -247,7 +259,7 @@ namespace TransCarga
                         _ = decimal.TryParse(dgv_vtas.Rows[0].Cells[i].Value.ToString(), out decimal vd);
                         if (vd != 0) dgv_vtas.Columns[i].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
                     }
-                    int b = 0;
+                    b = 0;
                     for (int i = 0; i < dgv_vtas.Columns.Count; i++)
                     {
                         int a = dgv_vtas.Columns[i].Width;
@@ -257,6 +269,60 @@ namespace TransCarga
                     }
                     if (b < dgv_vtas.Width) dgv_vtas.Width = b + 60;
                     dgv_vtas.ReadOnly = true;
+                    break;
+                case "dgv_guias":
+                    dgv_guias.Font = tiplg;
+                    dgv_guias.DefaultCellStyle.Font = tiplg;
+                    dgv_guias.RowTemplate.Height = 15;
+                    dgv_guias.AllowUserToAddRows = false;
+                    dgv_guias.Width = 1015;
+                    if (dgv_guias.DataSource == null) dgv_guias.ColumnCount = 11;
+                    if (dgv_guias.Rows.Count > 0)
+                    {
+                        for (int i = 0; i < dgv_guias.Columns.Count; i++)
+                        {
+                            dgv_guias.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                            _ = decimal.TryParse(dgv_guias.Rows[0].Cells[i].Value.ToString(), out decimal vd);
+                            if (vd != 0) dgv_guias.Columns[i].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+                        }
+                        b = 0;
+                        for (int i = 0; i < dgv_guias.Columns.Count; i++)
+                        {
+                            int a = dgv_guias.Columns[i].Width;
+                            b += a;
+                            dgv_guias.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+                            dgv_guias.Columns[i].Width = a;
+                        }
+                        if (b < dgv_guias.Width) dgv_guias.Width = b + 60;
+                        dgv_guias.ReadOnly = true;
+                    }
+                    break;
+                case "dgv_plan":
+                    dgv_plan.Font = tiplg;
+                    dgv_plan.DefaultCellStyle.Font = tiplg;
+                    dgv_plan.RowTemplate.Height = 15;
+                    dgv_plan.AllowUserToAddRows = false;
+                    dgv_plan.Width = 1015;
+                    if (dgv_plan.DataSource == null) dgv_plan.ColumnCount = 11;
+                    if (dgv_plan.Rows.Count > 0)
+                    {
+                        for (int i = 0; i < dgv_plan.Columns.Count; i++)
+                        {
+                            dgv_plan.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                            _ = decimal.TryParse(dgv_plan.Rows[0].Cells[i].Value.ToString(), out decimal vd);
+                            if (vd != 0) dgv_plan.Columns[i].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+                        }
+                        b = 0;
+                        for (int i = 0; i < dgv_plan.Columns.Count; i++)
+                        {
+                            int a = dgv_plan.Columns[i].Width;
+                            b += a;
+                            dgv_plan.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+                            dgv_plan.Columns[i].Width = a;
+                        }
+                        if (b < dgv_plan.Width) dgv_plan.Width = b + 60;
+                        dgv_plan.ReadOnly = true;
+                    }
                     break;
             }
         }
@@ -304,7 +370,7 @@ namespace TransCarga
                     break;
             }
         }
-        private void bt_vtasfiltra_Click(object sender, EventArgs e)    // filtra y muestra reporte pre guias
+        private void bt_vtasfiltra_Click(object sender, EventArgs e)    // genera reporte pre guias
         {
             string consulta;
             string parte = "";
@@ -424,7 +490,7 @@ namespace TransCarga
                 }
             }
         }
-        private void tx_codped_Leave(object sender, EventArgs e)    // valida existencia de pre guia
+        private void tx_codped_Leave(object sender, EventArgs e)    // RESUMEN CLIENTE valida existencia de # documento
         {
             if(tx_codped.Text != "" && tx_dat_tido.Text != "")
             {
@@ -476,7 +542,7 @@ namespace TransCarga
                 }
             }
         }
-        private void bt_resumen_Click(object sender, EventArgs e)   // genera resumen de pre guia
+        private void bt_resumen_Click(object sender, EventArgs e)   // genera resumen de cliente
         {
             if(tx_codped.Text != "" && tx_dat_tido.Text != "")
             {
@@ -517,6 +583,66 @@ namespace TransCarga
             }
             sumaGrilla("grillares");
         }
+        private void bt_guias_Click(object sender, EventArgs e)         // genera reporte guias
+        {
+            using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
+            {
+                conn.Open();
+                string consulta = "rep_oper_guiai1";
+                using (MySqlCommand micon = new MySqlCommand(consulta,conn))
+                {
+                    micon.CommandType = CommandType.StoredProcedure;
+                    micon.Parameters.AddWithValue("@loca", (tx_sede_guias.Text != "") ? tx_sede_guias.Text : "");
+                    micon.Parameters.AddWithValue("@fecini", dtp_ini_guias.Value.ToString("yyyy-MM-dd"));
+                    micon.Parameters.AddWithValue("@fecfin", dtp_ini_guias.Value.ToString("yyyy-MM-dd"));
+                    micon.Parameters.AddWithValue("@esta", (tx_estad_guias.Text != "") ? tx_estad_guias.Text : "");
+                    micon.Parameters.AddWithValue("@excl", (chk_excl_guias.Checked == true) ? "1" : "0");
+                    using (MySqlDataAdapter da = new MySqlDataAdapter(micon))
+                    {
+                        dgv_guias.DataSource = null;
+                        DataTable dt = new DataTable();
+                        da.Fill(dt);
+                        dgv_guias.DataSource = dt;
+                        grilla("dgv_guias");
+                    }
+                    string resulta = lib.ult_mov(nomform, nomtab, asd);
+                    if (resulta != "OK")                                        // actualizamos la tabla usuarios
+                    {
+                        MessageBox.Show(resulta, "Error en actualización de tabla usuarios", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+            }
+        }
+        private void bt_plan_Click(object sender, EventArgs e)          // genera reporte planilla de carga
+        {
+            using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
+            {
+                conn.Open();
+                string consulta = "rep_oper_plan1";
+                using (MySqlCommand micon = new MySqlCommand(consulta, conn))
+                {
+                    micon.CommandType = CommandType.StoredProcedure;
+                    micon.Parameters.AddWithValue("@fecini", dtp_fini_plan.Value.ToString("yyyy-MM-dd"));
+                    micon.Parameters.AddWithValue("@fecfin", dtp_fter_plan.Value.ToString("yyyy-MM-dd"));
+                    micon.Parameters.AddWithValue("@loca", (tx_dat_sede_plan.Text != "") ? tx_dat_sede_plan.Text : "");
+                    micon.Parameters.AddWithValue("@esta", (tx_dat_estad_plan.Text != "") ? tx_dat_estad_plan.Text : "");
+                    micon.Parameters.AddWithValue("@excl", (chk_exclu_plan.Checked == true)? "1" : "0");
+                    using (MySqlDataAdapter da = new MySqlDataAdapter(micon))
+                    {
+                        dgv_plan.DataSource = null;
+                        DataTable dt = new DataTable();
+                        da.Fill(dt);
+                        dgv_plan.DataSource = dt;
+                        grilla("dgv_plan");
+                    }
+                    string resulta = lib.ult_mov(nomform, nomtab, asd);
+                    if (resulta != "OK")                                        // actualizamos la tabla usuarios
+                    {
+                        MessageBox.Show(resulta, "Error en actualización de tabla usuarios", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+            }
+        }
 
         #region combos
         private void cmb_estad_ing_SelectionChangeCommitted(object sender, EventArgs e)
@@ -554,6 +680,59 @@ namespace TransCarga
             if (cmb_tidoc.SelectedValue != null) tx_dat_tido.Text = cmb_tidoc.SelectedValue.ToString();
             else tx_dat_tido.Text = "";
         }
+        private void cmb_sede_plan_SelectionChangeCommitted(object sender, EventArgs e)
+        {
+            if (cmb_sede_plan.SelectedValue != null) tx_dat_sede_plan.Text = cmb_sede_plan.SelectedValue.ToString();
+            else tx_dat_sede_plan.Text = "";
+        }
+        private void cmb_sede_plan_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Delete)
+            {
+                cmb_sede_plan.SelectedIndex = -1;
+                tx_dat_sede_plan.Text = "";
+            }
+        }
+        private void cmb_estad_plan_SelectionChangeCommitted(object sender, EventArgs e)
+        {
+            if (cmb_estad_plan.SelectedValue != null) tx_dat_estad_plan.Text = cmb_estad_plan.SelectedValue.ToString();
+            else tx_dat_estad_plan.Text = "";
+        }
+        private void cmb_estad_plan_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Delete)
+            {
+                cmb_estad_plan.SelectedIndex = -1;
+                tx_dat_estad_plan.Text = "";
+            }
+        }
+        private void cmb_sede_guias_SelectionChangeCommitted(object sender, EventArgs e)
+        {
+            if (cmb_sede_guias.SelectedValue != null) tx_sede_guias.Text = cmb_sede_guias.SelectedValue.ToString();
+            else tx_sede_guias.Text = "";
+        }
+        private void cmb_sede_guias_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Delete)
+            {
+                cmb_sede_guias.SelectedIndex = -1;
+                tx_sede_guias.Text = "";
+            }
+        }
+        private void cmb_estad_guias_SelectionChangeCommitted(object sender, EventArgs e)
+        {
+            if (cmb_estad_guias.SelectedValue != null) tx_estad_guias.Text = cmb_estad_guias.SelectedValue.ToString();
+            else tx_estad_guias.Text = "";
+        }
+        private void cmb_estad_guias_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Delete)
+            {
+                cmb_estad_guias.SelectedIndex = -1;
+                tx_estad_guias.Text = "";
+            }
+        }
+
         #endregion
 
         #region botones de comando
@@ -890,6 +1069,7 @@ namespace TransCarga
                 jalaoc("tx_idr");
             }*/
         }
+
         private void advancedDataGridView1_CellValidating(object sender, DataGridViewCellValidatingEventArgs e) // no usamos
         {
             /*if (e.RowIndex > -1 && e.ColumnIndex > 0 

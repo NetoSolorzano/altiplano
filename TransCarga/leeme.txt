@@ -20,12 +20,12 @@ form preguiat:
   una fila en la tabla detalle de la pre guía
 - permite poner clave de seguridad al envío
 form repsoper: (Reportes para todo el modulo de operaciones)
-- Falta considerar MONEDA y TIPO DE CAMBIO EN ESTOS REPORTES  
-- No debe considerar en sumas a los registros anulados ............................................
-- Mejorar el reporte resumen por cliente ..........................................................
-- Mejorar reporte de pre guías
-- Hacer el reporte de guias transp. individuales
-- Hacer el reporte de planillas de carga 
+- Falta considerar MONEDA y TIPO DE CAMBIO EN ESTOS REPORTES  .....................................
+- No debe considerar en sumas a los registros anulados ............................................ ok
+- Mejorar el reporte resumen por cliente .......................................................... ok
+- Mejorar reporte de pre guías ....................................................................
+- Hacer el reporte de guias transp. individuales ..................................................
+- Hacer el reporte de planillas de carga .......................................................... ME QUEDE ACA!
 form defs:
 - Se crea defininion de zonas "ZON" ............................................................... OK
 - En locales se debe especificar la zona del local ................................................ OK
