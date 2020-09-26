@@ -372,121 +372,31 @@ namespace TransCarga
         }
         private void bt_vtasfiltra_Click(object sender, EventArgs e)    // genera reporte pre guias
         {
-            string consulta;
-            string parte = "";
-            if (tx_dat_vtasloc.Text != "") parte += " and a.locorigen=@loca";
-            if (tx_dat_estad.Text != "")
+            using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
             {
-                if (chk_excluye.Checked == true) parte += " and a.estadoser<>@esta";
-                else parte += " and a.estadoser=@esta";
-
-            }
-            if (rb_listado.Checked == true)
-            {
-                consulta = "select a.id as ID,a.fechpregr as FECHA,a.serpregui as SERIE,a.numpregui as NUMERO,b.descrizionerid as DOC," +
-                    "a.nudodepre as NDOC,a.nombdepre as DESTINATARIO,a.diredepre as DIR_DESTINATARIO,a.ubigdepre as UBIG_D," +
-                    "c.descrizionerid as DOC,a.nudorepre as NDOC,a.nombrepre as REMITENTE,a.direrepre as DIR_REMITENTE,a.ubigrepre as UBIG_R," +
-                    "d.descrizionerid as LOCAL,a.dirorigen as DIR_PARTIDA,a.ubiorigen as UBIG_O,e.descrizionerid as DESTINO," +
-                    "a.dirdestin as DIR_DESTINO,a.ubidestin as UBIG_D,a.docsremit as DOCS_REMITENTE,a.obspregui as OBSERV," +
-                    "a.cantotpre as CANT,a.pestotpre as PESO,f.descrizionerid as MON,a.totpregui as FLETE,a.totpagpre as PAGADO," +
-                    "a.salpregui as SALDO,g.descrizionerid as ESTADO,a.impreso as IMPSO,a.serguitra as S_GUIA,a.numguitra as NUM_GUIA " +
-                    "from cabpregr a " +
-                    "left join desc_doc b on b.idcodice=a.tidodepre " +
-                    "left join desc_doc c on c.idcodice=a.tidorepre " +
-                    "left join desc_loc d on d.idcodice=a.locorigen " +
-                    "left join desc_loc e on e.idcodice=a.locdestin " +
-                    "left join desc_mon f on f.idcodice=a.tipmonpre " +
-                    "left join desc_est g on g.idcodice=a.estadoser " +
-                    "where a.fechpregr between @fecini and @fecfin" + parte;
-                try
+                conn.Open();
+                string consulta = "rep_oper_pregr1";
+                using (MySqlCommand micon = new MySqlCommand(consulta, conn))
                 {
-                    MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
-                    conn.Open();
-                    if (conn.State == ConnectionState.Open)
+                    micon.CommandType = CommandType.StoredProcedure;
+                    micon.Parameters.AddWithValue("@loca", (tx_dat_vtasloc.Text != "") ? tx_dat_vtasloc.Text : "");
+                    micon.Parameters.AddWithValue("@fecini", dtp_vtasfini.Value.ToString("yyyy-MM-dd"));
+                    micon.Parameters.AddWithValue("@fecfin", dtp_vtasfina.Value.ToString("yyyy-MM-dd"));
+                    micon.Parameters.AddWithValue("@esta", (tx_dat_estad.Text != "") ? tx_dat_estad.Text : "");
+                    micon.Parameters.AddWithValue("@excl", (chk_excluye.Checked == true) ? "1" : "0");
+                    using (MySqlDataAdapter da = new MySqlDataAdapter(micon))
                     {
                         dgv_vtas.DataSource = null;
-                        MySqlCommand micon = new MySqlCommand(consulta, conn);
-                        micon.Parameters.AddWithValue("@fecini", dtp_vtasfini.Value.ToString("yyyy-MM-dd"));
-                        micon.Parameters.AddWithValue("@fecfin", dtp_vtasfina.Value.ToString("yyyy-MM-dd"));
-                        if (tx_dat_vtasloc.Text != "") micon.Parameters.AddWithValue("@loca", tx_dat_vtasloc.Text);
-                        if (tx_dat_estad.Text != "") micon.Parameters.AddWithValue("@esta", tx_dat_estad.Text);
-                        MySqlDataAdapter da = new MySqlDataAdapter(micon);
-                        DataTable dt = new DataTable();
-                        da.Fill(dt);
-                        if (dt.Rows.Count > 0)
-                        {
-                            dgv_vtas.DataSource = dt;
-                            grilla("dgv_vtas");
-                        }
-                        else dgv_vtas.DataSource = null;
-                        da.Dispose();
-                        micon.Dispose();
-                        //
-                        string resulta = lib.ult_mov(nomform, nomtab, asd);
-                        if (resulta != "OK")                                        // actualizamos la tabla usuarios
-                        {
-                            MessageBox.Show(resulta, "Error en actualización de tabla usuarios", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        }
-                    }
-                    else
-                    {
-                        conn.Close();
-                        MessageBox.Show("No se puede conectar al servidor", "Error de conexión", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        return;
-                    }
-                    conn.Close();
-                }
-                catch (MySqlException ex)
-                {
-                    MessageBox.Show(ex.Message, "Error en obtener datos");
-                    Application.Exit();
-                    return;
-                }
-            }
-            else
-            {
-                consulta = "select * from controlg where ... ;" +
-                    "union; " +
-                    "select * from controlg where ... ;";
-                try
-                {
-                    MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
-                    conn.Open();
-                    if (conn.State == ConnectionState.Open)
-                    {
-                        dgv_vtas.DataSource = null;
-                        MySqlCommand micon = new MySqlCommand(consulta, conn);
-                        micon.CommandType = CommandType.StoredProcedure;
-                        micon.Parameters.AddWithValue("@fecini", dtp_vtasfini.Value.ToString("yyyy-MM-dd"));
-                        micon.Parameters.AddWithValue("@fecfin", dtp_vtasfina.Value.ToString("yyyy-MM-dd"));
-                        micon.Parameters.AddWithValue("@tienda", tx_dat_vtasloc.Text.Trim());
-                        if (rb_listado.Checked == true) micon.Parameters.AddWithValue("@modo", "listado");
-                        if (rb_resumen.Checked == true) micon.Parameters.AddWithValue("@modo", "resumen");
-                        MySqlDataAdapter da = new MySqlDataAdapter(micon);
                         DataTable dt = new DataTable();
                         da.Fill(dt);
                         dgv_vtas.DataSource = dt;
-                        if (dt.Rows.Count > 0) 
-                        { 
-                            dgv_vtas.DataSource = dt;
-                            grilla("dgv_vtas");
-                        }
-                        else dgv_vtas.DataSource = null;
-                        da.Dispose();
+                        grilla("dgv_vtas");
                     }
-                    else
+                    string resulta = lib.ult_mov(nomform, nomtab, asd);
+                    if (resulta != "OK")                                        // actualizamos la tabla usuarios
                     {
-                        conn.Close();
-                        MessageBox.Show("No se puede conectar al servidor", "Error de conexión", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        return;
+                        MessageBox.Show(resulta, "Error en actualización de tabla usuarios", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
-                    conn.Close();
-                }
-                catch (MySqlException ex)
-                {
-                    MessageBox.Show(ex.Message, "Error en obtener datos");
-                    Application.Exit();
-                    return;
                 }
             }
         }
@@ -594,7 +504,7 @@ namespace TransCarga
                     micon.CommandType = CommandType.StoredProcedure;
                     micon.Parameters.AddWithValue("@loca", (tx_sede_guias.Text != "") ? tx_sede_guias.Text : "");
                     micon.Parameters.AddWithValue("@fecini", dtp_ini_guias.Value.ToString("yyyy-MM-dd"));
-                    micon.Parameters.AddWithValue("@fecfin", dtp_ini_guias.Value.ToString("yyyy-MM-dd"));
+                    micon.Parameters.AddWithValue("@fecfin", dtp_fin_guias.Value.ToString("yyyy-MM-dd"));
                     micon.Parameters.AddWithValue("@esta", (tx_estad_guias.Text != "") ? tx_estad_guias.Text : "");
                     micon.Parameters.AddWithValue("@excl", (chk_excl_guias.Checked == true) ? "1" : "0");
                     using (MySqlDataAdapter da = new MySqlDataAdapter(micon))
