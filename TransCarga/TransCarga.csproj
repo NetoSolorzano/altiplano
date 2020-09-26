@@ -168,6 +168,11 @@
     <Compile Include="repsoper.designer.cs">
       <DependentUpon>repsoper.cs</DependentUpon>
     </Compile>
+    <Compile Include="Resource1.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resource1.resx</DependentUpon>
+    </Compile>
     <Compile Include="sernum.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -254,6 +259,10 @@
     <EmbeddedResource Include="repsoper.resx">
       <DependentUpon>repsoper.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Resource1.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resource1.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="sernum.resx">
       <DependentUpon>sernum.cs</DependentUpon>
     </EmbeddedResource>
@@ -298,7 +307,14 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="bin\Debug\recursos\fec_elect21.png" />
+    <None Include="bin\Debug\recursos\etiq_venta32.png" />
+    <None Include="bin\Debug\recursos\process32.png" />
+    <None Include="bin\Debug\recursos\almacen48.png" />
+    <None Include="bin\Debug\recursos\maestras48.png" />
+    <None Include="bin\Debug\recursos\service_manager.png" />
     <Content Include="leeme.txt" />
+    <Content Include="Properties\process32.png" />
     <Content Include="solorsoft.ico" />
   </ItemGroup>
   <ItemGroup>

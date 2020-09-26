@@ -74,10 +74,11 @@ namespace TransCarga
         string imgpe1 = "";                                             // imagen 1 pedidos - registro
         string imgpe2 = "";                                             // imagen 2 pedidos - reportes
         string imgvc1 = "";                                             // imagen 1 ventas - contratos
-        string imgvpc1 = "";                                            // imagen 1 ventas contratos pedidos cliente
-        string imgvic1 = "";                                            // imagen 1 ventas - ingresos de pedidos
-        string imgvsc1 = "";                                            // imagen 1 ventas - salidas de pedidos (entregas a cliente)
-        string imgvre1 = "";                                            // imagen 1 ventas - reportes
+        string imgvpc1 = "";                                            // imagen 1 operaciones 
+        string imgvic1 = "";                                            // imagen 1 operaciones - 
+        string imgvsc1 = "";                                            // imagen 1 operaciones - 
+        string imgvtc1 = "";                                            // imagen 1 operaciones - transbordos
+        string imgvre1 = "";                                            // imagen 1 operaciones - reportes
         string imgalm1 = "";                                            // imagen 1 almacen - gestion
         string imgalm2 = "";                                            // imagen 2 almacen - movimientos fiscos
         string imgalm3 = "";                                            // imagen 3 almacen - historico de ventas
@@ -252,6 +253,7 @@ namespace TransCarga
                         if (row["param"].ToString() == "imgvpc1") imgvpc1 = row["valor"].ToString().Trim();         // imagen1 de ventas contratos pedidos clientes
                         if (row["param"].ToString() == "imgvic1") imgvic1 = row["valor"].ToString().Trim();         // imagen1 de ventas ingreso pedidos clientes
                         if (row["param"].ToString() == "imgvsc1") imgvsc1 = row["valor"].ToString().Trim();         // imagen1 de ventas salidas pedidos clientes
+                        if (row["param"].ToString() == "imgvtc1") imgvtc1 = row["valor"].ToString().Trim();         // imagen1 operaciones transbordos
                         if (row["param"].ToString() == "imgvre1") imgvre1 = row["valor"].ToString().Trim();         // imagen1 de ventas clientes reportes
                         if (row["param"].ToString() == "imgalm1") imgalm1 = row["valor"].ToString().Trim();         // imagen1 de almace - gestion
                         if (row["param"].ToString() == "imgalm2") imgalm2 = row["valor"].ToString().Trim();         // imagen2 de almace - movimientos fisicos
@@ -386,6 +388,7 @@ namespace TransCarga
             Image img_F4 = Image.FromFile(imgF4);
             Image img_F5 = Image.FromFile(imgF5);
             //
+            pic_icon_menu.Image = TransCarga.Properties.Resources.fec_elect21;
             menuStrip1.Items.Clear();
             menuStrip1.Items.Add("Boletas/Facturas",img_F1,fac_rapida_Click);           // F1
             menuStrip1.Items.Add("Anulaciones",img_F4,fac_anulac_Click);              // F4
@@ -418,12 +421,16 @@ namespace TransCarga
             Image img_v_pc = Image.FromFile(imgvpc1);
             Image img_v_i = Image.FromFile(imgvic1);
             Image img_v_s = Image.FromFile(imgvsc1);
+            Image img_v_t = Image.FromFile(imgvtc1);
             Image img_v_r = Image.FromFile(imgvre1);
+            //
+            pic_icon_menu.Image = TransCarga.Properties.Resources.etiq_venta32;
             menuStrip1.Items.Clear();
             menuStrip1.Items.Add("Pre-Guías",img_v_c, vc_registro_Click);
             menuStrip1.Items.Add("GR Transp.",img_v_pc, vpc_registro_Click);
             menuStrip1.Items.Add("GR Remitente",img_v_i, vic_registro_Click);
             menuStrip1.Items.Add("Plan.Carga",img_v_s, vsc_registro_Click);
+            menuStrip1.Items.Add("Transbordo", img_v_t, vtc_registro_Click);
             menuStrip1.Items.Add("Reportes",img_v_r, vc_reportes_Click);
             menuStrip1.Visible = true;
         }
@@ -473,6 +480,10 @@ namespace TransCarga
             fsp.Show();
             fsp.BringToFront();
         }
+        private void vtc_registro_Click(object sender, EventArgs e)         // transbordos
+        {
+
+        }
         private void vc_reportes_Click(object sender, EventArgs e)          // Reportes de operaciones
         {
             repsoper frv = new repsoper();
@@ -488,8 +499,9 @@ namespace TransCarga
             frv.BringToFront();
         }
         //
-        private void bt_pedidos_Click(object sender, EventArgs e)       // Administración
+        private void bt_pedidos_Click(object sender, EventArgs e)           // Administración
         {
+            pic_icon_menu.Image = TransCarga.Properties.Resources.process32;
             Image img_pe1 = Image.FromFile(imgpe1);                     // Cuadre de Caja
                         // Cobranzas
                         // Egresos (Varios, Depositos)
@@ -532,6 +544,7 @@ namespace TransCarga
         //
         private void bt_pcontrol_Click(object sender, EventArgs e)      // Configuración
         {
+            pic_icon_menu.Image = Properties.Resources.service_manager;
             Image img_pc1 = Image.FromFile(imgpc1);
             Image img_pc2 = Image.FromFile(imgpc2);
             Image img_pc3 = Image.FromFile(imgpc3);
@@ -548,6 +561,7 @@ namespace TransCarga
         //
         private void bt_maestras_Click(object sender, EventArgs e)      // Maestras
         {
+            pic_icon_menu.Image = Properties.Resources.maestras48;
             Image img_ma1 = Image.FromFile(imgma1);
             Image img_ma2 = Image.FromFile(imgma2);
             Image img_ma3 = Image.FromFile(imgma3);
@@ -663,6 +677,7 @@ namespace TransCarga
         //
         private void bt_almacen_Click(object sender, EventArgs e)       // Almacen
         {
+            pic_icon_menu.Image = Properties.Resources.almacen48;
             Image img_alm1 = Image.FromFile(imgalm1);
             Image img_alm2 = Image.FromFile(imgalm2);
             Image img_alm3 = Image.FromFile(imgalm3);

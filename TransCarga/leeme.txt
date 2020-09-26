@@ -25,7 +25,7 @@ form repsoper: (Reportes para todo el modulo de operaciones)
 - Mejorar el reporte resumen por cliente .......................................................... ok
 - Mejorar reporte de pre guías ....................................................................
 - Hacer el reporte de guias transp. individuales ..................................................
-- Hacer el reporte de planillas de carga .......................................................... ME QUEDE ACA!
+- Hacer el reporte de planillas de carga .......................................................... ok
 form defs:
 - Se crea defininion de zonas "ZON" ............................................................... OK
 - En locales se debe especificar la zona del local ................................................ OK

@@ -47,21 +47,24 @@
             this.bt_pcontrol = new System.Windows.Forms.Button();
             this.bt_ventas = new System.Windows.Forms.Button();
             this.bt_facele = new System.Windows.Forms.Button();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.bt_salir = new System.Windows.Forms.Button();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.pn_centro = new System.Windows.Forms.Panel();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.pic_icon_menu = new System.Windows.Forms.PictureBox();
             this.pn_phor.SuspendLayout();
             this.pn_menu.SuspendLayout();
             this.pn_user.SuspendLayout();
             this.pn_pver.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pic_icon_menu)).BeginInit();
             this.SuspendLayout();
             // 
             // pn_phor
             // 
             this.pn_phor.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.pn_phor.Controls.Add(this.pic_icon_menu);
             this.pn_phor.Controls.Add(this.pn_menu);
             this.pn_phor.Controls.Add(this.bt_solorsoft);
             this.pn_phor.Controls.Add(this.pn_user);
@@ -75,9 +78,9 @@
             this.pn_menu.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.pn_menu.Controls.Add(this.menuStrip1);
-            this.pn_menu.Location = new System.Drawing.Point(-1, 25);
+            this.pn_menu.Location = new System.Drawing.Point(32, 25);
             this.pn_menu.Name = "pn_menu";
-            this.pn_menu.Size = new System.Drawing.Size(891, 28);
+            this.pn_menu.Size = new System.Drawing.Size(858, 28);
             this.pn_menu.TabIndex = 5;
             // 
             // menuStrip1
@@ -86,7 +89,7 @@
             this.menuStrip1.AutoSize = false;
             this.menuStrip1.Dock = System.Windows.Forms.DockStyle.None;
             this.menuStrip1.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.menuStrip1.Location = new System.Drawing.Point(5, 3);
+            this.menuStrip1.Location = new System.Drawing.Point(37, 3);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(100, 26);
             this.menuStrip1.TabIndex = 5;
@@ -283,16 +286,6 @@
             this.bt_facele.UseVisualStyleBackColor = true;
             this.bt_facele.Click += new System.EventHandler(this.bt_facele_Click);
             // 
-            // pictureBox1
-            // 
-            this.pictureBox1.Location = new System.Drawing.Point(0, 0);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(188, 128);
-            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.pictureBox1.TabIndex = 2;
-            this.pictureBox1.TabStop = false;
-            this.pictureBox1.Click += new System.EventHandler(this.pictureBox1_Click);
-            // 
             // bt_salir
             // 
             this.bt_salir.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
@@ -320,6 +313,27 @@
             this.pn_centro.Size = new System.Drawing.Size(944, 768);
             this.pn_centro.TabIndex = 2;
             // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Location = new System.Drawing.Point(0, 0);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(188, 128);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox1.TabIndex = 2;
+            this.pictureBox1.TabStop = false;
+            this.pictureBox1.Click += new System.EventHandler(this.pictureBox1_Click);
+            // 
+            // pic_icon_menu
+            // 
+            this.pic_icon_menu.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.pic_icon_menu.BackColor = System.Drawing.Color.White;
+            this.pic_icon_menu.Location = new System.Drawing.Point(1, 26);
+            this.pic_icon_menu.Name = "pic_icon_menu";
+            this.pic_icon_menu.Size = new System.Drawing.Size(30, 26);
+            this.pic_icon_menu.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pic_icon_menu.TabIndex = 7;
+            this.pic_icon_menu.TabStop = false;
+            // 
             // TransMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -341,6 +355,7 @@
             this.pn_user.PerformLayout();
             this.pn_pver.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pic_icon_menu)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -368,5 +383,6 @@
         private System.Windows.Forms.Button bt_almacen;
         private System.Windows.Forms.Button bt_pedidos;
         public System.Windows.Forms.TextBox tx_empresa;
+        private System.Windows.Forms.PictureBox pic_icon_menu;
     }
 }
