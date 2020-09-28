@@ -482,7 +482,14 @@ namespace TransCarga
         }
         private void vtc_registro_Click(object sender, EventArgs e)         // transbordos
         {
-
+            transbord fsp = new transbord();
+            fsp.TopLevel = false;
+            fsp.Parent = this;
+            pn_centro.Controls.Add(fsp);
+            //fsp.Location = new Point((pn_centro.Width - fsp.Width) / 2, (pn_centro.Height));
+            fsp.Anchor = AnchorStyles.None;
+            fsp.Show();
+            fsp.BringToFront();
         }
         private void vc_reportes_Click(object sender, EventArgs e)          // Reportes de operaciones
         {
