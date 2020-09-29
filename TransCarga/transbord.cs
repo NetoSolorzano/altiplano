@@ -45,7 +45,8 @@ namespace TransCarga
         string v_clu = "";              // codigo del local del usuario
         string v_slu = "";              // serie del local del usuario
         string v_nbu = "";              // nombre del usuario
-        string v_mfildet = "";          // maximo numero de filas en el detalle, coord. con el formato
+        //string v_mfildet = "";          // maximo numero de filas en el detalle, coord. con el formato
+        string v_plazo = "";            // dias de plazo para transbordos entre planillas
         string vint_A0 = "";            // variable INTERNA para amarrar el codigo anulacion cliente con A0
         //
         static libreria lib = new libreria();   // libreria de procedimientos
@@ -77,6 +78,7 @@ namespace TransCarga
                 Application.Exit();
                 return;
             }
+            lp.sololee(this);
         }
         private void jalainfo()                 // obtiene datos de imagenes y variables
         {
@@ -84,11 +86,11 @@ namespace TransCarga
             {
                 MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
                 conn.Open();
-                string consulta = "select formulario,campo,param,valor from enlaces where formulario in (@nofo,@nfin,@nofi,@nofa)";
+                string consulta = "select formulario,campo,param,valor from enlaces where formulario in (@nofo,@nfin,@nofa)";
                 MySqlCommand micon = new MySqlCommand(consulta, conn);
                 micon.Parameters.AddWithValue("@nofo", "main");
                 micon.Parameters.AddWithValue("@nfin", "interno");
-                micon.Parameters.AddWithValue("@nofi", "clients");
+                //micon.Parameters.AddWithValue("@nofi", "clients");
                 micon.Parameters.AddWithValue("@nofa", nomform);
                 MySqlDataAdapter da = new MySqlDataAdapter(micon);
                 DataTable dt = new DataTable();
@@ -123,9 +125,9 @@ namespace TransCarga
                     }
                     if (row["formulario"].ToString() == nomform)
                     {
-                        if (row["campo"].ToString() == "documento")
+                        if (row["campo"].ToString() == "plazo")
                         {
-                            //if (row["param"].ToString() == "serieAnu") v_sanu = row["valor"].ToString().Trim();               // serie anulacion interna
+                            if (row["param"].ToString() == "maximo") v_plazo = row["valor"].ToString().Trim();           // dias maximo plazo entre planillas
                         }
                         if (row["campo"].ToString() == "impresion")
                         {
@@ -295,7 +297,134 @@ namespace TransCarga
                 dataGridView1.Columns.Add(marca);
             }
         }
+        private bool valids_leave(string tipo, string valor, NumericTextBox con)
+        {
+            bool retorna = false;
+            if (tipo == "serie")
+            {
+                con.Text = lib.Right("000" + valor, 4);
+                retorna = true;
+            }
+            if (tipo == "numero")
+            {
+                con.Text = lib.Right("0000000" + valor, 8);
+                if (jalaoc(con.Name.ToString()) == false) retorna = false;
+                else
+                {
+                    if (con.Name.ToString() == "tx_numero")
+                    {
+                        MessageBox.Show(Convert.ToDateTime(tx_pla_fech.Text).ToString());
+                        jaladet(tx_serie.Text, tx_numero.Text);
+                        if (tx_estado.Text != codGene)
+                        {
+                            retorna = false;
+                            MessageBox.Show("La planilla origen no tiene el estado correcto", "No puede transbordar", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        }
+                    }
+                    else
+                    {
+                        // validamos que ambas planillas:
+                        // - tengan el mismo destino/origen
+                        // - tengan estado generado
+                        // - que no sean iguales
+                        // - alguna validacion de fecha ???
+                        if (tx_estad_des.Text != codGene)
+                        {
+                            retorna = false;
+                            MessageBox.Show("La planilla destino no tiene el estado correcto", "No puede transbordar", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        }
+                        if (tx_origen.Text != tx_orig_des.Text)
+                        {
+                            retorna = false;
+                            MessageBox.Show("Las planillas no tienen el mismo origen", "No puede transbordar", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        }
+                        if (tx_destino.Text != tx_dest_des.Text)
+                        {
+                            retorna = false;
+                            MessageBox.Show("Las planillas no tienen el mismo destino", "No puede transbordar", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        }
+                        if (tx_numero.Text == tx_num_pla_des.Text)
+                        {
+                            retorna = false;
+                            MessageBox.Show("Las planillas no pueden ser las mismas", "No puede transbordar", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        }
+                        DateTime odate = Convert.ToDateTime(tx_pla_fech.Text);
+                        //if ()
+                        //{
 
+                        //}
+                    }
+                }
+            }
+            return retorna;
+        }
+        private bool jalaoc(string tipo)        // jala datos de las planillas
+        {
+            bool retorna = false;
+            string consulta = "SELECT a.estadoser,a.fechope,lo.Descrizione,ld.Descrizione,a.brevchofe,a.nomchofe,a.brevayuda,a.nomayuda," +
+                "a.rucpropie,af.RazonSocial,a.platracto,a.placarret,a.confvehic,a.autorizac " +
+                "from cabplacar a " +
+                "LEFT JOIN desc_loc lo on lo.idcodice = a.locorigen " +
+                "LEFT JOIN desc_loc ld on ld.IDCodice = a.locdestin " +
+                "LEFT JOIN anag_for af on af.RUC = a.rucpropie " +
+                "WHERE a.serplacar = @ser AND a.numplacar = @num";
+            using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
+            {
+                conn.Open();
+                using (MySqlCommand micon = new MySqlCommand(consulta, conn))
+                {
+                    micon.Parameters.AddWithValue("@ser", (tipo == "tx_numero") ? tx_serie.Text : tx_ser_pla_des.Text);
+                    micon.Parameters.AddWithValue("@num", (tipo == "tx_numero") ? tx_numero.Text : tx_num_pla_des.Text);
+                    using (MySqlDataReader dr = micon.ExecuteReader())
+                    {
+                        if (dr.HasRows && dr.Read())
+                        {
+                            if (tipo == "tx_numero")        // jalamos datos de planilla origen
+                            {
+                                tx_estado.Text = dr.GetString(0);
+                                tx_pla_fech.Text = dr.GetString(1).Substring(0, 10);
+                                tx_origen.Text = dr.GetString(2);
+                                tx_destino.Text = dr.GetString(3);
+                                tx_pla_brevet.Text = dr.GetString(4);
+                                tx_pla_nomcho.Text = dr.GetString(5);
+                                tx_pla_ayud.Text = dr.GetString(6);
+                                tx_pla_nomayu.Text = dr.GetString(7);
+                                tx_pla_ruc.Text = dr.GetString(8);
+                                tx_pla_propiet.Text = dr.GetString(9);
+                                tx_pla_placa.Text = dr.GetString(10);
+                                tx_pla_carret.Text = dr.GetString(11);
+                                tx_pla_confv.Text = dr.GetString(12);
+                                tx_pla_autor.Text = dr.GetString(13);
+                                retorna = true;
+                            }
+                            if (tipo == "tx_num_pla_des")   // jalamos datos de planilla destino
+                            {
+                                tx_estad_des.Text = dr.GetString(0);
+                                tx_orig_des.Text = dr.GetString(1);
+                                tx_dest_des.Text = dr.GetString(2);
+                                tx_fech_des.Text = dr.GetString(3);
+                                tx_chof_des.Text = dr.GetString(4);
+                                tx_nomChof_des.Text = dr.GetString(5);
+                                tx_ayu_des.Text = dr.GetString(6);
+                                tx_nomAyu_des.Text = dr.GetString(7);
+                                tx_prop_des.Text = dr.GetString(8);
+                                tx_nomProp_des.Text = dr.GetString(9);
+                                tx_plac_des.Text = dr.GetString(10);
+                                tx_carret_des.Text = dr.GetString(11);
+                                tx_confv_des.Text = dr.GetString(12);
+                                tx_aut_des.Text = dr.GetString(13);
+                                retorna = true;
+                            }
+                        }
+                    }
+                }
+            }
+            return retorna;
+        }
+        private void jaladet(string ser, string num)                  // jala datos a la grilla
+        {
+
+        }
         #region botones_de_comando
         public void toolboton()
         {
@@ -329,49 +458,81 @@ namespace TransCarga
             if (mdtb.Rows.Count > 0)
             {
                 DataRow row = mdtb.Rows[0];
-                if (Convert.ToString(row["btn1"]) == "S")
-                {
-                    this.Bt_add.Visible = true;
-                }
-                else { this.Bt_add.Visible = false; }
-                if (Convert.ToString(row["btn2"]) == "S")
-                {
-                    this.Bt_edit.Visible = true;
-                }
-                else { this.Bt_edit.Visible = false; }
-                //if (Convert.ToString(row["btn5"]) == "S")
-                //{
-                //    this.Bt_print.Visible = true;
-                //}
-                //else { this.Bt_print.Visible = false; }
-                if (Convert.ToString(row["btn3"]) == "S")
-                {
-                    this.Bt_anul.Visible = true;
-                }
-                else { this.Bt_anul.Visible = false; }
-                //if (Convert.ToString(row["btn4"]) == "S")
-                //{
-                //    this.Bt_ver.Visible = true;
-                //}
-                //else { this.Bt_ver.Visible = false; }
-                if (Convert.ToString(row["btn6"]) == "S")
-                {
-                    this.Bt_close.Visible = true;
-                }
-                else { this.Bt_close.Visible = false; }
+                if (Convert.ToString(row["btn1"]) == "S") this.Bt_add.Visible = true;
+                else this.Bt_add.Visible = false; 
+                if (Convert.ToString(row["btn2"]) == "S") this.Bt_edit.Visible = true;
+                else this.Bt_edit.Visible = false;
+                if (Convert.ToString(row["btn3"]) == "S") this.Bt_anul.Visible = true;
+                else this.Bt_anul.Visible = false;
+                if (Convert.ToString(row["btn4"]) == "S") this.Bt_ver.Visible = true;
+                else this.Bt_ver.Visible = false;
+                if (Convert.ToString(row["btn5"]) == "S") this.Bt_print.Visible = true;
+                else this.Bt_print.Visible = false;
+                if (Convert.ToString(row["btn6"]) == "S") this.Bt_close.Visible = true;
+                else this.Bt_close.Visible = false;
             }
         }
         #region botones
         private void Bt_add_Click(object sender, EventArgs e)
         {
-
+            lp.escribe(this);
+            lp.limpiagbox(gbox_serie);
+            lp.limpiagbox(gbox_dest);
+            dataGridView1.Rows.Clear();
+            tx_serie.Focus();
         }
         private void Bt_close_Click(object sender, EventArgs e)
         {
             this.Close();
         }
         #endregion botones;
+
         #endregion botones_de_comando  ;
+
+        #region leaves y validating
+        private void tx_serie_Validating(object sender, CancelEventArgs e)
+        {
+            if (tx_serie.Text.Trim() != "")
+            {
+                if (valids_leave("serie", tx_serie.Text.Trim(), tx_serie) == false)
+                {
+                    e.Cancel = true;
+                }
+            }
+        }
+        private void tx_numero_Validating(object sender, CancelEventArgs e)
+        {
+            if (tx_numero.Text.Trim() != "")
+            {
+                if (valids_leave("numero",tx_numero.Text.Trim(),tx_numero) == false)
+                {
+                    tx_numero.Text = "";
+                    e.Cancel = true;
+                }
+            }
+        }
+        private void tx_ser_pla_des_Validating(object sender, CancelEventArgs e)
+        {
+            if (tx_ser_pla_des.Text.Trim() != "")
+            {
+                if (valids_leave("serie", tx_ser_pla_des.Text.Trim(), tx_ser_pla_des) == false)
+                {
+                    e.Cancel = true;
+                }
+            }
+        }
+        private void tx_num_pla_des_Validating(object sender, CancelEventArgs e)
+        {
+            if (tx_num_pla_des.Text.Trim() != "")
+            {
+                if (valids_leave("numero", tx_num_pla_des.Text.Trim(), tx_num_pla_des) == false)
+                {
+                    tx_num_pla_des.Text = "";
+                    e.Cancel = true;
+                }
+            }
+        }
+        #endregion
 
     }
 }
