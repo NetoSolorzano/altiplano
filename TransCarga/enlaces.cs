@@ -85,9 +85,9 @@ namespace TransCarga
             toolStrip1.BackColor = Color.FromName(colstrp);
             tabreg.BackColor = Color.FromName(colpage);
             advancedDataGridView1.DefaultCellStyle.BackColor = Color.FromName(colgrid);
-            advancedDataGridView1.DefaultCellStyle.ForeColor = Color.FromName(colfogr);
-            advancedDataGridView1.DefaultCellStyle.SelectionBackColor = Color.FromName(colsfon);
-            advancedDataGridView1.DefaultCellStyle.SelectionForeColor = Color.FromName(colsfgr);
+            //advancedDataGridView1.DefaultCellStyle.ForeColor = Color.FromName(colfogr);
+            //advancedDataGridView1.DefaultCellStyle.SelectionBackColor = Color.FromName(colsfon);
+            //advancedDataGridView1.DefaultCellStyle.SelectionForeColor = Color.FromName(colsfgr);
             //
             jalainfo();
             Bt_add.Image = Image.FromFile(img_btN);

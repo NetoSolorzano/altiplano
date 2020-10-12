@@ -324,6 +324,7 @@
     <None Include="bin\Debug\recursos\service_manager.png" />
     <Content Include="leeme.txt" />
     <Content Include="Properties\process32.png" />
+    <None Include="Resources\logo_solorsoft.png" />
     <Content Include="solorsoft.ico" />
   </ItemGroup>
   <ItemGroup>

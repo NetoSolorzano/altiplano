@@ -37,14 +37,16 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.lb_titulo = new System.Windows.Forms.Label();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.Button2 = new System.Windows.Forms.Button();
             this.Button1 = new System.Windows.Forms.Button();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.lb_version = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.groupBox1.SuspendLayout();
             this.panel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.panel2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // groupBox1
@@ -55,7 +57,7 @@
             this.groupBox1.Controls.Add(this.Tx_pwd);
             this.groupBox1.Controls.Add(this.Tx_user);
             this.groupBox1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.groupBox1.Location = new System.Drawing.Point(271, 166);
+            this.groupBox1.Location = new System.Drawing.Point(304, 170);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(284, 75);
             this.groupBox1.TabIndex = 0;
@@ -106,7 +108,7 @@
             // 
             this.panel1.Controls.Add(this.checkBox1);
             this.panel1.Controls.Add(this.tx_newcon);
-            this.panel1.Location = new System.Drawing.Point(271, 246);
+            this.panel1.Location = new System.Drawing.Point(304, 250);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(284, 26);
             this.panel1.TabIndex = 29;
@@ -128,29 +130,19 @@
             this.lb_titulo.BackColor = System.Drawing.Color.White;
             this.lb_titulo.Font = new System.Drawing.Font("Palatino Linotype", 15F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lb_titulo.ForeColor = System.Drawing.Color.DimGray;
-            this.lb_titulo.Location = new System.Drawing.Point(255, 36);
+            this.lb_titulo.Location = new System.Drawing.Point(287, 36);
             this.lb_titulo.Name = "lb_titulo";
             this.lb_titulo.Size = new System.Drawing.Size(320, 132);
             this.lb_titulo.TabIndex = 0;
             this.lb_titulo.Text = "titulo";
             this.lb_titulo.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // pictureBox1
-            // 
-            this.pictureBox1.BackColor = System.Drawing.Color.Transparent;
-            this.pictureBox1.Location = new System.Drawing.Point(35, 38);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(200, 190);
-            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBox1.TabIndex = 30;
-            this.pictureBox1.TabStop = false;
-            // 
             // Button2
             // 
             this.Button2.BackColor = System.Drawing.Color.Transparent;
             this.Button2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.Button2.ForeColor = System.Drawing.Color.Transparent;
-            this.Button2.Location = new System.Drawing.Point(537, -1);
+            this.Button2.Location = new System.Drawing.Point(571, 0);
             this.Button2.Name = "Button2";
             this.Button2.Size = new System.Drawing.Size(37, 37);
             this.Button2.TabIndex = 6;
@@ -162,9 +154,9 @@
             this.Button1.BackColor = System.Drawing.Color.Gray;
             this.Button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.Button1.ForeColor = System.Drawing.Color.Transparent;
-            this.Button1.Location = new System.Drawing.Point(319, 284);
+            this.Button1.Location = new System.Drawing.Point(304, 288);
             this.Button1.Name = "Button1";
-            this.Button1.Size = new System.Drawing.Size(196, 34);
+            this.Button1.Size = new System.Drawing.Size(284, 34);
             this.Button1.TabIndex = 3;
             this.Button1.Text = "INGRESAR";
             this.Button1.UseVisualStyleBackColor = false;
@@ -173,19 +165,53 @@
             // panel2
             // 
             this.panel2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(22)))), ((int)(((byte)(204)))));
+            this.panel2.Controls.Add(this.label1);
             this.panel2.Controls.Add(this.pictureBox1);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Left;
             this.panel2.Location = new System.Drawing.Point(0, 0);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(254, 347);
+            this.panel2.Size = new System.Drawing.Size(286, 347);
             this.panel2.TabIndex = 31;
+            // 
+            // lb_version
+            // 
+            this.lb_version.AutoSize = true;
+            this.lb_version.Location = new System.Drawing.Point(401, 11);
+            this.lb_version.Name = "lb_version";
+            this.lb_version.Size = new System.Drawing.Size(35, 13);
+            this.lb_version.TabIndex = 32;
+            this.lb_version.Text = "label1";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.label1.Location = new System.Drawing.Point(11, 247);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(200, 64);
+            this.label1.TabIndex = 33;
+            this.label1.Text = "Derechos reservados a: \r\nLucio Ernesto Solórzano Ramos\r\nneto.solorzano@solorsoft." +
+    "com\r\nwww.solorsoft.com";
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.BackColor = System.Drawing.Color.Transparent;
+            this.pictureBox1.Image = global::TransCarga.Properties.Resources.logo_solorsoft;
+            this.pictureBox1.Location = new System.Drawing.Point(9, 109);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(269, 67);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
+            this.pictureBox1.TabIndex = 30;
+            this.pictureBox1.TabStop = false;
             // 
             // login
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(15)))), ((int)(((byte)(15)))));
-            this.ClientSize = new System.Drawing.Size(574, 347);
+            this.ClientSize = new System.Drawing.Size(608, 347);
+            this.Controls.Add(this.lb_version);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.lb_titulo);
             this.Controls.Add(this.panel1);
@@ -205,9 +231,11 @@
             this.groupBox1.PerformLayout();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.panel2.ResumeLayout(false);
+            this.panel2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -225,6 +253,8 @@
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.Label lb_version;
+        private System.Windows.Forms.Label label1;
     }
 }
 

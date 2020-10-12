@@ -115,10 +115,9 @@ namespace TransCarga
             this.BackColor = Color.FromName(colback);
             toolStrip1.BackColor = Color.FromName(colstrp);
             dataGridView1.DefaultCellStyle.BackColor = Color.FromName(colgrid);
-            dataGridView1.DefaultCellStyle.BackColor = Color.FromName(colgrid);
-            dataGridView1.DefaultCellStyle.ForeColor = Color.FromName(colfogr);
-            dataGridView1.DefaultCellStyle.SelectionBackColor = Color.FromName(colsfon);
-            dataGridView1.DefaultCellStyle.SelectionForeColor = Color.FromName(colsfgr);
+            //dataGridView1.DefaultCellStyle.ForeColor = Color.FromName(colfogr);
+            //dataGridView1.DefaultCellStyle.SelectionBackColor = Color.FromName(colsfon);
+            //dataGridView1.DefaultCellStyle.SelectionForeColor = Color.FromName(colsfgr);
 
             tx_user.Text += asd;
             tx_nomuser.Text = lib.nomuser(asd);

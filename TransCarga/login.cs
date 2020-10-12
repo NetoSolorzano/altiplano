@@ -32,14 +32,14 @@ namespace TransCarga
         */
         private void login_Load(object sender, EventArgs e)
         {
-            this.Text = this.Text + "- Versión " + System.Diagnostics.FileVersionInfo.GetVersionInfo(Application.ExecutablePath).FileVersion;
+            lb_version.Text = "Versión " + System.Diagnostics.FileVersionInfo.GetVersionInfo(Application.ExecutablePath).FileVersion;
             lb_titulo.Text = Program.tituloF;
             lb_titulo.BackColor = System.Drawing.Color.White;
             //lb_titulo.Parent = pictureBox1;
-            Image logo = Image.FromFile("recursos/logo_solorsoft_2p.png");
+            //Image logo = Image.FromFile("recursos/logo_solorsoft_2p.png");
             Image salir = Image.FromFile("recursos/Close_32.png");
             //Image entrar = Image.FromFile("recursos/ok.png");
-            pictureBox1.Image = logo;
+            //pictureBox1.Image = logo;
             Button2.Image = salir;
             Button2.ImageAlign = ContentAlignment.MiddleCenter;
             //Button1.Image = entrar;
@@ -75,11 +75,10 @@ namespace TransCarga
             }
             if (Tx_user.Text != "USUARIO" && Tx_pwd.Text != "CLAVE")
             {
-                try
+                string contra = lib.md5(Tx_pwd.Text);
+                MySqlConnection cn = new MySqlConnection(DB_CONN_STR);
+                if (lib.procConn(cn) == true)
                 {
-                    string contra = lib.md5(Tx_pwd.Text);
-                    MySqlConnection cn = new MySqlConnection(DB_CONN_STR);
-                    cn.Open();
                     //validamos que el usuario y passw son los correctos
                     string query = "select a.bloqueado,a.local,a.nombre " +
                         "from usuarios a " +
@@ -114,6 +113,7 @@ namespace TransCarga
                                 return;
                             }
                         }
+                        dr.Close();
                     }
                     else
                     {
@@ -121,14 +121,9 @@ namespace TransCarga
                         MessageBox.Show("Usuario y/o Contraseña erronea", " Atención ", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
                     }
-                    cn.Close();
+                    mycomand.Dispose();
                 }
-                catch (MySqlException ex)
-                {
-                    MessageBox.Show(ex.Message, "No se tiene conexión con el servidor", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    Application.Exit();
-                    return;
-                }
+                cn.Close();
             }
         }
         private void Button2_Click(object sender, EventArgs e)
@@ -227,8 +222,7 @@ namespace TransCarga
             if (checkBox1.Checked == true && tx_newcon.Text != "")
             {
                 MySqlConnection cn = new MySqlConnection(DB_CONN_STR);
-                cn.Open();
-                try
+                if (lib.procConn(cn) == true)
                 {
                     string consulta = "update usuarios set pwd_user=@npa where nom_user=@nus";
                     MySqlCommand micon = new MySqlCommand(consulta, cn);
@@ -244,12 +238,7 @@ namespace TransCarga
                         Application.Exit();
                         return;
                     }
-                }
-                catch (MySqlException ex)
-                {
-                    MessageBox.Show(ex.Message, "Error en conexión");
-                    Application.Exit();
-                    return;
+                    micon.Dispose();
                 }
                 cn.Close();
             }
@@ -257,11 +246,9 @@ namespace TransCarga
         private void jaladatos()
         {
             MySqlConnection cn = new MySqlConnection(DB_CONN_STR);
-            cn.Open();
-            try
+            if (lib.procConn(cn) == true)
             {
                 string consulta = "SELECT a.param,a.value,a.used,b.cliente,b.ruc,b.igv from confmod a INNER JOIN baseconf b";
-                    //"select param,value,used from confmod";
                 MySqlCommand micon = new MySqlCommand(consulta, cn);
                 MySqlDataReader dr = micon.ExecuteReader();
                 if (dr.HasRows)
@@ -292,13 +279,9 @@ namespace TransCarga
                         TransCarga.Program.ruc = dr.GetString(4);
                         TransCarga.Program.cliente = dr.GetString(3);
                     }
+                    dr.Close();
+                    micon.Dispose();
                 }
-            }
-            catch (MySqlException ex)
-            {
-                MessageBox.Show(ex.Message, "Error en conexión");
-                Application.Exit();
-                return;
             }
             cn.Close();
         }

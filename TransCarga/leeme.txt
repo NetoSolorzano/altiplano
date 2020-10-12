@@ -47,5 +47,6 @@ form planicarga: (planilla de carga)
 - Desarrollo del form .............................................................................. ok
 - La EDICION de una planilla, NO recalcula el flete, pagado y saldo x pagar de las guías pre existentes en la planilla.
   Los saldos y flete de cada guía se calculan SOLO AL MOMENTO DE REGISTRAR UNA GUIA EN LA PLANILLA.
- 
+form transbord: (proceso de transbordos, no usa tablas propias) 
+- Unico boton de NUEVO, transborda parcial o total guias de una planilla a otra existente .......... ME QUEDE ACA
 

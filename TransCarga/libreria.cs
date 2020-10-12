@@ -3064,6 +3064,33 @@ namespace TransCarga
         {
             MessageBox.Show(texto, "FALTA CONFIGURAR", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
+        public bool procConn(MySqlConnection con)
+        {
+            bool retorna = false;
+            while (true)
+            {
+                try
+                {
+                    con.Open();
+                    if (con.State == ConnectionState.Open)
+                    {
+                        retorna = true;
+                        break;
+                    }
+                }
+                catch (MySqlException ex)
+                {
+                    var xx = MessageBox.Show("Tenemos un problema con la conexión al servidor" + Environment.NewLine +
+                        "No se puede conectar o esta tardando demasiado" + Environment.NewLine +
+                        "DESEA SEGUIR ESPERANDO ....?","Error de conectividad",MessageBoxButtons.YesNo,MessageBoxIcon.Question);
+                    if (xx == DialogResult.No)
+                    {
+                        break;
+                    }
+                }
+            }
+            return retorna;
+        }
     }
 
     public class ComboItem
