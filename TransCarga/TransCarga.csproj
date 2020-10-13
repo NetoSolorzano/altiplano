@@ -108,11 +108,11 @@
     <Compile Include="enlaces.designer.cs">
       <DependentUpon>enlaces.cs</DependentUpon>
     </Compile>
-    <Compile Include="facelec.cs">
+    <Compile Include="facelect.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="facelec.designer.cs">
-      <DependentUpon>facelec.cs</DependentUpon>
+    <Compile Include="facelect.designer.cs">
+      <DependentUpon>facelect.cs</DependentUpon>
     </Compile>
     <Compile Include="frmvizoper.cs">
       <SubType>Form</SubType>
@@ -228,8 +228,8 @@
     <EmbeddedResource Include="enlaces.resx">
       <DependentUpon>enlaces.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="facelec.resx">
-      <DependentUpon>facelec.cs</DependentUpon>
+    <EmbeddedResource Include="facelect.resx">
+      <DependentUpon>facelect.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmvizoper.resx">
       <DependentUpon>frmvizoper.cs</DependentUpon>

@@ -398,7 +398,7 @@ namespace TransCarga
         }
         private void fac_rapida_Click(object sender, EventArgs e)       // factura rapida
         {
-            facelec ffe1 = new TransCarga.facelec();
+            facelect ffe1 = new TransCarga.facelect();
             ffe1.TopLevel = false;
             ffe1.Parent = this;
             ffe1.Top = pn_phor.Top + pn_phor.Height + 1;

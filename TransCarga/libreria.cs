@@ -3067,7 +3067,7 @@ namespace TransCarga
         public bool procConn(MySqlConnection con)
         {
             bool retorna = false;
-            while (true)
+            while (con.State != ConnectionState.Open)
             {
                 try
                 {
@@ -3085,6 +3085,7 @@ namespace TransCarga
                         "DESEA SEGUIR ESPERANDO ....?","Error de conectividad",MessageBoxButtons.YesNo,MessageBoxIcon.Question);
                     if (xx == DialogResult.No)
                     {
+                        retorna = false;
                         break;
                     }
                 }
