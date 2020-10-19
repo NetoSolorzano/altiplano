@@ -1655,7 +1655,7 @@ namespace TransCarga
                 if (Tx_modo.Text == "NUEVO" || Tx_modo.Text == "EDITAR")
                 {
                     string[] datos = lib.datossn("CLI", tx_dat_tdRem.Text.Trim(), tx_numDocRem.Text.Trim());
-                    if (datos.Length > 0)
+                    if (datos[0] != "")   // datos.Length > 0
                     {
                         tx_nomRem.Text = datos[0];
                         tx_dirRem.Text = datos[1];
@@ -1721,7 +1721,7 @@ namespace TransCarga
                 if (Tx_modo.Text == "NUEVO" || Tx_modo.Text == "EDITAR")
                 {
                     string[] datos = lib.datossn("CLI", tx_dat_tDdest.Text.Trim(), tx_numDocDes.Text.Trim());
-                    if (datos.Length > 0)
+                    if (datos[0] != "")   // datos.Length > 0
                     {
                         tx_nomDrio.Text = datos[0];
                         tx_dirDrio.Text = datos[1];
