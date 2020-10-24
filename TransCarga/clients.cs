@@ -36,6 +36,7 @@ namespace TransCarga
         string vtc_dni = "";
         string vtc_ruc = "";
         static libreria lib = new libreria();
+        DataTable dataUbig = (DataTable)CacheManager.GetItem("ubigeos");
         string verapp = System.Diagnostics.FileVersionInfo.GetVersionInfo(Application.ExecutablePath).FileVersion;
         string iplan = lib.iplan();
         string ipwan = lib.ipwan();
@@ -290,71 +291,23 @@ namespace TransCarga
         }
         private void autodepa()                 // se jala en el load
         {
-            MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
-            conn.Open();
-            if (conn.State == ConnectionState.Open)
+            DataRow[] depar = dataUbig.Select("depart<>'00' and provin='00' and distri='00'");
+            departamentos.Clear();
+            foreach (DataRow row in depar)
             {
-                string consulta = "select nombre from ubigeos where depart<>'00' and provin='00' and distri='00'";
-                MySqlCommand micon = new MySqlCommand(consulta, conn);
-                try
-                {
-                    MySqlDataReader dr = micon.ExecuteReader();
-                    if (dr.HasRows == true)
-                    {
-                        while (dr.Read())
-                        {
-                            departamentos.Add(dr["nombre"].ToString());
-                        }
-                    }
-                    dr.Close();
-                }
-                catch (MySqlException ex)
-                {
-                    MessageBox.Show(ex.Message, "Error en obtener relación de departamentos", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    Application.Exit();
-                    return;
-                }
-                conn.Close();
-            }
-            else
-            {
-                MessageBox.Show("No se puede conectar al servidor!", "Error de conectividad", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                departamentos.Add(row["nombre"].ToString());
             }
         }
         private void autoprov()                 // se jala despues de ingresado el departamento
         {
-            if (textBox13.Text.Trim() != "")
+            if (textBox13.Text.Length > 1)
             {
-                MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
-                conn.Open();
-                if (conn.State == ConnectionState.Open)
+                DataRow[] provi = null;
+                provi = dataUbig.Select("depart='" + textBox13.Text.Substring(0, 2) + "' and provin<>'00' and distri='00'");
+                provincias.Clear();
+                foreach (DataRow row in provi)
                 {
-                    string consulta = "select nombre from ubigeos where depart=@dep and provin<>'00' and distri='00'";
-                    MySqlCommand micon = new MySqlCommand(consulta, conn);
-                    micon.Parameters.AddWithValue("@dep", textBox13.Text.Substring(0, 2));
-                    try
-                    {
-                        MySqlDataReader dr = micon.ExecuteReader();
-                        if (dr.HasRows == true)
-                        {
-                            while (dr.Read())
-                            {
-                                provincias.Add(dr["nombre"].ToString());
-                            }
-                        }
-                        dr.Close();
-                    }
-                    catch (MySqlException ex)
-                    {
-                        MessageBox.Show(ex.Message, "Error en obtener relación de provincias", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        Application.Exit();
-                        return;
-                    }
-                    conn.Close();
-                }
-                else
-                {
-                    MessageBox.Show("No se puede conectar al servidor!", "Error de conectividad", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    provincias.Add(row["nombre"].ToString());
                 }
             }
         }
@@ -362,38 +315,14 @@ namespace TransCarga
         {
             if (textBox13.Text.Trim() != "" && textBox8.Text.Trim() != "")
             {
-                MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
-                conn.Open();
-                if (conn.State == ConnectionState.Open)
+                DataRow[] distr = null;
+                distr = dataUbig.Select("depart='" + textBox13.Text.Substring(0, 2) + "' and provin='" + textBox13.Text.Substring(2, 2) + "' and distri<>'00'");
+                distritos.Clear();
+                foreach (DataRow row in distr)
                 {
-                    string consulta = "select nombre from ubigeos where depart=@dep and provin=@prov and distri<>'00'";
-                    MySqlCommand micon = new MySqlCommand(consulta, conn);
-                    micon.Parameters.AddWithValue("@dep", textBox13.Text.Substring(0, 2));
-                    micon.Parameters.AddWithValue("@prov", (textBox13.Text.Length > 2)? textBox13.Text.Substring(2, 2):"  ");
-                    try
-                    {
-                        MySqlDataReader dr = micon.ExecuteReader();
-                        if (dr.HasRows == true)
-                        {
-                            while (dr.Read())
-                            {
-                                distritos.Add(dr["nombre"].ToString());
-                            }
-                        }
-                        dr.Close();
-                    }
-                    catch (MySqlException ex)
-                    {
-                        MessageBox.Show(ex.Message, "Error en obtener relación de distritos", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        Application.Exit();
-                        return;
-                    }
-                    conn.Close();
+                    distritos.Add(row["nombre"].ToString());
                 }
-                else
-                {
-                    MessageBox.Show("No se puede conectar al servidor!", "Error de conectividad", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                }
+
             }
         }
         #endregion autocompletados
@@ -746,119 +675,40 @@ namespace TransCarga
         }
         private void textBox7_Leave(object sender, EventArgs e)         // departamento, jala provincia
         {
-            if(textBox7.Text != "" && TransCarga.Program.vg_conSol == false)
+            if(textBox7.Text != "") //  && TransCarga.Program.vg_conSol == false
             {
-                MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
-                conn.Open();
-                if (conn.State == ConnectionState.Open)
+                DataRow[] row = dataUbig.Select("nombre='" + textBox7.Text.Trim() + "' and provin='00' and distri='00'");
+                if (row.Length > 0)
                 {
-                    string consulta = "select depart from ubigeos where trim(nombre)=@dep and depart<>'00' and provin='00' and distri='00'";
-                    MySqlCommand micon = new MySqlCommand(consulta, conn);
-                    micon.Parameters.AddWithValue("@dep", textBox7.Text.Trim());
-                    try
-                    {
-                        MySqlDataReader dr = micon.ExecuteReader();
-                        if (dr.HasRows == true)
-                        {
-                            while (dr.Read())
-                            {
-                                textBox13.Text = dr.GetString(0).Trim();
-                            }
-                        }
-                        dr.Close();
-                    }
-                    catch (MySqlException ex)
-                    {
-                        MessageBox.Show(ex.Message, "Error en obtener codigo de departamento", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        Application.Exit();
-                        return;
-                    }
-                    conn.Close();
+                    textBox13.Text = row[0].ItemArray[1].ToString();
+                    autoprov();
                 }
-                else
-                {
-                    MessageBox.Show("No se puede conectar al servidor!", "Error de conectividad", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                }
-                autoprov();
+                else textBox7.Text = "";
             }
         }
         private void textBox8_Leave(object sender, EventArgs e)         // provincia de un departamento, jala distrito
         {
-            if(textBox8.Text != "" && textBox7.Text.Trim() != "" && TransCarga.Program.vg_conSol == false)
+            if(textBox8.Text != "" && textBox7.Text.Trim() != "")   //  && TransCarga.Program.vg_conSol == false
             {
-                MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
-                conn.Open();
-                if (conn.State == ConnectionState.Open)
+                DataRow[] row = dataUbig.Select("depart='" + textBox13.Text.Substring(0, 2) + "' and nombre='" + textBox8.Text.Trim() + "' and provin<>'00' and distri='00'");
+                if (row.Length > 0)
                 {
-                    string consulta = "select provin from ubigeos where trim(nombre)=@prov and depart=@dep and provin<>'00' and distri='00'";
-                    MySqlCommand micon = new MySqlCommand(consulta, conn);
-                    micon.Parameters.AddWithValue("@dep", textBox13.Text.Substring(0, 2));
-                    micon.Parameters.AddWithValue("@prov", textBox8.Text.Trim());
-                    try
-                    {
-                        MySqlDataReader dr = micon.ExecuteReader();
-                        if (dr.HasRows == true)
-                        {
-                            while (dr.Read())
-                            {
-                                if (textBox13.Text.Trim().Length == 6) textBox13.Text = textBox13.Text.Substring(0,2) + dr.GetString(0).Trim() + textBox13.Text.Substring(4, 2);
-                                if (textBox13.Text.Trim().Length < 6) textBox13.Text = textBox13.Text.Substring(0, 2) + dr.GetString(0).Trim();
-                            }
-                        }
-                        dr.Close();
-                    }
-                    catch (MySqlException ex)
-                    {
-                        MessageBox.Show(ex.Message, "Error en obtener codigo de provincia", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        Application.Exit();
-                        return;
-                    }
-                    conn.Close();
+                    textBox13.Text = textBox13.Text.Trim() + row[0].ItemArray[2].ToString();
+                    autodist();
                 }
-                else
-                {
-                    MessageBox.Show("No se puede conectar al servidor!", "Error de conectividad", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                }
-                autodist();
+                else textBox8.Text = "";
             }
         }
         private void textBox9_Leave(object sender, EventArgs e)
         {
-            if(textBox9.Text.Trim() != "" && textBox8.Text.Trim() != "" && textBox7.Text.Trim() != "" && TransCarga.Program.vg_conSol == false)
+            if(textBox9.Text.Trim() != "" && textBox8.Text.Trim() != "" && textBox7.Text.Trim() != "")  //  && TransCarga.Program.vg_conSol == false
             {
-                MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
-                conn.Open();
-                if (conn.State == ConnectionState.Open)
+                DataRow[] row = dataUbig.Select("depart='" + textBox13.Text.Substring(0, 2) + "' and provin='" + textBox13.Text.Substring(2, 2) + "' and nombre='" + textBox9.Text.Trim() + "'");
+                if (row.Length > 0)
                 {
-                    string consulta = "select distri from ubigeos where trim(nombre)=@dist and depart=@dep and provin=@prov and distri<>'00'";
-                    MySqlCommand micon = new MySqlCommand(consulta, conn);
-                    micon.Parameters.AddWithValue("@dep", textBox13.Text.Substring(0, 2));
-                    micon.Parameters.AddWithValue("@prov", (textBox13.Text.Length > 2)? textBox13.Text.Substring(2, 2):"  ");
-                    micon.Parameters.AddWithValue("@dist", textBox9.Text.Trim());
-                    try
-                    {
-                        MySqlDataReader dr = micon.ExecuteReader();
-                        if (dr.HasRows == true)
-                        {
-                            while (dr.Read())
-                            {
-                                if(textBox13.Text.Trim().Length >= 4) textBox13.Text = textBox13.Text.Trim().Substring(0,4) + dr.GetString(0).Trim();
-                            }
-                        }
-                        dr.Close();
-                    }
-                    catch (MySqlException ex)
-                    {
-                        MessageBox.Show(ex.Message, "Error en obtener codigo de distrito", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        Application.Exit();
-                        return;
-                    }
-                    conn.Close();
+                    textBox13.Text = textBox13.Text.Trim() + row[0].ItemArray[3].ToString();
                 }
-                else
-                {
-                    MessageBox.Show("No se puede conectar al servidor!", "Error de conectividad", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                }
+                else textBox9.Text = "";
             }
         }
         private void textBox12_Leave(object sender, EventArgs e)        // correo electrónico

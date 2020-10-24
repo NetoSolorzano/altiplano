@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -198,5 +199,35 @@ namespace TransCarga
             return (int)pixel;
         }
 
+    }
+    public class CacheManager
+    {
+        static System.Collections.Hashtable ht = new System.Collections.Hashtable();
+        public static void AddItem(string key, object value, uint timeToCache)
+        {
+            if (timeToCache > 3600)
+                throw new ArgumentOutOfRangeException("Cache time cannot be more than 1 hour.");
+            System.Threading.Timer t = new System.Threading.Timer(new TimerCallback(TimerProc));
+            t.Change(timeToCache * 1000, System.Threading.Timeout.Infinite);
+            ht.Add(t, key);
+            AppDomain.CurrentDomain.SetData(key, value);
+        }
+        public static object GetItem(string key)
+        {
+            return AppDomain.CurrentDomain.GetData(key);
+        }
+        private static void TimerProc(object state)
+        {
+            System.Threading.Timer t = state as System.Threading.Timer;
+            if (t != null)
+            {
+                object key = ht[t];
+                ht.Remove(t);
+                t.Dispose();
+
+                if (key != null)
+                    AppDomain.CurrentDomain.SetData(key.ToString(), null);
+            }
+        }
     }
 }

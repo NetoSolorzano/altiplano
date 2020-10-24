@@ -565,7 +565,7 @@
             this.groupBox11.Controls.Add(this.groupBox12);
             this.groupBox11.Location = new System.Drawing.Point(12, 151);
             this.groupBox11.Name = "groupBox11";
-            this.groupBox11.Size = new System.Drawing.Size(740, 1);
+            this.groupBox11.Size = new System.Drawing.Size(721, 1);
             this.groupBox11.TabIndex = 262;
             this.groupBox11.TabStop = false;
             // 
@@ -603,7 +603,7 @@
             this.groupBox7.Controls.Add(this.groupBox8);
             this.groupBox7.Location = new System.Drawing.Point(12, 124);
             this.groupBox7.Name = "groupBox7";
-            this.groupBox7.Size = new System.Drawing.Size(740, 1);
+            this.groupBox7.Size = new System.Drawing.Size(720, 1);
             this.groupBox7.TabIndex = 258;
             this.groupBox7.TabStop = false;
             // 
@@ -1018,7 +1018,7 @@
             this.groupBox19.Controls.Add(this.groupBox20);
             this.groupBox19.Location = new System.Drawing.Point(153, 52);
             this.groupBox19.Name = "groupBox19";
-            this.groupBox19.Size = new System.Drawing.Size(604, 1);
+            this.groupBox19.Size = new System.Drawing.Size(580, 1);
             this.groupBox19.TabIndex = 291;
             this.groupBox19.TabStop = false;
             // 
@@ -1036,7 +1036,7 @@
             this.groupBox21.Controls.Add(this.groupBox22);
             this.groupBox21.Location = new System.Drawing.Point(153, 81);
             this.groupBox21.Name = "groupBox21";
-            this.groupBox21.Size = new System.Drawing.Size(604, 1);
+            this.groupBox21.Size = new System.Drawing.Size(580, 1);
             this.groupBox21.TabIndex = 292;
             this.groupBox21.TabStop = false;
             // 
@@ -1068,6 +1068,7 @@
             this.tx_ubigRtt.Name = "tx_ubigRtt";
             this.tx_ubigRtt.Size = new System.Drawing.Size(33, 18);
             this.tx_ubigRtt.TabIndex = 294;
+            this.tx_ubigRtt.Visible = false;
             this.tx_ubigRtt.Leave += new System.EventHandler(this.textBox13_Leave);
             // 
             // tx_ubigDtt
@@ -1079,6 +1080,7 @@
             this.tx_ubigDtt.Name = "tx_ubigDtt";
             this.tx_ubigDtt.Size = new System.Drawing.Size(33, 18);
             this.tx_ubigDtt.TabIndex = 308;
+            this.tx_ubigDtt.Visible = false;
             this.tx_ubigDtt.Leave += new System.EventHandler(this.tx_ubigDtt_Leave);
             // 
             // tx_mldD
@@ -1130,7 +1132,7 @@
             this.groupBox1.Controls.Add(this.groupBox2);
             this.groupBox1.Location = new System.Drawing.Point(12, 207);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(740, 1);
+            this.groupBox1.Size = new System.Drawing.Size(721, 1);
             this.groupBox1.TabIndex = 306;
             this.groupBox1.TabStop = false;
             // 
@@ -1168,7 +1170,7 @@
             this.groupBox3.Controls.Add(this.groupBox4);
             this.groupBox3.Location = new System.Drawing.Point(12, 180);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(740, 1);
+            this.groupBox3.Size = new System.Drawing.Size(721, 1);
             this.groupBox3.TabIndex = 304;
             this.groupBox3.TabStop = false;
             // 
@@ -1286,7 +1288,7 @@
             this.tx_consig.Location = new System.Drawing.Point(491, 217);
             this.tx_consig.MaxLength = 0;
             this.tx_consig.Name = "tx_consig";
-            this.tx_consig.Size = new System.Drawing.Size(242, 18);
+            this.tx_consig.Size = new System.Drawing.Size(262, 18);
             this.tx_consig.TabIndex = 20;
             // 
             // dataGridView1
@@ -1630,7 +1632,7 @@
             this.tx_obser1.Location = new System.Drawing.Point(91, 244);
             this.tx_obser1.MaxLength = 0;
             this.tx_obser1.Name = "tx_obser1";
-            this.tx_obser1.Size = new System.Drawing.Size(642, 18);
+            this.tx_obser1.Size = new System.Drawing.Size(661, 18);
             this.tx_obser1.TabIndex = 332;
             // 
             // chk_flete

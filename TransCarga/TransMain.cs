@@ -156,6 +156,8 @@ namespace TransCarga
             menuStrip1.Visible = true;
             pn_menu.Controls.Add(menuStrip1);
             menuStrip1.Dock = DockStyle.Top;
+            //
+            dataload();                                         // jalamos datos comunes a todo el sistema
         }
 
         private void jalainfo()
@@ -281,7 +283,32 @@ namespace TransCarga
                 return;
             }
         }
-
+        private void dataload()
+        {
+            using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
+            {
+                try
+                {
+                    conn.Open();
+                }
+                catch (MySqlException ex)
+                {
+                    MessageBox.Show("No fue posible conectarse al servidor","Error en la conexión",MessageBoxButtons.OK,MessageBoxIcon.Error);
+                    Application.Exit();
+                }
+                // tabla de ubigeos - departamentos, provincias, distritos
+                string consulta = "select * from ubigeos";
+                using (MySqlCommand micon = new MySqlCommand(consulta, conn))
+                {
+                    using (MySqlDataAdapter da = new MySqlDataAdapter(micon))
+                    {
+                        DataTable dtu = new DataTable();
+                        da.Fill(dtu);
+                        CacheManager.AddItem("ubigeos", dtu, 300);
+                    }
+                }
+            }
+        }
         public string[] toolboton(string formu)
         {
             string[] retorno = new string[3];
