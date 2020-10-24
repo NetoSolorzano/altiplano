@@ -130,6 +130,7 @@ namespace TransCarga
             textBox11.MaxLength = 15;           // telef. 2
             textBox12.MaxLength = 50;          // correo electr.
             // 
+            textBox13.ReadOnly = true;          // ubigeos, no se escribe
         }
         private void jalainfo()                 // obtiene datos de imagenes
         {
@@ -322,7 +323,6 @@ namespace TransCarga
                 {
                     distritos.Add(row["nombre"].ToString());
                 }
-
             }
         }
         #endregion autocompletados
@@ -383,6 +383,7 @@ namespace TransCarga
                     oControls.Enabled = true;
                 }
             }
+            textBox13.ReadOnly = true;
         }
         public static void limpiar(Form ofrm)
         {
@@ -685,6 +686,7 @@ namespace TransCarga
                 }
                 else textBox7.Text = "";
             }
+            textBox8.Focus();
         }
         private void textBox8_Leave(object sender, EventArgs e)         // provincia de un departamento, jala distrito
         {
@@ -693,20 +695,21 @@ namespace TransCarga
                 DataRow[] row = dataUbig.Select("depart='" + textBox13.Text.Substring(0, 2) + "' and nombre='" + textBox8.Text.Trim() + "' and provin<>'00' and distri='00'");
                 if (row.Length > 0)
                 {
-                    textBox13.Text = textBox13.Text.Trim() + row[0].ItemArray[2].ToString();
+                    textBox13.Text = textBox13.Text.Trim().Substring(0,2) + row[0].ItemArray[2].ToString();
                     autodist();
                 }
                 else textBox8.Text = "";
+                textBox9.Focus();
             }
         }
         private void textBox9_Leave(object sender, EventArgs e)
         {
             if(textBox9.Text.Trim() != "" && textBox8.Text.Trim() != "" && textBox7.Text.Trim() != "")  //  && TransCarga.Program.vg_conSol == false
             {
-                DataRow[] row = dataUbig.Select("depart='" + textBox13.Text.Substring(0, 2) + "' and provin='" + textBox13.Text.Substring(2, 2) + "' and nombre='" + textBox9.Text.Trim() + "'");
+                DataRow[] row = dataUbig.Select("depart='" + textBox13.Text.Substring(0, 2) + "' and provin='" + textBox13.Text.Substring(2, 2) + "' and nombre='" + textBox9.Text.Trim() + "' and distri<>'00'");
                 if (row.Length > 0)
                 {
-                    textBox13.Text = textBox13.Text.Trim() + row[0].ItemArray[3].ToString();
+                    textBox13.Text = textBox13.Text.Trim().Substring(0,4) + row[0].ItemArray[3].ToString();
                 }
                 else textBox9.Text = "";
             }
@@ -725,8 +728,15 @@ namespace TransCarga
         }
         private void textBox13_Leave(object sender, EventArgs e)        // ubigeo
         {
-            if(textBox13.Text.Trim() != "" && TransCarga.Program.vg_conSol == false)
+            if(textBox13.Text.Trim() != "" && textBox13.Text.Trim().Length > 5) // && TransCarga.Program.vg_conSol == false
             {
+                DataRow[] row = dataUbig.Select("depart='" + textBox13.Text.Substring(0,2) + "' and provin='00' and distri='00'");
+                if (row.Length > 0) textBox7.Text = row[0].ItemArray[4].ToString();
+                row = dataUbig.Select("depart='" + textBox13.Text.Substring(0, 2) + "' and provin='" + textBox13.Text.Substring(2, 2) + "' and distri='00'");
+                if (row.Length > 0) textBox8.Text = row[0].ItemArray[4].ToString();
+                row = dataUbig.Select("depart='" + textBox13.Text.Substring(0, 2) + "' and provin='" + textBox13.Text.Substring(2, 2) + "' and distri='" + textBox13.Text.Substring(4, 2) + "'");
+                if (row.Length > 0) textBox9.Text = row[0].ItemArray[4].ToString();
+                /*
                 MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
                 conn.Open();
                 if (conn.State == ConnectionState.Open)
@@ -765,6 +775,7 @@ namespace TransCarga
                 {
                     MessageBox.Show("No se puede conectar al servidor!", "Error de conectividad", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 }
+                */
             }
         }
         private void textBox3_Leave(object sender, EventArgs e)         // número de documento
@@ -982,7 +993,8 @@ namespace TransCarga
             limpiar(this);
             limpia_otros();
             limpia_combos();
-            jalaoc("tx_idr");
+            //jalaoc("tx_idr");
+            textBox1.Focus();
         }
         private void Bt_close_Click(object sender, EventArgs e)
         {
