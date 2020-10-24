@@ -72,6 +72,7 @@ namespace TransCarga
         AutoCompleteStringCollection departamentos = new AutoCompleteStringCollection();// autocompletado departamentos
         AutoCompleteStringCollection provincias = new AutoCompleteStringCollection();   // autocompletado provincias
         AutoCompleteStringCollection distritos = new AutoCompleteStringCollection();    // autocompletado distritos
+        DataTable dataUbig = (DataTable)CacheManager.GetItem("ubigeos");
 
         // string de conexion
         //static string serv = ConfigurationManager.AppSettings["serv"].ToString();
@@ -756,44 +757,42 @@ namespace TransCarga
         }
 
         #region autocompletados
-        private void autodepa()                 // se jala en el load
+        private void autodepa()                 // 
         {
-            MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
-            conn.Open();
-            if (conn.State == ConnectionState.Open)
+            DataRow[] depar = dataUbig.Select("depart<>'00' and provin='00' and distri='00'");
+            departamentos.Clear();
+            foreach (DataRow row in depar)
             {
-                string consulta = "select nombre from ubigeos where depart<>'00' and provin='00' and distri='00'";
-                MySqlCommand micon = new MySqlCommand(consulta, conn);
-                try
-                {
-                    MySqlDataReader dr = micon.ExecuteReader();
-                    if (dr.HasRows == true)
-                    {
-                        while (dr.Read())
-                        {
-                            departamentos.Add(dr["nombre"].ToString());
-                        }
-                    }
-                    dr.Close();
-                }
-                catch (MySqlException ex)
-                {
-                    MessageBox.Show(ex.Message, "Error en obtener relación de departamentos", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    Application.Exit();
-                    return;
-                }
-                conn.Close();
-            }
-            else
-            {
-                MessageBox.Show("No se puede conectar al servidor!", "Error de conectividad", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                departamentos.Add(row["nombre"].ToString());
             }
         }
         private void autoprov(string marca)                 // se jala despues de ingresado el departamento
         {
             if (marca != "")   // tx_ubigO.Text.Trim() != ""
             {
-                MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
+                DataRow[] provi = null;
+                if (marca == "tx_ubigO")
+                {
+                    provi = dataUbig.Select("depart='" + tx_ubigO.Text.Substring(0, 2) + "' and provin<>'00' and distri='00'");
+                }
+                if (marca == "tx_ubigD")
+                {
+                    provi = dataUbig.Select("depart='" + tx_ubigD.Text.Substring(0, 2) + "' and provin<>'00' and distri='00'");
+                }
+                if (marca == "tx_ubigRtt")
+                {
+                    provi = dataUbig.Select("depart='" + tx_ubigRtt.Text.Substring(0, 2) + "' and provin<>'00' and distri='00'");
+                }
+                if (marca == "tx_ubigDtt")
+                {
+                    provi = dataUbig.Select("depart='" + tx_ubigDtt.Text.Substring(0, 2) + "' and provin<>'00' and distri='00'");
+                }
+                provincias.Clear();
+                foreach (DataRow row in provi)
+                {
+                    provincias.Add(row["nombre"].ToString());
+                }
+                /*MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
                 conn.Open();
                 if (conn.State == ConnectionState.Open)
                 {
@@ -826,62 +825,34 @@ namespace TransCarga
                 else
                 {
                     MessageBox.Show("No se puede conectar al servidor!", "Error de conectividad", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                }
+                }*/
             }
         }
         private void autodist(string marca)                 // se jala despues de ingresado la provincia
         {
             if (marca != "")
-            {   // tx_ubigO.Text.Trim() != "" && tx_provRtt.Text.Trim() != ""
-                MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
-                conn.Open();
-                if (conn.State == ConnectionState.Open)
+            {
+                DataRow[] distr = null;
+                if (marca == "tx_ubigO")
                 {
-                    string consulta = "select nombre from ubigeos where depart=@dep and provin=@prov and distri<>'00'";
-                    MySqlCommand micon = new MySqlCommand(consulta, conn);
-                    if (marca == "tx_ubigO")
-                    {
-                        micon.Parameters.AddWithValue("@dep", tx_ubigO.Text.Substring(0, 2));
-                        micon.Parameters.AddWithValue("@prov", (tx_ubigO.Text.Length > 2) ? tx_ubigO.Text.Substring(2, 2) : "  ");
-                    }
-                    if (marca == "tx_ubigD")
-                    {
-                        micon.Parameters.AddWithValue("@dep", tx_ubigD.Text.Substring(0, 2));
-                        micon.Parameters.AddWithValue("@prov", (tx_ubigD.Text.Length > 2) ? tx_ubigD.Text.Substring(2, 2) : "  ");
-                    }
-                    if (marca == "tx_ubigRtt")
-                    {
-                        micon.Parameters.AddWithValue("@dep", tx_ubigRtt.Text.Substring(0, 2));
-                        micon.Parameters.AddWithValue("@prov", (tx_ubigRtt.Text.Length > 2) ? tx_ubigRtt.Text.Substring(2, 2) : "  ");
-                    }
-                    if (marca == "tx_ubigDtt")
-                    {
-                        micon.Parameters.AddWithValue("@dep", tx_ubigDtt.Text.Substring(0, 2));
-                        micon.Parameters.AddWithValue("@prov", (tx_ubigDtt.Text.Length > 2) ? tx_ubigDtt.Text.Substring(2, 2) : "  ");
-                    }
-                    try
-                    {
-                        MySqlDataReader dr = micon.ExecuteReader();
-                        if (dr.HasRows == true)
-                        {
-                            while (dr.Read())
-                            {
-                                distritos.Add(dr["nombre"].ToString());
-                            }
-                        }
-                        dr.Close();
-                    }
-                    catch (MySqlException ex)
-                    {
-                        MessageBox.Show(ex.Message, "Error en obtener relación de distritos", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        Application.Exit();
-                        return;
-                    }
-                    conn.Close();
+                    distr = dataUbig.Select("depart='" + tx_ubigO.Text.Substring(0, 2) + "' and provin='" + tx_ubigO.Text.Substring(2, 2) + "' and distri<>'00'");
                 }
-                else
+                if (marca == "tx_ubigD")
                 {
-                    MessageBox.Show("No se puede conectar al servidor!", "Error de conectividad", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    distr = dataUbig.Select("depart='" + tx_ubigD.Text.Substring(0, 2) + "' and provin='" + tx_ubigD.Text.Substring(2, 2) + "' and distri<>'00'");
+                }
+                if (marca == "tx_ubigRtt")
+                {
+                    distr = dataUbig.Select("depart='" + tx_ubigRtt.Text.Substring(0, 2) + "' and provin='" + tx_ubigRtt.Text.Substring(2, 2) + "' and distri<>'00'");
+                }
+                if (marca == "tx_ubigDtt")
+                {
+                    distr = dataUbig.Select("depart='" + tx_ubigDtt.Text.Substring(0, 2) + "' and provin='" + tx_ubigDtt.Text.Substring(2, 2) + "' and distri<>'00'");
+                }
+                distritos.Clear();
+                foreach (DataRow row in distr)
+                {
+                    distritos.Add(row["nombre"].ToString());
                 }
             }
         }
@@ -1007,6 +978,12 @@ namespace TransCarga
                 tx_dirRem.Focus();
                 return;
             }
+            if (tx_dptoRtt.Text.Trim() == "" || tx_provRtt.Text.Trim() == "" || tx_distRtt.Text.Trim() == "")
+            {
+                MessageBox.Show("Complete la dirección, departamento, provincia y distrito", "Error en remitente", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                tx_dirRem.Focus();
+                return;
+            }
             if (tx_dat_tDdest.Text.Trim() == "")
             {
                 MessageBox.Show("Seleccione el tipo de documento", " Error en Destinatario ");
@@ -1035,6 +1012,12 @@ namespace TransCarga
             {
                 MessageBox.Show("Registre los documentos origen", " Faltan datos ");
                 tx_docsOr.Focus();
+                return;
+            }
+            if (tx_dptoDrio.Text.Trim() == "" || tx_proDrio.Text.Trim() == "" || tx_disDrio.Text.Trim() == "")
+            {
+                MessageBox.Show("Complete la dirección, departamento, provincia y distrito", "Error en destinatario", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                tx_dirDrio.Focus();
                 return;
             }
             #endregion
@@ -1598,23 +1581,38 @@ namespace TransCarga
         {
             if(tx_dptoRtt.Text.Trim() != "")    //  && TransCarga.Program.vg_conSol == false
             {
-                tx_ubigRtt.Text = lib.retCodubigeo(tx_dptoRtt.Text.Trim(),"","");
-                autoprov("tx_ubigRtt");
+                DataRow[] row = dataUbig.Select("nombre='" + tx_dptoRtt.Text.Trim() + "' and provin='00' and distri='00'");
+                if (row.Length > 0)
+                {
+                    tx_ubigRtt.Text = row[0].ItemArray[1].ToString(); // lib.retCodubigeo(tx_dptoRtt.Text.Trim(),"","");
+                    autoprov("tx_ubigRtt");
+                }
+                else tx_dptoRtt.Text = "";
             }
         }
         private void textBox8_Leave(object sender, EventArgs e)         // provincia del remitente
         {
             if(tx_provRtt.Text != "" && tx_dptoRtt.Text.Trim() != "")   //  && TransCarga.Program.vg_conSol == false
             {
-                tx_ubigRtt.Text = lib.retCodubigeo("", tx_provRtt.Text.Trim(), tx_ubigRtt.Text.Trim());
-                autodist("tx_ubigRtt");
+                DataRow[] row = dataUbig.Select("depart='" + tx_ubigRtt.Text.Substring(0, 2) + "' and nombre='" + tx_provRtt.Text.Trim() + "' and provin<>'00' and distri='00'");
+                if (row.Length > 0)
+                {
+                    tx_ubigRtt.Text = tx_ubigRtt.Text.Trim().Substring(0,2) + row[0].ItemArray[2].ToString();
+                    autodist("tx_ubigRtt");
+                }
+                else tx_provRtt.Text = "";
             }
         }
         private void textBox9_Leave(object sender, EventArgs e)         // distrito del remitente
         {
             if(tx_distRtt.Text.Trim() != "" && tx_provRtt.Text.Trim() != "" && tx_dptoRtt.Text.Trim() != "") //  && TransCarga.Program.vg_conSol == false
             {
-                tx_ubigRtt.Text = lib.retCodubigeo(tx_distRtt.Text.Trim(),"",tx_ubigRtt.Text.Trim());
+                DataRow[] row = dataUbig.Select("depart='" + tx_ubigRtt.Text.Substring(0, 2) + "' and provin='" + tx_ubigRtt.Text.Substring(2, 2) + "' and nombre='" + tx_distRtt.Text.Trim() + "'");
+                if (row.Length > 0)
+                {
+                    tx_ubigRtt.Text = tx_ubigRtt.Text.Trim().Substring(0,4) + row[0].ItemArray[3].ToString(); // lib.retCodubigeo(tx_distRtt.Text.Trim(),"",tx_ubigRtt.Text.Trim());
+                }
+                else tx_distRtt.Text = "";
             }
         }
         private void textBox13_Leave(object sender, EventArgs e)        // ubigeo del remitente
@@ -1631,23 +1629,38 @@ namespace TransCarga
         {
             if (tx_dptoDrio.Text.Trim() != "")  //  && TransCarga.Program.vg_conSol == false
             {
-                tx_ubigDtt.Text = lib.retCodubigeo(tx_dptoDrio.Text.Trim(),"","");
-                autoprov("tx_ubigDtt");
+                DataRow[] row = dataUbig.Select("nombre='" + tx_dptoDrio.Text.Trim() + "' and provin='00' and distri='00'");
+                if (row.Length > 0)
+                {
+                    tx_ubigDtt.Text = row[0].ItemArray[1].ToString(); // lib.retCodubigeo(tx_dptoRtt.Text.Trim(),"","");
+                    autoprov("tx_ubigDtt");
+                }
+                else tx_dptoDrio.Text = "";
             }
         }
         private void tx_proDio_Leave(object sender, EventArgs e)      // provincia del destinatario
         {
             if (tx_proDrio.Text.Trim() != "" && tx_dptoDrio.Text.Trim() != "")  //  && TransCarga.Program.vg_conSol == false
             {
-                tx_ubigDtt.Text = lib.retCodubigeo("", tx_proDrio.Text.Trim(), tx_ubigDtt.Text.Trim());
-                autodist("tx_ubigDtt");
+                DataRow[] row = dataUbig.Select("depart='" + tx_ubigDtt.Text.Substring(0, 2) + "' and nombre='" + tx_proDrio.Text.Trim() + "' and provin<>'00' and distri='00'");
+                if (row.Length > 0)
+                {
+                    tx_ubigDtt.Text = tx_ubigDtt.Text.Trim().Substring(0, 2) + row[0].ItemArray[2].ToString();
+                    autodist("tx_ubigDtt");
+                }
+                else tx_proDrio.Text = "";
             }
         }
         private void tx_disDrio_Leave(object sender, EventArgs e)      // distrito del destinatario
         {
             if (tx_proDrio.Text.Trim() != "" && tx_dptoDrio.Text.Trim() != "" && tx_disDrio.Text.Trim() != "")
-            {   //  && TransCarga.Program.vg_conSol == false
-                tx_ubigDtt.Text = lib.retCodubigeo(tx_disDrio.Text.Trim(), "", tx_ubigDtt.Text.Trim());
+            {
+                DataRow[] row = dataUbig.Select("depart='" + tx_ubigDtt.Text.Substring(0, 2) + "' and provin='" + tx_ubigDtt.Text.Substring(2, 2) + "' and nombre='" + tx_disDrio.Text.Trim() + "'");
+                if (row.Length > 0)
+                {
+                    tx_ubigDtt.Text = tx_ubigDtt.Text.Trim().Substring(0, 4) + row[0].ItemArray[3].ToString(); // lib.retCodubigeo(tx_distRtt.Text.Trim(),"",tx_ubigRtt.Text.Trim());
+                }
+                else tx_disDrio.Text = "";
             }
         }
         private void tx_ubigDtt_Leave(object sender, EventArgs e)      // ubigeo destinatario
@@ -2503,8 +2516,16 @@ namespace TransCarga
             ReportDocument repo = new ReportDocument();
             repo.Load(v_CR_gr_ind);
             repo.SetDataSource(data);
-            repo.PrintOptions.PrinterName = v_impA5;
-            repo.PrintToPrinter(int.Parse(vi_copias),false,1,1);
+            try
+            {
+                repo.PrintOptions.PrinterName = v_impA5;
+                repo.PrintToPrinter(int.Parse(vi_copias), false, 1, 1);
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show("No se encuentra la impresora de las guías" + Environment.NewLine +
+                    ex.Message, "Error en configuración", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
         private conClie generaReporte()
         {

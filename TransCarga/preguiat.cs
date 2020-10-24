@@ -1283,7 +1283,6 @@ namespace TransCarga
                     tx_ubigRtt.Text = tx_ubigRtt.Text.Trim() + row[0].ItemArray[3].ToString(); // lib.retCodubigeo(tx_distRtt.Text.Trim(),"",tx_ubigRtt.Text.Trim());
                 }
                 else tx_distRtt.Text = "";
-
             }
         }
         private void textBox13_Leave(object sender, EventArgs e)        // ubigeo del remitente
