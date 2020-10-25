@@ -322,6 +322,7 @@
     <None Include="bin\Debug\recursos\almacen48.png" />
     <None Include="bin\Debug\recursos\maestras48.png" />
     <None Include="bin\Debug\recursos\service_manager.png" />
+    <None Include="bin\Debug\recursos\process24.png" />
     <Content Include="leeme.txt" />
     <Content Include="Properties\process32.png" />
     <None Include="Resources\logo_solorsoft.png" />
