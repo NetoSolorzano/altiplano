@@ -616,31 +616,34 @@ namespace TransCarga
                         {
                             if (dr.Read())
                             {
-                                datcltsR[0] = dr.GetString("tidoregri");        // datos del remitente de la GR
-                                datcltsR[1] = dr.GetString("nudoregri");
-                                datcltsR[2] = dr.GetString("nombregri");
-                                datcltsR[3] = dr.GetString("direregri");
-                                datcltsR[4] = dr.GetString("ubigregri");
-                                datcltsR[5] = dr.GetString("emailR");
-                                datcltsR[6] = dr.GetString("numtel1R");
-                                datcltsR[7] = dr.GetString("numtel2R");
-                                //
-                                datcltsD[0] = dr.GetString("tidodegri");        // datos del destinatario de la GR
-                                datcltsD[1] = dr.GetString("nudodegri");
-                                datcltsD[2] = dr.GetString("nombdegri");
-                                datcltsD[3] = dr.GetString("diredegri");
-                                datcltsD[4] = dr.GetString("ubigdegri");
-                                datcltsD[5] = dr.GetString("emailD");
-                                datcltsD[6] = dr.GetString("numtel1D");
-                                datcltsD[7] = dr.GetString("numtel2D");
-                                //
-                                datguias[0] = serie+"-"+corre;                 // GR
-                                datguias[1] = dr.GetString("descrip");         // descrip
-                                datguias[2] = dr.GetString("bultos");          // cant bultos
-                                datguias[3] = dr.GetString("mon");             // moneda
-                                datguias[4] = dr.GetString("totgri");          // valor GR
-                                //
-                                retorna = true;
+                                if (dr.IsDBNull(0) == false)
+                                {
+                                    datcltsR[0] = dr.GetString("tidoregri");        // datos del remitente de la GR
+                                    datcltsR[1] = dr.GetString("nudoregri");
+                                    datcltsR[2] = dr.GetString("nombregri");
+                                    datcltsR[3] = dr.GetString("direregri");
+                                    datcltsR[4] = dr.GetString("ubigregri");
+                                    datcltsR[5] = dr.GetString("emailR");
+                                    datcltsR[6] = dr.GetString("numtel1R");
+                                    datcltsR[7] = dr.GetString("numtel2R");
+                                    //
+                                    datcltsD[0] = dr.GetString("tidodegri");        // datos del destinatario de la GR
+                                    datcltsD[1] = dr.GetString("nudodegri");
+                                    datcltsD[2] = dr.GetString("nombdegri");
+                                    datcltsD[3] = dr.GetString("diredegri");
+                                    datcltsD[4] = dr.GetString("ubigdegri");
+                                    datcltsD[5] = dr.GetString("emailD");
+                                    datcltsD[6] = dr.GetString("numtel1D");
+                                    datcltsD[7] = dr.GetString("numtel2D");
+                                    //
+                                    datguias[0] = serie + "-" + corre;                 // GR
+                                    datguias[1] = dr.GetString("descrip");         // descrip
+                                    datguias[2] = dr.GetString("bultos");          // cant bultos
+                                    datguias[3] = dr.GetString("mon");             // moneda
+                                    datguias[4] = dr.GetString("totgri");          // valor GR
+                                                                                   //
+                                    retorna = true;
+                                }
                             }
                         }
                     }
@@ -847,7 +850,13 @@ namespace TransCarga
             string iserror = "no";
             if (modo == "NUEVO")
             {
-                // valida que las filas de la grilla esten completas
+                // valida pago y calcula
+                if (rb_si.Checked == false && rb_no.Checked == false)
+                {
+                    MessageBox.Show("Seleccione si se cancela la factura o no","Atención - Confirme",MessageBoxButtons.OK,MessageBoxIcon.Warning);
+                    rb_si.Focus();
+                    return;
+                }
                 if (tx_idr.Text.Trim() == "")
                 {
                     var aa = MessageBox.Show("Confirma que desea crear el documento?", "Confirme por favor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
@@ -1291,11 +1300,17 @@ namespace TransCarga
                     if (datos.Length > 0)
                     {
                         tx_nomRem.Text = datos[0];
+                        tx_nomRem.Select(0, 0);
                         tx_dirRem.Text = datos[1];
+                        tx_dirRem.Select(0, 0);
                         tx_dptoRtt.Text = datos[2];
+                        tx_dptoRtt.Select(0, 0);
                         tx_provRtt.Text = datos[3];
+                        tx_provRtt.Select(0, 0);
                         tx_distRtt.Text = datos[4];
+                        tx_distRtt.Select(0, 0);
                         tx_ubigRtt.Text = datos[5];
+                        tx_ubigRtt.Select(0, 0);
                         encuentra = "si";
                     }
                     if (tx_dat_tdRem.Text == vtc_ruc)
@@ -1383,6 +1398,10 @@ namespace TransCarga
             tx_email.Text = datcltsR[5];
             tx_telc1.Text = datcltsR[6];
             tx_telc2.Text = datcltsR[7];
+            //
+            cmb_docRem.Enabled = false;
+            tx_numDocRem.ReadOnly = true;
+            tx_nomRem.ReadOnly = true;
         }
         private void rb_desGR_Click(object sender, EventArgs e)         // datos del destinatario de la GR
         {
@@ -1402,9 +1421,17 @@ namespace TransCarga
             tx_email.Text = datcltsD[5];
             tx_telc1.Text = datcltsD[6];
             tx_telc2.Text = datcltsD[7];
+            //
+            cmb_docRem.Enabled = false;
+            tx_numDocRem.ReadOnly = true;
+            tx_nomRem.ReadOnly = true;
         }
         private void rb_otro_Click(object sender, EventArgs e)
         {
+            cmb_docRem.Enabled = true;
+            tx_numDocRem.ReadOnly = false;
+            tx_nomRem.ReadOnly = false;
+            //
             tx_numDocRem.Text = "";
             tx_nomRem.Text = "";
             tx_dirRem.Text = "";
@@ -1414,16 +1441,38 @@ namespace TransCarga
             tx_email.Text = "";
             tx_telc1.Text = "";
             tx_telc2.Text = "";
+            cmb_docRem.SelectedIndex = 0;
+            tx_dat_tdRem.Text = cmb_docRem.SelectedValue.ToString();
+            DataRow[] fila = dttd0.Select("idcodice='" + tx_dat_tdRem.Text + "'");
+            foreach (DataRow row in fila)
+            {
+                tx_mld.Text = row[2].ToString();
+            }
             cmb_docRem.Focus();
         }
         private void tx_email_Leave(object sender, EventArgs e)
         {
-            if (lib.email_bien_escrito(tx_email.Text.Trim()) == false)
+            if (tx_email.Text.Trim() != "")
             {
-                MessageBox.Show("El correo electrónico esta mal","Por favor corrija", MessageBoxButtons.OK,MessageBoxIcon.Warning);
-                tx_email.Focus();
-                return;
+                if (lib.email_bien_escrito(tx_email.Text.Trim()) == false)
+                {
+                    MessageBox.Show("El correo electrónico esta mal", "Por favor corrija", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    tx_email.Focus();
+                    return;
+                }
             }
+        }
+        private void rb_si_Click(object sender, EventArgs e)
+        {
+            tx_pagado.Text = tx_flete.Text;
+            tx_salxcob.Text = "0.00";
+            tx_salxcob.BackColor = Color.Green;
+        }
+        private void rb_no_Click(object sender, EventArgs e)
+        {
+            tx_pagado.Text = "0.00";
+            tx_salxcob.Text = tx_flete.Text;
+            tx_salxcob.BackColor = Color.Red;
         }
         #endregion
 
@@ -1503,8 +1552,10 @@ namespace TransCarga
             Bt_sig.Enabled = false;
             Bt_ret.Enabled = false;
             Bt_fin.Enabled = false;
+            tx_salxcob.BackColor = Color.White;
             //
             tx_numero.ReadOnly = true;
+            cmb_tdv_SelectedIndexChanged(null, null);
             cmb_tdv.Focus();
         }
         private void Bt_edit_Click(object sender, EventArgs e)
@@ -1522,6 +1573,7 @@ namespace TransCarga
             Bt_sig.Enabled = true;
             Bt_ret.Enabled = true;
             Bt_fin.Enabled = true;
+            tx_salxcob.BackColor = Color.White;
         }
         private void Bt_close_Click(object sender, EventArgs e)
         {
@@ -1663,6 +1715,8 @@ namespace TransCarga
             if (cmb_mon.SelectedIndex > -1)
             {
                 tx_dat_mone.Text = cmb_mon.SelectedValue.ToString();
+                MessageBox.Show("Proceso de cálculo al tipo de cambio");
+                tx_flete.Text = "0.00";
             }
         }
         private void cmb_tdv_SelectedIndexChanged(object sender, EventArgs e)
@@ -1670,7 +1724,7 @@ namespace TransCarga
             if (cmb_tdv.SelectedIndex > -1)
             {
                 //tx_dat_tdv.Text = cmb_tdv. // cmb_tdv.SelectedValue.ToString();
-                DataRow[] row = dttd1.Select("idcodice='" + tx_dat_tdv.Text + "'");
+                DataRow[] row = dttd1.Select("idcodice='" + cmb_tdv.SelectedValue.ToString() + "'");
                 if (row.Length > 0)
                 {
                     tx_dat_tdv.Text = row[0].ItemArray[0].ToString();
