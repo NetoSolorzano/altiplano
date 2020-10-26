@@ -100,11 +100,6 @@
             this.groupBox10 = new System.Windows.Forms.GroupBox();
             this.tx_ubigRtt = new System.Windows.Forms.TextBox();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.guias = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Descrip = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Cant = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.moneda = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.valor = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.gbox_flete = new System.Windows.Forms.GroupBox();
             this.groupBox37 = new System.Windows.Forms.GroupBox();
             this.groupBox38 = new System.Windows.Forms.GroupBox();
@@ -120,7 +115,6 @@
             this.label15 = new System.Windows.Forms.Label();
             this.groupBox16 = new System.Windows.Forms.GroupBox();
             this.label12 = new System.Windows.Forms.Label();
-            this.label16 = new System.Windows.Forms.Label();
             this.tx_estado = new System.Windows.Forms.TextBox();
             this.tx_impreso = new System.Windows.Forms.TextBox();
             this.tx_dat_estad = new System.Windows.Forms.TextBox();
@@ -134,7 +128,6 @@
             this.label28 = new System.Windows.Forms.Label();
             this.tx_dat_tcr = new System.Windows.Forms.TextBox();
             this.tx_tfil = new TransCarga.NumericTextBox();
-            this.tx_totpes = new TransCarga.NumericTextBox();
             this.tx_totcant = new TransCarga.NumericTextBox();
             this.tx_serGR = new TransCarga.NumericTextBox();
             this.tx_numGR = new TransCarga.NumericTextBox();
@@ -153,6 +146,13 @@
             this.label4 = new System.Windows.Forms.Label();
             this.tx_telc1 = new System.Windows.Forms.TextBox();
             this.tx_telc2 = new System.Windows.Forms.TextBox();
+            this.tx_dat_tdv = new System.Windows.Forms.TextBox();
+            this.guias = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Descrip = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Cant = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.moneda = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.valor = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.tx_dat_tdec = new System.Windows.Forms.TextBox();
             this.toolStrip1.SuspendLayout();
             this.groupBox11.SuspendLayout();
             this.groupBox7.SuspendLayout();
@@ -454,7 +454,7 @@
             this.tx_distRtt.Multiline = true;
             this.tx_distRtt.Name = "tx_distRtt";
             this.tx_distRtt.Size = new System.Drawing.Size(80, 35);
-            this.tx_distRtt.TabIndex = 11;
+            this.tx_distRtt.TabIndex = 12;
             this.tx_distRtt.Leave += new System.EventHandler(this.textBox9_Leave);
             // 
             // tx_provRtt
@@ -466,7 +466,7 @@
             this.tx_provRtt.Multiline = true;
             this.tx_provRtt.Name = "tx_provRtt";
             this.tx_provRtt.Size = new System.Drawing.Size(80, 35);
-            this.tx_provRtt.TabIndex = 10;
+            this.tx_provRtt.TabIndex = 11;
             this.tx_provRtt.Leave += new System.EventHandler(this.textBox8_Leave);
             // 
             // tx_dptoRtt
@@ -478,7 +478,7 @@
             this.tx_dptoRtt.Multiline = true;
             this.tx_dptoRtt.Name = "tx_dptoRtt";
             this.tx_dptoRtt.Size = new System.Drawing.Size(80, 35);
-            this.tx_dptoRtt.TabIndex = 9;
+            this.tx_dptoRtt.TabIndex = 10;
             this.tx_dptoRtt.Leave += new System.EventHandler(this.textBox7_Leave);
             // 
             // groupBox11
@@ -518,7 +518,7 @@
             this.tx_dirRem.Multiline = true;
             this.tx_dirRem.Name = "tx_dirRem";
             this.tx_dirRem.Size = new System.Drawing.Size(322, 35);
-            this.tx_dirRem.TabIndex = 8;
+            this.tx_dirRem.TabIndex = 9;
             // 
             // groupBox7
             // 
@@ -556,7 +556,7 @@
             this.tx_nomRem.MaxLength = 0;
             this.tx_nomRem.Name = "tx_nomRem";
             this.tx_nomRem.Size = new System.Drawing.Size(412, 18);
-            this.tx_nomRem.TabIndex = 7;
+            this.tx_nomRem.TabIndex = 8;
             // 
             // cmb_docRem
             // 
@@ -565,7 +565,7 @@
             this.cmb_docRem.Location = new System.Drawing.Point(201, 90);
             this.cmb_docRem.Name = "cmb_docRem";
             this.cmb_docRem.Size = new System.Drawing.Size(48, 21);
-            this.cmb_docRem.TabIndex = 5;
+            this.cmb_docRem.TabIndex = 6;
             this.cmb_docRem.SelectionChangeCommitted += new System.EventHandler(this.cmb_docRem_SelectionChangeCommitted);
             // 
             // tx_idr
@@ -585,7 +585,7 @@
             this.tx_numDocRem.MaxLength = 0;
             this.tx_numDocRem.Name = "tx_numDocRem";
             this.tx_numDocRem.Size = new System.Drawing.Size(101, 18);
-            this.tx_numDocRem.TabIndex = 6;
+            this.tx_numDocRem.TabIndex = 7;
             this.tx_numDocRem.Leave += new System.EventHandler(this.textBox3_Leave);
             // 
             // tx_dat_tdRem
@@ -604,7 +604,7 @@
             this.button1.Location = new System.Drawing.Point(665, 407);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(62, 56);
-            this.button1.TabIndex = 24;
+            this.button1.TabIndex = 17;
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
@@ -743,7 +743,7 @@
             this.gbox_serie.Controls.Add(this.groupBox10);
             this.gbox_serie.Location = new System.Drawing.Point(6, 27);
             this.gbox_serie.Name = "gbox_serie";
-            this.gbox_serie.Size = new System.Drawing.Size(133, 80);
+            this.gbox_serie.Size = new System.Drawing.Size(133, 94);
             this.gbox_serie.TabIndex = 289;
             this.gbox_serie.TabStop = false;
             // 
@@ -751,7 +751,7 @@
             // 
             this.groupBox1.BackColor = System.Drawing.Color.White;
             this.groupBox1.Controls.Add(this.groupBox2);
-            this.groupBox1.Location = new System.Drawing.Point(6, 28);
+            this.groupBox1.Location = new System.Drawing.Point(6, 32);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(121, 1);
             this.groupBox1.TabIndex = 338;
@@ -769,16 +769,17 @@
             // 
             this.cmb_tdv.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmb_tdv.FormattingEnabled = true;
-            this.cmb_tdv.Location = new System.Drawing.Point(79, 8);
+            this.cmb_tdv.Location = new System.Drawing.Point(79, 12);
             this.cmb_tdv.Name = "cmb_tdv";
             this.cmb_tdv.Size = new System.Drawing.Size(49, 21);
-            this.cmb_tdv.TabIndex = 339;
+            this.cmb_tdv.TabIndex = 0;
+            this.cmb_tdv.SelectedIndexChanged += new System.EventHandler(this.cmb_tdv_SelectedIndexChanged);
             // 
             // label1
             // 
             this.label1.AutoSize = true;
             this.label1.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label1.Location = new System.Drawing.Point(5, 13);
+            this.label1.Location = new System.Drawing.Point(5, 17);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(54, 13);
             this.label1.TabIndex = 337;
@@ -789,7 +790,7 @@
             // 
             this.groupBox25.BackColor = System.Drawing.Color.White;
             this.groupBox25.Controls.Add(this.groupBox26);
-            this.groupBox25.Location = new System.Drawing.Point(6, 51);
+            this.groupBox25.Location = new System.Drawing.Point(6, 59);
             this.groupBox25.Name = "groupBox25";
             this.groupBox25.Size = new System.Drawing.Size(121, 1);
             this.groupBox25.TabIndex = 336;
@@ -807,7 +808,7 @@
             // 
             this.groupBox23.BackColor = System.Drawing.Color.White;
             this.groupBox23.Controls.Add(this.groupBox24);
-            this.groupBox23.Location = new System.Drawing.Point(6, 75);
+            this.groupBox23.Location = new System.Drawing.Point(6, 85);
             this.groupBox23.Name = "groupBox23";
             this.groupBox23.Size = new System.Drawing.Size(120, 1);
             this.groupBox23.TabIndex = 335;
@@ -825,7 +826,7 @@
             // 
             this.tx_numero.AllowSpace = false;
             this.tx_numero.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_numero.Location = new System.Drawing.Point(55, 56);
+            this.tx_numero.Location = new System.Drawing.Point(55, 66);
             this.tx_numero.Name = "tx_numero";
             this.tx_numero.Size = new System.Drawing.Size(73, 20);
             this.tx_numero.TabIndex = 2;
@@ -836,7 +837,7 @@
             // 
             this.tx_serie.AllowSpace = false;
             this.tx_serie.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_serie.Location = new System.Drawing.Point(63, 32);
+            this.tx_serie.Location = new System.Drawing.Point(63, 40);
             this.tx_serie.Name = "tx_serie";
             this.tx_serie.Size = new System.Drawing.Size(65, 20);
             this.tx_serie.TabIndex = 1;
@@ -847,7 +848,7 @@
             // 
             this.label8.AutoSize = true;
             this.label8.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label8.Location = new System.Drawing.Point(5, 60);
+            this.label8.Location = new System.Drawing.Point(5, 70);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(44, 13);
             this.label8.TabIndex = 290;
@@ -857,7 +858,7 @@
             // 
             this.label14.AutoSize = true;
             this.label14.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label14.Location = new System.Drawing.Point(5, 36);
+            this.label14.Location = new System.Drawing.Point(5, 44);
             this.label14.Name = "label14";
             this.label14.Size = new System.Drawing.Size(31, 13);
             this.label14.TabIndex = 289;
@@ -897,43 +898,6 @@
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.Size = new System.Drawing.Size(593, 162);
             this.dataGridView1.TabIndex = 21;
-            this.dataGridView1.EditingControlShowing += new System.Windows.Forms.DataGridViewEditingControlShowingEventHandler(this.dataGridView1_EditingControlShowing);
-            this.dataGridView1.RowLeave += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_RowLeave);
-            this.dataGridView1.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.dataGridView1_RowsAdded);
-            // 
-            // guias
-            // 
-            this.guias.FillWeight = 70F;
-            this.guias.HeaderText = "GUIA";
-            this.guias.Name = "guias";
-            this.guias.Width = 70;
-            // 
-            // Descrip
-            // 
-            this.Descrip.FillWeight = 300F;
-            this.Descrip.HeaderText = "DESCRIPCION";
-            this.Descrip.Name = "Descrip";
-            this.Descrip.Width = 300;
-            // 
-            // Cant
-            // 
-            this.Cant.FillWeight = 40F;
-            this.Cant.HeaderText = "C.BUL";
-            this.Cant.Name = "Cant";
-            this.Cant.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.Cant.Width = 40;
-            // 
-            // moneda
-            // 
-            this.moneda.FillWeight = 40F;
-            this.moneda.HeaderText = "MON";
-            this.moneda.Name = "moneda";
-            this.moneda.Width = 40;
-            // 
-            // valor
-            // 
-            this.valor.HeaderText = "       VALOR";
-            this.valor.Name = "valor";
             // 
             // gbox_flete
             // 
@@ -1032,7 +996,7 @@
             this.tx_pagado.Name = "tx_pagado";
             this.tx_pagado.ReadOnly = true;
             this.tx_pagado.Size = new System.Drawing.Size(69, 20);
-            this.tx_pagado.TabIndex = 401;
+            this.tx_pagado.TabIndex = 16;
             this.tx_pagado.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // tx_dat_mone
@@ -1089,23 +1053,12 @@
             // 
             this.label12.AutoSize = true;
             this.label12.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label12.Location = new System.Drawing.Point(254, 438);
+            this.label12.Location = new System.Drawing.Point(320, 438);
             this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(89, 13);
+            this.label12.Size = new System.Drawing.Size(91, 13);
             this.label12.TabIndex = 319;
-            this.label12.Text = "Total Cant. Paqs.";
+            this.label12.Text = "Total Cant. Bultos";
             this.label12.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // label16
-            // 
-            this.label16.AutoSize = true;
-            this.label16.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label16.Location = new System.Drawing.Point(405, 438);
-            this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(77, 13);
-            this.label16.TabIndex = 321;
-            this.label16.Text = "Total Peso Kg.";
-            this.label16.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // tx_estado
             // 
@@ -1123,7 +1076,7 @@
             // 
             this.tx_impreso.BackColor = System.Drawing.SystemColors.Window;
             this.tx_impreso.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_impreso.Location = new System.Drawing.Point(86, 436);
+            this.tx_impreso.Location = new System.Drawing.Point(153, 436);
             this.tx_impreso.Name = "tx_impreso";
             this.tx_impreso.ReadOnly = true;
             this.tx_impreso.Size = new System.Drawing.Size(26, 18);
@@ -1144,7 +1097,7 @@
             // 
             this.label18.AutoSize = true;
             this.label18.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label18.Location = new System.Drawing.Point(34, 438);
+            this.label18.Location = new System.Drawing.Point(101, 438);
             this.label18.Name = "label18";
             this.label18.Size = new System.Drawing.Size(50, 13);
             this.label18.TabIndex = 329;
@@ -1155,9 +1108,9 @@
             // 
             this.groupBox17.BackColor = System.Drawing.Color.White;
             this.groupBox17.Controls.Add(this.groupBox18);
-            this.groupBox17.Location = new System.Drawing.Point(27, 453);
+            this.groupBox17.Location = new System.Drawing.Point(94, 453);
             this.groupBox17.Name = "groupBox17";
-            this.groupBox17.Size = new System.Drawing.Size(497, 1);
+            this.groupBox17.Size = new System.Drawing.Size(358, 1);
             this.groupBox17.TabIndex = 330;
             this.groupBox17.TabStop = false;
             // 
@@ -1211,7 +1164,7 @@
             // 
             this.label28.AutoSize = true;
             this.label28.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label28.Location = new System.Drawing.Point(133, 438);
+            this.label28.Location = new System.Drawing.Point(200, 438);
             this.label28.Name = "label28";
             this.label28.Size = new System.Drawing.Size(55, 13);
             this.label28.TabIndex = 344;
@@ -1232,29 +1185,18 @@
             // 
             this.tx_tfil.AllowSpace = false;
             this.tx_tfil.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_tfil.Location = new System.Drawing.Point(190, 434);
+            this.tx_tfil.Location = new System.Drawing.Point(257, 434);
             this.tx_tfil.Name = "tx_tfil";
             this.tx_tfil.ReadOnly = true;
             this.tx_tfil.Size = new System.Drawing.Size(41, 20);
             this.tx_tfil.TabIndex = 347;
             this.tx_tfil.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
-            // tx_totpes
-            // 
-            this.tx_totpes.AllowSpace = false;
-            this.tx_totpes.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_totpes.Location = new System.Drawing.Point(483, 434);
-            this.tx_totpes.Name = "tx_totpes";
-            this.tx_totpes.ReadOnly = true;
-            this.tx_totpes.Size = new System.Drawing.Size(41, 20);
-            this.tx_totpes.TabIndex = 26;
-            this.tx_totpes.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
             // tx_totcant
             // 
             this.tx_totcant.AllowSpace = false;
             this.tx_totcant.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_totcant.Location = new System.Drawing.Point(344, 434);
+            this.tx_totcant.Location = new System.Drawing.Point(412, 434);
             this.tx_totcant.Name = "tx_totcant";
             this.tx_totcant.ReadOnly = true;
             this.tx_totcant.Size = new System.Drawing.Size(41, 20);
@@ -1268,7 +1210,7 @@
             this.tx_serGR.Location = new System.Drawing.Point(237, 35);
             this.tx_serGR.Name = "tx_serGR";
             this.tx_serGR.Size = new System.Drawing.Size(46, 20);
-            this.tx_serGR.TabIndex = 349;
+            this.tx_serGR.TabIndex = 2;
             this.tx_serGR.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.tx_serGR.Leave += new System.EventHandler(this.tx_serGR_Leave);
             // 
@@ -1279,7 +1221,7 @@
             this.tx_numGR.Location = new System.Drawing.Point(283, 35);
             this.tx_numGR.Name = "tx_numGR";
             this.tx_numGR.Size = new System.Drawing.Size(73, 20);
-            this.tx_numGR.TabIndex = 350;
+            this.tx_numGR.TabIndex = 3;
             this.tx_numGR.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.tx_numGR.Leave += new System.EventHandler(this.tx_numGR_Leave);
             // 
@@ -1318,8 +1260,9 @@
             this.bt_agr.Location = new System.Drawing.Point(359, 30);
             this.bt_agr.Name = "bt_agr";
             this.bt_agr.Size = new System.Drawing.Size(32, 31);
-            this.bt_agr.TabIndex = 353;
+            this.bt_agr.TabIndex = 4;
             this.bt_agr.UseVisualStyleBackColor = true;
+            this.bt_agr.Click += new System.EventHandler(this.bt_agr_Click);
             // 
             // panel1
             // 
@@ -1330,7 +1273,7 @@
             this.panel1.Location = new System.Drawing.Point(414, 32);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(278, 27);
-            this.panel1.TabIndex = 354;
+            this.panel1.TabIndex = 5;
             // 
             // rb_otro
             // 
@@ -1342,6 +1285,7 @@
             this.rb_otro.TabStop = true;
             this.rb_otro.Text = "Otro";
             this.rb_otro.UseVisualStyleBackColor = true;
+            this.rb_otro.Click += new System.EventHandler(this.rb_otro_Click);
             // 
             // rb_desGR
             // 
@@ -1353,6 +1297,7 @@
             this.rb_desGR.TabStop = true;
             this.rb_desGR.Text = "Destinat";
             this.rb_desGR.UseVisualStyleBackColor = true;
+            this.rb_desGR.Click += new System.EventHandler(this.rb_desGR_Click);
             // 
             // rb_remGR
             // 
@@ -1364,6 +1309,7 @@
             this.rb_remGR.TabStop = true;
             this.rb_remGR.Text = "Remitente";
             this.rb_remGR.UseVisualStyleBackColor = true;
+            this.rb_remGR.Click += new System.EventHandler(this.rb_remGR_Click);
             // 
             // groupBox9
             // 
@@ -1401,7 +1347,7 @@
             this.tx_email.MaxLength = 0;
             this.tx_email.Name = "tx_email";
             this.tx_email.Size = new System.Drawing.Size(323, 18);
-            this.tx_email.TabIndex = 357;
+            this.tx_email.TabIndex = 13;
             this.tx_email.Leave += new System.EventHandler(this.tx_email_Leave);
             // 
             // label4
@@ -1422,7 +1368,7 @@
             this.tx_telc1.MaxLength = 0;
             this.tx_telc1.Name = "tx_telc1";
             this.tx_telc1.Size = new System.Drawing.Size(80, 18);
-            this.tx_telc1.TabIndex = 359;
+            this.tx_telc1.TabIndex = 14;
             // 
             // tx_telc2
             // 
@@ -1432,7 +1378,63 @@
             this.tx_telc2.MaxLength = 0;
             this.tx_telc2.Name = "tx_telc2";
             this.tx_telc2.Size = new System.Drawing.Size(80, 18);
-            this.tx_telc2.TabIndex = 360;
+            this.tx_telc2.TabIndex = 15;
+            // 
+            // tx_dat_tdv
+            // 
+            this.tx_dat_tdv.BackColor = System.Drawing.SystemColors.Window;
+            this.tx_dat_tdv.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_dat_tdv.Location = new System.Drawing.Point(6, 113);
+            this.tx_dat_tdv.Name = "tx_dat_tdv";
+            this.tx_dat_tdv.Size = new System.Drawing.Size(27, 18);
+            this.tx_dat_tdv.TabIndex = 361;
+            this.tx_dat_tdv.Visible = false;
+            // 
+            // guias
+            // 
+            this.guias.FillWeight = 90F;
+            this.guias.HeaderText = "GUIA";
+            this.guias.Name = "guias";
+            this.guias.Width = 90;
+            // 
+            // Descrip
+            // 
+            this.Descrip.FillWeight = 300F;
+            this.Descrip.HeaderText = "DESCRIPCION";
+            this.Descrip.Name = "Descrip";
+            this.Descrip.Width = 300;
+            // 
+            // Cant
+            // 
+            this.Cant.FillWeight = 40F;
+            this.Cant.HeaderText = "C.BUL";
+            this.Cant.Name = "Cant";
+            this.Cant.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.Cant.Width = 40;
+            // 
+            // moneda
+            // 
+            this.moneda.FillWeight = 40F;
+            this.moneda.HeaderText = "MON";
+            this.moneda.Name = "moneda";
+            this.moneda.Width = 40;
+            // 
+            // valor
+            // 
+            this.valor.FillWeight = 80F;
+            this.valor.HeaderText = "  VALOR";
+            this.valor.Name = "valor";
+            this.valor.Width = 80;
+            // 
+            // tx_dat_tdec
+            // 
+            this.tx_dat_tdec.BackColor = System.Drawing.SystemColors.Window;
+            this.tx_dat_tdec.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_dat_tdec.Location = new System.Drawing.Point(38, 114);
+            this.tx_dat_tdec.Name = "tx_dat_tdec";
+            this.tx_dat_tdec.Size = new System.Drawing.Size(27, 18);
+            this.tx_dat_tdec.TabIndex = 362;
+            this.tx_dat_tdec.Visible = false;
             // 
             // facelect
             // 
@@ -1441,6 +1443,8 @@
             this.AutoSize = true;
             this.BackColor = System.Drawing.Color.LightSteelBlue;
             this.ClientSize = new System.Drawing.Size(770, 614);
+            this.Controls.Add(this.tx_dat_tdec);
+            this.Controls.Add(this.tx_dat_tdv);
             this.Controls.Add(this.groupBox9);
             this.Controls.Add(this.tx_telc2);
             this.Controls.Add(this.tx_telc1);
@@ -1466,8 +1470,6 @@
             this.Controls.Add(this.tx_dat_estad);
             this.Controls.Add(this.tx_impreso);
             this.Controls.Add(this.tx_estado);
-            this.Controls.Add(this.tx_totpes);
-            this.Controls.Add(this.label16);
             this.Controls.Add(this.tx_totcant);
             this.Controls.Add(this.label12);
             this.Controls.Add(this.gbox_flete);
@@ -1605,8 +1607,6 @@
         private System.Windows.Forms.GroupBox groupBox16;
         private NumericTextBox tx_totcant;
         private System.Windows.Forms.Label label12;
-        private NumericTextBox tx_totpes;
-        private System.Windows.Forms.Label label16;
         private System.Windows.Forms.TextBox tx_estado;
         private System.Windows.Forms.TextBox tx_impreso;
         private System.Windows.Forms.TextBox tx_dat_estad;
@@ -1643,11 +1643,6 @@
         private System.Windows.Forms.GroupBox groupBox4;
         private System.Windows.Forms.Label lb_GR;
         private System.Windows.Forms.Button bt_agr;
-        private System.Windows.Forms.DataGridViewTextBoxColumn guias;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Descrip;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Cant;
-        private System.Windows.Forms.DataGridViewTextBoxColumn moneda;
-        private System.Windows.Forms.DataGridViewTextBoxColumn valor;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.RadioButton rb_otro;
         private System.Windows.Forms.RadioButton rb_desGR;
@@ -1659,5 +1654,12 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TextBox tx_telc1;
         private System.Windows.Forms.TextBox tx_telc2;
+        private System.Windows.Forms.TextBox tx_dat_tdv;
+        private System.Windows.Forms.DataGridViewTextBoxColumn guias;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Descrip;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Cant;
+        private System.Windows.Forms.DataGridViewTextBoxColumn moneda;
+        private System.Windows.Forms.DataGridViewTextBoxColumn valor;
+        private System.Windows.Forms.TextBox tx_dat_tdec;
     }
 }

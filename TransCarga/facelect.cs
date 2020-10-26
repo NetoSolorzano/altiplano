@@ -80,8 +80,11 @@ namespace TransCarga
 
         DataTable dtu = new DataTable();
         DataTable dttd0 = new DataTable();
+        DataTable dttd1 = new DataTable();
         DataTable dtm = new DataTable();
-        string[] datclts = { "", "", "" };
+        string[] datcltsR = { "", "", "", "", "", "", "", "" };
+        string[] datcltsD = { "", "", "", "", "", "", "", "" };
+        string[] datguias = { "", "", "", "", "" };
 
         public facelect()
         {
@@ -173,6 +176,7 @@ namespace TransCarga
             tx_telc1.MaxLength = 12;
             tx_telc2.MaxLength = 12;
             // grilla
+            dataGridView1.ReadOnly = true;
             dataGridView1.Columns[0].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dataGridView1.Columns[3].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             // todo desabilidado
@@ -335,7 +339,6 @@ namespace TransCarga
                             tx_pagado.Text = dr.GetDecimal("totpag").ToString("#.##");
                             tx_salxcob.Text = dr.GetDecimal("salgri").ToString("#.##");
                             tx_totcant.Text = dr.GetString("cantotgri");
-                            tx_totpes.Text = dr.GetDecimal("pestotgri").ToString("#.#");
                             tx_impreso.Text = dr.GetString("impreso");
                             //
                             tx_estado.Text = lib.nomstat(tx_dat_estad.Text);
@@ -401,51 +404,70 @@ namespace TransCarga
         }
         public void dataload()                  // jala datos para los combos 
         {
-            MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
-            conn.Open();
-            if (conn.State != ConnectionState.Open)
+            using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
             {
-                MessageBox.Show("No se pudo conectar con el servidor", "Error de conexión");
-                Application.Exit();
-                return;
+                while (true)
+                {
+                    try
+                    {
+                        conn.Open();
+                        break;
+                    }
+                    catch (MySqlException ex)
+                    {
+                        var aa = MessageBox.Show("No se pudo conectar con el servidor" + Environment.NewLine +
+                            "Desea volver a intentarlo?", "Error de conexión", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                        if (aa == DialogResult.No)
+                        {
+                            Application.Exit();
+                            return;
+                        }
+                    }
+                }
+                // datos para el combobox documento de venta
+                cmb_tdv.Items.Clear();
+                using (MySqlCommand cdv = new MySqlCommand("select idcodice,descrizionerid,enlace1 from desc_tdv where numero=@bloq and codigo=@codv", conn))
+                {
+                    cdv.Parameters.AddWithValue("@bloq", 1);
+                    cdv.Parameters.AddWithValue("@codv", v_codidv);
+                    using (MySqlDataAdapter datv = new MySqlDataAdapter(cdv))
+                    {
+                        dttd1.Clear();
+                        datv.Fill(dttd1);
+                        cmb_tdv.DataSource = dttd1;
+                        cmb_tdv.DisplayMember = "descrizionerid";
+                        cmb_tdv.ValueMember = "idcodice";
+                    }
+                }
+                //  datos para los combobox de tipo de documento
+                cmb_docRem.Items.Clear();
+                using (MySqlCommand cdu = new MySqlCommand("select idcodice,descrizionerid,codigo from desc_doc where numero=@bloq", conn))
+                {
+                    cdu.Parameters.AddWithValue("@bloq", 1);
+                    using (MySqlDataAdapter datd = new MySqlDataAdapter(cdu))
+                    {
+                        dttd0.Clear();
+                        datd.Fill(dttd0);
+                        cmb_docRem.DataSource = dttd0;
+                        cmb_docRem.DisplayMember = "descrizionerid";
+                        cmb_docRem.ValueMember = "idcodice";
+                    }
+                }
+                // datos para el combo de moneda
+                cmb_mon.Items.Clear();
+                using (MySqlCommand cmo = new MySqlCommand("select idcodice,descrizionerid from desc_mon where numero=@bloq", conn))
+                {
+                    cmo.Parameters.AddWithValue("@bloq", 1);
+                    using (MySqlDataAdapter dacu = new MySqlDataAdapter(cmo))
+                    {
+                        dtm.Clear();
+                        dacu.Fill(dtm);
+                        cmb_mon.DataSource = dtm;
+                        cmb_mon.DisplayMember = "descrizionerid";
+                        cmb_mon.ValueMember = "idcodice";
+                    }
+                }
             }
-            // datos para el combobox documento de venta
-            cmb_tdv.Items.Clear();
-            MySqlCommand cdv = new MySqlCommand("select idcodice,descrizionerid from desc_tdv where numero=@bloq and codigo=@codv", conn);
-            cdv.Parameters.AddWithValue("@bloq", 1);
-            cdv.Parameters.AddWithValue("@codv", v_codidv);
-            MySqlDataAdapter datv = new MySqlDataAdapter(cdv);
-            dttd0.Clear();
-            datv.Fill(dttd0);
-            cmb_tdv.DataSource = dttd0;
-            cmb_tdv.DisplayMember = "descrizionerid";
-            cmb_tdv.ValueMember = "idcodice";
-            //  datos para los combobox de tipo de documento
-            cmb_docRem.Items.Clear();
-            MySqlCommand cdu = new MySqlCommand("select idcodice,descrizionerid,codigo from desc_doc where numero=@bloq", conn);
-            cdu.Parameters.AddWithValue("@bloq", 1);
-            MySqlDataAdapter datd = new MySqlDataAdapter(cdu);
-            dttd0.Clear();
-            datd.Fill(dttd0);
-            cmb_docRem.DataSource = dttd0;
-            cmb_docRem.DisplayMember = "descrizionerid";
-            cmb_docRem.ValueMember = "idcodice";
-            //
-            // datos para el combo de moneda
-            cmb_mon.Items.Clear();
-            MySqlCommand cmo = new MySqlCommand("select idcodice,descrizionerid from desc_mon where numero=@bloq", conn);
-            cmo.Parameters.AddWithValue("@bloq", 1);
-            MySqlDataAdapter dacu = new MySqlDataAdapter(cmo);
-            dtm.Clear();
-            dacu.Fill(dtm);
-            cmb_mon.DataSource = dtm;
-            cmb_mon.DisplayMember = "descrizionerid";
-            cmb_mon.ValueMember = "idcodice";
-            //
-            cmo.Dispose();
-            cdu.Dispose();
-            dacu.Dispose();
-            conn.Close();
         }
         private bool valiVars()                 // valida existencia de datos en variables del form
         {
@@ -546,12 +568,87 @@ namespace TransCarga
         private bool validGR(string serie, string corre)    // validamos y devolvemos datos
         {
             bool retorna = false;
-            // falta esto
-            // validamos que la GR: 1.exista, 2.No este facturada, 3.No este anulada
-            // y devolvemos una fila con los datos del remitente y otra fila los datos del destinatario
-
+            if (serie != "" && corre != "")
+            {
+                datcltsR[0] = "";
+                datcltsR[1] = "";
+                datcltsR[2] = "";
+                datcltsR[3] = "";
+                datcltsR[4] = "";
+                datcltsR[5] = "";
+                datcltsR[6] = "";
+                datcltsR[7] = "";
+                //
+                datcltsD[0] = "";
+                datcltsD[1] = "";
+                datcltsD[2] = "";
+                datcltsD[3] = "";
+                datcltsD[4] = "";
+                datcltsD[5] = "";
+                datcltsD[6] = "";
+                datcltsD[7] = "";
+                //
+                datguias[0] = "";
+                datguias[1] = "";
+                datguias[2] = "";
+                datguias[3] = "";
+                datguias[4] = "";
+                // validamos que la GR: 1.exista, 2.No este facturada, 3.No este anulada
+                // y devolvemos una fila con los datos del remitente y otra fila los datos del destinatario
+                using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
+                {
+                    lib.procConn(conn);
+                    string consulta = "SELECT a.tidoregri,a.nudoregri,a.nombregri,a.direregri,a.ubigregri,ifnull(b1.email,'') as emailR,ifnull(b1.numerotel1,'') as numtel1R,ifnull(b1.numerotel2,'') as numtel2R," +
+                        "a.tidodegri,a.nudodegri,a.nombdegri,a.diredegri,a.ubigdegri,ifnull(b2.email,'') as emailD,ifnull(b2.numerotel1,'') as numtel1D,ifnull(b2.numerotel2,'') as numtel2D," +
+                        "a.tipmongri,a.totgri,a.salgri,SUM(d.cantprodi) AS bultos,max(d.descprodi) AS descrip,m.descrizionerid as mon " +
+                        "from cabguiai a left join detguiai d on d.idc=a.id " +
+                        "LEFT JOIN controlg c ON c.serguitra = a.sergui AND c.numguitra = a.numgui " +
+                        "left join anag_cli b1 on b1.tipdoc=a.tidoregri and b1.ruc=a.nudoregri " +
+                        "left join anag_cli b2 on b2.tipdoc=a.tidodegri and b2.ruc=a.nudodegri " +
+                        "left join desc_mon m on m.idcodice=a.tipmongri " +
+                        "WHERE a.sergui = @ser AND a.numgui = @num AND a.estadoser IN(@est) AND c.fecdocvta IS NULL";
+                    using (MySqlCommand micon = new MySqlCommand(consulta, conn))
+                    {
+                        micon.Parameters.AddWithValue("@ser", serie);
+                        micon.Parameters.AddWithValue("@num", corre);
+                        micon.Parameters.AddWithValue("@est", codGene);
+                        using (MySqlDataReader dr = micon.ExecuteReader())
+                        {
+                            if (dr.Read())
+                            {
+                                datcltsR[0] = dr.GetString("tidoregri");        // datos del remitente de la GR
+                                datcltsR[1] = dr.GetString("nudoregri");
+                                datcltsR[2] = dr.GetString("nombregri");
+                                datcltsR[3] = dr.GetString("direregri");
+                                datcltsR[4] = dr.GetString("ubigregri");
+                                datcltsR[5] = dr.GetString("emailR");
+                                datcltsR[6] = dr.GetString("numtel1R");
+                                datcltsR[7] = dr.GetString("numtel2R");
+                                //
+                                datcltsD[0] = dr.GetString("tidodegri");        // datos del destinatario de la GR
+                                datcltsD[1] = dr.GetString("nudodegri");
+                                datcltsD[2] = dr.GetString("nombdegri");
+                                datcltsD[3] = dr.GetString("diredegri");
+                                datcltsD[4] = dr.GetString("ubigdegri");
+                                datcltsD[5] = dr.GetString("emailD");
+                                datcltsD[6] = dr.GetString("numtel1D");
+                                datcltsD[7] = dr.GetString("numtel2D");
+                                //
+                                datguias[0] = serie+"-"+corre;                 // GR
+                                datguias[1] = dr.GetString("descrip");         // descrip
+                                datguias[2] = dr.GetString("bultos");          // cant bultos
+                                datguias[3] = dr.GetString("mon");             // moneda
+                                datguias[4] = dr.GetString("totgri");          // valor GR
+                                //
+                                retorna = true;
+                            }
+                        }
+                    }
+                }
+            }
             return retorna;
         }
+
         #region autocompletados
         private void autodepa()                 // se jala en el load
         {
@@ -621,6 +718,60 @@ namespace TransCarga
         #endregion limpiadores_modos;
 
         #region boton_form GRABA EDITA ANULA
+        private void bt_agr_Click(object sender, EventArgs e)
+        {
+            if (tx_serGR.Text.Trim() != "" && tx_numGR.Text.Trim() != "" && Tx_modo.Text == "NUEVO")
+            {
+                // validamos que la GR: 1.exista, 2.No este facturada, 3.No este anulada
+                if (validGR(tx_serGR.Text, tx_numGR.Text) == false)
+                {
+                    MessageBox.Show("La GR no existe, esta anulada o ya esta facturada", "Error en Guía", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    tx_numGR.Text = "";
+                    tx_numGR.Focus();
+                    return;
+                }
+                else
+                {
+                    rb_desGR.PerformClick();
+                }
+                //
+                dataGridView1.Rows.Add(datguias[0], datguias[1], datguias[2], datguias[3], datguias[4]);     // insertamos en la grilla los datos de la GR
+                MessageBox.Show(datguias[0], datguias[0]);
+                int totfil = 0;
+                int totcant = 0;
+                decimal totflet = 0;
+                for (int i = 0; i < dataGridView1.Rows.Count; i++)
+                {
+                    if (dataGridView1.Rows[i].Cells[0].Value != null)
+                    {
+                        totcant = totcant + int.Parse(dataGridView1.Rows[i].Cells[2].Value.ToString());
+                        totfil += 1;
+                        if (dataGridView1.Rows[i].Cells[3].Value.ToString() != cmb_mon.Text)
+                        {
+                            MessageBox.Show("La GR " + dataGridView1.Rows[i].Cells[0].Value.ToString() + "tiene moneda distinta" + Environment.NewLine +
+                                "Se calcula al tipo de cambio del día", "Atención");
+                            // aca falta ver como le hacemos para los calculos
+                        }
+                        else
+                        {
+                            totflet = totflet + decimal.Parse(dataGridView1.Rows[i].Cells[4].Value.ToString());
+                        }
+                    }
+                }
+                tx_totcant.Text = totcant.ToString();
+                tx_tfil.Text = totfil.ToString();
+                tx_flete.Text = totflet.ToString("#0.00");
+                if (int.Parse(tx_tfil.Text) == int.Parse(v_mfildet))
+                {
+                    MessageBox.Show("Número máximo de filas de detalle", "El formato no permite mas", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    dataGridView1.AllowUserToAddRows = false;
+                }
+                else
+                {
+                    dataGridView1.AllowUserToAddRows = true;
+                }
+            }
+        }
         private void button1_Click(object sender, EventArgs e)
         {
             #region validaciones
@@ -681,6 +832,13 @@ namespace TransCarga
             {
                 MessageBox.Show("Debe ingresar un correo electrónico", " Error en Cliente ", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 tx_email.Focus();
+                return;
+            }
+            if (tx_dat_tdec.Text != tx_dat_tdRem.Text)
+            {
+                MessageBox.Show("Asegurese que el tipo de documento de venta" + Environment.NewLine +
+                    "sean coincidente con el tipo de cliente", "Error de tipos", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                cmb_docRem.Focus();
                 return;
             }
             #endregion
@@ -836,7 +994,6 @@ namespace TransCarga
                     micon.Parameters.AddWithValue("@dircre", tx_dirRem.Text);
                     micon.Parameters.AddWithValue("@ubicre", tx_ubigRtt.Text);
                     micon.Parameters.AddWithValue("@totcpr", tx_totcant.Text);
-                    micon.Parameters.AddWithValue("@totppr", tx_totpes.Text);
                     micon.Parameters.AddWithValue("@canfil", tx_tfil.Text);     // cantidad de filas de detalle
                     micon.Parameters.AddWithValue("@monppr", tx_dat_mone.Text);
                     micon.Parameters.AddWithValue("@tcprgr", "0.00");           // tipo de cambio ... falta leer de la tabla de cambios
@@ -937,7 +1094,6 @@ namespace TransCarga
                         micon.Parameters.AddWithValue("@dircre", tx_dirRem.Text);
                         micon.Parameters.AddWithValue("@ubicre", tx_ubigRtt.Text);
                         micon.Parameters.AddWithValue("@totcpr", tx_totcant.Text);
-                        micon.Parameters.AddWithValue("@totppr", tx_totpes.Text);
                         micon.Parameters.AddWithValue("@monppr", tx_dat_mone.Text);
                         micon.Parameters.AddWithValue("@tcprgr", "0.00");  // tipo de cambio
                         micon.Parameters.AddWithValue("@subpgr", "0"); // sub total de la pre guía
@@ -1192,6 +1348,7 @@ namespace TransCarga
         private void tx_serie_Leave(object sender, EventArgs e)
         {
             tx_serie.Text = lib.Right("0000" + tx_serie.Text, 4);
+            if (Tx_modo.Text == "NUEVO") tx_serGR.Focus();
         }
         private void tx_flete_Leave(object sender, EventArgs e)
         {
@@ -1203,23 +1360,65 @@ namespace TransCarga
         }
         private void tx_numGR_Leave(object sender, EventArgs e)
         {
-            tx_numGR.Text = lib.Right("00000000" + tx_numGR.Text, 8);
-            // validamos que la GR: 1.exista, 2.No este facturada, 3.No este anulada
-            if (validGR(tx_serGR.Text, tx_numGR.Text) == false)
+            if (Tx_modo.Text == "NUEVO" && tx_serGR.Text.Trim() != "" && tx_numGR.Text.Trim() != "")
             {
-                MessageBox.Show("La GR no existe, esta anulada o ya esta facturada", "Error en Guía", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                tx_numGR.Text = "";
-                tx_numGR.Focus();
-                return;
+                tx_numGR.Text = lib.Right("00000000" + tx_numGR.Text, 8);
             }
-            else
-            {
-                rb_desGR.PerformClick();
-            }
+        }
+        private void rb_remGR_Click(object sender, EventArgs e)         // datos del remitente de la GR
+        {
+            tx_dat_tdRem.Text = datcltsR[0];
+            cmb_docRem.SelectedValue = tx_dat_tdRem.Text;
+            tx_numDocRem.Text = datcltsR[1];
+            tx_nomRem.Text = datcltsR[2];
+            tx_dirRem.Text = datcltsR[3];
+            //
+            DataRow[] row = dataUbig.Select("depart='" + datcltsR[4].Substring(0, 2) + "' and provin='00' and distri='00'");
+            tx_dptoRtt.Text = row[0].ItemArray[4].ToString();
+            row = dataUbig.Select("depart='" + datcltsR[4].Substring(0, 2) + "' and provin ='"+ datcltsR[4].Substring(2, 2) + "' and distri='00'");
+            tx_provRtt.Text = row[0].ItemArray[4].ToString();
+            row = dataUbig.Select("depart='" + datcltsR[4].Substring(0, 2) + "' and provin ='" + datcltsR[4].Substring(2, 2) + "' and distri='" + datcltsR[4].Substring(4, 2) + "'");
+            tx_distRtt.Text = row[0].ItemArray[4].ToString();
+            //
+            tx_email.Text = datcltsR[5];
+            tx_telc1.Text = datcltsR[6];
+            tx_telc2.Text = datcltsR[7];
+        }
+        private void rb_desGR_Click(object sender, EventArgs e)         // datos del destinatario de la GR
+        {
+            tx_dat_tdRem.Text = datcltsD[0];
+            cmb_docRem.SelectedValue = tx_dat_tdRem.Text;
+            tx_numDocRem.Text = datcltsD[1];
+            tx_nomRem.Text = datcltsD[2];
+            tx_dirRem.Text = datcltsD[3];
+            //
+            DataRow[] row = dataUbig.Select("depart='" + datcltsD[4].Substring(0, 2) + "' and provin='00' and distri='00'");
+            tx_dptoRtt.Text = row[0].ItemArray[4].ToString();
+            row = dataUbig.Select("depart='" + datcltsD[4].Substring(0, 2) + "' and provin ='" + datcltsD[4].Substring(2, 2) + "' and distri='00'");
+            tx_provRtt.Text = row[0].ItemArray[4].ToString();
+            row = dataUbig.Select("depart='" + datcltsD[4].Substring(0, 2) + "' and provin ='" + datcltsD[4].Substring(2, 2) + "' and distri='" + datcltsD[4].Substring(4, 2) + "'");
+            tx_distRtt.Text = row[0].ItemArray[4].ToString();
+            //
+            tx_email.Text = datcltsD[5];
+            tx_telc1.Text = datcltsD[6];
+            tx_telc2.Text = datcltsD[7];
+        }
+        private void rb_otro_Click(object sender, EventArgs e)
+        {
+            tx_numDocRem.Text = "";
+            tx_nomRem.Text = "";
+            tx_dirRem.Text = "";
+            tx_dptoRtt.Text = "";
+            tx_provRtt.Text = "";
+            tx_distRtt.Text = "";
+            tx_email.Text = "";
+            tx_telc1.Text = "";
+            tx_telc2.Text = "";
+            cmb_docRem.Focus();
         }
         private void tx_email_Leave(object sender, EventArgs e)
         {
-            if (lib.email_bien_escrito(tx_email.Text) == false)
+            if (lib.email_bien_escrito(tx_email.Text.Trim()) == false)
             {
                 MessageBox.Show("El correo electrónico esta mal","Por favor corrija", MessageBoxButtons.OK,MessageBoxIcon.Warning);
                 tx_email.Focus();
@@ -1298,11 +1497,15 @@ namespace TransCarga
         {
             Tx_modo.Text = "NUEVO";
             button1.Image = Image.FromFile(img_grab);
+            escribe();
             // 
             Bt_ini.Enabled = false;
             Bt_sig.Enabled = false;
             Bt_ret.Enabled = false;
             Bt_fin.Enabled = false;
+            //
+            tx_numero.ReadOnly = true;
+            cmb_tdv.Focus();
         }
         private void Bt_edit_Click(object sender, EventArgs e)
         {
@@ -1462,76 +1665,20 @@ namespace TransCarga
                 tx_dat_mone.Text = cmb_mon.SelectedValue.ToString();
             }
         }
+        private void cmb_tdv_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (cmb_tdv.SelectedIndex > -1)
+            {
+                //tx_dat_tdv.Text = cmb_tdv. // cmb_tdv.SelectedValue.ToString();
+                DataRow[] row = dttd1.Select("idcodice='" + tx_dat_tdv.Text + "'");
+                if (row.Length > 0)
+                {
+                    tx_dat_tdv.Text = row[0].ItemArray[0].ToString();
+                    tx_dat_tdec.Text = row[0].ItemArray[2].ToString();
+                }
+            }
+        }
         #endregion comboboxes
-
-        #region datagridview
-        private void dataGridView1_RowLeave(object sender, DataGridViewCellEventArgs e)
-        {
-            int totfil = 0;
-            int totcant = 0;
-            decimal totpes = 0;
-            for (int i = 0; i < dataGridView1.Rows.Count; i++)
-            {
-                if (dataGridView1.Rows[i].Cells[0].Value != null)
-                {
-                    totcant = totcant + int.Parse(dataGridView1.Rows[i].Cells[0].Value.ToString());
-                    totfil += 1;
-                }
-                if (dataGridView1.Rows[i].Cells[3].Value != null)
-                {
-                    totpes = totpes + decimal.Parse(dataGridView1.Rows[i].Cells[3].Value.ToString());
-                }
-            }
-            tx_totcant.Text = totcant.ToString();
-            tx_totpes.Text = totpes.ToString("0.00");
-            tx_tfil.Text = totfil.ToString();
-            if (int.Parse(tx_tfil.Text) == int.Parse(v_mfildet))
-            {
-                MessageBox.Show("Número máximo de filas de detalle", "El formato no permite mas", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                dataGridView1.AllowUserToAddRows = false;
-            }
-            else
-            {
-                dataGridView1.AllowUserToAddRows = true;
-            }
-        }
-        private void dataGridView1_EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
-        {
-            e.Control.KeyPress -= new KeyPressEventHandler(Column_KeyPress);
-            if (dataGridView1.CurrentCell.ColumnIndex == 0 || dataGridView1.CurrentCell.ColumnIndex == 3)   // columnas de solo números
-            {
-                TextBox tb = e.Control as TextBox;
-                if (tb != null)
-                {
-                    tb.KeyPress += new KeyPressEventHandler(Column_KeyPress);
-                }
-            }
-            if (dataGridView1.CurrentCell.ColumnIndex == 1 || dataGridView1.CurrentCell.ColumnIndex == 2)   // columnas en MAYUSCULAS
-            {
-                if (e.Control is TextBox)
-                {
-                    ((TextBox)(e.Control)).CharacterCasing = CharacterCasing.Upper;
-                }
-            }
-        }
-        private void dataGridView1_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
-        {
-            /*
-            if (dataGridView1.Rows.Count > 1 && ("NUEVO,EDITAR").Contains(Tx_modo.Text))
-            {
-                if (e.RowIndex > -1) dataGridView1.CurrentRow.Cells[2].Value = gloDeta + " ";
-            }
-            */
-            // cambie de idea. Al momento de grabar y si es NUEVO se agrega la glosa a cada fila 
-        }
-        private void Column_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
-            {
-                e.Handled = true;
-            }
-        }
-        #endregion
 
         #region impresion
         private bool imprimeA4()
@@ -1731,5 +1878,6 @@ namespace TransCarga
             return guiaT;
         }
         #endregion
+
     }
 }
