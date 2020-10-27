@@ -59,10 +59,10 @@ namespace TransCarga
         static libreria lib = new libreria();   // libreria de procedimientos
         publico lp = new publico();             // libreria de clases
         string verapp = System.Diagnostics.FileVersionInfo.GetVersionInfo(Application.ExecutablePath).FileVersion;
-        string claveSeg = "";                       // clave de seguridad del envío
         string nomclie = Program.cliente;           // cliente usuario del sistema
         string rucclie = Program.ruc;               // ruc del cliente usuario del sistema
         string asd = TransCarga.Program.vg_user;    // usuario conectado al sistema
+        string dirloc = lib.dirloca(Program.almuser);
         #endregion
 
         AutoCompleteStringCollection departamentos = new AutoCompleteStringCollection();// autocompletado departamentos
@@ -255,7 +255,7 @@ namespace TransCarga
                     {
                         if (row["campo"].ToString() == "documento")
                         {
-                            if (row["param"].ToString() == "c_int") v_cid = row["valor"].ToString().Trim();               // codigo interno pre guias
+                            if (row["param"].ToString() == "c_int") v_cid = row["valor"].ToString().Trim();               // codigo interno 
                             if (row["param"].ToString() == "frase2") v_fra2 = row["valor"].ToString().Trim();               // frase otro dato
                             if (row["param"].ToString() == "serieAnu") v_sanu = row["valor"].ToString().Trim();               // serie anulacion interna
                         }
@@ -970,7 +970,7 @@ namespace TransCarga
                 using (MySqlCommand micon = new MySqlCommand(todo, conn))
                 {
                     micon.CommandType = CommandType.StoredProcedure;
-                    micon.Parameters.AddWithValue("td", v_cid);
+                    micon.Parameters.AddWithValue("td", tx_dat_tdv.Text);
                     micon.Parameters.AddWithValue("ser", tx_serie.Text);
                     using (MySqlDataReader dr0 = micon.ExecuteReader())
                     {
@@ -984,37 +984,52 @@ namespace TransCarga
                     }
                 }
                 string inserta = "insert into cabfactu (" +
-                    " .... " +
-                    "verApp,userc,fechc,diriplan4,diripwan4,netbname) " +
-                    "values (@fechop,@sergr,@numgr,@npregr,@tdcdes,@ndcdes,@nomdes,@dircde,@ubicde," +
-                    "@tdcrem,@ndcrem,@nomrem,@dircre,@ubicre,@locpgr,@dirpgr,@ubopgr," +
-                    "@ldcpgr,@didegr,@ubdegr,@dooprg,@obsprg,@conprg,@totcpr,@totppr," +
-                    "@monppr,@tcprgr,@subpgr,@igvpgr,@totpgr,@pagpgr,@totpgr,@estpgr,@canfil," +
-                    "@frase1,@frase2,@fleimp,@ticlre,@ticlde,@tipacc,@clavse," +
+                    "fechope,martdve,tipdvta,serdvta,numdvta,ticltgr,tidoclt,nudoclt,nombclt,direclt,dptoclt,provclt,distclt,ubigclt,corrclt,teleclt," +
+                    "locorig,dirorig,ubiorig,obsdvta,canfidt,canbudt,mondvta,tcadvta,subtota,igvtota,porcigv,totdvta,totpags,saldvta,estdvta,frase01," +
+                    "tipoclt,m1clien,tippago,ferecep," +
+                    "verApp,userc,fechc,diriplan4,diripwan4,netbname) values (" +
+                    "@fechop,@mtdvta,@ctdvta,@serdv,@numdv,@tcdvta,@tdcrem,@ndcrem,@nomrem,@dircre,@dptocl,@provcl,@distcl,@ubicre,@mailcl,@telecl," +
+                    "@ldcpgr,@didegr,@ubdegr,@obsprg,@canfil,@totcpr,@monppr,@tcoper,@subpgr,@igvpgr,@porcigv,@totpgr,@pagpgr,@salxpa,@estpgr,@frase1," +
+                    "@ticlre,@m1clte,@tipacc,@feredv," +
                     "@verApp,@asd,now(),@iplan,@ipwan,@nbnam)";
                 using (MySqlCommand micon = new MySqlCommand(inserta, conn))
                 {
                     micon.Parameters.AddWithValue("@fechop", tx_fechope.Text.Substring(6, 4) + "-" + tx_fechope.Text.Substring(3, 2) + "-" + tx_fechope.Text.Substring(0, 2));
-                    micon.Parameters.AddWithValue("@sergr", tx_serie.Text);
-                    micon.Parameters.AddWithValue("@numgr", tx_numero.Text);
+                    micon.Parameters.AddWithValue("@mtdvta", cmb_tdv.Text.Substring(0,1));
+                    micon.Parameters.AddWithValue("@ctdvta", tx_dat_tdv.Text);
+                    micon.Parameters.AddWithValue("@serdv", tx_serie.Text);
+                    micon.Parameters.AddWithValue("@numdv", tx_numero.Text);
+                    micon.Parameters.AddWithValue("@tcdvta", (rb_remGR.Checked == true)? "1" : (rb_desGR.Checked == true)? "2" : "3");
                     micon.Parameters.AddWithValue("@tdcrem", tx_dat_tdRem.Text);
                     micon.Parameters.AddWithValue("@ndcrem", tx_numDocRem.Text);
                     micon.Parameters.AddWithValue("@nomrem", tx_nomRem.Text);
                     micon.Parameters.AddWithValue("@dircre", tx_dirRem.Text);
+                    micon.Parameters.AddWithValue("@dptocl", tx_dptoRtt.Text);
+                    micon.Parameters.AddWithValue("@provcl", tx_provRtt.Text);
+                    micon.Parameters.AddWithValue("@distcl", tx_distRtt.Text);
                     micon.Parameters.AddWithValue("@ubicre", tx_ubigRtt.Text);
-                    micon.Parameters.AddWithValue("@totcpr", tx_totcant.Text);
+                    micon.Parameters.AddWithValue("@mailcl", tx_email.Text);
+                    micon.Parameters.AddWithValue("@telecl", tx_telc1.Text);
+                    micon.Parameters.AddWithValue("@ldcpgr", TransCarga.Program.almuser);         // local origen
+                    micon.Parameters.AddWithValue("@didegr", dirloc);                               // direccion origen
+                    micon.Parameters.AddWithValue("@ubdegr", "");                                   // ubigeo origen ( FALTA )
+                    micon.Parameters.AddWithValue("@obsprg", tx_obser1.Text);
                     micon.Parameters.AddWithValue("@canfil", tx_tfil.Text);     // cantidad de filas de detalle
+                    micon.Parameters.AddWithValue("@totcpr", tx_totcant.Text);  // total bultos
                     micon.Parameters.AddWithValue("@monppr", tx_dat_mone.Text);
-                    micon.Parameters.AddWithValue("@tcprgr", "0.00");           // tipo de cambio ... falta leer de la tabla de cambios
-                    micon.Parameters.AddWithValue("@subpgr", "0");              // sub total de la pre guía
-                    micon.Parameters.AddWithValue("@igvpgr", "0");              // igv
+                    micon.Parameters.AddWithValue("@tcoper", "0.00");           // FALTA TIPO DE CAMBIO
+                    micon.Parameters.AddWithValue("@subpgr", "0.00");              // sub total   FALTA
+                    micon.Parameters.AddWithValue("@igvpgr", "0");              // igv                  FALTA
+                    micon.Parameters.AddWithValue("@porcigv","18");             // porcentaje en numeros de IGV      FALTA
                     micon.Parameters.AddWithValue("@totpgr", tx_flete.Text);    // total inc. igv
-                    micon.Parameters.AddWithValue("@pagpgr", "0");
-                    micon.Parameters.AddWithValue("@estpgr", tx_dat_estad.Text); // estado de la pre guía
-                    micon.Parameters.AddWithValue("@frase2", v_fra2);
-                    micon.Parameters.AddWithValue("@ticlre", tx_dat_tcr.Text);   // tipo de cliente remitente, credito o contado
-                    micon.Parameters.AddWithValue("@tipacc", "");       // guía a credito o contra entrega
-                    micon.Parameters.AddWithValue("@clavse", claveSeg);
+                    micon.Parameters.AddWithValue("@pagpgr", tx_pagado.Text);
+                    micon.Parameters.AddWithValue("@salxpa", tx_salxcob.Text);
+                    micon.Parameters.AddWithValue("@estpgr", tx_dat_estad.Text); // estado
+                    micon.Parameters.AddWithValue("@frase1", v_fra2);               // REVISAR LA FRASE SI VA O NO
+                    micon.Parameters.AddWithValue("@ticlre", tx_dat_tcr.Text);   // tipo de cliente credito o contado
+                    micon.Parameters.AddWithValue("@m1clte", tx_dat_m1clte.Text);
+                    micon.Parameters.AddWithValue("@tipacc", "");                   // pago de documento a credito o contado   .. FALTA
+                    micon.Parameters.AddWithValue("@feredv", DBNull.Value);         // si es pago contado la fecha de recep del doc. es la misma fecha
                     micon.Parameters.AddWithValue("@verApp", verapp);
                     micon.Parameters.AddWithValue("@asd", asd);
                     micon.Parameters.AddWithValue("@iplan", lib.iplan());
@@ -1042,20 +1057,19 @@ namespace TransCarga
                         {
 
                             string inserd2 = "update detfactu set " +
-                                "cantprodi=@can,unimedpro=@uni,codiprodi=@cod,descprodi=@des,pesoprodi=@pes,precprodi=@preu,totaprodi=@pret " +
-                                "where idc=@idr and fila=@fila";
+                                "codgror=@guia,cantbul=@bult,unimedp=@unim,descpro=@desc,pesogro=@peso,codmogr=@codm,totalgr=@pret " +
+                                "where idc=@idr and filadet=@fila";
                             using (MySqlCommand micon = new MySqlCommand(inserd2, conn))
                             {
                                 micon.Parameters.AddWithValue("@idr", tx_idr.Text);
                                 micon.Parameters.AddWithValue("@fila", fila);
-                                //micon.Parameters.AddWithValue("@serpgr", tx_serie.Text);
-                                //micon.Parameters.AddWithValue("@corpgr", tx_numero.Text);
-                                micon.Parameters.AddWithValue("@can", dataGridView1.Rows[i].Cells[0].Value.ToString());
-                                micon.Parameters.AddWithValue("@uni", dataGridView1.Rows[i].Cells[1].Value.ToString());
-                                micon.Parameters.AddWithValue("@cod", "");
-                                micon.Parameters.AddWithValue("@pes", dataGridView1.Rows[i].Cells[3].Value.ToString());
-                                micon.Parameters.AddWithValue("@preu", "0");
-                                micon.Parameters.AddWithValue("@pret", "0");
+                                micon.Parameters.AddWithValue("@guia", dataGridView1.Rows[i].Cells[0].Value.ToString());
+                                micon.Parameters.AddWithValue("@bult", dataGridView1.Rows[i].Cells[2].Value.ToString());
+                                micon.Parameters.AddWithValue("@unim", "");
+                                micon.Parameters.AddWithValue("@desc", dataGridView1.Rows[i].Cells[1].Value.ToString());
+                                micon.Parameters.AddWithValue("@peso", "0");
+                                micon.Parameters.AddWithValue("@codm", dataGridView1.Rows[i].Cells[3].Value.ToString());
+                                micon.Parameters.AddWithValue("@pret", dataGridView1.Rows[i].Cells[4].Value.ToString());
                                 micon.ExecuteNonQuery();
                                 fila += 1;
                                 //
@@ -1085,33 +1099,10 @@ namespace TransCarga
                     if (tx_impreso.Text == "N")     // EDICION DE CABECERA
                     {
                         string actua = "update cabfactu a set " +
-                            "a.fechopegr=@fechop,a.tidodegri=@tdcdes,a.nudodegri=@ndcdes," +
-                            "a.nombdegri=@nomdes,a.diredegri=@dircde,a.ubigdegri=@ubicde,a.tidoregri=@tdcrem,a.nudoregri=@ndcrem," + 
-                            "a.nombregri=@nomrem,a.direregri=@dircre,a.ubigregri=@ubicre,a.locorigen=@locpgr,a.dirorigen=@dirpgr," +
-                            "a.ubiorigen=@ubopgr,a.locdestin=@ldcpgr,a.dirdestin=@didegr,a.ubidestin=@ubdegr,a.docsremit=@dooprg," +
-                            "a.obspregri=@obsprg,a.clifingri=@conprg,a.cantotgri=@totcpr,a.pestotgri=@totppr,a.tipmongri=@monppr," +
-                            "a.tipcamgri=@tcprgr,a.subtotgri=@subpgr,a.igvgri=@igvpgr,a.totgri=@totpgr,a.totpag=@pagpgr," +
-                            "a.salgri=@totpgr,a.estadoser=@estpgr,a.seguroE=@clavse,a.cantfilas=@canfil," +
                             "a.verApp=@verApp,a.userm=@asd,a.fechm=now(),a.diriplan4=@iplan,a.diripwan4=@ipwan,a.netbname=@nbnam " +
                             "where a.id=@idr";
                         MySqlCommand micon = new MySqlCommand(actua, conn);
                         micon.Parameters.AddWithValue("@idr", tx_idr.Text);
-                        micon.Parameters.AddWithValue("@fechop", tx_fechope.Text.Substring(6, 4) + "-" + tx_fechope.Text.Substring(3, 2) + "-" + tx_fechope.Text.Substring(0, 2));
-                        micon.Parameters.AddWithValue("@tdcrem", tx_dat_tdRem.Text);
-                        micon.Parameters.AddWithValue("@ndcrem", tx_numDocRem.Text);
-                        micon.Parameters.AddWithValue("@nomrem", tx_nomRem.Text);
-                        micon.Parameters.AddWithValue("@dircre", tx_dirRem.Text);
-                        micon.Parameters.AddWithValue("@ubicre", tx_ubigRtt.Text);
-                        micon.Parameters.AddWithValue("@totcpr", tx_totcant.Text);
-                        micon.Parameters.AddWithValue("@monppr", tx_dat_mone.Text);
-                        micon.Parameters.AddWithValue("@tcprgr", "0.00");  // tipo de cambio
-                        micon.Parameters.AddWithValue("@subpgr", "0"); // sub total de la pre guía
-                        micon.Parameters.AddWithValue("@igvpgr", "0"); // igv
-                        micon.Parameters.AddWithValue("@pagpgr", "0");
-                        micon.Parameters.AddWithValue("@totpgr", tx_flete.Text); // saldo de la pre guia = total pre guia
-                        micon.Parameters.AddWithValue("@estpgr", tx_dat_estad.Text); // estado de la pre guía
-                        micon.Parameters.AddWithValue("@clavse", claveSeg);
-                        micon.Parameters.AddWithValue("@canfil", tx_tfil.Text);
                         micon.Parameters.AddWithValue("@verApp", verapp);
                         micon.Parameters.AddWithValue("@asd", asd);
                         micon.Parameters.AddWithValue("@iplan", lib.iplan());
@@ -1120,7 +1111,7 @@ namespace TransCarga
                         micon.ExecuteNonQuery();
                         //
                         // EDICION DEL DETALLE .... ANALIZAR SI VAMOS O NO?
-                        //
+                        /*
                         micon = new MySqlCommand("borraseguro", conn);
                         micon.CommandType = CommandType.StoredProcedure;
                         micon.Parameters.AddWithValue("@tabla", "detguiai");
@@ -1158,7 +1149,7 @@ namespace TransCarga
                                 micon.ExecuteNonQuery();
                             }
                         }
-                        //
+                        */
                         micon.Dispose();
                     }
                     if (tx_impreso.Text == "S")
@@ -1312,6 +1303,7 @@ namespace TransCarga
                         tx_ubigRtt.Text = datos[5];
                         tx_ubigRtt.Select(0, 0);
                         encuentra = "si";
+                        tx_dat_m1clte.Text = "";
                     }
                     if (tx_dat_tdRem.Text == vtc_ruc)
                     {
@@ -1326,6 +1318,7 @@ namespace TransCarga
                                 tx_dptoRtt.Text = rl[3];      // departamento
                                 tx_provRtt.Text = rl[4];      // provincia
                                 tx_distRtt.Text = rl[5];      // distrito
+                                tx_dat_m1clte.Text = "N";
                             }
                         }
                     }
@@ -1338,6 +1331,7 @@ namespace TransCarga
                                 string[] rl = lib.conectorSolorsoft("DNI", tx_numDocRem.Text);
                                 tx_nomRem.Text = rl[0];      // nombre
                                 //tx_numDocRem.Text = rl[1];     // num dni
+                                tx_dat_m1clte.Text = "N";
                             }
                         }
                     }
@@ -1554,6 +1548,7 @@ namespace TransCarga
             Bt_fin.Enabled = false;
             tx_salxcob.BackColor = Color.White;
             //
+            initIngreso();
             tx_numero.ReadOnly = true;
             cmb_tdv_SelectedIndexChanged(null, null);
             cmb_tdv.Focus();
