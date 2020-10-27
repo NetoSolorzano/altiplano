@@ -1843,7 +1843,7 @@ namespace TransCarga
         }
         private void tx_numero_Leave(object sender, EventArgs e)
         {
-            if (Tx_modo.Text != "NUEVO")
+            if (Tx_modo.Text != "NUEVO" && tx_numero.Text.Trim() != "")
             {
                 // en el caso de las pre guias el numero es el mismo que el ID del registro
                 tx_numero.Text = lib.Right("00000000" + tx_numero.Text, 8);
