@@ -759,6 +759,10 @@ namespace TransCarga
         #region autocompletados
         private void autodepa()                 // 
         {
+            if (dataUbig == null)
+            {
+                DataTable dataUbig = (DataTable)CacheManager.GetItem("ubigeos");
+            }
             DataRow[] depar = dataUbig.Select("depart<>'00' and provin='00' and distri='00'");
             departamentos.Clear();
             foreach (DataRow row in depar)

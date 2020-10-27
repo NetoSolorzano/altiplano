@@ -616,7 +616,7 @@ namespace TransCarga
                         {
                             if (dr.Read())
                             {
-                                if (dr.IsDBNull(0) == false)
+                                if (!dr.IsDBNull(0))
                                 {
                                     datcltsR[0] = dr.GetString("tidoregri");        // datos del remitente de la GR
                                     datcltsR[1] = dr.GetString("nudoregri");
@@ -637,8 +637,8 @@ namespace TransCarga
                                     datcltsD[7] = dr.GetString("numtel2D");
                                     //
                                     datguias[0] = serie + "-" + corre;                 // GR
-                                    datguias[1] = dr.GetString("descrip");         // descrip
-                                    datguias[2] = dr.GetString("bultos");          // cant bultos
+                                    datguias[1] = (dr.IsDBNull(20))? "" : dr.GetString("descrip");         // descrip
+                                    datguias[2] = (dr.IsDBNull(19))? "0" : dr.GetString("bultos");          // cant bultos
                                     datguias[3] = dr.GetString("mon");             // moneda
                                     datguias[4] = dr.GetString("totgri");          // valor GR
                                                                                    //
@@ -1302,8 +1302,12 @@ namespace TransCarga
                         tx_distRtt.Select(0, 0);
                         tx_ubigRtt.Text = datos[5];
                         tx_ubigRtt.Select(0, 0);
+                        tx_email.Text = datos[7];
+                        tx_email.Select(0, 0);
+                        tx_telc1.Text = datos[6];
+                        tx_telc1.Select(0, 0);
                         encuentra = "si";
-                        tx_dat_m1clte.Text = "";
+                        tx_dat_m1clte.Text = "E";
                     }
                     if (tx_dat_tdRem.Text == vtc_ruc)
                     {
@@ -1454,6 +1458,14 @@ namespace TransCarga
                     tx_email.Focus();
                     return;
                 }
+                tx_dat_m1clte.Text = "E";
+            }
+        }
+        private void tx_telc1_Leave(object sender, EventArgs e)
+        {
+            if (tx_telc1.Text.Trim() != "") //  && (Tx_modo.Text == "NUEVO" || Tx_modo.Text == "EDITAR")
+            {
+                tx_dat_m1clte.Text = "E";
             }
         }
         private void rb_si_Click(object sender, EventArgs e)

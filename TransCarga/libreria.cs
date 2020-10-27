@@ -1767,7 +1767,7 @@ namespace TransCarga
         }
         public string[] datossn(string vista, string docu, string numero)   // retorna datos del socio, (nombre,direc, etc)
         {
-            string[] retorna = new string[] { "", "", "", "", "", "" };
+            string[] retorna = new string[] { "", "", "", "", "", "", "", "" };
             MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
             conn.Open();
             if (conn.State == ConnectionState.Open)
@@ -1789,6 +1789,8 @@ namespace TransCarga
                         retorna[3] = dr.GetString("Provincia");
                         retorna[4] = dr.GetString("Localidad");
                         retorna[5] = dr.GetString("ubigeo");
+                        retorna[6] = dr.GetString("NumeroTel1");
+                        retorna[7] = dr.GetString("EMail");
                     }
                     dr.Dispose();
                     micon.Dispose();
