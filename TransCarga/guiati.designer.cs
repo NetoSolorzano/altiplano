@@ -534,7 +534,7 @@
             this.tx_distRtt.MaxLength = 0;
             this.tx_distRtt.Name = "tx_distRtt";
             this.tx_distRtt.Size = new System.Drawing.Size(80, 18);
-            this.tx_distRtt.TabIndex = 11;
+            this.tx_distRtt.TabIndex = 10;
             this.tx_distRtt.Leave += new System.EventHandler(this.textBox9_Leave);
             // 
             // tx_provRtt
@@ -545,7 +545,7 @@
             this.tx_provRtt.MaxLength = 0;
             this.tx_provRtt.Name = "tx_provRtt";
             this.tx_provRtt.Size = new System.Drawing.Size(80, 18);
-            this.tx_provRtt.TabIndex = 10;
+            this.tx_provRtt.TabIndex = 9;
             this.tx_provRtt.Leave += new System.EventHandler(this.textBox8_Leave);
             // 
             // tx_dptoRtt
@@ -556,7 +556,7 @@
             this.tx_dptoRtt.MaxLength = 0;
             this.tx_dptoRtt.Name = "tx_dptoRtt";
             this.tx_dptoRtt.Size = new System.Drawing.Size(80, 18);
-            this.tx_dptoRtt.TabIndex = 9;
+            this.tx_dptoRtt.TabIndex = 8;
             this.tx_dptoRtt.Leave += new System.EventHandler(this.textBox7_Leave);
             // 
             // groupBox11
@@ -595,7 +595,7 @@
             this.tx_dirRem.MaxLength = 0;
             this.tx_dirRem.Name = "tx_dirRem";
             this.tx_dirRem.Size = new System.Drawing.Size(398, 18);
-            this.tx_dirRem.TabIndex = 8;
+            this.tx_dirRem.TabIndex = 7;
             // 
             // groupBox7
             // 
@@ -633,7 +633,7 @@
             this.tx_nomRem.MaxLength = 0;
             this.tx_nomRem.Name = "tx_nomRem";
             this.tx_nomRem.Size = new System.Drawing.Size(491, 18);
-            this.tx_nomRem.TabIndex = 7;
+            this.tx_nomRem.TabIndex = 6;
             // 
             // cmb_docRem
             // 
@@ -642,7 +642,7 @@
             this.cmb_docRem.Location = new System.Drawing.Point(92, 103);
             this.cmb_docRem.Name = "cmb_docRem";
             this.cmb_docRem.Size = new System.Drawing.Size(48, 21);
-            this.cmb_docRem.TabIndex = 5;
+            this.cmb_docRem.TabIndex = 4;
             this.cmb_docRem.SelectionChangeCommitted += new System.EventHandler(this.cmb_docRem_SelectionChangeCommitted);
             // 
             // tx_idr
@@ -662,7 +662,7 @@
             this.tx_numDocRem.MaxLength = 0;
             this.tx_numDocRem.Name = "tx_numDocRem";
             this.tx_numDocRem.Size = new System.Drawing.Size(101, 18);
-            this.tx_numDocRem.TabIndex = 6;
+            this.tx_numDocRem.TabIndex = 5;
             this.tx_numDocRem.Leave += new System.EventHandler(this.textBox3_Leave);
             // 
             // tx_dat_tdRem
@@ -761,7 +761,7 @@
             this.cmb_origen.Location = new System.Drawing.Point(228, 32);
             this.cmb_origen.Name = "cmb_origen";
             this.cmb_origen.Size = new System.Drawing.Size(98, 21);
-            this.cmb_origen.TabIndex = 31;
+            this.cmb_origen.TabIndex = 331;
             this.cmb_origen.SelectionChangeCommitted += new System.EventHandler(this.cmb_origen_SelectionChangeCommitted);
             // 
             // cmb_destino
@@ -771,7 +771,7 @@
             this.cmb_destino.Location = new System.Drawing.Point(228, 61);
             this.cmb_destino.Name = "cmb_destino";
             this.cmb_destino.Size = new System.Drawing.Size(98, 21);
-            this.cmb_destino.TabIndex = 4;
+            this.cmb_destino.TabIndex = 3;
             this.cmb_destino.SelectionChangeCommitted += new System.EventHandler(this.cmb_destino_SelectionChangeCommitted);
             // 
             // tx_dirOrigen
@@ -957,7 +957,7 @@
             this.tx_pregr_num.Name = "tx_pregr_num";
             this.tx_pregr_num.ReadOnly = true;
             this.tx_pregr_num.Size = new System.Drawing.Size(73, 18);
-            this.tx_pregr_num.TabIndex = 328;
+            this.tx_pregr_num.TabIndex = 0;
             this.tx_pregr_num.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.tx_pregr_num.Leave += new System.EventHandler(this.tx_pregr_num_Leave);
             // 
@@ -1067,7 +1067,7 @@
             this.tx_ubigRtt.MaxLength = 6;
             this.tx_ubigRtt.Name = "tx_ubigRtt";
             this.tx_ubigRtt.Size = new System.Drawing.Size(33, 18);
-            this.tx_ubigRtt.TabIndex = 294;
+            this.tx_ubigRtt.TabIndex = 11;
             this.tx_ubigRtt.Visible = false;
             this.tx_ubigRtt.Leave += new System.EventHandler(this.textBox13_Leave);
             // 

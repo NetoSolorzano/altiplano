@@ -761,7 +761,8 @@ namespace TransCarga
         {
             if (dataUbig == null)
             {
-                DataTable dataUbig = (DataTable)CacheManager.GetItem("ubigeos");
+                //DataTable dataUbig = (DataTable)CacheManager.GetItem("ubigeos");
+                // aca deberiamos volver a hacer un AddItem de CacheManager
             }
             DataRow[] depar = dataUbig.Select("depart<>'00' and provin='00' and distri='00'");
             departamentos.Clear();
@@ -1746,7 +1747,7 @@ namespace TransCarga
                         }
                     }
                     // si la direccion esta en blanco, debe permitir escribir
-                    if (tx_dirRem.Text.Trim() == "")
+                    if (tx_dirRem.Text.Trim() == "" || tx_dirRem.Text.Trim().Substring(0,3) == "- -")
                     {
                         tx_dirRem.ReadOnly = false;
                         tx_dptoRtt.ReadOnly = false;
@@ -1830,7 +1831,7 @@ namespace TransCarga
                         }
                     }
                     // si la direccion esta en blanco debe permitir actualizar
-                    if (tx_dirDrio.Text.Trim() == "")
+                    if (tx_dirDrio.Text.Trim() == "" || tx_dirDrio.Text.Trim().Substring(0,3) == "- -")   // tx_dirDrio.Text.Trim() == ""
                     {
                         tx_dirDrio.ReadOnly = false;
                         tx_dptoDrio.ReadOnly = false;

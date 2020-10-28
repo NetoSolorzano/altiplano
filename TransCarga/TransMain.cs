@@ -304,7 +304,7 @@ namespace TransCarga
                     {
                         DataTable dtu = new DataTable();
                         da.Fill(dtu);
-                        CacheManager.AddItem("ubigeos", dtu, 300);
+                        CacheManager.AddItem("ubigeos", dtu, 3600);
                     }
                 }
             }
