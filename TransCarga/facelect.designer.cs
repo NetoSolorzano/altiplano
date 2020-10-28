@@ -456,9 +456,8 @@
             this.tx_distRtt.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tx_distRtt.Location = new System.Drawing.Point(683, 98);
             this.tx_distRtt.MaxLength = 0;
-            this.tx_distRtt.Multiline = true;
             this.tx_distRtt.Name = "tx_distRtt";
-            this.tx_distRtt.Size = new System.Drawing.Size(80, 35);
+            this.tx_distRtt.Size = new System.Drawing.Size(80, 18);
             this.tx_distRtt.TabIndex = 12;
             this.tx_distRtt.Leave += new System.EventHandler(this.textBox9_Leave);
             // 
@@ -468,9 +467,8 @@
             this.tx_provRtt.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tx_provRtt.Location = new System.Drawing.Point(603, 98);
             this.tx_provRtt.MaxLength = 0;
-            this.tx_provRtt.Multiline = true;
             this.tx_provRtt.Name = "tx_provRtt";
-            this.tx_provRtt.Size = new System.Drawing.Size(80, 35);
+            this.tx_provRtt.Size = new System.Drawing.Size(80, 18);
             this.tx_provRtt.TabIndex = 11;
             this.tx_provRtt.Leave += new System.EventHandler(this.textBox8_Leave);
             // 
@@ -480,9 +478,8 @@
             this.tx_dptoRtt.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tx_dptoRtt.Location = new System.Drawing.Point(523, 98);
             this.tx_dptoRtt.MaxLength = 0;
-            this.tx_dptoRtt.Multiline = true;
             this.tx_dptoRtt.Name = "tx_dptoRtt";
-            this.tx_dptoRtt.Size = new System.Drawing.Size(80, 35);
+            this.tx_dptoRtt.Size = new System.Drawing.Size(80, 18);
             this.tx_dptoRtt.TabIndex = 10;
             this.tx_dptoRtt.Leave += new System.EventHandler(this.textBox7_Leave);
             // 
@@ -490,7 +487,7 @@
             // 
             this.groupBox11.BackColor = System.Drawing.Color.White;
             this.groupBox11.Controls.Add(this.groupBox12);
-            this.groupBox11.Location = new System.Drawing.Point(144, 132);
+            this.groupBox11.Location = new System.Drawing.Point(144, 115);
             this.groupBox11.Name = "groupBox11";
             this.groupBox11.Size = new System.Drawing.Size(619, 1);
             this.groupBox11.TabIndex = 262;
@@ -508,7 +505,7 @@
             // 
             this.label5.AutoSize = true;
             this.label5.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label5.Location = new System.Drawing.Point(147, 108);
+            this.label5.Location = new System.Drawing.Point(147, 100);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(52, 13);
             this.label5.TabIndex = 261;
@@ -520,9 +517,8 @@
             this.tx_dirRem.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tx_dirRem.Location = new System.Drawing.Point(201, 98);
             this.tx_dirRem.MaxLength = 0;
-            this.tx_dirRem.Multiline = true;
             this.tx_dirRem.Name = "tx_dirRem";
-            this.tx_dirRem.Size = new System.Drawing.Size(322, 35);
+            this.tx_dirRem.Size = new System.Drawing.Size(322, 18);
             this.tx_dirRem.TabIndex = 9;
             // 
             // groupBox7
@@ -860,10 +856,10 @@
             // 
             this.tx_ubigRtt.BackColor = System.Drawing.SystemColors.Window;
             this.tx_ubigRtt.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_ubigRtt.Location = new System.Drawing.Point(153, 95);
+            this.tx_ubigRtt.Location = new System.Drawing.Point(142, 95);
             this.tx_ubigRtt.MaxLength = 6;
             this.tx_ubigRtt.Name = "tx_ubigRtt";
-            this.tx_ubigRtt.Size = new System.Drawing.Size(33, 18);
+            this.tx_ubigRtt.Size = new System.Drawing.Size(23, 18);
             this.tx_ubigRtt.TabIndex = 294;
             this.tx_ubigRtt.Visible = false;
             this.tx_ubigRtt.Leave += new System.EventHandler(this.textBox13_Leave);
@@ -1294,7 +1290,7 @@
             // 
             this.groupBox9.BackColor = System.Drawing.Color.White;
             this.groupBox9.Controls.Add(this.groupBox13);
-            this.groupBox9.Location = new System.Drawing.Point(144, 159);
+            this.groupBox9.Location = new System.Drawing.Point(144, 142);
             this.groupBox9.Name = "groupBox9";
             this.groupBox9.Size = new System.Drawing.Size(539, 1);
             this.groupBox9.TabIndex = 356;
@@ -1312,7 +1308,7 @@
             // 
             this.label2.AutoSize = true;
             this.label2.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label2.Location = new System.Drawing.Point(147, 144);
+            this.label2.Location = new System.Drawing.Point(147, 127);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(38, 13);
             this.label2.TabIndex = 355;
@@ -1322,7 +1318,7 @@
             // 
             this.tx_email.BackColor = System.Drawing.SystemColors.Window;
             this.tx_email.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_email.Location = new System.Drawing.Point(201, 142);
+            this.tx_email.Location = new System.Drawing.Point(201, 125);
             this.tx_email.MaxLength = 0;
             this.tx_email.Name = "tx_email";
             this.tx_email.Size = new System.Drawing.Size(323, 18);
@@ -1333,7 +1329,7 @@
             // 
             this.label4.AutoSize = true;
             this.label4.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label4.Location = new System.Drawing.Point(550, 144);
+            this.label4.Location = new System.Drawing.Point(550, 127);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(49, 13);
             this.label4.TabIndex = 358;
@@ -1343,7 +1339,7 @@
             // 
             this.tx_telc1.BackColor = System.Drawing.SystemColors.Window;
             this.tx_telc1.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_telc1.Location = new System.Drawing.Point(603, 142);
+            this.tx_telc1.Location = new System.Drawing.Point(603, 125);
             this.tx_telc1.MaxLength = 0;
             this.tx_telc1.Name = "tx_telc1";
             this.tx_telc1.Size = new System.Drawing.Size(80, 18);
@@ -1354,7 +1350,7 @@
             // 
             this.tx_telc2.BackColor = System.Drawing.SystemColors.Window;
             this.tx_telc2.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_telc2.Location = new System.Drawing.Point(683, 142);
+            this.tx_telc2.Location = new System.Drawing.Point(683, 125);
             this.tx_telc2.MaxLength = 0;
             this.tx_telc2.Name = "tx_telc2";
             this.tx_telc2.Size = new System.Drawing.Size(80, 18);
@@ -1375,9 +1371,9 @@
             // 
             this.tx_dat_tdec.BackColor = System.Drawing.SystemColors.Window;
             this.tx_dat_tdec.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_dat_tdec.Location = new System.Drawing.Point(62, 129);
+            this.tx_dat_tdec.Location = new System.Drawing.Point(60, 129);
             this.tx_dat_tdec.Name = "tx_dat_tdec";
-            this.tx_dat_tdec.Size = new System.Drawing.Size(37, 18);
+            this.tx_dat_tdec.Size = new System.Drawing.Size(44, 18);
             this.tx_dat_tdec.TabIndex = 362;
             this.tx_dat_tdec.Visible = false;
             // 

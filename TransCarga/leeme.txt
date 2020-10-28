@@ -51,4 +51,4 @@ form transbord: (proceso de transbordos, no usa tablas propias)
 - Unico boton de NUEVO, transborda parcial o total guias de una planilla a otra existente .......... ME QUEDE ACA
 form factelect: (facturacion electrónica, se integra con sist propio del cliente)
 - desarrollo del form .............................................................................. ME QUEDE ACA
--- falta: edicion, anulacion, formato impresion (al 26/10/2020)
+-- falta: tip.cambio, igv ,formato impresion (al 28/10/2020)

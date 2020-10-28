@@ -159,7 +159,15 @@ namespace TransCarga
         }
         public string ipwan()                                               // retorna la IP wan del cliente
         {
-            string externalip = new WebClient().DownloadString("http://icanhazip.com");
+            string externalip = "";
+            try
+            {
+                externalip = new WebClient().DownloadString("http://icanhazip.com");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Imposible obtener dirección WAN");
+            }
             return externalip;
         }
         public string nbname()                                              // retorna el nombre de la pc cliente
