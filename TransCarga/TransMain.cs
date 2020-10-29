@@ -70,7 +70,9 @@ namespace TransCarga
         string imgpc5 = "";                                             // imagen5 de menu panel de control
         string imgma1 = "";                                             // imagen 1 maestras - clientes
         string imgma2 = "";                                             // imagen 2 maestras - artículos
-        string imgma3 = "";                                             // imagen 3 maestras - adicionales
+        string imgma3 = "";                                             // imagen 3 maestras - camiones
+        string imgma4 = "";                                             // imagen 4 maestras - RR.HH.
+        string imgma5 = "";                                             // imagen 5 maestras - Tipos de cambio
         string imgpe1 = "";                                             // imagen 1 pedidos - registro
         string imgpe2 = "";                                             // imagen 2 pedidos - reportes
         string imgvc1 = "";                                             // imagen 1 ventas - contratos
@@ -249,6 +251,8 @@ namespace TransCarga
                         if (row["param"].ToString() == "imgma1") imgma1 = row["valor"].ToString().Trim();         // imagen1 de maestras - clientes
                         if (row["param"].ToString() == "imgma2") imgma2 = row["valor"].ToString().Trim();         // imagen2 de maestras - proveedores 
                         if (row["param"].ToString() == "imgma3") imgma3 = row["valor"].ToString().Trim();         // imagen3 de maestras - vehiculos 
+                        if (row["param"].ToString() == "imgma4") imgma4 = row["valor"].ToString().Trim();         // imagen3 de maestras - RR.HH.
+                        if (row["param"].ToString() == "imgma5") imgma5 = row["valor"].ToString().Trim();         // imagen3 de maestras - Tipos de cambio
                         if (row["param"].ToString() == "imgpe1") imgpe1 = row["valor"].ToString().Trim();         // imagen1 de pedidos - registro
                         if (row["param"].ToString() == "imgpe2") imgpe2 = row["valor"].ToString().Trim();         // imagen1 de pedidos - reportes
                         if (row["param"].ToString() == "imgvc1") imgvc1 = row["valor"].ToString().Trim();         // imagen1 de ventas contratos
@@ -599,11 +603,14 @@ namespace TransCarga
             Image img_ma1 = Image.FromFile(imgma1);
             Image img_ma2 = Image.FromFile(imgma2);
             Image img_ma3 = Image.FromFile(imgma3);
+            Image img_ma4 = Image.FromFile(imgma4);
+            Image img_ma5 = Image.FromFile(imgma5);
             menuStrip1.Items.Clear();
             menuStrip1.Items.Add("Clientes", img_ma1, ma_clientes_Click);               // clientes
-            menuStrip1.Items.Add("Proveedores", img_ma2, ma_proveed_Click);               // proveedores
+            menuStrip1.Items.Add("Proveedores", img_ma2, ma_proveed_Click);             // proveedores
             menuStrip1.Items.Add("Vehículos", img_ma3, ma_camiones_Click);              // camiones propios y terceros
-            menuStrip1.Items.Add("RR.HH.", img_ma3, ma_rrhh_Click);                // adicionales para los contratos clientes
+            menuStrip1.Items.Add("RR.HH.", img_ma4, ma_rrhh_Click);                     // recursos humanos
+            menuStrip1.Items.Add("Tipo Cambio", img_ma5, ma_tipcam_Click);              // tipos de cambio
             menuStrip1.Visible = true;
         }
         private void ma_clientes_Click(object sender, EventArgs e)
@@ -651,6 +658,17 @@ namespace TransCarga
             fad.Show();
             fad.BringToFront();
             */
+        }
+        private void ma_tipcam_Click(object sender, EventArgs e)
+        {
+            tipcamref fmc = new tipcamref();
+            fmc.TopLevel = false;
+            fmc.Parent = this;
+            pn_centro.Controls.Add(fmc);
+            fmc.Location = new Point((pn_centro.Width - fmc.Width), (pn_centro.Height - fmc.Height) / 2);
+            fmc.Anchor = AnchorStyles.None;
+            fmc.Show();
+            fmc.BringToFront();
         }
         //
         private void pc_usuarios_Click(object sender, EventArgs e)
