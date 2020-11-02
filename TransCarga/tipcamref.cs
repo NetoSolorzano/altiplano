@@ -36,6 +36,10 @@ namespace TransCarga
         string img_grab = "";
         string img_anul = "";
         string vEstAnu = "";            // estado de serie anulada
+        string v_noM1 = "";
+        string v_noM2 = "";
+        string v_noM3 = "";
+        string v_noM4 = "";
         libreria lib = new libreria();
         publico lp = new publico(); 
         // string de conexion
@@ -46,6 +50,7 @@ namespace TransCarga
         static string data = ConfigurationManager.AppSettings["data"].ToString();
         string DB_CONN_STR = "server=" + login.serv + ";uid=" + login.usua + ";pwd=" + login.cont + ";database=" + data + ";";
         DataTable dtg = new DataTable();
+        DataTable dtm = new DataTable();
 
         public tipcamref()
         {
@@ -75,7 +80,7 @@ namespace TransCarga
             toolboton();
             limpiar();
             sololee();
-            //dataload();
+            dataload();
             //grilla();
             this.KeyPreview = true;
             advancedDataGridView1.Enabled = false;
@@ -119,33 +124,33 @@ namespace TransCarga
             // fecha
             advancedDataGridView1.Columns[1].Visible = true;            // columna visible o no
             advancedDataGridView1.Columns[1].HeaderText = "Fecha";    // titulo de la columna
-            advancedDataGridView1.Columns[1].Width = 100;                // ancho
+            advancedDataGridView1.Columns[1].Width = 150;                // ancho
             advancedDataGridView1.Columns[1].ReadOnly = true;           // lectura o no
-            advancedDataGridView1.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            //advancedDataGridView1.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
             // mext1
             advancedDataGridView1.Columns[2].Visible = true;       
-            advancedDataGridView1.Columns[2].HeaderText = "mext1";
+            advancedDataGridView1.Columns[2].HeaderText = v_noM1; // "mext1"
             advancedDataGridView1.Columns[2].Width = 60;
             advancedDataGridView1.Columns[2].ReadOnly = false;          // las celdas de esta columna pueden cambiarse
             advancedDataGridView1.Columns[2].Tag = "validaNO";          // las celdas de esta columna se NO se validan
             advancedDataGridView1.Columns[2].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
             // mext2
             advancedDataGridView1.Columns[3].Visible = true;
-            advancedDataGridView1.Columns[3].HeaderText = "mext2";
+            advancedDataGridView1.Columns[3].HeaderText = v_noM2; // "mext2"
             advancedDataGridView1.Columns[3].Width = 60;
             advancedDataGridView1.Columns[3].ReadOnly = false;          // las celdas de esta columna pueden cambiarse
             advancedDataGridView1.Columns[3].Tag = "validaNO";          // las celdas de esta columna se validan
             advancedDataGridView1.Columns[3].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
             // mext3
             advancedDataGridView1.Columns[4].Visible = true;
-            advancedDataGridView1.Columns[4].HeaderText = "mext3";
+            advancedDataGridView1.Columns[4].HeaderText = v_noM3; // "mext3"
             advancedDataGridView1.Columns[4].Width = 60;
             advancedDataGridView1.Columns[4].ReadOnly = false;          // las celdas de esta columna pueden cambiarse
             advancedDataGridView1.Columns[4].Tag = "validaNO";          // las celdas de esta columna se validan
             advancedDataGridView1.Columns[4].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
             // mext4
             advancedDataGridView1.Columns[5].Visible = true;
-            advancedDataGridView1.Columns[5].HeaderText = "mext4";
+            advancedDataGridView1.Columns[5].HeaderText = v_noM4; // "mext4"
             advancedDataGridView1.Columns[5].Width = 60;
             advancedDataGridView1.Columns[5].ReadOnly = false;
             advancedDataGridView1.Columns[5].Tag = "validaNO";          // las celdas de esta columna se NO se validan
@@ -208,12 +213,69 @@ namespace TransCarga
                 Application.Exit();
                 return;
             }
-            
+            string consulta = "select idcodice,descrizionerid,codigo from desc_mon";
+            using (MySqlCommand micon = new MySqlCommand(consulta, conn))
+            {
+                using (MySqlDataAdapter da = new MySqlDataAdapter(micon))
+                {
+                    da.Fill(dtm);
+                }
+            }
+            // dtm.Rows[0].ItemArray[2].ToString() -> es la moneda local
+            v_noM1 = (dtm.Rows.Count == 2) ? dtm.Rows[1].ItemArray[2].ToString() : "";
+            v_noM2 = (dtm.Rows.Count == 3) ? dtm.Rows[2].ItemArray[2].ToString() : "";
+            v_noM3 = (dtm.Rows.Count == 4) ? dtm.Rows[3].ItemArray[2].ToString() : "";
+            v_noM4 = (dtm.Rows.Count == 5) ? dtm.Rows[4].ItemArray[2].ToString() : "";
             conn.Close();
         }
         private void bt_agr_Click(object sender, EventArgs e)
         {
-
+            using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
+            {
+                if (lib.procConn(conn) == true)
+                {
+                    string consulta = "select id,fechope,mext1,mext2,mext3,mext4 from tipcamref where year(fechope)=@yea and month(fechope)=@mes";
+                    using (MySqlCommand micon = new MySqlCommand(consulta, conn))
+                    {
+                        micon.Parameters.AddWithValue("@yea", dtp_yea.Value.Year.ToString());
+                        micon.Parameters.AddWithValue("@mes", dtp_mes.Value.Month.ToString());
+                        using (MySqlDataAdapter da = new MySqlDataAdapter(micon))
+                        {
+                            dtg.Rows.Clear();
+                            dtg.Columns.Clear();
+                            da.Fill(dtg);
+                            if (dtg.Rows.Count > 0) grilla();
+                            else
+                            {
+                                string inserta = "insert into tipcamref (fechope,verapp,userc,fechc,diriplan4,diripwan4) values ";
+                                int days = DateTime.DaysInMonth(dtp_yea.Value.Year, dtp_mes.Value.Month);
+                                for (int i=1; i<=days; i++)
+                                {
+                                    inserta = inserta + "('" + dtp_yea.Value.Year.ToString() + "-" + lib.Right("0" + dtp_mes.Value.Month.ToString(),2) + "-" + lib.Right("0" + i.ToString(),2) +
+                                        "','" + verapp + "','" + asd + "'," + "now(),'" + lib.iplan() + "','" + lib.ipwan() + "')";
+                                    if (i != days) inserta = inserta + ",";
+                                }
+                                using (MySqlCommand minsert = new MySqlCommand(inserta, conn))
+                                {
+                                    minsert.ExecuteNonQuery();
+                                }
+                                using (MySqlCommand micon2 = new MySqlCommand(consulta, conn))
+                                {
+                                    micon2.Parameters.AddWithValue("@yea", dtp_yea.Value.Year.ToString());
+                                    micon2.Parameters.AddWithValue("@mes", dtp_mes.Value.Month.ToString());
+                                    using (MySqlDataAdapter da2 = new MySqlDataAdapter(micon))
+                                    {
+                                        dtg.Rows.Clear();
+                                        dtg.Columns.Clear();
+                                            da2.Fill(dtg);
+                                        if (dtg.Rows.Count > 0) grilla();
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         string[] equivinter(string titulo)        // equivalencia entre titulo de columna y tabla 
@@ -362,20 +424,11 @@ namespace TransCarga
         private void Bt_edit_Click(object sender, EventArgs e)
         {
             advancedDataGridView1.Enabled = true;
-            string codu = "";
-            string idr="",rin="";
-            if (advancedDataGridView1.CurrentRow.Index > -1)
-            {
-                codu = advancedDataGridView1.CurrentRow.Cells[1].Value.ToString();
-                idr = advancedDataGridView1.CurrentRow.Cells[0].Value.ToString();
-                rin = advancedDataGridView1.CurrentRow.Index.ToString();
-            }
             escribe();
             Tx_modo.Text = "EDITAR";
             limpiar();
             limpia_otros();
             limpia_combos();
-            jalaoc("tx_idr");
         }
         private void Bt_close_Click(object sender, EventArgs e)
         {
@@ -388,20 +441,7 @@ namespace TransCarga
         }
         private void Bt_anul_Click(object sender, EventArgs e)
         {
-            advancedDataGridView1.Enabled = true;
-            string codu = "";
-            string idr = "";
-            if (advancedDataGridView1.CurrentRow.Index > -1)
-            {
-                codu = advancedDataGridView1.CurrentRow.Cells[1].Value.ToString();
-                idr = advancedDataGridView1.CurrentRow.Cells[0].Value.ToString();
-            }
-            escribe();
-            Tx_modo.Text = "ANULAR";
-            limpiar();
-            limpia_otros();
-            limpia_combos();
-            jalaoc("tx_idr");
+            //Tx_modo.Text = "ANULAR";
         }
         private void Bt_first_Click(object sender, EventArgs e)
         {
@@ -444,13 +484,13 @@ namespace TransCarga
         {
             if(e.ColumnIndex == 1)
             {
-                string idr,rin;
+                /*string idr,rin;
                 idr = advancedDataGridView1.CurrentRow.Cells[0].Value.ToString();
                 rin = advancedDataGridView1.CurrentRow.Index.ToString();
                 limpiar();
                 limpia_otros();
                 limpia_combos();
-                jalaoc("tx_idr");
+                jalaoc("tx_idr"); */
             }
         }
         private void advancedDataGridView1_CellValidating(object sender, DataGridViewCellValidatingEventArgs e) // valida cambios en valor de la celda
@@ -466,24 +506,16 @@ namespace TransCarga
                     MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (aaa == DialogResult.Yes)
                 {
-                    if(advancedDataGridView1.Columns[e.ColumnIndex].Tag.ToString() == "validaSI")   // la columna se valida?
+                    using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
                     {
-                        // valida si el dato ingresado es valido en la columna
-                        if (lib.validac(noeta[0], noeta[1], e.FormattedValue.ToString()) == true)
+                        if (lib.procConn(conn) == true)
                         {
-                            // llama a libreria con los datos para el update - tabla,id,campo,nuevo valor
-                            lib.actuac(nomtab, campo, e.FormattedValue.ToString(),advancedDataGridView1.Rows[e.RowIndex].Cells[0].Value.ToString());
+                            string actua = "update ";
+                            using (MySqlCommand micon = new MySqlCommand())
+                            {
+
+                            }
                         }
-                        else
-                        {
-                            MessageBox.Show("El valor no es válido para la columna", "Atención - Corrija");
-                            e.Cancel = true;
-                        }
-                    }
-                    else
-                    {
-                        // llama a libreria con los datos para el update - tabla,id,campo,nuevo valor
-                        lib.actuac(nomtab, campo, e.FormattedValue.ToString(), advancedDataGridView1.Rows[e.RowIndex].Cells[0].Value.ToString());
                     }
                 }
                 else

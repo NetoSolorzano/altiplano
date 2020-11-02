@@ -56,6 +56,8 @@
             this.dtp_yea = new System.Windows.Forms.DateTimePicker();
             this.dtp_mes = new System.Windows.Forms.DateTimePicker();
             this.bt_agr = new System.Windows.Forms.Button();
+            this.label1 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
             this.toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.advancedDataGridView1)).BeginInit();
             this.SuspendLayout();
@@ -89,7 +91,7 @@
             this.toolStripSeparator11});
             this.toolStrip1.Location = new System.Drawing.Point(0, 373);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(662, 35);
+            this.toolStrip1.Size = new System.Drawing.Size(465, 35);
             this.toolStrip1.TabIndex = 33;
             this.toolStrip1.Text = "toolStrip1";
             // 
@@ -299,15 +301,18 @@
             this.advancedDataGridView1.DateWithTime = false;
             this.advancedDataGridView1.Location = new System.Drawing.Point(6, 38);
             this.advancedDataGridView1.Name = "advancedDataGridView1";
-            this.advancedDataGridView1.Size = new System.Drawing.Size(650, 329);
+            this.advancedDataGridView1.Size = new System.Drawing.Size(453, 329);
             this.advancedDataGridView1.TabIndex = 34;
             this.advancedDataGridView1.TimeFilter = false;
+            this.advancedDataGridView1.FilterStringChanged += new System.EventHandler(this.advancedDataGridView1_FilterStringChanged);
+            this.advancedDataGridView1.CellEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.advancedDataGridView1_CellEnter);
+            this.advancedDataGridView1.CellValidating += new System.Windows.Forms.DataGridViewCellValidatingEventHandler(this.advancedDataGridView1_CellValidating);
             // 
             // dtp_yea
             // 
             this.dtp_yea.Checked = false;
             this.dtp_yea.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dtp_yea.Location = new System.Drawing.Point(360, 8);
+            this.dtp_yea.Location = new System.Drawing.Point(138, 8);
             this.dtp_yea.Name = "dtp_yea";
             this.dtp_yea.Size = new System.Drawing.Size(66, 20);
             this.dtp_yea.TabIndex = 35;
@@ -316,7 +321,7 @@
             // 
             this.dtp_mes.Checked = false;
             this.dtp_mes.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dtp_mes.Location = new System.Drawing.Point(482, 8);
+            this.dtp_mes.Location = new System.Drawing.Point(260, 8);
             this.dtp_mes.Name = "dtp_mes";
             this.dtp_mes.Size = new System.Drawing.Size(55, 20);
             this.dtp_mes.TabIndex = 36;
@@ -324,20 +329,41 @@
             // bt_agr
             // 
             this.bt_agr.Image = global::TransCarga.Properties.Resources.process24;
-            this.bt_agr.Location = new System.Drawing.Point(552, 3);
+            this.bt_agr.Location = new System.Drawing.Point(330, 3);
             this.bt_agr.Name = "bt_agr";
             this.bt_agr.Size = new System.Drawing.Size(32, 32);
             this.bt_agr.TabIndex = 37;
             this.bt_agr.UseVisualStyleBackColor = true;
             this.bt_agr.Click += new System.EventHandler(this.bt_agr_Click);
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.ForeColor = System.Drawing.Color.Black;
+            this.label1.Location = new System.Drawing.Point(109, 12);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(26, 13);
+            this.label1.TabIndex = 38;
+            this.label1.Text = "Año";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.ForeColor = System.Drawing.Color.Black;
+            this.label2.Location = new System.Drawing.Point(231, 12);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(27, 13);
+            this.label2.TabIndex = 39;
+            this.label2.Text = "Mes";
+            // 
             // tipcamref
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.AutoSize = true;
             this.BackColor = System.Drawing.SystemColors.InactiveCaption;
-            this.ClientSize = new System.Drawing.Size(662, 408);
+            this.ClientSize = new System.Drawing.Size(465, 408);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.bt_agr);
             this.Controls.Add(this.dtp_mes);
             this.Controls.Add(this.dtp_yea);
@@ -358,6 +384,7 @@
             this.toolStrip1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.advancedDataGridView1)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -389,5 +416,7 @@
         private System.Windows.Forms.DateTimePicker dtp_yea;
         private System.Windows.Forms.DateTimePicker dtp_mes;
         private System.Windows.Forms.Button bt_agr;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label label2;
     }
 }
