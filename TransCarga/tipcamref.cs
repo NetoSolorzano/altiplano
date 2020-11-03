@@ -19,7 +19,7 @@ namespace TransCarga
         string colsfon = TransCarga.Program.colsbg;   // color fondo seleccion
         string colsfgr = TransCarga.Program.colsfc;   // color seleccion
         string colstrp = TransCarga.Program.colstr;   // color del strip
-        static string nomtab = "series";
+        static string nomtab = "tipcamref";
         public int totfilgrid, cta;      // variables para impresion
         public string perAg = "";
         public string perMo = "";
@@ -28,11 +28,13 @@ namespace TransCarga
         string img_btN = "";
         string img_btE = "";
         string img_btA = "";
-        string img_bti = "";
-        string img_bts = "";
-        string img_btr = "";
-        string img_btf = "";
         string img_btq = "";
+        string img_btP = "";
+        string img_btV = "";
+        string img_bti = "";            // ir al inicio
+        string img_bts = "";            // siguiente
+        string img_btr = "";            // regresa
+        string img_btf = "";            // ir al final
         string img_grab = "";
         string img_anul = "";
         string vEstAnu = "";            // estado de serie anulada
@@ -59,11 +61,11 @@ namespace TransCarga
         private void tipcamref_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter) SendKeys.Send("{TAB}");
-            //if (Control.ModifierKeys == Keys.Control && e.KeyCode == Keys.N) Bt_add.PerformClick();
-            //if (Control.ModifierKeys == Keys.Control && e.KeyCode == Keys.E) Bt_edit.PerformClick();
+            if (Control.ModifierKeys == Keys.Control && e.KeyCode == Keys.N) Bt_add.PerformClick();
+            if (Control.ModifierKeys == Keys.Control && e.KeyCode == Keys.E) Bt_edit.PerformClick();
             //if (Control.ModifierKeys == Keys.Control && e.KeyCode == Keys.P) Bt_print.PerformClick();
             //if (Control.ModifierKeys == Keys.Control && e.KeyCode == Keys.A) Bt_anul.PerformClick();
-            //if (Control.ModifierKeys == Keys.Control && e.KeyCode == Keys.O) Bt_ver.PerformClick();
+            if (Control.ModifierKeys == Keys.Control && e.KeyCode == Keys.O) Bt_ver.PerformClick();
             //if (Control.ModifierKeys == Keys.Control && e.KeyCode == Keys.S) Bt_close.PerformClick();
         }
         private void tipcamref_Load(object sender, EventArgs e)
@@ -98,6 +100,8 @@ namespace TransCarga
             Bt_add.Image = Image.FromFile(img_btN);
             Bt_edit.Image = Image.FromFile(img_btE);
             Bt_anul.Image = Image.FromFile(img_btA);
+            Bt_print.Image = Image.FromFile(img_btP);
+            Bt_ver.Image = Image.FromFile(img_btV);
             Bt_close.Image = Image.FromFile(img_btq);
             Bt_ini.Image = Image.FromFile(img_bti);
             Bt_sig.Image = Image.FromFile(img_bts);
@@ -177,8 +181,8 @@ namespace TransCarga
                         if (row["param"].ToString() == "img_btE") img_btE = row["valor"].ToString().Trim();         // imagen del boton de accion EDITAR
                         if (row["param"].ToString() == "img_btA") img_btA = row["valor"].ToString().Trim();         // imagen del boton de accion ANULAR/BORRAR
                         if (row["param"].ToString() == "img_btQ") img_btq = row["valor"].ToString().Trim();         // imagen del boton de accion SALIR
-                        //if (row["param"].ToString() == "img_btP") img_btP = row["valor"].ToString().Trim();         // imagen del boton de accion IMPRIMIR
-                        // boton de vista preliminar .... esta por verse su utlidad
+                        if (row["param"].ToString() == "img_btP") img_btP = row["valor"].ToString().Trim();         // imagen del boton de accion IMPRIMIR
+                        if (row["param"].ToString() == "img_btV") img_btV = row["valor"].ToString().Trim();         // imagen del boton de accion VISUALIZAR
                         if (row["param"].ToString() == "img_bti") img_bti = row["valor"].ToString().Trim();         // imagen del boton de accion IR AL INICIO
                         if (row["param"].ToString() == "img_bts") img_bts = row["valor"].ToString().Trim();         // imagen del boton de accion SIGUIENTE
                         if (row["param"].ToString() == "img_btr") img_btr = row["valor"].ToString().Trim();         // imagen del boton de accion RETROCEDE
@@ -278,43 +282,6 @@ namespace TransCarga
             }
         }
 
-        string[] equivinter(string titulo)        // equivalencia entre titulo de columna y tabla 
-        {
-            string[] retorna = new string[2];
-            switch (titulo)
-            {
-                case "NIVEL":
-                    retorna[0] = "desc_niv";
-                    retorna[1] = "codigo";
-                    break;
-                case "???":
-                    retorna[0] = "";
-                    retorna[1] = "";
-                    break;
-                case "Zona":
-                    retorna[0] = "desc_zon";
-                    retorna[1] = "idcodice";
-                    break;
-                case "LOCAL":
-                    retorna[0] = "desc_alm";
-                    retorna[1] = "idcodice";
-                    break;
-                case "TIENDA":
-                    retorna[0] = "desc_ven";
-                    retorna[1] = "idcodice";
-                    break;
-                case "SEDE":
-                    retorna[0] = "desc_loc";
-                    retorna[1] = "idcodice";
-                    break;
-                case "RUC":
-                    retorna[0] = "desc_raz";
-                    retorna[1] = "idcodice";
-                    break;
-            }
-            return retorna;
-        }
-
         #region limpiadores_modos
         public void sololee()
         {
@@ -389,21 +356,21 @@ namespace TransCarga
                     this.Bt_edit.Visible = true;
                 }
                 else { this.Bt_edit.Visible = false; }
-                //if (Convert.ToString(row["btn5"]) == "S")
-                //{
-                //    this.Bt_print.Visible = true;
-                //}
-                //else { this.Bt_print.Visible = false; }
                 if (Convert.ToString(row["btn3"]) == "S")
                 {
                     this.Bt_anul.Visible = true;
                 }
                 else { this.Bt_anul.Visible = false; }
-                //if (Convert.ToString(row["btn4"]) == "S")
-                //{
-                //    this.Bt_ver.Visible = true;
-                //}
-                //else { this.Bt_ver.Visible = false; }
+                if (Convert.ToString(row["btn4"]) == "S")
+                {
+                    this.Bt_ver.Visible = true;
+                }
+                else { this.Bt_ver.Visible = false; }
+                if (Convert.ToString(row["btn5"]) == "S")
+                {
+                    this.Bt_print.Visible = true;
+                }
+                else { this.Bt_print.Visible = false; }
                 if (Convert.ToString(row["btn6"]) == "S")
                 {
                     this.Bt_close.Visible = true;
@@ -415,6 +382,7 @@ namespace TransCarga
         private void Bt_add_Click(object sender, EventArgs e)
         {
             advancedDataGridView1.Enabled = true;
+            advancedDataGridView1.ReadOnly = false;
             escribe();
             Tx_modo.Text = "NUEVO";
             limpiar();
@@ -424,6 +392,7 @@ namespace TransCarga
         private void Bt_edit_Click(object sender, EventArgs e)
         {
             advancedDataGridView1.Enabled = true;
+            advancedDataGridView1.ReadOnly = false;
             escribe();
             Tx_modo.Text = "EDITAR";
             limpiar();
@@ -442,6 +411,16 @@ namespace TransCarga
         private void Bt_anul_Click(object sender, EventArgs e)
         {
             //Tx_modo.Text = "ANULAR";
+        }
+        private void Bt_ver_Click(object sender, EventArgs e)
+        {
+            advancedDataGridView1.Enabled = true;
+            advancedDataGridView1.ReadOnly = true;
+            escribe();
+            Tx_modo.Text = "VISUALIZAR";
+            limpiar();
+            limpia_otros();
+            limpia_combos();
         }
         private void Bt_first_Click(object sender, EventArgs e)
         {
@@ -495,32 +474,37 @@ namespace TransCarga
         }
         private void advancedDataGridView1_CellValidating(object sender, DataGridViewCellValidatingEventArgs e) // valida cambios en valor de la celda
         {
-            if (e.RowIndex > -1 && e.ColumnIndex > 0 
-                && advancedDataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString() != e.FormattedValue.ToString())
+            if (Tx_modo.Text == "NUEVO" || Tx_modo.Text == "EDITAR")
             {
-                string campo = advancedDataGridView1.Columns[e.ColumnIndex].Name.ToString();
-                string[] noeta = equivinter(advancedDataGridView1.Columns[e.ColumnIndex].HeaderText.ToString());    // retorna la tabla segun el titulo de la columna
-
-                var aaa = MessageBox.Show("Confirma que desea cambiar el valor?",
-                    "Columna: " + advancedDataGridView1.Columns[e.ColumnIndex].HeaderText.ToString(),
-                    MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                if (aaa == DialogResult.Yes)
+                if (e.RowIndex > -1 && e.ColumnIndex > 0
+                    && advancedDataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString() != e.FormattedValue.ToString())
                 {
-                    using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
-                    {
-                        if (lib.procConn(conn) == true)
-                        {
-                            string actua = "update ";
-                            using (MySqlCommand micon = new MySqlCommand())
-                            {
+                    string campo = advancedDataGridView1.Columns[e.ColumnIndex].Name.ToString();
 
+                    var aaa = MessageBox.Show("Confirma que desea cambiar el valor?",
+                        "Columna: " + advancedDataGridView1.Columns[e.ColumnIndex].HeaderText.ToString(),
+                        MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                    if (aaa == DialogResult.Yes)
+                    {
+                        using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
+                        {
+                            if (lib.procConn(conn) == true)
+                            {
+                                string actua = "update tipcamref set " + campo + " = " + e.FormattedValue +
+                                    " where id=@idr";    // advancedDataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString()
+                                using (MySqlCommand micon = new MySqlCommand(actua, conn))
+                                {
+                                    micon.Parameters.AddWithValue("@idr", advancedDataGridView1.Rows[e.RowIndex].Cells["id"].Value.ToString());
+                                    micon.ExecuteNonQuery();
+                                }
                             }
                         }
                     }
-                }
-                else
-                {
-                    e.Cancel = true;
+                    else
+                    {
+                        e.Cancel = true;
+                        SendKeys.Send("{ESC}");
+                    }
                 }
             }
         }

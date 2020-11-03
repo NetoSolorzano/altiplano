@@ -53,4 +53,4 @@ form factelect: (facturacion electrónica, se integra con sist propio del client
 - desarrollo del form .............................................................................. ME QUEDE ACA
 -- falta: tip.cambio, igv ,formato impresion (al 28/10/2020)
 form tipcamref: (tipo de cambio)
-- Desarrollo del form .............................................................................. ME QUEDE ACA
+- Desarrollo del form .............................................................................. ok 02/11/2020
