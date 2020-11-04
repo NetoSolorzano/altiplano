@@ -59,6 +59,7 @@ namespace TransCarga
         string vint_A0 = "";            // variable codigo anulacion interna por BD
         string v_clte_rem = "";         // variable para marcar si el remitente es cliente nuevo "N" o para actualizar sus datos "E"
         string v_clte_des = "";         // variable para marcar si el destinatario es cliente nuevo "N" o para actualizar sus datos "E"
+        string v_igv = "";
         //
         static libreria lib = new libreria();   // libreria de procedimientos
         publico lp = new publico();             // libreria de clases
@@ -293,6 +294,7 @@ namespace TransCarga
                     if (row["formulario"].ToString() == "interno")              // codigo enlace interno de anulacion del cliente con en BD A0
                     {
                         if (row["campo"].ToString() == "anulado" && row["param"].ToString() == "A0") vint_A0 = row["valor"].ToString().Trim();
+                        if (row["campo"].ToString() == "igv" && row["param"].ToString() == "%") v_igv = row["valor"].ToString().Trim();
                     }
                 }
                 da.Dispose();
@@ -1262,18 +1264,22 @@ namespace TransCarga
                         }
                     }
                 }
+                decimal igvMN = decimal.Parse(tx_fletMN.Text) * decimal.Parse(v_igv) / 100;
+                decimal subMN = decimal.Parse(tx_fletMN.Text) - igvMN;
                 string inserta = "insert into cabguiai (" +
                     "fechopegr,sergui,numgui,numpregui,tidodegri,nudodegri,nombdegri,diredegri,ubigdegri," +
                     "tidoregri,nudoregri,nombregri,direregri,ubigregri,locorigen,dirorigen,ubiorigen," +
                     "locdestin,dirdestin,ubidestin,docsremit,obspregri,clifingri,cantotgri,pestotgri," +
                     "tipmongri,tipcamgri,subtotgri,igvgri,totgri,totpag,salgri,estadoser,cantfilas," +
                     "frase1,frase2,fleteimp,tipintrem,tipintdes,tippagpre,seguroE,m1cliente,m2cliente," +
+                    "subtotMN,igvMN,totgrMN," +
                     "verApp,userc,fechc,diriplan4,diripwan4,netbname) " +
                     "values (@fechop,@sergr,@numgr,@npregr,@tdcdes,@ndcdes,@nomdes,@dircde,@ubicde," +
                     "@tdcrem,@ndcrem,@nomrem,@dircre,@ubicre,@locpgr,@dirpgr,@ubopgr," +
                     "@ldcpgr,@didegr,@ubdegr,@dooprg,@obsprg,@conprg,@totcpr,@totppr," +
                     "@monppr,@tcprgr,@subpgr,@igvpgr,@totpgr,@pagpgr,@totpgr,@estpgr,@canfil," +
                     "@frase1,@frase2,@fleimp,@ticlre,@ticlde,@tipacc,@clavse,@m1clte,@m2clte," +
+                    "@stMN,@igMN,@tgMN," +
                     "@verApp,@asd,now(),@iplan,@ipwan,@nbnam)";
                 using (MySqlCommand micon = new MySqlCommand(inserta, conn))
                 {
@@ -1319,6 +1325,9 @@ namespace TransCarga
                     micon.Parameters.AddWithValue("@clavse", claveSeg);
                     micon.Parameters.AddWithValue("@m1clte", v_clte_rem);
                     micon.Parameters.AddWithValue("@m2clte", v_clte_des);
+                    micon.Parameters.AddWithValue("@stMN", subMN.ToString());
+                    micon.Parameters.AddWithValue("@igMN", igvMN.ToString());
+                    micon.Parameters.AddWithValue("@tgMN", tx_fletMN.Text);
                     micon.Parameters.AddWithValue("@verApp", verapp);
                     micon.Parameters.AddWithValue("@asd", asd);
                     micon.Parameters.AddWithValue("@iplan", lib.iplan());
@@ -1401,6 +1410,8 @@ namespace TransCarga
                 {
                     if (tx_impreso.Text == "N")     // EDICION DE CABECERA
                     {
+                        decimal igvMN = decimal.Parse(tx_fletMN.Text) * decimal.Parse(v_igv) / 100;
+                        decimal subMN = decimal.Parse(tx_fletMN.Text) - igvMN;
                         string actua = "update cabguiai a set " +
                             "a.fechopegr=@fechop,a.tidodegri=@tdcdes,a.nudodegri=@ndcdes," +
                             "a.nombdegri=@nomdes,a.diredegri=@dircde,a.ubigdegri=@ubicde,a.tidoregri=@tdcrem,a.nudoregri=@ndcrem," + 
@@ -1446,6 +1457,9 @@ namespace TransCarga
                         micon.Parameters.AddWithValue("@m1clte", v_clte_rem);
                         micon.Parameters.AddWithValue("@m2clte", v_clte_des);
                         micon.Parameters.AddWithValue("@canfil", tx_tfil.Text);
+                        micon.Parameters.AddWithValue("@stMN", subMN.ToString());
+                        micon.Parameters.AddWithValue("@igMN", igvMN.ToString());
+                        micon.Parameters.AddWithValue("@tgMN", tx_fletMN.Text);
                         micon.Parameters.AddWithValue("@verApp", verapp);
                         micon.Parameters.AddWithValue("@asd", asd);
                         micon.Parameters.AddWithValue("@iplan", lib.iplan());
@@ -1931,6 +1945,17 @@ namespace TransCarga
         }
         private void tx_flete_Leave(object sender, EventArgs e)
         {
+            if ((Tx_modo.Text == "NUEVO" && tx_flete.Text.Trim() != "") || (Tx_modo.Text == "EDITAR" && tx_flete.Enabled == true && tx_flete.ReadOnly == false))
+            {
+                if (tx_dat_mone.Text == MonDeft)
+                {
+                    tx_fletMN.Text = tx_flete.Text;
+                }
+                else
+                {
+                    // EL CALCULO DE LA moneda local se hace en el indexchange del combo
+                }
+            }
             button1.Focus();
         }
         private void chk_seguridad_CheckStateChanged(object sender, EventArgs e)
@@ -2227,9 +2252,18 @@ namespace TransCarga
         }
         private void cmb_mon_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (cmb_mon.SelectedIndex > -1)
+            if (Tx_modo.Text.Trim() != "")
             {
-                tx_dat_mone.Text = cmb_mon.SelectedValue.ToString();
+                if (cmb_mon.SelectedIndex > -1)
+                {
+                    tx_dat_mone.Text = cmb_mon.SelectedValue.ToString();
+                    if (tx_dat_mone.Text != MonDeft)
+                    {
+                        vtipcam vtipcam = new vtipcam(tx_flete.Text,tx_dat_mone.Text,tx_fechope.Text);
+                        var result = vtipcam.ShowDialog();
+                        // ME QUEDE ACA 04/11/2020   
+                    }
+                }
             }
         }
         private void cmb_origen_SelectionChangeCommitted(object sender, EventArgs e)
