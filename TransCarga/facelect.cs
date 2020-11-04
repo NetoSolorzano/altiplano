@@ -84,7 +84,7 @@ namespace TransCarga
         DataTable dtm = new DataTable();
         string[] datcltsR = { "", "", "", "", "", "", "", "" };
         string[] datcltsD = { "", "", "", "", "", "", "", "" };
-        string[] datguias = { "", "", "", "", "" };
+        string[] datguias = { "", "", "", "", "", "" };
 
         public facelect()
         {
@@ -606,11 +606,12 @@ namespace TransCarga
                 datcltsD[6] = "";
                 datcltsD[7] = "";
                 //
-                datguias[0] = "";
-                datguias[1] = "";
-                datguias[2] = "";
-                datguias[3] = "";
-                datguias[4] = "";
+                datguias[0] = "";   // num GR
+                datguias[1] = "";   // descrip
+                datguias[2] = "";   // cant bultos
+                datguias[3] = "";   // codigo moneda de la GR
+                datguias[4] = "";   // valor de la guía en su moneda
+                datguias[5] = "";   // valor en moneda local
                 // validamos que la GR: 1.exista, 2.No este facturada, 3.No este anulada
                 // y devolvemos una fila con los datos del remitente y otra fila los datos del destinatario
                 using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
@@ -618,7 +619,7 @@ namespace TransCarga
                     lib.procConn(conn);
                     string consulta = "SELECT a.tidoregri,a.nudoregri,a.nombregri,a.direregri,a.ubigregri,ifnull(b1.email,'') as emailR,ifnull(b1.numerotel1,'') as numtel1R,ifnull(b1.numerotel2,'') as numtel2R," +
                         "a.tidodegri,a.nudodegri,a.nombdegri,a.diredegri,a.ubigdegri,ifnull(b2.email,'') as emailD,ifnull(b2.numerotel1,'') as numtel1D,ifnull(b2.numerotel2,'') as numtel2D," +
-                        "a.tipmongri,a.totgri,a.salgri,SUM(d.cantprodi) AS bultos,max(d.descprodi) AS descrip,m.descrizionerid as mon " +
+                        "a.tipmongri,a.totgri,a.salgri,SUM(d.cantprodi) AS bultos,max(d.descprodi) AS descrip,m.descrizionerid as mon,totgrMN " +
                         "from cabguiai a left join detguiai d on d.idc=a.id " +
                         "LEFT JOIN controlg c ON c.serguitra = a.sergui AND c.numguitra = a.numgui " +
                         "left join anag_cli b1 on b1.tipdoc=a.tidoregri and b1.ruc=a.nudoregri " +
@@ -657,9 +658,9 @@ namespace TransCarga
                                     datguias[0] = serie + "-" + corre;                 // GR
                                     datguias[1] = (dr.IsDBNull(20))? "" : dr.GetString("descrip");         // descrip
                                     datguias[2] = (dr.IsDBNull(19))? "0" : dr.GetString("bultos");          // cant bultos
-                                    datguias[3] = dr.GetString("mon");             // moneda
-                                    datguias[4] = dr.GetString("totgri");          // valor GR
-                                                                                   //
+                                    datguias[3] = dr.GetString("mon");             // moneda de la GR
+                                    datguias[4] = dr.GetString("totgri");          // valor GR en su moneda
+                                    datguias[5] = dr.GetString("totgrMN");         // valor GR en moneda local
                                     retorna = true;
                                 }
                             }
@@ -668,6 +669,27 @@ namespace TransCarga
                 }
             }
             return retorna;
+        }
+        private void tipcambio(string codmod)                // funcion para calculos con el tipo de cambio
+        {
+            decimal totflet = 0;
+            for (int i = 0; i < dataGridView1.Rows.Count; i++)
+            {
+                if (dataGridView1.Rows[i].Cells[0].Value != null)
+                {
+                    totflet = totflet + decimal.Parse(dataGridView1.Rows[i].Cells[5].Value.ToString()); // VALOR DE LA GR EN MONEDA LOCAL
+                }
+            }
+            // si codmod es moneda local, suma campos totales de moneda local y retorna valor
+            if (codmod == MonDeft)
+            {
+                tx_flete.Text = totflet.ToString("#0.00");
+            }
+            else
+            {
+                vtipcam vtipcam = new vtipcam(tx_flete.Text,codmod,DateTime.Now.Date.ToString());
+                var result = vtipcam.ShowDialog();
+            }
         }
 
         #region autocompletados
@@ -760,8 +782,7 @@ namespace TransCarga
                     rb_desGR.PerformClick();
                 }
                 //
-                dataGridView1.Rows.Add(datguias[0], datguias[1], datguias[2], datguias[3], datguias[4]);     // insertamos en la grilla los datos de la GR
-                //MessageBox.Show(datguias[0], datguias[0]);
+                dataGridView1.Rows.Add(datguias[0], datguias[1], datguias[2], datguias[3], datguias[4], datguias[5]);     // insertamos en la grilla los datos de la GR
                 int totfil = 0;
                 int totcant = 0;
                 decimal totflet = 0;
@@ -771,15 +792,22 @@ namespace TransCarga
                     {
                         totcant = totcant + int.Parse(dataGridView1.Rows[i].Cells[2].Value.ToString());
                         totfil += 1;
-                        if (dataGridView1.Rows[i].Cells[3].Value.ToString() != cmb_mon.Text)
+                        if (tx_dat_mone.Text == MonDeft)
                         {
-                            MessageBox.Show("La GR " + dataGridView1.Rows[i].Cells[0].Value.ToString() + "tiene moneda distinta" + Environment.NewLine +
-                                "Se calcula al tipo de cambio del día", "Atención");
-                            // aca falta ver como le hacemos para los calculos
+                            totflet = totflet + decimal.Parse(dataGridView1.Rows[i].Cells[5].Value.ToString()); // VALOR DE LA GR EN MONEDA LOCAL
                         }
                         else
                         {
-                            totflet = totflet + decimal.Parse(dataGridView1.Rows[i].Cells[4].Value.ToString());
+                            if (dataGridView1.Rows[i].Cells[3].Value.ToString() == cmb_mon.Text)
+                            {
+                                totflet = totflet + decimal.Parse(dataGridView1.Rows[i].Cells[4].Value.ToString()); // VALOR DE LA GR EN SU MONEDA
+                            }
+                            else
+                            {
+                                MessageBox.Show("La GR registrada tiene una moneda distinta a la seleccionada" + Environment.NewLine +
+                                    "se procederá a efectuar la conversión con fecha actual","OPCION EN DESARROLLO");
+                                totflet = totflet + 0; // falta desarrollar
+                            }
                         }
                     }
                 }
@@ -1726,11 +1754,15 @@ namespace TransCarga
         }
         private void cmb_mon_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (cmb_mon.SelectedIndex > -1)
+            if (Tx_modo.Text != "")
             {
-                tx_dat_mone.Text = cmb_mon.SelectedValue.ToString();
-                MessageBox.Show("Proceso de cálculo al tipo de cambio");
-                tx_flete.Text = "0.00";
+                if (cmb_mon.SelectedIndex > -1)
+                {
+                    tx_dat_mone.Text = cmb_mon.SelectedValue.ToString();
+                    MessageBox.Show("Proceso de cálculo al tipo de cambio");
+                    tipcambio(tx_dat_mone.Text);
+                    //tx_flete.Text = "0.00";
+                }
             }
         }
         private void cmb_tdv_SelectedIndexChanged(object sender, EventArgs e)
