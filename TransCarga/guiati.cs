@@ -2263,8 +2263,9 @@ namespace TransCarga
                         var result = vtipcam.ShowDialog();
                         if (vtipcam.ReturnValue1 != "" || vtipcam.ReturnValue1 != "0")
                         {
-                            cmb_mon.SelectedValue = MonDeft;
+                            //cmb_mon.SelectedValue = MonDeft;
                             tx_flete.Text = vtipcam.ReturnValue1;
+                            tx_fletMN.Text = vtipcam.ReturnValue2;
                         }
                     }
                 }

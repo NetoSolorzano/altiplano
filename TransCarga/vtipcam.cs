@@ -3,6 +3,7 @@ using System.Data;
 using System.Configuration;
 using System.Windows.Forms;
 using MySql.Data.MySqlClient;
+using System.Drawing;
 
 namespace TransCarga
 {
@@ -31,7 +32,12 @@ namespace TransCarga
         }
         private void vtipcam_Load(object sender, EventArgs e)
         {
+            Image salir = Image.FromFile("recursos/Close_32.png");
+            button3.Image = salir;
+            button3.ImageAlign = ContentAlignment.MiddleCenter;
             // jalamos la tabla tipcamref
+            string xnum = "";      // cnt de la fila
+            string c = "";      // codigo internacional de moneda
             using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
             {
                 lib.procConn(conn);
@@ -44,8 +50,6 @@ namespace TransCarga
                         dr.Fill(dt);
                     }
                 }
-                string xnum = "";      // cnt de la fila
-                string c = "";      // codigo internacional de moneda
                 DataRow[] row = dt.Select("idcodice='" + para2 + "'");
                 if (row != null)
                 {
@@ -56,7 +60,7 @@ namespace TransCarga
                 string consulta = "select fechope,mext1,mext2,mext3,mext4 from tipcamref where fechope=@fec";
                 using (MySqlCommand micon = new MySqlCommand(consulta, conn))
                 {
-                    micon.Parameters.AddWithValue("@fec", para3);
+                    micon.Parameters.AddWithValue("@fec", para3.Substring(6,4) + "-" + para3.Substring(3,2) + "-" + para3.Substring(0,2));
                     using (MySqlDataReader dr = micon.ExecuteReader())
                     {
                         if (dr.HasRows)
@@ -74,15 +78,24 @@ namespace TransCarga
                     }
                 }
             }
-            // calculamos el valor cambiado
-            tx_newVal.Text = (decimal.Parse(para1) * decimal.Parse(tx_tipcam.Text)).ToString();
-            if (tx_newVal.Text.Trim() == "" || tx_newVal.Text.Trim().Substring(0,1) == "0")
+            if (tx_tipcam.Text.Trim() == "" || xnum == "" || c == "")
             {
-                MessageBox.Show("Falta información en tabla de tipos de cambio", "No se puede continuar");
+                MessageBox.Show("Falta información en tabla de tipos de cambio" + Environment.NewLine + 
+                    "o falta configurar tabla de monedas", "No se puede continuar",MessageBoxButtons.OK,MessageBoxIcon.Error);
                 ReturnValue1 = "0";
                 this.Close();
             }
-
+            // calculamos el valor cambiado
+            if (para1 == "" || para1 == "0")
+            {
+                tx_newVal.ReadOnly = false;
+                tx_newVal.Focus();
+            }
+            else
+            {
+                tx_newVal.ReadOnly = true;
+                tx_newVal.Text = Math.Round(decimal.Parse(para1) / decimal.Parse(tx_tipcam.Text), 3).ToString(); ;
+            }
         }
         private void vtipcam_KeyDown(object sender, KeyEventArgs e)
         {
@@ -90,13 +103,40 @@ namespace TransCarga
             {
                 SendKeys.Send("{TAB}");
             }
-        }
-        public string ReturnValue1 { get; set; }
+        }   
+        public string ReturnValue1 { get; set; }        // valor cambiado a la moneda deseada
+        public string ReturnValue2 { get; set; }        // valor en moneda local
+        public string ReturnValue3 { get; set; }        // tipo de cambio de la operacion
 
         private void button1_Click(object sender, EventArgs e)
         {
-            ReturnValue1 = tx_newVal.Text;
+            ReturnValue1 = tx_newVal.Text;                                                          // valor cambiado a la moneda deseada
+            if (para1 == "" || para1 == "0")
+            {
+                ReturnValue2 = Math.Round(decimal.Parse(tx_newVal.Text) * decimal.Parse(tx_tipcam.Text),3).ToString();      // valor en moneda local
+            }
+            else ReturnValue2 = para1;
+            ReturnValue3 = tx_tipcam.Text;                                                          // tipo de cambio de la operacion
+            //
             this.Close();
         }
+        private void button3_Click(object sender, EventArgs e)
+        {
+            ReturnValue1 = para1;
+            ReturnValue2 = para1;
+            ReturnValue3 = "0";
+            this.Close();
+        }
+
+        private void tx_tipcam_Leave(object sender, EventArgs e)
+        {
+            tx_newVal.Text = Math.Round(decimal.Parse(para1) / decimal.Parse(tx_tipcam.Text), 3).ToString(); ;
+        }
+
+        private void tx_newVal_Leave(object sender, EventArgs e)
+        {
+            // nada que hacer
+        }
+
     }
 }

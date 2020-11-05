@@ -2117,11 +2117,10 @@
             // 
             this.tx_fletMN.BackColor = System.Drawing.SystemColors.Window;
             this.tx_fletMN.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_fletMN.Location = new System.Drawing.Point(597, 318);
+            this.tx_fletMN.Location = new System.Drawing.Point(590, 318);
             this.tx_fletMN.Name = "tx_fletMN";
-            this.tx_fletMN.Size = new System.Drawing.Size(32, 18);
+            this.tx_fletMN.Size = new System.Drawing.Size(44, 18);
             this.tx_fletMN.TabIndex = 350;
-            this.tx_fletMN.Visible = false;
             // 
             // guiati
             // 
