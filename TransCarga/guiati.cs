@@ -2261,7 +2261,11 @@ namespace TransCarga
                     {
                         vtipcam vtipcam = new vtipcam(tx_flete.Text,tx_dat_mone.Text,tx_fechope.Text);
                         var result = vtipcam.ShowDialog();
-                        // ME QUEDE ACA 04/11/2020   
+                        if (vtipcam.ReturnValue1 != "" || vtipcam.ReturnValue1 != "0")
+                        {
+                            cmb_mon.SelectedValue = MonDeft;
+                            tx_flete.Text = vtipcam.ReturnValue1;
+                        }
                     }
                 }
             }

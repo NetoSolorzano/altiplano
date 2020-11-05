@@ -44,12 +44,12 @@ namespace TransCarga
                         dr.Fill(dt);
                     }
                 }
-                string x = "";      // cnt de la fila
+                string xnum = "";      // cnt de la fila
                 string c = "";      // codigo internacional de moneda
                 DataRow[] row = dt.Select("idcodice='" + para2 + "'");
                 if (row != null)
                 {
-                    x = row[0].ItemArray[2].ToString();
+                    xnum = row[0].ItemArray[2].ToString();
                     c = row[0].ItemArray[1].ToString();
                 }
                 //
@@ -65,7 +65,10 @@ namespace TransCarga
                             {
                                 tx_fecha.Text = para3.Substring(0,10);
                                 tx_codmon.Text = c;                     //para2
-                                tx_tipcam.Text = (x == "1") ? dr.GetString(1) : (x == "2")? dr.GetString(2) : (x == "3")? dr.GetString(3) : dr.GetString(4);
+                                if (xnum == "1") tx_tipcam.Text = dr.GetString(1);  // ALGO ANDA MAL POR ACA 04/11/2020 no funca
+                                if (xnum == "2") tx_tipcam.Text = dr.GetString(2);
+                                if (xnum == "3") tx_tipcam.Text = dr.GetString(3);
+                                if (xnum == "4") tx_tipcam.Text = dr.GetString(4);
                             }
                         }
                     }
