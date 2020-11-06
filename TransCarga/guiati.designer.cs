@@ -214,6 +214,7 @@
             this.tx_totpes = new TransCarga.NumericTextBox();
             this.tx_totcant = new TransCarga.NumericTextBox();
             this.tx_fletMN = new System.Windows.Forms.TextBox();
+            this.tx_tipcam = new System.Windows.Forms.TextBox();
             this.toolStrip1.SuspendLayout();
             this.groupBox11.SuspendLayout();
             this.groupBox7.SuspendLayout();
@@ -2117,10 +2118,21 @@
             // 
             this.tx_fletMN.BackColor = System.Drawing.SystemColors.Window;
             this.tx_fletMN.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_fletMN.Location = new System.Drawing.Point(590, 318);
+            this.tx_fletMN.Location = new System.Drawing.Point(619, 400);
             this.tx_fletMN.Name = "tx_fletMN";
             this.tx_fletMN.Size = new System.Drawing.Size(44, 18);
             this.tx_fletMN.TabIndex = 350;
+            this.tx_fletMN.Visible = false;
+            // 
+            // tx_tipcam
+            // 
+            this.tx_tipcam.BackColor = System.Drawing.SystemColors.Window;
+            this.tx_tipcam.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_tipcam.Location = new System.Drawing.Point(619, 420);
+            this.tx_tipcam.Name = "tx_tipcam";
+            this.tx_tipcam.Size = new System.Drawing.Size(44, 18);
+            this.tx_tipcam.TabIndex = 351;
+            this.tx_tipcam.Visible = false;
             // 
             // guiati
             // 
@@ -2129,6 +2141,7 @@
             this.AutoSize = true;
             this.BackColor = System.Drawing.Color.LightSteelBlue;
             this.ClientSize = new System.Drawing.Size(770, 614);
+            this.Controls.Add(this.tx_tipcam);
             this.Controls.Add(this.tx_fletMN);
             this.Controls.Add(this.groupBox17);
             this.Controls.Add(this.tx_dat_tcd);
@@ -2444,5 +2457,6 @@
         private System.Windows.Forms.TextBox tx_impDV;
         private System.Windows.Forms.TextBox tx_clteDV;
         private System.Windows.Forms.TextBox tx_fletMN;
+        private System.Windows.Forms.TextBox tx_tipcam;
     }
 }

@@ -1264,8 +1264,11 @@ namespace TransCarga
                         }
                     }
                 }
-                decimal igvMN = decimal.Parse(tx_fletMN.Text) * decimal.Parse(v_igv) / 100;
-                decimal subMN = decimal.Parse(tx_fletMN.Text) - igvMN;
+                if (tx_tipcam.Text.Trim() == "") tx_tipcam.Text = "0";
+                decimal subtgr = Math.Round(decimal.Parse(tx_flete.Text) / (decimal.Parse(v_igv) / 100 + 1), 3);
+                decimal igvtgr = Math.Round(decimal.Parse(tx_flete.Text) - subtgr, 3);
+                decimal subMN = Math.Round(decimal.Parse(tx_fletMN.Text) / (decimal.Parse(v_igv)/100 + 1),3);
+                decimal igvMN = Math.Round(decimal.Parse(tx_fletMN.Text) - subMN,3);
                 string inserta = "insert into cabguiai (" +
                     "fechopegr,sergui,numgui,numpregui,tidodegri,nudodegri,nombdegri,diredegri,ubigdegri," +
                     "tidoregri,nudoregri,nombregri,direregri,ubigregri,locorigen,dirorigen,ubiorigen," +
@@ -1308,14 +1311,14 @@ namespace TransCarga
                     micon.Parameters.AddWithValue("@conprg", tx_consig.Text);
                     micon.Parameters.AddWithValue("@totcpr", tx_totcant.Text);
                     micon.Parameters.AddWithValue("@totppr", tx_totpes.Text);
-                    micon.Parameters.AddWithValue("@canfil", tx_tfil.Text);     // cantidad de filas de detalle
+                    micon.Parameters.AddWithValue("@canfil", tx_tfil.Text);             // cantidad de filas de detalle
                     micon.Parameters.AddWithValue("@monppr", tx_dat_mone.Text);
-                    micon.Parameters.AddWithValue("@tcprgr", "0.00");           // tipo de cambio ... falta leer de la tabla de cambios
-                    micon.Parameters.AddWithValue("@subpgr", "0");              // sub total de la pre guía
-                    micon.Parameters.AddWithValue("@igvpgr", "0");              // igv
-                    micon.Parameters.AddWithValue("@totpgr", tx_flete.Text);    // total inc. igv
+                    micon.Parameters.AddWithValue("@tcprgr", tx_tipcam.Text);           // tipo de cambio ... falta leer de la tabla de cambios
+                    micon.Parameters.AddWithValue("@subpgr", subtgr.ToString());        // sub total
+                    micon.Parameters.AddWithValue("@igvpgr", igvtgr.ToString());        // igv
+                    micon.Parameters.AddWithValue("@totpgr", tx_flete.Text);            // total inc. igv
                     micon.Parameters.AddWithValue("@pagpgr", "0");
-                    micon.Parameters.AddWithValue("@estpgr", tx_dat_estad.Text); // estado de la pre guía
+                    micon.Parameters.AddWithValue("@estpgr", tx_dat_estad.Text);        // estado de la guía
                     micon.Parameters.AddWithValue("@frase1", (claveSeg == "") ? "" : v_fra1);
                     micon.Parameters.AddWithValue("@frase2", v_fra2);
                     micon.Parameters.AddWithValue("@fleimp", (chk_flete.Checked == true) ? "S" : "N");
@@ -1410,8 +1413,10 @@ namespace TransCarga
                 {
                     if (tx_impreso.Text == "N")     // EDICION DE CABECERA
                     {
-                        decimal igvMN = decimal.Parse(tx_fletMN.Text) * decimal.Parse(v_igv) / 100;
-                        decimal subMN = decimal.Parse(tx_fletMN.Text) - igvMN;
+                        decimal subtgr = Math.Round(decimal.Parse(tx_flete.Text) / (decimal.Parse(v_igv) / 100 + 1), 3);
+                        decimal igvtgr = Math.Round(decimal.Parse(tx_flete.Text) - subtgr, 3);
+                        decimal subMN = Math.Round(decimal.Parse(tx_fletMN.Text) / (decimal.Parse(v_igv) / 100 + 1), 3);
+                        decimal igvMN = Math.Round(decimal.Parse(tx_fletMN.Text) - subMN, 3);
                         string actua = "update cabguiai a set " +
                             "a.fechopegr=@fechop,a.tidodegri=@tdcdes,a.nudodegri=@ndcdes," +
                             "a.nombdegri=@nomdes,a.diredegri=@dircde,a.ubigdegri=@ubicde,a.tidoregri=@tdcrem,a.nudoregri=@ndcrem," + 
@@ -1447,12 +1452,12 @@ namespace TransCarga
                         micon.Parameters.AddWithValue("@totcpr", tx_totcant.Text);
                         micon.Parameters.AddWithValue("@totppr", tx_totpes.Text);
                         micon.Parameters.AddWithValue("@monppr", tx_dat_mone.Text);
-                        micon.Parameters.AddWithValue("@tcprgr", "0.00");  // tipo de cambio
-                        micon.Parameters.AddWithValue("@subpgr", "0"); // sub total de la pre guía
-                        micon.Parameters.AddWithValue("@igvpgr", "0"); // igv
+                        micon.Parameters.AddWithValue("@tcprgr", tx_tipcam.Text);  // tipo de cambio
+                        micon.Parameters.AddWithValue("@subpgr", subtgr.ToString()); // sub total de la pre guía
+                        micon.Parameters.AddWithValue("@igvpgr", igvtgr.ToString()); // igv
                         micon.Parameters.AddWithValue("@pagpgr", "0");
-                        micon.Parameters.AddWithValue("@totpgr", tx_flete.Text); // saldo de la pre guia = total pre guia
-                        micon.Parameters.AddWithValue("@estpgr", tx_dat_estad.Text); // estado de la pre guía
+                        micon.Parameters.AddWithValue("@totpgr", tx_flete.Text);        // saldo de la pre guia = total pre guia
+                        micon.Parameters.AddWithValue("@estpgr", tx_dat_estad.Text);    // estado de la pre guía
                         micon.Parameters.AddWithValue("@clavse", claveSeg);
                         micon.Parameters.AddWithValue("@m1clte", v_clte_rem);
                         micon.Parameters.AddWithValue("@m2clte", v_clte_des);
@@ -2266,6 +2271,13 @@ namespace TransCarga
                             //cmb_mon.SelectedValue = MonDeft;
                             tx_flete.Text = vtipcam.ReturnValue1;
                             tx_fletMN.Text = vtipcam.ReturnValue2;
+                            tx_tipcam.Text = vtipcam.ReturnValue3;
+                        }
+                        else
+                        {
+                            tx_flete.Text = "";
+                            tx_fletMN.Text = "";
+                            tx_tipcam.Text = "";
                         }
                     }
                 }

@@ -130,7 +130,7 @@ namespace TransCarga
 
         private void tx_tipcam_Leave(object sender, EventArgs e)
         {
-            tx_newVal.Text = Math.Round(decimal.Parse(para1) / decimal.Parse(tx_tipcam.Text), 3).ToString(); ;
+            if (para1 != "") tx_newVal.Text = Math.Round(decimal.Parse(para1) / decimal.Parse(tx_tipcam.Text), 3).ToString(); ;
         }
 
         private void tx_newVal_Leave(object sender, EventArgs e)

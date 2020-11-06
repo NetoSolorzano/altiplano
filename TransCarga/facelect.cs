@@ -122,8 +122,8 @@ namespace TransCarga
             //autodist();                                     // autocompleta distritos
             if (valiVars() == false)
             {
-                //Application.Exit();
-                //return;
+                Application.Exit();
+                return;
             }
         }
         private void init()
@@ -256,7 +256,6 @@ namespace TransCarga
                     {
                         if (row["campo"].ToString() == "documento")
                         {
-                            if (row["param"].ToString() == "c_int") v_cid = row["valor"].ToString().Trim();               // codigo interno 
                             if (row["param"].ToString() == "frase2") v_fra2 = row["valor"].ToString().Trim();               // frase otro dato
                             if (row["param"].ToString() == "serieAnu") v_sanu = row["valor"].ToString().Trim();               // serie anulacion interna
                         }
@@ -265,9 +264,8 @@ namespace TransCarga
                             if (row["param"].ToString() == "formato") vi_formato = row["valor"].ToString().Trim();
                             if (row["param"].ToString() == "filasDet") v_mfildet = row["valor"].ToString().Trim();       // maxima cant de filas de detalle
                             if (row["param"].ToString() == "copias") vi_copias = row["valor"].ToString().Trim();
-                            if (row["param"].ToString() == "impMatris") v_impA5 = row["valor"].ToString().Trim();
                             if (row["param"].ToString() == "impTK") v_impTK = row["valor"].ToString().Trim();
-                            if (row["param"].ToString() == "nomGRi_cr") v_CR_gr_ind = row["valor"].ToString().Trim();
+                            if (row["param"].ToString() == "nomfor_cr") v_CR_gr_ind = row["valor"].ToString().Trim();
                         }
                         if (row["campo"].ToString() == "moneda" && row["param"].ToString() == "default") MonDeft = row["valor"].ToString().Trim();             // moneda por defecto
                     }
@@ -507,12 +505,12 @@ namespace TransCarga
             }
             if (codAnul == "")          // codigo de documento anulado
             {
-                lib.messagebox("Código de GR indivual ANULADA");
+                lib.messagebox("Código de Doc.Venta ANULADA");
                 retorna = false;
             }
             if (codGene == "")          // codigo documento nuevo generado
             {
-                lib.messagebox("Código de GR indivual GENERADA/NUEVA");
+                lib.messagebox("Código de Doc.Venta GENERADA/NUEVA");
                 retorna = false;
             }
             if (MonDeft == "")          // moneda por defecto
@@ -537,27 +535,17 @@ namespace TransCarga
             }
             if (vi_formato == "")       // formato de impresion del documento
             {
-                lib.messagebox("formato de impresion de la GR interna");
+                lib.messagebox("formato de impresion del Doc.Venta");
                 retorna = false;
             }
             if (vi_copias == "")        // cant copias impresion
             {
-                lib.messagebox("# copias impresas de la GR interna");
-                retorna = false;
-            }
-            if (v_impA5 == "")          // nombre de la impresora matricial
-            {
-                lib.messagebox("Nombre de impresora matricial");
+                lib.messagebox("# copias impresas del Doc.Venta");
                 retorna = false;
             }
             if (v_impTK == "")           // nombre de la ticketera
             {
                 lib.messagebox("Nombre de impresora de Tickets");
-                retorna = false;
-            }
-            if (v_cid == "")             // codigo interno de tipo de documento
-            {
-                lib.messagebox("Código interno tipo de documento");
                 retorna = false;
             }
             if (v_sanu == "")           // serie de anulacion del documento
@@ -567,7 +555,7 @@ namespace TransCarga
             }
             if (v_CR_gr_ind == "")
             {
-                lib.messagebox("Nombre formato GR en CR");
+                lib.messagebox("Nombre formato Doc.Venta en CR");
                 retorna = false;
             }
             if (v_mfildet == "")
@@ -689,6 +677,9 @@ namespace TransCarga
             {
                 vtipcam vtipcam = new vtipcam(tx_flete.Text,codmod,DateTime.Now.Date.ToString());
                 var result = vtipcam.ShowDialog();
+                tx_flete.Text = vtipcam.ReturnValue1;
+                // = vtipcam.ReturnValue2;
+                tx_tipcam.Text = vtipcam.ReturnValue3;
             }
         }
 
@@ -1062,6 +1053,7 @@ namespace TransCarga
                         }
                     }
                 }
+                if (tx_tipcam.Text == "") tx_tipcam.Text = "0";
                 string inserta = "insert into cabfactu (" +
                     "fechope,martdve,tipdvta,serdvta,numdvta,ticltgr,tidoclt,nudoclt,nombclt,direclt,dptoclt,provclt,distclt,ubigclt,corrclt,teleclt," +
                     "locorig,dirorig,ubiorig,obsdvta,canfidt,canbudt,mondvta,tcadvta,subtota,igvtota,porcigv,totdvta,totpags,saldvta,estdvta,frase01," +
@@ -1096,10 +1088,10 @@ namespace TransCarga
                     micon.Parameters.AddWithValue("@canfil", tx_tfil.Text);     // cantidad de filas de detalle
                     micon.Parameters.AddWithValue("@totcpr", tx_totcant.Text);  // total bultos
                     micon.Parameters.AddWithValue("@monppr", tx_dat_mone.Text);
-                    micon.Parameters.AddWithValue("@tcoper", "0.00");           // FALTA TIPO DE CAMBIO
-                    micon.Parameters.AddWithValue("@subpgr", "0.00");              // sub total   FALTA
-                    micon.Parameters.AddWithValue("@igvpgr", "0");              // igv                  FALTA
-                    micon.Parameters.AddWithValue("@porcigv","18");             // porcentaje en numeros de IGV      FALTA
+                    micon.Parameters.AddWithValue("@tcoper", tx_tipcam.Text);           // FALTA TIPO DE CAMBIO
+                    micon.Parameters.AddWithValue("@subpgr", );              // sub total   FALTA
+                    micon.Parameters.AddWithValue("@igvpgr", );              // igv                  FALTA
+                    micon.Parameters.AddWithValue("@porcigv",);             // porcentaje en numeros de IGV      FALTA
                     micon.Parameters.AddWithValue("@totpgr", tx_flete.Text);    // total inc. igv
                     micon.Parameters.AddWithValue("@pagpgr", tx_pagado.Text);
                     micon.Parameters.AddWithValue("@salxpa", tx_salxcob.Text);
@@ -1759,7 +1751,6 @@ namespace TransCarga
                 if (cmb_mon.SelectedIndex > -1)
                 {
                     tx_dat_mone.Text = cmb_mon.SelectedValue.ToString();
-                    MessageBox.Show("Proceso de cálculo al tipo de cambio");
                     tipcambio(tx_dat_mone.Text);
                     //tx_flete.Text = "0.00";
                 }
