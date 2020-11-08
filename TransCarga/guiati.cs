@@ -1275,14 +1275,14 @@ namespace TransCarga
                     "locdestin,dirdestin,ubidestin,docsremit,obspregri,clifingri,cantotgri,pestotgri," +
                     "tipmongri,tipcamgri,subtotgri,igvgri,totgri,totpag,salgri,estadoser,cantfilas," +
                     "frase1,frase2,fleteimp,tipintrem,tipintdes,tippagpre,seguroE,m1cliente,m2cliente," +
-                    "subtotMN,igvMN,totgrMN," +
+                    "subtotMN,igvMN,totgrMN,codMN," +
                     "verApp,userc,fechc,diriplan4,diripwan4,netbname) " +
                     "values (@fechop,@sergr,@numgr,@npregr,@tdcdes,@ndcdes,@nomdes,@dircde,@ubicde," +
                     "@tdcrem,@ndcrem,@nomrem,@dircre,@ubicre,@locpgr,@dirpgr,@ubopgr," +
                     "@ldcpgr,@didegr,@ubdegr,@dooprg,@obsprg,@conprg,@totcpr,@totppr," +
                     "@monppr,@tcprgr,@subpgr,@igvpgr,@totpgr,@pagpgr,@totpgr,@estpgr,@canfil," +
                     "@frase1,@frase2,@fleimp,@ticlre,@ticlde,@tipacc,@clavse,@m1clte,@m2clte," +
-                    "@stMN,@igMN,@tgMN," +
+                    "@stMN,@igMN,@tgMN,@codmn," +
                     "@verApp,@asd,now(),@iplan,@ipwan,@nbnam)";
                 using (MySqlCommand micon = new MySqlCommand(inserta, conn))
                 {
@@ -1331,6 +1331,7 @@ namespace TransCarga
                     micon.Parameters.AddWithValue("@stMN", subMN.ToString());
                     micon.Parameters.AddWithValue("@igMN", igvMN.ToString());
                     micon.Parameters.AddWithValue("@tgMN", tx_fletMN.Text);
+                    micon.Parameters.AddWithValue("@codmn", MonDeft);           // codigo moneda local es la moneda por defecto 08/11/2020
                     micon.Parameters.AddWithValue("@verApp", verapp);
                     micon.Parameters.AddWithValue("@asd", asd);
                     micon.Parameters.AddWithValue("@iplan", lib.iplan());

@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Drawing;
+using System.Text;
 using System.Windows.Forms;
 using CrystalDecisions.CrystalReports.Engine;
 using MySql.Data.MySqlClient;
+using Newtonsoft.Json;
 
 namespace TransCarga
 {
@@ -55,6 +58,7 @@ namespace TransCarga
         string v_mfildet = "";          // maximo numero de filas en el detalle, coord. con el formato
         string vint_A0 = "";            // variable codigo anulacion interna por BD
         string v_codidv = "";           // variable codifo interno de documento de venta en vista TDV
+        string v_igv = "";              // valor igv %
         //
         static libreria lib = new libreria();   // libreria de procedimientos
         publico lp = new publico();             // libreria de clases
@@ -84,7 +88,7 @@ namespace TransCarga
         DataTable dtm = new DataTable();
         string[] datcltsR = { "", "", "", "", "", "", "", "" };
         string[] datcltsD = { "", "", "", "", "", "", "", "" };
-        string[] datguias = { "", "", "", "", "", "" };
+        string[] datguias = { "", "", "", "", "", "", "" };
 
         public facelect()
         {
@@ -273,6 +277,7 @@ namespace TransCarga
                     {
                         if (row["campo"].ToString() == "anulado" && row["param"].ToString() == "A0") vint_A0 = row["valor"].ToString().Trim();
                         if (row["campo"].ToString() == "codinDV" && row["param"].ToString() == "DV") v_codidv = row["valor"].ToString().Trim();           // codigo de dov.vta en tabla TDV
+                        if (row["campo"].ToString() == "igv" && row["param"].ToString() == "%") v_igv = row["valor"].ToString().Trim();
                     }
                 }
                 da.Dispose();
@@ -600,6 +605,7 @@ namespace TransCarga
                 datguias[3] = "";   // codigo moneda de la GR
                 datguias[4] = "";   // valor de la guía en su moneda
                 datguias[5] = "";   // valor en moneda local
+                datguias[6] = "";   // codigo moneda local
                 // validamos que la GR: 1.exista, 2.No este facturada, 3.No este anulada
                 // y devolvemos una fila con los datos del remitente y otra fila los datos del destinatario
                 using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
@@ -607,7 +613,7 @@ namespace TransCarga
                     lib.procConn(conn);
                     string consulta = "SELECT a.tidoregri,a.nudoregri,a.nombregri,a.direregri,a.ubigregri,ifnull(b1.email,'') as emailR,ifnull(b1.numerotel1,'') as numtel1R,ifnull(b1.numerotel2,'') as numtel2R," +
                         "a.tidodegri,a.nudodegri,a.nombdegri,a.diredegri,a.ubigdegri,ifnull(b2.email,'') as emailD,ifnull(b2.numerotel1,'') as numtel1D,ifnull(b2.numerotel2,'') as numtel2D," +
-                        "a.tipmongri,a.totgri,a.salgri,SUM(d.cantprodi) AS bultos,max(d.descprodi) AS descrip,m.descrizionerid as mon,totgrMN " +
+                        "a.tipmongri,a.totgri,a.salgri,SUM(d.cantprodi) AS bultos,max(d.descprodi) AS descrip,m.descrizionerid as mon,a.totgrMN,a.codMN " +
                         "from cabguiai a left join detguiai d on d.idc=a.id " +
                         "LEFT JOIN controlg c ON c.serguitra = a.sergui AND c.numguitra = a.numgui " +
                         "left join anag_cli b1 on b1.tipdoc=a.tidoregri and b1.ruc=a.nudoregri " +
@@ -649,6 +655,7 @@ namespace TransCarga
                                     datguias[3] = dr.GetString("mon");             // moneda de la GR
                                     datguias[4] = dr.GetString("totgri");          // valor GR en su moneda
                                     datguias[5] = dr.GetString("totgrMN");         // valor GR en moneda local
+                                    datguias[6] = dr.GetString("codMN");            // codigo moneda local
                                     retorna = true;
                                 }
                             }
@@ -682,7 +689,85 @@ namespace TransCarga
                 tx_tipcam.Text = vtipcam.ReturnValue3;
             }
         }
+        private bool factElec()                 // conexion a facturacion electrónica con nubefact
+        {
+            bool retorna = false;
+            //NubeFacT nubeFacT = new NubeFacT();
+            Invoice invoice = new Invoice();
+            invoice.operacion = "generar_comprobante";
+            invoice.tipo_de_comprobante = 1;
+            invoice.serie = "FFF1";
+            invoice.numero = 1;
+            invoice.sunat_transaction = 1;
+            invoice.cliente_tipo_de_documento = 6;
+            invoice.cliente_numero_de_documento = tx_numDocRem.Text;
+            invoice.cliente_denominacion = tx_nomRem.Text;
+            invoice.cliente_direccion = tx_dirRem.Text;
+            invoice.cliente_email = tx_email.Text;
+            invoice.cliente_email_1 = "";
+            invoice.cliente_email_2 = "";
+            invoice.fecha_de_emision = DateTime.Parse(tx_fechope.Text);
+            invoice.fecha_de_vencimiento = DateTime.Now.AddDays(1);         // ponerlo en variable 
+            invoice.moneda = 1;                                             // ponerlo en desc_mon
+            invoice.tipo_de_cambio = tx_tipcam.Text;
+            invoice.porcentaje_de_igv = double.Parse(v_igv);
+            invoice.descuento_global = "";
+            invoice.total_descuento = "";
+            invoice.total_anticipo = "";
+            invoice.total_gravada = 180.00;                                     // falta
+            invoice.total_inafecta = "";
+            invoice.total_exonerada = "";
+            invoice.total_igv = 180.00;                                         // falta
+            invoice.total_gratuita = "";
+            invoice.total_otros_cargos = "";
+            invoice.total = double.Parse(tx_flete.Text);
+            invoice.percepcion_tipo = "";
+            invoice.percepcion_base_imponible = "";
+            invoice.total_percepcion = "";
+            invoice.detraccion = false;                                         // validar si es o no
+            invoice.observaciones = tx_obser1.Text;
+            invoice.documento_que_se_modifica_tipo = "";
+            invoice.documento_que_se_modifica_serie = "";
+            invoice.documento_que_se_modifica_numero = "";
+            invoice.tipo_de_nota_de_credito = "";
+            invoice.tipo_de_nota_de_debito = "";
+            invoice.enviar_automaticamente_a_la_sunat = true;
+            invoice.enviar_automaticamente_al_cliente = false;
+            invoice.codigo_unico = "";
+            invoice.condiciones_de_pago = "";
+            invoice.medio_de_pago = "";
+            invoice.placa_vehiculo = "";
+            invoice.orden_compra_servicio = "";
+            invoice.tabla_personalizada_codigo = "";
+            invoice.formato_de_pdf = "";
+            invoice.items = new List<Items>()                               // meterlo en un bucle
+            {
+                new Items()
+                {
+                    unidad_de_medida = "ZZ",
+                    codigo = "001",
+                    descripcion = dataGridView1.Rows[0].Cells[1].Value.ToString(),
+                    cantidad = int.Parse(dataGridView1.Rows[0].Cells[2].Value.ToString()),
+                    valor_unitario = double.Parse(dataGridView1.Rows[0].Cells[4].Value.ToString()),
+                    precio_unitario = double.Parse(dataGridView1.Rows[0].Cells[4].Value.ToString()),
+                    descuento = "",
+                    subtotal = 100,
+                    tipo_de_igv = 1,                                    // meterlo en una variable
+                    igv = 18,
+                    total = double.Parse(dataGridView1.Rows[0].Cells[4].Value.ToString()),
+                    anticipo_regularizacion = false,
+                    anticipo_comprobante_serie = "",
+                    anticipo_comprobante_numero = ""
+                },
+            };
+            string json = JsonConvert.SerializeObject(invoice, Formatting.Indented);
+            Console.WriteLine(json);
+            byte[] bytes = Encoding.Default.GetBytes(json);
+            string json_en_utf_8 = Encoding.UTF8.GetString(bytes);
+            // me quede aCA!
 
+            return retorna;
+        }
         #region autocompletados
         private void autodepa()                 // se jala en el load
         {
@@ -772,8 +857,7 @@ namespace TransCarga
                 {
                     rb_desGR.PerformClick();
                 }
-                //
-                dataGridView1.Rows.Add(datguias[0], datguias[1], datguias[2], datguias[3], datguias[4], datguias[5]);     // insertamos en la grilla los datos de la GR
+                dataGridView1.Rows.Add(datguias[0], datguias[1], datguias[2], datguias[3], datguias[4], datguias[5], datguias[6]);     // insertamos en la grilla los datos de la GR
                 int totfil = 0;
                 int totcant = 0;
                 decimal totflet = 0;
@@ -898,29 +982,43 @@ namespace TransCarga
                     rb_si.Focus();
                     return;
                 }
+                if (tx_pagado.Text.Trim() == "" && tx_salxcob.Text.Trim() == "")
+                {
+                    MessageBox.Show("Seleccione si se cancela la factura o no", "Atención - Confirme", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    rb_si.Focus();
+                    return;
+                }
                 if (tx_idr.Text.Trim() == "")
                 {
                     var aa = MessageBox.Show("Confirma que desea crear el documento?", "Confirme por favor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                     if (aa == DialogResult.Yes)
                     {
-                        if (graba() == true)
+                        if (factElec() == true)       // facturacion electrónica
                         {
-                            // actualizamos la tabla seguimiento de usuarios
-                            string resulta = lib.ult_mov(nomform, nomtab, asd);
-                            if (resulta != "OK")
+                            if (graba() == true)
                             {
-                                MessageBox.Show(resulta, "Error en actualización de seguimiento", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            }
-                            /*  TODO DOC.VTA. SE ENVIA A LA ETIQUETERA DE FRENTE ... 28/10/2020
-                             *  AL GRABAR SE ASUME IMPRESA 28/10/2020
-                            var bb = MessageBox.Show("Desea imprimir el documento?" + Environment.NewLine +
-                                "El formato actual es " + vi_formato, "Confirme por favor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                            if (bb == DialogResult.Yes)
-                            {
+                                // actualizamos la tabla seguimiento de usuarios
+                                string resulta = lib.ult_mov(nomform, nomtab, asd);
+                                if (resulta != "OK")
+                                {
+                                    MessageBox.Show(resulta, "Error en actualización de seguimiento", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                }
+                                /*  TODO DOC.VTA. SE ENVIA A LA ETIQUETERA DE FRENTE ... 28/10/2020
+                                 *  AL GRABAR SE ASUME IMPRESA 28/10/2020
+                                var bb = MessageBox.Show("Desea imprimir el documento?" + Environment.NewLine +
+                                    "El formato actual es " + vi_formato, "Confirme por favor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                                if (bb == DialogResult.Yes)
+                                {
+                                    Bt_print.PerformClick();
+                                }
+                                */
                                 Bt_print.PerformClick();
                             }
-                            */
-                            Bt_print.PerformClick();
+                        }
+                        else
+                        {
+                            MessageBox.Show("No se puede generar el documento de venta electrónico","Error en proveedor de Fact.Electrónica");
+                            iserror = "si";
                         }
                     }
                     else
@@ -1054,6 +1152,8 @@ namespace TransCarga
                     }
                 }
                 if (tx_tipcam.Text == "") tx_tipcam.Text = "0";
+                decimal subt = Math.Round(decimal.Parse(tx_flete.Text)/(1 + decimal.Parse(v_igv)/100), 3);
+                decimal igvt = Math.Round(decimal.Parse(tx_flete.Text) - subt,3);
                 string inserta = "insert into cabfactu (" +
                     "fechope,martdve,tipdvta,serdvta,numdvta,ticltgr,tidoclt,nudoclt,nombclt,direclt,dptoclt,provclt,distclt,ubigclt,corrclt,teleclt," +
                     "locorig,dirorig,ubiorig,obsdvta,canfidt,canbudt,mondvta,tcadvta,subtota,igvtota,porcigv,totdvta,totpags,saldvta,estdvta,frase01," +
@@ -1089,12 +1189,12 @@ namespace TransCarga
                     micon.Parameters.AddWithValue("@totcpr", tx_totcant.Text);  // total bultos
                     micon.Parameters.AddWithValue("@monppr", tx_dat_mone.Text);
                     micon.Parameters.AddWithValue("@tcoper", tx_tipcam.Text);           // FALTA TIPO DE CAMBIO
-                    micon.Parameters.AddWithValue("@subpgr", );              // sub total   FALTA
-                    micon.Parameters.AddWithValue("@igvpgr", );              // igv                  FALTA
-                    micon.Parameters.AddWithValue("@porcigv",);             // porcentaje en numeros de IGV      FALTA
+                    micon.Parameters.AddWithValue("@subpgr", subt.ToString());              // sub total   FALTA
+                    micon.Parameters.AddWithValue("@igvpgr", igvt.ToString());              // igv                  FALTA
+                    micon.Parameters.AddWithValue("@porcigv", v_igv);             // porcentaje en numeros de IGV      FALTA
                     micon.Parameters.AddWithValue("@totpgr", tx_flete.Text);    // total inc. igv
-                    micon.Parameters.AddWithValue("@pagpgr", tx_pagado.Text);
-                    micon.Parameters.AddWithValue("@salxpa", tx_salxcob.Text);
+                    micon.Parameters.AddWithValue("@pagpgr", (tx_pagado.Text == "") ? "0" : tx_pagado.Text);
+                    micon.Parameters.AddWithValue("@salxpa", (tx_salxcob.Text == "") ? "0" : tx_salxcob.Text);
                     micon.Parameters.AddWithValue("@estpgr", tx_dat_estad.Text); // estado
                     micon.Parameters.AddWithValue("@frase1", v_fra2);               // REVISAR LA FRASE SI VA O NO
                     micon.Parameters.AddWithValue("@ticlre", tx_dat_tcr.Text);   // tipo de cliente credito o contado
@@ -1129,7 +1229,7 @@ namespace TransCarga
                         {
 
                             string inserd2 = "update detfactu set " +
-                                "codgror=@guia,cantbul=@bult,unimedp=@unim,descpro=@desc,pesogro=@peso,codmogr=@codm,totalgr=@pret " +
+                                "codgror=@guia,cantbul=@bult,unimedp=@unim,descpro=@desc,pesogro=@peso,codmogr=@codm,totalgr=@pret,codMN=@cmnn,totalgrMN=@tgrmn " +
                                 "where idc=@idr and filadet=@fila";
                             using (MySqlCommand micon = new MySqlCommand(inserd2, conn))
                             {
@@ -1142,6 +1242,8 @@ namespace TransCarga
                                 micon.Parameters.AddWithValue("@peso", "0");
                                 micon.Parameters.AddWithValue("@codm", dataGridView1.Rows[i].Cells[3].Value.ToString());
                                 micon.Parameters.AddWithValue("@pret", dataGridView1.Rows[i].Cells[4].Value.ToString());
+                                micon.Parameters.AddWithValue("@cmnn", dataGridView1.Rows[i].Cells[6].Value.ToString());
+                                micon.Parameters.AddWithValue("@tgrmn", dataGridView1.Rows[i].Cells[5].Value.ToString());
                                 micon.ExecuteNonQuery();
                                 fila += 1;
                                 //
@@ -1890,7 +1992,7 @@ namespace TransCarga
             using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
             {
                 conn.Open();
-                string consulta = "update cabguiai set impreso=@sn where id=@idr";
+                string consulta = "update cabfactu set impreso=@sn where id=@idr";
                 using (MySqlCommand micon = new MySqlCommand(consulta, conn))
                 {
                     micon.Parameters.AddWithValue("@sn", sn);

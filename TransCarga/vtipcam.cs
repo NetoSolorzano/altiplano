@@ -78,7 +78,7 @@ namespace TransCarga
                     }
                 }
             }
-            if (tx_tipcam.Text.Trim() == "" || xnum == "" || c == "")
+            if (tx_tipcam.Text.Trim() == "" || xnum == "" || c == "" || tx_tipcam.Text.Substring(0,1) == "0")
             {
                 MessageBox.Show("Falta información en tabla de tipos de cambio" + Environment.NewLine + 
                     "o falta configurar tabla de monedas", "No se puede continuar",MessageBoxButtons.OK,MessageBoxIcon.Error);
@@ -86,7 +86,7 @@ namespace TransCarga
                 this.Close();
             }
             // calculamos el valor cambiado
-            if (para1 == "" || para1 == "0")
+            if (para1 == "" || para1.Substring(0,1) == "0")
             {
                 tx_newVal.ReadOnly = false;
                 tx_newVal.Focus();
