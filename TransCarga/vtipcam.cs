@@ -85,16 +85,19 @@ namespace TransCarga
                 ReturnValue1 = "0";
                 this.Close();
             }
-            // calculamos el valor cambiado
-            if (para1 == "" || para1.Substring(0,1) == "0")
-            {
-                tx_newVal.ReadOnly = false;
-                tx_newVal.Focus();
-            }
             else
             {
-                tx_newVal.ReadOnly = true;
-                tx_newVal.Text = Math.Round(decimal.Parse(para1) / decimal.Parse(tx_tipcam.Text), 3).ToString(); ;
+                // calculamos el valor cambiado
+                if (para1 == "" || para1.Substring(0, 1) == "0")
+                {
+                    tx_newVal.ReadOnly = false;
+                    tx_newVal.Focus();
+                }
+                else
+                {
+                    tx_newVal.ReadOnly = true;
+                    tx_newVal.Text = Math.Round(decimal.Parse(para1) / decimal.Parse(tx_tipcam.Text), 3).ToString(); ;
+                }
             }
         }
         private void vtipcam_KeyDown(object sender, KeyEventArgs e)

@@ -138,7 +138,6 @@
     <Compile Include="login.designer.cs">
       <DependentUpon>login.cs</DependentUpon>
     </Compile>
-    <Compile Include="NubeFact-json.cs" />
     <Compile Include="permisos.cs">
       <SubType>Form</SubType>
     </Compile>

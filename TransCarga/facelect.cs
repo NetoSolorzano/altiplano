@@ -43,6 +43,7 @@ namespace TransCarga
         string vtc_ext = "";            // variable tipo cliente extranjero
         string codAnul = "";            // codigo de documento anulado
         string codGene = "";            // codigo documento nuevo generado
+        string codCanc = "";            // codigo documento cancelado (pagado 100%)
         string MonDeft = "";            // moneda por defecto
         string v_clu = "";              // codigo del local del usuario
         string v_slu = "";              // serie del local del usuario
@@ -248,6 +249,7 @@ namespace TransCarga
                         {
                             if (row["param"].ToString() == "anulado") codAnul = row["valor"].ToString().Trim();         // codigo doc anulado
                             if (row["param"].ToString() == "generado") codGene = row["valor"].ToString().Trim();        // codigo doc generado
+                            if (row["param"].ToString() == "cancelado") codCanc = row["valor"].ToString().Trim();        // codigo doc cancelado
                         }
                     }
                     if (row["formulario"].ToString() == "clients" && row["campo"].ToString() == "documento")
@@ -313,7 +315,7 @@ namespace TransCarga
                 if (conn.State == ConnectionState.Open)
                 {
                     string consulta = "select id,fechope,martdve,tipdvta,serdvta,numdvta,ticltgr,tidoclt,nudoclt,nombclt,direclt,dptoclt,provclt,distclt,ubigclt,corrclt,teleclt," +
-                        "locorig,dirorig,ubiorig,obsdvta,canfidt,canbudt,mondvta,tcadvta,subtota,igvtota,porcigv,totdvta,totpags,saldvta,estdvta,frase01," +
+                        "locorig,dirorig,ubiorig,obsdvta,canfidt,canbudt,mondvta,tcadvta,subtota,igvtota,porcigv,totdvta,totpags,saldvta,estdvta,frase01,impreso," +
                         "tipoclt,m1clien,tippago,ferecep,userc,fechc,userm,fechm " +
                         "from cabfactu a " + parte;
                     MySqlCommand micon = new MySqlCommand(consulta, conn);
@@ -354,13 +356,17 @@ namespace TransCarga
                             tx_tfil.Text = dr.GetString("canfidt");
                             tx_totcant.Text = dr.GetString("canbudt");  // total bultos
                             tx_dat_mone.Text = dr.GetString("mondvta");
-                            //tcadvta,subtota,igvtota,porcigv
-                            tx_flete.Text = dr.GetString("totdvta");           // total inc. igv
+                            tx_tipcam.Text = dr.GetString("tcadvta");
+                            tx_subt.Text = Math.Round(dr.GetDecimal("subtota"),2).ToString();
+                            tx_igv.Text = Math.Round(dr.GetDecimal("igvtota"), 2).ToString();
+                            //,,,porcigv
+                            tx_flete.Text = Math.Round(dr.GetDecimal("totdvta"),2).ToString();           // total inc. igv
                             tx_pagado.Text = dr.GetString("totpags");
                             tx_salxcob.Text = dr.GetString("saldvta");
                             tx_dat_estad.Text = dr.GetString("estdvta");        // estado
                             tx_dat_tcr.Text = dr.GetString("tipoclt");          // tipo de cliente credito o contado
                             tx_dat_m1clte.Text = dr.GetString("m1clien");
+                            tx_impreso.Text = dr.GetString("impreso");
                             //
                             cmb_tdv.SelectedValue = tx_dat_tdv.Text;
                             cmb_tdv_SelectedIndexChanged(null, null);
@@ -370,7 +376,7 @@ namespace TransCarga
                             tx_estado.Text = lib.nomstat(tx_dat_estad.Text);
                             if (dr.GetString("userm") == "") tx_digit.Text = lib.nomuser(dr.GetString("userc"));
                             else tx_digit.Text = lib.nomuser(dr.GetString("userm"));
-                            if (tx_salxcob.Text == tx_flete.Text) rb_no.Checked = true;
+                            if (decimal.Parse(tx_salxcob.Text) == decimal.Parse(tx_flete.Text)) rb_no.Checked = true;
                             else rb_si.Checked = true;
                             //
                         }
@@ -608,55 +614,81 @@ namespace TransCarga
                 datguias[6] = "";   // codigo moneda local
                 // validamos que la GR: 1.exista, 2.No este facturada, 3.No este anulada
                 // y devolvemos una fila con los datos del remitente y otra fila los datos del destinatario
+                string hay = "no";
                 using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
                 {
                     lib.procConn(conn);
-                    string consulta = "SELECT a.tidoregri,a.nudoregri,a.nombregri,a.direregri,a.ubigregri,ifnull(b1.email,'') as emailR,ifnull(b1.numerotel1,'') as numtel1R,ifnull(b1.numerotel2,'') as numtel2R," +
-                        "a.tidodegri,a.nudodegri,a.nombdegri,a.diredegri,a.ubigdegri,ifnull(b2.email,'') as emailD,ifnull(b2.numerotel1,'') as numtel1D,ifnull(b2.numerotel2,'') as numtel2D," +
-                        "a.tipmongri,a.totgri,a.salgri,SUM(d.cantprodi) AS bultos,max(d.descprodi) AS descrip,m.descrizionerid as mon,a.totgrMN,a.codMN " +
-                        "from cabguiai a left join detguiai d on d.idc=a.id " +
-                        "LEFT JOIN controlg c ON c.serguitra = a.sergui AND c.numguitra = a.numgui " +
-                        "left join anag_cli b1 on b1.tipdoc=a.tidoregri and b1.ruc=a.nudoregri " +
-                        "left join anag_cli b2 on b2.tipdoc=a.tidodegri and b2.ruc=a.nudodegri " +
-                        "left join desc_mon m on m.idcodice=a.tipmongri " +
-                        "WHERE a.sergui = @ser AND a.numgui = @num AND a.estadoser IN(@est) AND c.fecdocvta IS NULL";
-                    using (MySqlCommand micon = new MySqlCommand(consulta, conn))
+                    string cons = "select fecguitra,totguitra,estadoser,fecdocvta,tipdocvta,serdocvta,numdocvta,codmonvta,totdocvta " +
+                        "from controlg where serguitra=@ser and numguitra=@num";
+                    using (MySqlCommand mic1 = new MySqlCommand(cons, conn))
                     {
-                        micon.Parameters.AddWithValue("@ser", serie);
-                        micon.Parameters.AddWithValue("@num", corre);
-                        micon.Parameters.AddWithValue("@est", codGene);
-                        using (MySqlDataReader dr = micon.ExecuteReader())
+                        mic1.Parameters.AddWithValue("@ser", serie);
+                        mic1.Parameters.AddWithValue("@num", corre);
+                        using (MySqlDataReader dr = mic1.ExecuteReader())
                         {
-                            if (dr.Read())
+                            if (dr.HasRows)
                             {
-                                if (!dr.IsDBNull(0))
+                                if (dr.Read())
                                 {
-                                    datcltsR[0] = dr.GetString("tidoregri");        // datos del remitente de la GR
-                                    datcltsR[1] = dr.GetString("nudoregri");
-                                    datcltsR[2] = dr.GetString("nombregri");
-                                    datcltsR[3] = dr.GetString("direregri");
-                                    datcltsR[4] = dr.GetString("ubigregri");
-                                    datcltsR[5] = dr.GetString("emailR");
-                                    datcltsR[6] = dr.GetString("numtel1R");
-                                    datcltsR[7] = dr.GetString("numtel2R");
-                                    //
-                                    datcltsD[0] = dr.GetString("tidodegri");        // datos del destinatario de la GR
-                                    datcltsD[1] = dr.GetString("nudodegri");
-                                    datcltsD[2] = dr.GetString("nombdegri");
-                                    datcltsD[3] = dr.GetString("diredegri");
-                                    datcltsD[4] = dr.GetString("ubigdegri");
-                                    datcltsD[5] = dr.GetString("emailD");
-                                    datcltsD[6] = dr.GetString("numtel1D");
-                                    datcltsD[7] = dr.GetString("numtel2D");
-                                    //
-                                    datguias[0] = serie + "-" + corre;                 // GR
-                                    datguias[1] = (dr.IsDBNull(20))? "" : dr.GetString("descrip");         // descrip
-                                    datguias[2] = (dr.IsDBNull(19))? "0" : dr.GetString("bultos");          // cant bultos
-                                    datguias[3] = dr.GetString("mon");             // moneda de la GR
-                                    datguias[4] = dr.GetString("totgri");          // valor GR en su moneda
-                                    datguias[5] = dr.GetString("totgrMN");         // valor GR en moneda local
-                                    datguias[6] = dr.GetString("codMN");            // codigo moneda local
-                                    retorna = true;
+                                    if (dr.GetString("numdocvta").Trim() != "") hay = "sif"; // si hay guía pero ya esta facturado
+                                    else hay = "sin";    // si hay guía y no tiene factura
+                                }
+                            }
+                            else
+                            {
+                                hay = "no"; // no existe la guía
+                            }
+                        }
+                    }
+                    if (hay == "sin")
+                    {
+                        string consulta = "SELECT a.tidoregri,a.nudoregri,a.nombregri,a.direregri,a.ubigregri,ifnull(b1.email,'') as emailR,ifnull(b1.numerotel1,'') as numtel1R,ifnull(b1.numerotel2,'') as numtel2R," +
+                            "a.tidodegri,a.nudodegri,a.nombdegri,a.diredegri,a.ubigdegri,ifnull(b2.email,'') as emailD,ifnull(b2.numerotel1,'') as numtel1D,ifnull(b2.numerotel2,'') as numtel2D," +
+                            "a.tipmongri,a.totgri,a.salgri,SUM(d.cantprodi) AS bultos,max(d.descprodi) AS descrip,ifnull(m.descrizionerid,'') as mon,a.totgrMN,a.codMN,c.fecdocvta " +
+                            "from cabguiai a left join detguiai d on d.idc=a.id " +
+                            "LEFT JOIN controlg c ON c.serguitra = a.sergui AND c.numguitra = a.numgui " +
+                            "left join anag_cli b1 on b1.tipdoc=a.tidoregri and b1.ruc=a.nudoregri " +
+                            "left join anag_cli b2 on b2.tipdoc=a.tidodegri and b2.ruc=a.nudodegri " +
+                            "left join desc_mon m on m.idcodice=a.tipmongri " +
+                            "WHERE a.sergui = @ser AND a.numgui = @num AND a.estadoser IN(@est) AND c.fecdocvta IS NULL";
+                        using (MySqlCommand micon = new MySqlCommand(consulta, conn))
+                        {
+                            micon.Parameters.AddWithValue("@ser", serie);
+                            micon.Parameters.AddWithValue("@num", corre);
+                            micon.Parameters.AddWithValue("@est", codGene);
+                            using (MySqlDataReader dr = micon.ExecuteReader())
+                            {
+                                if (dr.Read())
+                                {
+                                    if (!dr.IsDBNull(0) && dr[24] == DBNull.Value)
+                                    {
+                                        datcltsR[0] = dr.GetString("tidoregri");        // datos del remitente de la GR
+                                        datcltsR[1] = dr.GetString("nudoregri");
+                                        datcltsR[2] = dr.GetString("nombregri");
+                                        datcltsR[3] = dr.GetString("direregri");
+                                        datcltsR[4] = dr.GetString("ubigregri");
+                                        datcltsR[5] = dr.GetString("emailR");
+                                        datcltsR[6] = dr.GetString("numtel1R");
+                                        datcltsR[7] = dr.GetString("numtel2R");
+                                        //
+                                        datcltsD[0] = dr.GetString("tidodegri");        // datos del destinatario de la GR
+                                        datcltsD[1] = dr.GetString("nudodegri");
+                                        datcltsD[2] = dr.GetString("nombdegri");
+                                        datcltsD[3] = dr.GetString("diredegri");
+                                        datcltsD[4] = dr.GetString("ubigdegri");
+                                        datcltsD[5] = dr.GetString("emailD");
+                                        datcltsD[6] = dr.GetString("numtel1D");
+                                        datcltsD[7] = dr.GetString("numtel2D");
+                                        //
+                                        datguias[0] = serie + "-" + corre;                 // GR
+                                        datguias[1] = (dr.IsDBNull(20)) ? "" : dr.GetString("descrip");         // descrip
+                                        datguias[2] = (dr.IsDBNull(19)) ? "0" : dr.GetString("bultos");          // cant bultos
+                                        datguias[3] = dr.GetString("mon");             // moneda de la GR
+                                        datguias[4] = dr.GetString("totgri");          // valor GR en su moneda
+                                        datguias[5] = dr.GetString("totgrMN");         // valor GR en moneda local
+                                        datguias[6] = dr.GetString("codMN");            // codigo moneda local
+                                        retorna = true;
+                                    }
                                 }
                             }
                         }
@@ -682,65 +714,84 @@ namespace TransCarga
             }
             else
             {
-                vtipcam vtipcam = new vtipcam(tx_flete.Text,codmod,DateTime.Now.Date.ToString());
-                var result = vtipcam.ShowDialog();
-                tx_flete.Text = vtipcam.ReturnValue1;
-                // = vtipcam.ReturnValue2;
-                tx_tipcam.Text = vtipcam.ReturnValue3;
+                if (codmod != "")
+                {
+                    vtipcam vtipcam = new vtipcam(tx_flete.Text, codmod, DateTime.Now.Date.ToString());
+                    var result = vtipcam.ShowDialog();
+                    tx_flete.Text = vtipcam.ReturnValue1;
+                    tx_fletMN.Text = vtipcam.ReturnValue2;
+                    tx_tipcam.Text = vtipcam.ReturnValue3;
+                    tx_flete_Leave(null, null);
+                }
             }
         }
-        private bool factElec()                 // conexion a facturacion electrónica con nubefact
+        private void calculos(decimal totDoc)
+        {
+            decimal tigv = 0;
+            decimal tsub = 0;
+            if (totDoc > 0)
+            {
+                tsub = Math.Round(totDoc / (1 + decimal.Parse(v_igv) / 100), 2);
+                tigv = Math.Round(totDoc - tsub, 2);
+                
+            }
+            tx_igv.Text = tigv.ToString("#0.00");
+            tx_subt.Text = tsub.ToString("#0.00");
+        }
+        private bool factElec(string provee, string tipo)                 // conexion a facturacion electrónica provee=proveedor | tipo=txt ó json
         {
             bool retorna = false;
-            //NubeFacT nubeFacT = new NubeFacT();
-            Invoice invoice = new Invoice();
-            invoice.operacion = "generar_comprobante";
-            invoice.tipo_de_comprobante = 1;
-            invoice.serie = "FFF1";
-            invoice.numero = 1;
-            invoice.sunat_transaction = 1;
-            invoice.cliente_tipo_de_documento = 6;
-            invoice.cliente_numero_de_documento = tx_numDocRem.Text;
-            invoice.cliente_denominacion = tx_nomRem.Text;
-            invoice.cliente_direccion = tx_dirRem.Text;
-            invoice.cliente_email = tx_email.Text;
-            invoice.cliente_email_1 = "";
-            invoice.cliente_email_2 = "";
-            invoice.fecha_de_emision = DateTime.Parse(tx_fechope.Text);
-            invoice.fecha_de_vencimiento = DateTime.Now.AddDays(1);         // ponerlo en variable 
-            invoice.moneda = 1;                                             // ponerlo en desc_mon
-            invoice.tipo_de_cambio = tx_tipcam.Text;
-            invoice.porcentaje_de_igv = double.Parse(v_igv);
-            invoice.descuento_global = "";
-            invoice.total_descuento = "";
-            invoice.total_anticipo = "";
-            invoice.total_gravada = 180.00;                                     // falta
-            invoice.total_inafecta = "";
-            invoice.total_exonerada = "";
-            invoice.total_igv = 180.00;                                         // falta
-            invoice.total_gratuita = "";
-            invoice.total_otros_cargos = "";
-            invoice.total = double.Parse(tx_flete.Text);
-            invoice.percepcion_tipo = "";
-            invoice.percepcion_base_imponible = "";
-            invoice.total_percepcion = "";
-            invoice.detraccion = false;                                         // validar si es o no
-            invoice.observaciones = tx_obser1.Text;
-            invoice.documento_que_se_modifica_tipo = "";
-            invoice.documento_que_se_modifica_serie = "";
-            invoice.documento_que_se_modifica_numero = "";
-            invoice.tipo_de_nota_de_credito = "";
-            invoice.tipo_de_nota_de_debito = "";
-            invoice.enviar_automaticamente_a_la_sunat = true;
-            invoice.enviar_automaticamente_al_cliente = false;
-            invoice.codigo_unico = "";
-            invoice.condiciones_de_pago = "";
-            invoice.medio_de_pago = "";
-            invoice.placa_vehiculo = "";
-            invoice.orden_compra_servicio = "";
-            invoice.tabla_personalizada_codigo = "";
-            invoice.formato_de_pdf = "";
-            invoice.items = new List<Items>()                               // meterlo en un bucle
+            if (provee == "NubeFact")
+            {
+                /* NubeFacT nubeFacT = new NubeFacT();                
+                Invoice invoice = new Invoice();
+                invoice.operacion = "generar_comprobante";
+                invoice.tipo_de_comprobante = 1;
+                invoice.serie = "FFF1";
+                invoice.numero = 1;
+                invoice.sunat_transaction = 1;
+                invoice.cliente_tipo_de_documento = 6;
+                invoice.cliente_numero_de_documento = tx_numDocRem.Text;
+                invoice.cliente_denominacion = tx_nomRem.Text;
+                invoice.cliente_direccion = tx_dirRem.Text;
+                invoice.cliente_email = tx_email.Text;
+                invoice.cliente_email_1 = "";
+                invoice.cliente_email_2 = "";
+                invoice.fecha_de_emision = DateTime.Parse(tx_fechope.Text);
+                invoice.fecha_de_vencimiento = DateTime.Now.AddDays(1);         // ponerlo en variable 
+                invoice.moneda = 1;                                             // ponerlo en desc_mon
+                invoice.tipo_de_cambio = tx_tipcam.Text;
+                invoice.porcentaje_de_igv = double.Parse(v_igv);
+                invoice.descuento_global = "";
+                invoice.total_descuento = "";
+                invoice.total_anticipo = "";
+                invoice.total_gravada = double.Parse(tx_flete.Text);
+                invoice.total_inafecta = "";
+                invoice.total_exonerada = "";
+                invoice.total_igv = Math.Round(double.Parse(tx_flete.Text) * 18 / 100, 2);          // falta DEBE JALARSE DE UN TEXTBOX
+                invoice.total_gratuita = "";
+                invoice.total_otros_cargos = "";
+                invoice.total = double.Parse(tx_flete.Text);
+                invoice.percepcion_tipo = "";
+                invoice.percepcion_base_imponible = "";
+                invoice.total_percepcion = "";
+                invoice.detraccion = false;                                         // validar si es o no
+                invoice.observaciones = tx_obser1.Text;
+                invoice.documento_que_se_modifica_tipo = "";
+                invoice.documento_que_se_modifica_serie = "";
+                invoice.documento_que_se_modifica_numero = "";
+                invoice.tipo_de_nota_de_credito = "";
+                invoice.tipo_de_nota_de_debito = "";
+                invoice.enviar_automaticamente_a_la_sunat = true;
+                invoice.enviar_automaticamente_al_cliente = false;
+                invoice.codigo_unico = "";
+                invoice.condiciones_de_pago = "";
+                invoice.medio_de_pago = "";
+                invoice.placa_vehiculo = "";
+                invoice.orden_compra_servicio = "";
+                invoice.tabla_personalizada_codigo = "";
+                invoice.formato_de_pdf = "";
+                invoice.items = new List<Items>()                               // meterlo en un bucle
             {
                 new Items()
                 {
@@ -751,23 +802,28 @@ namespace TransCarga
                     valor_unitario = double.Parse(dataGridView1.Rows[0].Cells[4].Value.ToString()),
                     precio_unitario = double.Parse(dataGridView1.Rows[0].Cells[4].Value.ToString()),
                     descuento = "",
-                    subtotal = 100,
-                    tipo_de_igv = 1,                                    // meterlo en una variable
-                    igv = 18,
+                    subtotal = double.Parse(dataGridView1.Rows[0].Cells[4].Value.ToString())/1.18,      // ponerlo en variable
+                    tipo_de_igv = 1,                                                                    // meterlo en una variable
+                    igv = double.Parse(dataGridView1.Rows[0].Cells[4].Value.ToString())*18/100,         // meterlo en una variable
                     total = double.Parse(dataGridView1.Rows[0].Cells[4].Value.ToString()),
                     anticipo_regularizacion = false,
                     anticipo_comprobante_serie = "",
                     anticipo_comprobante_numero = ""
                 },
             };
-            string json = JsonConvert.SerializeObject(invoice, Formatting.Indented);
-            Console.WriteLine(json);
-            byte[] bytes = Encoding.Default.GetBytes(json);
-            string json_en_utf_8 = Encoding.UTF8.GetString(bytes);
-            // me quede aCA!
+                string json = JsonConvert.SerializeObject(invoice, Formatting.Indented);
+                Console.WriteLine(json);
+                byte[] bytes = Encoding.Default.GetBytes(json);
+                string json_en_utf_8 = Encoding.UTF8.GetString(bytes);
+                // me quede aCA!
+                // en desarrollo 09/11/2020
+            */
+            }
 
+            retorna = true;
             return retorna;
         }
+
         #region autocompletados
         private void autodepa()                 // se jala en el load
         {
@@ -898,6 +954,7 @@ namespace TransCarga
                 {
                     dataGridView1.AllowUserToAddRows = true;
                 }
+                tx_flete_Leave(null, null);
             }
         }
         private void button1_Click(object sender, EventArgs e)
@@ -993,7 +1050,7 @@ namespace TransCarga
                     var aa = MessageBox.Show("Confirma que desea crear el documento?", "Confirme por favor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                     if (aa == DialogResult.Yes)
                     {
-                        if (factElec() == true)       // facturacion electrónica
+                        if (factElec("NubeFact","txt") == true)       // facturacion electrónica
                         {
                             if (graba() == true)
                             {
@@ -1152,16 +1209,37 @@ namespace TransCarga
                     }
                 }
                 if (tx_tipcam.Text == "") tx_tipcam.Text = "0";
-                decimal subt = Math.Round(decimal.Parse(tx_flete.Text)/(1 + decimal.Parse(v_igv)/100), 3);
-                decimal igvt = Math.Round(decimal.Parse(tx_flete.Text) - subt,3);
+                decimal fletMN = 0;
+                decimal subtMN = 0;
+                decimal igvtMN = 0;
+                if (tx_dat_mone.Text != MonDeft)
+                {
+                    if (tx_tipcam.Text == "0" || tx_fletMN.Text == "")
+                    {
+                        MessageBox.Show("Error con el tipo de cambio", "Error interno", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return retorna;
+                    }
+                    else
+                    {
+                        fletMN = Math.Round(decimal.Parse(tx_fletMN.Text), 3);
+                        subtMN = Math.Round(fletMN / (1 + decimal.Parse(v_igv)/100), 3);
+                        igvtMN = Math.Round(fletMN - subtMN, 3);
+                    }
+                }
+                else
+                {
+                    fletMN = Math.Round(decimal.Parse(tx_flete.Text), 3);
+                    subtMN = Math.Round(decimal.Parse(tx_subt.Text), 3);
+                    igvtMN = Math.Round(decimal.Parse(tx_igv.Text), 3);
+                }
                 string inserta = "insert into cabfactu (" +
                     "fechope,martdve,tipdvta,serdvta,numdvta,ticltgr,tidoclt,nudoclt,nombclt,direclt,dptoclt,provclt,distclt,ubigclt,corrclt,teleclt," +
                     "locorig,dirorig,ubiorig,obsdvta,canfidt,canbudt,mondvta,tcadvta,subtota,igvtota,porcigv,totdvta,totpags,saldvta,estdvta,frase01," +
-                    "tipoclt,m1clien,tippago,ferecep,impreso," +
+                    "tipoclt,m1clien,tippago,ferecep,impreso,codMN,subtMN,igvtMN,totdvMN," +
                     "verApp,userc,fechc,diriplan4,diripwan4,netbname) values (" +
                     "@fechop,@mtdvta,@ctdvta,@serdv,@numdv,@tcdvta,@tdcrem,@ndcrem,@nomrem,@dircre,@dptocl,@provcl,@distcl,@ubicre,@mailcl,@telecl," +
                     "@ldcpgr,@didegr,@ubdegr,@obsprg,@canfil,@totcpr,@monppr,@tcoper,@subpgr,@igvpgr,@porcigv,@totpgr,@pagpgr,@salxpa,@estpgr,@frase1," +
-                    "@ticlre,@m1clte,@tipacc,@feredv,@impSN," +
+                    "@ticlre,@m1clte,@tipacc,@feredv,@impSN,@codMN,@subMN,@igvMN,@totMN," +
                     "@verApp,@asd,now(),@iplan,@ipwan,@nbnam)";
                 using (MySqlCommand micon = new MySqlCommand(inserta, conn))
                 {
@@ -1183,25 +1261,29 @@ namespace TransCarga
                     micon.Parameters.AddWithValue("@telecl", tx_telc1.Text);
                     micon.Parameters.AddWithValue("@ldcpgr", TransCarga.Program.almuser);         // local origen
                     micon.Parameters.AddWithValue("@didegr", dirloc);                               // direccion origen
-                    micon.Parameters.AddWithValue("@ubdegr", "");                                   // ubigeo origen ( FALTA )
+                    micon.Parameters.AddWithValue("@ubdegr", );                                   // ubigeo origen ( FALTA )
                     micon.Parameters.AddWithValue("@obsprg", tx_obser1.Text);
                     micon.Parameters.AddWithValue("@canfil", tx_tfil.Text);     // cantidad de filas de detalle
                     micon.Parameters.AddWithValue("@totcpr", tx_totcant.Text);  // total bultos
                     micon.Parameters.AddWithValue("@monppr", tx_dat_mone.Text);
-                    micon.Parameters.AddWithValue("@tcoper", tx_tipcam.Text);           // FALTA TIPO DE CAMBIO
-                    micon.Parameters.AddWithValue("@subpgr", subt.ToString());              // sub total   FALTA
-                    micon.Parameters.AddWithValue("@igvpgr", igvt.ToString());              // igv                  FALTA
-                    micon.Parameters.AddWithValue("@porcigv", v_igv);             // porcentaje en numeros de IGV      FALTA
-                    micon.Parameters.AddWithValue("@totpgr", tx_flete.Text);    // total inc. igv
+                    micon.Parameters.AddWithValue("@tcoper", tx_tipcam.Text);                   // TIPO DE CAMBIO
+                    micon.Parameters.AddWithValue("@subpgr", tx_subt.Text);                     // sub total
+                    micon.Parameters.AddWithValue("@igvpgr", tx_igv.Text);                      // igv
+                    micon.Parameters.AddWithValue("@porcigv", v_igv);                           // porcentaje en numeros de IGV
+                    micon.Parameters.AddWithValue("@totpgr", tx_flete.Text);                    // total inc. igv
                     micon.Parameters.AddWithValue("@pagpgr", (tx_pagado.Text == "") ? "0" : tx_pagado.Text);
                     micon.Parameters.AddWithValue("@salxpa", (tx_salxcob.Text == "") ? "0" : tx_salxcob.Text);
-                    micon.Parameters.AddWithValue("@estpgr", tx_dat_estad.Text); // estado
+                    micon.Parameters.AddWithValue("@estpgr", (tx_pagado.Text == "") ? tx_dat_estad.Text : codCanc); // estado
                     micon.Parameters.AddWithValue("@frase1", v_fra2);               // REVISAR LA FRASE SI VA O NO
-                    micon.Parameters.AddWithValue("@ticlre", tx_dat_tcr.Text);   // tipo de cliente credito o contado
+                    micon.Parameters.AddWithValue("@ticlre", tx_dat_tcr.Text);      // tipo de cliente credito o contado
                     micon.Parameters.AddWithValue("@m1clte", tx_dat_m1clte.Text);
                     micon.Parameters.AddWithValue("@tipacc", "");                   // pago de documento a credito o contado   .. FALTA
                     micon.Parameters.AddWithValue("@feredv", DBNull.Value);         // si es pago contado la fecha de recep del doc. es la misma fecha
                     micon.Parameters.AddWithValue("@impSN", "S");
+                    micon.Parameters.AddWithValue("@codMN", MonDeft);               // codigo moneda local
+                    micon.Parameters.AddWithValue("@subMN", subtMN);
+                    micon.Parameters.AddWithValue("@igvMN", igvtMN);
+                    micon.Parameters.AddWithValue("@totMN", fletMN);
                     micon.Parameters.AddWithValue("@verApp", verapp);
                     micon.Parameters.AddWithValue("@asd", asd);
                     micon.Parameters.AddWithValue("@iplan", lib.iplan());
@@ -1491,7 +1573,12 @@ namespace TransCarga
         }
         private void tx_flete_Leave(object sender, EventArgs e)
         {
-            button1.Focus();
+            if (tx_flete.Text.Trim() != "" && Tx_modo.Text == "NUEVO")
+            {
+                tx_flete.Text = Math.Round(decimal.Parse(tx_flete.Text), 2).ToString("#0.00");
+                calculos(decimal.Parse((tx_flete.Text.Trim() != "") ? tx_flete.Text : "0"));
+                button1.Focus();
+            }
         }
         private void tx_serGR_Leave(object sender, EventArgs e)
         {
@@ -1522,6 +1609,7 @@ namespace TransCarga
             tx_email.Text = datcltsR[5];
             tx_telc1.Text = datcltsR[6];
             tx_telc2.Text = datcltsR[7];
+            tx_ubigRtt.Text = datcltsR[4];
             //
             cmb_docRem.Enabled = false;
             tx_numDocRem.ReadOnly = true;
@@ -1545,6 +1633,7 @@ namespace TransCarga
             tx_email.Text = datcltsD[5];
             tx_telc1.Text = datcltsD[6];
             tx_telc2.Text = datcltsD[7];
+            tx_ubigRtt.Text = datcltsD[4];
             //
             cmb_docRem.Enabled = false;
             tx_numDocRem.ReadOnly = true;
@@ -1848,13 +1937,12 @@ namespace TransCarga
         }
         private void cmb_mon_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (Tx_modo.Text != "")
+            if (Tx_modo.Text == "NUEVO" || Tx_modo.Text == "EDITAR")
             {
                 if (cmb_mon.SelectedIndex > -1)
                 {
                     tx_dat_mone.Text = cmb_mon.SelectedValue.ToString();
                     tipcambio(tx_dat_mone.Text);
-                    //tx_flete.Text = "0.00";
                 }
             }
         }

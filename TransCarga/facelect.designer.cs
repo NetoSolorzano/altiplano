@@ -93,14 +93,18 @@
             this.groupBox26 = new System.Windows.Forms.GroupBox();
             this.groupBox23 = new System.Windows.Forms.GroupBox();
             this.groupBox24 = new System.Windows.Forms.GroupBox();
-            this.tx_numero = new TransCarga.NumericTextBox();
-            this.tx_serie = new TransCarga.NumericTextBox();
             this.label8 = new System.Windows.Forms.Label();
             this.label14 = new System.Windows.Forms.Label();
             this.groupBox10 = new System.Windows.Forms.GroupBox();
             this.tx_ubigRtt = new System.Windows.Forms.TextBox();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.gbox_flete = new System.Windows.Forms.GroupBox();
+            this.groupBox19 = new System.Windows.Forms.GroupBox();
+            this.groupBox20 = new System.Windows.Forms.GroupBox();
+            this.label7 = new System.Windows.Forms.Label();
+            this.groupBox14 = new System.Windows.Forms.GroupBox();
+            this.groupBox15 = new System.Windows.Forms.GroupBox();
+            this.label6 = new System.Windows.Forms.Label();
             this.groupBox37 = new System.Windows.Forms.GroupBox();
             this.groupBox38 = new System.Windows.Forms.GroupBox();
             this.pan_pago = new System.Windows.Forms.Panel();
@@ -109,12 +113,9 @@
             this.groupBox39 = new System.Windows.Forms.GroupBox();
             this.groupBox40 = new System.Windows.Forms.GroupBox();
             this.label24 = new System.Windows.Forms.Label();
-            this.tx_salxcob = new TransCarga.NumericTextBox();
             this.label32 = new System.Windows.Forms.Label();
-            this.tx_pagado = new TransCarga.NumericTextBox();
             this.tx_dat_mone = new System.Windows.Forms.TextBox();
             this.cmb_mon = new System.Windows.Forms.ComboBox();
-            this.tx_flete = new TransCarga.NumericTextBox();
             this.label15 = new System.Windows.Forms.Label();
             this.groupBox16 = new System.Windows.Forms.GroupBox();
             this.label12 = new System.Windows.Forms.Label();
@@ -148,11 +149,19 @@
             this.tx_dat_tdv = new System.Windows.Forms.TextBox();
             this.tx_dat_tdec = new System.Windows.Forms.TextBox();
             this.tx_dat_m1clte = new System.Windows.Forms.TextBox();
+            this.tx_tipcam = new System.Windows.Forms.TextBox();
+            this.tx_fletMN = new System.Windows.Forms.TextBox();
             this.tx_numGR = new TransCarga.NumericTextBox();
             this.tx_serGR = new TransCarga.NumericTextBox();
             this.tx_tfil = new TransCarga.NumericTextBox();
             this.tx_totcant = new TransCarga.NumericTextBox();
-            this.tx_tipcam = new System.Windows.Forms.TextBox();
+            this.tx_subt = new TransCarga.NumericTextBox();
+            this.tx_igv = new TransCarga.NumericTextBox();
+            this.tx_salxcob = new TransCarga.NumericTextBox();
+            this.tx_pagado = new TransCarga.NumericTextBox();
+            this.tx_flete = new TransCarga.NumericTextBox();
+            this.tx_numero = new TransCarga.NumericTextBox();
+            this.tx_serie = new TransCarga.NumericTextBox();
             this.guias = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Descrip = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Cant = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -171,6 +180,8 @@
             this.groupBox23.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.gbox_flete.SuspendLayout();
+            this.groupBox19.SuspendLayout();
+            this.groupBox14.SuspendLayout();
             this.groupBox37.SuspendLayout();
             this.pan_pago.SuspendLayout();
             this.groupBox39.SuspendLayout();
@@ -605,7 +616,7 @@
             // button1
             // 
             this.button1.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.button1.Location = new System.Drawing.Point(665, 375);
+            this.button1.Location = new System.Drawing.Point(672, 389);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(62, 56);
             this.button1.TabIndex = 18;
@@ -826,28 +837,6 @@
             this.groupBox24.TabIndex = 113;
             this.groupBox24.TabStop = false;
             // 
-            // tx_numero
-            // 
-            this.tx_numero.AllowSpace = false;
-            this.tx_numero.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_numero.Location = new System.Drawing.Point(55, 66);
-            this.tx_numero.Name = "tx_numero";
-            this.tx_numero.Size = new System.Drawing.Size(73, 20);
-            this.tx_numero.TabIndex = 2;
-            this.tx_numero.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.tx_numero.Leave += new System.EventHandler(this.tx_numero_Leave);
-            // 
-            // tx_serie
-            // 
-            this.tx_serie.AllowSpace = false;
-            this.tx_serie.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_serie.Location = new System.Drawing.Point(63, 40);
-            this.tx_serie.Name = "tx_serie";
-            this.tx_serie.Size = new System.Drawing.Size(65, 20);
-            this.tx_serie.TabIndex = 1;
-            this.tx_serie.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.tx_serie.Leave += new System.EventHandler(this.tx_serie_Leave);
-            // 
             // label8
             // 
             this.label8.AutoSize = true;
@@ -908,6 +897,12 @@
             // gbox_flete
             // 
             this.gbox_flete.BackColor = System.Drawing.Color.Transparent;
+            this.gbox_flete.Controls.Add(this.groupBox19);
+            this.gbox_flete.Controls.Add(this.label7);
+            this.gbox_flete.Controls.Add(this.groupBox14);
+            this.gbox_flete.Controls.Add(this.label6);
+            this.gbox_flete.Controls.Add(this.tx_subt);
+            this.gbox_flete.Controls.Add(this.tx_igv);
             this.gbox_flete.Controls.Add(this.groupBox37);
             this.gbox_flete.Controls.Add(this.pan_pago);
             this.gbox_flete.Controls.Add(this.groupBox39);
@@ -920,17 +915,75 @@
             this.gbox_flete.Controls.Add(this.tx_flete);
             this.gbox_flete.Controls.Add(this.label15);
             this.gbox_flete.Controls.Add(this.groupBox16);
-            this.gbox_flete.Location = new System.Drawing.Point(611, 234);
+            this.gbox_flete.Location = new System.Drawing.Point(611, 210);
             this.gbox_flete.Name = "gbox_flete";
-            this.gbox_flete.Size = new System.Drawing.Size(152, 123);
+            this.gbox_flete.Size = new System.Drawing.Size(152, 167);
             this.gbox_flete.TabIndex = 315;
             this.gbox_flete.TabStop = false;
+            // 
+            // groupBox19
+            // 
+            this.groupBox19.BackColor = System.Drawing.Color.White;
+            this.groupBox19.Controls.Add(this.groupBox20);
+            this.groupBox19.Location = new System.Drawing.Point(11, 103);
+            this.groupBox19.Name = "groupBox19";
+            this.groupBox19.Size = new System.Drawing.Size(127, 1);
+            this.groupBox19.TabIndex = 412;
+            this.groupBox19.TabStop = false;
+            // 
+            // groupBox20
+            // 
+            this.groupBox20.Location = new System.Drawing.Point(0, -26);
+            this.groupBox20.Name = "groupBox20";
+            this.groupBox20.Size = new System.Drawing.Size(164, 1);
+            this.groupBox20.TabIndex = 113;
+            this.groupBox20.TabStop = false;
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.label7.Location = new System.Drawing.Point(14, 88);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(48, 13);
+            this.label7.TabIndex = 411;
+            this.label7.Text = "Sub Tot.";
+            this.label7.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // groupBox14
+            // 
+            this.groupBox14.BackColor = System.Drawing.Color.White;
+            this.groupBox14.Controls.Add(this.groupBox15);
+            this.groupBox14.Location = new System.Drawing.Point(11, 78);
+            this.groupBox14.Name = "groupBox14";
+            this.groupBox14.Size = new System.Drawing.Size(127, 1);
+            this.groupBox14.TabIndex = 410;
+            this.groupBox14.TabStop = false;
+            // 
+            // groupBox15
+            // 
+            this.groupBox15.Location = new System.Drawing.Point(0, -26);
+            this.groupBox15.Name = "groupBox15";
+            this.groupBox15.Size = new System.Drawing.Size(164, 1);
+            this.groupBox15.TabIndex = 113;
+            this.groupBox15.TabStop = false;
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.label6.Location = new System.Drawing.Point(14, 63);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(25, 13);
+            this.label6.TabIndex = 409;
+            this.label6.Text = "IGV";
+            this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // groupBox37
             // 
             this.groupBox37.BackColor = System.Drawing.Color.White;
             this.groupBox37.Controls.Add(this.groupBox38);
-            this.groupBox37.Location = new System.Drawing.Point(7, 81);
+            this.groupBox37.Location = new System.Drawing.Point(9, 159);
             this.groupBox37.Name = "groupBox37";
             this.groupBox37.Size = new System.Drawing.Size(127, 1);
             this.groupBox37.TabIndex = 406;
@@ -948,7 +1001,7 @@
             // 
             this.pan_pago.Controls.Add(this.rb_no);
             this.pan_pago.Controls.Add(this.rb_si);
-            this.pan_pago.Location = new System.Drawing.Point(61, 59);
+            this.pan_pago.Location = new System.Drawing.Point(62, 137);
             this.pan_pago.Name = "pan_pago";
             this.pan_pago.Size = new System.Drawing.Size(82, 23);
             this.pan_pago.TabIndex = 17;
@@ -983,7 +1036,7 @@
             // 
             this.groupBox39.BackColor = System.Drawing.Color.White;
             this.groupBox39.Controls.Add(this.groupBox40);
-            this.groupBox39.Location = new System.Drawing.Point(7, 107);
+            this.groupBox39.Location = new System.Drawing.Point(9, 130);
             this.groupBox39.Name = "groupBox39";
             this.groupBox39.Size = new System.Drawing.Size(127, 1);
             this.groupBox39.TabIndex = 405;
@@ -1001,53 +1054,30 @@
             // 
             this.label24.AutoSize = true;
             this.label24.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label24.Location = new System.Drawing.Point(7, 91);
+            this.label24.Location = new System.Drawing.Point(9, 114);
             this.label24.Name = "label24";
             this.label24.Size = new System.Drawing.Size(56, 13);
             this.label24.TabIndex = 404;
             this.label24.Text = "Por cobrar";
             this.label24.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // tx_salxcob
-            // 
-            this.tx_salxcob.AllowSpace = false;
-            this.tx_salxcob.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_salxcob.Location = new System.Drawing.Point(66, 88);
-            this.tx_salxcob.Name = "tx_salxcob";
-            this.tx_salxcob.ReadOnly = true;
-            this.tx_salxcob.Size = new System.Drawing.Size(69, 20);
-            this.tx_salxcob.TabIndex = 403;
-            this.tx_salxcob.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
             // label32
             // 
             this.label32.AutoSize = true;
             this.label32.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label32.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label32.Location = new System.Drawing.Point(7, 65);
+            this.label32.Location = new System.Drawing.Point(9, 143);
             this.label32.Name = "label32";
             this.label32.Size = new System.Drawing.Size(53, 13);
             this.label32.TabIndex = 402;
             this.label32.Text = "Cancela";
             this.label32.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // tx_pagado
-            // 
-            this.tx_pagado.AllowSpace = false;
-            this.tx_pagado.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_pagado.Location = new System.Drawing.Point(40, 107);
-            this.tx_pagado.Name = "tx_pagado";
-            this.tx_pagado.ReadOnly = true;
-            this.tx_pagado.Size = new System.Drawing.Size(69, 20);
-            this.tx_pagado.TabIndex = 16;
-            this.tx_pagado.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.tx_pagado.Visible = false;
-            // 
             // tx_dat_mone
             // 
             this.tx_dat_mone.BackColor = System.Drawing.SystemColors.Window;
             this.tx_dat_mone.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_dat_mone.Location = new System.Drawing.Point(3, 26);
+            this.tx_dat_mone.Location = new System.Drawing.Point(5, 26);
             this.tx_dat_mone.Name = "tx_dat_mone";
             this.tx_dat_mone.Size = new System.Drawing.Size(32, 18);
             this.tx_dat_mone.TabIndex = 319;
@@ -1057,28 +1087,17 @@
             // 
             this.cmb_mon.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmb_mon.FormattingEnabled = true;
-            this.cmb_mon.Location = new System.Drawing.Point(18, 37);
+            this.cmb_mon.Location = new System.Drawing.Point(20, 36);
             this.cmb_mon.Name = "cmb_mon";
             this.cmb_mon.Size = new System.Drawing.Size(40, 21);
             this.cmb_mon.TabIndex = 22;
             this.cmb_mon.SelectedIndexChanged += new System.EventHandler(this.cmb_mon_SelectedIndexChanged);
             // 
-            // tx_flete
-            // 
-            this.tx_flete.AllowSpace = false;
-            this.tx_flete.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_flete.Location = new System.Drawing.Point(63, 37);
-            this.tx_flete.Name = "tx_flete";
-            this.tx_flete.Size = new System.Drawing.Size(73, 20);
-            this.tx_flete.TabIndex = 16;
-            this.tx_flete.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.tx_flete.Leave += new System.EventHandler(this.tx_flete_Leave);
-            // 
             // label15
             // 
             this.label15.AutoSize = true;
             this.label15.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label15.Location = new System.Drawing.Point(23, 18);
+            this.label15.Location = new System.Drawing.Point(25, 18);
             this.label15.Name = "label15";
             this.label15.Size = new System.Drawing.Size(104, 13);
             this.label15.TabIndex = 289;
@@ -1152,7 +1171,7 @@
             // 
             this.groupBox17.BackColor = System.Drawing.Color.White;
             this.groupBox17.Controls.Add(this.groupBox18);
-            this.groupBox17.Location = new System.Drawing.Point(94, 403);
+            this.groupBox17.Location = new System.Drawing.Point(95, 403);
             this.groupBox17.Name = "groupBox17";
             this.groupBox17.Size = new System.Drawing.Size(358, 1);
             this.groupBox17.TabIndex = 330;
@@ -1412,6 +1431,26 @@
             this.tx_dat_m1clte.TabIndex = 363;
             this.tx_dat_m1clte.Visible = false;
             // 
+            // tx_tipcam
+            // 
+            this.tx_tipcam.BackColor = System.Drawing.SystemColors.Window;
+            this.tx_tipcam.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_tipcam.Location = new System.Drawing.Point(603, 383);
+            this.tx_tipcam.Name = "tx_tipcam";
+            this.tx_tipcam.Size = new System.Drawing.Size(32, 18);
+            this.tx_tipcam.TabIndex = 364;
+            this.tx_tipcam.Visible = false;
+            // 
+            // tx_fletMN
+            // 
+            this.tx_fletMN.BackColor = System.Drawing.SystemColors.Window;
+            this.tx_fletMN.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_fletMN.Location = new System.Drawing.Point(603, 403);
+            this.tx_fletMN.Name = "tx_fletMN";
+            this.tx_fletMN.Size = new System.Drawing.Size(32, 18);
+            this.tx_fletMN.TabIndex = 365;
+            this.tx_fletMN.Visible = false;
+            // 
             // tx_numGR
             // 
             this.tx_numGR.AllowSpace = false;
@@ -1456,15 +1495,83 @@
             this.tx_totcant.TabIndex = 25;
             this.tx_totcant.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
-            // tx_tipcam
+            // tx_subt
             // 
-            this.tx_tipcam.BackColor = System.Drawing.SystemColors.Window;
-            this.tx_tipcam.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_tipcam.Location = new System.Drawing.Point(611, 363);
-            this.tx_tipcam.Name = "tx_tipcam";
-            this.tx_tipcam.Size = new System.Drawing.Size(32, 18);
-            this.tx_tipcam.TabIndex = 364;
-            this.tx_tipcam.Visible = false;
+            this.tx_subt.AllowSpace = false;
+            this.tx_subt.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_subt.Location = new System.Drawing.Point(65, 84);
+            this.tx_subt.Name = "tx_subt";
+            this.tx_subt.ReadOnly = true;
+            this.tx_subt.Size = new System.Drawing.Size(73, 20);
+            this.tx_subt.TabIndex = 408;
+            this.tx_subt.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // tx_igv
+            // 
+            this.tx_igv.AllowSpace = false;
+            this.tx_igv.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_igv.Location = new System.Drawing.Point(65, 60);
+            this.tx_igv.Name = "tx_igv";
+            this.tx_igv.ReadOnly = true;
+            this.tx_igv.Size = new System.Drawing.Size(73, 20);
+            this.tx_igv.TabIndex = 407;
+            this.tx_igv.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // tx_salxcob
+            // 
+            this.tx_salxcob.AllowSpace = false;
+            this.tx_salxcob.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_salxcob.Location = new System.Drawing.Point(65, 111);
+            this.tx_salxcob.Name = "tx_salxcob";
+            this.tx_salxcob.ReadOnly = true;
+            this.tx_salxcob.Size = new System.Drawing.Size(73, 20);
+            this.tx_salxcob.TabIndex = 403;
+            this.tx_salxcob.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // tx_pagado
+            // 
+            this.tx_pagado.AllowSpace = false;
+            this.tx_pagado.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_pagado.Location = new System.Drawing.Point(42, 130);
+            this.tx_pagado.Name = "tx_pagado";
+            this.tx_pagado.ReadOnly = true;
+            this.tx_pagado.Size = new System.Drawing.Size(69, 20);
+            this.tx_pagado.TabIndex = 16;
+            this.tx_pagado.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.tx_pagado.Visible = false;
+            // 
+            // tx_flete
+            // 
+            this.tx_flete.AllowSpace = false;
+            this.tx_flete.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_flete.Location = new System.Drawing.Point(65, 37);
+            this.tx_flete.Name = "tx_flete";
+            this.tx_flete.Size = new System.Drawing.Size(73, 20);
+            this.tx_flete.TabIndex = 16;
+            this.tx_flete.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.tx_flete.Leave += new System.EventHandler(this.tx_flete_Leave);
+            // 
+            // tx_numero
+            // 
+            this.tx_numero.AllowSpace = false;
+            this.tx_numero.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_numero.Location = new System.Drawing.Point(55, 66);
+            this.tx_numero.Name = "tx_numero";
+            this.tx_numero.Size = new System.Drawing.Size(73, 20);
+            this.tx_numero.TabIndex = 2;
+            this.tx_numero.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.tx_numero.Leave += new System.EventHandler(this.tx_numero_Leave);
+            // 
+            // tx_serie
+            // 
+            this.tx_serie.AllowSpace = false;
+            this.tx_serie.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_serie.Location = new System.Drawing.Point(63, 40);
+            this.tx_serie.Name = "tx_serie";
+            this.tx_serie.Size = new System.Drawing.Size(65, 20);
+            this.tx_serie.TabIndex = 1;
+            this.tx_serie.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.tx_serie.Leave += new System.EventHandler(this.tx_serie_Leave);
             // 
             // guias
             // 
@@ -1506,11 +1613,13 @@
             // 
             this.valorMN.HeaderText = "VALMONLOC";
             this.valorMN.Name = "valorMN";
+            this.valorMN.Visible = false;
             // 
             // codmonloc
             // 
             this.codmonloc.HeaderText = "CODMN";
             this.codmonloc.Name = "codmonloc";
+            this.codmonloc.Visible = false;
             // 
             // facelect
             // 
@@ -1519,6 +1628,7 @@
             this.AutoSize = true;
             this.BackColor = System.Drawing.Color.LightSteelBlue;
             this.ClientSize = new System.Drawing.Size(770, 557);
+            this.Controls.Add(this.tx_fletMN);
             this.Controls.Add(this.tx_tipcam);
             this.Controls.Add(this.tx_dat_m1clte);
             this.Controls.Add(this.tx_dat_tdec);
@@ -1601,6 +1711,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.gbox_flete.ResumeLayout(false);
             this.gbox_flete.PerformLayout();
+            this.groupBox19.ResumeLayout(false);
+            this.groupBox14.ResumeLayout(false);
             this.groupBox37.ResumeLayout(false);
             this.pan_pago.ResumeLayout(false);
             this.pan_pago.PerformLayout();
@@ -1741,6 +1853,15 @@
         private System.Windows.Forms.RadioButton rb_si;
         private System.Windows.Forms.TextBox tx_dat_m1clte;
         private System.Windows.Forms.TextBox tx_tipcam;
+        private System.Windows.Forms.GroupBox groupBox19;
+        private System.Windows.Forms.GroupBox groupBox20;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.GroupBox groupBox14;
+        private System.Windows.Forms.GroupBox groupBox15;
+        private System.Windows.Forms.Label label6;
+        private NumericTextBox tx_subt;
+        private NumericTextBox tx_igv;
+        private System.Windows.Forms.TextBox tx_fletMN;
         private System.Windows.Forms.DataGridViewTextBoxColumn guias;
         private System.Windows.Forms.DataGridViewTextBoxColumn Descrip;
         private System.Windows.Forms.DataGridViewTextBoxColumn Cant;

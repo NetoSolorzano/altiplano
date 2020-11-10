@@ -79,7 +79,7 @@
             this.tx_fecha.Name = "tx_fecha";
             this.tx_fecha.ReadOnly = true;
             this.tx_fecha.Size = new System.Drawing.Size(77, 20);
-            this.tx_fecha.TabIndex = 8;
+            this.tx_fecha.TabIndex = 3;
             // 
             // label2
             // 
@@ -97,7 +97,7 @@
             this.tx_codmon.Name = "tx_codmon";
             this.tx_codmon.ReadOnly = true;
             this.tx_codmon.Size = new System.Drawing.Size(77, 20);
-            this.tx_codmon.TabIndex = 10;
+            this.tx_codmon.TabIndex = 4;
             // 
             // label3
             // 
@@ -137,7 +137,7 @@
             this.tx_tipcam.Location = new System.Drawing.Point(224, 79);
             this.tx_tipcam.Name = "tx_tipcam";
             this.tx_tipcam.Size = new System.Drawing.Size(77, 20);
-            this.tx_tipcam.TabIndex = 12;
+            this.tx_tipcam.TabIndex = 0;
             this.tx_tipcam.Leave += new System.EventHandler(this.tx_tipcam_Leave);
             // 
             // tx_newVal
@@ -170,12 +170,14 @@
             this.Controls.Add(this.button1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.KeyPreview = true;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "vtipcam";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "ENVIO SEGURO";
             this.Load += new System.EventHandler(this.vtipcam_Load);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.vtipcam_KeyDown);
             this.ResumeLayout(false);
             this.PerformLayout();
 
