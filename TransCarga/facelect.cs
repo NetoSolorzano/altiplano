@@ -67,7 +67,8 @@ namespace TransCarga
         string nomclie = Program.cliente;           // cliente usuario del sistema
         string rucclie = Program.ruc;               // ruc del cliente usuario del sistema
         string asd = TransCarga.Program.vg_user;    // usuario conectado al sistema
-        string dirloc = lib.dirloca(Program.almuser);
+        string dirloc = TransCarga.Program.vg_duse; // direccion completa del local usuario conectado
+        string ubiloc = TransCarga.Program.vg_uuse; // ubigeo local del usuario conectado
         #endregion
 
         AutoCompleteStringCollection departamentos = new AutoCompleteStringCollection();// autocompletado departamentos
@@ -142,8 +143,8 @@ namespace TransCarga
             //dataGridView1.DefaultCellStyle.SelectionForeColor = Color.FromName(colsfgr);
             //
             tx_user.Text += asd;
-            tx_nomuser.Text = lib.nomuser(asd);
-            tx_locuser.Text += lib.locuser(asd);
+            tx_nomuser.Text = TransCarga.Program.vg_nuse;   // lib.nomuser(asd);
+            tx_locuser.Text = TransCarga.Program.vg_luse;  // lib.locuser(asd);
             tx_fechact.Text = DateTime.Today.ToString();
             //
             Bt_add.Image = Image.FromFile(img_btN);
@@ -285,9 +286,9 @@ namespace TransCarga
                 da.Dispose();
                 dt.Dispose();
                 // jalamos datos del usuario y local
-                v_clu = lib.codloc(asd);                // codigo local usuario
-                v_slu = lib.serlocs(v_clu);             // serie local usuario
-                v_nbu = lib.nomuser(asd);               // nombre del usuario
+                v_clu = TransCarga.Program.vg_luse;                // codigo local usuario
+                v_slu = lib.serlocs(v_clu);                        // serie local usuario
+                v_nbu = TransCarga.Program.vg_nuse;                // nombre del usuario
                 conn.Close();
             }
             catch (MySqlException ex)
@@ -314,10 +315,10 @@ namespace TransCarga
                 conn.Open();
                 if (conn.State == ConnectionState.Open)
                 {
-                    string consulta = "select id,fechope,martdve,tipdvta,serdvta,numdvta,ticltgr,tidoclt,nudoclt,nombclt,direclt,dptoclt,provclt,distclt,ubigclt,corrclt,teleclt," +
-                        "locorig,dirorig,ubiorig,obsdvta,canfidt,canbudt,mondvta,tcadvta,subtota,igvtota,porcigv,totdvta,totpags,saldvta,estdvta,frase01,impreso," +
-                        "tipoclt,m1clien,tippago,ferecep,userc,fechc,userm,fechm " +
-                        "from cabfactu a " + parte;
+                    string consulta = "select a.id,a.fechope,a.martdve,a.tipdvta,a.serdvta,a.numdvta,a.ticltgr,a.tidoclt,a.nudoclt,a.nombclt,a.direclt,a.dptoclt,a.provclt,a.distclt,a.ubigclt,a.corrclt,a.teleclt," +
+                        "a.locorig,a.dirorig,a.ubiorig,a.obsdvta,a.canfidt,a.canbudt,a.mondvta,a.tcadvta,a.subtota,a.igvtota,a.porcigv,a.totdvta,a.totpags,a.saldvta,a.estdvta,a.frase01,a.impreso," +
+                        "a.tipoclt,a.m1clien,a.tippago,a.ferecep,a.userc,a.fechc,a.userm,a.fechm,b.descrizionerid as nomest " +
+                        "from cabfactu a left join desc_est b on b.idcodice=a.estdvta " + parte;
                     MySqlCommand micon = new MySqlCommand(consulta, conn);
                     micon.Parameters.AddWithValue("@tdep", vtc_ruc);
                     if (campo == "tx_idr") micon.Parameters.AddWithValue("@ida", tx_idr.Text);
@@ -373,7 +374,7 @@ namespace TransCarga
                             tx_numero.Text = dr.GetString("numdvta");       // al cambiar el indice en el combox se borra numero, por eso lo volvemos a jalar
                             cmb_docRem.SelectedValue = tx_dat_tdRem.Text;
                             cmb_mon.SelectedValue = tx_dat_mone.Text;
-                            tx_estado.Text = lib.nomstat(tx_dat_estad.Text);
+                            tx_estado.Text = dr.GetString("nomest");   // lib.nomstat(tx_dat_estad.Text);
                             if (dr.GetString("userm") == "") tx_digit.Text = lib.nomuser(dr.GetString("userc"));
                             else tx_digit.Text = lib.nomuser(dr.GetString("userm"));
                             if (decimal.Parse(tx_salxcob.Text) == decimal.Parse(tx_flete.Text)) rb_no.Checked = true;
@@ -529,19 +530,9 @@ namespace TransCarga
                 lib.messagebox("Moneda por defecto");
                 retorna = false;
             }
-            if (v_clu == "")            // codigo del local del usuario
-            {
-                lib.messagebox("Código local del usuario");
-                retorna = false;
-            }
             if (v_slu == "")            // serie del local del usuario
             {
                 lib.messagebox("Serie general local del usuario");
-                retorna = false;
-            }
-            if (v_nbu == "")            // nombre del usuario
-            {
-                lib.messagebox("Nombre del usuario");
                 retorna = false;
             }
             if (vi_formato == "")       // formato de impresion del documento
@@ -1260,8 +1251,8 @@ namespace TransCarga
                     micon.Parameters.AddWithValue("@mailcl", tx_email.Text);
                     micon.Parameters.AddWithValue("@telecl", tx_telc1.Text);
                     micon.Parameters.AddWithValue("@ldcpgr", TransCarga.Program.almuser);         // local origen
-                    micon.Parameters.AddWithValue("@didegr", dirloc);                               // direccion origen
-                    micon.Parameters.AddWithValue("@ubdegr", );                                   // ubigeo origen ( FALTA )
+                    micon.Parameters.AddWithValue("@didegr", dirloc);                             // direccion origen
+                    micon.Parameters.AddWithValue("@ubdegr", ubiloc);                             // ubigeo origen
                     micon.Parameters.AddWithValue("@obsprg", tx_obser1.Text);
                     micon.Parameters.AddWithValue("@canfil", tx_tfil.Text);     // cantidad de filas de detalle
                     micon.Parameters.AddWithValue("@totcpr", tx_totcant.Text);  // total bultos

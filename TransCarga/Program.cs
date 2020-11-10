@@ -10,6 +10,10 @@ namespace TransCarga
         /// </summary>
         public static string vg_user = "";      // codigo de usuario
         public static string vg_nuse = "";      // nombre de usuario
+        public static string vg_luse = "";      // codigo local usuario
+        public static string vg_duse = "";      // dirección locar usuario
+        public static string vg_uuse = "";      // ubigeo local usuario
+        public static string almuser = "";      // codigo almacen del usuario
         public static string bd = "";           // base de datos seleccionada
         public static string colbac = "";       // back color
         public static string colpag = "";       // pagaframe color
@@ -20,7 +24,6 @@ namespace TransCarga
         public static string colstr = "";       // strip color
         public static string colpnc = "";       // panel cabecera color
         public static string cliente = "";      // cliente del sistema
-        public static string almuser = "";     // valor almacen del usuario
         public static string retorna1 = "";
         public static string ruc = "";          // ruc del cliente
         public static string tituloF = "SOLORSOFT - TransCarga" + Environment.NewLine +

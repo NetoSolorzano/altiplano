@@ -73,8 +73,8 @@ namespace TransCarga
                 if (lib.procConn(cn) == true)
                 {
                     //validamos que el usuario y passw son los correctos
-                    string query = "select a.bloqueado,a.local,a.nombre " +
-                        "from usuarios a " +
+                    string query = "select a.bloqueado,a.local,a.nombre,concat(trim(b.deta1),' - ',b.deta2,' - ',b.deta3,' - ',b.deta4) AS direcc,b.ubiDir " +
+                        "from usuarios a LEFT JOIN desc_loc b ON b.idcodice=a.local " +
                         "where a.nom_user=@usuario and a.pwd_user=@contra";
                     MySqlCommand mycomand = new MySqlCommand(query, cn);
                     mycomand.Parameters.AddWithValue("@usuario", Tx_user.Text);
@@ -89,6 +89,9 @@ namespace TransCarga
                                 TransCarga.Program.vg_user = Tx_user.Text;
                                 TransCarga.Program.vg_nuse = dr.GetString(2);
                                 TransCarga.Program.almuser = dr.GetString(1);
+                                TransCarga.Program.vg_uuse = dr.GetString(4);
+                                TransCarga.Program.vg_duse = dr.GetString(3);
+                                TransCarga.Program.vg_luse = dr.GetString(1);
                                 dr.Close();
                                 // cambiamos la contraseña si fue hecha
                                 cambiacont();
