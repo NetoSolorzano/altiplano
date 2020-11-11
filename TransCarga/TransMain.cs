@@ -73,8 +73,11 @@ namespace TransCarga
         string imgma3 = "";                                             // imagen 3 maestras - camiones
         string imgma4 = "";                                             // imagen 4 maestras - RR.HH.
         string imgma5 = "";                                             // imagen 5 maestras - Tipos de cambio
-        string imgpe1 = "";                                             // imagen 1 pedidos - registro
-        string imgpe2 = "";                                             // imagen 2 pedidos - reportes
+        string imgpe1 = "";                                             // imagen 1 administ - cuadre
+        string imgpe2 = "";                                             // imagen 2 administ - cobranzas
+        string imgpe3 = "";                                             // imagen 3 administ - egresos
+        string imgpe4 = "";                                             // imagen 4 administ - ingresos varios
+        string imgpe5 = "";                                             // imagen 5 administ - reportes
         string imgvc1 = "";                                             // imagen 1 ventas - contratos
         string imgvpc1 = "";                                            // imagen 1 operaciones 
         string imgvic1 = "";                                            // imagen 1 operaciones - 
@@ -253,8 +256,11 @@ namespace TransCarga
                         if (row["param"].ToString() == "imgma3") imgma3 = row["valor"].ToString().Trim();         // imagen3 de maestras - vehiculos 
                         if (row["param"].ToString() == "imgma4") imgma4 = row["valor"].ToString().Trim();         // imagen3 de maestras - RR.HH.
                         if (row["param"].ToString() == "imgma5") imgma5 = row["valor"].ToString().Trim();         // imagen3 de maestras - Tipos de cambio
-                        if (row["param"].ToString() == "imgpe1") imgpe1 = row["valor"].ToString().Trim();         // imagen1 de pedidos - registro
-                        if (row["param"].ToString() == "imgpe2") imgpe2 = row["valor"].ToString().Trim();         // imagen1 de pedidos - reportes
+                        if (row["param"].ToString() == "imgpe1") imgpe1 = row["valor"].ToString().Trim();         // imagen1 de administ - cuadre
+                        if (row["param"].ToString() == "imgpe2") imgpe2 = row["valor"].ToString().Trim();         // imagen2 de administ - cobranzas
+                        if (row["param"].ToString() == "imgpe3") imgpe3 = row["valor"].ToString().Trim();         // imagen3 de administ - egresos
+                        if (row["param"].ToString() == "imgpe4") imgpe4 = row["valor"].ToString().Trim();         // imagen4 de administ - ingresos extraordinarios
+                        if (row["param"].ToString() == "imgpe5") imgpe5 = row["valor"].ToString().Trim();         // imagen5 de administ - reportes
                         if (row["param"].ToString() == "imgvc1") imgvc1 = row["valor"].ToString().Trim();         // imagen1 de ventas contratos
                         if (row["param"].ToString() == "imgvpc1") imgvpc1 = row["valor"].ToString().Trim();         // imagen1 de ventas contratos pedidos clientes
                         if (row["param"].ToString() == "imgvic1") imgvic1 = row["valor"].ToString().Trim();         // imagen1 de ventas ingreso pedidos clientes
@@ -541,16 +547,16 @@ namespace TransCarga
         {
             pic_icon_menu.Image = TransCarga.Properties.Resources.process32;
             Image img_pe1 = Image.FromFile(imgpe1);                     // Cuadre de Caja
-                        // Cobranzas
-                        // Egresos (Varios, Depositos)
-                        // Ingresos varios
-            Image img_pe2 = Image.FromFile(imgpe2);                     // reportes
+            Image img_pe2 = Image.FromFile(imgpe2);                     // Cobranzas
+            Image img_pe3 = Image.FromFile(imgpe3);                     // Egresos (Varios, Depositos) 
+            Image img_pe4 = Image.FromFile(imgpe4);                     // Ingresos varios
+            Image img_pe5 = Image.FromFile(imgpe5);                     // reportes
             menuStrip1.Items.Clear();
             menuStrip1.Items.Add("Cuadre", img_pe1, pe_registro_Click);            // Cuadre, apertura y cierre
-            //menuStrip1.Items.Add("Cobranzas", img_pe2, pe_cobranzas_Click);            // Cobranzas de ventas
-            //menuStrip1.Items.Add("Egresos", img_pe2, pe_egresos_Click);            // Egresos y depositos
-            //menuStrip1.Items.Add("Ing. Varios", img_pe2, pe_ingresosV_Click);            // Ingresos varios
-            menuStrip1.Items.Add("Reportes", img_pe2, pe_reportes_Click);            // Reportes
+            menuStrip1.Items.Add("Cobranzas", img_pe2, pe_cobranzas_Click);            // Cobranzas de ventas
+            menuStrip1.Items.Add("Egresos", img_pe3, pe_egresos_Click);            // Egresos y depositos
+            menuStrip1.Items.Add("Ing. Varios", img_pe4, pe_ingresosV_Click);            // Ingresos varios
+            menuStrip1.Items.Add("Reportes", img_pe5, pe_reportes_Click);            // Reportes
             menuStrip1.Visible = true;
         }
         private void pe_registro_Click(object sender, EventArgs e)
@@ -565,6 +571,18 @@ namespace TransCarga
             fpe.Show();
             fpe.BringToFront();
             */
+        }
+        private void pe_cobranzas_Click(object sender, EventArgs e)
+        {
+
+        }
+        private void pe_egresos_Click(object sender, EventArgs e)
+        {
+
+        }
+        private void pe_ingresosV_Click(object sender, EventArgs e)
+        {
+
         }
         private void pe_reportes_Click(object sender, EventArgs e)
         {

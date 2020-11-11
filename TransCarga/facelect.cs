@@ -88,8 +88,8 @@ namespace TransCarga
         DataTable dttd0 = new DataTable();
         DataTable dttd1 = new DataTable();
         DataTable dtm = new DataTable();
-        string[] datcltsR = { "", "", "", "", "", "", "", "" };
-        string[] datcltsD = { "", "", "", "", "", "", "", "" };
+        string[] datcltsR = { "", "", "", "", "", "", "", "", "" };
+        string[] datcltsD = { "", "", "", "", "", "", "", "", "" };
         string[] datguias = { "", "", "", "", "", "", "" };
 
         public facelect()
@@ -586,6 +586,7 @@ namespace TransCarga
                 datcltsR[5] = "";
                 datcltsR[6] = "";
                 datcltsR[7] = "";
+                datcltsR[8] = "";
                 //
                 datcltsD[0] = "";
                 datcltsD[1] = "";
@@ -595,6 +596,7 @@ namespace TransCarga
                 datcltsD[5] = "";
                 datcltsD[6] = "";
                 datcltsD[7] = "";
+                datcltsD[8] = "";
                 //
                 datguias[0] = "";   // num GR
                 datguias[1] = "";   // descrip
@@ -633,9 +635,10 @@ namespace TransCarga
                     }
                     if (hay == "sin")
                     {
-                        string consulta = "SELECT a.tidoregri,a.nudoregri,a.nombregri,a.direregri,a.ubigregri,ifnull(b1.email,'') as emailR,ifnull(b1.numerotel1,'') as numtel1R,ifnull(b1.numerotel2,'') as numtel2R," +
-                            "a.tidodegri,a.nudodegri,a.nombdegri,a.diredegri,a.ubigdegri,ifnull(b2.email,'') as emailD,ifnull(b2.numerotel1,'') as numtel1D,ifnull(b2.numerotel2,'') as numtel2D," +
-                            "a.tipmongri,a.totgri,a.salgri,SUM(d.cantprodi) AS bultos,max(d.descprodi) AS descrip,ifnull(m.descrizionerid,'') as mon,a.totgrMN,a.codMN,c.fecdocvta " +
+                        string consulta = "SELECT a.tidoregri,a.nudoregri,a.nombregri,a.direregri,a.ubigregri,ifnull(b1.email,'') as emailR,ifnull(b1.numerotel1,'') as numtel1R," +
+                            "ifnull(b1.numerotel2,'') as numtel2R,a.tidodegri,a.nudodegri,a.nombdegri,a.diredegri,a.ubigdegri,ifnull(b2.email,'') as emailD," +
+                            "ifnull(b2.numerotel1,'') as numtel1D,ifnull(b2.numerotel2,'') as numtel2D,a.tipmongri,a.totgri,a.salgri,SUM(d.cantprodi) AS bultos," +
+                            "max(d.descprodi) AS descrip,ifnull(m.descrizionerid,'') as mon,a.totgrMN,a.codMN,c.fecdocvta,b1.tiposocio as tipsrem,b2.tiposocio as tipsdes " +
                             "from cabguiai a left join detguiai d on d.idc=a.id " +
                             "LEFT JOIN controlg c ON c.serguitra = a.sergui AND c.numguitra = a.numgui " +
                             "left join anag_cli b1 on b1.tipdoc=a.tidoregri and b1.ruc=a.nudoregri " +
@@ -661,6 +664,7 @@ namespace TransCarga
                                         datcltsR[5] = dr.GetString("emailR");
                                         datcltsR[6] = dr.GetString("numtel1R");
                                         datcltsR[7] = dr.GetString("numtel2R");
+                                        datcltsR[8] = dr.GetString("tipsrem");
                                         //
                                         datcltsD[0] = dr.GetString("tidodegri");        // datos del destinatario de la GR
                                         datcltsD[1] = dr.GetString("nudodegri");
@@ -670,6 +674,7 @@ namespace TransCarga
                                         datcltsD[5] = dr.GetString("emailD");
                                         datcltsD[6] = dr.GetString("numtel1D");
                                         datcltsD[7] = dr.GetString("numtel2D");
+                                        datcltsD[8] = dr.GetString("tipsdes");
                                         //
                                         datguias[0] = serie + "-" + corre;                 // GR
                                         datguias[1] = (dr.IsDBNull(20)) ? "" : dr.GetString("descrip");         // descrip
