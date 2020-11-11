@@ -574,7 +574,14 @@ namespace TransCarga
         }
         private void pe_cobranzas_Click(object sender, EventArgs e)
         {
-
+            cobranzas fpe = new cobranzas();
+            fpe.TopLevel = false;
+            fpe.Parent = this;
+            pn_centro.Controls.Add(fpe);
+            fpe.Location = new Point((pn_centro.Width - fpe.Width) / 2, (pn_centro.Height - fpe.Height));
+            fpe.Anchor = AnchorStyles.None;
+            fpe.Show();
+            fpe.BringToFront();
         }
         private void pe_egresos_Click(object sender, EventArgs e)
         {

@@ -91,6 +91,12 @@
     <Compile Include="clients.designer.cs">
       <DependentUpon>clients.cs</DependentUpon>
     </Compile>
+    <Compile Include="cobranzas.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="cobranzas.designer.cs">
+      <DependentUpon>cobranzas.cs</DependentUpon>
+    </Compile>
     <Compile Include="conClie.cs">
       <DependentUpon>conClie.xsd</DependentUpon>
     </Compile>
@@ -236,6 +242,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="clients.resx">
       <DependentUpon>clients.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="cobranzas.resx">
+      <DependentUpon>cobranzas.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="defs.resx">
       <DependentUpon>defs.cs</DependentUpon>
