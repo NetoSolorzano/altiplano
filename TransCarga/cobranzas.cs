@@ -49,8 +49,8 @@ namespace TransCarga
         string v_impA5 = "";            // nombre de la impresora matricial
         string v_impTK = "";            // nombre de la ticketera
         string v_cid = "";              // codigo interno de tipo de documento
-        string v_fra2 = "";             // frase libre 
-        string v_sanu = "";             // serie anulacion interna ANU
+        string v_codc = "";             // codigo tipo documento cobranza
+        string v_noco = "";             // sigla del codigo cobranza
         string v_CR_gr_ind = "";        // nombre del formato FT/BV en CR
         string v_mfildet = "";          // maximo numero de filas en el detalle, coord. con el formato
         string vint_A0 = "";            // variable codigo anulacion interna por BD
@@ -76,8 +76,7 @@ namespace TransCarga
         string DB_CONN_STR = "server=" + login.serv + ";uid=" + login.usua + ";pwd=" + login.cont + ";database=" + data + ";";
 
         DataTable dtm = new DataTable();
-        string[] datcltsR = { "", "", "", "", "", "", "", "", "" };
-        string[] datguias = { "", "", "", "", "", "", "" };
+        DataTable dtmpa = new DataTable();
         public cobranzas()
         {
             InitializeComponent();
@@ -154,6 +153,9 @@ namespace TransCarga
             dataGridView1.Columns[3].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             // todo desabilidado
             sololee();
+            tx_dat_tdv.Text = v_codc;
+            tx_noco.Text = v_noco;
+            tx_serGR.CharacterCasing = CharacterCasing.Upper;
         }
         private void initIngreso()
         {
@@ -233,7 +235,7 @@ namespace TransCarga
                         if (row["campo"].ToString() == "documento")
                         {
                             if (row["param"].ToString() == "codigo") v_codc = row["valor"].ToString().Trim();               // codigo tipo documento
-                            if (row["param"].ToString() == "serieAnu") v_sanu = row["valor"].ToString().Trim();               // serie anulacion interna
+                            if (row["param"].ToString() == "nomcod") v_noco = row["valor"].ToString().Trim();               // nombre codido cobranza
                         }
                         if (row["campo"].ToString() == "impresion")
                         {
@@ -391,6 +393,20 @@ namespace TransCarga
                         cmb_mon.ValueMember = "idcodice";
                     }
                 }
+                // datos para el combo de medio de pago
+                cmb_mpago.Items.Clear();
+                using (MySqlCommand cmo = new MySqlCommand("select idcodice,descrizionerid from desc_mpa where numero=@bloq", conn))
+                {
+                    cmo.Parameters.AddWithValue("@bloq", 1);
+                    using (MySqlDataAdapter dacu = new MySqlDataAdapter(cmo))
+                    {
+                        dtmpa.Clear();
+                        dacu.Fill(dtmpa);
+                        cmb_mpago.DataSource = dtmpa;
+                        cmb_mpago.DisplayMember = "descrizionerid";
+                        cmb_mpago.ValueMember = "idcodice";
+                    }
+                }
             }
         }
         private bool valiVars()                 // valida existencia de datos en variables del form
@@ -446,11 +462,6 @@ namespace TransCarga
                 lib.messagebox("Nombre de impresora de Tickets");
                 retorna = false;
             }
-            if (v_sanu == "")           // serie de anulacion del documento
-            {
-                lib.messagebox("Serie de Anulación interna");
-                retorna = false;
-            }
             if (v_CR_gr_ind == "")
             {
                 lib.messagebox("Nombre formato Doc.Venta en CR");
@@ -474,30 +485,28 @@ namespace TransCarga
             bool retorna = false;
             if (serie != "" && corre != "")
             {
-                datcltsR[0] = "";
-                datcltsR[1] = "";
-                datcltsR[2] = "";
-                datcltsR[3] = "";
-                datcltsR[4] = "";
-                datcltsR[5] = "";
-                datcltsR[6] = "";
-                datcltsR[7] = "";
-                datcltsR[8] = "";
-                //
-                datguias[0] = "";   // 
-                datguias[1] = "";   // 
-                datguias[2] = "";   // 
-                datguias[3] = "";   // 
-                datguias[4] = "";   // 
-                datguias[5] = "";   // 
-                datguias[6] = "";   // 
-                // validamos que la GR: 1.exista, 2.No este facturada, 3.No este anulada
-                // y devolvemos una fila con los datos del remitente y otra fila los datos del destinatario
+                // validamos que el DOC: 1.exista, 2.No este cobrada, 3.No este anulada
+                // si es fact o boleta de varias Guias debe validarse guía x guia
                 string hay = "no";
                 using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
                 {
                     lib.procConn(conn);
                     string cons = "???";
+                    if (rb_PG.Checked == true)
+                    {
+
+                    }
+                    if (rb_GR.Checked == true)
+                    {
+                        cons = "SELECT a.fecpregui,a.serpregui,a.numpregui,a.codmonpre,a.totpregui,a.fecguitra,a.serguitra,a.numguitra,a.tidodegui,a.nudodegui,a.codmongui,a.totguitra," +
+                            "a.fecdocvta,a.tipdocvta,a.serdocvta,a.numdocvta,a.codmonvta,a.totdocvta,a.codmonpag,a.totpagado,a.saldofina,a.feculpago,a.estadoser," +
+                            "b.descrizionerid AS ntdc,c.razonsocial,concat(c.Direcc1, ' ', c.Direcc2) AS direc,c.depart,c.Provincia,c.Localidad,d.Descrizione AS nctm " +
+                            "from controlg a " +
+                            "LEFT JOIN desc_doc b ON b.idcodice = a.tidodegui " +
+                            "LEFT JOIN anag_cli c ON c.tipdoc = a.tidodegui AND c.RUC = a.nudodegui " +
+                            "LEFT JOIN desc_mon d ON d.idcodice = a.codmongui " +
+                            "WHERE a.serguitra = @ser AND a.numguitra = @num";
+                    }
                     using (MySqlCommand mic1 = new MySqlCommand(cons, conn))
                     {
                         mic1.Parameters.AddWithValue("@ser", serie);
@@ -508,7 +517,32 @@ namespace TransCarga
                             {
                                 if (dr.Read())
                                 {
-                                    hay = "nose";
+                                    if (dr.GetString("numguitra").Trim() == "")
+                                    {
+                                        hay = "nohay";
+                                    }
+                                    else
+                                    {
+                                        if (dr.GetString("estadoser") == codAnul || dr.GetDouble("saldofina") <= 0)
+                                        {
+                                            MessageBox.Show("La Guía esta anulada o ya esta pagada","Atención",MessageBoxButtons.OK,MessageBoxIcon.Warning);
+                                            hay = "nohay";
+                                        }
+                                        else
+                                        {
+                                            tx_dat_tdRem.Text = dr.GetString("ntdc");
+                                            tx_numDocRem.Text = dr.GetString("nudodegui");
+                                            tx_nomRem.Text = dr.GetString("razonsocial");
+                                            tx_dirRem.Text = dr.GetString("direc");
+                                            tx_dptoRtt.Text = dr.GetString("depart");
+                                            tx_provRtt.Text = dr.GetString("Provincia");
+                                            tx_distRtt.Text = dr.GetString("Localidad");
+                                            lb_moneda.Text = dr.GetString("nctm");
+                                            tx_flete.Text = dr.GetString("totguitra");
+                                            //
+                                            hay = "si";
+                                        }
+                                    }
                                 }
                             }
                             else
@@ -516,42 +550,29 @@ namespace TransCarga
                                 hay = "no"; // no existe la guía
                             }
                         }
-                    }
-                    if (hay == "sin")
-                    {
-                        string consulta = "???";
-                        using (MySqlCommand micon = new MySqlCommand(consulta, conn))
+                        if (hay == "si")
                         {
-                            micon.Parameters.AddWithValue("@ser", serie);
-                            micon.Parameters.AddWithValue("@num", corre);
-                            micon.Parameters.AddWithValue("@est", codGene);
-                            using (MySqlDataReader dr = micon.ExecuteReader())
+                            string consdet = "SELECT fila,sergui,numgui,cantprodi,unimedpro,codiprodi,descprodi,pesoprodi,precprodi,totaprodi " +
+                                "FROM detguiai WHERE sergui = @ser AND numgui = @num";
+                            using (MySqlCommand midet = new MySqlCommand(consdet, conn))
                             {
-                                if (dr.Read())
+                                midet.Parameters.AddWithValue("@ser", serie);
+                                midet.Parameters.AddWithValue("@num", corre);
+                                using (MySqlDataReader drD = midet.ExecuteReader())
                                 {
-                                    if (!dr.IsDBNull(0) && dr[24] == DBNull.Value)
+                                    while (drD.Read())
                                     {
-                                        datcltsR[0] = dr.GetString("tidoregri");        // datos del remitente de la GR
-                                        datcltsR[1] = dr.GetString("nudoregri");
-                                        datcltsR[2] = dr.GetString("nombregri");
-                                        datcltsR[3] = dr.GetString("direregri");
-                                        datcltsR[4] = dr.GetString("ubigregri");
-                                        datcltsR[5] = dr.GetString("emailR");
-                                        datcltsR[6] = dr.GetString("numtel1R");
-                                        datcltsR[7] = dr.GetString("numtel2R");
-                                        datcltsR[8] = dr.GetString("tipsrem");
-                                        //
-                                        datguias[0] = serie + "-" + corre;                 // GR
-                                        datguias[1] = (dr.IsDBNull(20)) ? "" : dr.GetString("descrip");         // descrip
-                                        datguias[2] = (dr.IsDBNull(19)) ? "0" : dr.GetString("bultos");          // cant bultos
-                                        datguias[3] = dr.GetString("mon");             // moneda de la GR
-                                        datguias[4] = dr.GetString("totgri");          // valor GR en su moneda
-                                        datguias[5] = dr.GetString("totgrMN");         // valor GR en moneda local
-                                        datguias[6] = dr.GetString("codMN");            // codigo moneda local
-                                        retorna = true;
+                                        dataGridView1.Rows.Add(
+                                            serie + "-" + corre,
+                                            drD.GetString("descprodi"),
+                                            drD.GetString("cantprodi"),
+                                            drD.GetString("pesoprodi"),
+                                            drD.GetString("totaprodi")
+                                            );
                                     }
                                 }
                             }
+                            retorna = true;
                         }
                     }
                 }
@@ -608,6 +629,19 @@ namespace TransCarga
         {
             lp.escribe(this);
             tx_nomRem.ReadOnly = true;
+            tx_dat_tdRem.ReadOnly = true;
+            tx_numDocRem.ReadOnly = true;
+            tx_nomRem.ReadOnly = true;
+            tx_dirRem.ReadOnly = true;
+            tx_dptoRtt.ReadOnly = true;
+            tx_provRtt.ReadOnly = true;
+            tx_distRtt.ReadOnly = true;
+            //
+            tx_flete.ReadOnly = true;
+            tx_igv.ReadOnly = true;
+            tx_subt.ReadOnly = true;
+            tx_salxcob.ReadOnly = true;
+            tx_pagado.ReadOnly = true;
         }
         private void limpiar()
         {
@@ -642,36 +676,8 @@ namespace TransCarga
                 }
                 else
                 {
-                    //
-                }
-                dataGridView1.Rows.Add(datguias[0], datguias[1], datguias[2], datguias[3], datguias[4], datguias[5], datguias[6]);     // insertamos en la grilla los datos de la GR
-                int totfil = 0;
-                int totcant = 0;
-                decimal totflet = 0;
-                for (int i = 0; i < dataGridView1.Rows.Count; i++)
-                {
-                    if (dataGridView1.Rows[i].Cells[0].Value != null)
-                    {
-                        totcant = totcant + int.Parse(dataGridView1.Rows[i].Cells[2].Value.ToString());
-                        totfil += 1;
-                        if (tx_dat_mone.Text == MonDeft)
-                        {
-                            totflet = totflet + decimal.Parse(dataGridView1.Rows[i].Cells[5].Value.ToString()); // VALOR DE LA GR EN MONEDA LOCAL
-                        }
-                        else
-                        {
-                            if (dataGridView1.Rows[i].Cells[3].Value.ToString() == cmb_mon.Text)
-                            {
-                                totflet = totflet + decimal.Parse(dataGridView1.Rows[i].Cells[4].Value.ToString()); // VALOR DE LA GR EN SU MONEDA
-                            }
-                            else
-                            {
-                                MessageBox.Show("La GR registrada tiene una moneda distinta a la seleccionada" + Environment.NewLine +
-                                    "se procederá a efectuar la conversión con fecha actual","OPCION EN DESARROLLO");
-                                totflet = totflet + 0; // falta desarrollar
-                            }
-                        }
-                    }
+                    cmb_mpago.Focus();
+                    cmb_mpago.DroppedDown = true;
                 }
             }
         }
@@ -937,7 +943,6 @@ namespace TransCarga
                     micon.Parameters.AddWithValue("@pagpgr", (tx_pagado.Text == "") ? "0" : tx_pagado.Text);
                     micon.Parameters.AddWithValue("@salxpa", (tx_salxcob.Text == "") ? "0" : tx_salxcob.Text);
                     micon.Parameters.AddWithValue("@estpgr", (tx_pagado.Text == "") ? tx_dat_estad.Text : codCanc); // estado
-                    micon.Parameters.AddWithValue("@frase1", v_fra2);               // REVISAR LA FRASE SI VA O NO
                     micon.Parameters.AddWithValue("@tipacc", "");                   // pago de documento a credito o contado   .. FALTA
                     micon.Parameters.AddWithValue("@feredv", DBNull.Value);         // si es pago contado la fecha de recep del doc. es la misma fecha
                     micon.Parameters.AddWithValue("@impSN", "S");
@@ -1183,7 +1188,12 @@ namespace TransCarga
             tx_salxcob.BackColor = Color.White;
             //
             initIngreso();
+            tx_numero.Text = "";
             tx_numero.ReadOnly = true;
+            tx_noco.ReadOnly = true;
+            tx_serie.ReadOnly = true;
+            rb_GR.Checked = true;
+            tx_serGR.Focus();
         }
         private void Bt_edit_Click(object sender, EventArgs e)
         {
@@ -1201,7 +1211,6 @@ namespace TransCarga
             Bt_sig.Enabled = true;
             Bt_ret.Enabled = true;
             Bt_fin.Enabled = true;
-            tx_salxcob.BackColor = Color.White;
         }
         private void Bt_close_Click(object sender, EventArgs e)
         {
