@@ -428,12 +428,12 @@ namespace TransCarga
             pic_icon_menu.Image = TransCarga.Properties.Resources.fec_elect21;
             menuStrip1.Items.Clear();
             menuStrip1.Items.Add("Boletas/Facturas",img_F1,fac_rapida_Click);           // F1
-            menuStrip1.Items.Add("Anulaciones",img_F4,fac_anulac_Click);              // F4
+            menuStrip1.Items.Add("Notas Cred/Deb",img_F4,fac_anulac_Click);              // F4
             menuStrip1.Items.Add("Reportes",img_F5,fac_reportes_Click);               // F5
             //
             menuStrip1.Visible = true;
         }
-        private void fac_rapida_Click(object sender, EventArgs e)       // factura rapida
+        private void fac_rapida_Click(object sender, EventArgs e)       // facturas y boletas
         {
             facelect ffe1 = new TransCarga.facelect();
             ffe1.TopLevel = false;
@@ -445,11 +445,11 @@ namespace TransCarga
         }
         private void fac_anulac_Click(object sender, EventArgs e)       // anulaciones de facturas
         {
-            MessageBox.Show("Form de anulaciones de facturas");
+            MessageBox.Show("Form Notas de Crédito/Débito","Primavera 2021",MessageBoxButtons.OK,MessageBoxIcon.Information);
         }
         private void fac_reportes_Click(object sender, EventArgs e)     // reportes de facturas
         {
-            MessageBox.Show("Form de reportes de facturas");
+            MessageBox.Show("Form de reportes de facturas","En desarrollo", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
         //
         private void bt_ventas_Click(object sender, EventArgs e)        // Operaciones
@@ -495,16 +495,7 @@ namespace TransCarga
         }      
         private void vic_registro_Click(object sender, EventArgs e)         // Guías Remisión Remitente
         {
-            /*
-            ingpedclts fip = new ingpedclts();
-            fip.TopLevel = false;
-            fip.Parent = this;
-            pn_centro.Controls.Add(fip);
-            //fip.Location = new Point((pn_centro.Width - fip.Width) / 2, (pn_centro.Height - fip.Height) / 2);
-            fip.Anchor = AnchorStyles.None;
-            fip.Show();
-            fip.BringToFront();
-            */
+            MessageBox.Show("Form Guía de Remisión de Remitente", "Otoño 2021", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
         private void vsc_registro_Click(object sender, EventArgs e)         // Planilla de carga
         {
@@ -543,7 +534,7 @@ namespace TransCarga
             frv.BringToFront();
         }
         //
-        private void bt_pedidos_Click(object sender, EventArgs e)           // Administración
+        private void bt_pedidos_Click(object sender, EventArgs e)           // Administración - caja
         {
             pic_icon_menu.Image = TransCarga.Properties.Resources.process32;
             Image img_pe1 = Image.FromFile(imgpe1);                     // Cuadre de Caja
@@ -561,16 +552,7 @@ namespace TransCarga
         }
         private void pe_registro_Click(object sender, EventArgs e)
         {
-            /*
-            Pedsalm fpe = new Pedsalm();
-            fpe.TopLevel = false;
-            fpe.Parent = this;
-            pn_centro.Controls.Add(fpe);
-            fpe.Location = new Point((pn_centro.Width - fpe.Width) / 2, (pn_centro.Height - fpe.Height) / 2);
-            fpe.Anchor = AnchorStyles.None;
-            fpe.Show();
-            fpe.BringToFront();
-            */
+            MessageBox.Show("Form Cuadre de Caja", "En desarrollo", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
         private void pe_cobranzas_Click(object sender, EventArgs e)
         {
@@ -583,26 +565,17 @@ namespace TransCarga
             fpe.Show();
             fpe.BringToFront();
         }
-        private void pe_egresos_Click(object sender, EventArgs e)
+        private void pe_egresos_Click(object sender, EventArgs e)       // egresos y despositos
         {
-
+            MessageBox.Show("Form Egresos/Depósitos", "En desarrollo", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
         private void pe_ingresosV_Click(object sender, EventArgs e)
         {
-
+            MessageBox.Show("Form Ingresos extraordinarios", "Otoño 2021", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
         private void pe_reportes_Click(object sender, EventArgs e)
         {
-            /*
-            repspedalm frp = new repspedalm();
-            frp.TopLevel = false;
-            frp.Parent = this;
-            pn_centro.Controls.Add(frp);
-            frp.Location = new Point((pn_centro.Width - frp.Width) / 2, (pn_centro.Height - frp.Height) / 2);
-            frp.Anchor = AnchorStyles.None;
-            frp.Show();
-            frp.BringToFront();
-            */
+            MessageBox.Show("Form Reportes de adm/caja", "En desarrollo", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
         //
         private void bt_pcontrol_Click(object sender, EventArgs e)      // Configuración
@@ -673,16 +646,7 @@ namespace TransCarga
         }
         private void ma_rrhh_Click(object sender, EventArgs e)
         {
-            /*
-            adicionals fad = new adicionals();
-            fad.TopLevel = false;
-            fad.Parent = this;
-            pn_centro.Controls.Add(fad);
-            fad.Location = new Point((pn_centro.Width - fad.Width) / 2, (pn_centro.Height - fad.Height) / 2);
-            fad.Anchor = AnchorStyles.None;
-            fad.Show();
-            fad.BringToFront();
-            */
+            MessageBox.Show("Form Recursos Humanos", "Otoño 2021", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
         private void ma_tipcam_Click(object sender, EventArgs e)
         {
@@ -766,43 +730,15 @@ namespace TransCarga
         }
         private void alm_gestion_Click(object sender, EventArgs e)
         {
-            /*
-            almgestion fenl = new almgestion();
-            //pan_inicio fenl = new pan_inicio();
-            fenl.TopLevel = false;
-            fenl.Parent = this;
-            pn_centro.Controls.Add(fenl);
-            fenl.Location = new Point((pn_centro.Width - fenl.Width) / 2, (pn_centro.Height - fenl.Height) / 2);
-            fenl.Anchor = AnchorStyles.None;
-            fenl.Show();
-            fenl.BringToFront();
-            */
+            MessageBox.Show("Form Gestión de almacénes", "Primavera 2021", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
         private void alm_movfisicos_Click(object sender, EventArgs e)
         {
-            /*
-            almovfis fmf = new almovfis();
-            fmf.TopLevel = false;
-            fmf.Parent = this;
-            pn_centro.Controls.Add(fmf);
-            fmf.Location = new Point((pn_centro.Width - fmf.Width) / 2, (pn_centro.Height - fmf.Height) / 2);
-            fmf.Anchor = AnchorStyles.None;
-            fmf.Show();
-            fmf.BringToFront();
-            */
+            MessageBox.Show("Form Gestión de Entradas/Salidas", "Primavera 2021", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
         private void alm_historicos_Click(object sender, EventArgs e)
         {
-            /*
-            repsalmac fra = new repsalmac();
-            fra.TopLevel = false;
-            fra.Parent = this;
-            pn_centro.Controls.Add(fra);
-            //fra.Location = new Point((pn_centro.Width - fra.Width) / 2, (pn_centro.Height - fra.Height) / 2);
-            fra.Anchor = AnchorStyles.None;
-            fra.Show();
-            fra.BringToFront();
-            */
+            MessageBox.Show("Form Reportes de Almacén", "Primavera 2021", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
         //
         private void pictureBox1_Click(object sender, EventArgs e)
