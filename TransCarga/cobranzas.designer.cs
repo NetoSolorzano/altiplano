@@ -161,6 +161,7 @@
             this.tx_PAGO = new TransCarga.NumericTextBox();
             this.label12 = new System.Windows.Forms.Label();
             this.tx_serGR = new System.Windows.Forms.TextBox();
+            this.tx_dat_mod = new System.Windows.Forms.TextBox();
             this.toolStrip1.SuspendLayout();
             this.groupBox11.SuspendLayout();
             this.groupBox7.SuspendLayout();
@@ -756,7 +757,7 @@
             // 
             this.tx_noco.BackColor = System.Drawing.SystemColors.Window;
             this.tx_noco.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_noco.Location = new System.Drawing.Point(85, 15);
+            this.tx_noco.Location = new System.Drawing.Point(85, 14);
             this.tx_noco.Name = "tx_noco";
             this.tx_noco.Size = new System.Drawing.Size(43, 20);
             this.tx_noco.TabIndex = 339;
@@ -1482,6 +1483,7 @@
             this.tx_PAGO.Size = new System.Drawing.Size(77, 26);
             this.tx_PAGO.TabIndex = 12;
             this.tx_PAGO.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.tx_PAGO.Leave += new System.EventHandler(this.tx_pago_Leave);
             // 
             // label12
             // 
@@ -1502,6 +1504,15 @@
             this.tx_serGR.TabIndex = 4;
             this.tx_serGR.Leave += new System.EventHandler(this.tx_serGR_Leave);
             // 
+            // tx_dat_mod
+            // 
+            this.tx_dat_mod.BackColor = System.Drawing.SystemColors.Window;
+            this.tx_dat_mod.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_dat_mod.Location = new System.Drawing.Point(692, 299);
+            this.tx_dat_mod.Name = "tx_dat_mod";
+            this.tx_dat_mod.Size = new System.Drawing.Size(32, 18);
+            this.tx_dat_mod.TabIndex = 380;
+            // 
             // cobranzas
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1509,6 +1520,7 @@
             this.AutoSize = true;
             this.BackColor = System.Drawing.Color.LightSteelBlue;
             this.ClientSize = new System.Drawing.Size(770, 557);
+            this.Controls.Add(this.tx_dat_mod);
             this.Controls.Add(this.tx_serGR);
             this.Controls.Add(this.groupBox17);
             this.Controls.Add(this.label12);
@@ -1734,5 +1746,6 @@
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.TextBox tx_noco;
         private System.Windows.Forms.TextBox tx_serGR;
+        private System.Windows.Forms.TextBox tx_dat_mod;
     }
 }

@@ -500,11 +500,12 @@ namespace TransCarga
                     {
                         cons = "SELECT a.fecpregui,a.serpregui,a.numpregui,a.codmonpre,a.totpregui,a.fecguitra,a.serguitra,a.numguitra,a.tidodegui,a.nudodegui,a.codmongui,a.totguitra," +
                             "a.fecdocvta,a.tipdocvta,a.serdocvta,a.numdocvta,a.codmonvta,a.totdocvta,a.codmonpag,a.totpagado,a.saldofina,a.feculpago,a.estadoser," +
-                            "b.descrizionerid AS ntdc,c.razonsocial,concat(c.Direcc1, ' ', c.Direcc2) AS direc,c.depart,c.Provincia,c.Localidad,d.Descrizione AS nctm " +
+                            "b.descrizionerid AS ntdc,c.razonsocial,concat(c.Direcc1, ' ', c.Direcc2) AS direc,c.depart,c.Provincia,c.Localidad,d.Descrizione AS nctmG,e.descrizione as nctmV " +
                             "from controlg a " +
                             "LEFT JOIN desc_doc b ON b.idcodice = a.tidodegui " +
                             "LEFT JOIN anag_cli c ON c.tipdoc = a.tidodegui AND c.RUC = a.nudodegui " +
                             "LEFT JOIN desc_mon d ON d.idcodice = a.codmongui " +
+                            "left join desc_mon e on e.idcodice = a.codmonvta " +
                             "WHERE a.serguitra = @ser AND a.numguitra = @num";
                     }
                     using (MySqlCommand mic1 = new MySqlCommand(cons, conn))
@@ -537,9 +538,20 @@ namespace TransCarga
                                             tx_dptoRtt.Text = dr.GetString("depart");
                                             tx_provRtt.Text = dr.GetString("Provincia");
                                             tx_distRtt.Text = dr.GetString("Localidad");
-                                            lb_moneda.Text = dr.GetString("nctm");
-                                            tx_flete.Text = dr.GetString("totguitra");
-                                            //
+                                            tx_flete.Text = string.Format("{0:0.00}", dr.GetDecimal("totguitra"));
+                                            tx_salxcob.Text = string.Format("{0:0.00}", dr.GetDecimal("totpagado"));
+                                            tx_pagado.Text = string.Format("{0:0.00}", dr.GetDecimal("saldofina"));
+                                            // a.codmonpag
+                                            if (dr.GetString("codmonvta") != "")
+                                            {
+                                                tx_dat_mod.Text = dr.GetString("codmonvta");
+                                                lb_moneda.Text = dr.GetString("nctmV");
+                                            }
+                                            else
+                                            {
+                                                tx_dat_mod.Text = dr.GetString("codmongui");
+                                                lb_moneda.Text = dr.GetString("nctmG");
+                                            }
                                             hay = "si";
                                         }
                                     }
@@ -572,6 +584,7 @@ namespace TransCarga
                                     }
                                 }
                             }
+                            calculos(decimal.Parse(tx_flete.Text));    // calculamos el subtotal e IGV
                             retorna = true;
                         }
                     }
@@ -1073,7 +1086,7 @@ namespace TransCarga
                 // naaaa
             }
         }
-        private void textBox9_Leave(object sender, EventArgs e)
+        private void textBox9_Leave(object sender, EventArgs e)         // distrito
         {
             if(tx_distRtt.Text.Trim() != "" && tx_provRtt.Text.Trim() != "" && tx_dptoRtt.Text.Trim() != "")
             {
@@ -1105,6 +1118,37 @@ namespace TransCarga
             if (Tx_modo.Text == "NUEVO" && tx_serGR.Text.Trim() != "" && tx_numGR.Text.Trim() != "")
             {
                 tx_numGR.Text = lib.Right("00000000" + tx_numGR.Text, 8);
+            }
+        }
+        private void tx_pago_Leave(object sender, EventArgs e)
+        {
+            if (tx_PAGO.Text.Trim() != "" && Tx_modo.Text == "NUEVO")
+            {
+                decimal vpag = decimal.Parse(tx_PAGO.Text);
+                decimal vsal = decimal.Parse(tx_salxcob.Text);
+                if (vpag <= 0)
+                {
+                    MessageBox.Show("El monto a pagar debe ser mayor a cero", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+                    tx_PAGO.Text = "";
+                    tx_PAGO.Focus();
+                    return;
+                }
+                if (tx_dat_mone.Text == tx_dat_mod.Text)    // moneda del doc y moneda de pago son iguales?
+                {
+                    if (vpag > vsal)
+                    {
+                        MessageBox.Show("El monto a pagar no puede ser mayor al saldo", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+                        tx_PAGO.Text = "";
+                        tx_PAGO.Focus();
+                        return;
+                    }
+                }
+                else
+                {
+                    // las monedas no son iguales
+                    // se tiene que comparar el saldo del documento con el pago en moneda cambiada
+
+                }
             }
         }
         #endregion
@@ -1193,6 +1237,7 @@ namespace TransCarga
             tx_noco.ReadOnly = true;
             tx_serie.ReadOnly = true;
             rb_GR.Checked = true;
+            tx_cajero.Text = tx_nomuser.Text;
             tx_serGR.Focus();
         }
         private void Bt_edit_Click(object sender, EventArgs e)
