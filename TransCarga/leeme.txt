@@ -56,3 +56,6 @@ form tipcamref: (tipo de cambio)
 - Desarrollo del form .............................................................................. ok 02/11/2020
 form vtipcam, ventana para realizar calculo de tipo de cambio ...................................... ok 05/11/2020
 form guiati: temas de monedas y tipos de cambio .................................................... ok 05/11/2020
+form cobranzas: (el pago DEBE SER en la moneda del documento) 14/11/2020
+- desarrollo del form ..............................................................................
+- formato de impresion notas de cobranza ...........................................................

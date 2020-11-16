@@ -147,6 +147,9 @@ namespace TransCarga
             tx_detpago.MaxLength = 90;      // detalle del pago, num operacion, banco, etc.
             tx_cajero.MaxLength = 90;       // nombre del trabajador que recibe el dinero
             tx_obser1.MaxLength = 245;      // observaciones
+            tx_fb.MaxLength = 1;            // F ó B
+            tx_fb.CharacterCasing = CharacterCasing.Upper;
+            tx_fb.Visible = false;
             // grilla
             dataGridView1.ReadOnly = true;
             dataGridView1.Columns[0].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
@@ -174,8 +177,8 @@ namespace TransCarga
             tx_serie.Text = v_slu;
             tx_numero.ReadOnly = true;
             // ser_gr, num_gry resto se limpian solos
-            tx_dat_mone.Text = MonDeft;
-            cmb_mon.SelectedValue = tx_dat_mone.Text;
+            //tx_dat_mone.Text = MonDeft;
+            //cmb_mon.SelectedValue = tx_dat_mone.Text;
             tx_fechope.Text = DateTime.Today.ToString("dd/MM/yyyy");
             tx_digit.Text = v_nbu;
             tx_dat_estad.Text = codGene;
@@ -492,82 +495,163 @@ namespace TransCarga
                 {
                     lib.procConn(conn);
                     string cons = "???";
-                    if (rb_PG.Checked == true)
+                    if (rb_PG.Checked == true)          // Pre guia
                     {
 
                     }
-                    if (rb_GR.Checked == true)
+                    if (rb_GR.Checked == true)          // guia
                     {
                         cons = "SELECT a.fecpregui,a.serpregui,a.numpregui,a.codmonpre,a.totpregui,a.fecguitra,a.serguitra,a.numguitra,a.tidodegui,a.nudodegui,a.codmongui,a.totguitra," +
                             "a.fecdocvta,a.tipdocvta,a.serdocvta,a.numdocvta,a.codmonvta,a.totdocvta,a.codmonpag,a.totpagado,a.saldofina,a.feculpago,a.estadoser," +
-                            "b.descrizionerid AS ntdc,c.razonsocial,concat(c.Direcc1, ' ', c.Direcc2) AS direc,c.depart,c.Provincia,c.Localidad,d.Descrizione AS nctmG,e.descrizione as nctmV " +
+                            "b.descrizionerid AS ntdc,c.razonsocial,concat(c.Direcc1, ' ', c.Direcc2) AS direc,c.depart,c.Provincia,c.Localidad,d.Descrizione AS nctmG,ifnull(e.descrizione,'') as nctmV " +
                             "from controlg a " +
                             "LEFT JOIN desc_doc b ON b.idcodice = a.tidodegui " +
                             "LEFT JOIN anag_cli c ON c.tipdoc = a.tidodegui AND c.RUC = a.nudodegui " +
                             "LEFT JOIN desc_mon d ON d.idcodice = a.codmongui " +
                             "left join desc_mon e on e.idcodice = a.codmonvta " +
                             "WHERE a.serguitra = @ser AND a.numguitra = @num";
-                    }
-                    using (MySqlCommand mic1 = new MySqlCommand(cons, conn))
-                    {
-                        mic1.Parameters.AddWithValue("@ser", serie);
-                        mic1.Parameters.AddWithValue("@num", corre);
-                        using (MySqlDataReader dr = mic1.ExecuteReader())
+                        using (MySqlCommand mic1 = new MySqlCommand(cons, conn))
                         {
-                            if (dr.HasRows)
+                            mic1.Parameters.AddWithValue("@ser", serie);
+                            mic1.Parameters.AddWithValue("@num", corre);
+                            using (MySqlDataReader dr = mic1.ExecuteReader())
                             {
-                                if (dr.Read())
+                                if (dr.HasRows)
                                 {
-                                    if (dr.GetString("numguitra").Trim() == "")
+                                    if (dr.Read())
                                     {
-                                        hay = "nohay";
-                                    }
-                                    else
-                                    {
-                                        if (dr.GetString("estadoser") == codAnul || dr.GetDouble("saldofina") <= 0)
+                                        if (dr.GetString("numguitra").Trim() == "")
                                         {
-                                            MessageBox.Show("La Guía esta anulada o ya esta pagada","Atención",MessageBoxButtons.OK,MessageBoxIcon.Warning);
                                             hay = "nohay";
                                         }
                                         else
                                         {
-                                            tx_dat_tdRem.Text = dr.GetString("ntdc");
-                                            tx_numDocRem.Text = dr.GetString("nudodegui");
-                                            tx_nomRem.Text = dr.GetString("razonsocial");
-                                            tx_dirRem.Text = dr.GetString("direc");
-                                            tx_dptoRtt.Text = dr.GetString("depart");
-                                            tx_provRtt.Text = dr.GetString("Provincia");
-                                            tx_distRtt.Text = dr.GetString("Localidad");
-                                            tx_flete.Text = string.Format("{0:0.00}", dr.GetDecimal("totguitra"));
-                                            tx_salxcob.Text = string.Format("{0:0.00}", dr.GetDecimal("totpagado"));
-                                            tx_pagado.Text = string.Format("{0:0.00}", dr.GetDecimal("saldofina"));
-                                            // a.codmonpag
-                                            if (dr.GetString("codmonvta") != "")
+                                            if (dr.GetString("estadoser") == codAnul || dr.GetDouble("saldofina") <= 0)
                                             {
-                                                tx_dat_mod.Text = dr.GetString("codmonvta");
-                                                lb_moneda.Text = dr.GetString("nctmV");
+                                                MessageBox.Show("La Guía esta anulada o ya esta pagada", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                                hay = "nohay";
                                             }
                                             else
                                             {
-                                                tx_dat_mod.Text = dr.GetString("codmongui");
-                                                lb_moneda.Text = dr.GetString("nctmG");
+                                                tx_dat_tdRem.Text = dr.GetString("ntdc");
+                                                tx_numDocRem.Text = dr.GetString("nudodegui");
+                                                tx_nomRem.Text = dr.GetString("razonsocial");
+                                                tx_dirRem.Text = dr.GetString("direc");
+                                                tx_dptoRtt.Text = dr.GetString("depart");
+                                                tx_provRtt.Text = dr.GetString("Provincia");
+                                                tx_distRtt.Text = dr.GetString("Localidad");
+                                                tx_flete.Text = string.Format("{0:0.00}", dr.GetDecimal("totguitra"));
+                                                tx_salxcob.Text = string.Format("{0:0.00}", dr.GetDecimal("saldofina"));
+                                                tx_pagado.Text = string.Format("{0:0.00}", dr.GetDecimal("totpagado"));
+                                                // a.codmonpag
+                                                if (!string.IsNullOrEmpty(dr.GetString("codmonvta").Trim()))    //  != ""
+                                                {
+                                                    tx_dat_mod.Text = dr.GetString("codmonvta");
+                                                    lb_moneda.Text = dr.GetString("nctmV");
+                                                }
+                                                else
+                                                {
+                                                    tx_dat_mod.Text = dr.GetString("codmongui");
+                                                    lb_moneda.Text = dr.GetString("nctmG");
+                                                }
+                                                cmb_mon.SelectedValue = tx_dat_mod.Text;
+                                                hay = "si";
                                             }
-                                            hay = "si";
                                         }
                                     }
                                 }
+                                else
+                                {
+                                    hay = "no"; // no existe la guía
+                                }
                             }
-                            else
+                            if (hay == "si")
                             {
-                                hay = "no"; // no existe la guía
+                                dataGridView1.Rows.Clear();
+                                string consdet = "SELECT fila,sergui,numgui,cantprodi,unimedpro,codiprodi,descprodi,pesoprodi,precprodi,totaprodi " +
+                                    "FROM detguiai WHERE sergui = @ser AND numgui = @num";
+                                using (MySqlCommand midet = new MySqlCommand(consdet, conn))
+                                {
+                                    midet.Parameters.AddWithValue("@ser", serie);
+                                    midet.Parameters.AddWithValue("@num", corre);
+                                    using (MySqlDataReader drD = midet.ExecuteReader())
+                                    {
+                                        while (drD.Read())
+                                        {
+                                            dataGridView1.Rows.Add(
+                                                serie + "-" + corre,
+                                                drD.GetString("descprodi"),
+                                                drD.GetString("cantprodi"),
+                                                drD.GetString("pesoprodi"),
+                                                drD.GetString("totaprodi")
+                                                );
+                                        }
+                                    }
+                                }
+                                calculos(decimal.Parse(tx_flete.Text));    // calculamos el subtotal e IGV
+                                retorna = true;
+                            }
+                        }
+                    }
+                    if (rb_DV.Checked == true)          // doc. venta
+                    {
+                        cons = "SELECT a.fechope,a.martdve,a.tipdvta,a.serdvta,a.numdvta,a.tidoclt,a.nudoclt,a.nombclt,a.direclt,a.dptoclt,a.provclt,a.distclt," +
+                            "a.mondvta,a.subtota,a.igvtota,a.totdvta,a.totpags,a.saldvta,a.estdvta," +
+                            "b.descrizionerid AS ntdc,ifnull(e.descrizione, '') as nctmV " +
+                            "FROM cabfactu a " +
+                            "LEFT JOIN desc_doc b ON b.idcodice = a.tidoclt " +
+                            "left join desc_mon e on e.idcodice = a.mondvta " +
+                            "WHERE a.martdve = @tip and a.serdvta = @ser and a.numdvta = @num";
+                        // "left join controlg g on g.tipdocvta=a.tipdvta and g.serdocvta=a.serdvta and g.numdocvta=a.numdvta " +
+                        // "g.fecguitra,g.serguitra,g.numguitra,g.codmongui,g.totguitra " +
+                        using (MySqlCommand micon = new MySqlCommand(cons, conn))
+                        {
+                            micon.Parameters.AddWithValue("@tip", tx_fb.Text);
+                            micon.Parameters.AddWithValue("@ser", serie);
+                            micon.Parameters.AddWithValue("@num", corre);
+                            using (MySqlDataReader dr = micon.ExecuteReader())
+                            {
+                                if (dr.HasRows)
+                                {
+                                    if (dr.Read())
+                                    {
+                                        if (string.IsNullOrEmpty(dr.GetString("estdvta")) || dr.GetString("estdvta") == codAnul || dr.GetDecimal("saldvta") <= 0)
+                                        {
+                                            hay = "no";
+                                        }
+                                        else
+                                        {
+                                            hay = "si";
+                                            tx_dat_tdRem.Text = dr.GetString("ntdc");
+                                            tx_numDocRem.Text = dr.GetString("nudoclt");
+                                            tx_nomRem.Text = dr.GetString("nombclt");
+                                            tx_dirRem.Text = dr.GetString("direclt");
+                                            tx_dptoRtt.Text = dr.GetString("dptoclt");
+                                            tx_provRtt.Text = dr.GetString("provclt");
+                                            tx_distRtt.Text = dr.GetString("distclt");
+                                            tx_flete.Text = string.Format("{0:0.00}", dr.GetDecimal("totdvta"));
+                                            tx_salxcob.Text = string.Format("{0:0.00}", dr.GetDecimal("saldvta"));
+                                            tx_pagado.Text = string.Format("{0:0.00}", dr.GetDecimal("totpags"));
+                                            tx_dat_mod.Text = dr.GetString("mondvta");
+                                            lb_moneda.Text = dr.GetString("nctmV");
+                                            cmb_mon.SelectedValue = tx_dat_mod.Text;
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    hay = "no"; // no existe el doc
+                                }
                             }
                         }
                         if (hay == "si")
                         {
-                            string consdet = "SELECT fila,sergui,numgui,cantprodi,unimedpro,codiprodi,descprodi,pesoprodi,precprodi,totaprodi " +
-                                "FROM detguiai WHERE sergui = @ser AND numgui = @num";
+                            dataGridView1.Rows.Clear();
+                            string consdet = "SELECT codgror,cantbul,unimedp,descpro,pesogro,codmogr,totalgr " +
+                                    "FROM detfactu WHERE martdve = @tip and serdvta = @ser and numdvta = @num";
                             using (MySqlCommand midet = new MySqlCommand(consdet, conn))
                             {
+                                midet.Parameters.AddWithValue("@tip", tx_fb.Text);
                                 midet.Parameters.AddWithValue("@ser", serie);
                                 midet.Parameters.AddWithValue("@num", corre);
                                 using (MySqlDataReader drD = midet.ExecuteReader())
@@ -575,11 +659,11 @@ namespace TransCarga
                                     while (drD.Read())
                                     {
                                         dataGridView1.Rows.Add(
-                                            serie + "-" + corre,
-                                            drD.GetString("descprodi"),
-                                            drD.GetString("cantprodi"),
-                                            drD.GetString("pesoprodi"),
-                                            drD.GetString("totaprodi")
+                                            drD.GetString("codgror"),
+                                            drD.GetString("descpro"),
+                                            drD.GetString("cantbul"),
+                                            drD.GetString("pesogro"),
+                                            drD.GetString("totalgr")
                                             );
                                     }
                                 }
@@ -594,7 +678,7 @@ namespace TransCarga
         }
         private void tipcambio(string codmod)                // funcion para calculos con el tipo de cambio
         {
-            decimal totflet = 0;
+            /*decimal totflet = 0;
             for (int i = 0; i < dataGridView1.Rows.Count; i++)
             {
                 if (dataGridView1.Rows[i].Cells[0].Value != null)
@@ -603,21 +687,29 @@ namespace TransCarga
                 }
             }
             // si codmod es moneda local, suma campos totales de moneda local y retorna valor
-            if (codmod == MonDeft)
+            */
+            //if (codmod == MonDeft)
+            //{
+            //    tx_flete.Text = totflet.ToString("#0.00");
+            //}
+            //else
+            //{
+            if (codmod != MonDeft)   // codmod != ""
             {
-                tx_flete.Text = totflet.ToString("#0.00");
-            }
-            else
-            {
-                if (codmod != "")
+                vtipcam vtipcam = new vtipcam(tx_PAGO.Text, codmod, DateTime.Now.Date.ToString());
+                var result = vtipcam.ShowDialog();
+                if (vtipcam.ReturnValue3 != null)
                 {
-                    vtipcam vtipcam = new vtipcam(tx_flete.Text, codmod, DateTime.Now.Date.ToString());
-                    var result = vtipcam.ShowDialog();
-                    tx_flete.Text = vtipcam.ReturnValue1;
+                    tx_PAGO.Text = vtipcam.ReturnValue1;
                     tx_fletMN.Text = vtipcam.ReturnValue2;
                     tx_tipcam.Text = vtipcam.ReturnValue3;
                 }
+                else
+                {
+                    cmb_mon.SelectedValue = MonDeft;
+                }
             }
+            //}
         }
         private void calculos(decimal totDoc)
         {
@@ -682,8 +774,23 @@ namespace TransCarga
                 // validamos que la GR: 1.exista, 2.No este facturada, 3.No este anulada
                 if (validGR(tx_serGR.Text, tx_numGR.Text) == false)
                 {
-                    MessageBox.Show("La GR no existe, esta anulada o ya esta facturada", "Error en Guía", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    if (rb_PG.Checked == true) MessageBox.Show("");
+                    if (rb_GR.Checked == true) MessageBox.Show("La GR no existe, esta anulada o ya esta facturada", "Error en Guía", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    if (rb_DV.Checked == true) MessageBox.Show("El documento de venta, no existe" + Environment.NewLine +
+                        "esta anulada o esta cancelada", "Error en Documento", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     tx_numGR.Text = "";
+                    limpiar();
+                    limpia_chk();
+                    limpia_otros();
+                    limpia_combos();
+                    dataGridView1.Rows.Clear();
+                    tx_flete.Text = "";
+                    tx_igv.Text = "";
+                    tx_subt.Text = "";
+                    tx_pagado.Text = "";
+                    tx_salxcob.Text = "";
+                    tx_numero.Text = "";
+                    tx_serie.Text = v_slu;
                     tx_numGR.Focus();
                     return;
                 }
@@ -711,37 +818,31 @@ namespace TransCarga
             if (tx_flete.Text.Trim() == "" || tx_flete.Text.Trim() == "0")
             {
                 MessageBox.Show("No existe valor del documento", " Atención ");
-                tx_flete.Focus();
+                tx_serGR.Focus();
                 return;
             }
             if (tx_dat_tdRem.Text.Trim() == "")
             {
-                MessageBox.Show("Seleccione el documento de cliente", " Error en Cliente ");
-                tx_dat_tdRem.Focus();
+                MessageBox.Show("Seleccione un documento a cobrar", " Atención ");
+                tx_serGR.Focus();
                 return;
             }
-            if (tx_numDocRem.Text.Trim() == "")
+            if (tx_dat_mp.Text == "")
             {
-                MessageBox.Show("Ingrese el número de documento", " Error en Cliente ");
-                tx_numDocRem.Focus();
+                MessageBox.Show("Seleccione un tipo de pago", " Atención ", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                cmb_mpago.Focus();
                 return;
             }
-            if (tx_nomRem.Text.Trim() == "")
+            if (tx_dat_mone.Text == "")
             {
-                MessageBox.Show("Ingrese el nombre o razón social", " Error en Cliente ");
-                tx_nomRem.Focus();
+                MessageBox.Show("Seleccione una moneda de pago", " Atención ", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                cmb_mon.Focus();
                 return;
             }
-            if (tx_dirRem.Text.Trim() == "")
+            if (tx_PAGO.Text.Trim() == "")
             {
-                MessageBox.Show("Ingrese la dirección", " Error en Remitente ");
-                tx_dirRem.Focus();
-                return;
-            }
-            if (tx_dptoRtt.Text.Trim() == "" || tx_provRtt.Text.Trim() == "" || tx_distRtt.Text.Trim() == "")
-            {
-                MessageBox.Show("Ingrese departamento, provincia y distrito", "Dirección incompleta", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                tx_dptoRtt.Focus();
+                MessageBox.Show("Ingrese el monto del pago", " Atención ", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                tx_PAGO.Focus();
                 return;
             }
             #endregion
@@ -750,11 +851,9 @@ namespace TransCarga
             string iserror = "no";
             if (modo == "NUEVO")
             {
-                // valida pago > 0
-
                 if (tx_idr.Text.Trim() == "")
                 {
-                    var aa = MessageBox.Show("Confirma que desea crear el documento?", "Confirme por favor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                    var aa = MessageBox.Show("Confirma que desea crear la cobranza?", "Confirme por favor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                     if (aa == DialogResult.Yes)
                     {
                         if (true)
@@ -773,7 +872,7 @@ namespace TransCarga
                     }
                     else
                     {
-                        tx_numDocRem.Focus();
+                        tx_serGR.Focus();
                         return;
                     }
                 }
@@ -801,7 +900,7 @@ namespace TransCarga
                 {
                     if (tx_idr.Text.Trim() != "")
                     {
-                        var aa = MessageBox.Show("Confirma que desea modificar el documento?", "Confirme por favor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                        var aa = MessageBox.Show("Confirma que desea modificar la cobranza?", "Confirme por favor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                         if (aa == DialogResult.Yes)
                         {
                             edita();    // modificacion total
@@ -844,7 +943,7 @@ namespace TransCarga
                 // anulacio procede siempre y cuando de la caja del día y usuario cajero
                 if (tx_idr.Text.Trim() != "")
                 {
-                    var aa = MessageBox.Show("Confirma que desea ANULAR el documento?", "Confirme por favor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                    var aa = MessageBox.Show("Confirma que desea ANULAR la cobranza?", "Confirme por favor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                     if (aa == DialogResult.Yes)
                     {
                         anula();
@@ -879,7 +978,7 @@ namespace TransCarga
         }
         private bool graba()
         {
-            bool retorna = false;
+            bool retorna = false;                                   // ME QUEDE ACA
             MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
             conn.Open();
             if(conn.State == ConnectionState.Open)
@@ -1112,6 +1211,7 @@ namespace TransCarga
         private void tx_serGR_Leave(object sender, EventArgs e)
         {
             tx_serGR.Text = lib.Right("0000" + tx_serGR.Text, 4);
+            tx_numGR.Focus();
         }
         private void tx_numGR_Leave(object sender, EventArgs e)
         {
@@ -1142,6 +1242,17 @@ namespace TransCarga
                         tx_PAGO.Focus();
                         return;
                     }
+                    if (vpag < vsal)
+                    {
+                        var aa = MessageBox.Show("El valor pagado es MENOR al saldo del documento" + Environment.NewLine +
+                            "Confirma que la operación es correcta?", "Atención - confirme por favor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                        if (aa == DialogResult.No)
+                        {
+                            tx_PAGO.Text = "";
+                            tx_PAGO.Focus();
+                            return;
+                        }
+                    }
                 }
                 else
                 {
@@ -1150,6 +1261,35 @@ namespace TransCarga
 
                 }
             }
+        }
+        private void tx_fb_Validating(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (tx_fb.Text != "B" && tx_fb.Text != "F")
+            {
+                e.Cancel = true;
+            }
+        }
+        private void tx_fb_Leave(object sender, EventArgs e)
+        {
+            tx_serGR.Focus();
+        }
+        private void rb_PG_Click(object sender, EventArgs e)            // boton pre guia
+        {
+            tx_fb.Visible = false;
+            tx_fb.Text = "";
+            tx_serGR.Focus();
+        }
+        private void rb_GR_Click(object sender, EventArgs e)            // boton guias
+        {
+            tx_fb.Visible = false;
+            tx_fb.Text = "";
+            tx_serGR.Focus();
+        }
+        private void rb_DV_Click(object sender, EventArgs e)            // boton doc. venta
+        {
+            tx_fb.Visible = true;
+            tx_fb.Text = "B";
+            tx_fb.Focus();
         }
         #endregion
 
@@ -1384,13 +1524,33 @@ namespace TransCarga
         #region comboboxes
         private void cmb_mon_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (Tx_modo.Text == "NUEVO" || Tx_modo.Text == "EDITAR")
+            // lo moví a change commitment
+        }
+        private void cmb_mon_SelectionChangeCommitted(object sender, EventArgs e)
+        {
+            if (Tx_modo.Text == "NUEVO")    //  || Tx_modo.Text == "EDITAR"
             {
                 if (cmb_mon.SelectedIndex > -1)
                 {
                     tx_dat_mone.Text = cmb_mon.SelectedValue.ToString();
-                    tipcambio(tx_dat_mone.Text);
+                    if (tx_dat_mone.Text == tx_dat_mod.Text)
+                    {
+                        tipcambio(tx_dat_mone.Text);
+                    }
+                    else
+                    {
+                        MessageBox.Show("La moneda de pago debe ser igual" + Environment.NewLine +
+                            "a la moneda del documento", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+                        cmb_mon.SelectedValue = tx_dat_mod.Text;
+                    }
                 }
+            }
+        }
+        private void cmb_mpago_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (cmb_mpago.SelectedIndex > -1)
+            {
+                tx_dat_mp.Text = cmb_mpago.SelectedValue.ToString();
             }
         }
         #endregion comboboxes

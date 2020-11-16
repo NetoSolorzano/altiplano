@@ -116,7 +116,14 @@ namespace TransCarga
             ReturnValue1 = tx_newVal.Text;                                                          // valor cambiado a la moneda deseada
             if (para1 == "" || para1 == "0")
             {
-                ReturnValue2 = Math.Round(decimal.Parse(tx_newVal.Text) * decimal.Parse(tx_tipcam.Text),3).ToString();      // valor en moneda local
+                if (tx_newVal.Text.Trim() == "")
+                {
+                    ReturnValue2 = "0.000";
+                }
+                else
+                {
+                    ReturnValue2 = Math.Round(decimal.Parse(tx_newVal.Text) * decimal.Parse(tx_tipcam.Text), 3).ToString();      // valor en moneda local
+                }
             }
             else ReturnValue2 = para1;
             ReturnValue3 = tx_tipcam.Text;                                                          // tipo de cambio de la operacion
