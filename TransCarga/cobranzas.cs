@@ -526,36 +526,46 @@ namespace TransCarga
                                         }
                                         else
                                         {
-                                            if (dr.GetString("estadoser") == codAnul || dr.GetDouble("saldofina") <= 0)
+                                            if (dr.GetString("tipdocvta").Trim() != "")
                                             {
-                                                MessageBox.Show("La Guía esta anulada o ya esta pagada", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                                MessageBox.Show("La Guía tiene documento de venta" + Environment.NewLine +
+                                                    "Debe cobrar desde " + dr.GetString("tipdocvta") + dr.GetString("serdocvta") + "-" + dr.GetString("numdocvta"), "Atención", 
+                                                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
                                                 hay = "nohay";
                                             }
                                             else
                                             {
-                                                tx_dat_tdRem.Text = dr.GetString("ntdc");
-                                                tx_numDocRem.Text = dr.GetString("nudodegui");
-                                                tx_nomRem.Text = dr.GetString("razonsocial");
-                                                tx_dirRem.Text = dr.GetString("direc");
-                                                tx_dptoRtt.Text = dr.GetString("depart");
-                                                tx_provRtt.Text = dr.GetString("Provincia");
-                                                tx_distRtt.Text = dr.GetString("Localidad");
-                                                tx_flete.Text = string.Format("{0:0.00}", dr.GetDecimal("totguitra"));
-                                                tx_salxcob.Text = string.Format("{0:0.00}", dr.GetDecimal("saldofina"));
-                                                tx_pagado.Text = string.Format("{0:0.00}", dr.GetDecimal("totpagado"));
-                                                // a.codmonpag
-                                                if (!string.IsNullOrEmpty(dr.GetString("codmonvta").Trim()))    //  != ""
+                                                if (dr.GetString("estadoser") == codAnul || dr.GetDouble("saldofina") <= 0)
                                                 {
-                                                    tx_dat_mod.Text = dr.GetString("codmonvta");
-                                                    lb_moneda.Text = dr.GetString("nctmV");
+                                                    MessageBox.Show("La Guía esta anulada o ya esta pagada", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                                    hay = "nohay";
                                                 }
                                                 else
                                                 {
-                                                    tx_dat_mod.Text = dr.GetString("codmongui");
-                                                    lb_moneda.Text = dr.GetString("nctmG");
+                                                    tx_dat_tdRem.Text = dr.GetString("ntdc");
+                                                    tx_numDocRem.Text = dr.GetString("nudodegui");
+                                                    tx_nomRem.Text = dr.GetString("razonsocial");
+                                                    tx_dirRem.Text = dr.GetString("direc");
+                                                    tx_dptoRtt.Text = dr.GetString("depart");
+                                                    tx_provRtt.Text = dr.GetString("Provincia");
+                                                    tx_distRtt.Text = dr.GetString("Localidad");
+                                                    tx_flete.Text = string.Format("{0:0.00}", dr.GetDecimal("totguitra"));
+                                                    tx_salxcob.Text = string.Format("{0:0.00}", dr.GetDecimal("saldofina"));
+                                                    tx_pagado.Text = string.Format("{0:0.00}", dr.GetDecimal("totpagado"));
+                                                    // a.codmonpag
+                                                    if (!string.IsNullOrEmpty(dr.GetString("codmonvta").Trim()))    //  != ""
+                                                    {
+                                                        tx_dat_mod.Text = dr.GetString("codmonvta");
+                                                        lb_moneda.Text = dr.GetString("nctmV");
+                                                    }
+                                                    else
+                                                    {
+                                                        tx_dat_mod.Text = dr.GetString("codmongui");
+                                                        lb_moneda.Text = dr.GetString("nctmG");
+                                                    }
+                                                    cmb_mon.SelectedValue = tx_dat_mod.Text;
+                                                    hay = "si";
                                                 }
-                                                cmb_mon.SelectedValue = tx_dat_mod.Text;
-                                                hay = "si";
                                             }
                                         }
                                     }
