@@ -183,6 +183,7 @@ namespace TransCarga
             tx_digit.Text = v_nbu;
             tx_dat_estad.Text = codGene;
             tx_estado.Text = lib.nomstat(tx_dat_estad.Text);
+            if (Tx_modo.Text == "NUEVO") tx_cajero.Text = tx_nomuser.Text;
         }
         private void jalainfo()                 // obtiene datos de imagenes y variables
         {
@@ -643,6 +644,7 @@ namespace TransCarga
                                                         tx_dat_mod.Text = dr.GetString("codmongui");
                                                         lb_moneda.Text = dr.GetString("nctmG");
                                                     }
+                                                    tx_dat_mone.Text = tx_dat_mod.Text;
                                                     cmb_mon.SelectedValue = tx_dat_mod.Text;
                                                     hay = "si";
                                                 }
@@ -869,18 +871,11 @@ namespace TransCarga
                     if (rb_DV.Checked == true) MessageBox.Show("El documento de venta, no existe" + Environment.NewLine +
                         "esta anulada o esta cancelada", "Error en Documento", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     tx_numGR.Text = "";
-                    limpiar();
-                    limpia_chk();
-                    limpia_otros();
-                    limpia_combos();
-                    dataGridView1.Rows.Clear();
-                    tx_flete.Text = "";
-                    tx_igv.Text = "";
-                    tx_subt.Text = "";
-                    tx_pagado.Text = "";
-                    tx_salxcob.Text = "";
-                    tx_numero.Text = "";
-                    tx_serie.Text = v_slu;
+                    initIngreso();
+                    tx_dat_tidoor.Text = v_tip2;
+                    if (rb_GR.Checked == true) rb_GR.PerformClick();
+                    if (rb_PG.Checked == true) rb_PG.PerformClick();
+                    if (rb_DV.Checked == true) rb_DV.PerformClick();
                     tx_numGR.Focus();
                     return;
                 }
@@ -1068,6 +1063,7 @@ namespace TransCarga
                 }
                 // debe limpiar los campos y actualizar la grilla
                 initIngreso();          // limpiamos todo para volver a empesar
+                tx_dat_tidoor.Text = v_tip2;
             }
         }
         private bool graba()
@@ -1326,6 +1322,10 @@ namespace TransCarga
                 {
                     // las monedas no son iguales
                     // SOLO SE ACEPTAN PAGOS EN LA MONEDA DEL DOCUMENTO
+                    MessageBox.Show("Problema con la moneda e importes","Confirme moneda");
+                    tx_PAGO.Text = "";
+                    tx_PAGO.Focus();
+                    return;
                 }
             }
         }
@@ -1447,7 +1447,7 @@ namespace TransCarga
             tx_numero.ReadOnly = true;
             tx_noco.ReadOnly = true;
             tx_serie.ReadOnly = true;
-            rb_GR.Checked = true;
+            rb_GR.PerformClick();    // rb_GR.Checked = true;
             tx_cajero.Text = tx_nomuser.Text;
             tx_serGR.Focus();
         }

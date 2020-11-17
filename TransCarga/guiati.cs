@@ -1267,6 +1267,12 @@ namespace TransCarga
                 if (tx_tipcam.Text.Trim() == "") tx_tipcam.Text = "0";
                 decimal subtgr = Math.Round(decimal.Parse(tx_flete.Text) / (decimal.Parse(v_igv) / 100 + 1), 3);
                 decimal igvtgr = Math.Round(decimal.Parse(tx_flete.Text) - subtgr, 3);
+                if (tx_dat_mone.Text == MonDeft) tx_fletMN.Text = tx_flete.Text;
+                if (tx_fletMN.Text.Trim() == "")
+                {
+                    MessageBox.Show("Problema con la moneda o tipo de cambio","No puede continuar");
+                    return retorna;
+                }
                 decimal subMN = Math.Round(decimal.Parse(tx_fletMN.Text) / (decimal.Parse(v_igv)/100 + 1),3);
                 decimal igvMN = Math.Round(decimal.Parse(tx_fletMN.Text) - subMN,3);
                 string inserta = "insert into cabguiai (" +
