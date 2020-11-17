@@ -34,28 +34,28 @@ namespace TransCarga
         string img_grab = "";
         string img_anul = "";
         string img_ver = "";
-        string vtc_dni = "";            // variable tipo cliente natural
-        string vtc_ruc = "";            // variable tipo cliente empresa
-        string vtc_ext = "";            // variable tipo cliente extranjero
         string codAnul = "";            // codigo de documento anulado
         string codGene = "";            // codigo documento nuevo generado
-        string codCanc = "";            // codigo documento cancelado (pagado 100%)
         string MonDeft = "";            // moneda por defecto
         string v_clu = "";              // codigo del local del usuario
         string v_slu = "";              // serie del local del usuario
         string v_nbu = "";              // nombre del usuario
         string vi_formato = "";         // formato de impresion del documento
         string vi_copias = "";          // cant copias impresion
-        string v_impA5 = "";            // nombre de la impresora matricial
+//        string v_impA5 = "";            // nombre de la impresora matricial
         string v_impTK = "";            // nombre de la ticketera
-        string v_cid = "";              // codigo interno de tipo de documento
+//        string v_cid = "";              // codigo interno de tipo de documento
         string v_codc = "";             // codigo tipo documento cobranza
         string v_noco = "";             // sigla del codigo cobranza
         string v_CR_gr_ind = "";        // nombre del formato FT/BV en CR
-        string v_mfildet = "";          // maximo numero de filas en el detalle, coord. con el formato
+ //       string v_mfildet = "";          // maximo numero de filas en el detalle, coord. con el formato
         string vint_A0 = "";            // variable codigo anulacion interna por BD
-        string v_codidv = "";           // variable codifo interno de documento de venta en vista TDV
+//        string v_codidv = "";           // variable codifo interno de documento de venta en vista TDV
         string v_igv = "";              // valor igv %
+        string v_tip1 = "";             // cobranza desde pre guia
+        string v_tip2 = "";             // cobranza desde guia transportista
+        string v_tip3 = "";             // cobranza desde BOLETA
+        string v_tip4 = "";             // cobranza desde FACTURA
         //
         static libreria lib = new libreria();   // libreria de procedimientos
         publico lp = new publico();             // libreria de clases
@@ -224,14 +224,12 @@ namespace TransCarga
                         {
                             if (row["param"].ToString() == "anulado") codAnul = row["valor"].ToString().Trim();         // codigo doc anulado
                             if (row["param"].ToString() == "generado") codGene = row["valor"].ToString().Trim();        // codigo doc generado
-                            if (row["param"].ToString() == "cancelado") codCanc = row["valor"].ToString().Trim();        // codigo doc cancelado
                         }
                     }
                     if (row["formulario"].ToString() == "clients" && row["campo"].ToString() == "documento")
                     {
-                        if (row["param"].ToString() == "dni") vtc_dni = row["valor"].ToString().Trim();
-                        if (row["param"].ToString() == "ruc") vtc_ruc = row["valor"].ToString().Trim();
-                        if (row["param"].ToString() == "ext") vtc_ext = row["valor"].ToString().Trim();
+                        //if (row["param"].ToString() == "dni") vtc_dni = row["valor"].ToString().Trim();
+                        //if (row["param"].ToString() == "ruc") vtc_ruc = row["valor"].ToString().Trim();
                     }
                     if (row["formulario"].ToString() == nomform)
                     {
@@ -240,10 +238,16 @@ namespace TransCarga
                             if (row["param"].ToString() == "codigo") v_codc = row["valor"].ToString().Trim();               // codigo tipo documento
                             if (row["param"].ToString() == "nomcod") v_noco = row["valor"].ToString().Trim();               // nombre codido cobranza
                         }
+                        if (row["campo"].ToString() == "cobranza")
+                        {
+                            if (row["param"].ToString() == "tipo1") v_tip1 = row["valor"].ToString().Trim();               // cobranza desde pre guia
+                            if (row["param"].ToString() == "tipo2") v_tip2 = row["valor"].ToString().Trim();               // cobranza desde guia transp.
+                            if (row["param"].ToString() == "tipo3") v_tip3 = row["valor"].ToString().Trim();               // cobranza desde BOLETA
+                            if (row["param"].ToString() == "tipo4") v_tip4 = row["valor"].ToString().Trim();               // cobranza desde FACTURA
+                        }
                         if (row["campo"].ToString() == "impresion")
                         {
                             if (row["param"].ToString() == "formato") vi_formato = row["valor"].ToString().Trim();
-                            if (row["param"].ToString() == "filasDet") v_mfildet = row["valor"].ToString().Trim();       // maxima cant de filas de detalle
                             if (row["param"].ToString() == "copias") vi_copias = row["valor"].ToString().Trim();
                             if (row["param"].ToString() == "impTK") v_impTK = row["valor"].ToString().Trim();
                             if (row["param"].ToString() == "nomfor_cr") v_CR_gr_ind = row["valor"].ToString().Trim();
@@ -253,7 +257,6 @@ namespace TransCarga
                     if (row["formulario"].ToString() == "interno")              // codigo enlace interno de anulacion del cliente con en BD A0
                     {
                         if (row["campo"].ToString() == "anulado" && row["param"].ToString() == "A0") vint_A0 = row["valor"].ToString().Trim();
-                        if (row["campo"].ToString() == "codinDV" && row["param"].ToString() == "DV") v_codidv = row["valor"].ToString().Trim();           // codigo de dov.vta en tabla TDV
                         if (row["campo"].ToString() == "igv" && row["param"].ToString() == "%") v_igv = row["valor"].ToString().Trim();
                     }
                 }
@@ -289,12 +292,9 @@ namespace TransCarga
                 conn.Open();
                 if (conn.State == ConnectionState.Open)
                 {
-                    string consulta = "select a.id,a.fechope,a.martdve,a.tipdvta,a.serdvta,a.numdvta,a.ticltgr,a.tidoclt,a.nudoclt,a.nombclt,a.direclt,a.dptoclt,a.provclt,a.distclt,a.ubigclt,a.corrclt,a.teleclt," +
-                        "a.locorig,a.dirorig,a.ubiorig,a.obsdvta,a.canfidt,a.canbudt,a.mondvta,a.tcadvta,a.subtota,a.igvtota,a.porcigv,a.totdvta,a.totpags,a.saldvta,a.estdvta,a.frase01,a.impreso," +
-                        "a.tipoclt,a.m1clien,a.tippago,a.ferecep,a.userc,a.fechc,a.userm,a.fechm,b.descrizionerid as nomest " +
-                        "from cabcobran a left join desc_est b on b.idcodice=a.estdvta " + parte;
+                    string consulta = " " + parte;
                     MySqlCommand micon = new MySqlCommand(consulta, conn);
-                    micon.Parameters.AddWithValue("@tdep", vtc_ruc);
+                    micon.Parameters.AddWithValue("@tdep", "xx");
                     if (campo == "tx_idr") micon.Parameters.AddWithValue("@ida", tx_idr.Text);
                     if (campo == "sernum")
                     {
@@ -415,29 +415,14 @@ namespace TransCarga
         private bool valiVars()                 // valida existencia de datos en variables del form
         {
             bool retorna = true;
-            if (vtc_dni == "")           // variable tipo cliente natural
-            {
-                lib.messagebox("Tipo de cliente Natural");
-                retorna = false;
-            }
-            if (vtc_ruc == "")          // variable tipo cliente empresa
-            {
-                lib.messagebox("Tipo de cliente Empresa");
-                retorna = false;
-            }
-            if (vtc_ext == "")          // variable tipo cliente extranjero
-            {
-                lib.messagebox("Tipo de cliente Extranjero");
-                retorna = false;
-            }
             if (codAnul == "")          // codigo de documento anulado
             {
-                lib.messagebox("Código de Doc.Venta ANULADA");
+                lib.messagebox("Código de Cobranza ANULADA");
                 retorna = false;
             }
             if (codGene == "")          // codigo documento nuevo generado
             {
-                lib.messagebox("Código de Doc.Venta GENERADA/NUEVA");
+                lib.messagebox("Código de Cobranza GENERADA/NUEVA");
                 retorna = false;
             }
             if (MonDeft == "")          // moneda por defecto
@@ -452,12 +437,12 @@ namespace TransCarga
             }
             if (vi_formato == "")       // formato de impresion del documento
             {
-                lib.messagebox("formato de impresion del Doc.Venta");
+                lib.messagebox("formato de impresion de la cobranza");
                 retorna = false;
             }
             if (vi_copias == "")        // cant copias impresion
             {
-                lib.messagebox("# copias impresas del Doc.Venta");
+                lib.messagebox("# copias impresas de la cobranza");
                 retorna = false;
             }
             if (v_impTK == "")           // nombre de la ticketera
@@ -467,12 +452,7 @@ namespace TransCarga
             }
             if (v_CR_gr_ind == "")
             {
-                lib.messagebox("Nombre formato Doc.Venta en CR");
-                retorna = false;
-            }
-            if (v_mfildet == "")
-            {
-                lib.messagebox("Max. filas de detalle");
+                lib.messagebox("Nombre formato Cobranzas en CR");
                 retorna = false;
             }
             if (vint_A0 == "")
@@ -497,7 +477,107 @@ namespace TransCarga
                     string cons = "???";
                     if (rb_PG.Checked == true)          // Pre guia
                     {
-
+                        cons = "SELECT a.fecpregui,a.serpregui,a.numpregui,a.codmonpre,a.totpregui,a.tidodepre,a.nudodepre,a.tidorepre,a.nudorepre,a.estadoser,d.Descrizione AS nctmG," +
+                            "a.fecguitra,a.serguitra,a.numguitra,a.codmongui,a.totguitra," +
+                            "a.fecdocvta,a.tipdocvta,a.serdocvta,a.numdocvta,a.codmonvta,a.totdocvta," +
+                            "a.codmonpag,a.totpagado,a.saldofina,a.feculpago,a.estadoser," +
+                            "ifnull(b.descrizionerid,'') AS ntdcD,c.razonsocial as razsocialD,concat(c.Direcc1, ' ', c.Direcc2) AS direcD, c.depart as depD,c.Provincia as proD,c.Localidad as disD," +
+                            "ifnull(b1.descrizionerid,'') AS ntdcR,c1.razonsocial as razsocialR,CONCAT(c1.Direcc1,' ',c1.Direcc2) AS direcR,c1.depart as depR,c1.Provincia as proR,c1.Localidad as disR " +
+                            "from controlg a " +
+                            "LEFT JOIN desc_doc b ON b.idcodice = a.tidodepre " +
+                            "LEFT JOIN anag_cli c ON c.tipdoc = a.tidodepre AND c.RUC = a.nudodepre " +
+                            "LEFT JOIN desc_doc b1 ON b1.idcodice = a.tidorepre " +
+                            "LEFT JOIN anag_cli c1 ON c1.tipdoc = a.tidorepre AND c1.RUC = a.nudorepre " +
+                            "LEFT JOIN desc_mon d ON d.idcodice = a.codmonpre " +
+                            "WHERE a.serpregui = @ser AND a.numpregui = @num";
+                        using (MySqlCommand micon = new MySqlCommand(cons, conn))
+                        {
+                            micon.Parameters.AddWithValue("@ser", serie);
+                            micon.Parameters.AddWithValue("@num", corre);
+                            using (MySqlDataReader dr = micon.ExecuteReader())
+                            {
+                                if (dr.HasRows)
+                                {
+                                    if (dr.Read())
+                                    {
+                                        if (string.IsNullOrEmpty(dr.GetString("serpregui")) || dr.GetString("estadoser") == codAnul || dr.GetDecimal("saldofina") <= 0)
+                                        {
+                                            hay = "no";
+                                        }
+                                        else
+                                        {
+                                            if (dr.GetString("serguitra").Trim() != "")
+                                            {
+                                                MessageBox.Show("La Pre-Guía tiene una Guía de Remisión asociada" + Environment.NewLine +
+                                                    "debe pagar desde la guía " + dr.GetString("serguitra") + "-" + dr.GetString("numguitra"), "Atención", MessageBoxButtons.OK,MessageBoxIcon.Hand);
+                                                hay = "no";
+                                            }
+                                            else
+                                            {
+                                                hay = "si";
+                                                if (dr.GetString("ntdcD") != "")
+                                                {
+                                                    tx_dat_tdRem.Text = dr.GetString("ntdcD");
+                                                    tx_numDocRem.Text = dr.GetString("nudodepre");
+                                                    tx_nomRem.Text = dr.GetString("razsocialD");
+                                                    tx_dirRem.Text = dr.GetString("direcD");
+                                                    tx_dptoRtt.Text = dr.GetString("depD");
+                                                    tx_provRtt.Text = dr.GetString("proD");
+                                                    tx_distRtt.Text = dr.GetString("disD");
+                                                }
+                                                else
+                                                {
+                                                    tx_dat_tdRem.Text = dr.GetString("ntdcR");
+                                                    tx_numDocRem.Text = dr.GetString("nudorepre");
+                                                    tx_nomRem.Text = dr.GetString("razsocialR");
+                                                    tx_dirRem.Text = dr.GetString("direcR");
+                                                    tx_dptoRtt.Text = dr.GetString("depR");
+                                                    tx_provRtt.Text = dr.GetString("proR");
+                                                    tx_distRtt.Text = dr.GetString("disR");
+                                                }
+                                                tx_flete.Text = string.Format("{0:0.00}", dr.GetDecimal("totpregui"));
+                                                tx_salxcob.Text = string.Format("{0:0.00}", dr.GetDecimal("saldofina"));
+                                                tx_pagado.Text = string.Format("{0:0.00}", dr.GetDecimal("totpagado"));
+                                                tx_dat_mod.Text = dr.GetString("codmonpre");
+                                                lb_moneda.Text = dr.GetString("nctmG");
+                                                tx_dat_mone.Text = dr.GetString("codmonpre");
+                                                cmb_mon.SelectedValue = tx_dat_mone.Text;
+                                            }
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    hay = "no"; // no existe el doc
+                                }
+                            }
+                        }
+                        if (hay == "si")
+                        {
+                            dataGridView1.Rows.Clear();
+                            string consdet = "SELECT cantprodi,unimedpro,codiprodi,descprodi,pesoprodi,precprodi,totaprodi " +
+                                    "FROM detpregr WHERE serpregui = @ser AND numpregui = @num";
+                            using (MySqlCommand midet = new MySqlCommand(consdet, conn))
+                            {
+                                midet.Parameters.AddWithValue("@ser", serie);
+                                midet.Parameters.AddWithValue("@num", corre);
+                                using (MySqlDataReader drD = midet.ExecuteReader())
+                                {
+                                    while (drD.Read())
+                                    {
+                                        dataGridView1.Rows.Add(
+                                            drD.GetString("unimedpro"),
+                                            drD.GetString("descprodi"),
+                                            drD.GetString("cantprodi"),
+                                            drD.GetString("pesoprodi"),
+                                            drD.GetString("totaprodi")
+                                            );
+                                    }
+                                }
+                            }
+                            calculos(decimal.Parse(tx_flete.Text));    // calculamos el subtotal e IGV
+                            retorna = true;
+                        }
                     }
                     if (rb_GR.Checked == true)          // guia
                     {
@@ -784,8 +864,8 @@ namespace TransCarga
                 // validamos que la GR: 1.exista, 2.No este facturada, 3.No este anulada
                 if (validGR(tx_serGR.Text, tx_numGR.Text) == false)
                 {
-                    if (rb_PG.Checked == true) MessageBox.Show("");
-                    if (rb_GR.Checked == true) MessageBox.Show("La GR no existe, esta anulada o ya esta facturada", "Error en Guía", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    if (rb_PG.Checked == true) MessageBox.Show("La Pre-Guía no existe, esta anulada o ya esta pagada", "Error en Pre Guía", MessageBoxButtons.OK,MessageBoxIcon.Hand);
+                    if (rb_GR.Checked == true) MessageBox.Show("La GR no existe, esta anulada o ya esta pagada", "Error en Guía", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     if (rb_DV.Checked == true) MessageBox.Show("El documento de venta, no existe" + Environment.NewLine +
                         "esta anulada o esta cancelada", "Error en Documento", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     tx_numGR.Text = "";
@@ -876,7 +956,11 @@ namespace TransCarga
                                 {
                                     MessageBox.Show(resulta, "Error en actualización de seguimiento", MessageBoxButtons.OK, MessageBoxIcon.Error);
                                 }
-                                //Bt_print.PerformClick();
+                                var xx = MessageBox.Show("Desea imprimir registro de cobranza?", "Confirme por favor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                                if (xx == DialogResult.Yes)
+                                {
+                                    Bt_print.PerformClick();
+                                }
                             }
                         }
                     }
@@ -988,90 +1072,48 @@ namespace TransCarga
         }
         private bool graba()
         {
-            bool retorna = false;                                   // ME QUEDE ACA
+            bool retorna = false;
             MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
             conn.Open();
             if(conn.State == ConnectionState.Open)
             {
-                string todo = "corre_serie";
-                using (MySqlCommand micon = new MySqlCommand(todo, conn))
-                {
-                    micon.CommandType = CommandType.StoredProcedure;
-                    micon.Parameters.AddWithValue("td", tx_dat_tdv.Text);
-                    micon.Parameters.AddWithValue("ser", tx_serie.Text);
-                    using (MySqlDataReader dr0 = micon.ExecuteReader())
-                    {
-                        if (dr0.Read())
-                        {
-                            if (dr0[0] != null && dr0.GetString(0) != "")
-                            {
-                                tx_numero.Text = lib.Right("00000000" + dr0.GetString(0), 8);
-                            }
-                        }
-                    }
-                }
-                if (tx_tipcam.Text == "") tx_tipcam.Text = "0";
-                decimal fletMN = 0;
-                decimal subtMN = 0;
-                decimal igvtMN = 0;
-                if (tx_dat_mone.Text != MonDeft)
-                {
-                    if (tx_tipcam.Text == "0" || tx_fletMN.Text == "")
-                    {
-                        MessageBox.Show("Error con el tipo de cambio", "Error interno", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        return retorna;
-                    }
-                    else
-                    {
-                        fletMN = Math.Round(decimal.Parse(tx_fletMN.Text), 3);
-                        subtMN = Math.Round(fletMN / (1 + decimal.Parse(v_igv)/100), 3);
-                        igvtMN = Math.Round(fletMN - subtMN, 3);
-                    }
-                }
-                else
-                {
-                    fletMN = Math.Round(decimal.Parse(tx_flete.Text), 3);
-                    subtMN = Math.Round(decimal.Parse(tx_subt.Text), 3);
-                    igvtMN = Math.Round(decimal.Parse(tx_igv.Text), 3);
-                }
                 string inserta = "insert into cabcobran (" +
-                    "??," +
+                    "fechope,tipdcob,sercobc,loccobc,estdcob,tidoorc,martdve,tipdoco,serdoco,numdoco,timepag,refpagc,cobrdor,obscobc,mondoco,totdoco,totpags," +
+                    "saldvta,subdoco,igvdoco,codmopa,totpago,tcadvta,porcigv,totpaMN,codmoMN,impreso," +
                     "verApp,userc,fechc,diriplan4,diripwan4,netbname) values (" +
-                    "???," +
+                    "@fechop,@ctdvta,@serdv,@ldcpgr,@estado,@tidoor,@martdv,@tipdoc,@serdoc,@numdoc,@timepa,@refpag,@cobrdo,@obsprg,@mondoc,@totpgr,@pagpgr," +
+                    "@salxpa,@subpgr,@igvpgr,@monppr,@totpag,@tcoper,@porcig,@totMN,@codMN,@impSN," +
                     "@verApp,@asd,now(),@iplan,@ipwan,@nbnam)";
                 using (MySqlCommand micon = new MySqlCommand(inserta, conn))
                 {
                     micon.Parameters.AddWithValue("@fechop", tx_fechope.Text.Substring(6, 4) + "-" + tx_fechope.Text.Substring(3, 2) + "-" + tx_fechope.Text.Substring(0, 2));
                     micon.Parameters.AddWithValue("@ctdvta", tx_dat_tdv.Text);
                     micon.Parameters.AddWithValue("@serdv", tx_serie.Text);
-                    micon.Parameters.AddWithValue("@numdv", tx_numero.Text);
-                    micon.Parameters.AddWithValue("@tdcrem", tx_dat_tdRem.Text);
-                    micon.Parameters.AddWithValue("@ndcrem", tx_numDocRem.Text);
-                    micon.Parameters.AddWithValue("@nomrem", tx_nomRem.Text);
-                    micon.Parameters.AddWithValue("@dircre", tx_dirRem.Text);
-                    micon.Parameters.AddWithValue("@dptocl", tx_dptoRtt.Text);
-                    micon.Parameters.AddWithValue("@provcl", tx_provRtt.Text);
-                    micon.Parameters.AddWithValue("@distcl", tx_distRtt.Text);
+                    //micon.Parameters.AddWithValue("@numdv", tx_numero.Text);  // numero NO porque se autogenera en la BD
                     micon.Parameters.AddWithValue("@ldcpgr", TransCarga.Program.almuser);         // local origen
-                    micon.Parameters.AddWithValue("@didegr", dirloc);                             // direccion origen
-                    micon.Parameters.AddWithValue("@ubdegr", ubiloc);                             // ubigeo origen
+                    micon.Parameters.AddWithValue("@estado", tx_dat_estad.Text);
+                    micon.Parameters.AddWithValue("@tidoor", (rb_PG.Checked == true)? "1":(rb_GR.Checked == true)? "2":"3");
+                    micon.Parameters.AddWithValue("@martdv", tx_fb.Text);
+                    micon.Parameters.AddWithValue("@tipdoc", tx_dat_tidoor.Text);
+                    micon.Parameters.AddWithValue("@serdoc", tx_serGR.Text);
+                    micon.Parameters.AddWithValue("@numdoc", tx_numGR.Text);
+                    micon.Parameters.AddWithValue("@timepa", tx_dat_mp.Text);
+                    micon.Parameters.AddWithValue("@refpag", tx_detpago.Text);
+                    micon.Parameters.AddWithValue("@cobrdo", tx_cajero.Text);
                     micon.Parameters.AddWithValue("@obsprg", tx_obser1.Text);
-                    micon.Parameters.AddWithValue("@monppr", tx_dat_mone.Text);
-                    micon.Parameters.AddWithValue("@tcoper", tx_tipcam.Text);                   // TIPO DE CAMBIO
-                    micon.Parameters.AddWithValue("@subpgr", tx_subt.Text);                     // sub total
-                    micon.Parameters.AddWithValue("@igvpgr", tx_igv.Text);                      // igv
-                    micon.Parameters.AddWithValue("@porcigv", v_igv);                           // porcentaje en numeros de IGV
-                    micon.Parameters.AddWithValue("@totpgr", tx_flete.Text);                    // total inc. igv
+                    micon.Parameters.AddWithValue("@mondoc", tx_dat_mod.Text);
+                    micon.Parameters.AddWithValue("@totpgr", tx_flete.Text);                    // total doc origen
                     micon.Parameters.AddWithValue("@pagpgr", (tx_pagado.Text == "") ? "0" : tx_pagado.Text);
                     micon.Parameters.AddWithValue("@salxpa", (tx_salxcob.Text == "") ? "0" : tx_salxcob.Text);
-                    micon.Parameters.AddWithValue("@estpgr", (tx_pagado.Text == "") ? tx_dat_estad.Text : codCanc); // estado
-                    micon.Parameters.AddWithValue("@tipacc", "");                   // pago de documento a credito o contado   .. FALTA
-                    micon.Parameters.AddWithValue("@feredv", DBNull.Value);         // si es pago contado la fecha de recep del doc. es la misma fecha
-                    micon.Parameters.AddWithValue("@impSN", "S");
-                    micon.Parameters.AddWithValue("@codMN", MonDeft);               // codigo moneda local
-                    micon.Parameters.AddWithValue("@subMN", subtMN);
-                    micon.Parameters.AddWithValue("@igvMN", igvtMN);
-                    micon.Parameters.AddWithValue("@totMN", fletMN);
+                    micon.Parameters.AddWithValue("@subpgr", tx_subt.Text);                     // sub total
+                    micon.Parameters.AddWithValue("@igvpgr", tx_igv.Text);                      // igv
+                    micon.Parameters.AddWithValue("@monppr", tx_dat_mone.Text);
+                    micon.Parameters.AddWithValue("@totpag", tx_PAGO.Text);
+                    micon.Parameters.AddWithValue("@tcoper", (tx_tipcam.Text == "")? "0" : tx_tipcam.Text);                   // TIPO DE CAMBIO
+                    micon.Parameters.AddWithValue("@porcig", v_igv);                            // porcentaje en numeros de IGV
+                    micon.Parameters.AddWithValue("@totMN", tx_fletMN.Text);
+                    micon.Parameters.AddWithValue("@codMN", MonDeft);                           // codigo moneda local
+                    micon.Parameters.AddWithValue("@impSN", tx_impreso.Text);
                     micon.Parameters.AddWithValue("@verApp", verapp);
                     micon.Parameters.AddWithValue("@asd", asd);
                     micon.Parameters.AddWithValue("@iplan", lib.iplan());
@@ -1086,6 +1128,7 @@ namespace TransCarga
                         if (dr.Read())
                         {
                             tx_idr.Text = dr.GetString(0);
+                            tx_numero.Text = lib.Right(tx_idr.Text, 8);
                         }
                     }
                 }
@@ -1263,12 +1306,26 @@ namespace TransCarga
                             return;
                         }
                     }
+                    // calculos en moneda local
+                    if (tx_dat_mone.Text == MonDeft)
+                    {
+                        tx_fletMN.Text = tx_PAGO.Text;
+                    }
+                    else
+                    {
+                        if (tx_tipcam.Text.Trim() == "")
+                        {
+                            MessageBox.Show("Se requiere tipo de cambio para operaciones" + Environment.NewLine +
+                                "que no son en moneda local", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+                            cmb_mon.Focus();
+                            return;
+                        }
+                    }
                 }
                 else
                 {
                     // las monedas no son iguales
-                    // se tiene que comparar el saldo del documento con el pago en moneda cambiada
-
+                    // SOLO SE ACEPTAN PAGOS EN LA MONEDA DEL DOCUMENTO
                 }
             }
         }
@@ -1281,18 +1338,22 @@ namespace TransCarga
         }
         private void tx_fb_Leave(object sender, EventArgs e)
         {
+            if (tx_fb.Text == "B") tx_dat_tidoor.Text = v_tip3;
+            else tx_dat_tidoor.Text = v_tip4;
             tx_serGR.Focus();
         }
         private void rb_PG_Click(object sender, EventArgs e)            // boton pre guia
         {
             tx_fb.Visible = false;
             tx_fb.Text = "";
+            tx_dat_tidoor.Text = v_tip1;
             tx_serGR.Focus();
         }
         private void rb_GR_Click(object sender, EventArgs e)            // boton guias
         {
             tx_fb.Visible = false;
             tx_fb.Text = "";
+            tx_dat_tidoor.Text = v_tip2;
             tx_serGR.Focus();
         }
         private void rb_DV_Click(object sender, EventArgs e)            // boton doc. venta
