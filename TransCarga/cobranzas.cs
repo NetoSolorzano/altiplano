@@ -287,19 +287,20 @@ namespace TransCarga
                 }
                 if (campo == "sernum")
                 {
-                    parte = "where a.tipdvta=@tdv and a.serdvta=@ser and a.numdvta=@num";
+                    parte = "where a.sercobc=@ser AND a.numcobc=@num";
                 }
                 MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
                 conn.Open();
                 if (conn.State == ConnectionState.Open)
                 {
-                    string consulta = " " + parte;
+                    string consulta = "SELECT a.id,a.fechope,a.tipdcob,a.sercobc,a.numcobc,a.loccobc,a.estdcob,a.tidoorc,a.martdve,a.tipdoco,a.serdoco,a.numdoco," +
+                        "a.timepag,a.refpagc,a.cobrdor,a.obscobc,a.mondoco,a.totdoco,a.totpags,a.saldvta,a.subdoco,a.igvdoco,a.codmopa,a.totpago,a.tcadvta," +
+                        "a.porcigv,a.totpaMN,a.codmoMN,a.impreso " +
+                        "FROM cabcobran a " + parte;
                     MySqlCommand micon = new MySqlCommand(consulta, conn);
-                    micon.Parameters.AddWithValue("@tdep", "xx");
                     if (campo == "tx_idr") micon.Parameters.AddWithValue("@ida", tx_idr.Text);
                     if (campo == "sernum")
                     {
-                        micon.Parameters.AddWithValue("@tdv", tx_dat_tdv.Text);
                         micon.Parameters.AddWithValue("@ser", tx_serie.Text);
                         micon.Parameters.AddWithValue("@num", tx_numero.Text);
                     }
@@ -310,35 +311,31 @@ namespace TransCarga
                         {
                             tx_idr.Text = dr.GetString("id");
                             tx_fechope.Text = dr.GetString("fechope").Substring(0, 10);
-                            //.Text = dr.GetString("martdve");
-                            tx_dat_tdv.Text = dr.GetString("tipdvta");
-                            tx_serie.Text = dr.GetString("serdvta");
-                            tx_numero.Text = dr.GetString("numdvta");
-                            tx_dat_tdRem.Text = dr.GetString("tidoclt");
-                            tx_numDocRem.Text = dr.GetString("nudoclt");
-                            tx_nomRem.Text = dr.GetString("nombclt");
-                            tx_dirRem.Text = dr.GetString("direclt");
-                            tx_dptoRtt.Text = dr.GetString("dptoclt");
-                            tx_provRtt.Text = dr.GetString("provclt");
-                            tx_distRtt.Text = dr.GetString("distclt");
-                            //locorig,dirorig,ubiorig
-                            tx_obser1.Text = dr.GetString("obsdvta");
-                            tx_dat_mone.Text = dr.GetString("mondvta");
-                            tx_tipcam.Text = dr.GetString("tcadvta");
-                            tx_subt.Text = Math.Round(dr.GetDecimal("subtota"),2).ToString();
-                            tx_igv.Text = Math.Round(dr.GetDecimal("igvtota"), 2).ToString();
-                            //,,,porcigv
-                            tx_flete.Text = Math.Round(dr.GetDecimal("totdvta"),2).ToString();           // total inc. igv
-                            tx_pagado.Text = dr.GetString("totpags");
-                            tx_salxcob.Text = dr.GetString("saldvta");
-                            tx_dat_estad.Text = dr.GetString("estdvta");        // estado
-                            //
-                            tx_numero.Text = dr.GetString("numdvta");       // al cambiar el indice en el combox se borra numero, por eso lo volvemos a jalar
-                            cmb_mon.SelectedValue = tx_dat_mone.Text;
-                            tx_estado.Text = dr.GetString("nomest");   // lib.nomstat(tx_dat_estad.Text);
-                            if (dr.GetString("userm") == "") tx_digit.Text = lib.nomuser(dr.GetString("userc"));
-                            else tx_digit.Text = lib.nomuser(dr.GetString("userm"));
-                            //
+                            tx_dat_tdv.Text = dr.GetString("tipdcob");
+                            tx_serie.Text = dr.GetString("sercobc");
+                            tx_dat_estad.Text = dr.GetString("estdcob");
+                            rb_PG.Checked = (dr.GetString("tidoorc") == "1") ? true : false;
+                            rb_GR.Checked = (dr.GetString("tidoorc") == "2") ? true : false;
+                            rb_DV.Checked = (dr.GetString("tidoorc") == "3") ? true : false;
+                            tx_fb.Text = dr.GetString("martdve");
+                            tx_dat_tidoor.Text = dr.GetString("");
+                            tx_serGR.Text = dr.GetString("serdoco");
+                            tx_numGR.Text = dr.GetString("numdoco");
+                            tx_dat_mp.Text = dr.GetString("");
+                            tx_detpago.Text = dr.GetString("");
+                            tx_cajero.Text = dr.GetString("");
+                            tx_obser1.Text = dr.GetString("");
+                            tx_dat_mod.Text = dr.GetString("");
+                            tx_flete.Text = dr.GetString("");
+                            tx_pagado.Text = dr.GetString("");
+                            tx_salxcob.Text = dr.GetString("");
+                            tx_subt.Text = dr.GetString("");
+                            tx_igv.Text = dr.GetString("");
+                            tx_dat_mone.Text = dr.GetString("");
+                            tx_PAGO.Text = dr.GetString("");
+                            tx_tipcam.Text = dr.GetString("");
+                            tx_fletMN.Text = dr.GetString("");
+                            tx_impreso.Text = dr.GetString("");
                         }
                         else
                         {
@@ -1291,7 +1288,7 @@ namespace TransCarga
                         tx_PAGO.Focus();
                         return;
                     }
-                    if (vpag < vsal)
+                    if (vpag < vsal && rb_GR.Checked == true)
                     {
                         var aa = MessageBox.Show("El valor pagado es MENOR al saldo del documento" + Environment.NewLine +
                             "Confirma que la operación es correcta?", "Atención - confirme por favor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
@@ -1301,6 +1298,13 @@ namespace TransCarga
                             tx_PAGO.Focus();
                             return;
                         }
+                    }
+                    if (vpag < vsal && rb_DV.Checked == true)
+                    {
+                        MessageBox.Show("El pago de Docs. Venta deben ser cancelatorios","Atención",MessageBoxButtons.OK,MessageBoxIcon.Hand);
+                        tx_PAGO.Text = tx_salxcob.Text;
+                        tx_PAGO.Focus();
+                        return;
                     }
                     // calculos en moneda local
                     if (tx_dat_mone.Text == MonDeft)

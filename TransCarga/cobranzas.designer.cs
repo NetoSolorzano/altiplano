@@ -1302,7 +1302,7 @@
             // rb_DV
             // 
             this.rb_DV.AutoSize = true;
-            this.rb_DV.Location = new System.Drawing.Point(131, 7);
+            this.rb_DV.Location = new System.Drawing.Point(108, 7);
             this.rb_DV.Name = "rb_DV";
             this.rb_DV.Size = new System.Drawing.Size(64, 17);
             this.rb_DV.TabIndex = 2;
@@ -1314,7 +1314,7 @@
             // rb_GR
             // 
             this.rb_GR.AutoSize = true;
-            this.rb_GR.Location = new System.Drawing.Point(77, 7);
+            this.rb_GR.Location = new System.Drawing.Point(39, 7);
             this.rb_GR.Name = "rb_GR";
             this.rb_GR.Size = new System.Drawing.Size(46, 17);
             this.rb_GR.TabIndex = 1;
@@ -1333,6 +1333,7 @@
             this.rb_PG.TabStop = true;
             this.rb_PG.Text = "Pre G/R";
             this.rb_PG.UseVisualStyleBackColor = true;
+            this.rb_PG.Visible = false;
             this.rb_PG.Click += new System.EventHandler(this.rb_PG_Click);
             // 
             // label18

@@ -197,6 +197,8 @@ namespace TransCarga
             cmb_tdv.SelectedIndex = -1;
             dataGridView1.Rows.Clear();
             dataGridView1.ReadOnly = true;
+            tx_igv.Text = "";
+            tx_subt.Text = "";
             tx_flete.Text = "";
             tx_pagado.Text = "";
             tx_salxcob.Text = "";
@@ -611,7 +613,7 @@ namespace TransCarga
                 using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
                 {
                     lib.procConn(conn);
-                    string cons = "select fecguitra,totguitra,estadoser,fecdocvta,tipdocvta,serdocvta,numdocvta,codmonvta,totdocvta " +
+                    string cons = "select fecguitra,totguitra,estadoser,fecdocvta,tipdocvta,serdocvta,numdocvta,codmonvta,totdocvta,saldofina " +
                         "from controlg where serguitra=@ser and numguitra=@num";
                     using (MySqlCommand mic1 = new MySqlCommand(cons, conn))
                     {
@@ -625,6 +627,12 @@ namespace TransCarga
                                 {
                                     if (dr.GetString("numdocvta").Trim() != "") hay = "sif"; // si hay guía pero ya esta facturado
                                     else hay = "sin";    // si hay guía y no tiene factura
+                                    if (dr.GetString("saldofina") != dr.GetString("totguitra") && dr.GetDecimal("saldofina") > 0)
+                                    {
+                                        MessageBox.Show("No esta permitido generar un documento" + Environment.NewLine + 
+                                            "de venta de una guía que tiene pago parcial","Atención - no puede continuar");
+                                        hay = "no";
+                                    }
                                 }
                             }
                             else
@@ -644,12 +652,12 @@ namespace TransCarga
                             "left join anag_cli b1 on b1.tipdoc=a.tidoregri and b1.ruc=a.nudoregri " +
                             "left join anag_cli b2 on b2.tipdoc=a.tidodegri and b2.ruc=a.nudodegri " +
                             "left join desc_mon m on m.idcodice=a.tipmongri " +
-                            "WHERE a.sergui = @ser AND a.numgui = @num AND a.estadoser IN(@est) AND c.fecdocvta IS NULL";
+                            "WHERE a.sergui = @ser AND a.numgui = @num AND a.estadoser not IN(@est) AND c.fecdocvta IS NULL";
                         using (MySqlCommand micon = new MySqlCommand(consulta, conn))
                         {
                             micon.Parameters.AddWithValue("@ser", serie);
                             micon.Parameters.AddWithValue("@num", corre);
-                            micon.Parameters.AddWithValue("@est", codGene);
+                            micon.Parameters.AddWithValue("@est", codAnul);
                             using (MySqlDataReader dr = micon.ExecuteReader())
                             {
                                 if (dr.Read())
@@ -683,6 +691,8 @@ namespace TransCarga
                                         datguias[4] = dr.GetString("totgri");          // valor GR en su moneda
                                         datguias[5] = dr.GetString("totgrMN");         // valor GR en moneda local
                                         datguias[6] = dr.GetString("codMN");            // codigo moneda local
+                                        //
+                                        tx_dat_saldoGR.Text = dr.GetString("salgri");
                                         retorna = true;
                                     }
                                 }
@@ -949,6 +959,14 @@ namespace TransCarga
                 else
                 {
                     dataGridView1.AllowUserToAddRows = true;
+                }
+                rb_no.Enabled = true;
+                if (decimal.Parse(tx_dat_saldoGR.Text) <= 0)
+                {
+                    MessageBox.Show("La GR esta cancelada, el documento de venta"+ Environment.NewLine +
+                         "se creará con el estado cancelado","Atención verifique",MessageBoxButtons.OK,MessageBoxIcon.Information);
+                    rb_si.PerformClick();
+                    rb_no.Enabled = false;
                 }
                 tx_flete_Leave(null, null);
             }
@@ -1681,9 +1699,16 @@ namespace TransCarga
         }
         private void rb_si_Click(object sender, EventArgs e)
         {
-            tx_pagado.Text = tx_flete.Text;
-            tx_salxcob.Text = "0.00";
-            tx_salxcob.BackColor = Color.Green;
+            if (decimal.Parse(tx_dat_saldoGR.Text) > 0)
+            {
+                tx_pagado.Text = tx_flete.Text;
+                tx_salxcob.Text = "0.00";
+                tx_salxcob.BackColor = Color.Green;
+            }
+            else
+            {
+                tx_salxcob.Text = "0.00";
+            }
         }
         private void rb_no_Click(object sender, EventArgs e)
         {

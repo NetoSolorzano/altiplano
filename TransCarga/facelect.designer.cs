@@ -169,6 +169,7 @@
             this.tx_serGR = new TransCarga.NumericTextBox();
             this.tx_tfil = new TransCarga.NumericTextBox();
             this.tx_totcant = new TransCarga.NumericTextBox();
+            this.tx_dat_saldoGR = new System.Windows.Forms.TextBox();
             this.toolStrip1.SuspendLayout();
             this.groupBox11.SuspendLayout();
             this.groupBox7.SuspendLayout();
@@ -1621,6 +1622,16 @@
             this.tx_totcant.TabIndex = 25;
             this.tx_totcant.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
+            // tx_dat_saldoGR
+            // 
+            this.tx_dat_saldoGR.BackColor = System.Drawing.SystemColors.Window;
+            this.tx_dat_saldoGR.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_dat_saldoGR.Location = new System.Drawing.Point(708, 35);
+            this.tx_dat_saldoGR.Name = "tx_dat_saldoGR";
+            this.tx_dat_saldoGR.Size = new System.Drawing.Size(26, 18);
+            this.tx_dat_saldoGR.TabIndex = 366;
+            this.tx_dat_saldoGR.Visible = false;
+            // 
             // facelect
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1628,6 +1639,7 @@
             this.AutoSize = true;
             this.BackColor = System.Drawing.Color.LightSteelBlue;
             this.ClientSize = new System.Drawing.Size(770, 557);
+            this.Controls.Add(this.tx_dat_saldoGR);
             this.Controls.Add(this.tx_fletMN);
             this.Controls.Add(this.tx_tipcam);
             this.Controls.Add(this.tx_dat_m1clte);
@@ -1869,5 +1881,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn valor;
         private System.Windows.Forms.DataGridViewTextBoxColumn valorMN;
         private System.Windows.Forms.DataGridViewTextBoxColumn codmonloc;
+        private System.Windows.Forms.TextBox tx_dat_saldoGR;
     }
 }
