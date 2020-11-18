@@ -295,8 +295,15 @@ namespace TransCarga
                 {
                     string consulta = "SELECT a.id,a.fechope,a.tipdcob,a.sercobc,a.numcobc,a.loccobc,a.estdcob,a.tidoorc,a.martdve,a.tipdoco,a.serdoco,a.numdoco," +
                         "a.timepag,a.refpagc,a.cobrdor,a.obscobc,a.mondoco,a.totdoco,a.totpags,a.saldvta,a.subdoco,a.igvdoco,a.codmopa,a.totpago,a.tcadvta," +
-                        "a.porcigv,a.totpaMN,a.codmoMN,a.impreso " +
-                        "FROM cabcobran a " + parte;
+                        "a.porcigv,a.totpaMN,a.codmoMN,a.impreso,a.cltdoco,a.dcltdoco,d.Descrizione AS nctmG,a.userc,u.nombre,e.descrizionerid as nomest," +
+                        "b.descrizionerid AS ntdc,c.razonsocial,concat(c.Direcc1, ' ', c.Direcc2) AS direc,c.depart,c.Provincia,c.Localidad " +
+                        "FROM cabcobran a " +
+                        "LEFT JOIN desc_doc b ON b.idcodice = a.cltdoco " +
+                        "LEFT JOIN anag_cli c ON c.tipdoc = a.cltdoco AND c.RUC = a.dcltdoco " +
+                        "LEFT JOIN desc_mon d ON d.idcodice = a.codmopa " +
+                        "left join usuarios u on u.nom_user = a.userc " +
+                        "left join desc_est e on e.idcodice = a.estdcob " +
+                        parte;
                     MySqlCommand micon = new MySqlCommand(consulta, conn);
                     if (campo == "tx_idr") micon.Parameters.AddWithValue("@ida", tx_idr.Text);
                     if (campo == "sernum")
@@ -313,29 +320,47 @@ namespace TransCarga
                             tx_fechope.Text = dr.GetString("fechope").Substring(0, 10);
                             tx_dat_tdv.Text = dr.GetString("tipdcob");
                             tx_serie.Text = dr.GetString("sercobc");
+                            tx_numero.Text = dr.GetString("numcobc");
                             tx_dat_estad.Text = dr.GetString("estdcob");
+                            tx_estado.Text = dr.GetString("nomest");
                             rb_PG.Checked = (dr.GetString("tidoorc") == "1") ? true : false;
                             rb_GR.Checked = (dr.GetString("tidoorc") == "2") ? true : false;
                             rb_DV.Checked = (dr.GetString("tidoorc") == "3") ? true : false;
                             tx_fb.Text = dr.GetString("martdve");
-                            tx_dat_tidoor.Text = dr.GetString("");
+                            tx_dat_tidoor.Text = dr.GetString("tipdoco");
                             tx_serGR.Text = dr.GetString("serdoco");
                             tx_numGR.Text = dr.GetString("numdoco");
-                            tx_dat_mp.Text = dr.GetString("");
-                            tx_detpago.Text = dr.GetString("");
-                            tx_cajero.Text = dr.GetString("");
-                            tx_obser1.Text = dr.GetString("");
-                            tx_dat_mod.Text = dr.GetString("");
-                            tx_flete.Text = dr.GetString("");
-                            tx_pagado.Text = dr.GetString("");
-                            tx_salxcob.Text = dr.GetString("");
-                            tx_subt.Text = dr.GetString("");
-                            tx_igv.Text = dr.GetString("");
-                            tx_dat_mone.Text = dr.GetString("");
-                            tx_PAGO.Text = dr.GetString("");
-                            tx_tipcam.Text = dr.GetString("");
-                            tx_fletMN.Text = dr.GetString("");
-                            tx_impreso.Text = dr.GetString("");
+                            tx_dat_mp.Text = dr.GetString("timepag");
+                            tx_detpago.Text = dr.GetString("refpagc");
+                            tx_cajero.Text = dr.GetString("cobrdor");
+                            tx_obser1.Text = dr.GetString("obscobc");
+                            tx_dat_mod.Text = dr.GetString("mondoco");
+                            tx_flete.Text = string.Format("{0:0.00}", dr.GetDecimal("totdoco"));
+                            tx_pagado.Text = string.Format("{0:0.00}", dr.GetDecimal("totpags"));
+                            tx_salxcob.Text = string.Format("{0:0.00}", dr.GetDecimal("saldvta"));
+                            tx_subt.Text = string.Format("{0:0.00}", dr.GetDecimal("subdoco"));
+                            tx_igv.Text = string.Format("{0:0.00}" ,dr.GetDecimal("igvdoco"));
+                            tx_dat_mone.Text = dr.GetString("codmopa");
+                            tx_PAGO.Text = string.Format("{0:0.00}", dr.GetDecimal("totpago"));
+                            tx_tipcam.Text = dr.GetString("tcadvta");
+                            tx_fletMN.Text = string.Format("{0:0.00}", dr.GetDecimal("totpaMN"));
+                            tx_impreso.Text = dr.GetString("impreso");
+                            lb_moneda.Text = dr.GetString("nctmG");
+                            tx_digit.Text = dr.GetString("nombre");
+                            tx_dat_userdoc.Text = dr.GetString("userc");
+                            // 
+                            tx_dat_tdRem.Text = dr.GetString("ntdc");
+                            tx_numDocRem.Text = dr.GetString("dcltdoco");
+                            tx_nomRem.Text = dr.GetString("razonsocial");
+                            tx_dirRem.Text = dr.GetString("direc");
+                            tx_dptoRtt.Text = dr.GetString("depart");
+                            tx_provRtt.Text = dr.GetString("Provincia");
+                            tx_distRtt.Text = dr.GetString("Localidad");
+                            //
+                            cmb_mpago.SelectedValue = tx_dat_mp.Text;
+                            cmb_mon.SelectedValue = tx_dat_mone.Text;
+                            //
+                            if (rb_GR.Checked == true) jaladet("guia", tx_serGR.Text, tx_numGR.Text);
                         }
                         else
                         {
@@ -620,6 +645,7 @@ namespace TransCarga
                                                 }
                                                 else
                                                 {
+                                                    tx_dat_clte.Text = dr.GetString("tidodegui");
                                                     tx_dat_tdRem.Text = dr.GetString("ntdc");
                                                     tx_numDocRem.Text = dr.GetString("nudodegui");
                                                     tx_nomRem.Text = dr.GetString("razonsocial");
@@ -656,27 +682,7 @@ namespace TransCarga
                             }
                             if (hay == "si")
                             {
-                                dataGridView1.Rows.Clear();
-                                string consdet = "SELECT fila,sergui,numgui,cantprodi,unimedpro,codiprodi,descprodi,pesoprodi,precprodi,totaprodi " +
-                                    "FROM detguiai WHERE sergui = @ser AND numgui = @num";
-                                using (MySqlCommand midet = new MySqlCommand(consdet, conn))
-                                {
-                                    midet.Parameters.AddWithValue("@ser", serie);
-                                    midet.Parameters.AddWithValue("@num", corre);
-                                    using (MySqlDataReader drD = midet.ExecuteReader())
-                                    {
-                                        while (drD.Read())
-                                        {
-                                            dataGridView1.Rows.Add(
-                                                serie + "-" + corre,
-                                                drD.GetString("descprodi"),
-                                                drD.GetString("cantprodi"),
-                                                drD.GetString("pesoprodi"),
-                                                drD.GetString("totaprodi")
-                                                );
-                                        }
-                                    }
-                                }
+                                jaladet("guia",serie,corre);
                                 calculos(decimal.Parse(tx_flete.Text));    // calculamos el subtotal e IGV
                                 retorna = true;
                             }
@@ -711,6 +717,7 @@ namespace TransCarga
                                         else
                                         {
                                             hay = "si";
+                                            tx_dat_clte.Text = dr.GetString("tidoclt");
                                             tx_dat_tdRem.Text = dr.GetString("ntdc");
                                             tx_numDocRem.Text = dr.GetString("nudoclt");
                                             tx_nomRem.Text = dr.GetString("nombclt");
@@ -735,28 +742,7 @@ namespace TransCarga
                         }
                         if (hay == "si")
                         {
-                            dataGridView1.Rows.Clear();
-                            string consdet = "SELECT codgror,cantbul,unimedp,descpro,pesogro,codmogr,totalgr " +
-                                    "FROM detfactu WHERE martdve = @tip and serdvta = @ser and numdvta = @num";
-                            using (MySqlCommand midet = new MySqlCommand(consdet, conn))
-                            {
-                                midet.Parameters.AddWithValue("@tip", tx_fb.Text);
-                                midet.Parameters.AddWithValue("@ser", serie);
-                                midet.Parameters.AddWithValue("@num", corre);
-                                using (MySqlDataReader drD = midet.ExecuteReader())
-                                {
-                                    while (drD.Read())
-                                    {
-                                        dataGridView1.Rows.Add(
-                                            drD.GetString("codgror"),
-                                            drD.GetString("descpro"),
-                                            drD.GetString("cantbul"),
-                                            drD.GetString("pesogro"),
-                                            drD.GetString("totalgr")
-                                            );
-                                    }
-                                }
-                            }
+                            jaladet("docvta", serie,corre);   
                             calculos(decimal.Parse(tx_flete.Text));    // calculamos el subtotal e IGV
                             retorna = true;
                         }
@@ -812,6 +798,61 @@ namespace TransCarga
             }
             tx_igv.Text = tigv.ToString("#0.00");
             tx_subt.Text = tsub.ToString("#0.00");
+        }
+        private void jaladet(string tipo,string ser,string cor)
+        {
+            using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
+            {
+                dataGridView1.Rows.Clear();
+                lib.procConn(conn);
+                if (tipo == "guia")
+                {
+                    string consdet = "SELECT fila,sergui,numgui,cantprodi,unimedpro,codiprodi,descprodi,pesoprodi,precprodi,totaprodi " +
+                        "FROM detguiai WHERE sergui = @ser AND numgui = @num";
+                    using (MySqlCommand midet = new MySqlCommand(consdet, conn))
+                    {
+                        midet.Parameters.AddWithValue("@ser", ser);
+                        midet.Parameters.AddWithValue("@num", cor);
+                        using (MySqlDataReader drD = midet.ExecuteReader())
+                        {
+                            while (drD.Read())
+                            {
+                                dataGridView1.Rows.Add(
+                                    ser + "-" + cor,
+                                    drD.GetString("descprodi"),
+                                    drD.GetString("cantprodi"),
+                                    drD.GetString("pesoprodi"),
+                                    drD.GetString("totaprodi")
+                                    );
+                            }
+                        }
+                    }
+                }
+                if (tipo == "docvta")
+                {
+                    string consdet = "SELECT codgror,cantbul,unimedp,descpro,pesogro,codmogr,totalgr " +
+                                    "FROM detfactu WHERE martdve = @tip and serdvta = @ser and numdvta = @num";
+                    using (MySqlCommand midet = new MySqlCommand(consdet, conn))
+                    {
+                        midet.Parameters.AddWithValue("@tip", tx_fb.Text);
+                        midet.Parameters.AddWithValue("@ser", ser);
+                        midet.Parameters.AddWithValue("@num", cor);
+                        using (MySqlDataReader drD = midet.ExecuteReader())
+                        {
+                            while (drD.Read())
+                            {
+                                dataGridView1.Rows.Add(
+                                    drD.GetString("codgror"),
+                                    drD.GetString("descpro"),
+                                    drD.GetString("cantbul"),
+                                    drD.GetString("pesogro"),
+                                    drD.GetString("totalgr")
+                                    );
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         #region limpiadores_modos
@@ -1025,8 +1066,15 @@ namespace TransCarga
                     return;
                 }
                 // SOLO USUARIOS AUTORIZADOS DEBEN ACCEDER A ESTA OPCIÓN
-                // SE ANULA EL DOCUMENTO Y SE HACEN LOS MOVIMIENTOS INTERNOS
-                // anulacio procede siempre y cuando de la caja del día y usuario cajero
+                // SE ANULA EL DOCUMENTO Y LOS MOVIMIENTOS INTERNOS se hacen por B.D.
+                // anulacion procede siempre y cuando sea de la fecha y del usuario
+                MessageBox.Show(DateTime.Now.Date.ToString());
+                if (asd != tx_dat_userdoc.Text || DateTime.Now.Date.ToString().Substring(0,10) != tx_fechope.Text)
+                {
+                    MessageBox.Show("No se puede ANULAR cobranzas fuera de fecha" + Environment.NewLine +
+                        "o que sean de otro local/usuario","Atención",MessageBoxButtons.OK,MessageBoxIcon.Hand);
+                    return;
+                }
                 if (tx_idr.Text.Trim() != "")
                 {
                     var aa = MessageBox.Show("Confirma que desea ANULAR la cobranza?", "Confirme por favor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
@@ -1047,7 +1095,7 @@ namespace TransCarga
                 }
                 else
                 {
-                    MessageBox.Show("El documento ya debe existir para anular", "No esta el Id del registro", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+                    MessageBox.Show("El documento debe existir para poder anular!", "No esta el Id del registro", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
                     return;
                 }
             }
@@ -1072,10 +1120,10 @@ namespace TransCarga
             {
                 string inserta = "insert into cabcobran (" +
                     "fechope,tipdcob,sercobc,loccobc,estdcob,tidoorc,martdve,tipdoco,serdoco,numdoco,timepag,refpagc,cobrdor,obscobc,mondoco,totdoco,totpags," +
-                    "saldvta,subdoco,igvdoco,codmopa,totpago,tcadvta,porcigv,totpaMN,codmoMN,impreso," +
+                    "saldvta,subdoco,igvdoco,codmopa,totpago,tcadvta,porcigv,totpaMN,codmoMN,impreso,cltdoco,dcltdoco," +
                     "verApp,userc,fechc,diriplan4,diripwan4,netbname) values (" +
                     "@fechop,@ctdvta,@serdv,@ldcpgr,@estado,@tidoor,@martdv,@tipdoc,@serdoc,@numdoc,@timepa,@refpag,@cobrdo,@obsprg,@mondoc,@totpgr,@pagpgr," +
-                    "@salxpa,@subpgr,@igvpgr,@monppr,@totpag,@tcoper,@porcig,@totMN,@codMN,@impSN," +
+                    "@salxpa,@subpgr,@igvpgr,@monppr,@totpag,@tcoper,@porcig,@totMN,@codMN,@impSN,@cltdoc,@dcltdo," +
                     "@verApp,@asd,now(),@iplan,@ipwan,@nbnam)";
                 using (MySqlCommand micon = new MySqlCommand(inserta, conn))
                 {
@@ -1107,6 +1155,8 @@ namespace TransCarga
                     micon.Parameters.AddWithValue("@totMN", tx_fletMN.Text);
                     micon.Parameters.AddWithValue("@codMN", MonDeft);                           // codigo moneda local
                     micon.Parameters.AddWithValue("@impSN", tx_impreso.Text);
+                    micon.Parameters.AddWithValue("@cltdoc", tx_dat_clte.Text); // tx_dat_tdRem.Text.PadRight(6).Substring(0,6)
+                    micon.Parameters.AddWithValue("@dcltdo", tx_numDocRem.Text);
                     micon.Parameters.AddWithValue("@verApp", verapp);
                     micon.Parameters.AddWithValue("@asd", asd);
                     micon.Parameters.AddWithValue("@iplan", lib.iplan());
@@ -1145,7 +1195,7 @@ namespace TransCarga
                 {
                     if (true)     // EDICION DE CABECERA
                     {
-                        string actua = "update cabcobran a set obsdvta=@obsprg," +
+                        string actua = "update cabcobran a set a.obscobc=@obsprg," +
                             "a.verApp=@verApp,a.userm=@asd,a.fechm=now(),a.diriplan4=@iplan,a.diripwan4=@ipwan,a.netbname=@nbnam " +
                             "where a.id=@idr";
                         MySqlCommand micon = new MySqlCommand(actua, conn);
@@ -1158,7 +1208,7 @@ namespace TransCarga
                         micon.Parameters.AddWithValue("@nbnam", Environment.MachineName);
                         micon.ExecuteNonQuery();
                         //
-                        // EDICION DEL DETALLE .... no hay 28/10/2020
+                        // EDICION DEL DETALLE .... no hay detalle
                         micon.Dispose();
                     }
                     conn.Close();
@@ -1179,15 +1229,15 @@ namespace TransCarga
         }
         private void anula()
         {
-            // en el caso de documentos de venta HAY 1: ANULACION FISICA ... 28/10/2020
-            // Anulacion fisica se "anula" el numero del documento en sistema y en fisico se tacha y en prov. fact.electronica se marca anulado 
+            // en este caso solo hay ANULACION FISICA
+            // Anulacion fisica se "anula" el numero del documento en sistema y
             // se borran todos los enlaces mediante triggers en la B.D.
             using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
             {
                 conn.Open();
                 if (conn.State == ConnectionState.Open)
                 {
-                    string canul = "update cabcobran set estdvta=@estser,obsdvta=@obse,usera=@asd,fecha=now()," +
+                    string canul = "update cabcobran set estdcob=@estser,obscobc=@obse,usera=@asd,fecha=now()," +
                         "verApp=@veap,diriplan4=@dil4,diripwan4=@diw4,netbname=@nbnp,estintreg=@eiar " +
                         "where id=@idr";
                     using (MySqlCommand micon = new MySqlCommand(canul, conn))
