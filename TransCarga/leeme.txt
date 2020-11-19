@@ -58,10 +58,11 @@ form vtipcam, ventana para realizar calculo de tipo de cambio ..................
 form guiati: temas de monedas y tipos de cambio .................................................... ok 05/11/2020
 form cobranzas: (el pago DEBE SER en la moneda del documento) 14/11/2020
 - desarrollo del form .............................................................................. ok 18/11/2020
-- formato de impresion notas de cobranza ........................................................... 
+- formato de impresion notas de cobranza ........................................................... falta
 ***** SOLO PAGOS TOTALES DE DOCS.VENTA
 ***** GUIAS SI PERMITE PAGOS PARCIALES O TOTALES
 ***** LOS PAGOS SE HACEN EN ORDEN: 1 DOCS.VENTA 2 GUIAS, SI LA GR TIENE DOV.VTA. SE DEBE PAGAR DESDE EL DOC.VENTA
 ***** NO SE PERMITE PAGOS DESDE PRE GUIAS
 ***** SOLO SE PERMITE HACER DOCS.VENTA DE GUIAS QUE NO TENGAN PAGOS
 ************** 17/11/2020 CONSIDERACIONES RESPECTO AL FORM DE COBRANZAS ******************************************
+form facelect: falta modulo para cobrar cuando nace pagado el doc.venta ............................ falta

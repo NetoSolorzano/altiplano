@@ -319,11 +319,17 @@ namespace TransCarga
                 {
                     string consulta = "select a.id,a.fechope,a.martdve,a.tipdvta,a.serdvta,a.numdvta,a.ticltgr,a.tidoclt,a.nudoclt,a.nombclt,a.direclt,a.dptoclt,a.provclt,a.distclt,a.ubigclt,a.corrclt,a.teleclt," +
                         "a.locorig,a.dirorig,a.ubiorig,a.obsdvta,a.canfidt,a.canbudt,a.mondvta,a.tcadvta,a.subtota,a.igvtota,a.porcigv,a.totdvta,a.totpags,a.saldvta,a.estdvta,a.frase01,a.impreso," +
-                        "a.tipoclt,a.m1clien,a.tippago,a.ferecep,a.userc,a.fechc,a.userm,a.fechm,b.descrizionerid as nomest " +
-                        "from cabfactu a left join desc_est b on b.idcodice=a.estdvta " + parte;
+                        "a.tipoclt,a.m1clien,a.tippago,a.ferecep,a.userc,a.fechc,a.userm,a.fechm,b.descrizionerid as nomest,ifnull(c.id,'') as cobra " +
+                        "from cabfactu a left join desc_est b on b.idcodice=a.estdvta " +
+                        "left join cabcobran c on c.tipdoco=a.tipdvta and c.serdoco=a.serdvta and c.numdoco=a.numdvta and c.estdcob<>@coda "
+                        + parte;
                     MySqlCommand micon = new MySqlCommand(consulta, conn);
                     micon.Parameters.AddWithValue("@tdep", vtc_ruc);
-                    if (campo == "tx_idr") micon.Parameters.AddWithValue("@ida", tx_idr.Text);
+                    micon.Parameters.AddWithValue("@coda", codAnul);
+                    if (campo == "tx_idr")
+                    {
+                        micon.Parameters.AddWithValue("@ida", tx_idr.Text);
+                    }
                     if (campo == "sernum")
                     {
                         micon.Parameters.AddWithValue("@tdv", tx_dat_tdv.Text);
@@ -370,6 +376,7 @@ namespace TransCarga
                             tx_dat_tcr.Text = dr.GetString("tipoclt");          // tipo de cliente credito o contado
                             tx_dat_m1clte.Text = dr.GetString("m1clien");
                             tx_impreso.Text = dr.GetString("impreso");
+                            tx_idcob.Text = dr.GetString("cobra");              // id de cobranza
                             //
                             cmb_tdv.SelectedValue = tx_dat_tdv.Text;
                             cmb_tdv_SelectedIndexChanged(null, null);
@@ -1160,6 +1167,13 @@ namespace TransCarga
                     tx_numero.Focus();
                     return;
                 }
+                if (tx_idcob.Text != "")
+                {
+                    MessageBox.Show("El documento de venta tiene Cobranza activa" + Environment.NewLine +
+                        "No se puede Anular!", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    tx_numero.Focus();
+                    return;
+                }
                 // SOLO USUARIOS AUTORIZADOS DEBEN ACCEDER A ESTA OPCIÓN
                 // SE ANULA EL DOCUMENTO Y SE HACEN LOS MOVIMIENTOS INTERNOS
                 // LA ANULACION EN EL PROVEEDOR DE FACT. ELECTRONICA SE HACE A MANO POR EL ENCARGADO ... 28/10/2020
@@ -1403,6 +1417,7 @@ namespace TransCarga
         private void anula()
         {
             // en el caso de documentos de venta HAY 1: ANULACION FISICA ... 28/10/2020
+            // tambien podría haber ANULACION interna con la serie ANU1 .... 19/11/2020
             // Anulacion fisica se "anula" el numero del documento en sistema y en fisico se tacha y en prov. fact.electronica se marca anulado 
             // se borran todos los enlaces mediante triggers en la B.D.
             using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))

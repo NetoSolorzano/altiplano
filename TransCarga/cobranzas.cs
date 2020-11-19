@@ -361,6 +361,7 @@ namespace TransCarga
                             cmb_mon.SelectedValue = tx_dat_mone.Text;
                             //
                             if (rb_GR.Checked == true) jaladet("guia", tx_serGR.Text, tx_numGR.Text);
+                            if (rb_DV.Checked == true) jaladet("docvta", tx_serGR.Text, tx_numGR.Text);
                         }
                         else
                         {
@@ -1056,7 +1057,6 @@ namespace TransCarga
                 // SOLO USUARIOS AUTORIZADOS DEBEN ACCEDER A ESTA OPCIÓN
                 // SE ANULA EL DOCUMENTO Y LOS MOVIMIENTOS INTERNOS se hacen por B.D.
                 // anulacion procede siempre y cuando sea de la fecha y del usuario
-                MessageBox.Show(DateTime.Now.Date.ToString());
                 if (asd != tx_dat_userdoc.Text || DateTime.Now.Date.ToString().Substring(0,10) != tx_fechope.Text)
                 {
                     MessageBox.Show("No se puede ANULAR cobranzas fuera de fecha" + Environment.NewLine +

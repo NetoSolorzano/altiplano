@@ -170,6 +170,7 @@
             this.tx_tfil = new TransCarga.NumericTextBox();
             this.tx_totcant = new TransCarga.NumericTextBox();
             this.tx_dat_saldoGR = new System.Windows.Forms.TextBox();
+            this.tx_idcob = new System.Windows.Forms.TextBox();
             this.toolStrip1.SuspendLayout();
             this.groupBox11.SuspendLayout();
             this.groupBox7.SuspendLayout();
@@ -1532,9 +1533,9 @@
             // 
             this.tx_dat_tdv.BackColor = System.Drawing.SystemColors.Window;
             this.tx_dat_tdv.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_dat_tdv.Location = new System.Drawing.Point(23, 128);
+            this.tx_dat_tdv.Location = new System.Drawing.Point(43, 129);
             this.tx_dat_tdv.Name = "tx_dat_tdv";
-            this.tx_dat_tdv.Size = new System.Drawing.Size(36, 18);
+            this.tx_dat_tdv.Size = new System.Drawing.Size(29, 18);
             this.tx_dat_tdv.TabIndex = 361;
             this.tx_dat_tdv.Visible = false;
             // 
@@ -1542,9 +1543,9 @@
             // 
             this.tx_dat_tdec.BackColor = System.Drawing.SystemColors.Window;
             this.tx_dat_tdec.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_dat_tdec.Location = new System.Drawing.Point(60, 129);
+            this.tx_dat_tdec.Location = new System.Drawing.Point(73, 129);
             this.tx_dat_tdec.Name = "tx_dat_tdec";
-            this.tx_dat_tdec.Size = new System.Drawing.Size(38, 18);
+            this.tx_dat_tdec.Size = new System.Drawing.Size(31, 18);
             this.tx_dat_tdec.TabIndex = 362;
             this.tx_dat_tdec.Visible = false;
             // 
@@ -1552,9 +1553,9 @@
             // 
             this.tx_dat_m1clte.BackColor = System.Drawing.SystemColors.Window;
             this.tx_dat_m1clte.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_dat_m1clte.Location = new System.Drawing.Point(101, 129);
+            this.tx_dat_m1clte.Location = new System.Drawing.Point(105, 129);
             this.tx_dat_m1clte.Name = "tx_dat_m1clte";
-            this.tx_dat_m1clte.Size = new System.Drawing.Size(37, 18);
+            this.tx_dat_m1clte.Size = new System.Drawing.Size(30, 18);
             this.tx_dat_m1clte.TabIndex = 363;
             this.tx_dat_m1clte.Visible = false;
             // 
@@ -1632,6 +1633,16 @@
             this.tx_dat_saldoGR.TabIndex = 366;
             this.tx_dat_saldoGR.Visible = false;
             // 
+            // tx_idcob
+            // 
+            this.tx_idcob.BackColor = System.Drawing.SystemColors.Window;
+            this.tx_idcob.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_idcob.Location = new System.Drawing.Point(13, 129);
+            this.tx_idcob.Name = "tx_idcob";
+            this.tx_idcob.Size = new System.Drawing.Size(29, 18);
+            this.tx_idcob.TabIndex = 367;
+            this.tx_idcob.Visible = false;
+            // 
             // facelect
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1639,6 +1650,7 @@
             this.AutoSize = true;
             this.BackColor = System.Drawing.Color.LightSteelBlue;
             this.ClientSize = new System.Drawing.Size(770, 557);
+            this.Controls.Add(this.tx_idcob);
             this.Controls.Add(this.tx_dat_saldoGR);
             this.Controls.Add(this.tx_fletMN);
             this.Controls.Add(this.tx_tipcam);
@@ -1882,5 +1894,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn valorMN;
         private System.Windows.Forms.DataGridViewTextBoxColumn codmonloc;
         private System.Windows.Forms.TextBox tx_dat_saldoGR;
+        private System.Windows.Forms.TextBox tx_idcob;
     }
 }
