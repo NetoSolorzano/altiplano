@@ -753,22 +753,6 @@ namespace TransCarga
         }
         private void tipcambio(string codmod)                // funcion para calculos con el tipo de cambio
         {
-            /*decimal totflet = 0;
-            for (int i = 0; i < dataGridView1.Rows.Count; i++)
-            {
-                if (dataGridView1.Rows[i].Cells[0].Value != null)
-                {
-                    totflet = totflet + decimal.Parse(dataGridView1.Rows[i].Cells[5].Value.ToString()); // VALOR DE LA GR EN MONEDA LOCAL
-                }
-            }
-            // si codmod es moneda local, suma campos totales de moneda local y retorna valor
-            */
-            //if (codmod == MonDeft)
-            //{
-            //    tx_flete.Text = totflet.ToString("#0.00");
-            //}
-            //else
-            //{
             if (codmod != MonDeft)   // codmod != ""
             {
                 vtipcam vtipcam = new vtipcam(tx_PAGO.Text, codmod, DateTime.Now.Date.ToString());
@@ -778,6 +762,10 @@ namespace TransCarga
                     tx_PAGO.Text = vtipcam.ReturnValue1;
                     tx_fletMN.Text = vtipcam.ReturnValue2;
                     tx_tipcam.Text = vtipcam.ReturnValue3;
+                    if (tx_fletMN.Text.Trim() == "0.00" && (tx_PAGO.Text.Trim() != "" || tx_PAGO.Text.Trim() != "0"))
+                    {
+                        tx_fletMN.Text = Math.Round(decimal.Parse(tx_PAGO.Text) * decimal.Parse(tx_tipcam.Text), 2).ToString();
+                    }
                 }
                 else
                 {
@@ -934,7 +922,7 @@ namespace TransCarga
             }
             if (tx_dat_mone.Text.Trim() == "")
             {
-                MessageBox.Show("Seleccione el tipo de moneda", " Atención ");
+                MessageBox.Show("Seleccione el tipo de moneda de pago", " Atención ");
                 cmb_mon.Focus();
                 return;
             }
@@ -956,9 +944,9 @@ namespace TransCarga
                 cmb_mpago.Focus();
                 return;
             }
-            if (tx_dat_mone.Text == "")
+            if (tx_dat_mone.Text != MonDeft && tx_tipcam.Text.Trim() == "")
             {
-                MessageBox.Show("Seleccione una moneda de pago", " Atención ", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Seleccione la moneda de pago y tipo de cambio", " Atención ", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 cmb_mon.Focus();
                 return;
             }
@@ -1369,6 +1357,10 @@ namespace TransCarga
                                 "que no son en moneda local", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Hand);
                             cmb_mon.Focus();
                             return;
+                        }
+                        else
+                        {
+                            tx_fletMN.Text = Math.Round(decimal.Parse(tx_PAGO.Text) * decimal.Parse(tx_tipcam.Text), 2).ToString();
                         }
                     }
                 }

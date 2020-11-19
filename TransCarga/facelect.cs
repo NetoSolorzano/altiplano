@@ -1287,7 +1287,7 @@ namespace TransCarga
                     micon.Parameters.AddWithValue("@totpgr", tx_flete.Text);                    // total inc. igv
                     micon.Parameters.AddWithValue("@pagpgr", (tx_pagado.Text == "") ? "0" : tx_pagado.Text);
                     micon.Parameters.AddWithValue("@salxpa", (tx_salxcob.Text == "") ? "0" : tx_salxcob.Text);
-                    micon.Parameters.AddWithValue("@estpgr", (tx_pagado.Text == "") ? tx_dat_estad.Text : codCanc); // estado
+                    micon.Parameters.AddWithValue("@estpgr", (tx_pagado.Text == "" || tx_pagado.Text == "0.00") ? tx_dat_estad.Text : codCanc); // estado
                     micon.Parameters.AddWithValue("@frase1", v_fra2);               // REVISAR LA FRASE SI VA O NO
                     micon.Parameters.AddWithValue("@ticlre", tx_dat_tcr.Text);      // tipo de cliente credito o contado
                     micon.Parameters.AddWithValue("@m1clte", tx_dat_m1clte.Text);
@@ -1964,6 +1964,9 @@ namespace TransCarga
                 {
                     tx_dat_mone.Text = cmb_mon.SelectedValue.ToString();
                     tipcambio(tx_dat_mone.Text);
+                    if (tx_flete.Text != "" || tx_flete.Text != "0.00") calculos(decimal.Parse(tx_flete.Text));
+                    if (rb_no.Checked == true) rb_no_Click(null,null);
+                    if (rb_si.Checked == true) rb_si_Click(null, null);
                 }
             }
         }
@@ -2183,6 +2186,5 @@ namespace TransCarga
             return guiaT;
         }
         #endregion
-
     }
 }
