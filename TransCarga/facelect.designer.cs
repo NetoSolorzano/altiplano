@@ -1565,9 +1565,8 @@
             this.tx_tipcam.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tx_tipcam.Location = new System.Drawing.Point(603, 383);
             this.tx_tipcam.Name = "tx_tipcam";
-            this.tx_tipcam.Size = new System.Drawing.Size(32, 18);
+            this.tx_tipcam.Size = new System.Drawing.Size(55, 18);
             this.tx_tipcam.TabIndex = 364;
-            this.tx_tipcam.Visible = false;
             // 
             // tx_fletMN
             // 
@@ -1575,9 +1574,8 @@
             this.tx_fletMN.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tx_fletMN.Location = new System.Drawing.Point(603, 403);
             this.tx_fletMN.Name = "tx_fletMN";
-            this.tx_fletMN.Size = new System.Drawing.Size(32, 18);
+            this.tx_fletMN.Size = new System.Drawing.Size(55, 18);
             this.tx_fletMN.TabIndex = 365;
-            this.tx_fletMN.Visible = false;
             // 
             // tx_numGR
             // 

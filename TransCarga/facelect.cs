@@ -53,8 +53,10 @@ namespace TransCarga
         string v_impA5 = "";            // nombre de la impresora matricial
         string v_impTK = "";            // nombre de la ticketera
         string v_cid = "";              // codigo interno de tipo de documento
-        string v_fra2 = "";             // frase libre 
+        string v_fra2 = "";             // frase que va en obs de cobranza cuando se cancela desde el doc.vta.
         string v_sanu = "";             // serie anulacion interna ANU
+        string v_mpag = "";             // medio de pago automatico x defecto para las cobranzas
+        string v_codcob = "";           // codigo del documento cobranza
         string v_CR_gr_ind = "";        // nombre del formato FT/BV en CR
         string v_mfildet = "";          // maximo numero de filas en el detalle, coord. con el formato
         string vint_A0 = "";            // variable codigo anulacion interna por BD
@@ -218,11 +220,12 @@ namespace TransCarga
             {
                 MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
                 conn.Open();
-                string consulta = "select formulario,campo,param,valor from enlaces where formulario in (@nofo,@nfin,@nofa,@nofi)";
+                string consulta = "select formulario,campo,param,valor from enlaces where formulario in (@nofo,@nfin,@nofa,@nofi,@noco)";
                 MySqlCommand micon = new MySqlCommand(consulta, conn);
                 micon.Parameters.AddWithValue("@nofo", "main");
                 micon.Parameters.AddWithValue("@nfin", "interno");
                 micon.Parameters.AddWithValue("@nofi", "clients");
+                micon.Parameters.AddWithValue("@noco", "cobranzas");
                 micon.Parameters.AddWithValue("@nofa", nomform);
                 MySqlDataAdapter da = new MySqlDataAdapter(micon);
                 DataTable dt = new DataTable();
@@ -261,12 +264,17 @@ namespace TransCarga
                         if (row["param"].ToString() == "ruc") vtc_ruc = row["valor"].ToString().Trim();
                         if (row["param"].ToString() == "ext") vtc_ext = row["valor"].ToString().Trim();
                     }
+                    if (row["formulario"].ToString() == "cobranzas" && row["campo"].ToString() == "documento")
+                    {
+                        if (row["param"].ToString() == "codigo") v_codcob = row["valor"].ToString().Trim();
+                    }
                     if (row["formulario"].ToString() == nomform)
                     {
                         if (row["campo"].ToString() == "documento")
                         {
-                            if (row["param"].ToString() == "frase2") v_fra2 = row["valor"].ToString().Trim();               // frase otro dato
+                            if (row["param"].ToString() == "frase2") v_fra2 = row["valor"].ToString().Trim();               // frase cuando se cancela el doc.vta.
                             if (row["param"].ToString() == "serieAnu") v_sanu = row["valor"].ToString().Trim();               // serie anulacion interna
+                            if (row["param"].ToString() == "mpagdef") v_mpag = row["valor"].ToString().Trim();               // medio de pago x defecto para cobranzas
                         }
                         if (row["campo"].ToString() == "impresion")
                         {
@@ -1263,11 +1271,11 @@ namespace TransCarga
                 string inserta = "insert into cabfactu (" +
                     "fechope,martdve,tipdvta,serdvta,numdvta,ticltgr,tidoclt,nudoclt,nombclt,direclt,dptoclt,provclt,distclt,ubigclt,corrclt,teleclt," +
                     "locorig,dirorig,ubiorig,obsdvta,canfidt,canbudt,mondvta,tcadvta,subtota,igvtota,porcigv,totdvta,totpags,saldvta,estdvta,frase01," +
-                    "tipoclt,m1clien,tippago,ferecep,impreso,codMN,subtMN,igvtMN,totdvMN," +
+                    "tipoclt,m1clien,tippago,ferecep,impreso,codMN,subtMN,igvtMN,totdvMN,pagauto,tipdcob," +
                     "verApp,userc,fechc,diriplan4,diripwan4,netbname) values (" +
                     "@fechop,@mtdvta,@ctdvta,@serdv,@numdv,@tcdvta,@tdcrem,@ndcrem,@nomrem,@dircre,@dptocl,@provcl,@distcl,@ubicre,@mailcl,@telecl," +
                     "@ldcpgr,@didegr,@ubdegr,@obsprg,@canfil,@totcpr,@monppr,@tcoper,@subpgr,@igvpgr,@porcigv,@totpgr,@pagpgr,@salxpa,@estpgr,@frase1," +
-                    "@ticlre,@m1clte,@tipacc,@feredv,@impSN,@codMN,@subMN,@igvMN,@totMN," +
+                    "@ticlre,@m1clte,@tipacc,@feredv,@impSN,@codMN,@subMN,@igvMN,@totMN,@pagaut,@tipdco," +
                     "@verApp,@asd,now(),@iplan,@ipwan,@nbnam)";
                 using (MySqlCommand micon = new MySqlCommand(inserta, conn))
                 {
@@ -1302,16 +1310,18 @@ namespace TransCarga
                     micon.Parameters.AddWithValue("@pagpgr", (tx_pagado.Text == "") ? "0" : tx_pagado.Text);
                     micon.Parameters.AddWithValue("@salxpa", (tx_salxcob.Text == "") ? "0" : tx_salxcob.Text);
                     micon.Parameters.AddWithValue("@estpgr", (tx_pagado.Text == "" || tx_pagado.Text == "0.00") ? tx_dat_estad.Text : codCanc); // estado
-                    micon.Parameters.AddWithValue("@frase1", v_fra2);               // REVISAR LA FRASE SI VA O NO
+                    micon.Parameters.AddWithValue("@frase1", "");                   // no hay nada que poner 19/11/2020
                     micon.Parameters.AddWithValue("@ticlre", tx_dat_tcr.Text);      // tipo de cliente credito o contado
                     micon.Parameters.AddWithValue("@m1clte", tx_dat_m1clte.Text);
-                    micon.Parameters.AddWithValue("@tipacc", "");                   // pago de documento a credito o contado   .. FALTA
+                    micon.Parameters.AddWithValue("@tipacc", v_mpag);                   // pago del documento x defecto si nace la fact pagada
                     micon.Parameters.AddWithValue("@feredv", DBNull.Value);         // si es pago contado la fecha de recep del doc. es la misma fecha
                     micon.Parameters.AddWithValue("@impSN", "S");
                     micon.Parameters.AddWithValue("@codMN", MonDeft);               // codigo moneda local
                     micon.Parameters.AddWithValue("@subMN", subtMN);
                     micon.Parameters.AddWithValue("@igvMN", igvtMN);
                     micon.Parameters.AddWithValue("@totMN", fletMN);
+                    micon.Parameters.AddWithValue("@pagaut", (rb_si.Checked == true)? "S" : "N");
+                    micon.Parameters.AddWithValue("@tipdco", (rb_si.Checked == true)? v_codcob : "");
                     micon.Parameters.AddWithValue("@verApp", verapp);
                     micon.Parameters.AddWithValue("@asd", asd);
                     micon.Parameters.AddWithValue("@iplan", lib.iplan());
@@ -1443,6 +1453,80 @@ namespace TransCarga
                     }
                 }
             }
+        }
+        private bool grabaCob()     // lo paso a la B.D. trigger after insert de cabfactu
+        {
+            bool retorna = false;
+            MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
+            conn.Open();
+            if (conn.State == ConnectionState.Open)
+            {
+                string inserta = "insert into cabcobran (" +
+                    "fechope,tipdcob,sercobc,loccobc,estdcob,tidoorc,martdve,tipdoco,serdoco,numdoco,timepag,refpagc,cobrdor,obscobc,mondoco,totdoco,totpags," +
+                    "saldvta,subdoco,igvdoco,codmopa,totpago,tcadvta,porcigv,totpaMN,codmoMN,impreso,cltdoco,dcltdoco," +
+                    "verApp,userc,fechc,diriplan4,diripwan4,netbname) values (" +
+                    "@fechop,@ctdvta,@serdv,@ldcpgr,@estado,@tidoor,@martdv,@tipdoc,@serdoc,@numdoc,@timepa,@refpag,@cobrdo,@obsprg,@mondoc,@totpgr,@pagpgr," +
+                    "@salxpa,@subpgr,@igvpgr,@monppr,@totpag,@tcoper,@porcig,@totMN,@codMN,@impSN,@cltdoc,@dcltdo," +
+                    "@verApp,@asd,now(),@iplan,@ipwan,@nbnam)";
+                using (MySqlCommand micon = new MySqlCommand(inserta, conn))
+                {
+                    micon.Parameters.AddWithValue("@fechop", tx_fechope.Text.Substring(6, 4) + "-" + tx_fechope.Text.Substring(3, 2) + "-" + tx_fechope.Text.Substring(0, 2));
+                    micon.Parameters.AddWithValue("@ctdvta", v_codcob);     // tipo documento cobranza
+                    micon.Parameters.AddWithValue("@serdv", tx_serie.Text); // serie de la cobranza
+                    //micon.Parameters.AddWithValue("@numdv", tx_numero.Text);  // numero NO porque se autogenera en la BD
+                    micon.Parameters.AddWithValue("@ldcpgr", TransCarga.Program.almuser);         // local origen
+                    micon.Parameters.AddWithValue("@estado", codGene);     // estado de la cobranza "generado"
+                    micon.Parameters.AddWithValue("@tidoor", "3");  // tipo doc origen Doc.Vta.
+                    micon.Parameters.AddWithValue("@martdv", cmb_tdv.Text.Substring(0, 1));
+                    micon.Parameters.AddWithValue("@tipdoc", tx_dat_tdv.Text);
+                    micon.Parameters.AddWithValue("@serdoc", tx_serie.Text);
+                    micon.Parameters.AddWithValue("@numdoc", tx_numero.Text);
+                    micon.Parameters.AddWithValue("@timepa", v_mpag);     // medio de pago, efectivo x defecto
+                    micon.Parameters.AddWithValue("@refpag", "");
+                    micon.Parameters.AddWithValue("@cobrdo", tx_digit.Text);
+                    micon.Parameters.AddWithValue("@obsprg", v_fra2);   // comentario de la cobranza, frase "cobranza automatica desde Doc.Venta"
+                    micon.Parameters.AddWithValue("@mondoc", tx_dat_mone.Text);
+                    micon.Parameters.AddWithValue("@totpgr", tx_flete.Text);             // total doc origen
+                    micon.Parameters.AddWithValue("@pagpgr", tx_pagado.Text);            // pagado
+                    micon.Parameters.AddWithValue("@salxpa", tx_salxcob.Text);          // saldo x pagar
+                    micon.Parameters.AddWithValue("@subpgr", tx_subt.Text);             // sub total
+                    micon.Parameters.AddWithValue("@igvpgr", tx_igv.Text);              // igv
+                    micon.Parameters.AddWithValue("@monppr", tx_dat_mone.Text);         // moneda del pago
+                    micon.Parameters.AddWithValue("@totpag", tx_flete.Text);            // importe pagado
+                    micon.Parameters.AddWithValue("@tcoper", (tx_tipcam.Text == "") ? "0" : tx_tipcam.Text);    // TIPO DE CAMBIO
+                    micon.Parameters.AddWithValue("@porcig", v_igv);                            // porcentaje en numeros de IGV
+                    micon.Parameters.AddWithValue("@totMN", tx_fletMN.Text);
+                    micon.Parameters.AddWithValue("@codMN", MonDeft);                           // codigo moneda local
+                    micon.Parameters.AddWithValue("@impSN", "");
+                    micon.Parameters.AddWithValue("@cltdoc", tx_dat_tdRem.Text);
+                    micon.Parameters.AddWithValue("@dcltdo", tx_numDocRem.Text);
+                    micon.Parameters.AddWithValue("@verApp", verapp);
+                    micon.Parameters.AddWithValue("@asd", asd);
+                    micon.Parameters.AddWithValue("@iplan", lib.iplan());
+                    micon.Parameters.AddWithValue("@ipwan", lib.ipwan());
+                    micon.Parameters.AddWithValue("@nbnam", Environment.MachineName);
+                    micon.ExecuteNonQuery();
+                }
+                using (MySqlCommand micon = new MySqlCommand("select last_insert_id()", conn))
+                {
+                    using (MySqlDataReader dr = micon.ExecuteReader())
+                    {
+                        if (dr.Read())
+                        {
+                            tx_idr.Text = dr.GetString(0);
+                            tx_numero.Text = lib.Right(tx_idr.Text, 8);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                MessageBox.Show("No fue posible conectarse al servidor de datos");
+                Application.Exit();
+                return retorna;
+            }
+            conn.Close();
+            return retorna;
         }
         #endregion boton_form;
 
@@ -1714,15 +1798,18 @@ namespace TransCarga
         }
         private void rb_si_Click(object sender, EventArgs e)
         {
-            if (decimal.Parse(tx_dat_saldoGR.Text) > 0)
+            if (tx_dat_saldoGR.Text.Trim() != "")
             {
-                tx_pagado.Text = tx_flete.Text;
-                tx_salxcob.Text = "0.00";
-                tx_salxcob.BackColor = Color.Green;
-            }
-            else
-            {
-                tx_salxcob.Text = "0.00";
+                if (decimal.Parse(tx_dat_saldoGR.Text) > 0)
+                {
+                    tx_pagado.Text = tx_flete.Text;
+                    tx_salxcob.Text = "0.00";
+                    tx_salxcob.BackColor = Color.Green;
+                }
+                else
+                {
+                    tx_salxcob.Text = "0.00";
+                }
             }
         }
         private void rb_no_Click(object sender, EventArgs e)
