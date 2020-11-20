@@ -92,7 +92,7 @@ namespace TransCarga
         DataTable dtm = new DataTable();
         string[] datcltsR = { "", "", "", "", "", "", "", "", "" };
         string[] datcltsD = { "", "", "", "", "", "", "", "", "" };
-        string[] datguias = { "", "", "", "", "", "", "" };
+        string[] datguias = { "", "", "", "", "", "", "", "", "", "" };
 
         public facelect()
         {
@@ -618,10 +618,13 @@ namespace TransCarga
                 datguias[0] = "";   // num GR
                 datguias[1] = "";   // descrip
                 datguias[2] = "";   // cant bultos
-                datguias[3] = "";   // codigo moneda de la GR
+                datguias[3] = "";   // nombre de la moneda de la GR
                 datguias[4] = "";   // valor de la guía en su moneda
                 datguias[5] = "";   // valor en moneda local
                 datguias[6] = "";   // codigo moneda local
+                datguias[7] = "";   // codigo moneda de la guia
+                datguias[8] = "";   // tipo de cambio
+                datguias[9] = "";   // fecha de la GR
                 // validamos que la GR: 1.exista, 2.No este facturada, 3.No este anulada
                 // y devolvemos una fila con los datos del remitente y otra fila los datos del destinatario
                 string hay = "no";
@@ -660,7 +663,7 @@ namespace TransCarga
                     {
                         string consulta = "SELECT a.tidoregri,a.nudoregri,a.nombregri,a.direregri,a.ubigregri,ifnull(b1.email,'') as emailR,ifnull(b1.numerotel1,'') as numtel1R," +
                             "ifnull(b1.numerotel2,'') as numtel2R,a.tidodegri,a.nudodegri,a.nombdegri,a.diredegri,a.ubigdegri,ifnull(b2.email,'') as emailD," +
-                            "ifnull(b2.numerotel1,'') as numtel1D,ifnull(b2.numerotel2,'') as numtel2D,a.tipmongri,a.totgri,a.salgri,SUM(d.cantprodi) AS bultos," +
+                            "ifnull(b2.numerotel1,'') as numtel1D,ifnull(b2.numerotel2,'') as numtel2D,a.tipmongri,a.totgri,a.salgri,SUM(d.cantprodi) AS bultos,a.fechopegr,a.tipcamgri," +
                             "max(d.descprodi) AS descrip,ifnull(m.descrizionerid,'') as mon,a.totgrMN,a.codMN,c.fecdocvta,b1.tiposocio as tipsrem,b2.tiposocio as tipsdes " +
                             "from cabguiai a left join detguiai d on d.idc=a.id " +
                             "LEFT JOIN controlg c ON c.serguitra = a.sergui AND c.numguitra = a.numgui " +
@@ -677,7 +680,7 @@ namespace TransCarga
                             {
                                 if (dr.Read())
                                 {
-                                    if (!dr.IsDBNull(0) && dr[24] == DBNull.Value)
+                                    if (!dr.IsDBNull(0))    //  && dr[24] == DBNull.Value
                                     {
                                         datcltsR[0] = dr.GetString("tidoregri");        // datos del remitente de la GR
                                         datcltsR[1] = dr.GetString("nudoregri");
@@ -702,10 +705,13 @@ namespace TransCarga
                                         datguias[0] = serie + "-" + corre;                 // GR
                                         datguias[1] = (dr.IsDBNull(20)) ? "" : dr.GetString("descrip");         // descrip
                                         datguias[2] = (dr.IsDBNull(19)) ? "0" : dr.GetString("bultos");          // cant bultos
-                                        datguias[3] = dr.GetString("mon");             // moneda de la GR
+                                        datguias[3] = dr.GetString("mon");             // nombre moneda de la GR
                                         datguias[4] = dr.GetString("totgri");          // valor GR en su moneda
                                         datguias[5] = dr.GetString("totgrMN");         // valor GR en moneda local
                                         datguias[6] = dr.GetString("codMN");            // codigo moneda local
+                                        datguias[7] = dr.GetString("tipmongri");        // codigo moneda de la guía
+                                        datguias[8] = dr.GetString("tipcamgri");     // tipo de cambio de la GR
+                                        datguias[9] = dr.GetString("fechopegr");     // fecha de la GR
                                         //
                                         tx_dat_saldoGR.Text = dr.GetString("salgri");
                                         retorna = true;
@@ -737,7 +743,7 @@ namespace TransCarga
             {
                 if (codmod != "")
                 {
-                    vtipcam vtipcam = new vtipcam(tx_flete.Text, codmod, DateTime.Now.Date.ToString());
+                    vtipcam vtipcam = new vtipcam(tx_tfmn.Text, codmod, DateTime.Now.Date.ToString());
                     var result = vtipcam.ShowDialog();
                     tx_flete.Text = vtipcam.ReturnValue1;
                     tx_fletMN.Text = vtipcam.ReturnValue2;
@@ -937,35 +943,44 @@ namespace TransCarga
                 dataGridView1.Rows.Add(datguias[0], datguias[1], datguias[2], datguias[3], datguias[4], datguias[5], datguias[6]);     // insertamos en la grilla los datos de la GR
                 int totfil = 0;
                 int totcant = 0;
-                decimal totflet = 0;
+                decimal totflet = 0;    // acumulador en moneda de la GR
+                tx_dat_mone.Text = datguias[7].ToString();
+                cmb_mon.SelectedValue = datguias[7].ToString();
                 for (int i = 0; i < dataGridView1.Rows.Count; i++)
                 {
                     if (dataGridView1.Rows[i].Cells[0].Value != null)
                     {
                         totcant = totcant + int.Parse(dataGridView1.Rows[i].Cells[2].Value.ToString());
                         totfil += 1;
-                        if (tx_dat_mone.Text == MonDeft)
+                        if (tx_dat_mone.Text != MonDeft)
                         {
                             totflet = totflet + decimal.Parse(dataGridView1.Rows[i].Cells[5].Value.ToString()); // VALOR DE LA GR EN MONEDA LOCAL
                         }
                         else
                         {
-                            if (dataGridView1.Rows[i].Cells[3].Value.ToString() == cmb_mon.Text)
-                            {
-                                totflet = totflet + decimal.Parse(dataGridView1.Rows[i].Cells[4].Value.ToString()); // VALOR DE LA GR EN SU MONEDA
-                            }
-                            else
-                            {
-                                MessageBox.Show("La GR registrada tiene una moneda distinta a la seleccionada" + Environment.NewLine +
-                                    "se procederá a efectuar la conversión con fecha actual","OPCION EN DESARROLLO");
-                                totflet = totflet + 0; // falta desarrollar
-                            }
+                            totflet = totflet + decimal.Parse(dataGridView1.Rows[i].Cells[4].Value.ToString()); // VALOR DE LA GR EN SU MONEDA
                         }
                     }
                 }
+                tx_tfmn.Text = totflet.ToString("#0.00");
                 tx_totcant.Text = totcant.ToString();
                 tx_tfil.Text = totfil.ToString();
                 tx_flete.Text = totflet.ToString("#0.00");
+                tx_fletMN.Text = totflet.ToString("#0.00"); // Math.Round(decimal.Parse(tx_flete.Text) * decimal.Parse(tx_tipcam.Text), 2).ToString();
+                if (tx_dat_mone.Text != MonDeft && datguias[9].ToString().Substring(0,10) != tx_fechope.Text)
+                {
+                    // llamanos a tipo de cambio
+                    vtipcam vtipcam = new vtipcam("", tx_dat_mone.Text, DateTime.Now.Date.ToString());
+                    var result = vtipcam.ShowDialog();
+                    //tx_flete.Text = vtipcam.ReturnValue1;
+                    //tx_fletMN.Text = vtipcam.ReturnValue2;
+                    tx_tipcam.Text = vtipcam.ReturnValue3;
+                    tx_fletMN.Text = Math.Round(decimal.Parse(tx_flete.Text) * decimal.Parse(tx_tipcam.Text), 2).ToString();
+                }
+                else
+                {
+                    tx_tipcam.Text = datguias[8].ToString();
+                }
                 if (int.Parse(tx_tfil.Text) == int.Parse(v_mfildet))
                 {
                     MessageBox.Show("Número máximo de filas de detalle", "El formato no permite mas", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -1073,6 +1088,21 @@ namespace TransCarga
                     MessageBox.Show("Seleccione si se cancela la factura o no", "Atención - Confirme", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     rb_si.Focus();
                     return;
+                }
+                if (tx_dat_mone.Text != MonDeft && tx_tipcam.Text == "" || tx_tipcam.Text == "0")
+                {
+                    MessageBox.Show("Problemas con el tipo de cambio","Atención",MessageBoxButtons.OK,MessageBoxIcon.Warning);
+                    cmb_mon.Focus();
+                    return;
+                }
+                if (tx_dat_mone.Text != MonDeft && decimal.Parse(tx_tipcam.Text) > 1)
+                {
+                    if (Math.Round(decimal.Parse(tx_tfmn.Text), 1) != Math.Round(decimal.Parse(tx_fletMN.Text), 1))
+                    {
+                        MessageBox.Show("El valor a facturar no puede ser diferente al valor de la(s) GR");
+                        tx_flete.Focus();
+                        return;
+                    }
                 }
                 if (tx_idr.Text.Trim() == "")
                 {
@@ -1349,7 +1379,8 @@ namespace TransCarga
                         {
 
                             string inserd2 = "update detfactu set " +
-                                "codgror=@guia,cantbul=@bult,unimedp=@unim,descpro=@desc,pesogro=@peso,codmogr=@codm,totalgr=@pret,codMN=@cmnn,totalgrMN=@tgrmn " +
+                                "codgror=@guia,cantbul=@bult,unimedp=@unim,descpro=@desc,pesogro=@peso,codmogr=@codm,totalgr=@pret,codMN=@cmnn," +
+                                "totalgrMN=@tgrmn,pagauto=@pagaut " +
                                 "where idc=@idr and filadet=@fila";
                             using (MySqlCommand micon = new MySqlCommand(inserd2, conn))
                             {
@@ -1364,6 +1395,7 @@ namespace TransCarga
                                 micon.Parameters.AddWithValue("@pret", dataGridView1.Rows[i].Cells[4].Value.ToString());
                                 micon.Parameters.AddWithValue("@cmnn", dataGridView1.Rows[i].Cells[6].Value.ToString());
                                 micon.Parameters.AddWithValue("@tgrmn", dataGridView1.Rows[i].Cells[5].Value.ToString());
+                                micon.Parameters.AddWithValue("@pagaut", (rb_si.Checked == true) ? "S" : "N");
                                 micon.ExecuteNonQuery();
                                 fila += 1;
                                 //
@@ -1453,80 +1485,6 @@ namespace TransCarga
                     }
                 }
             }
-        }
-        private bool grabaCob()     // lo paso a la B.D. trigger after insert de cabfactu
-        {
-            bool retorna = false;
-            MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
-            conn.Open();
-            if (conn.State == ConnectionState.Open)
-            {
-                string inserta = "insert into cabcobran (" +
-                    "fechope,tipdcob,sercobc,loccobc,estdcob,tidoorc,martdve,tipdoco,serdoco,numdoco,timepag,refpagc,cobrdor,obscobc,mondoco,totdoco,totpags," +
-                    "saldvta,subdoco,igvdoco,codmopa,totpago,tcadvta,porcigv,totpaMN,codmoMN,impreso,cltdoco,dcltdoco," +
-                    "verApp,userc,fechc,diriplan4,diripwan4,netbname) values (" +
-                    "@fechop,@ctdvta,@serdv,@ldcpgr,@estado,@tidoor,@martdv,@tipdoc,@serdoc,@numdoc,@timepa,@refpag,@cobrdo,@obsprg,@mondoc,@totpgr,@pagpgr," +
-                    "@salxpa,@subpgr,@igvpgr,@monppr,@totpag,@tcoper,@porcig,@totMN,@codMN,@impSN,@cltdoc,@dcltdo," +
-                    "@verApp,@asd,now(),@iplan,@ipwan,@nbnam)";
-                using (MySqlCommand micon = new MySqlCommand(inserta, conn))
-                {
-                    micon.Parameters.AddWithValue("@fechop", tx_fechope.Text.Substring(6, 4) + "-" + tx_fechope.Text.Substring(3, 2) + "-" + tx_fechope.Text.Substring(0, 2));
-                    micon.Parameters.AddWithValue("@ctdvta", v_codcob);     // tipo documento cobranza
-                    micon.Parameters.AddWithValue("@serdv", tx_serie.Text); // serie de la cobranza
-                    //micon.Parameters.AddWithValue("@numdv", tx_numero.Text);  // numero NO porque se autogenera en la BD
-                    micon.Parameters.AddWithValue("@ldcpgr", TransCarga.Program.almuser);         // local origen
-                    micon.Parameters.AddWithValue("@estado", codGene);     // estado de la cobranza "generado"
-                    micon.Parameters.AddWithValue("@tidoor", "3");  // tipo doc origen Doc.Vta.
-                    micon.Parameters.AddWithValue("@martdv", cmb_tdv.Text.Substring(0, 1));
-                    micon.Parameters.AddWithValue("@tipdoc", tx_dat_tdv.Text);
-                    micon.Parameters.AddWithValue("@serdoc", tx_serie.Text);
-                    micon.Parameters.AddWithValue("@numdoc", tx_numero.Text);
-                    micon.Parameters.AddWithValue("@timepa", v_mpag);     // medio de pago, efectivo x defecto
-                    micon.Parameters.AddWithValue("@refpag", "");
-                    micon.Parameters.AddWithValue("@cobrdo", tx_digit.Text);
-                    micon.Parameters.AddWithValue("@obsprg", v_fra2);   // comentario de la cobranza, frase "cobranza automatica desde Doc.Venta"
-                    micon.Parameters.AddWithValue("@mondoc", tx_dat_mone.Text);
-                    micon.Parameters.AddWithValue("@totpgr", tx_flete.Text);             // total doc origen
-                    micon.Parameters.AddWithValue("@pagpgr", tx_pagado.Text);            // pagado
-                    micon.Parameters.AddWithValue("@salxpa", tx_salxcob.Text);          // saldo x pagar
-                    micon.Parameters.AddWithValue("@subpgr", tx_subt.Text);             // sub total
-                    micon.Parameters.AddWithValue("@igvpgr", tx_igv.Text);              // igv
-                    micon.Parameters.AddWithValue("@monppr", tx_dat_mone.Text);         // moneda del pago
-                    micon.Parameters.AddWithValue("@totpag", tx_flete.Text);            // importe pagado
-                    micon.Parameters.AddWithValue("@tcoper", (tx_tipcam.Text == "") ? "0" : tx_tipcam.Text);    // TIPO DE CAMBIO
-                    micon.Parameters.AddWithValue("@porcig", v_igv);                            // porcentaje en numeros de IGV
-                    micon.Parameters.AddWithValue("@totMN", tx_fletMN.Text);
-                    micon.Parameters.AddWithValue("@codMN", MonDeft);                           // codigo moneda local
-                    micon.Parameters.AddWithValue("@impSN", "");
-                    micon.Parameters.AddWithValue("@cltdoc", tx_dat_tdRem.Text);
-                    micon.Parameters.AddWithValue("@dcltdo", tx_numDocRem.Text);
-                    micon.Parameters.AddWithValue("@verApp", verapp);
-                    micon.Parameters.AddWithValue("@asd", asd);
-                    micon.Parameters.AddWithValue("@iplan", lib.iplan());
-                    micon.Parameters.AddWithValue("@ipwan", lib.ipwan());
-                    micon.Parameters.AddWithValue("@nbnam", Environment.MachineName);
-                    micon.ExecuteNonQuery();
-                }
-                using (MySqlCommand micon = new MySqlCommand("select last_insert_id()", conn))
-                {
-                    using (MySqlDataReader dr = micon.ExecuteReader())
-                    {
-                        if (dr.Read())
-                        {
-                            tx_idr.Text = dr.GetString(0);
-                            tx_numero.Text = lib.Right(tx_idr.Text, 8);
-                        }
-                    }
-                }
-            }
-            else
-            {
-                MessageBox.Show("No fue posible conectarse al servidor de datos");
-                Application.Exit();
-                return retorna;
-            }
-            conn.Close();
-            return retorna;
         }
         #endregion boton_form;
 
@@ -1690,6 +1648,28 @@ namespace TransCarga
             {
                 tx_flete.Text = Math.Round(decimal.Parse(tx_flete.Text), 2).ToString("#0.00");
                 calculos(decimal.Parse((tx_flete.Text.Trim() != "") ? tx_flete.Text : "0"));
+                //
+                if (tx_dat_mone.Text != MonDeft)
+                {
+                    if (tx_tipcam.Text == "" || tx_tipcam.Text.Trim() == "0")
+                    {
+                        MessageBox.Show("Se requiere tipo de cambio");
+                        tx_flete.Text = "";
+                        tx_flete.Focus();
+                        return;
+                    }
+                    else
+                    {
+                        tx_fletMN.Text = Math.Round(decimal.Parse(tx_flete.Text) * decimal.Parse(tx_tipcam.Text), 2).ToString();
+                        if (Math.Round(decimal.Parse(tx_tfmn.Text),1) != Math.Round(decimal.Parse(tx_fletMN.Text),1))
+                        {
+                            MessageBox.Show("No coinciden los valores!","Error en calculo",MessageBoxButtons.OK,MessageBoxIcon.Error);
+                            tx_flete.Text = "";
+                            tx_flete.Focus();
+                            return;
+                        }
+                    }
+                }
                 button1.Focus();
             }
         }
@@ -2060,15 +2040,16 @@ namespace TransCarga
         }
         private void cmb_mon_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (Tx_modo.Text == "NUEVO" || Tx_modo.Text == "EDITAR")
-            {
+            if (Tx_modo.Text == "NUEVO" && tx_totcant.Text != "")    //  || Tx_modo.Text == "EDITAR"
+            {   // lo de totcant es para accionar solo cuando el detalle de la GR se haya cargado
                 if (cmb_mon.SelectedIndex > -1)
                 {
                     tx_dat_mone.Text = cmb_mon.SelectedValue.ToString();
                     tipcambio(tx_dat_mone.Text);
-                    if (tx_flete.Text != "" || tx_flete.Text != "0.00") calculos(decimal.Parse(tx_flete.Text));
+                    if (tx_flete.Text != "" && tx_flete.Text != "0.00") calculos(decimal.Parse(tx_flete.Text));
                     if (rb_no.Checked == true) rb_no_Click(null,null);
                     if (rb_si.Checked == true) rb_si_Click(null, null);
+                    tx_flete.Focus();
                 }
             }
         }

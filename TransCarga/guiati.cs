@@ -763,6 +763,10 @@ namespace TransCarga
         {
             if (dataUbig == null)
             {
+                MessageBox.Show("Problema de comunicación de datos" + Environment.NewLine +
+                    "Debe reiniciar el sistema","Error interno",MessageBoxButtons.OK,MessageBoxIcon.Warning);
+                Application.Exit();
+                return;
                 //DataTable dataUbig = (DataTable)CacheManager.GetItem("ubigeos");
                 // aca deberiamos volver a hacer un AddItem de CacheManager
             }
@@ -891,6 +895,11 @@ namespace TransCarga
         private void limpiar()
         {
             lp.limpiar(this);
+            tx_pagado.Text = "";
+            tx_fecDV.Text = "";
+            tx_DV.Text = "";
+            tx_clteDV.Text = "";
+            tx_impDV.Text = "";
         }
         private void limpia_chk()    
         {
@@ -1159,7 +1168,7 @@ namespace TransCarga
                     MessageBox.Show("Ingrese el número de la guía", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                     return;
                 }
-                if ((tx_pla_plani.Text.Trim() == "") && tx_impreso.Text == "N")
+                if ((tx_pla_plani.Text.Trim() == "") && tx_DV.Text.Trim() == "")   // tx_impreso.Text == "N"
                 {
                     // no tiene planilla y no esta impreso => se puede modificar todo y SI anular
                     if (tx_idr.Text.Trim() != "")
@@ -1182,6 +1191,7 @@ namespace TransCarga
                         }
                     }
                 }
+                /*
                 if ((tx_pla_plani.Text.Trim() == "") && tx_impreso.Text == "S")
                 {
                     // no tiene planilla y SI esta impreso => NO se puede modificar y SI anular
@@ -1214,11 +1224,13 @@ namespace TransCarga
                     tx_dat_tdRem.Focus();
                     return;
                 }
-                if ((tx_pla_plani.Text.Trim() != "") && tx_impreso.Text == "S")
+                */
+                //if ((tx_pla_plani.Text.Trim() != "") && tx_impreso.Text == "S")
+                else
                 {
-                    // si tiene guía y si esta impreso => NO se puede modificar NO anular
                     sololee();
-                    MessageBox.Show("No se puede Anular", "Tiene planilla de carga", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+                    MessageBox.Show("No se puede Anular" + Environment.NewLine +
+                        "Tiene planilla de carga y/o Doc.Venta","Atención",MessageBoxButtons.OK, MessageBoxIcon.Hand);
                     tx_dat_tdRem.Focus();
                     return;
                 }
@@ -1268,10 +1280,17 @@ namespace TransCarga
                 decimal subtgr = Math.Round(decimal.Parse(tx_flete.Text) / (decimal.Parse(v_igv) / 100 + 1), 3);
                 decimal igvtgr = Math.Round(decimal.Parse(tx_flete.Text) - subtgr, 3);
                 if (tx_dat_mone.Text == MonDeft) tx_fletMN.Text = tx_flete.Text;
-                if (tx_fletMN.Text.Trim() == "")
+                else
                 {
-                    MessageBox.Show("Problema con la moneda o tipo de cambio","No puede continuar");
-                    return retorna;
+                    if (tx_tipcam.Text.Trim() == "" || tx_tipcam.Text == "0")   // tx_fletMN.Text.Trim() == "" || tx_fletMN.Text.Trim() == "0"
+                    {
+                        MessageBox.Show("Problema con la moneda o tipo de cambio", "No puede continuar");
+                        return retorna;
+                    }
+                    else
+                    {
+                        tx_fletMN.Text = Math.Round(decimal.Parse(tx_flete.Text) * decimal.Parse(tx_tipcam.Text), 2).ToString();
+                    }
                 }
                 decimal subMN = Math.Round(decimal.Parse(tx_fletMN.Text) / (decimal.Parse(v_igv)/100 + 1),3);
                 decimal igvMN = Math.Round(decimal.Parse(tx_fletMN.Text) - subMN,3);
@@ -1965,7 +1984,17 @@ namespace TransCarga
                 }
                 else
                 {
-                    // EL CALCULO DE LA moneda local se hace en el indexchange del combo
+                    if (tx_tipcam.Text.Trim() != "" && tx_tipcam.Text.Trim() != "0")
+                    {
+                        tx_fletMN.Text = Math.Round(decimal.Parse(tx_flete.Text) * decimal.Parse(tx_tipcam.Text), 2).ToString();
+                    }
+                    else
+                    {
+                        MessageBox.Show("Se requiere tipo de cambio","Atención",MessageBoxButtons.OK,MessageBoxIcon.Warning);
+                        tx_flete.Text = "";
+                        cmb_mon.Focus();
+                        return;
+                    }
                 }
             }
             button1.Focus();
@@ -2264,7 +2293,7 @@ namespace TransCarga
         }
         private void cmb_mon_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (Tx_modo.Text.Trim() != "")
+            if (Tx_modo.Text.Trim().Contains("NUEVO,EDITAR"))   // ("NUEVO,EDITAR").Contains(Tx_modo.Text.Trim())
             {
                 if (cmb_mon.SelectedIndex > -1)
                 {
@@ -2287,6 +2316,7 @@ namespace TransCarga
                             tx_tipcam.Text = "";
                         }
                     }
+                    tx_flete.Focus();
                 }
             }
         }
