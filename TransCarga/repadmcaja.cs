@@ -8,9 +8,9 @@ using ClosedXML.Excel;
 
 namespace TransCarga
 {
-    public partial class repsoper : Form
+    public partial class repadmcaja : Form
     {
-        static string nomform = "repsoper";           // nombre del formulario
+        static string nomform = "repadmcaja";           // nombre del formulario
         string colback = TransCarga.Program.colbac;   // color de fondo
         string colpage = TransCarga.Program.colpag;   // color de los pageframes
         string colgrid = TransCarga.Program.colgri;   // color de las grillas
@@ -18,7 +18,7 @@ namespace TransCarga
         string colsfon = TransCarga.Program.colsbg;   // color fondo seleccion
         string colsfgr = TransCarga.Program.colsfc;   // color seleccion grilla
         string colstrp = TransCarga.Program.colstr;   // color del strip
-        static string nomtab = "cabpregr";            // 
+        static string nomtab = "cabcobran";            // 
         #region variables
         string asd = TransCarga.Program.vg_user;      // usuario conectado al sistema
         public int totfilgrid, cta;             // variables para impresion
@@ -58,7 +58,7 @@ namespace TransCarga
         static string data = ConfigurationManager.AppSettings["data"].ToString();
         string DB_CONN_STR = "server=" + login.serv + ";uid=" + login.usua + ";pwd=" + login.cont + ";database=" + data + ";";
 
-        public repsoper()
+        public repadmcaja()
         {
             InitializeComponent();
         }
@@ -67,11 +67,11 @@ namespace TransCarga
             // en este form no usamos
             return base.ProcessCmdKey(ref msg, keyData);
         }
-        private void repsoper_KeyDown(object sender, KeyEventArgs e)
+        private void repadmcaja_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter) SendKeys.Send("{TAB}");
         }
-        private void repsoper_Load(object sender, EventArgs e)
+        private void repadmcaja_Load(object sender, EventArgs e)
         {
             /*
             ToolTip toolTipNombre = new ToolTip();           // Create the ToolTip and associate with the Form container.
@@ -88,9 +88,6 @@ namespace TransCarga
             toolboton();
             KeyPreview = true;
             tabControl1.Enabled = false;
-            //
-            tx_codped.CharacterCasing = CharacterCasing.Upper;
-            tx_codped.TextAlign = HorizontalAlignment.Center;
         }
         private void init()
         {
@@ -223,22 +220,11 @@ namespace TransCarga
                 cmb_estad_plan.DataSource = dtestad;
                 cmb_estad_plan.DisplayMember = "descrizionerid";
                 cmb_estad_plan.ValueMember = "idcodice";
-                // ***************** seleccion del tipo de documento cliente
-                const string contidoc = "select descrizionerid,idcodice,codigo from desc_doc " +
-                                       "where numero=1 order by idcodice";
-                cmd = new MySqlCommand(contidoc, conn);
-                MySqlDataAdapter datad = new MySqlDataAdapter(cmd);
-                DataTable dttd = new DataTable();
-                datad.Fill(dttd);
-                cmb_tidoc.DataSource = dttd;
-                cmb_tidoc.DisplayMember = "descrizionerid";
-                cmb_tidoc.ValueMember = "idcodice";
                 //
-                datad.Dispose();
             }
             conn.Close();
         }
-        private void grilla(string dgv)                             // 
+        private void grilla(string dgv)                             // arma las grillas
         {
             Font tiplg = new Font("Arial", 7, FontStyle.Bold);
             int b;
@@ -328,51 +314,7 @@ namespace TransCarga
                     break;
             }
         }
-        private void grillares()                                    // FALTA arma la grilla del resumen
-        {
-            Font tiplg = new Font("Arial", 7, FontStyle.Bold);
-            dgv_resumen.Font = tiplg;
-            dgv_resumen.DefaultCellStyle.Font = tiplg;
-            dgv_resumen.RowTemplate.Height = 15;
-            dgv_vtas.DefaultCellStyle.BackColor = Color.MediumAquamarine;
-            dgv_resumen.AllowUserToAddRows = false;
-            //dgv_resumen.EnableHeadersVisualStyles = false;
-            dgv_resumen.Width = 1015;
-            if (dgv_resumen.DataSource == null) dgv_resumen.ColumnCount = 11;
-            for (int i = 0; i < dgv_resumen.Columns.Count; i++)
-            {
-                dgv_resumen.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-                _ = decimal.TryParse(dgv_resumen.Rows[0].Cells[i].Value.ToString(), out decimal vd);
-                if (vd != 0) dgv_resumen.Columns[i].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
-            }
-            int b = 0;
-            for (int i = 0; i < dgv_resumen.Columns.Count; i++)
-            {
-                int a = dgv_resumen.Columns[i].Width;
-                b += a;
-                dgv_resumen.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-                dgv_resumen.Columns[i].Width = a;
-            }
-            if (b < dgv_resumen.Width) dgv_resumen.Width = b + 60;
-            dgv_resumen.ReadOnly = true;
-        }
-        private void sumaGrilla(string grilla)
-        {
-            switch (grilla)
-            {
-                case "grillares":
-                    //object sumPRE, sumGR, sumsaldos;
-                    Decimal sumPRE = decimal.Parse(dt.Compute("Sum(TOT_PRE)", "ESTADO <> '" + nomAnul + "' and TOT_GUIA = 0").ToString());   // string.Empty
-                    Decimal sumGR = decimal.Parse(dt.Compute("Sum(TOT_GUIA)", "ESTADO <> '" + nomAnul + "' and TOT_PRE < TOT_GUIA").ToString());
-                    Decimal sumsaldos = decimal.Parse(dt.Compute("Sum(SALDO)", "ESTADO <> '" + nomAnul + "'").ToString());      // string.Empty
-                    tx_valor.Text = (sumPRE + sumGR).ToString();
-                    tx_pendien.Text = sumsaldos.ToString();
-                    //tx_nser.Text = dt.Rows.Count.ToString();
-                    tx_nser.Text = dt.Select("ESTADO <> '" + nomAnul + "'").Length.ToString();
-                    break;
-            }
-        }
-        private void bt_vtasfiltra_Click(object sender, EventArgs e)    // genera reporte pre guias
+        private void bt_vtasfiltra_Click(object sender, EventArgs e)    // 
         {
             using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
             {
@@ -402,100 +344,7 @@ namespace TransCarga
                 }
             }
         }
-        private void tx_codped_Leave(object sender, EventArgs e)    // RESUMEN CLIENTE valida existencia de # documento
-        {
-            if(tx_codped.Text != "" && tx_dat_tido.Text != "")
-            {
-                try
-                {
-                    MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
-                    conn.Open();
-                    if (conn.State == ConnectionState.Open)
-                    {
-                        string consu = "select b.id,b.ruc,b.razonsocial,b.estado,b.tiposocio " +
-                            "from anag_cli b " +
-                            "where b.tipdoc=@td and ruc=@nd";
-                        MySqlCommand micon = new MySqlCommand(consu, conn);
-                        micon.Parameters.AddWithValue("@td", tx_dat_tido.Text);
-                        micon.Parameters.AddWithValue("@nd", tx_codped.Text.Trim());
-                        MySqlDataReader dr = micon.ExecuteReader();
-                        if (dr.Read())
-                        {
-                            if(dr[0] == null)
-                            {
-                                MessageBox.Show("No existe el cliente", "Atención verifique", MessageBoxButtons.OK, MessageBoxIcon.Hand);
-                                tx_codped.Text = "";
-                                tx_docu.Text = "";
-                                tx_cliente.Text = "";
-                                tx_valor.Text = "";
-                                tx_pendien.Text = "";
-                                tx_nser.Text = "";
-                                tx_codped.Focus();
-                                dr.Close();
-                                conn.Close();
-                                return;
-                            }
-                            else
-                            {
-                                tx_cliente.Text = dr.GetString(2);
-                                tx_docu.Text = dr.GetString(1);
-                                dr.Close();
-                            }
-                        }
-                        micon.Dispose();
-                    }
-                    conn.Close();
-                }
-                catch (MySqlException ex)
-                {
-                    MessageBox.Show(ex.Message, "Error de conectividad", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    Application.Exit();
-                    return;
-                }
-            }
-        }
-        private void bt_resumen_Click(object sender, EventArgs e)   // genera resumen de cliente
-        {
-            if(tx_codped.Text != "" && tx_dat_tido.Text != "")
-            {
-                tx_codped_Leave(null, null);
-                string consulta = "res_serv_clte";
-                try
-                {
-                    MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
-                    conn.Open();
-                    if (conn.State == ConnectionState.Open)
-                    {
-                        dgv_resumen.DataSource = null;
-                        MySqlCommand micon = new MySqlCommand(consulta, conn);
-                        micon.CommandType = CommandType.StoredProcedure;
-                        micon.Parameters.AddWithValue("@tido", tx_dat_tido.Text);
-                        micon.Parameters.AddWithValue("@nudo", tx_codped.Text.Trim());
-                        MySqlDataAdapter da = new MySqlDataAdapter(micon);
-                        da.Fill(dt);
-                        dgv_resumen.DataSource = dt;
-                        dt.Dispose();
-                        da.Dispose();
-                        grillares();
-                    }
-                    else
-                    {
-                        conn.Close();
-                        MessageBox.Show("No se puede conectar al servidor", "Error de conexión", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        return;
-                    }
-                    conn.Close();
-                }
-                catch (MySqlException ex)
-                {
-                    MessageBox.Show(ex.Message, "Error en obtener datos");
-                    Application.Exit();
-                    return;
-                }
-            }
-            sumaGrilla("grillares");
-        }
-        private void bt_guias_Click(object sender, EventArgs e)         // genera reporte guias
+        private void bt_guias_Click(object sender, EventArgs e)         // 
         {
             using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
             {
@@ -525,7 +374,7 @@ namespace TransCarga
                 }
             }
         }
-        private void bt_plan_Click(object sender, EventArgs e)          // genera reporte planilla de carga
+        private void bt_plan_Click(object sender, EventArgs e)          // 
         {
             using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
             {
@@ -587,11 +436,6 @@ namespace TransCarga
                 tx_dat_vtasloc.Text = "";
             }
         }
-        private void cmb_tidoc_SelectionChangeCommitted(object sender, EventArgs e)
-        {
-            if (cmb_tidoc.SelectedValue != null) tx_dat_tido.Text = cmb_tidoc.SelectedValue.ToString();
-            else tx_dat_tido.Text = "";
-        }
         private void cmb_sede_plan_SelectionChangeCommitted(object sender, EventArgs e)
         {
             if (cmb_sede_plan.SelectedValue != null) tx_dat_sede_plan.Text = cmb_sede_plan.SelectedValue.ToString();
@@ -644,7 +488,6 @@ namespace TransCarga
                 tx_estad_guias.Text = "";
             }
         }
-
         #endregion
 
         #region botones de comando
@@ -750,7 +593,6 @@ namespace TransCarga
             tabControl1.Enabled = true;
             cmb_estad.SelectedIndex = -1;
             cmb_vtasloc.SelectedIndex = -1;
-            cmb_tidoc.SelectedIndex = -1;
             chk_excluye.Checked = false;
             //
             cmb_sede_guias.SelectedIndex = -1;
@@ -767,14 +609,14 @@ namespace TransCarga
             if (tabControl1.Enabled == false) return;
             if (tabControl1.SelectedTab == tabres && dgv_resumen.Rows.Count > 0)
             {
-                nombre = "resumen_cliente_" + tx_codped.Text.Trim() +"_" + DateTime.Now.Date.ToString("yyyy-MM-dd") + ".xlsx";
+                nombre = "reporte_cajas_" + "<local>" +"_" + DateTime.Now.Date.ToString("yyyy-MM-dd") + ".xlsx";
                 var aa = MessageBox.Show("Confirma que desea generar la hoja de calculo?",
                     "Archivo: " + nombre, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (aa == DialogResult.Yes)
                 {
                     var wb = new XLWorkbook();
                     DataTable dt = (DataTable)dgv_resumen.DataSource;
-                    wb.Worksheets.Add(dt, "Resumen");
+                    wb.Worksheets.Add(dt, "Cajas");
                     wb.SaveAs(nombre);
                     MessageBox.Show("Archivo generado con exito!");
                     this.Close();
@@ -782,7 +624,7 @@ namespace TransCarga
             }
             if (tabControl1.SelectedTab == tabvtas && dgv_vtas.Rows.Count > 0)
             {
-                nombre = "Reportes_PreGuias_" + DateTime.Now.Date.ToString("yyyy-MM-dd") + ".xlsx";
+                nombre = "Reportes_Cobranzas_" + DateTime.Now.Date.ToString("yyyy-MM-dd") + ".xlsx";
                 var aa = MessageBox.Show("Confirma que desea generar la hoja de calculo?",
                     "Archivo: " + nombre, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (aa == DialogResult.Yes)
@@ -954,7 +796,7 @@ namespace TransCarga
         }
         private void tabres_Enter(object sender, EventArgs e)
         {
-            cmb_tidoc.Focus();
+            //cmb_tidoc.Focus();
         }
         #endregion
 

@@ -575,7 +575,18 @@ namespace TransCarga
         }
         private void pe_reportes_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Form Reportes de adm/caja", "En desarrollo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            //MessageBox.Show("Form Reportes de adm/caja", "En desarrollo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            repadmcaja fpe = new repadmcaja();
+            fpe.TopLevel = false;
+            fpe.Parent = this;
+            pn_centro.Controls.Add(fpe);
+            fpe.Show();
+            if (fpe.Parent.Width < fpe.Width)
+            {
+                //frv.Parent.Width = frv.Width + 10;
+                this.Width = this.Width + (this.Width - fpe.Width) + 20;
+            }
+            fpe.BringToFront();
         }
         //
         private void bt_pcontrol_Click(object sender, EventArgs e)      // Configuración

@@ -65,4 +65,9 @@ form cobranzas: (el pago DEBE SER en la moneda del documento) 14/11/2020
 ***** NO SE PERMITE PAGOS DESDE PRE GUIAS
 ***** SOLO SE PERMITE HACER DOCS.VENTA DE GUIAS QUE NO TENGAN PAGOS
 ************** 17/11/2020 CONSIDERACIONES RESPECTO AL FORM DE COBRANZAS ******************************************
-form facelect: falta modulo para cobrar cuando nace pagado el doc.venta ............................ falta
+form facelect: falta modulo para cobrar cuando nace pagado el doc.venta ............................ ok 20/11/2020
+form tipcamref: arreglos del form en grilla y validaciones solo numeros y punto decimal ............ ok 20/11/2020
+form repsoper: Arreglos en inicializacion de combos de guias, ampliacion de reporte guias x BD ..... ok 20/11/2020
+form repadmcaja:
+- desarrollo del form, paneles, combos, grillas, etc. .............................................. ok 20/11/2020
+- desarrollo de panel grillas y opciones de cobranzas ..............................................

@@ -472,15 +472,21 @@ namespace TransCarga
                 jalaoc("tx_idr"); */
             }
         }
+        private void advancedDataGridView1_EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
+        {
+            DataGridViewTextBoxEditingControl tb = (DataGridViewTextBoxEditingControl)e.Control;
+            tb.KeyPress += new KeyPressEventHandler(dataGridViewTextBox_KeyPress);
+            e.Control.KeyPress += new KeyPressEventHandler(dataGridViewTextBox_KeyPress);
+        }
         private void advancedDataGridView1_CellValidating(object sender, DataGridViewCellValidatingEventArgs e) // valida cambios en valor de la celda
         {
             if (Tx_modo.Text == "NUEVO" || Tx_modo.Text == "EDITAR")
             {
-                if (e.RowIndex > -1 && e.ColumnIndex > 0
+                if (e.RowIndex > -1 && e.ColumnIndex > 1
                     && advancedDataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString() != e.FormattedValue.ToString())
                 {
                     string campo = advancedDataGridView1.Columns[e.ColumnIndex].Name.ToString();
-
+                    //
                     var aaa = MessageBox.Show("Confirma que desea cambiar el valor?",
                         "Columna: " + advancedDataGridView1.Columns[e.ColumnIndex].HeaderText.ToString(),
                         MessageBoxButtons.YesNo, MessageBoxIcon.Question);
@@ -506,6 +512,19 @@ namespace TransCarga
                         SendKeys.Send("{ESC}");
                     }
                 }
+            }
+        }
+        private void dataGridViewTextBox_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            // Verify that the pressed key isn't CTRL or any non-numeric digit
+            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) && (e.KeyChar != '.'))
+            {
+                e.Handled = true;
+            }
+            // If you want, you can allow decimal (float) numbers
+            if ((e.KeyChar == '.') && ((sender as TextBox).Text.IndexOf('.') > -1))
+            {
+                e.Handled = true;
             }
         }
         #endregion
