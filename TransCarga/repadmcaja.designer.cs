@@ -641,6 +641,7 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(92, 45);
             this.panel1.TabIndex = 357;
+            this.panel1.Visible = false;
             // 
             // rb_listado
             // 

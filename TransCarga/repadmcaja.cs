@@ -37,6 +37,7 @@ namespace TransCarga
         string img_grab = "";
         string img_anul = "";
         string img_imprime = "";
+        string v_ruta = "";             // ruta para los archivos que se exportan, vacio = ruta del sistema
         string img_preview = "";        // imagen del boton preview e imprimir reporte
         string letpied = "";            // letra indentificadora de piedra en detalle 2
         string cliente = Program.cliente;    // razon social para los reportes
@@ -126,7 +127,7 @@ namespace TransCarga
                 string consulta = "select formulario,campo,param,valor from enlaces where formulario in(@nofo,@ped)";
                 MySqlCommand micon = new MySqlCommand(consulta, conn);
                 micon.Parameters.AddWithValue("@nofo", "main");
-                micon.Parameters.AddWithValue("@ped", "xxx");
+                micon.Parameters.AddWithValue("@ped", nomform);
                 MySqlDataAdapter da = new MySqlDataAdapter(micon);
                 DataTable dt = new DataTable();
                 da.Fill(dt);
@@ -154,11 +155,9 @@ namespace TransCarga
                         DataRow[] fila = dtestad.Select("idcodice='" + codAnul + "'");
                         nomAnul = fila[0][0].ToString();
                     }
-                    if (row["formulario"].ToString() == "xxx")
+                    if (row["formulario"].ToString() == nomform)
                     {
-                        if (row["campo"].ToString() == "tipoped" && row["param"].ToString() == "almacen") tipede = row["valor"].ToString().Trim();         // tipo de pedido por defecto en almacen
-                        if (row["campo"].ToString() == "estado" && row["param"].ToString() == "default") tiesta = row["valor"].ToString().Trim();         // estado del pedido inicial
-                        if (row["campo"].ToString() == "detalle2" && row["param"].ToString() == "piedra") letpied = row["valor"].ToString().Trim();         // letra identificadora de Piedra en Detalle2
+                        if (row["campo"].ToString() == "exporta" && row["param"].ToString() == "ruta") v_ruta = row["valor"].ToString().Trim();
                     }
                 }
                 da.Dispose();
@@ -314,12 +313,12 @@ namespace TransCarga
                     break;
             }
         }
-        private void bt_vtasfiltra_Click(object sender, EventArgs e)    // 
+        private void bt_vtasfiltra_Click(object sender, EventArgs e)    // COBRANZAS
         {
             using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
             {
                 conn.Open();
-                string consulta = "rep_oper_pregr1";
+                string consulta = "rep_adm_cob1";
                 using (MySqlCommand micon = new MySqlCommand(consulta, conn))
                 {
                     micon.CommandType = CommandType.StoredProcedure;
@@ -632,7 +631,7 @@ namespace TransCarga
                     var wb = new XLWorkbook();
                     DataTable dt = (DataTable)dgv_vtas.DataSource;
                     wb.Worksheets.Add(dt, "PreGuias");
-                    wb.SaveAs(nombre);
+                    wb.SaveAs(v_ruta + nombre);
                     MessageBox.Show("Archivo generado con exito!");
                     this.Close();
                 }

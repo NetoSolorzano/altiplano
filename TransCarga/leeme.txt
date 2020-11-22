@@ -70,4 +70,4 @@ form tipcamref: arreglos del form en grilla y validaciones solo numeros y punto 
 form repsoper: Arreglos en inicializacion de combos de guias, ampliacion de reporte guias x BD ..... ok 20/11/2020
 form repadmcaja:
 - desarrollo del form, paneles, combos, grillas, etc. .............................................. ok 20/11/2020
-- desarrollo de panel grillas y opciones de cobranzas ..............................................
+- desarrollo de panel grillas y opciones de cobranzas .............................................. OK 21/11/2020
