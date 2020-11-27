@@ -567,7 +567,14 @@ namespace TransCarga
         }
         private void pe_egresos_Click(object sender, EventArgs e)       // egresos y despositos
         {
-            MessageBox.Show("Form Egresos/Depósitos", "En desarrollo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            egresosdep fpe = new egresosdep();
+            fpe.TopLevel = false;
+            fpe.Parent = this;
+            pn_centro.Controls.Add(fpe);
+            fpe.Location = new Point(pn_centro.Left, (pn_centro.Height - fpe.Height));
+            fpe.Anchor = AnchorStyles.None;
+            fpe.Show();
+            fpe.BringToFront();
         }
         private void pe_ingresosV_Click(object sender, EventArgs e)
         {

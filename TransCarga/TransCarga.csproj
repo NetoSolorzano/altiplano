@@ -111,6 +111,12 @@
     <Compile Include="defs.designer.cs">
       <DependentUpon>defs.cs</DependentUpon>
     </Compile>
+    <Compile Include="egresosdep.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="egresosdep.designer.cs">
+      <DependentUpon>egresosdep.cs</DependentUpon>
+    </Compile>
     <Compile Include="enlaces.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -254,6 +260,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="defs.resx">
       <DependentUpon>defs.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="egresosdep.resx">
+      <DependentUpon>egresosdep.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="enlaces.resx">
       <DependentUpon>enlaces.cs</DependentUpon>
