@@ -255,16 +255,16 @@ namespace TransCarga
                 conn.Open();
                 if (conn.State == ConnectionState.Open)
                 {
-                    string consulta = "SELECT ??? " +
+                    string consulta = "SELECT a.id,a.codtegr,a.seregre,a.numegre,d.descrizionerid,a.totpago,a.totpaMN,u.descrizionerid,a.serdoco,a.numdoco," +
+                        "e.descrizionerid,c.descrizionerid,a.refctap,a.fechdep,a.obscobc " +
                         "FROM cabegresos a " +
-                        "LEFT JOIN desc_doc b ON b.idcodice = a.cltdoco " +
-                        "LEFT JOIN anag_cli c ON c.tipdoc = a.cltdoco AND c.RUC = a.dcltdoco " +
                         "LEFT JOIN desc_mon d ON d.idcodice = a.codmopa " +
-                        "left join usuarios u on u.nom_user = a.userc " +
-                        "left join desc_est e on e.idcodice = a.estdcob " +
+                        "left join desc_tdv u on u.idcodice = a.tipdoco " +
+                        "left join desc_teg e on e.idcodice = a.codgrpe " +
+                        "left join desc_ctb c on c.idcodice = a.ctaprop " +
                         parte;
                     MySqlCommand micon = new MySqlCommand(consulta, conn);
-                    if (campo == "tx_idr") micon.Parameters.AddWithValue("@idcaja", tx_idcaja.Text);
+                    if (campo == "tx_idcaja") micon.Parameters.AddWithValue("@idcaja", tx_idcaja.Text);
                     MySqlDataReader dr = micon.ExecuteReader();
                     if (dr != null)
                     {
@@ -702,30 +702,39 @@ namespace TransCarga
             if(conn.State == ConnectionState.Open)
             {
                 string inserta = "insert into cabegresos (" +
-                    " , , " +
+                    "idcaja,fechope,seregre,locegre,estdegr,tipegre,codtegr,tipdoco,martdve,serdoco,numdoco,codgrpe,ctaprop,refctap," +
+                    "fechdep,obscobc,codmopa,totpago,timegre,tcadvta,porcigv,totpaMN,codmoMN,pagauto," +
                     "verApp,userc,fechc,diriplan4,diripwan4,netbname) values (" +
-                    " , ," +
+                    "@idcaja,@fechop,@seregr,@ldcpgr,@estado,@tipegr,@codteg,@tipdoc,@martdv,@serdoc,@numdoc,@codgrp,@ctapro,@refcta," +
+                    "@fechde,@obsprg,@monppr,@totpag,@timepa,@tcoper,@porcig,@totMN,@codMN,@pagau," +
                     "@verApp,@asd,now(),@iplan,@ipwan,@nbnam)";
                 using (MySqlCommand micon = new MySqlCommand(inserta, conn))
                 {
+                    micon.Parameters.AddWithValue("@idcaja", tx_idcaja.Text);
                     micon.Parameters.AddWithValue("@fechop", tx_fechope.Text.Substring(6, 4) + "-" + tx_fechope.Text.Substring(3, 2) + "-" + tx_fechope.Text.Substring(0, 2));
-                    micon.Parameters.AddWithValue("@ctdvta", tx_dat_tdv.Text);
-                    micon.Parameters.AddWithValue("@serdv", tx_serie.Text);
-                    //micon.Parameters.AddWithValue("@numdv", tx_numero.Text);  // numero NO porque se autogenera en la BD
+                    micon.Parameters.AddWithValue("@seregr", tx_serie.Text);
+                    //micon.Parameters.AddWithValue("@numegr", tx_numero.Text);
                     micon.Parameters.AddWithValue("@ldcpgr", TransCarga.Program.almuser);         // local origen
                     micon.Parameters.AddWithValue("@estado", tx_dat_estad.Text);
+                    micon.Parameters.AddWithValue("@tipegr", (rb_pago.Checked == true)? "1" : "2");
+                    micon.Parameters.AddWithValue("@codteg", tx_dat_tdv.Text);
+                    micon.Parameters.AddWithValue("@tipdoc", tx_dat_comp.Text);
                     micon.Parameters.AddWithValue("@martdv", tx_fb.Text);
                     micon.Parameters.AddWithValue("@serdoc", tx_serGR.Text);
                     micon.Parameters.AddWithValue("@numdoc", tx_numGR.Text);
-                    micon.Parameters.AddWithValue("@timepa", tx_dat_mp.Text);
-                    micon.Parameters.AddWithValue("@refpag", tx_glosa.Text);
+                    micon.Parameters.AddWithValue("@codgrp", tx_dat_grupo.Text);
+                    micon.Parameters.AddWithValue("@ctapro", tx_dat_cta.Text);
+                    micon.Parameters.AddWithValue("@refcta", tx_glosa.Text);
+                    micon.Parameters.AddWithValue("@fechde", (rb_pago.Checked == true) ? null : tx_fecdep.Text.Substring(6, 4) + "-" + tx_fecdep.Text.Substring(3, 2) + "-" + tx_fecdep.Text.Substring(0, 2));
                     micon.Parameters.AddWithValue("@obsprg", tx_obser1.Text);
                     micon.Parameters.AddWithValue("@monppr", tx_dat_mone.Text);
                     micon.Parameters.AddWithValue("@totpag", tx_PAGO.Text);
-                    micon.Parameters.AddWithValue("@tcoper", (tx_tipcam.Text == "")? "0" : tx_tipcam.Text);                   // TIPO DE CAMBIO
+                    micon.Parameters.AddWithValue("@timepa", tx_dat_mp.Text);
+                    micon.Parameters.AddWithValue("@tcoper", (tx_tipcam.Text == "") ? "0" : tx_tipcam.Text);                   // TIPO DE CAMBIO                    
                     micon.Parameters.AddWithValue("@porcig", v_igv);                            // porcentaje en numeros de IGV
                     micon.Parameters.AddWithValue("@totMN", tx_pagoMN.Text);
-                    micon.Parameters.AddWithValue("@codMN", MonDeft);                           // codigo moneda local
+                    micon.Parameters.AddWithValue("@codMN", MonDeft);
+                    micon.Parameters.AddWithValue("@pagau", "N");   // pago manual desde el formulario
                     micon.Parameters.AddWithValue("@verApp", verapp);
                     micon.Parameters.AddWithValue("@asd", asd);
                     micon.Parameters.AddWithValue("@iplan", lib.iplan());
@@ -892,7 +901,15 @@ namespace TransCarga
             tx_noco.Text = v_noco;
             if (Tx_modo.Text == "NUEVO")
             {
+                cmb_ctaprop.Enabled = false;
+                tx_glosa.Enabled = false;
+                tx_fecdep.Enabled = false;
                 tx_fecdep.Text = "";
+                //
+                cmb_comp.Enabled = true;
+                tx_serGR.Enabled = true;
+                tx_numGR.Enabled = true;
+                cmb_grupo.Enabled = true;
                 tx_numero.Focus();
             }
         }
@@ -901,7 +918,15 @@ namespace TransCarga
             tx_noco.Text = v_nodd;
             if (Tx_modo.Text == "NUEVO")
             {
-                tx_fecdep.Text = tx_fechope.Text;
+                cmb_ctaprop.Enabled = true;
+                tx_glosa.Enabled = true;
+                tx_fecdep.Enabled = true;
+                tx_fecdep.Text = "";
+                //
+                cmb_comp.Enabled = false;
+                tx_serGR.Enabled = false;
+                tx_numGR.Enabled = false;
+                cmb_grupo.Enabled = false;
                 tx_numero.Focus();
             }
         }
@@ -1009,6 +1034,9 @@ namespace TransCarga
             tx_numero.ReadOnly = true;
             tx_noco.ReadOnly = true;
             tx_serie.ReadOnly = true;
+            // valida existencia de caja abierta en fecha y sede
+            tx_idcaja.Text = "1";   // aca debe ir el verdadero id de la caja abierta
+            //
             rb_pago.Focus();
         }
         private void Bt_edit_Click(object sender, EventArgs e)
