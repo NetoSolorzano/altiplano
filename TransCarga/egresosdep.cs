@@ -158,6 +158,8 @@ namespace TransCarga
             limpia_combos();
             dataGridView1.Rows.Clear();
             dataGridView1.ReadOnly = true;
+            tx_idcaja.ReadOnly = true;
+            tx_noco.ReadOnly = true;
             tx_numero.Text = "";
             tx_serie.Text = v_slu;
             tx_numero.ReadOnly = true;
@@ -488,7 +490,7 @@ namespace TransCarga
             }
             if (tx_dat_mone.Text.Trim() == "")
             {
-                MessageBox.Show("Seleccione el tipo de moneda de pago", " Atención ");
+                MessageBox.Show("Seleccione la moneda del egreso", " Atención ");
                 cmb_mon.Focus();
                 return;
             }
@@ -516,6 +518,50 @@ namespace TransCarga
             string iserror = "no";
             if (modo == "NUEVO")
             {
+                // validaciones de egresos PAGOS EFECTUADOS
+                if (rb_pago.Checked == true)
+                {
+                    if (tx_dat_comp.Text.Trim() == "")
+                    {
+                        MessageBox.Show("Seleccione el comprobante del egreso", " Atención ", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        cmb_comp.Focus();
+                        return;
+                    }
+                    if (tx_serGR.Text.Trim() == "")
+                    {
+                        MessageBox.Show("Ingrese la serie del comprobante", " Atención ", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        tx_serGR.Focus();
+                        return;
+                    }
+                    if (tx_numGR.Text.Trim() == "")
+                    {
+                        MessageBox.Show("Ingrese el número del comprobante", " Atención ", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        tx_numGR.Focus();
+                        return;
+                    }
+                    if (tx_dat_grupo.Text.Trim() == "")
+                    {
+                        MessageBox.Show("Seleccione el grupo de egreso", " Atención ", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        cmb_grupo.Focus();
+                        return;
+                    }
+                }
+                if (rb_depo.Checked == true)
+                {
+                    if (tx_dat_cta.Text.Trim() == "")
+                    {
+                        MessageBox.Show("Seleccione la cuenta del depósito", " Atención ", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        cmb_ctaprop.Focus();
+                        return;
+                    }
+                    if (tx_glosa.Text.Trim() == "")
+                    {
+                        MessageBox.Show("Ingrese el # de operación y algún otro detalle importante", " Atención", MessageBoxButtons.OK,MessageBoxIcon.Warning);
+                        tx_glosa.Focus();
+                        return;
+                    }
+                }
+                // vamos con todo
                 if (tx_idr.Text.Trim() == "")
                 {
                     var aa = MessageBox.Show("Confirma que desea crear el Egreso?", "Confirme por favor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
@@ -531,6 +577,7 @@ namespace TransCarga
                                 {
                                     MessageBox.Show(resulta, "Error en actualización de seguimiento", MessageBoxButtons.OK, MessageBoxIcon.Error);
                                 }
+                                jalaoc("tx_idcaja");
                             }
                         }
                     }
@@ -840,6 +887,44 @@ namespace TransCarga
             //else tx_dat_tidoor.Text = v_tip4;
             //tx_serGR.Focus();
         }
+        private void rb_pago_Enter(object sender, EventArgs e)          // tipo de egreso - pago efectuado
+        {
+            tx_noco.Text = v_noco;
+            if (Tx_modo.Text == "NUEVO")
+            {
+                tx_fecdep.Text = "";
+                tx_numero.Focus();
+            }
+        }
+        private void rb_depo_Enter(object sender, EventArgs e)
+        {
+            tx_noco.Text = v_nodd;
+            if (Tx_modo.Text == "NUEVO")
+            {
+                tx_fecdep.Text = tx_fechope.Text;
+                tx_numero.Focus();
+            }
+        }
+        private void cmb_mon_Enter(object sender, EventArgs e)
+        {
+            if (Tx_modo.Text == "NUEVO") cmb_mon.DroppedDown = true;
+        }
+        private void cmb_mpago_Enter(object sender, EventArgs e)
+        {
+            if (Tx_modo.Text == "NUEVO") cmb_mpago.DroppedDown = true;
+        }
+        private void cmb_comp_Enter(object sender, EventArgs e)
+        {
+            if (Tx_modo.Text == "NUEVO") cmb_comp.DroppedDown = true;
+        }
+        private void cmb_grupo_Enter(object sender, EventArgs e)
+        {
+            if (Tx_modo.Text == "NUEVO") cmb_grupo.DroppedDown = true;
+        }
+        private void cmb_ctapro_Enter(object sender, EventArgs e)
+        {
+            if (Tx_modo.Text == "NUEVO") cmb_ctaprop.DroppedDown = true;
+        }
         #endregion
 
         #region botones_de_comando
@@ -1057,16 +1142,27 @@ namespace TransCarga
         }
         private void cmb_comp_SelectedIndexChanged(object sender, EventArgs e)
         {
-
+            if (cmb_comp.SelectedIndex > -1)
+            {
+                tx_dat_comp.Text = cmb_comp.SelectedValue.ToString();
+            }
         }
         private void cmb_grupo_SelectedIndexChanged(object sender, EventArgs e)
         {
-
+            if (cmb_grupo.SelectedIndex > -1)
+            {
+                tx_dat_grupo.Text = cmb_grupo.SelectedValue.ToString();
+            }
         }
         private void cmb_ctaprop_SelectedIndexChanged(object sender, EventArgs e)
         {
-
+            if (cmb_ctaprop.SelectedIndex > -1)
+            {
+                tx_dat_cta.Text = cmb_ctaprop.SelectedValue.ToString();
+            }
         }
         #endregion comboboxes
+
+        
     }
 }
