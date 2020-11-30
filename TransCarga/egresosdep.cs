@@ -255,8 +255,8 @@ namespace TransCarga
                 conn.Open();
                 if (conn.State == ConnectionState.Open)
                 {
-                    string consulta = "SELECT a.id,a.codtegr,a.seregre,a.numegre,d.descrizionerid,a.totpago,a.totpaMN,u.descrizionerid,a.serdoco,a.numdoco," +
-                        "e.descrizionerid,c.descrizionerid,a.refctap,a.fechdep,a.obscobc " +
+                    string consulta = "SELECT a.id,a.codtegr,a.seregre,a.numegre,d.descrizionerid as mon,a.totpago,a.totpaMN,ifnull(u.descrizionerid,'') as tdv," +
+                        "a.serdoco,a.numdoco,ifnull(e.descrizionerid,'') as teg,ifnull(c.descrizionerid,'') as cta,a.refctap,ifnull(a.fechdep,'') as fechdep,a.obscobc " +
                         "FROM cabegresos a " +
                         "LEFT JOIN desc_mon d ON d.idcodice = a.codmopa " +
                         "left join desc_tdv u on u.idcodice = a.tipdoco " +
@@ -268,18 +268,35 @@ namespace TransCarga
                     MySqlDataReader dr = micon.ExecuteReader();
                     if (dr != null)
                     {
-                        if (dr.Read())
+                        while (dr.Read())
                         {
                             // aca llenamos el detalle de los egresos para la caja respectiva
+                            dataGridView1.Rows.Add(
+                                    dr.GetString("id"),
+                                    dr.GetString("codtegr"),
+                                    dr.GetString("seregre"),
+                                    dr.GetString("numegre"),
+                                    dr.GetString("mon"),
+                                    dr.GetString("totpago"),
+                                    dr.GetString("totpaMN"),
+                                    dr.GetString("tdv"),
+                                    dr.GetString("serdoco"),
+                                    dr.GetString("numdoco"),
+                                    dr.GetString("teg"),
+                                    dr.GetString("cta"),
+                                    dr.GetString("refctap"),
+                                    dr.GetString("fechdep"),
+                                    dr.GetString("obscobc")
+                                    );
                         }
-                        else
+                        /*else
                         {
                             MessageBox.Show("No existe el código de egreso!", "Atención - dato incorrecto",
                             MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                             tx_numero.Text = "";
                             tx_numero.Focus();
                             return;
-                        }
+                        }*/
                     }
                     else
                     {
@@ -450,6 +467,21 @@ namespace TransCarga
                 tigv = Math.Round(totDoc - tsub, 2);
                 
             }
+        }
+        private void sumdet()                   // totalizamos detalle
+        {
+            tx_tfil.Text = "";
+            tx_totcant.Text = "";
+            decimal tp = 0;
+            foreach (DataGridViewRow row in dataGridView1.Rows)
+            {
+                if (row.Cells["valorMN"].Value != null)
+                {
+                    tp = tp + decimal.Parse(row.Cells["valorMN"].Value.ToString());  // row["valorMN"].ToString()
+                }
+            }
+            tx_tfil.Text = (dataGridView1.Rows.Count - 1).ToString();
+            tx_totcant.Text = tp.ToString();
         }
 
         #region limpiadores_modos
@@ -881,6 +913,15 @@ namespace TransCarga
                     tx_PAGO.Focus();
                     return;
                 }
+                if (tx_dat_mone.Text != MonDeft)   // tipo de cambio si moneda <> local
+                {
+                    calculos(decimal.Parse(tx_PAGO.Text));
+                }
+                else
+                {
+                    tx_pagoMN.Text = tx_PAGO.Text;
+                    calculos(decimal.Parse(tx_PAGO.Text));
+                }
             }
         }
         private void tx_fb_Validating(object sender, System.ComponentModel.CancelEventArgs e)
@@ -1036,7 +1077,7 @@ namespace TransCarga
             tx_serie.ReadOnly = true;
             // valida existencia de caja abierta en fecha y sede
             tx_idcaja.Text = "1";   // aca debe ir el verdadero id de la caja abierta
-            //
+            jalaoc("tx_idcaja");
             rb_pago.Focus();
         }
         private void Bt_edit_Click(object sender, EventArgs e)
@@ -1154,9 +1195,13 @@ namespace TransCarga
                 if (cmb_mon.SelectedIndex > -1)
                 {
                     tx_dat_mone.Text = cmb_mon.SelectedValue.ToString();
-                    if (true)
+                    if (tx_dat_mone.Text != MonDeft)
                     {
                         tipcambio(tx_dat_mone.Text);
+                    }
+                    else
+                    {
+                        tx_pagoMN.Text = tx_PAGO.Text;
                     }
                 }
             }
@@ -1191,6 +1236,15 @@ namespace TransCarga
         }
         #endregion comboboxes
 
-        
+        #region grilla
+        private void dataGridView1_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
+        {
+            sumdet();
+        }
+        private void dataGridView1_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
+        {
+            sumdet();
+        }
+        #endregion
     }
 }
