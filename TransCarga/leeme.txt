@@ -73,4 +73,6 @@ form repadmcaja:
 - desarrollo de panel grillas y opciones de cobranzas .............................................. OK 21/11/2020
 form egresosdep: Egresos y depositos (salidas de dinero a cta de la empresa) 
 - desarrollo del form .............................................................................. ok 30/11/2020
+form ingresosv:
+- desarrollo del form .............................................................................. 
 

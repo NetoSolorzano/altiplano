@@ -578,7 +578,14 @@ namespace TransCarga
         }
         private void pe_ingresosV_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Form Ingresos extraordinarios", "Otoño 2021", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            ingresosv fpe = new ingresosv();
+            fpe.TopLevel = false;
+            fpe.Parent = this;
+            pn_centro.Controls.Add(fpe);
+            //fpe.Location = new Point(pn_centro.Right, (pn_centro.Height - fpe.Height));
+            fpe.Anchor = AnchorStyles.None;
+            fpe.Show();
+            fpe.BringToFront();
         }
         private void pe_reportes_Click(object sender, EventArgs e)
         {
