@@ -255,13 +255,16 @@ namespace TransCarga
                 conn.Open();
                 if (conn.State == ConnectionState.Open)
                 {
-                    string consulta = "SELECT a.id,a.codtegr,a.seregre,a.numegre,d.descrizionerid as mon,a.totpago,a.totpaMN,ifnull(u.descrizionerid,'') as tdv," +
-                        "a.serdoco,a.numdoco,ifnull(e.descrizionerid,'') as teg,ifnull(c.descrizionerid,'') as cta,a.refctap,ifnull(a.fechdep,'') as fechdep,a.obscobc " +
+                    string consulta = "SELECT a.id,ifnull(f.descrizionerid,'') as tipeg,a.seregre,a.numegre,d.descrizionerid as mon,a.totpago,a.totpaMN,ifnull(u.descrizionerid,'') as tdv," +
+                        "a.serdoco,a.numdoco,ifnull(e.descrizionerid,'') as teg,ifnull(c.descrizionerid,'') as cta,a.refctap,ifnull(a.fechdep,'') as fechdep,a.obscobc," +
+                        "a.fechope,a.timegre,a.codmopa,a.codtegr,a.ctaprop,a.estdegr,a.userc,b.nom_user " +
                         "FROM cabegresos a " +
                         "LEFT JOIN desc_mon d ON d.idcodice = a.codmopa " +
                         "left join desc_tdv u on u.idcodice = a.tipdoco " +
                         "left join desc_teg e on e.idcodice = a.codgrpe " +
                         "left join desc_ctb c on c.idcodice = a.ctaprop " +
+                        "left join desc_tdi f on f.idcodice = a.codtegr " +
+                        "left join usuarios b on b.nom_user = a.userc " + 
                         parte;
                     MySqlCommand micon = new MySqlCommand(consulta, conn);
                     if (campo == "tx_idcaja") micon.Parameters.AddWithValue("@idcaja", tx_idcaja.Text);
@@ -273,7 +276,7 @@ namespace TransCarga
                             // aca llenamos el detalle de los egresos para la caja respectiva
                             dataGridView1.Rows.Add(
                                     dr.GetString("id"),
-                                    dr.GetString("codtegr"),
+                                    dr.GetString("tipeg"),
                                     dr.GetString("seregre"),
                                     dr.GetString("numegre"),
                                     dr.GetString("mon"),
@@ -286,7 +289,14 @@ namespace TransCarga
                                     dr.GetString("cta"),
                                     dr.GetString("refctap"),
                                     dr.GetString("fechdep"),
-                                    dr.GetString("obscobc")
+                                    dr.GetString("obscobc"),
+                                    dr.GetString("fechope"),
+                                    dr.GetString("timegre"),
+                                    dr.GetString("codmopa"),
+                                    dr.GetString("ctaprop"),
+                                    dr.GetString("estdegr"),
+                                    dr.GetString("userc"),
+                                    dr.GetString("nom_user")
                                     );
                         }
                         /*else
@@ -475,7 +485,7 @@ namespace TransCarga
             decimal tp = 0;
             foreach (DataGridViewRow row in dataGridView1.Rows)
             {
-                if (row.Cells["valorMN"].Value != null)
+                if (row.Cells["valorMN"].Value != null && row.Cells["status"].Value.ToString() != codAnul)
                 {
                     tp = tp + decimal.Parse(row.Cells["valorMN"].Value.ToString());  // row["valorMN"].ToString()
                 }
@@ -684,7 +694,7 @@ namespace TransCarga
                 // SOLO USUARIOS AUTORIZADOS DEBEN ACCEDER A ESTA OPCIÓN
                 // SE ANULA EL DOCUMENTO Y LOS MOVIMIENTOS INTERNOS se hacen por B.D.
                 // anulacion procede siempre y cuando sea de la fecha y del usuario
-                if (asd != tx_dat_userdoc.Text || DateTime.Now.Date.ToString().Substring(0,10) != tx_fechope.Text)
+                if (asd != tx_dat_userdoc.Text) // falta validar caja abierta
                 {
                     MessageBox.Show("No se puede ANULAR Egresos/Depósitos fuera de fecha" + Environment.NewLine +
                         "o que sean de otro local/usuario","Atención",MessageBoxButtons.OK,MessageBoxIcon.Hand);
@@ -803,14 +813,37 @@ namespace TransCarga
             {
                 try
                 {
-                    if (true)     // EDICION DE CABECERA
+                    if (true)     // donde validas que la caja este abierta ?????
                     {
-                        string actua = "update cabegresos a set a.obscobc=@obsprg," +
+                        string actua = "update cabegresos a set " +
+                            "a.fechope=@fechop,a.locegre=@ldcpgr,a.estdegr=@estado,a.tipegre=@tipegr,a.codtegr=@codteg,a.tipdoco=@tipdoc,a.martdve=@martdv,a.serdoco=@serdoc," +
+                            "a.numdoco=@numdoc,a.codgrpe=@codgrp,a.ctaprop=@ctapro,a.refctap=@refcta,a.fechdep=@fechde,a.codmopa=@monppr,a.totpago=@totpag," +
+                            "a.timegre=@timepa,a.tcadvta=@tcoper,a.porcigv=@porcig,a.totpaMN=@totMN,a.codmoMN=@codMN,a.obscobc=@obsprg," +
                             "a.verApp=@verApp,a.userm=@asd,a.fechm=now(),a.diriplan4=@iplan,a.diripwan4=@ipwan,a.netbname=@nbnam " +
                             "where a.id=@idr";
                         MySqlCommand micon = new MySqlCommand(actua, conn);
                         micon.Parameters.AddWithValue("@idr", tx_idr.Text);
                         micon.Parameters.AddWithValue("@obsprg", tx_obser1.Text);
+                        micon.Parameters.AddWithValue("@fechop", tx_fechope.Text.Substring(6, 4) + "-" + tx_fechope.Text.Substring(3, 2) + "-" + tx_fechope.Text.Substring(0, 2));
+                        micon.Parameters.AddWithValue("@ldcpgr", TransCarga.Program.almuser);         // local origen
+                        micon.Parameters.AddWithValue("@estado", tx_dat_estad.Text);
+                        micon.Parameters.AddWithValue("@tipegr", (rb_pago.Checked == true) ? "1" : "2");
+                        micon.Parameters.AddWithValue("@codteg", tx_dat_tdv.Text);
+                        micon.Parameters.AddWithValue("@tipdoc", tx_dat_comp.Text);
+                        micon.Parameters.AddWithValue("@martdv", tx_fb.Text);
+                        micon.Parameters.AddWithValue("@serdoc", tx_serGR.Text);
+                        micon.Parameters.AddWithValue("@numdoc", tx_numGR.Text);
+                        micon.Parameters.AddWithValue("@codgrp", tx_dat_grupo.Text);
+                        micon.Parameters.AddWithValue("@ctapro", tx_dat_cta.Text);
+                        micon.Parameters.AddWithValue("@refcta", tx_glosa.Text);
+                        micon.Parameters.AddWithValue("@fechde", (rb_pago.Checked == true) ? null : tx_fecdep.Text.Substring(6, 4) + "-" + tx_fecdep.Text.Substring(3, 2) + "-" + tx_fecdep.Text.Substring(0, 2));
+                        micon.Parameters.AddWithValue("@monppr", tx_dat_mone.Text);
+                        micon.Parameters.AddWithValue("@totpag", tx_PAGO.Text);
+                        micon.Parameters.AddWithValue("@timepa", tx_dat_mp.Text);
+                        micon.Parameters.AddWithValue("@tcoper", (tx_tipcam.Text == "") ? "0" : tx_tipcam.Text);                   // TIPO DE CAMBIO                    
+                        micon.Parameters.AddWithValue("@porcig", v_igv);                            // porcentaje en numeros de IGV
+                        micon.Parameters.AddWithValue("@totMN", tx_pagoMN.Text);
+                        micon.Parameters.AddWithValue("@codMN", MonDeft);
                         micon.Parameters.AddWithValue("@verApp", verapp);
                         micon.Parameters.AddWithValue("@asd", asd);
                         micon.Parameters.AddWithValue("@iplan", lib.iplan());
@@ -847,7 +880,7 @@ namespace TransCarga
                 conn.Open();
                 if (conn.State == ConnectionState.Open)
                 {
-                    string canul = "update cabegresos set estdcob=@estser,obscobc=@obse,usera=@asd,fecha=now()," +
+                    string canul = "update cabegresos set estdegr=@estser,obscobc=@obse,usera=@asd,fecha=now()," +
                         "verApp=@veap,diriplan4=@dil4,diripwan4=@diw4,netbname=@nbnp,estintreg=@eiar " +
                         "where id=@idr";
                     using (MySqlCommand micon = new MySqlCommand(canul, conn))
@@ -940,7 +973,7 @@ namespace TransCarga
         private void rb_pago_Enter(object sender, EventArgs e)          // tipo de egreso - pago efectuado
         {
             tx_noco.Text = v_noco;
-            if (Tx_modo.Text == "NUEVO")
+            if (("NUEVO,EDITAR").Contains(Tx_modo.Text))
             {
                 cmb_ctaprop.Enabled = false;
                 tx_glosa.Enabled = false;
@@ -951,23 +984,25 @@ namespace TransCarga
                 tx_serGR.Enabled = true;
                 tx_numGR.Enabled = true;
                 cmb_grupo.Enabled = true;
+                tx_dat_tdv.Text = v_codc;
                 tx_numero.Focus();
             }
         }
         private void rb_depo_Enter(object sender, EventArgs e)
         {
             tx_noco.Text = v_nodd;
-            if (Tx_modo.Text == "NUEVO")
+            if (("NUEVO,EDITAR").Contains(Tx_modo.Text))
             {
                 cmb_ctaprop.Enabled = true;
                 tx_glosa.Enabled = true;
                 tx_fecdep.Enabled = true;
-                tx_fecdep.Text = "";
+                if (Tx_modo.Text == "NUEVO") tx_fecdep.Text = "";
                 //
                 cmb_comp.Enabled = false;
                 tx_serGR.Enabled = false;
                 tx_numGR.Enabled = false;
                 cmb_grupo.Enabled = false;
+                tx_dat_tdv.Text = v_codd;
                 tx_numero.Focus();
             }
         }
@@ -1090,7 +1125,9 @@ namespace TransCarga
             tx_obser1.ReadOnly = false;
             tx_numero.Text = "";
             tx_numero.ReadOnly = false;
-            rb_pago.Focus();
+            // valida existencia de caja abierta en fecha y sede
+            tx_idcaja.Text = "1";   // aca debe ir el verdadero id de la caja abierta
+            jalaoc("tx_idcaja");
             //
             Bt_ini.Enabled = true;
             Bt_sig.Enabled = true;
@@ -1115,7 +1152,9 @@ namespace TransCarga
             tx_numero.ReadOnly = false;
             tx_obser1.Enabled = true;
             tx_obser1.ReadOnly = false;
-            rb_pago.Focus();
+            // valida existencia de caja abierta en fecha y sede
+            tx_idcaja.Text = "1";   // aca debe ir el verdadero id de la caja abierta
+            jalaoc("tx_idcaja");
             //
             Bt_ini.Enabled = true;
             Bt_sig.Enabled = true;
@@ -1240,10 +1279,67 @@ namespace TransCarga
         private void dataGridView1_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
         {
             sumdet();
+            if (dataGridView1.Rows[e.RowIndex].Cells["status"].Value != null)
+            {
+                if (dataGridView1.Rows[e.RowIndex].Cells["status"].Value.ToString() == codAnul)
+                   dataGridView1.Rows[e.RowIndex].DefaultCellStyle.BackColor = Color.IndianRed;
+            }
         }
         private void dataGridView1_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
         {
             sumdet();
+        }
+        private void dataGridView1_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (Tx_modo.Text == "EDITAR" || Tx_modo.Text == "ANULAR")
+            {
+                if (e.RowIndex > -1 && e.RowIndex < dataGridView1.Rows.Count - 1)
+                {
+                    tx_idr.Text = dataGridView1.Rows[e.RowIndex].Cells["id"].Value.ToString();
+                    tx_fechope.Text = dataGridView1.Rows[e.RowIndex].Cells["fechope"].Value.ToString().Substring(0,10);
+                    tx_noco.Text = dataGridView1.Rows[e.RowIndex].Cells["noeg"].Value.ToString();
+                    tx_serie.Text = dataGridView1.Rows[e.RowIndex].Cells["serie"].Value.ToString();
+                    tx_numero.Text = dataGridView1.Rows[e.RowIndex].Cells["numero"].Value.ToString();
+                    tx_dat_estad.Text = codGene;
+                    if (dataGridView1.Rows[e.RowIndex].Cells["noeg"].Value.ToString() == v_noco) rb_pago.Checked = true;
+                    if (dataGridView1.Rows[e.RowIndex].Cells["noeg"].Value.ToString() == v_nodd) rb_depo.Checked = true;
+                    tx_dat_tdv.Text = dataGridView1.Rows[e.RowIndex].Cells["comprob"].Value.ToString();
+                    tx_dat_comp.Text = "";
+                    tx_serGR.Text = dataGridView1.Rows[e.RowIndex].Cells["sercomp"].Value.ToString();
+                    tx_numGR.Text = dataGridView1.Rows[e.RowIndex].Cells["numcomp"].Value.ToString();
+                    tx_dat_grupo.Text = dataGridView1.Rows[e.RowIndex].Cells["gpoegreso"].Value.ToString();
+                    tx_dat_cta.Text = dataGridView1.Rows[e.RowIndex].Cells["ctaprop"].Value.ToString();
+                    tx_glosa.Text = dataGridView1.Rows[e.RowIndex].Cells["glosa"].Value.ToString();
+                    if (dataGridView1.Rows[e.RowIndex].Cells["fechdep"].Value.ToString().Trim() != "")
+                    {
+                        tx_fecdep.Text = dataGridView1.Rows[e.RowIndex].Cells["fechdep"].Value.ToString().Substring(8, 2) +
+                            dataGridView1.Rows[e.RowIndex].Cells["fechdep"].Value.ToString().Substring(5, 2) +
+                            dataGridView1.Rows[e.RowIndex].Cells["fechdep"].Value.ToString().Substring(0, 4);
+                    }
+                    else
+                    {
+                        tx_fecdep.Text = dataGridView1.Rows[e.RowIndex].Cells["fechdep"].Value.ToString();
+                    }
+                    tx_obser1.Text = dataGridView1.Rows[e.RowIndex].Cells["observaciones"].Value.ToString();
+                    tx_dat_mone.Text = dataGridView1.Rows[e.RowIndex].Cells["codmopa"].Value.ToString();
+                    tx_PAGO.Text = dataGridView1.Rows[e.RowIndex].Cells["monto"].Value.ToString();
+                    tx_dat_mp.Text = dataGridView1.Rows[e.RowIndex].Cells["mpago"].Value.ToString();
+                    tx_tipcam.Text = "";
+                    tx_pagoMN.Text = dataGridView1.Rows[e.RowIndex].Cells["valorMN"].Value.ToString();
+                    cmb_mon.SelectedValue = tx_dat_mone.Text;
+                    cmb_mpago.SelectedValue = tx_dat_mp.Text;
+                    cmb_ctaprop.SelectedValue = tx_dat_cta.Text;
+                    tx_dat_userdoc.Text = dataGridView1.Rows[e.RowIndex].Cells["userc"].Value.ToString();
+                    tx_digit.Text = dataGridView1.Rows[e.RowIndex].Cells["nom_user"].Value.ToString();
+                    //
+                    if (Tx_modo.Text == "EDITAR")
+                    {
+                        escribe();
+                        tx_serie.ReadOnly = true;
+                        tx_numero.ReadOnly = true;
+                    }
+                }
+            }
         }
         #endregion
     }
