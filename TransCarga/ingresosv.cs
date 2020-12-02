@@ -40,10 +40,10 @@ namespace TransCarga
         string v_clu = "";              // codigo del local del usuario
         string v_slu = "";              // serie del local del usuario
         string v_nbu = "";              // nombre del usuario
-        string v_codc = "";             // codigo tipo documento EGRESO - pagos efectuados
-        string v_noco = "";             // siglas del documento EGRESO - pagos efectuados
-        string v_codd = "";             // codigo tipo documento EGRESO - deposito en cuenta propia
-        string v_nodd = "";             // siglas del documento EGRESO - deposito en cuenta propia
+        //string v_codc = "";             // codigo tipo documento EGRESO - pagos efectuados
+        //string v_noco = "";             // siglas del documento EGRESO - pagos efectuados
+        string v_codd = "";             // codigo tipo documento - deposito en cuenta propia
+        string v_nodd = "";             // siglas del documento - deposito en cuenta propia
         string vint_A0 = "";            // variable codigo anulacion interna por BD
         string v_igv = "";              // valor igv %
         //
@@ -66,9 +66,8 @@ namespace TransCarga
         string DB_CONN_STR = "server=" + login.serv + ";uid=" + login.usua + ";pwd=" + login.cont + ";database=" + data + ";";
 
         DataTable dtm = new DataTable();        // combo moneda
-        DataTable dtmpa = new DataTable();      // medio de pago del egreso
+        DataTable dtmpa = new DataTable();      // medio de pago del ingreso
         DataTable dtcom = new DataTable();      // combo documento de compra
-        DataTable dteg = new DataTable();       // combo grupos de egresos
         DataTable dtctb = new DataTable();      // cuentas bancarias propias
         public ingresosv()
         {
@@ -139,9 +138,9 @@ namespace TransCarga
             tx_obser1.MaxLength = 245;      // observaciones
             // grilla
             dataGridView1.ReadOnly = true;
-            dataGridView1.Columns[4].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;    // tipo moneda
-            dataGridView1.Columns[5].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;     // monto egresado
-            dataGridView1.Columns[6].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;     // monto en MN
+            //dataGridView1.Columns[4].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;    // tipo moneda
+            //dataGridView1.Columns[5].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;     // monto egresado
+            //dataGridView1.Columns[6].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;     // monto en MN
             // todo desabilidado
             sololee();
         }
@@ -205,8 +204,6 @@ namespace TransCarga
                     {
                         if (row["campo"].ToString() == "documento")
                         {
-                            if (row["param"].ToString() == "codpag") v_codc = row["valor"].ToString().Trim();               // codigo tipo pagos
-                            if (row["param"].ToString() == "nompag") v_noco = row["valor"].ToString().Trim();               // nombre codido pagos
                             if (row["param"].ToString() == "coddep") v_codd = row["valor"].ToString().Trim();               // codigo tipo depositos
                             if (row["param"].ToString() == "nomdep") v_nodd = row["valor"].ToString().Trim();               // nombre codido depositos
                         }
@@ -246,10 +243,9 @@ namespace TransCarga
                 conn.Open();
                 if (conn.State == ConnectionState.Open)
                 {
-                    string consulta = "SELECT a.id,ifnull(f.descrizionerid,'') as tipeg,a.seregre,a.numegre,d.descrizionerid as mon,a.totpago,a.totpaMN,ifnull(u.descrizionerid,'') as tdv," +
-                        "a.serdoco,a.numdoco,ifnull(e.descrizionerid,'') as teg,ifnull(c.descrizionerid,'') as cta,a.refctap,ifnull(a.fechdep,'') as fechdep,a.obscobc," +
-                        "a.fechope,a.timegre,a.codmopa,a.codtegr,a.ctaprop,a.estdegr,a.userc,b.nom_user " +
-                        "FROM cabegresos a " +
+                    string consulta = "SELECT a.id,a.idcaja,a.fechope,a.seringv,a.numingv,a.locingv,a.estingv,a.codting,a.tipdoco,a.serdoco,a.numdoco,a.ctaprop," +
+                        "a.refctap,a.fechdep,a.obscobc,a.codmopa,a.totpago,a.timping,a.tcadvta,a.porcigv,a.totpaMN,a.codmoMN,a.userc,b.nom_user " +
+                        "FROM cabingresosv a " +
                         "LEFT JOIN desc_mon d ON d.idcodice = a.codmopa " +
                         "left join desc_tdv u on u.idcodice = a.tipdoco " +
                         "left join desc_teg e on e.idcodice = a.codgrpe " +
@@ -264,7 +260,7 @@ namespace TransCarga
                     {
                         while (dr.Read())
                         {
-                            // aca llenamos el detalle de los egresos para la caja respectiva
+                            // aca llenamos el detalle de los egresos para la caja respectiva ME QUEDE ACA!
                             dataGridView1.Rows.Add(
                                     dr.GetString("id"),
                                     dr.GetString("tipeg"),
@@ -290,14 +286,6 @@ namespace TransCarga
                                     dr.GetString("nom_user")
                                     );
                         }
-                        /*else
-                        {
-                            MessageBox.Show("No existe el código de egreso!", "Atención - dato incorrecto",
-                            MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                            tx_numero.Text = "";
-                            tx_numero.Focus();
-                            return;
-                        }*/
                     }
                     else
                     {
@@ -396,12 +384,12 @@ namespace TransCarga
             bool retorna = true;
             if (codAnul == "")          // codigo de documento anulado
             {
-                lib.messagebox("Código de Cobranza ANULADA");
+                lib.messagebox("Código de Ingreso ANULADO");
                 retorna = false;
             }
             if (codGene == "")          // codigo documento nuevo generado
             {
-                lib.messagebox("Código de Cobranza GENERADA/NUEVA");
+                lib.messagebox("Código de Ingreso GENERADA/NUEVA");
                 retorna = false;
             }
             if (MonDeft == "")          // moneda por defecto
@@ -504,25 +492,25 @@ namespace TransCarga
             #region validaciones
             if (tx_dat_mone.Text.Trim() == "")
             {
-                MessageBox.Show("Seleccione la moneda del egreso", " Atención ");
+                MessageBox.Show("Seleccione la moneda del ingreso extraordinario", " Atención ");
                 cmb_mon.Focus();
                 return;
             }
             if (tx_dat_mp.Text == "")
             {
-                MessageBox.Show("Seleccione un tipo de pago", " Atención ", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Seleccione un tipo de pago del ingreso", " Atención ", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 cmb_mpago.Focus();
                 return;
             }
             if (tx_dat_mone.Text != MonDeft && tx_tipcam.Text.Trim() == "")
             {
-                MessageBox.Show("Seleccione la moneda de pago y tipo de cambio", " Atención ", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Seleccione la moneda y tipo de cambio", " Atención ", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 cmb_mon.Focus();
                 return;
             }
             if (tx_PAGO.Text.Trim() == "")
             {
-                MessageBox.Show("Ingrese el monto del pago", " Atención ", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Ingrese el monto del ingreso", " Atención ", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 tx_PAGO.Focus();
                 return;
             }
@@ -780,7 +768,7 @@ namespace TransCarga
                 conn.Open();
                 if (conn.State == ConnectionState.Open)
                 {
-                    string canul = "update cabegresos set estdegr=@estser,obscobc=@obse,usera=@asd,fecha=now()," +
+                    string canul = "update cabingresosv set estdegr=@estser,obscobc=@obse,usera=@asd,fecha=now()," +
                         "verApp=@veap,diriplan4=@dil4,diripwan4=@diw4,netbname=@nbnp,estintreg=@eiar " +
                         "where id=@idr";
                     using (MySqlCommand micon = new MySqlCommand(canul, conn))

@@ -68,28 +68,6 @@
             this.label13 = new System.Windows.Forms.Label();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.id = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.noeg = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.serie = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.numero = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.moneda = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.monto = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.valorMN = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.comprob = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.sercomp = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.numcomp = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.gpoegreso = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.cuenta = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.glosa = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.fechdep = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.observaciones = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.fechope = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.mpago = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.codmopa = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.ctaprop = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.status = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.userc = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.nom_user = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tx_dat_mone = new System.Windows.Forms.TextBox();
             this.cmb_mon = new System.Windows.Forms.ComboBox();
             this.tx_estado = new System.Windows.Forms.TextBox();
@@ -126,6 +104,24 @@
             this.tx_totcant = new TransCarga.NumericTextBox();
             this.tx_PAGO = new TransCarga.NumericTextBox();
             this.tx_numGR = new TransCarga.NumericTextBox();
+            this.id = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.noing = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.serie = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.numero = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.moneda = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.monto = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.valorMN = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cuenta = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.glosa = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.fechdep = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.observaciones = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.fechope = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.mpago = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.codmopa = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ctaprop = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.status = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.userc = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.nom_user = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.toolStrip1.SuspendLayout();
             this.pn_usloc.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
@@ -405,7 +401,7 @@
             this.button1.Location = new System.Drawing.Point(689, 52);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(62, 56);
-            this.button1.TabIndex = 16;
+            this.button1.TabIndex = 12;
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
@@ -525,16 +521,12 @@
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.id,
-            this.noeg,
+            this.noing,
             this.serie,
             this.numero,
             this.moneda,
             this.monto,
             this.valorMN,
-            this.comprob,
-            this.sercomp,
-            this.numcomp,
-            this.gpoegreso,
             this.cuenta,
             this.glosa,
             this.fechdep,
@@ -553,150 +545,6 @@
             this.dataGridView1.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellDoubleClick);
             this.dataGridView1.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.dataGridView1_RowsAdded);
             this.dataGridView1.RowsRemoved += new System.Windows.Forms.DataGridViewRowsRemovedEventHandler(this.dataGridView1_RowsRemoved);
-            // 
-            // id
-            // 
-            this.id.FillWeight = 40F;
-            this.id.HeaderText = "ID";
-            this.id.Name = "id";
-            this.id.ReadOnly = true;
-            this.id.Width = 40;
-            // 
-            // noeg
-            // 
-            this.noeg.FillWeight = 30F;
-            this.noeg.HeaderText = "EGRESO";
-            this.noeg.Name = "noeg";
-            this.noeg.Width = 30;
-            // 
-            // serie
-            // 
-            this.serie.FillWeight = 30F;
-            this.serie.HeaderText = "SERIE";
-            this.serie.Name = "serie";
-            this.serie.Width = 30;
-            // 
-            // numero
-            // 
-            this.numero.FillWeight = 60F;
-            this.numero.HeaderText = "NUMERO";
-            this.numero.Name = "numero";
-            this.numero.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.numero.Width = 60;
-            // 
-            // moneda
-            // 
-            this.moneda.FillWeight = 40F;
-            this.moneda.HeaderText = "MON";
-            this.moneda.Name = "moneda";
-            this.moneda.Width = 40;
-            // 
-            // monto
-            // 
-            this.monto.FillWeight = 80F;
-            this.monto.HeaderText = "MONTO";
-            this.monto.Name = "monto";
-            this.monto.Width = 80;
-            // 
-            // valorMN
-            // 
-            this.valorMN.HeaderText = "VALMN";
-            this.valorMN.Name = "valorMN";
-            // 
-            // comprob
-            // 
-            this.comprob.HeaderText = "COMPROB";
-            this.comprob.Name = "comprob";
-            // 
-            // sercomp
-            // 
-            this.sercomp.FillWeight = 30F;
-            this.sercomp.HeaderText = "SER";
-            this.sercomp.Name = "sercomp";
-            this.sercomp.ReadOnly = true;
-            this.sercomp.Width = 30;
-            // 
-            // numcomp
-            // 
-            this.numcomp.FillWeight = 60F;
-            this.numcomp.HeaderText = "NUMERO";
-            this.numcomp.Name = "numcomp";
-            this.numcomp.ReadOnly = true;
-            this.numcomp.Width = 60;
-            // 
-            // gpoegreso
-            // 
-            this.gpoegreso.HeaderText = "GPO_EGRESO";
-            this.gpoegreso.Name = "gpoegreso";
-            this.gpoegreso.ReadOnly = true;
-            // 
-            // cuenta
-            // 
-            this.cuenta.HeaderText = "CUENTA";
-            this.cuenta.Name = "cuenta";
-            this.cuenta.ReadOnly = true;
-            // 
-            // glosa
-            // 
-            this.glosa.HeaderText = "GLOSA";
-            this.glosa.Name = "glosa";
-            this.glosa.ReadOnly = true;
-            // 
-            // fechdep
-            // 
-            this.fechdep.FillWeight = 60F;
-            this.fechdep.HeaderText = "F_DEP";
-            this.fechdep.Name = "fechdep";
-            this.fechdep.ReadOnly = true;
-            this.fechdep.Width = 60;
-            // 
-            // observaciones
-            // 
-            this.observaciones.HeaderText = "OBSERVACIONES";
-            this.observaciones.Name = "observaciones";
-            this.observaciones.ReadOnly = true;
-            // 
-            // fechope
-            // 
-            this.fechope.HeaderText = "fechope";
-            this.fechope.Name = "fechope";
-            this.fechope.ReadOnly = true;
-            this.fechope.Visible = false;
-            // 
-            // mpago
-            // 
-            this.mpago.HeaderText = "mpago";
-            this.mpago.Name = "mpago";
-            this.mpago.Visible = false;
-            // 
-            // codmopa
-            // 
-            this.codmopa.HeaderText = "codmopa";
-            this.codmopa.Name = "codmopa";
-            this.codmopa.Visible = false;
-            // 
-            // ctaprop
-            // 
-            this.ctaprop.HeaderText = "ctaprop";
-            this.ctaprop.Name = "ctaprop";
-            this.ctaprop.Visible = false;
-            // 
-            // status
-            // 
-            this.status.HeaderText = "ESTADO";
-            this.status.Name = "status";
-            // 
-            // userc
-            // 
-            this.userc.HeaderText = "userc";
-            this.userc.Name = "userc";
-            this.userc.Visible = false;
-            // 
-            // nom_user
-            // 
-            this.nom_user.HeaderText = "nom_user";
-            this.nom_user.Name = "nom_user";
-            this.nom_user.Visible = false;
             // 
             // tx_dat_mone
             // 
@@ -769,7 +617,7 @@
             this.tx_obser1.MaxLength = 0;
             this.tx_obser1.Name = "tx_obser1";
             this.tx_obser1.Size = new System.Drawing.Size(564, 18);
-            this.tx_obser1.TabIndex = 15;
+            this.tx_obser1.TabIndex = 11;
             // 
             // tx_tipcam
             // 
@@ -810,7 +658,7 @@
             this.tx_glosa.MaxLength = 0;
             this.tx_glosa.Name = "tx_glosa";
             this.tx_glosa.Size = new System.Drawing.Size(276, 18);
-            this.tx_glosa.TabIndex = 13;
+            this.tx_glosa.TabIndex = 9;
             // 
             // tx_dat_mp
             // 
@@ -847,7 +695,7 @@
             this.tx_serGR.Location = new System.Drawing.Point(252, 39);
             this.tx_serGR.Name = "tx_serGR";
             this.tx_serGR.Size = new System.Drawing.Size(40, 20);
-            this.tx_serGR.TabIndex = 9;
+            this.tx_serGR.TabIndex = 3;
             this.tx_serGR.Leave += new System.EventHandler(this.tx_serGR_Leave);
             // 
             // tx_dat_ntp
@@ -888,7 +736,7 @@
             this.cmb_comp.Location = new System.Drawing.Point(198, 38);
             this.cmb_comp.Name = "cmb_comp";
             this.cmb_comp.Size = new System.Drawing.Size(52, 21);
-            this.cmb_comp.TabIndex = 8;
+            this.cmb_comp.TabIndex = 2;
             this.cmb_comp.SelectedIndexChanged += new System.EventHandler(this.cmb_comp_SelectedIndexChanged);
             this.cmb_comp.Enter += new System.EventHandler(this.cmb_comp_Enter);
             // 
@@ -919,7 +767,7 @@
             this.cmb_ctaprop.Location = new System.Drawing.Point(94, 73);
             this.cmb_ctaprop.Name = "cmb_ctaprop";
             this.cmb_ctaprop.Size = new System.Drawing.Size(163, 21);
-            this.cmb_ctaprop.TabIndex = 12;
+            this.cmb_ctaprop.TabIndex = 8;
             this.cmb_ctaprop.SelectedIndexChanged += new System.EventHandler(this.cmb_ctaprop_SelectedIndexChanged);
             this.cmb_ctaprop.Enter += new System.EventHandler(this.cmb_ctapro_Enter);
             // 
@@ -949,7 +797,7 @@
             this.tx_fecdep.Mask = "00/00/0000";
             this.tx_fecdep.Name = "tx_fecdep";
             this.tx_fecdep.Size = new System.Drawing.Size(65, 20);
-            this.tx_fecdep.TabIndex = 14;
+            this.tx_fecdep.TabIndex = 10;
             // 
             // label2
             // 
@@ -1019,7 +867,7 @@
             this.tx_idcaja.Location = new System.Drawing.Point(54, 39);
             this.tx_idcaja.Name = "tx_idcaja";
             this.tx_idcaja.Size = new System.Drawing.Size(51, 20);
-            this.tx_idcaja.TabIndex = 404;
+            this.tx_idcaja.TabIndex = 1;
             // 
             // tx_tfil
             // 
@@ -1061,9 +909,126 @@
             this.tx_numGR.Location = new System.Drawing.Point(292, 39);
             this.tx_numGR.Name = "tx_numGR";
             this.tx_numGR.Size = new System.Drawing.Size(90, 20);
-            this.tx_numGR.TabIndex = 10;
+            this.tx_numGR.TabIndex = 4;
             this.tx_numGR.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.tx_numGR.Leave += new System.EventHandler(this.tx_numGR_Leave);
+            // 
+            // id
+            // 
+            this.id.FillWeight = 40F;
+            this.id.HeaderText = "ID";
+            this.id.Name = "id";
+            this.id.ReadOnly = true;
+            this.id.Width = 40;
+            // 
+            // noing
+            // 
+            this.noing.FillWeight = 30F;
+            this.noing.HeaderText = "TDOC";
+            this.noing.Name = "noing";
+            this.noing.Width = 30;
+            // 
+            // serie
+            // 
+            this.serie.FillWeight = 30F;
+            this.serie.HeaderText = "SERIE";
+            this.serie.Name = "serie";
+            this.serie.Width = 30;
+            // 
+            // numero
+            // 
+            this.numero.FillWeight = 60F;
+            this.numero.HeaderText = "NUMERO";
+            this.numero.Name = "numero";
+            this.numero.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.numero.Width = 60;
+            // 
+            // moneda
+            // 
+            this.moneda.FillWeight = 40F;
+            this.moneda.HeaderText = "MON";
+            this.moneda.Name = "moneda";
+            this.moneda.Width = 40;
+            // 
+            // monto
+            // 
+            this.monto.FillWeight = 80F;
+            this.monto.HeaderText = "MONTO";
+            this.monto.Name = "monto";
+            this.monto.Width = 80;
+            // 
+            // valorMN
+            // 
+            this.valorMN.HeaderText = "VALMN";
+            this.valorMN.Name = "valorMN";
+            // 
+            // cuenta
+            // 
+            this.cuenta.HeaderText = "CUENTA";
+            this.cuenta.Name = "cuenta";
+            this.cuenta.ReadOnly = true;
+            // 
+            // glosa
+            // 
+            this.glosa.HeaderText = "GLOSA";
+            this.glosa.Name = "glosa";
+            this.glosa.ReadOnly = true;
+            // 
+            // fechdep
+            // 
+            this.fechdep.FillWeight = 60F;
+            this.fechdep.HeaderText = "F_DEP";
+            this.fechdep.Name = "fechdep";
+            this.fechdep.ReadOnly = true;
+            this.fechdep.Width = 60;
+            // 
+            // observaciones
+            // 
+            this.observaciones.HeaderText = "OBSERVACIONES";
+            this.observaciones.Name = "observaciones";
+            this.observaciones.ReadOnly = true;
+            // 
+            // fechope
+            // 
+            this.fechope.HeaderText = "fechope";
+            this.fechope.Name = "fechope";
+            this.fechope.ReadOnly = true;
+            this.fechope.Visible = false;
+            // 
+            // mpago
+            // 
+            this.mpago.HeaderText = "mpago";
+            this.mpago.Name = "mpago";
+            this.mpago.Visible = false;
+            // 
+            // codmopa
+            // 
+            this.codmopa.HeaderText = "codmopa";
+            this.codmopa.Name = "codmopa";
+            this.codmopa.Visible = false;
+            // 
+            // ctaprop
+            // 
+            this.ctaprop.HeaderText = "ctaprop";
+            this.ctaprop.Name = "ctaprop";
+            this.ctaprop.Visible = false;
+            // 
+            // status
+            // 
+            this.status.HeaderText = "ESTADO";
+            this.status.Name = "status";
+            // 
+            // userc
+            // 
+            this.userc.HeaderText = "userc";
+            this.userc.Name = "userc";
+            this.userc.Visible = false;
+            // 
+            // nom_user
+            // 
+            this.nom_user.HeaderText = "nom_user";
+            this.nom_user.Name = "nom_user";
+            this.nom_user.Visible = false;
             // 
             // ingresosv
             // 
@@ -1217,16 +1182,12 @@
         private System.Windows.Forms.Label label6;
         private NumericTextBox tx_idcaja;
         private System.Windows.Forms.DataGridViewTextBoxColumn id;
-        private System.Windows.Forms.DataGridViewTextBoxColumn noeg;
+        private System.Windows.Forms.DataGridViewTextBoxColumn noing;
         private System.Windows.Forms.DataGridViewTextBoxColumn serie;
         private System.Windows.Forms.DataGridViewTextBoxColumn numero;
         private System.Windows.Forms.DataGridViewTextBoxColumn moneda;
         private System.Windows.Forms.DataGridViewTextBoxColumn monto;
         private System.Windows.Forms.DataGridViewTextBoxColumn valorMN;
-        private System.Windows.Forms.DataGridViewTextBoxColumn comprob;
-        private System.Windows.Forms.DataGridViewTextBoxColumn sercomp;
-        private System.Windows.Forms.DataGridViewTextBoxColumn numcomp;
-        private System.Windows.Forms.DataGridViewTextBoxColumn gpoegreso;
         private System.Windows.Forms.DataGridViewTextBoxColumn cuenta;
         private System.Windows.Forms.DataGridViewTextBoxColumn glosa;
         private System.Windows.Forms.DataGridViewTextBoxColumn fechdep;
