@@ -552,7 +552,15 @@ namespace TransCarga
         }
         private void pe_registro_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Form Cuadre de Caja", "En desarrollo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            //MessageBox.Show("Form Cuadre de Caja", "En desarrollo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            ayccaja fay = new ayccaja();
+            fay.TopLevel = false;
+            fay.Parent = this;
+            pn_centro.Controls.Add(fay);
+            fay.Location = new Point((pn_centro.Width - fay.Width) / 2, (pn_centro.Height - fay.Height));
+            fay.Anchor = AnchorStyles.None;
+            fay.Show();
+            fay.BringToFront();
         }
         private void pe_cobranzas_Click(object sender, EventArgs e)
         {
