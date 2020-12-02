@@ -99,11 +99,6 @@
             this.label28 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
-            this.tx_idcaja = new TransCarga.NumericTextBox();
-            this.tx_tfil = new TransCarga.NumericTextBox();
-            this.tx_totcant = new TransCarga.NumericTextBox();
-            this.tx_PAGO = new TransCarga.NumericTextBox();
-            this.tx_numGR = new TransCarga.NumericTextBox();
             this.id = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.noing = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.serie = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -122,6 +117,14 @@
             this.status = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.userc = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.nom_user = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.numingv = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.tipdoco = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.tx_nuingv = new TransCarga.NumericTextBox();
+            this.tx_idcaja = new TransCarga.NumericTextBox();
+            this.tx_tfil = new TransCarga.NumericTextBox();
+            this.tx_totcant = new TransCarga.NumericTextBox();
+            this.tx_PAGO = new TransCarga.NumericTextBox();
+            this.tx_numGR = new TransCarga.NumericTextBox();
             this.toolStrip1.SuspendLayout();
             this.pn_usloc.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
@@ -518,6 +521,8 @@
             // 
             // dataGridView1
             // 
+            this.dataGridView1.AllowUserToAddRows = false;
+            this.dataGridView1.AllowUserToDeleteRows = false;
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.id,
@@ -537,7 +542,9 @@
             this.ctaprop,
             this.status,
             this.userc,
-            this.nom_user});
+            this.nom_user,
+            this.numingv,
+            this.tipdoco});
             this.dataGridView1.Location = new System.Drawing.Point(6, 140);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.Size = new System.Drawing.Size(745, 183);
@@ -648,6 +655,7 @@
             this.cmb_mpago.Size = new System.Drawing.Size(81, 21);
             this.cmb_mpago.TabIndex = 7;
             this.cmb_mpago.SelectedIndexChanged += new System.EventHandler(this.cmb_mpago_SelectedIndexChanged);
+            this.cmb_mpago.SelectionChangeCommitted += new System.EventHandler(this.cmb_mpago_SelectionChangeCommitted);
             this.cmb_mpago.Enter += new System.EventHandler(this.cmb_mpago_Enter);
             // 
             // tx_glosa
@@ -861,58 +869,6 @@
             this.label6.Text = "Id Caja";
             this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // tx_idcaja
-            // 
-            this.tx_idcaja.AllowSpace = false;
-            this.tx_idcaja.Location = new System.Drawing.Point(54, 39);
-            this.tx_idcaja.Name = "tx_idcaja";
-            this.tx_idcaja.Size = new System.Drawing.Size(51, 20);
-            this.tx_idcaja.TabIndex = 1;
-            // 
-            // tx_tfil
-            // 
-            this.tx_tfil.AllowSpace = false;
-            this.tx_tfil.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_tfil.Location = new System.Drawing.Point(279, 335);
-            this.tx_tfil.Name = "tx_tfil";
-            this.tx_tfil.ReadOnly = true;
-            this.tx_tfil.Size = new System.Drawing.Size(41, 20);
-            this.tx_tfil.TabIndex = 402;
-            this.tx_tfil.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // tx_totcant
-            // 
-            this.tx_totcant.AllowSpace = false;
-            this.tx_totcant.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_totcant.Location = new System.Drawing.Point(484, 335);
-            this.tx_totcant.Name = "tx_totcant";
-            this.tx_totcant.ReadOnly = true;
-            this.tx_totcant.Size = new System.Drawing.Size(70, 20);
-            this.tx_totcant.TabIndex = 398;
-            this.tx_totcant.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // tx_PAGO
-            // 
-            this.tx_PAGO.AllowSpace = false;
-            this.tx_PAGO.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_PAGO.Location = new System.Drawing.Point(493, 33);
-            this.tx_PAGO.Name = "tx_PAGO";
-            this.tx_PAGO.Size = new System.Drawing.Size(77, 26);
-            this.tx_PAGO.TabIndex = 6;
-            this.tx_PAGO.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.tx_PAGO.Leave += new System.EventHandler(this.tx_pago_Leave);
-            // 
-            // tx_numGR
-            // 
-            this.tx_numGR.AllowSpace = false;
-            this.tx_numGR.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_numGR.Location = new System.Drawing.Point(292, 39);
-            this.tx_numGR.Name = "tx_numGR";
-            this.tx_numGR.Size = new System.Drawing.Size(90, 20);
-            this.tx_numGR.TabIndex = 4;
-            this.tx_numGR.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.tx_numGR.Leave += new System.EventHandler(this.tx_numGR_Leave);
-            // 
             // id
             // 
             this.id.FillWeight = 40F;
@@ -923,17 +879,17 @@
             // 
             // noing
             // 
-            this.noing.FillWeight = 30F;
+            this.noing.FillWeight = 40F;
             this.noing.HeaderText = "TDOC";
             this.noing.Name = "noing";
-            this.noing.Width = 30;
+            this.noing.Width = 40;
             // 
             // serie
             // 
-            this.serie.FillWeight = 30F;
+            this.serie.FillWeight = 40F;
             this.serie.HeaderText = "SERIE";
             this.serie.Name = "serie";
-            this.serie.Width = 30;
+            this.serie.Width = 40;
             // 
             // numero
             // 
@@ -1030,6 +986,81 @@
             this.nom_user.Name = "nom_user";
             this.nom_user.Visible = false;
             // 
+            // numingv
+            // 
+            this.numingv.HeaderText = "numingv";
+            this.numingv.Name = "numingv";
+            this.numingv.Visible = false;
+            // 
+            // tipdoco
+            // 
+            this.tipdoco.HeaderText = "tipdoco";
+            this.tipdoco.Name = "tipdoco";
+            this.tipdoco.Visible = false;
+            // 
+            // tx_nuingv
+            // 
+            this.tx_nuingv.AllowSpace = false;
+            this.tx_nuingv.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_nuingv.Location = new System.Drawing.Point(311, 28);
+            this.tx_nuingv.Name = "tx_nuingv";
+            this.tx_nuingv.Size = new System.Drawing.Size(90, 20);
+            this.tx_nuingv.TabIndex = 404;
+            this.tx_nuingv.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.tx_nuingv.Visible = false;
+            // 
+            // tx_idcaja
+            // 
+            this.tx_idcaja.AllowSpace = false;
+            this.tx_idcaja.Location = new System.Drawing.Point(54, 39);
+            this.tx_idcaja.Name = "tx_idcaja";
+            this.tx_idcaja.Size = new System.Drawing.Size(51, 20);
+            this.tx_idcaja.TabIndex = 1;
+            // 
+            // tx_tfil
+            // 
+            this.tx_tfil.AllowSpace = false;
+            this.tx_tfil.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_tfil.Location = new System.Drawing.Point(279, 335);
+            this.tx_tfil.Name = "tx_tfil";
+            this.tx_tfil.ReadOnly = true;
+            this.tx_tfil.Size = new System.Drawing.Size(41, 20);
+            this.tx_tfil.TabIndex = 402;
+            this.tx_tfil.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // tx_totcant
+            // 
+            this.tx_totcant.AllowSpace = false;
+            this.tx_totcant.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_totcant.Location = new System.Drawing.Point(484, 335);
+            this.tx_totcant.Name = "tx_totcant";
+            this.tx_totcant.ReadOnly = true;
+            this.tx_totcant.Size = new System.Drawing.Size(70, 20);
+            this.tx_totcant.TabIndex = 398;
+            this.tx_totcant.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // tx_PAGO
+            // 
+            this.tx_PAGO.AllowSpace = false;
+            this.tx_PAGO.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_PAGO.Location = new System.Drawing.Point(493, 33);
+            this.tx_PAGO.Name = "tx_PAGO";
+            this.tx_PAGO.Size = new System.Drawing.Size(77, 26);
+            this.tx_PAGO.TabIndex = 6;
+            this.tx_PAGO.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.tx_PAGO.Leave += new System.EventHandler(this.tx_pago_Leave);
+            // 
+            // tx_numGR
+            // 
+            this.tx_numGR.AllowSpace = false;
+            this.tx_numGR.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_numGR.Location = new System.Drawing.Point(292, 39);
+            this.tx_numGR.Name = "tx_numGR";
+            this.tx_numGR.Size = new System.Drawing.Size(90, 20);
+            this.tx_numGR.TabIndex = 4;
+            this.tx_numGR.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.tx_numGR.Leave += new System.EventHandler(this.tx_numGR_Leave);
+            // 
             // ingresosv
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1037,6 +1068,7 @@
             this.AutoSize = true;
             this.BackColor = System.Drawing.Color.LightSteelBlue;
             this.ClientSize = new System.Drawing.Size(757, 436);
+            this.Controls.Add(this.tx_nuingv);
             this.Controls.Add(this.groupBox17);
             this.Controls.Add(this.tx_idcaja);
             this.Controls.Add(this.label6);
@@ -1181,6 +1213,7 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label6;
         private NumericTextBox tx_idcaja;
+        private NumericTextBox tx_nuingv;
         private System.Windows.Forms.DataGridViewTextBoxColumn id;
         private System.Windows.Forms.DataGridViewTextBoxColumn noing;
         private System.Windows.Forms.DataGridViewTextBoxColumn serie;
@@ -1199,5 +1232,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn status;
         private System.Windows.Forms.DataGridViewTextBoxColumn userc;
         private System.Windows.Forms.DataGridViewTextBoxColumn nom_user;
+        private System.Windows.Forms.DataGridViewTextBoxColumn numingv;
+        private System.Windows.Forms.DataGridViewTextBoxColumn tipdoco;
     }
 }

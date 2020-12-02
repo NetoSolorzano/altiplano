@@ -74,5 +74,5 @@ form repadmcaja:
 form egresosdep: Egresos y depositos (salidas de dinero a cta de la empresa) 
 - desarrollo del form .............................................................................. ok 30/11/2020
 form ingresosv:
-- desarrollo del form .............................................................................. 
+- desarrollo del form .............................................................................. ok 02/12/2020
 
