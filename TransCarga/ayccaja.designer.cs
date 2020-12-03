@@ -339,7 +339,7 @@
             // 
             // tx_idr
             // 
-            this.tx_idr.Location = new System.Drawing.Point(65, 3);
+            this.tx_idr.Location = new System.Drawing.Point(65, 4);
             this.tx_idr.Name = "tx_idr";
             this.tx_idr.ReadOnly = true;
             this.tx_idr.Size = new System.Drawing.Size(75, 20);
@@ -409,7 +409,7 @@
             // 
             this.label10.AutoSize = true;
             this.label10.ForeColor = System.Drawing.Color.Black;
-            this.label10.Location = new System.Drawing.Point(10, 6);
+            this.label10.Location = new System.Drawing.Point(10, 8);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(52, 13);
             this.label10.TabIndex = 282;
@@ -419,7 +419,7 @@
             // 
             this.label11.AutoSize = true;
             this.label11.ForeColor = System.Drawing.Color.Black;
-            this.label11.Location = new System.Drawing.Point(150, 6);
+            this.label11.Location = new System.Drawing.Point(150, 8);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(63, 13);
             this.label11.TabIndex = 283;
@@ -429,7 +429,7 @@
             // 
             this.tx_fechope.BackColor = System.Drawing.SystemColors.Window;
             this.tx_fechope.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_fechope.Location = new System.Drawing.Point(215, 4);
+            this.tx_fechope.Location = new System.Drawing.Point(215, 5);
             this.tx_fechope.MaxLength = 0;
             this.tx_fechope.Name = "tx_fechope";
             this.tx_fechope.ReadOnly = true;
@@ -441,7 +441,7 @@
             // 
             this.tx_digit.BackColor = System.Drawing.SystemColors.Window;
             this.tx_digit.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_digit.Location = new System.Drawing.Point(404, 4);
+            this.tx_digit.Location = new System.Drawing.Point(404, 5);
             this.tx_digit.MaxLength = 0;
             this.tx_digit.Name = "tx_digit";
             this.tx_digit.ReadOnly = true;
@@ -452,7 +452,7 @@
             // 
             this.label13.AutoSize = true;
             this.label13.ForeColor = System.Drawing.Color.Black;
-            this.label13.Location = new System.Drawing.Point(352, 6);
+            this.label13.Location = new System.Drawing.Point(352, 8);
             this.label13.Name = "label13";
             this.label13.Size = new System.Drawing.Size(49, 13);
             this.label13.TabIndex = 285;
@@ -471,7 +471,7 @@
             // 
             this.tx_estado.BackColor = System.Drawing.SystemColors.Window;
             this.tx_estado.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_estado.Location = new System.Drawing.Point(654, 4);
+            this.tx_estado.Location = new System.Drawing.Point(654, 5);
             this.tx_estado.MaxLength = 0;
             this.tx_estado.Name = "tx_estado";
             this.tx_estado.ReadOnly = true;
@@ -493,9 +493,9 @@
             // 
             this.tx_dat_userdoc.BackColor = System.Drawing.SystemColors.Window;
             this.tx_dat_userdoc.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_dat_userdoc.Location = new System.Drawing.Point(372, 1);
+            this.tx_dat_userdoc.Location = new System.Drawing.Point(387, 5);
             this.tx_dat_userdoc.Name = "tx_dat_userdoc";
-            this.tx_dat_userdoc.Size = new System.Drawing.Size(41, 18);
+            this.tx_dat_userdoc.Size = new System.Drawing.Size(30, 18);
             this.tx_dat_userdoc.TabIndex = 382;
             this.tx_dat_userdoc.Visible = false;
             // 
@@ -538,9 +538,9 @@
             this.AutoSize = true;
             this.BackColor = System.Drawing.Color.LightSteelBlue;
             this.ClientSize = new System.Drawing.Size(757, 436);
+            this.Controls.Add(this.groupBox5);
             this.Controls.Add(this.dataGridView1);
             this.Controls.Add(this.tx_dat_userdoc);
-            this.Controls.Add(this.groupBox5);
             this.Controls.Add(this.tx_dat_estad);
             this.Controls.Add(this.tx_estado);
             this.Controls.Add(this.tx_digit);
