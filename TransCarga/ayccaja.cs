@@ -38,6 +38,8 @@ namespace TransCarga
         string v_clu = "";              // codigo del local del usuario
         string v_slu = "";              // serie del local del usuario
         string v_nbu = "";              // nombre del usuario
+        string codAbie = "";            // codigo caja abierta
+        string codCier = "";            // codigo caja cerrada
         //
         static libreria lib = new libreria();   // libreria de procedimientos
         publico lp = new publico();             // libreria de clases
@@ -161,14 +163,14 @@ namespace TransCarga
                             if (row["param"].ToString() == "img_anu") img_anul = row["valor"].ToString().Trim();         // imagen del boton grabar anular
                             if (row["param"].ToString() == "img_preview") img_ver = row["valor"].ToString().Trim();         // imagen del boton grabar visualizar
                         }
-                        if (row["campo"].ToString() == "estado")
-                        {
-                            //if (row["param"].ToString() == "anulado") codAnul = row["valor"].ToString().Trim();         // codigo doc anulado
-                            //if (row["param"].ToString() == "generado") codGene = row["valor"].ToString().Trim();        // codigo doc generado
-                        }
                     }
                     if (row["formulario"].ToString() == nomform)
                     {
+                        if (row["campo"].ToString() == "estado")
+                        {
+                            if (row["param"].ToString() == "abierto") codAbie = row["valor"].ToString().Trim();         // codigo caja abierta
+                            if (row["param"].ToString() == "cerrado") codCier = row["valor"].ToString().Trim();         // codigo caja cerrada
+                        }
                         if (row["campo"].ToString() == "documento")
                         {
                             //if (row["param"].ToString() == "codingef") v_ctpe = row["valor"].ToString().Trim();             // codigo ingreso efectivo
@@ -196,15 +198,48 @@ namespace TransCarga
             string parte = "";
             if (campo == "tx_idcaja")
             {
-                parte = "where a.idcaja=@idcaja";
+                parte = "where loccaja=@loca order by id desc limit 1";   // a.id=@idcaja
             }
             using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
             {
-                conn.Open();
-                if (conn.State == ConnectionState.Open)
+                if (lib.procConn(conn) == true)
                 {
-                    string consulta = " " + parte;
+                    if (conn.State == ConnectionState.Open)
+                    {
+                        string consulta = "select id,userabr,usercie,fechope,fechcie,loccaja,obscobc,codmoMN,cantcob,cantinv,cantegr,saldoan," +
+                            "cobranz,ingvari,egresos,saldofi,statusc from cabccaja " + parte;
+                        using (MySqlCommand micon = new MySqlCommand(consulta, conn))
+                        {
+                            micon.Parameters.AddWithValue("@loca", v_clu);
+                            using (MySqlDataReader dr = micon.ExecuteReader())
+                            {
+                                if (dr.HasRows == false)
+                                {
+                                    // primera caja que se abre en el local
+                                    button1.Text = "ABRE CAJA";
+                                }
+                                else
+                                {
+                                    if (dr.GetString("statusc") == codCier)    // estado cerrado
+                                    {
+                                        // ultima caja esta cerrada
+                                        button1.Text = "ABRE CAJA";
+                                    }
+                                    if (dr.GetString("statusc") == codAbie)     // la caja esta abierta
+                                    {
+                                        button1.Text = "CIERRA CAJA";
+                                        // mostramos los datos
 
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    Application.Exit();
+                    return;
                 }
             }
         }
@@ -493,9 +528,8 @@ namespace TransCarga
         private void Bt_add_Click(object sender, EventArgs e)
         {
             Tx_modo.Text = "NUEVO";
-            button1.Image = Image.FromFile(img_grab);
+            //button1.Image = Image.FromFile(img_grab);
             escribe();
-
             // 
             Bt_ini.Enabled = false;
             Bt_sig.Enabled = false;
@@ -503,15 +537,13 @@ namespace TransCarga
             Bt_fin.Enabled = false;
             //
             initIngreso();
-            // valida existencia de caja abierta en fecha y sede
-            // aca debe ir el verdadero id de la caja abierta
             jalaoc("tx_idcaja");
         }
         private void Bt_edit_Click(object sender, EventArgs e)
         {
             sololee();          
             Tx_modo.Text = "EDITAR";
-            button1.Image = Image.FromFile(img_grab);
+            //button1.Image = Image.FromFile(img_grab);
             initIngreso();
             // valida existencia de caja abierta en fecha y sede
             // aca debe ir el verdadero id de la caja abierta

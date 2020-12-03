@@ -70,8 +70,13 @@
             this.tx_estado = new System.Windows.Forms.TextBox();
             this.tx_dat_estad = new System.Windows.Forms.TextBox();
             this.tx_dat_userdoc = new System.Windows.Forms.TextBox();
+            this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.etiqueta = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cant = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.valor = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.toolStrip1.SuspendLayout();
             this.pn_usloc.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
             // toolStrip1
@@ -494,6 +499,38 @@
             this.tx_dat_userdoc.TabIndex = 382;
             this.tx_dat_userdoc.Visible = false;
             // 
+            // dataGridView1
+            // 
+            this.dataGridView1.AllowUserToAddRows = false;
+            this.dataGridView1.AllowUserToDeleteRows = false;
+            this.dataGridView1.AllowUserToResizeColumns = false;
+            this.dataGridView1.AllowUserToResizeRows = false;
+            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+            this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.etiqueta,
+            this.cant,
+            this.valor});
+            this.dataGridView1.Location = new System.Drawing.Point(229, 53);
+            this.dataGridView1.Name = "dataGridView1";
+            this.dataGridView1.ScrollBars = System.Windows.Forms.ScrollBars.None;
+            this.dataGridView1.Size = new System.Drawing.Size(306, 185);
+            this.dataGridView1.TabIndex = 383;
+            // 
+            // etiqueta
+            // 
+            this.etiqueta.HeaderText = "";
+            this.etiqueta.Name = "etiqueta";
+            // 
+            // cant
+            // 
+            this.cant.HeaderText = "";
+            this.cant.Name = "cant";
+            // 
+            // valor
+            // 
+            this.valor.HeaderText = "";
+            this.valor.Name = "valor";
+            // 
             // ayccaja
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -501,6 +538,7 @@
             this.AutoSize = true;
             this.BackColor = System.Drawing.Color.LightSteelBlue;
             this.ClientSize = new System.Drawing.Size(757, 436);
+            this.Controls.Add(this.dataGridView1);
             this.Controls.Add(this.tx_dat_userdoc);
             this.Controls.Add(this.groupBox5);
             this.Controls.Add(this.tx_dat_estad);
@@ -529,6 +567,7 @@
             this.toolStrip1.PerformLayout();
             this.pn_usloc.ResumeLayout(false);
             this.pn_usloc.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -576,5 +615,9 @@
         private System.Windows.Forms.TextBox tx_estado;
         private System.Windows.Forms.TextBox tx_dat_estad;
         private System.Windows.Forms.TextBox tx_dat_userdoc;
+        private System.Windows.Forms.DataGridView dataGridView1;
+        private System.Windows.Forms.DataGridViewTextBoxColumn etiqueta;
+        private System.Windows.Forms.DataGridViewTextBoxColumn cant;
+        private System.Windows.Forms.DataGridViewTextBoxColumn valor;
     }
 }
