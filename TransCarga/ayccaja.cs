@@ -103,7 +103,7 @@ namespace TransCarga
             //
             tx_user.Text += asd;
             tx_nomuser.Text = TransCarga.Program.vg_nuse;
-            tx_locuser.Text = TransCarga.Program.vg_luse;
+            tx_locuser.Text = tx_locuser.Text + " " + TransCarga.Program.vg_nlus;    //TransCarga.Program.vg_luse;
             tx_fechact.Text = DateTime.Today.ToString();
             //
             Bt_add.Image = Image.FromFile(img_btN);
@@ -126,6 +126,9 @@ namespace TransCarga
             limpia_otros();
             limpia_combos();
             tx_fechope.Text = DateTime.Today.ToString("dd/MM/yyyy");
+            tx_dat_userdoc.Text = asd;
+            tx_digit.Text = v_nbu;
+            //tx_dat_estad.Text = codAbie;
         }
         private void jalainfo()                 // obtiene datos de imagenes y variables
         {
@@ -206,8 +209,12 @@ namespace TransCarga
                 {
                     if (conn.State == ConnectionState.Open)
                     {
-                        string consulta = "select id,userabr,usercie,fechope,fechcie,loccaja,obscobc,codmoMN,cantcob,cantinv,cantegr,saldoan," +
-                            "cobranz,ingvari,egresos,saldofi,statusc from cabccaja " + parte;
+                        string consulta = "select a.id,a.userabr,a.usercie,a.fechope,a.fechcie,a.loccaja,a.obscobc,a.codmoMN,a.cantcob,a.cantinv,a.cantegr,a.saldoan," +
+                            "a.cobranz,a.ingvari,a.egresos,a.saldofi,a.statusc,b.descrizionerid as ESTADO,u.nombre as CAJERO " +
+                            "from cabccaja a " +
+                            "left join desc_est b on b.idcodice=a.statusc " +
+                            "left join usuarios u on u.nom_user=a.userabr " +
+                            parte;
                         using (MySqlCommand micon = new MySqlCommand(consulta, conn))
                         {
                             micon.Parameters.AddWithValue("@loca", v_clu);
@@ -220,16 +227,30 @@ namespace TransCarga
                                 }
                                 else
                                 {
-                                    if (dr.GetString("statusc") == codCier)    // estado cerrado
+                                    if (dr.Read())
                                     {
-                                        // ultima caja esta cerrada
-                                        button1.Text = "ABRE CAJA";
-                                    }
-                                    if (dr.GetString("statusc") == codAbie)     // la caja esta abierta
-                                    {
-                                        button1.Text = "CIERRA CAJA";
-                                        // mostramos los datos
-
+                                        if (dr.GetString("statusc") == codCier)    // estado cerrado
+                                        {
+                                            // ultima caja esta cerrada
+                                            button1.Text = "ABRE CAJA";
+                                        }
+                                        if (dr.GetString("statusc") == codAbie)     // la caja esta abierta
+                                        {
+                                            button1.Text = "CIERRA CAJA";
+                                            // mostramos los datos
+                                            tx_dat_estad.Text = dr.GetString("statusc");
+                                            tx_estado.Text = dr.GetString("ESTADO");
+                                            tx_dat_userdoc.Text = dr.GetString("userabr");
+                                            tx_digit.Text = dr.GetString("CAJERO");
+                                            tx_fechope.Text = dr.GetString("fechope").Substring(0,10);
+                                            tx_idr.Text = dr.GetString("id");
+                                            // solo se computan documentos validos NO ANULADOS
+                                            dataGridView1.Rows.Add("SALDO ANTERIOR", "", dr.GetString("saldoan"));
+                                            dataGridView1.Rows.Add("COBRANZAS", dr.GetString("cantcob"), dr.GetString("cobranz"));
+                                            dataGridView1.Rows.Add("ING.VARIOS", dr.GetString("cantinv"),dr.GetString("ingvari"));
+                                            dataGridView1.Rows.Add("EGRESOS/DEP", dr.GetString("cantegr"),dr.GetString("egresos"));
+                                            dataGridView1.Rows.Add("SALDO AL CIERRE", "", dr.GetString("saldofi"));
+                                        }
                                     }
                                 }
                             }
@@ -352,17 +373,25 @@ namespace TransCarga
             string iserror = "no";
             if (modo == "NUEVO" || modo == "EDITAR")
             {
+                string keta = "";
                 // validaciones de ingresos
-
+                if (button1.Text == "ABRE CAJA")
+                {
+                    keta = "APERTURAR";
+                }
+                if (button1.Text == "CIERRA CAJA")
+                {
+                    keta = "CERRAR";
+                }
                 // vamos con todo
                 if (tx_idr.Text.Trim() == "")
                 {
-                    var aa = MessageBox.Show("Confirma que desea aperturar/cerrar la caja?", "Confirme por favor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                    var aa = MessageBox.Show("Confirma que desea " + keta + " la caja?", "Confirme por favor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                     if (aa == DialogResult.Yes)
                     {
                         if (true)
                         {
-                            if (graba() == true)
+                            if (graba(keta) == true)
                             {
                                 // actualizamos la tabla seguimiento de usuarios
                                 string resulta = lib.ult_mov(nomform, nomtab, asd);
@@ -371,6 +400,7 @@ namespace TransCarga
                                     MessageBox.Show(resulta, "Error en actualización de seguimiento", MessageBoxButtons.OK, MessageBoxIcon.Error);
                                 }
                                 //jalaoc("tx_idcaja");
+                                this.Close();
                             }
                         }
                     }
@@ -395,45 +425,53 @@ namespace TransCarga
                 }
             }
         }
-        private bool graba()
+        private bool graba(string accion)
         {
             bool retorna = false;
             MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
             conn.Open();
             if(conn.State == ConnectionState.Open)
             {
-                string inserta = "insert into cabccaja (" +
-                    "idcaja,fechope,???," +
-                    "verApp,userc,fechc,diriplan4,diripwan4,netbname) values (" +
-                    "@idcaja,@fechop,@servin,@ldcpgr,@estado,@tip,@tipdoc,@serdoc,@numdoc," +
-                    "@ctapro,@refcta,@fechde,@obsprg,@monppr,@totpag,@timepa,@tcoper,@porcig,@totMN,@codMN," +
-                    "@verApp,@asd,now(),@iplan,@ipwan,@nbnam)";
-                using (MySqlCommand micon = new MySqlCommand(inserta, conn))
+                if (accion == "APERTURAR")
                 {
-                    micon.Parameters.AddWithValue("@idcaja", tx_idr.Text);
-                    micon.Parameters.AddWithValue("@fechop", tx_fechope.Text.Substring(6, 4) + "-" + tx_fechope.Text.Substring(3, 2) + "-" + tx_fechope.Text.Substring(0, 2));
-                    //micon.Parameters.AddWithValue("@numvin", );   // automatico en BD
-                    micon.Parameters.AddWithValue("@ldcpgr", TransCarga.Program.almuser);         // local origen
-                    micon.Parameters.AddWithValue("@estado", tx_dat_estad.Text);
-                    micon.Parameters.AddWithValue("@tip", "");      // creo esta por las puras
-
-                    micon.Parameters.AddWithValue("@codMN", MonDeft);
-                    micon.Parameters.AddWithValue("@verApp", verapp);
-                    micon.Parameters.AddWithValue("@asd", asd);
-                    micon.Parameters.AddWithValue("@iplan", lib.iplan());
-                    micon.Parameters.AddWithValue("@ipwan", lib.ipwan());
-                    micon.Parameters.AddWithValue("@nbnam", Environment.MachineName);
-                    micon.ExecuteNonQuery();
-                }
-                using (MySqlCommand micon = new MySqlCommand("select last_insert_id()", conn))
-                {
-                    using (MySqlDataReader dr = micon.ExecuteReader())
+                    string inserta = "insert into cabccaja (" +
+                        "userabr,fechope,loccaja,obscobc,codmoMN,statusc," +
+                        "verApp,userc,fechc,diriplan4,diripwan4,netbname) values (" +
+                        "@asd,@fechop,@ldcpgr,@obsprg,@codMN,@estado," +
+                        ")";
+                    using (MySqlCommand micon = new MySqlCommand(inserta, conn))
                     {
-                        if (dr.Read())
-                        {
-                            tx_idr.Text = dr.GetString(0);
-                            //tx_numero.Text = lib.Right(tx_idr.Text, 8);
-                        }
+                        micon.Parameters.AddWithValue("@fechop", tx_fechope.Text.Substring(6, 4) + "-" + tx_fechope.Text.Substring(3, 2) + "-" + tx_fechope.Text.Substring(0, 2));
+                        micon.Parameters.AddWithValue("@ldcpgr", TransCarga.Program.almuser);         // local origen
+                        micon.Parameters.AddWithValue("obsprg", "");
+                        micon.Parameters.AddWithValue("@codMN", MonDeft);
+                        micon.Parameters.AddWithValue("@estado", codAbie);
+                        micon.Parameters.AddWithValue("@verApp", verapp);
+                        micon.Parameters.AddWithValue("@asd", asd);
+                        micon.Parameters.AddWithValue("@iplan", lib.iplan());
+                        micon.Parameters.AddWithValue("@ipwan", lib.ipwan());
+                        micon.Parameters.AddWithValue("@nbnam", Environment.MachineName);
+                        micon.ExecuteNonQuery();
+                        retorna = true;
+                    }
+                }
+                if (accion == "CERRAR")
+                {
+                    string actua = "update cabccaja set usercie=@asd,fechcie=DATE(NOW()),obscobc=@obs,statusc=@newst," +
+                        "verApp=@verApp,userm=@asd,fechm=now(),diriplan4=@iplan,diripwan4=@ipwan,netbname=@nbnam" +
+                        "where id=@idr";
+                    using (MySqlCommand micon = new MySqlCommand(actua, conn))
+                    {
+                        micon.Parameters.AddWithValue("@idr", tx_idr.Text);
+                        micon.Parameters.AddWithValue("@newst", codCier);
+                        micon.Parameters.AddWithValue("@obs", "");
+                        micon.Parameters.AddWithValue("@asd", asd);
+                        micon.Parameters.AddWithValue("@verApp", verapp);
+                        micon.Parameters.AddWithValue("@iplan", lib.iplan());
+                        micon.Parameters.AddWithValue("@ipwan", lib.ipwan());
+                        micon.Parameters.AddWithValue("@nbnam", Environment.MachineName);
+                        micon.ExecuteNonQuery();
+                        retorna = true;
                     }
                 }
             }
@@ -545,8 +583,6 @@ namespace TransCarga
             Tx_modo.Text = "EDITAR";
             //button1.Image = Image.FromFile(img_grab);
             initIngreso();
-            // valida existencia de caja abierta en fecha y sede
-            // aca debe ir el verdadero id de la caja abierta
             jalaoc("tx_idcaja");
             //
             Bt_ini.Enabled = true;

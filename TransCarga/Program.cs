@@ -11,6 +11,7 @@ namespace TransCarga
         public static string vg_user = "";      // codigo de usuario
         public static string vg_nuse = "";      // nombre de usuario
         public static string vg_luse = "";      // codigo local usuario
+        public static string vg_nlus = "";      // nombre local usuario
         public static string vg_duse = "";      // dirección locar usuario
         public static string vg_uuse = "";      // ubigeo local usuario
         public static string almuser = "";      // codigo almacen del usuario
