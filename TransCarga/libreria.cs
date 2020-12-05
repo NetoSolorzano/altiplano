@@ -3102,6 +3102,13 @@ namespace TransCarga
             }
             return retorna;
         }
+        public bool valcaja(string codcaj)
+        {
+            bool retorna = false;
+            // mejor no ... en cada form donde tenga que ver la caja debe jalarse la caja actual y su estado, todo esta
+            // lógica debe hacerce en el jalainfo .... 03/12/2020
+            return retorna;
+        }
     }
 
     public class ComboItem

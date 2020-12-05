@@ -166,6 +166,10 @@
             this.tx_dat_userdoc = new System.Windows.Forms.TextBox();
             this.tx_PAGO = new TransCarga.NumericTextBox();
             this.tx_numGR = new TransCarga.NumericTextBox();
+            this.tx_idcaja = new TransCarga.NumericTextBox();
+            this.label16 = new System.Windows.Forms.Label();
+            this.groupBox29 = new System.Windows.Forms.GroupBox();
+            this.groupBox30 = new System.Windows.Forms.GroupBox();
             this.toolStrip1.SuspendLayout();
             this.groupBox11.SuspendLayout();
             this.groupBox7.SuspendLayout();
@@ -187,6 +191,7 @@
             this.groupBox3.SuspendLayout();
             this.groupBox9.SuspendLayout();
             this.groupBox17.SuspendLayout();
+            this.groupBox29.SuspendLayout();
             this.SuspendLayout();
             // 
             // toolStrip1
@@ -1569,6 +1574,43 @@
             this.tx_numGR.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.tx_numGR.Leave += new System.EventHandler(this.tx_numGR_Leave);
             // 
+            // tx_idcaja
+            // 
+            this.tx_idcaja.AllowSpace = false;
+            this.tx_idcaja.Location = new System.Drawing.Point(52, 465);
+            this.tx_idcaja.Name = "tx_idcaja";
+            this.tx_idcaja.Size = new System.Drawing.Size(51, 20);
+            this.tx_idcaja.TabIndex = 406;
+            // 
+            // label16
+            // 
+            this.label16.AutoSize = true;
+            this.label16.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.label16.Location = new System.Drawing.Point(6, 469);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(40, 13);
+            this.label16.TabIndex = 405;
+            this.label16.Text = "Id Caja";
+            this.label16.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // groupBox29
+            // 
+            this.groupBox29.BackColor = System.Drawing.Color.White;
+            this.groupBox29.Controls.Add(this.groupBox30);
+            this.groupBox29.Location = new System.Drawing.Point(8, 484);
+            this.groupBox29.Name = "groupBox29";
+            this.groupBox29.Size = new System.Drawing.Size(94, 1);
+            this.groupBox29.TabIndex = 407;
+            this.groupBox29.TabStop = false;
+            // 
+            // groupBox30
+            // 
+            this.groupBox30.Location = new System.Drawing.Point(0, -26);
+            this.groupBox30.Name = "groupBox30";
+            this.groupBox30.Size = new System.Drawing.Size(164, 1);
+            this.groupBox30.TabIndex = 113;
+            this.groupBox30.TabStop = false;
+            // 
             // cobranzas
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1576,6 +1618,9 @@
             this.AutoSize = true;
             this.BackColor = System.Drawing.Color.LightSteelBlue;
             this.ClientSize = new System.Drawing.Size(770, 557);
+            this.Controls.Add(this.groupBox29);
+            this.Controls.Add(this.tx_idcaja);
+            this.Controls.Add(this.label16);
             this.Controls.Add(this.tx_dat_userdoc);
             this.Controls.Add(this.tx_dat_clte);
             this.Controls.Add(this.tx_dat_tidoor);
@@ -1668,6 +1713,7 @@
             this.groupBox3.ResumeLayout(false);
             this.groupBox9.ResumeLayout(false);
             this.groupBox17.ResumeLayout(false);
+            this.groupBox29.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1811,5 +1857,9 @@
         private System.Windows.Forms.TextBox tx_dat_tidoor;
         private System.Windows.Forms.TextBox tx_dat_clte;
         private System.Windows.Forms.TextBox tx_dat_userdoc;
+        private NumericTextBox tx_idcaja;
+        private System.Windows.Forms.Label label16;
+        private System.Windows.Forms.GroupBox groupBox29;
+        private System.Windows.Forms.GroupBox groupBox30;
     }
 }

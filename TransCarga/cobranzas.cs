@@ -56,6 +56,10 @@ namespace TransCarga
         string v_tip2 = "";             // cobranza desde guia transportista
         string v_tip3 = "";             // cobranza desde BOLETA
         string v_tip4 = "";             // cobranza desde FACTURA
+        string v_estcaj = "";           // estado de la caja del local
+        string codAbie = "";            // codigo caja abierta
+        string codCier = "";            // codigo caja cerrada
+        string v_idcaj = "";            // id de la caja actual
         //
         static libreria lib = new libreria();   // libreria de procedimientos
         publico lp = new publico();             // libreria de clases
@@ -183,7 +187,11 @@ namespace TransCarga
             tx_digit.Text = v_nbu;
             tx_dat_estad.Text = codGene;
             tx_estado.Text = lib.nomstat(tx_dat_estad.Text);
-            if (Tx_modo.Text == "NUEVO") tx_cajero.Text = tx_nomuser.Text;
+            if (Tx_modo.Text == "NUEVO")
+            {
+                tx_cajero.Text = tx_nomuser.Text;
+
+            }
         }
         private void jalainfo()                 // obtiene datos de imagenes y variables
         {
@@ -195,7 +203,7 @@ namespace TransCarga
                 MySqlCommand micon = new MySqlCommand(consulta, conn);
                 micon.Parameters.AddWithValue("@nofo", "main");
                 micon.Parameters.AddWithValue("@nfin", "interno");
-                micon.Parameters.AddWithValue("@nofi", "clients");
+                micon.Parameters.AddWithValue("@nofi", "ayccaja");
                 micon.Parameters.AddWithValue("@nofa", nomform);
                 MySqlDataAdapter da = new MySqlDataAdapter(micon);
                 DataTable dt = new DataTable();
@@ -227,10 +235,10 @@ namespace TransCarga
                             if (row["param"].ToString() == "generado") codGene = row["valor"].ToString().Trim();        // codigo doc generado
                         }
                     }
-                    if (row["formulario"].ToString() == "clients" && row["campo"].ToString() == "documento")
+                    if (row["formulario"].ToString() == "ayccaja" && row["campo"].ToString() == "estado")
                     {
-                        //if (row["param"].ToString() == "dni") vtc_dni = row["valor"].ToString().Trim();
-                        //if (row["param"].ToString() == "ruc") vtc_ruc = row["valor"].ToString().Trim();
+                        if (row["param"].ToString() == "abierto") codAbie = row["valor"].ToString().Trim();             // codigo caja abierta
+                        if (row["param"].ToString() == "cerrado") codCier = row["valor"].ToString().Trim();             // codigo caja cerrada
                     }
                     if (row["formulario"].ToString() == nomform)
                     {
@@ -432,6 +440,18 @@ namespace TransCarga
                         cmb_mpago.DataSource = dtmpa;
                         cmb_mpago.DisplayMember = "descrizionerid";
                         cmb_mpago.ValueMember = "idcodice";
+                    }
+                }
+                // jalamos la caja
+                using (MySqlCommand micon = new MySqlCommand("select id,fechope,statusc from cabccaja where loccaja=@luc order by id desc limit 1" , conn))
+                {
+                    micon.Parameters.AddWithValue("@luc", v_clu);
+                    using (MySqlDataReader dr = micon.ExecuteReader())
+                    {
+                        if (dr.Read())
+                        {
+                            v_estcaj = dr.GetString("statusc");
+                        }
                     }
                 }
             }
@@ -1478,6 +1498,16 @@ namespace TransCarga
         #region botones
         private void Bt_add_Click(object sender, EventArgs e)
         {
+            // validamos caja abierta
+            if (v_estcaj == codCier || v_estcaj == "")
+            {
+                MessageBox.Show("Debe aperturar caja para poder cobrar","Caja no abierta",MessageBoxButtons.OK,MessageBoxIcon.Hand);
+                return;
+            }
+            else
+            {
+                tx_idcaja.Text = v_idcaj;
+            }
             Tx_modo.Text = "NUEVO";
             button1.Image = Image.FromFile(img_grab);
             escribe();
@@ -1560,6 +1590,16 @@ namespace TransCarga
         }
         private void Bt_anul_Click(object sender, EventArgs e)
         {
+            if (v_estcaj == codCier || v_estcaj == "")
+            {
+                MessageBox.Show("La caja debe estar abierta para" + Environment.NewLine +
+                    "poder continuar!", "Caja no abierta", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+                return;
+            }
+            else
+            {
+                tx_idcaja.Text = v_idcaj;
+            }
             sololee();
             Tx_modo.Text = "ANULAR";
             button1.Image = Image.FromFile(img_anul);
