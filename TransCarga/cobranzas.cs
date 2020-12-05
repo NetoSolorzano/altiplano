@@ -187,10 +187,11 @@ namespace TransCarga
             tx_digit.Text = v_nbu;
             tx_dat_estad.Text = codGene;
             tx_estado.Text = lib.nomstat(tx_dat_estad.Text);
+            tx_idcaja.ReadOnly = true;
             if (Tx_modo.Text == "NUEVO")
             {
                 tx_cajero.Text = tx_nomuser.Text;
-
+                tx_idcaja.Text = v_idcaj;
             }
         }
         private void jalainfo()                 // obtiene datos de imagenes y variables
@@ -304,7 +305,7 @@ namespace TransCarga
                     string consulta = "SELECT a.id,a.fechope,a.tipdcob,a.sercobc,a.numcobc,a.loccobc,a.estdcob,a.tidoorc,a.martdve,a.tipdoco,a.serdoco,a.numdoco," +
                         "a.timepag,a.refpagc,a.cobrdor,a.obscobc,a.mondoco,a.totdoco,a.totpags,a.saldvta,a.subdoco,a.igvdoco,a.codmopa,a.totpago,a.tcadvta," +
                         "a.porcigv,a.totpaMN,a.codmoMN,a.impreso,a.cltdoco,a.dcltdoco,d.Descrizione AS nctmG,a.userc,u.nombre,e.descrizionerid as nomest," +
-                        "b.descrizionerid AS ntdc,c.razonsocial,concat(c.Direcc1, ' ', c.Direcc2) AS direc,c.depart,c.Provincia,c.Localidad " +
+                        "b.descrizionerid AS ntdc,c.razonsocial,concat(c.Direcc1, ' ', c.Direcc2) AS direc,c.depart,c.Provincia,c.Localidad,a.idcaja " +
                         "FROM cabcobran a " +
                         "LEFT JOIN desc_doc b ON b.idcodice = a.cltdoco " +
                         "LEFT JOIN anag_cli c ON c.tipdoc = a.cltdoco AND c.RUC = a.dcltdoco " +
@@ -325,6 +326,7 @@ namespace TransCarga
                         if (dr.Read())
                         {
                             tx_idr.Text = dr.GetString("id");
+                            tx_idcaja.Text = dr.GetString("idcaja");
                             tx_fechope.Text = dr.GetString("fechope").Substring(0, 10);
                             tx_dat_tdv.Text = dr.GetString("tipdcob");
                             tx_serie.Text = dr.GetString("sercobc");
@@ -451,6 +453,7 @@ namespace TransCarga
                         if (dr.Read())
                         {
                             v_estcaj = dr.GetString("statusc");
+                            v_idcaj = dr.GetString("id");
                         }
                     }
                 }
@@ -1128,10 +1131,10 @@ namespace TransCarga
             {
                 string inserta = "insert into cabcobran (" +
                     "fechope,tipdcob,sercobc,loccobc,estdcob,tidoorc,martdve,tipdoco,serdoco,numdoco,timepag,refpagc,cobrdor,obscobc,mondoco,totdoco,totpags," +
-                    "saldvta,subdoco,igvdoco,codmopa,totpago,tcadvta,porcigv,totpaMN,codmoMN,impreso,cltdoco,dcltdoco," +
+                    "saldvta,subdoco,igvdoco,codmopa,totpago,tcadvta,porcigv,totpaMN,codmoMN,impreso,cltdoco,dcltdoco,idcaja," +
                     "verApp,userc,fechc,diriplan4,diripwan4,netbname) values (" +
                     "@fechop,@ctdvta,@serdv,@ldcpgr,@estado,@tidoor,@martdv,@tipdoc,@serdoc,@numdoc,@timepa,@refpag,@cobrdo,@obsprg,@mondoc,@totpgr,@pagpgr," +
-                    "@salxpa,@subpgr,@igvpgr,@monppr,@totpag,@tcoper,@porcig,@totMN,@codMN,@impSN,@cltdoc,@dcltdo," +
+                    "@salxpa,@subpgr,@igvpgr,@monppr,@totpag,@tcoper,@porcig,@totMN,@codMN,@impSN,@cltdoc,@dcltdo,@idc," +
                     "@verApp,@asd,now(),@iplan,@ipwan,@nbnam)";
                 using (MySqlCommand micon = new MySqlCommand(inserta, conn))
                 {
@@ -1165,6 +1168,7 @@ namespace TransCarga
                     micon.Parameters.AddWithValue("@impSN", tx_impreso.Text);
                     micon.Parameters.AddWithValue("@cltdoc", tx_dat_clte.Text); // tx_dat_tdRem.Text.PadRight(6).Substring(0,6)
                     micon.Parameters.AddWithValue("@dcltdo", tx_numDocRem.Text);
+                    micon.Parameters.AddWithValue("@idc", tx_idcaja.Text);
                     micon.Parameters.AddWithValue("@verApp", verapp);
                     micon.Parameters.AddWithValue("@asd", asd);
                     micon.Parameters.AddWithValue("@iplan", lib.iplan());
@@ -1504,10 +1508,6 @@ namespace TransCarga
                 MessageBox.Show("Debe aperturar caja para poder cobrar","Caja no abierta",MessageBoxButtons.OK,MessageBoxIcon.Hand);
                 return;
             }
-            else
-            {
-                tx_idcaja.Text = v_idcaj;
-            }
             Tx_modo.Text = "NUEVO";
             button1.Image = Image.FromFile(img_grab);
             escribe();
@@ -1595,10 +1595,6 @@ namespace TransCarga
                 MessageBox.Show("La caja debe estar abierta para" + Environment.NewLine +
                     "poder continuar!", "Caja no abierta", MessageBoxButtons.OK, MessageBoxIcon.Hand);
                 return;
-            }
-            else
-            {
-                tx_idcaja.Text = v_idcaj;
             }
             sololee();
             Tx_modo.Text = "ANULAR";
