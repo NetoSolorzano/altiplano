@@ -95,7 +95,7 @@ namespace TransCarga
             tabControl1.BackColor = Color.FromName(TransCarga.Program.colgri);
             this.BackColor = Color.FromName(colback);
             toolStrip1.BackColor = Color.FromName(colstrp);
-            dgv_resumen.DefaultCellStyle.BackColor = Color.FromName(colgrid);
+            dgv_ccaja.DefaultCellStyle.BackColor = Color.FromName(colgrid);
             //dgv_resumen.DefaultCellStyle.ForeColor = Color.FromName(colfogr);
             //dgv_resumen.DefaultCellStyle.SelectionBackColor = Color.FromName(colsfon);
             //dgv_resumen.DefaultCellStyle.SelectionForeColor = Color.FromName(colsfgr);
@@ -606,7 +606,7 @@ namespace TransCarga
             // segun la pestanha activa debe exportar
             string nombre = "";
             if (tabControl1.Enabled == false) return;
-            if (tabControl1.SelectedTab == tabres && dgv_resumen.Rows.Count > 0)
+            if (tabControl1.SelectedTab == tabres && dgv_ccaja.Rows.Count > 0)
             {
                 nombre = "reporte_cajas_" + "<local>" +"_" + DateTime.Now.Date.ToString("yyyy-MM-dd") + ".xlsx";
                 var aa = MessageBox.Show("Confirma que desea generar la hoja de calculo?",
@@ -614,7 +614,7 @@ namespace TransCarga
                 if (aa == DialogResult.Yes)
                 {
                     var wb = new XLWorkbook();
-                    DataTable dt = (DataTable)dgv_resumen.DataSource;
+                    DataTable dt = (DataTable)dgv_ccaja.DataSource;
                     wb.Worksheets.Add(dt, "Cajas");
                     wb.SaveAs(nombre);
                     MessageBox.Show("Archivo generado con exito!");

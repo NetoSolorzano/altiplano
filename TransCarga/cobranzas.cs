@@ -130,7 +130,7 @@ namespace TransCarga
             //
             tx_user.Text += asd;
             tx_nomuser.Text = TransCarga.Program.vg_nuse;
-            tx_locuser.Text = TransCarga.Program.vg_luse;
+            tx_locuser.Text = tx_locuser.Text + " " + TransCarga.Program.vg_nlus; // TransCarga.Program.vg_luse;
             tx_fechact.Text = DateTime.Today.ToString();
             //
             Bt_add.Image = Image.FromFile(img_btN);

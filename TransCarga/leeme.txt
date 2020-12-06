@@ -71,11 +71,15 @@ form repsoper: Arreglos en inicializacion de combos de guias, ampliacion de repo
 form repadmcaja:
 - desarrollo del form, paneles, combos, grillas, etc. .............................................. ok 20/11/2020
 - desarrollo de panel grillas y opciones de cobranzas .............................................. OK 21/11/2020
+- desarrollo de panel grilla y opciones de apertura/cierre de caja ................................. 
+- desarrollo de panel grilla y opciones de Egresos / Depositos ..................................... 
+- desarrollo de panel grilla y opciones de ingresos varios ......................................... 
 form egresosdep: Egresos y depositos (salidas de dinero a cta de la empresa) 
 - desarrollo del form .............................................................................. ok 30/11/2020
-** validaciones de caja abierta .................................................................... 
+** validaciones de caja abierta .................................................................... ok 06/12/2020
 form ingresosv:
 - desarrollo del form .............................................................................. ok 02/12/2020
+** validaciones de caja abierta .................................................................... ok 06/12/2020
 form ayccaja:
 - desarrollo del form .............................................................................. ok 04/12/2020
 ** arreglos en apertura y cierre ................................................................... ok 05/12/2020

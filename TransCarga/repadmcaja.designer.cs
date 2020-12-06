@@ -55,7 +55,7 @@
             this.toolStripSeparator11 = new System.Windows.Forms.ToolStripSeparator();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabres = new System.Windows.Forms.TabPage();
-            this.dgv_resumen = new System.Windows.Forms.DataGridView();
+            this.dgv_ccaja = new System.Windows.Forms.DataGridView();
             this.tabvtas = new System.Windows.Forms.TabPage();
             this.chk_excluye = new System.Windows.Forms.CheckBox();
             this.groupBox19 = new System.Windows.Forms.GroupBox();
@@ -128,10 +128,31 @@
             this.bt_filtra_plan = new System.Windows.Forms.Button();
             this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.groupBox27 = new System.Windows.Forms.GroupBox();
+            this.groupBox28 = new System.Windows.Forms.GroupBox();
+            this.groupBox29 = new System.Windows.Forms.GroupBox();
+            this.groupBox30 = new System.Windows.Forms.GroupBox();
+            this.label8 = new System.Windows.Forms.Label();
+            this.groupBox31 = new System.Windows.Forms.GroupBox();
+            this.groupBox32 = new System.Windows.Forms.GroupBox();
+            this.label9 = new System.Windows.Forms.Label();
+            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.comboBox2 = new System.Windows.Forms.ComboBox();
+            this.button2 = new System.Windows.Forms.Button();
+            this.dateTimePicker1 = new System.Windows.Forms.DateTimePicker();
+            this.dateTimePicker2 = new System.Windows.Forms.DateTimePicker();
+            this.button5 = new System.Windows.Forms.Button();
+            this.label11 = new System.Windows.Forms.Label();
+            this.label12 = new System.Windows.Forms.Label();
             this.toolStrip1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabres.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgv_resumen)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgv_ccaja)).BeginInit();
             this.tabvtas.SuspendLayout();
             this.groupBox19.SuspendLayout();
             this.groupBox9.SuspendLayout();
@@ -151,6 +172,10 @@
             this.groupBox15.SuspendLayout();
             this.groupBox21.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgv_plan)).BeginInit();
+            this.groupBox1.SuspendLayout();
+            this.groupBox27.SuspendLayout();
+            this.groupBox29.SuspendLayout();
+            this.groupBox31.SuspendLayout();
             this.SuspendLayout();
             // 
             // toolStrip1
@@ -424,7 +449,24 @@
             // 
             // tabres
             // 
-            this.tabres.Controls.Add(this.dgv_resumen);
+            this.tabres.Controls.Add(this.checkBox1);
+            this.tabres.Controls.Add(this.groupBox1);
+            this.tabres.Controls.Add(this.textBox1);
+            this.tabres.Controls.Add(this.comboBox1);
+            this.tabres.Controls.Add(this.groupBox27);
+            this.tabres.Controls.Add(this.groupBox29);
+            this.tabres.Controls.Add(this.label8);
+            this.tabres.Controls.Add(this.groupBox31);
+            this.tabres.Controls.Add(this.label9);
+            this.tabres.Controls.Add(this.textBox2);
+            this.tabres.Controls.Add(this.comboBox2);
+            this.tabres.Controls.Add(this.button2);
+            this.tabres.Controls.Add(this.dateTimePicker1);
+            this.tabres.Controls.Add(this.dateTimePicker2);
+            this.tabres.Controls.Add(this.button5);
+            this.tabres.Controls.Add(this.label11);
+            this.tabres.Controls.Add(this.label12);
+            this.tabres.Controls.Add(this.dgv_ccaja);
             this.tabres.Location = new System.Drawing.Point(4, 22);
             this.tabres.Name = "tabres";
             this.tabres.Size = new System.Drawing.Size(1026, 377);
@@ -433,16 +475,16 @@
             this.tabres.UseVisualStyleBackColor = true;
             this.tabres.Enter += new System.EventHandler(this.tabres_Enter);
             // 
-            // dgv_resumen
+            // dgv_ccaja
             // 
-            this.dgv_resumen.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.dgv_ccaja.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.dgv_resumen.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgv_resumen.Location = new System.Drawing.Point(3, 98);
-            this.dgv_resumen.Name = "dgv_resumen";
-            this.dgv_resumen.Size = new System.Drawing.Size(1020, 276);
-            this.dgv_resumen.TabIndex = 5;
+            this.dgv_ccaja.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgv_ccaja.Location = new System.Drawing.Point(3, 57);
+            this.dgv_ccaja.Name = "dgv_ccaja";
+            this.dgv_ccaja.Size = new System.Drawing.Size(1020, 317);
+            this.dgv_ccaja.TabIndex = 5;
             // 
             // tabvtas
             // 
@@ -1240,6 +1282,206 @@
             this.label6.Text = "Fech Inicial";
             this.label6.Visible = false;
             // 
+            // checkBox1
+            // 
+            this.checkBox1.AutoSize = true;
+            this.checkBox1.Location = new System.Drawing.Point(365, 31);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(63, 17);
+            this.checkBox1.TabIndex = 389;
+            this.checkBox1.Text = "Excluye";
+            this.checkBox1.UseVisualStyleBackColor = true;
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.BackColor = System.Drawing.Color.DimGray;
+            this.groupBox1.Controls.Add(this.groupBox2);
+            this.groupBox1.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.groupBox1.Location = new System.Drawing.Point(187, 48);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(171, 1);
+            this.groupBox1.TabIndex = 384;
+            this.groupBox1.TabStop = false;
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Location = new System.Drawing.Point(0, -26);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(164, 1);
+            this.groupBox2.TabIndex = 113;
+            this.groupBox2.TabStop = false;
+            // 
+            // textBox1
+            // 
+            this.textBox1.Location = new System.Drawing.Point(167, 31);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(17, 20);
+            this.textBox1.TabIndex = 388;
+            this.textBox1.Visible = false;
+            // 
+            // comboBox1
+            // 
+            this.comboBox1.BackColor = System.Drawing.SystemColors.ScrollBar;
+            this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBox1.DropDownWidth = 100;
+            this.comboBox1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.comboBox1.FormattingEnabled = true;
+            this.comboBox1.Location = new System.Drawing.Point(274, 28);
+            this.comboBox1.Name = "comboBox1";
+            this.comboBox1.Size = new System.Drawing.Size(85, 21);
+            this.comboBox1.TabIndex = 387;
+            // 
+            // groupBox27
+            // 
+            this.groupBox27.BackColor = System.Drawing.Color.DimGray;
+            this.groupBox27.Controls.Add(this.groupBox28);
+            this.groupBox27.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.groupBox27.Location = new System.Drawing.Point(490, 48);
+            this.groupBox27.Name = "groupBox27";
+            this.groupBox27.Size = new System.Drawing.Size(161, 1);
+            this.groupBox27.TabIndex = 386;
+            this.groupBox27.TabStop = false;
+            // 
+            // groupBox28
+            // 
+            this.groupBox28.Location = new System.Drawing.Point(0, -26);
+            this.groupBox28.Name = "groupBox28";
+            this.groupBox28.Size = new System.Drawing.Size(164, 1);
+            this.groupBox28.TabIndex = 113;
+            this.groupBox28.TabStop = false;
+            // 
+            // groupBox29
+            // 
+            this.groupBox29.BackColor = System.Drawing.Color.DimGray;
+            this.groupBox29.Controls.Add(this.groupBox30);
+            this.groupBox29.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.groupBox29.Location = new System.Drawing.Point(490, 26);
+            this.groupBox29.Name = "groupBox29";
+            this.groupBox29.Size = new System.Drawing.Size(161, 1);
+            this.groupBox29.TabIndex = 385;
+            this.groupBox29.TabStop = false;
+            // 
+            // groupBox30
+            // 
+            this.groupBox30.Location = new System.Drawing.Point(0, -26);
+            this.groupBox30.Name = "groupBox30";
+            this.groupBox30.Size = new System.Drawing.Size(164, 1);
+            this.groupBox30.TabIndex = 113;
+            this.groupBox30.TabStop = false;
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(189, 33);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(78, 13);
+            this.label8.TabIndex = 383;
+            this.label8.Text = "Estado de caja";
+            // 
+            // groupBox31
+            // 
+            this.groupBox31.BackColor = System.Drawing.Color.DimGray;
+            this.groupBox31.Controls.Add(this.groupBox32);
+            this.groupBox31.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.groupBox31.Location = new System.Drawing.Point(187, 26);
+            this.groupBox31.Name = "groupBox31";
+            this.groupBox31.Size = new System.Drawing.Size(137, 1);
+            this.groupBox31.TabIndex = 382;
+            this.groupBox31.TabStop = false;
+            // 
+            // groupBox32
+            // 
+            this.groupBox32.Location = new System.Drawing.Point(0, -26);
+            this.groupBox32.Name = "groupBox32";
+            this.groupBox32.Size = new System.Drawing.Size(164, 1);
+            this.groupBox32.TabIndex = 113;
+            this.groupBox32.TabStop = false;
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(189, 11);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(61, 13);
+            this.label9.TabIndex = 380;
+            this.label9.Text = "Local Sede";
+            // 
+            // textBox2
+            // 
+            this.textBox2.Location = new System.Drawing.Point(167, 7);
+            this.textBox2.Name = "textBox2";
+            this.textBox2.Size = new System.Drawing.Size(20, 20);
+            this.textBox2.TabIndex = 381;
+            this.textBox2.Visible = false;
+            // 
+            // comboBox2
+            // 
+            this.comboBox2.BackColor = System.Drawing.SystemColors.ScrollBar;
+            this.comboBox2.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBox2.DropDownWidth = 100;
+            this.comboBox2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.comboBox2.FormattingEnabled = true;
+            this.comboBox2.Location = new System.Drawing.Point(257, 6);
+            this.comboBox2.Name = "comboBox2";
+            this.comboBox2.Size = new System.Drawing.Size(85, 21);
+            this.comboBox2.TabIndex = 379;
+            // 
+            // button2
+            // 
+            this.button2.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.button2.Enabled = false;
+            this.button2.Location = new System.Drawing.Point(767, 8);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(50, 41);
+            this.button2.TabIndex = 378;
+            this.button2.UseVisualStyleBackColor = true;
+            // 
+            // dateTimePicker1
+            // 
+            this.dateTimePicker1.Checked = false;
+            this.dateTimePicker1.Format = System.Windows.Forms.DateTimePickerFormat.Short;
+            this.dateTimePicker1.Location = new System.Drawing.Point(556, 29);
+            this.dateTimePicker1.Name = "dateTimePicker1";
+            this.dateTimePicker1.Size = new System.Drawing.Size(95, 20);
+            this.dateTimePicker1.TabIndex = 374;
+            // 
+            // dateTimePicker2
+            // 
+            this.dateTimePicker2.Checked = false;
+            this.dateTimePicker2.Format = System.Windows.Forms.DateTimePickerFormat.Short;
+            this.dateTimePicker2.Location = new System.Drawing.Point(556, 7);
+            this.dateTimePicker2.Name = "dateTimePicker2";
+            this.dateTimePicker2.Size = new System.Drawing.Size(95, 20);
+            this.dateTimePicker2.TabIndex = 373;
+            // 
+            // button5
+            // 
+            this.button5.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.button5.Location = new System.Drawing.Point(678, 13);
+            this.button5.Name = "button5";
+            this.button5.Size = new System.Drawing.Size(59, 29);
+            this.button5.TabIndex = 375;
+            this.button5.Text = "Filtra";
+            this.button5.UseVisualStyleBackColor = true;
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(500, 34);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(53, 13);
+            this.label11.TabIndex = 377;
+            this.label11.Text = "Fech final";
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(492, 11);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(61, 13);
+            this.label12.TabIndex = 376;
+            this.label12.Text = "Fech Inicial";
+            // 
             // repadmcaja
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1257,7 +1499,8 @@
             this.toolStrip1.PerformLayout();
             this.tabControl1.ResumeLayout(false);
             this.tabres.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.dgv_resumen)).EndInit();
+            this.tabres.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgv_ccaja)).EndInit();
             this.tabvtas.ResumeLayout(false);
             this.tabvtas.PerformLayout();
             this.groupBox19.ResumeLayout(false);
@@ -1281,6 +1524,10 @@
             this.groupBox15.ResumeLayout(false);
             this.groupBox21.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgv_plan)).EndInit();
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox27.ResumeLayout(false);
+            this.groupBox29.ResumeLayout(false);
+            this.groupBox31.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -1314,7 +1561,7 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator11;
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.TabPage tabres;
-        private System.Windows.Forms.DataGridView dgv_resumen;
+        private System.Windows.Forms.DataGridView dgv_ccaja;
         private System.Windows.Forms.TabPage tabvtas;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.RadioButton rb_resumen;
@@ -1387,5 +1634,26 @@
         private System.Windows.Forms.Button bt_filtra_plan;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.GroupBox groupBox27;
+        private System.Windows.Forms.GroupBox groupBox28;
+        private System.Windows.Forms.GroupBox groupBox29;
+        private System.Windows.Forms.GroupBox groupBox30;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.GroupBox groupBox31;
+        private System.Windows.Forms.GroupBox groupBox32;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.ComboBox comboBox2;
+        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.DateTimePicker dateTimePicker1;
+        private System.Windows.Forms.DateTimePicker dateTimePicker2;
+        private System.Windows.Forms.Button button5;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.Label label12;
     }
 }

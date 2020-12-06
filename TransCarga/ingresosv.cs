@@ -46,6 +46,9 @@ namespace TransCarga
         string v_nodd = "";             // siglas del documento - deposito en cuenta propia
         string vint_A0 = "";            // variable codigo anulacion interna por BD
         string v_igv = "";              // valor igv %
+        string v_estcaj = "";           // estado de la caja
+        string v_idcaj = "";            // id de la caja
+        string codAbie = "";            // codigo estado de caja abierta
         //
         static libreria lib = new libreria();   // libreria de procedimientos
         publico lp = new publico();             // libreria de clases
@@ -118,7 +121,7 @@ namespace TransCarga
             //
             tx_user.Text += asd;
             tx_nomuser.Text = TransCarga.Program.vg_nuse;
-            tx_locuser.Text = TransCarga.Program.vg_luse;
+            tx_locuser.Text = tx_locuser.Text + " " + TransCarga.Program.vg_nlus; // TransCarga.Program.vg_luse;
             tx_fechact.Text = DateTime.Today.ToString();
             //
             Bt_add.Image = Image.FromFile(img_btN);
@@ -169,7 +172,7 @@ namespace TransCarga
                 MySqlCommand micon = new MySqlCommand(consulta, conn);
                 micon.Parameters.AddWithValue("@nofo", "main");
                 micon.Parameters.AddWithValue("@nfin", "interno");
-                micon.Parameters.AddWithValue("@nofi", "xxx");      // libre
+                micon.Parameters.AddWithValue("@nofi", "ayccaja");
                 micon.Parameters.AddWithValue("@nofa", nomform);
                 MySqlDataAdapter da = new MySqlDataAdapter(micon);
                 DataTable dt = new DataTable();
@@ -211,6 +214,11 @@ namespace TransCarga
                             if (row["param"].ToString() == "codingef") v_ctpe = row["valor"].ToString().Trim();             // codigo ingreso efectivo
                         }
                         if (row["campo"].ToString() == "moneda" && row["param"].ToString() == "default") MonDeft = row["valor"].ToString().Trim();             // moneda por defecto
+                    }
+                    if (row["formulario"].ToString() == "ayccaja")
+                    {
+                        if (row["campo"].ToString() == "estado" && row["param"].ToString() == "abierto") codAbie = row["valor"].ToString().Trim();             // codigo caja abierta
+                        //if (row["param"].ToString() == "cerrado") codCier = row["valor"].ToString().Trim();             // codigo caja cerrada
                     }
                     if (row["formulario"].ToString() == "interno")              // codigo enlace interno de anulacion del cliente con en BD A0
                     {
@@ -378,6 +386,19 @@ namespace TransCarga
                         cmb_ctaprop.ValueMember = "idcodice";
                     }
                 }
+                // jalamos la caja
+                using (MySqlCommand micon = new MySqlCommand("select id,fechope,statusc from cabccaja where loccaja=@luc order by id desc limit 1", conn))
+                {
+                    micon.Parameters.AddWithValue("@luc", v_clu);
+                    using (MySqlDataReader dr = micon.ExecuteReader())
+                    {
+                        if (dr.Read())
+                        {
+                            v_estcaj = dr.GetString("statusc");
+                            v_idcaj = dr.GetString("id");
+                        }
+                    }
+                }
             }
         }
         private bool valiVars()                 // valida existencia de datos en variables del form
@@ -541,6 +562,11 @@ namespace TransCarga
                     cmb_ctaprop.Focus();
                     return;
                 }
+            }
+            if (tx_idcaja.Text == "")
+            {
+                MessageBox.Show("No existe caja!", " Atención ", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
             }
             #endregion
             // grabamos, actualizamos, etc
@@ -834,6 +860,14 @@ namespace TransCarga
                 jalaoc("tx_idcaja");
             }
         }
+        private void tx_idcaja_Leave(object sender, EventArgs e)
+        {
+            if (Tx_modo.Text == "VISUALIZAR" && tx_idcaja.Text != "")
+            {
+                dataGridView1.Rows.Clear();
+                jalaoc("tx_idcaja");
+            }
+        }
         private void tx_serGR_Leave(object sender, EventArgs e)
         {
             tx_serGR.Text = lib.Right("0000" + tx_serGR.Text, 4);
@@ -958,7 +992,6 @@ namespace TransCarga
             Tx_modo.Text = "NUEVO";
             button1.Image = Image.FromFile(img_grab);
             escribe();
-
             // 
             Bt_ini.Enabled = false;
             Bt_sig.Enabled = false;
@@ -966,8 +999,11 @@ namespace TransCarga
             Bt_fin.Enabled = false;
             //
             initIngreso();
-            // valida existencia de caja abierta en fecha y sede
-            tx_idcaja.Text = "1";   // aca debe ir el verdadero id de la caja abierta
+            tx_idcaja.Text = "";
+            if (v_estcaj == codAbie)    // valida existencia de caja abierta en fecha y sede
+            {
+                tx_idcaja.Text = v_idcaj;   // aca debe ir el verdadero id de la caja abierta
+            }
             jalaoc("tx_idcaja");
             tx_serGR.ReadOnly = true;
             cmb_comp.Focus();
@@ -980,8 +1016,11 @@ namespace TransCarga
             initIngreso();
             tx_obser1.Enabled = true;
             tx_obser1.ReadOnly = false;
-            // valida existencia de caja abierta en fecha y sede
-            tx_idcaja.Text = "1";   // aca debe ir el verdadero id de la caja abierta
+            tx_idcaja.Text = "";
+            if (v_estcaj == codAbie)    // valida existencia de caja abierta en fecha y sede
+            {
+                tx_idcaja.Text = v_idcaj;   // aca debe ir el verdadero id de la caja abierta
+            }
             jalaoc("tx_idcaja");
             //
             Bt_ini.Enabled = true;
@@ -1005,8 +1044,11 @@ namespace TransCarga
             initIngreso();
             tx_obser1.Enabled = true;
             tx_obser1.ReadOnly = false;
-            // valida existencia de caja abierta en fecha y sede
-            tx_idcaja.Text = "1";   // aca debe ir el verdadero id de la caja abierta
+            tx_idcaja.Text = "";
+            if (v_estcaj == codAbie)    // valida existencia de caja abierta en fecha y sede
+            {
+                tx_idcaja.Text = v_idcaj;   // aca debe ir el verdadero id de la caja abierta
+            }
             jalaoc("tx_idcaja");
             //
             Bt_ini.Enabled = true;
@@ -1020,10 +1062,9 @@ namespace TransCarga
             Tx_modo.Text = "VISUALIZAR";
             button1.Image = Image.FromFile(img_ver);
             initIngreso();
-            // valida existencia de caja abierta en fecha y sede
-            tx_idcaja.Text = "1";   // aca debe ir el verdadero id de la caja abierta
-            jalaoc("tx_idcaja");
-            dataGridView1.Focus();
+            tx_idcaja.Enabled = true;
+            tx_idcaja.ReadOnly = false;
+            tx_idcaja.Focus();
             //
             Bt_ini.Enabled = true;
             Bt_sig.Enabled = true;
@@ -1037,31 +1078,31 @@ namespace TransCarga
             limpia_combos();
             limpia_otros();
             limpia_chk();
-            tx_idr.Text = lib.gofirts(nomtab);
-            tx_idr_Leave(null, null);
+            tx_idcaja.Text = lib.gofirts("cabccaja");  // nomtab
+            tx_idcaja_Leave(null, null);
         }
         private void Bt_back_Click(object sender, EventArgs e)
         {
-            if(tx_idr.Text.Trim() != "")
+            if(tx_idcaja.Text.Trim() != "")    // tx_idr.Text.Trim() != ""
             {
-                int aca = int.Parse(tx_idr.Text) - 1;
+                int aca = int.Parse(tx_idcaja.Text) - 1;
                 limpiar();
                 limpia_chk();
                 limpia_combos();
                 limpia_otros();
-                tx_idr.Text = aca.ToString();
-                tx_idr_Leave(null, null);
+                tx_idcaja.Text = aca.ToString();   // tx_idr.Text = aca.ToString();
+                tx_idcaja_Leave(null, null);
             }
         }
         private void Bt_next_Click(object sender, EventArgs e)
         {
-            int aca = int.Parse(tx_idr.Text) + 1;
+            int aca = int.Parse(tx_idcaja.Text) + 1;
             limpiar();
             limpia_chk();
             limpia_combos();
             limpia_otros();
-            tx_idr.Text = aca.ToString();
-            tx_idr_Leave(null, null);
+            tx_idcaja.Text = aca.ToString();
+            tx_idcaja_Leave(null, null);
         }
         private void Bt_last_Click(object sender, EventArgs e)
         {
@@ -1069,8 +1110,8 @@ namespace TransCarga
             limpia_chk();
             limpia_combos();
             limpia_otros();
-            tx_idr.Text = lib.golast(nomtab);
-            tx_idr_Leave(null, null);
+            tx_idcaja.Text = lib.golast("cabccaja");     // nomtab
+            tx_idcaja_Leave(null, null);
         }
         #endregion botones;
         // proveed para habilitar los botones de comando

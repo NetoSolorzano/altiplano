@@ -122,7 +122,7 @@ namespace TransCarga
             //
             tx_user.Text += asd;
             tx_nomuser.Text = TransCarga.Program.vg_nuse;
-            tx_locuser.Text = TransCarga.Program.vg_luse;
+            tx_locuser.Text = tx_locuser.Text + " " + TransCarga.Program.vg_nlus; // TransCarga.Program.vg_luse;
             tx_fechact.Text = DateTime.Today.ToString();
             //
             Bt_add.Image = Image.FromFile(img_btN);
@@ -944,6 +944,7 @@ namespace TransCarga
         {
             if (Tx_modo.Text == "VISUALIZAR" && tx_idcaja.Text != "")
             {
+                dataGridView1.Rows.Clear();
                 jalaoc("tx_idcaja");
             }
         }
@@ -1229,31 +1230,31 @@ namespace TransCarga
             limpia_combos();
             limpia_otros();
             limpia_chk();
-            tx_idr.Text = lib.gofirts(nomtab);
-            tx_idr_Leave(null, null);
+            tx_idcaja.Text = lib.gofirts("cabccaja");
+            tx_idcaja_Leave(null, null);
         }
         private void Bt_back_Click(object sender, EventArgs e)
         {
-            if(tx_idr.Text.Trim() != "")
+            if(tx_idcaja.Text.Trim() != "")
             {
-                int aca = int.Parse(tx_idr.Text) - 1;
+                int aca = int.Parse(tx_idcaja.Text) - 1;
                 limpiar();
                 limpia_chk();
                 limpia_combos();
                 limpia_otros();
-                tx_idr.Text = aca.ToString();
-                tx_idr_Leave(null, null);
+                tx_idcaja.Text = aca.ToString();
+                tx_idcaja_Leave(null, null);
             }
         }
         private void Bt_next_Click(object sender, EventArgs e)
         {
-            int aca = int.Parse(tx_idr.Text) + 1;
+            int aca = int.Parse(tx_idcaja.Text) + 1;
             limpiar();
             limpia_chk();
             limpia_combos();
             limpia_otros();
-            tx_idr.Text = aca.ToString();
-            tx_idr_Leave(null, null);
+            tx_idcaja.Text = aca.ToString();
+            tx_idcaja_Leave(null, null);
         }
         private void Bt_last_Click(object sender, EventArgs e)
         {
@@ -1261,8 +1262,8 @@ namespace TransCarga
             limpia_chk();
             limpia_combos();
             limpia_otros();
-            tx_idr.Text = lib.golast(nomtab);
-            tx_idr_Leave(null, null);
+            tx_idcaja.Text = lib.golast("cabccaja");
+            tx_idcaja_Leave(null, null);
         }
         #endregion botones;
         // proveed para habilitar los botones de comando
