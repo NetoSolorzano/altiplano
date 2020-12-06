@@ -78,4 +78,5 @@ form ingresosv:
 form ayccaja:
 - desarrollo del form .............................................................................. ok 04/12/2020
 form cobranzas:
-- valiaciones de caja abierta ...................................................................... 
+- validaciones de caja abierta ..................................................................... ok 05/12/2020
+form facelect: cuando se cobra en automatico, debe tener el id de caja ............................. ok 05/12/2020 

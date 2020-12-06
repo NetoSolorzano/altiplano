@@ -62,6 +62,9 @@ namespace TransCarga
         string vint_A0 = "";            // variable codigo anulacion interna por BD
         string v_codidv = "";           // variable codifo interno de documento de venta en vista TDV
         string v_igv = "";              // valor igv %
+        string v_estcaj = "";           // estado de la caja
+        string v_idcaj = "";            // id de la caja actual
+        string codAbie = "";            // codigo estado de caja abierta
         //
         static libreria lib = new libreria();   // libreria de procedimientos
         publico lp = new publico();             // libreria de clases
@@ -213,6 +216,12 @@ namespace TransCarga
             tx_digit.Text = v_nbu;
             tx_dat_estad.Text = codGene;
             tx_estado.Text = lib.nomstat(tx_dat_estad.Text);
+            tx_idcaja.ReadOnly = true;
+            tx_idcaja.Text = "";
+            if (Tx_modo.Text == "NUEVO" && v_estcaj == codAbie)      // caja esta abierta?
+            {
+                tx_idcaja.Text = v_idcaj;
+            }
         }
         private void jalainfo()                 // obtiene datos de imagenes y variables
         {
@@ -220,12 +229,13 @@ namespace TransCarga
             {
                 MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
                 conn.Open();
-                string consulta = "select formulario,campo,param,valor from enlaces where formulario in (@nofo,@nfin,@nofa,@nofi,@noco)";
+                string consulta = "select formulario,campo,param,valor from enlaces where formulario in (@nofo,@nfin,@nofa,@nofi,@noca,@noco)";
                 MySqlCommand micon = new MySqlCommand(consulta, conn);
                 micon.Parameters.AddWithValue("@nofo", "main");
                 micon.Parameters.AddWithValue("@nfin", "interno");
                 micon.Parameters.AddWithValue("@nofi", "clients");
                 micon.Parameters.AddWithValue("@noco", "cobranzas");
+                micon.Parameters.AddWithValue("@noca", "ayccaja");
                 micon.Parameters.AddWithValue("@nofa", nomform);
                 MySqlDataAdapter da = new MySqlDataAdapter(micon);
                 DataTable dt = new DataTable();
@@ -286,6 +296,11 @@ namespace TransCarga
                         }
                         if (row["campo"].ToString() == "moneda" && row["param"].ToString() == "default") MonDeft = row["valor"].ToString().Trim();             // moneda por defecto
                     }
+                    if (row["formulario"].ToString() == "ayccaja" && row["campo"].ToString() == "estado")
+                    {
+                        if (row["param"].ToString() == "abierto") codAbie = row["valor"].ToString().Trim();             // codigo caja abierta
+                        //if (row["param"].ToString() == "cerrado") codCier = row["valor"].ToString().Trim();             // codigo caja cerrada
+                    }
                     if (row["formulario"].ToString() == "interno")              // codigo enlace interno de anulacion del cliente con en BD A0
                     {
                         if (row["campo"].ToString() == "anulado" && row["param"].ToString() == "A0") vint_A0 = row["valor"].ToString().Trim();
@@ -327,7 +342,7 @@ namespace TransCarga
                 {
                     string consulta = "select a.id,a.fechope,a.martdve,a.tipdvta,a.serdvta,a.numdvta,a.ticltgr,a.tidoclt,a.nudoclt,a.nombclt,a.direclt,a.dptoclt,a.provclt,a.distclt,a.ubigclt,a.corrclt,a.teleclt," +
                         "a.locorig,a.dirorig,a.ubiorig,a.obsdvta,a.canfidt,a.canbudt,a.mondvta,a.tcadvta,a.subtota,a.igvtota,a.porcigv,a.totdvta,a.totpags,a.saldvta,a.estdvta,a.frase01,a.impreso," +
-                        "a.tipoclt,a.m1clien,a.tippago,a.ferecep,a.userc,a.fechc,a.userm,a.fechm,b.descrizionerid as nomest,ifnull(c.id,'') as cobra " +
+                        "a.tipoclt,a.m1clien,a.tippago,a.ferecep,a.userc,a.fechc,a.userm,a.fechm,b.descrizionerid as nomest,ifnull(c.id,'') as cobra,a.idcaja " +
                         "from cabfactu a left join desc_est b on b.idcodice=a.estdvta " +
                         "left join cabcobran c on c.tipdoco=a.tipdvta and c.serdoco=a.serdvta and c.numdoco=a.numdvta and c.estdcob<>@coda "
                         + parte;
@@ -350,6 +365,7 @@ namespace TransCarga
                         if (dr.Read())
                         {
                             tx_idr.Text = dr.GetString("id");
+                            tx_idcaja.Text = dr.GetString("idcaja");
                             tx_fechope.Text = dr.GetString("fechope").Substring(0, 10);
                             //.Text = dr.GetString("martdve");
                             tx_dat_tdv.Text = dr.GetString("tipdvta");
@@ -510,6 +526,19 @@ namespace TransCarga
                         cmb_mon.DataSource = dtm;
                         cmb_mon.DisplayMember = "descrizionerid";
                         cmb_mon.ValueMember = "idcodice";
+                    }
+                }
+                // jalamos la caja
+                using (MySqlCommand micon = new MySqlCommand("select id,fechope,statusc from cabccaja where loccaja=@luc order by id desc limit 1", conn))
+                {
+                    micon.Parameters.AddWithValue("@luc", v_clu);
+                    using (MySqlDataReader dr = micon.ExecuteReader())
+                    {
+                        if (dr.Read())
+                        {
+                            v_estcaj = dr.GetString("statusc");
+                            v_idcaj = dr.GetString("id");
+                        }
                     }
                 }
             }
@@ -1301,11 +1330,11 @@ namespace TransCarga
                 string inserta = "insert into cabfactu (" +
                     "fechope,martdve,tipdvta,serdvta,numdvta,ticltgr,tidoclt,nudoclt,nombclt,direclt,dptoclt,provclt,distclt,ubigclt,corrclt,teleclt," +
                     "locorig,dirorig,ubiorig,obsdvta,canfidt,canbudt,mondvta,tcadvta,subtota,igvtota,porcigv,totdvta,totpags,saldvta,estdvta,frase01," +
-                    "tipoclt,m1clien,tippago,ferecep,impreso,codMN,subtMN,igvtMN,totdvMN,pagauto,tipdcob," +
+                    "tipoclt,m1clien,tippago,ferecep,impreso,codMN,subtMN,igvtMN,totdvMN,pagauto,tipdcob,idcaja," +
                     "verApp,userc,fechc,diriplan4,diripwan4,netbname) values (" +
                     "@fechop,@mtdvta,@ctdvta,@serdv,@numdv,@tcdvta,@tdcrem,@ndcrem,@nomrem,@dircre,@dptocl,@provcl,@distcl,@ubicre,@mailcl,@telecl," +
                     "@ldcpgr,@didegr,@ubdegr,@obsprg,@canfil,@totcpr,@monppr,@tcoper,@subpgr,@igvpgr,@porcigv,@totpgr,@pagpgr,@salxpa,@estpgr,@frase1," +
-                    "@ticlre,@m1clte,@tipacc,@feredv,@impSN,@codMN,@subMN,@igvMN,@totMN,@pagaut,@tipdco," +
+                    "@ticlre,@m1clte,@tipacc,@feredv,@impSN,@codMN,@subMN,@igvMN,@totMN,@pagaut,@tipdco,@idcaj," +
                     "@verApp,@asd,now(),@iplan,@ipwan,@nbnam)";
                 using (MySqlCommand micon = new MySqlCommand(inserta, conn))
                 {
@@ -1352,6 +1381,7 @@ namespace TransCarga
                     micon.Parameters.AddWithValue("@totMN", fletMN);
                     micon.Parameters.AddWithValue("@pagaut", (rb_si.Checked == true)? "S" : "N");
                     micon.Parameters.AddWithValue("@tipdco", (rb_si.Checked == true)? v_codcob : "");
+                    micon.Parameters.AddWithValue("@idcaj", tx_idcaja.Text);
                     micon.Parameters.AddWithValue("@verApp", verapp);
                     micon.Parameters.AddWithValue("@asd", asd);
                     micon.Parameters.AddWithValue("@iplan", lib.iplan());
@@ -1778,18 +1808,27 @@ namespace TransCarga
         }
         private void rb_si_Click(object sender, EventArgs e)
         {
-            if (tx_dat_saldoGR.Text.Trim() != "")
+            if (tx_idcaja.Text != "")
             {
-                if (decimal.Parse(tx_dat_saldoGR.Text) > 0)
+                if (tx_dat_saldoGR.Text.Trim() != "")
                 {
-                    tx_pagado.Text = tx_flete.Text;
-                    tx_salxcob.Text = "0.00";
-                    tx_salxcob.BackColor = Color.Green;
+                    if (decimal.Parse(tx_dat_saldoGR.Text) > 0)
+                    {
+                        tx_pagado.Text = tx_flete.Text;
+                        tx_salxcob.Text = "0.00";
+                        tx_salxcob.BackColor = Color.Green;
+                    }
+                    else
+                    {
+                        tx_salxcob.Text = "0.00";
+                    }
                 }
-                else
-                {
-                    tx_salxcob.Text = "0.00";
-                }
+            }
+            else
+            {
+                MessageBox.Show("No existe caja abierta!" + Environment.NewLine +
+                    "No puede cobrar hasta aperturar caja", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+                rb_no_Click(null, null);
             }
         }
         private void rb_no_Click(object sender, EventArgs e)
