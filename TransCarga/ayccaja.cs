@@ -40,6 +40,8 @@ namespace TransCarga
         string v_nbu = "";              // nombre del usuario
         string codAbie = "";            // codigo caja abierta
         string codCier = "";            // codigo caja cerrada
+        decimal vsali = 0;              // saldo inicial del cuadre
+        decimal vsalf = 0;              // saldo final del cuadre
         //
         static libreria lib = new libreria();   // libreria de procedimientos
         publico lp = new publico();             // libreria de clases
@@ -233,6 +235,12 @@ namespace TransCarga
                                         {
                                             // ultima caja esta cerrada
                                             button1.Text = "ABRE CAJA";
+                                            vsali = dr.GetDecimal("saldofi");
+                                            dataGridView1.Rows.Add("SALDO ANTERIOR", "", vsali.ToString("#0.00"));
+                                            dataGridView1.Rows.Add("COBRANZAS", "0", "0");
+                                            dataGridView1.Rows.Add("ING.VARIOS", "0", "0");
+                                            dataGridView1.Rows.Add("EGRESOS/DEP", "0", "0");
+                                            dataGridView1.Rows.Add("SALDO AL CIERRE", "", vsali.ToString("#0.00"));
                                         }
                                         if (dr.GetString("statusc") == codAbie)     // la caja esta abierta
                                         {
@@ -245,12 +253,18 @@ namespace TransCarga
                                             tx_fechope.Text = dr.GetString("fechope").Substring(0,10);
                                             tx_idr.Text = dr.GetString("id");
                                             // solo se computan documentos validos NO ANULADOS
+                                            decimal salan = dr.GetDecimal("saldoan");
+                                            decimal vcobr = dr.GetDecimal("cobranz");
+                                            decimal vingv = dr.GetDecimal("ingvari");
+                                            decimal vegre = dr.GetDecimal("egresos");
+                                            vsalf = salan + vcobr + vingv - vegre;
                                             dataGridView1.Rows.Add("SALDO ANTERIOR", "", dr.GetString("saldoan"));
                                             dataGridView1.Rows.Add("COBRANZAS", dr.GetString("cantcob"), dr.GetString("cobranz"));
                                             dataGridView1.Rows.Add("ING.VARIOS", dr.GetString("cantinv"),dr.GetString("ingvari"));
                                             dataGridView1.Rows.Add("EGRESOS/DEP", dr.GetString("cantegr"),dr.GetString("egresos"));
-                                            dataGridView1.Rows.Add("SALDO AL CIERRE", "", dr.GetString("saldofi"));
+                                            dataGridView1.Rows.Add("SALDO AL CIERRE", "", vsalf.ToString("#0.00"));
                                         }
+
                                     }
                                 }
                             }
@@ -410,10 +424,28 @@ namespace TransCarga
                         return;
                     }
                 }
-                else
+                if (tx_idr.Text.Trim() != "")
                 {
-                    MessageBox.Show("Los datos no son nuevos en egresos", "Verifique duplicidad", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-                    return;
+                    var aa = MessageBox.Show("Confirma que desea " + keta + " la caja?", "Confirme por favor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                    if (aa == DialogResult.Yes)
+                    {
+                        if (graba(keta) == true)
+                        {
+                            // actualizamos la tabla seguimiento de usuarios
+                            string resulta = lib.ult_mov(nomform, nomtab, asd);
+                            if (resulta != "OK")
+                            {
+                                MessageBox.Show(resulta, "Error en actualización de seguimiento", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
+                            //jalaoc("tx_idcaja");
+                            this.Close();
+                        }
+                    }
+                    else
+                    {
+                        //rb_pago.Focus();
+                        return;
+                    }
                 }
             }
             if (iserror == "no")
@@ -435,15 +467,16 @@ namespace TransCarga
                 if (accion == "APERTURAR")
                 {
                     string inserta = "insert into cabccaja (" +
-                        "userabr,fechope,loccaja,obscobc,codmoMN,statusc," +
+                        "userabr,fechope,loccaja,obscobc,codmoMN,statusc,saldoan," +
                         "verApp,userc,fechc,diriplan4,diripwan4,netbname) values (" +
-                        "@asd,@fechop,@ldcpgr,@obsprg,@codMN,@estado," +
-                        ")";
+                        "@asd,@fechop,@ldcpgr,@obsprg,@codMN,@estado,@salan," +
+                        "@verApp,@asd,now(),@iplan,@ipwan,@nbnam)";
                     using (MySqlCommand micon = new MySqlCommand(inserta, conn))
                     {
                         micon.Parameters.AddWithValue("@fechop", tx_fechope.Text.Substring(6, 4) + "-" + tx_fechope.Text.Substring(3, 2) + "-" + tx_fechope.Text.Substring(0, 2));
                         micon.Parameters.AddWithValue("@ldcpgr", TransCarga.Program.almuser);         // local origen
-                        micon.Parameters.AddWithValue("obsprg", "");
+                        micon.Parameters.AddWithValue("@obsprg", "");
+                        micon.Parameters.AddWithValue("@salan", vsali);
                         micon.Parameters.AddWithValue("@codMN", MonDeft);
                         micon.Parameters.AddWithValue("@estado", codAbie);
                         micon.Parameters.AddWithValue("@verApp", verapp);
@@ -457,13 +490,14 @@ namespace TransCarga
                 }
                 if (accion == "CERRAR")
                 {
-                    string actua = "update cabccaja set usercie=@asd,fechcie=DATE(NOW()),obscobc=@obs,statusc=@newst," +
-                        "verApp=@verApp,userm=@asd,fechm=now(),diriplan4=@iplan,diripwan4=@ipwan,netbname=@nbnam" +
+                    string actua = "update cabccaja set usercie=@asd,fechcie=DATE(NOW()),obscobc=@obs,statusc=@newst,saldofi=@salf," +
+                        "verApp=@verApp,userm=@asd,fechm=now(),diriplan4=@iplan,diripwan4=@ipwan,netbname=@nbnam " +
                         "where id=@idr";
                     using (MySqlCommand micon = new MySqlCommand(actua, conn))
                     {
                         micon.Parameters.AddWithValue("@idr", tx_idr.Text);
                         micon.Parameters.AddWithValue("@newst", codCier);
+                        micon.Parameters.AddWithValue("@salf", vsalf);
                         micon.Parameters.AddWithValue("@obs", "");
                         micon.Parameters.AddWithValue("@asd", asd);
                         micon.Parameters.AddWithValue("@verApp", verapp);

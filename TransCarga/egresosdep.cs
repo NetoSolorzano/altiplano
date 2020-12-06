@@ -46,6 +46,9 @@ namespace TransCarga
         string v_nodd = "";             // siglas del documento EGRESO - deposito en cuenta propia
         string vint_A0 = "";            // variable codigo anulacion interna por BD
         string v_igv = "";              // valor igv %
+        string v_estcaj = "";           // estado de la caja
+        string v_idcaj = "";            // id de la caja
+        string codAbie = "";            // codigo estado de caja abierta
         //
         static libreria lib = new libreria();   // libreria de procedimientos
         publico lp = new publico();             // libreria de clases
@@ -178,7 +181,7 @@ namespace TransCarga
                 MySqlCommand micon = new MySqlCommand(consulta, conn);
                 micon.Parameters.AddWithValue("@nofo", "main");
                 micon.Parameters.AddWithValue("@nfin", "interno");
-                micon.Parameters.AddWithValue("@nofi", "xxx");      // libre
+                micon.Parameters.AddWithValue("@nofi", "ayccaja");
                 micon.Parameters.AddWithValue("@nofa", nomform);
                 MySqlDataAdapter da = new MySqlDataAdapter(micon);
                 DataTable dt = new DataTable();
@@ -220,6 +223,11 @@ namespace TransCarga
                             if (row["param"].ToString() == "nomdep") v_nodd = row["valor"].ToString().Trim();               // nombre codido depositos
                         }
                         if (row["campo"].ToString() == "moneda" && row["param"].ToString() == "default") MonDeft = row["valor"].ToString().Trim();             // moneda por defecto
+                    }
+                    if (row["formulario"].ToString() == "ayccaja")
+                    {
+                        if (row["campo"].ToString() == "estado" && row["param"].ToString() == "abierto") codAbie = row["valor"].ToString().Trim();             // codigo caja abierta
+                        //if (row["param"].ToString() == "cerrado") codCier = row["valor"].ToString().Trim();             // codigo caja cerrada
                     }
                     if (row["formulario"].ToString() == "interno")              // codigo enlace interno de anulacion del cliente con en BD A0
                     {
@@ -412,6 +420,19 @@ namespace TransCarga
                         cmb_ctaprop.ValueMember = "idcodice";
                     }
                 }
+                // jalamos la caja
+                using (MySqlCommand micon = new MySqlCommand("select id,fechope,statusc from cabccaja where loccaja=@luc order by id desc limit 1", conn))
+                {
+                    micon.Parameters.AddWithValue("@luc", v_clu);
+                    using (MySqlDataReader dr = micon.ExecuteReader())
+                    {
+                        if (dr.Read())
+                        {
+                            v_estcaj = dr.GetString("statusc");
+                            v_idcaj = dr.GetString("id");
+                        }
+                    }
+                }
             }
         }
         private bool valiVars()                 // valida existencia de datos en variables del form
@@ -498,10 +519,14 @@ namespace TransCarga
         private void sololee()
         {
             lp.sololee(this);
+            rb_depo.Enabled = false;
+            rb_pago.Enabled = false;
         }
         private void escribe()
         {
             lp.escribe(this);
+            rb_depo.Enabled = true;
+            rb_pago.Enabled = true;
         }
         private void limpiar()
         {
@@ -552,6 +577,11 @@ namespace TransCarga
             {
                 MessageBox.Show("Ingrese el monto del pago", " Atención ", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 tx_PAGO.Focus();
+                return;
+            }
+            if (tx_idcaja.Text == "")
+            {
+                MessageBox.Show("No existe caja!", " Atención ", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
             #endregion
@@ -910,6 +940,13 @@ namespace TransCarga
                 jalaoc("tx_idcaja");
             }
         }
+        private void tx_idcaja_Leave(object sender, EventArgs e)
+        {
+            if (Tx_modo.Text == "VISUALIZAR" && tx_idcaja.Text != "")
+            {
+                jalaoc("tx_idcaja");
+            }
+        }
         private void tx_numero_Leave(object sender, EventArgs e)
         {
             if (Tx_modo.Text != "NUEVO" && tx_numero.Text.Trim() != "")
@@ -1110,8 +1147,11 @@ namespace TransCarga
             tx_numero.ReadOnly = true;
             tx_noco.ReadOnly = true;
             tx_serie.ReadOnly = true;
-            // valida existencia de caja abierta en fecha y sede
-            tx_idcaja.Text = "1";   // aca debe ir el verdadero id de la caja abierta
+            tx_idcaja.Text = "";
+            if (v_estcaj == codAbie)    // valida existencia de caja abierta en fecha y sede
+            { 
+                tx_idcaja.Text = v_idcaj;   // aca debe ir el verdadero id de la caja abierta
+            }
             jalaoc("tx_idcaja");
             rb_pago.Focus();
         }
@@ -1125,8 +1165,11 @@ namespace TransCarga
             tx_obser1.ReadOnly = false;
             tx_numero.Text = "";
             tx_numero.ReadOnly = false;
-            // valida existencia de caja abierta en fecha y sede
-            tx_idcaja.Text = "1";   // aca debe ir el verdadero id de la caja abierta
+            tx_idcaja.Text = "";
+            if (v_estcaj == codAbie)    // valida existencia de caja abierta en fecha y sede
+            {
+                tx_idcaja.Text = v_idcaj;   // aca debe ir el verdadero id de la caja abierta
+            }
             jalaoc("tx_idcaja");
             //
             Bt_ini.Enabled = true;
@@ -1152,8 +1195,11 @@ namespace TransCarga
             tx_numero.ReadOnly = false;
             tx_obser1.Enabled = true;
             tx_obser1.ReadOnly = false;
-            // valida existencia de caja abierta en fecha y sede
-            tx_idcaja.Text = "1";   // aca debe ir el verdadero id de la caja abierta
+            tx_idcaja.Text = "";
+            if (v_estcaj == codAbie)    // valida existencia de caja abierta en fecha y sede
+            {
+                tx_idcaja.Text = v_idcaj;   // aca debe ir el verdadero id de la caja abierta
+            }
             jalaoc("tx_idcaja");
             //
             Bt_ini.Enabled = true;
@@ -1161,15 +1207,15 @@ namespace TransCarga
             Bt_ret.Enabled = true;
             Bt_fin.Enabled = true;
         }
-        private void Bt_ver_Click(object sender, EventArgs e)
+        private void Bt_ver_Click(object sender, EventArgs e)           // En egresos e ing. varios se puede y debe jalar desde el id de la caja
         {
             sololee();
             Tx_modo.Text = "VISUALIZAR";
             button1.Image = Image.FromFile(img_ver);
             initIngreso();
-            tx_serie.ReadOnly = false;
-            tx_numero.ReadOnly = false;
-            tx_obser1.Focus();
+            tx_idcaja.Enabled = true;
+            tx_idcaja.ReadOnly = false;
+            tx_idcaja.Focus();
             //
             Bt_ini.Enabled = true;
             Bt_sig.Enabled = true;

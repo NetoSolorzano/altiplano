@@ -1828,7 +1828,10 @@ namespace TransCarga
             {
                 MessageBox.Show("No existe caja abierta!" + Environment.NewLine +
                     "No puede cobrar hasta aperturar caja", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Hand);
-                rb_no_Click(null, null);
+                rb_si.Checked = false;
+                //rb_no_Click(null, null);
+                //rb_no.Checked = true;
+                rb_no.PerformClick();
             }
         }
         private void rb_no_Click(object sender, EventArgs e)

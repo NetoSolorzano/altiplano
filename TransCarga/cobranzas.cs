@@ -326,7 +326,6 @@ namespace TransCarga
                         if (dr.Read())
                         {
                             tx_idr.Text = dr.GetString("id");
-                            tx_idcaja.Text = dr.GetString("idcaja");
                             tx_fechope.Text = dr.GetString("fechope").Substring(0, 10);
                             tx_dat_tdv.Text = dr.GetString("tipdcob");
                             tx_serie.Text = dr.GetString("sercobc");
@@ -372,6 +371,26 @@ namespace TransCarga
                             //
                             if (rb_GR.Checked == true) jaladet("guia", tx_serGR.Text, tx_numGR.Text);
                             if (rb_DV.Checked == true) jaladet("docvta", tx_serGR.Text, tx_numGR.Text);
+                            // 
+                            if (v_idcaj != dr.GetString("idcaja"))
+                            {
+                                tx_numero.Text = "";
+                                MessageBox.Show("La Caja del documento esta cerrada!","No puede continuar",MessageBoxButtons.OK,MessageBoxIcon.Information);
+                                initIngreso();
+                            }
+                            else
+                            {
+                                if (v_estcaj != codAbie)
+                                {
+                                    tx_numero.Text = "";
+                                    MessageBox.Show("La Caja esta cerrada!", "No puede continuar", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                    initIngreso();
+                                }
+                                else
+                                {
+                                    tx_idcaja.Text = dr.GetString("idcaja");
+                                }
+                            }
                         }
                         else
                         {
@@ -980,6 +999,11 @@ namespace TransCarga
                 tx_PAGO.Focus();
                 return;
             }
+            if (tx_idcaja.Text.Trim() == "")
+            {
+                MessageBox.Show("No existe Caja!","No puede continuar",MessageBoxButtons.OK,MessageBoxIcon.Error);
+                return;
+            }
             #endregion
             // grabamos, actualizamos, etc
             string modo = Tx_modo.Text;
@@ -1533,6 +1557,7 @@ namespace TransCarga
             Tx_modo.Text = "EDITAR";                    // solo puede editarse la observacion 28/10/2020
             button1.Image = Image.FromFile(img_grab);
             initIngreso();
+            gbox_serie.Enabled = true;
             tx_obser1.Enabled = true;
             tx_obser1.ReadOnly = false;
             tx_numero.Text = "";
