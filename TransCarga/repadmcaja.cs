@@ -188,16 +188,20 @@ namespace TransCarga
                                        "where numero=1 order by idcodice";
                 MySqlCommand cmd = new MySqlCommand(contaller, conn);
                 MySqlDataAdapter dataller = new MySqlDataAdapter(cmd);
-                // panel PRE GUIAS
+                // PANEL CUADRE CAJA
                 dataller.Fill(dttaller);
+                cmb_sedeCaj.DataSource = dttaller;
+                cmb_sedeCaj.DisplayMember = "descrizionerid";
+                cmb_sedeCaj.ValueMember = "idcodice";
+                // panel COBRANZAS
                 cmb_vtasloc.DataSource = dttaller;
                 cmb_vtasloc.DisplayMember = "descrizionerid";
                 cmb_vtasloc.ValueMember = "idcodice";
-                // PANEL GUIAS
+                // PANEL EGRESOS
                 cmb_sede_guias.DataSource = dttaller;
                 cmb_sede_guias.DisplayMember = "descrizionerid";
                 cmb_sede_guias.ValueMember = "idcodice";
-                // PANEL PLANILLA CARGA
+                // PANEL INGRESOS VARIOS
                 cmb_sede_plan.DataSource = dttaller;
                 cmb_sede_plan.DisplayMember = "descrizionerid"; ;
                 cmb_sede_plan.ValueMember = "idcodice";
@@ -207,15 +211,19 @@ namespace TransCarga
                 cmd = new MySqlCommand(conestad, conn);
                 MySqlDataAdapter daestad = new MySqlDataAdapter(cmd);
                 daestad.Fill(dtestad);
-                // PANEL GUIAS
+                // PANEL CUADRE DE CAJA
+                cmb_estCaj.DataSource = dtestad;
+                cmb_estCaj.DisplayMember = "descrizionerid";
+                cmb_estCaj.ValueMember = "idcodice";
+                // PANEL COBRANZAS
                 cmb_estad.DataSource = dtestad;
                 cmb_estad.DisplayMember = "descrizionerid";
                 cmb_estad.ValueMember = "idcodice";
-                // PANEL GUIAS
+                // PANEL EGRESOS
                 cmb_estad_guias.DataSource = dtestad;
                 cmb_estad_guias.DisplayMember = "descrizionerid";
                 cmb_estad_guias.ValueMember = "idcodice";
-                // PANEL PLANILLA CARGA
+                // PANEL INGRESOS VARIOS
                 cmb_estad_plan.DataSource = dtestad;
                 cmb_estad_plan.DisplayMember = "descrizionerid";
                 cmb_estad_plan.ValueMember = "idcodice";
@@ -229,7 +237,35 @@ namespace TransCarga
             int b;
             switch (dgv)
             {
-                case "dgv_vtas":
+                case "dgv_ccaja":
+                    dgv_ccaja.Font = tiplg;
+                    dgv_ccaja.DefaultCellStyle.Font = tiplg;
+                    dgv_ccaja.RowTemplate.Height = 15;
+                    //dgv_ccaja.DefaultCellStyle.BackColor = Color.MediumAquamarine;
+                    dgv_ccaja.AllowUserToAddRows = false;
+                    dgv_ccaja.Width = 1015;
+                    if (dgv_ccaja.DataSource == null) dgv_ccaja.ColumnCount = 1;
+                    if (dgv_ccaja.Rows.Count > 0)
+                    {
+                        for (int i = 0; i < dgv_ccaja.Columns.Count; i++)
+                        {
+                            dgv_ccaja.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                            _ = decimal.TryParse(dgv_ccaja.Rows[0].Cells[i].Value.ToString(), out decimal vd);
+                            if (vd != 0) dgv_ccaja.Columns[i].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+                        }
+                        b = 0;
+                        for (int i = 0; i < dgv_ccaja.Columns.Count; i++)
+                        {
+                            int a = dgv_ccaja.Columns[i].Width;
+                            b += a;
+                            dgv_ccaja.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+                            dgv_ccaja.Columns[i].Width = a;
+                        }
+                        if (b < dgv_ccaja.Width) dgv_ccaja.Width = b + 60;
+                        dgv_ccaja.ReadOnly = true;
+                    }
+                    break;
+                case "dgv_vtas":                                    // COBRANZAS
                     dgv_vtas.Font = tiplg;
                     dgv_vtas.DefaultCellStyle.Font = tiplg;
                     dgv_vtas.RowTemplate.Height = 15;
@@ -257,7 +293,7 @@ namespace TransCarga
                         dgv_vtas.ReadOnly = true;
                     }
                     break;
-                case "dgv_guias":
+                case "dgv_guias":                                   // EGRESOS
                     dgv_guias.Font = tiplg;
                     dgv_guias.DefaultCellStyle.Font = tiplg;
                     dgv_guias.RowTemplate.Height = 15;
@@ -284,7 +320,7 @@ namespace TransCarga
                         dgv_guias.ReadOnly = true;
                     }
                     break;
-                case "dgv_plan":
+                case "dgv_plan":                                // INGRESOS VARIOS
                     dgv_plan.Font = tiplg;
                     dgv_plan.DefaultCellStyle.Font = tiplg;
                     dgv_plan.RowTemplate.Height = 15;
@@ -311,6 +347,36 @@ namespace TransCarga
                         dgv_plan.ReadOnly = true;
                     }
                     break;
+            }
+        }
+        private void bt_caja_Click(object sender, EventArgs e)          // CUADRE DE CAJA
+        {
+            using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
+            {
+                conn.Open();
+                string consulta = "rep_adm_caj1";
+                using (MySqlCommand micon = new MySqlCommand(consulta, conn))
+                {
+                    micon.CommandType = CommandType.StoredProcedure;
+                    micon.Parameters.AddWithValue("@loca", (tx_dat_sedecaj.Text != "") ? tx_dat_sedecaj.Text : "");
+                    micon.Parameters.AddWithValue("@fecini", dtp_iniCaj.Value.ToString("yyyy-MM-dd"));
+                    micon.Parameters.AddWithValue("@fecfin", dtp_finCaj.Value.ToString("yyyy-MM-dd"));
+                    micon.Parameters.AddWithValue("@esta", (tx_dat_estCaj.Text != "") ? tx_dat_estCaj.Text : "");
+                    micon.Parameters.AddWithValue("@excl", (chk_excCaj.Checked == true) ? "1" : "0");
+                    using (MySqlDataAdapter da = new MySqlDataAdapter(micon))
+                    {
+                        dgv_ccaja.DataSource = null;
+                        DataTable dt = new DataTable();
+                        da.Fill(dt);
+                        dgv_ccaja.DataSource = dt;
+                        grilla("dgv_ccaja");
+                    }
+                    string resulta = lib.ult_mov(nomform, nomtab, asd);
+                    if (resulta != "OK")                                        // actualizamos la tabla usuarios
+                    {
+                        MessageBox.Show(resulta, "Error en actualización de tabla usuarios", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
             }
         }
         private void bt_vtasfiltra_Click(object sender, EventArgs e)    // COBRANZAS
@@ -343,12 +409,12 @@ namespace TransCarga
                 }
             }
         }
-        private void bt_guias_Click(object sender, EventArgs e)         // 
+        private void bt_guias_Click(object sender, EventArgs e)         // EGRESOS
         {
             using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
             {
                 conn.Open();
-                string consulta = "rep_oper_guiai1";
+                string consulta = "rep_adm_egre1";
                 using (MySqlCommand micon = new MySqlCommand(consulta,conn))
                 {
                     micon.CommandType = CommandType.StoredProcedure;
@@ -373,12 +439,12 @@ namespace TransCarga
                 }
             }
         }
-        private void bt_plan_Click(object sender, EventArgs e)          // 
+        private void bt_plan_Click(object sender, EventArgs e)          // INGRESOS VARIOS
         {
             using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
             {
                 conn.Open();
-                string consulta = "rep_oper_plan1";
+                string consulta = "rep_adm_ingv1";
                 using (MySqlCommand micon = new MySqlCommand(consulta, conn))
                 {
                     micon.CommandType = CommandType.StoredProcedure;
@@ -405,7 +471,33 @@ namespace TransCarga
         }
 
         #region combos
-        private void cmb_estad_ing_SelectionChangeCommitted(object sender, EventArgs e)
+        private void cmb_sedeCaj_SelectionChangeCommitted(object sender, EventArgs e)                                   // CAJA - Sede
+        {
+            if (cmb_sedeCaj.SelectedValue != null) tx_dat_sedecaj.Text = cmb_sedeCaj.SelectedValue.ToString();
+            else tx_dat_sedecaj.Text = "";
+        }
+        private void cmb_estCaj_SelectionChangeCommitted(object sender, EventArgs e)                                    // CAJA - Estados
+        {
+            if (cmb_estCaj.SelectedValue != null) tx_dat_estCaj.Text = cmb_estCaj.SelectedValue.ToString();
+            else tx_dat_estCaj.Text = "";
+        }
+        private void cmb_sedeCaj_KeyDown(object sender, KeyEventArgs e)                                                 // CAJA - Sede delete
+        {
+            if (e.KeyCode == Keys.Delete)
+            {
+                cmb_sedeCaj.SelectedIndex = -1;
+                tx_dat_sedecaj.Text = "";
+            }
+        }
+        private void cmb_estCaj_KeyDown(object sender, KeyEventArgs e)                                                  // CAJA - Estados delete
+        {
+            if (e.KeyCode == Keys.Delete)
+            {
+                cmb_estCaj.SelectedIndex = -1;
+                tx_dat_estCaj.Text = "";
+            }
+        }
+        private void cmb_estad_ing_SelectionChangeCommitted(object sender, EventArgs e)                                 // COBRANZAS - Estados
         {
             if (cmb_estad.SelectedValue != null) tx_dat_estad.Text = cmb_estad.SelectedValue.ToString();
             else
@@ -414,12 +506,12 @@ namespace TransCarga
                 chk_excluye.Checked = false;
             }
         }
-        private void cmb_vtasloc_SelectionChangeCommitted(object sender, EventArgs e)
+        private void cmb_vtasloc_SelectionChangeCommitted(object sender, EventArgs e)                                   // COBRANZAS - Sede
         {
             if (cmb_vtasloc.SelectedValue != null) tx_dat_vtasloc.Text = cmb_vtasloc.SelectedValue.ToString();
             else tx_dat_vtasloc.Text = ""; // cmb_vtasloc.SelectedItem.ToString().PadRight(6).Substring(0, 6).Trim();
         }
-        private void cmb_estad_ing_KeyDown(object sender, KeyEventArgs e)
+        private void cmb_estad_ing_KeyDown(object sender, KeyEventArgs e)                                               // COBRANZAS - Estados delete
         {
             if (e.KeyCode == Keys.Delete)
             {
@@ -427,7 +519,7 @@ namespace TransCarga
                 tx_dat_estad.Text = "";
             }
         }
-        private void cmb_vtasloc_KeyDown(object sender, KeyEventArgs e)
+        private void cmb_vtasloc_KeyDown(object sender, KeyEventArgs e)                                                 // COBRANZAS - Sede delete
         {
             if (e.KeyCode == Keys.Delete)
             {
@@ -435,12 +527,12 @@ namespace TransCarga
                 tx_dat_vtasloc.Text = "";
             }
         }
-        private void cmb_sede_plan_SelectionChangeCommitted(object sender, EventArgs e)
+        private void cmb_sede_plan_SelectionChangeCommitted(object sender, EventArgs e)                                 // INGRESOS VARIOS - Sede
         {
             if (cmb_sede_plan.SelectedValue != null) tx_dat_sede_plan.Text = cmb_sede_plan.SelectedValue.ToString();
             else tx_dat_sede_plan.Text = "";
         }
-        private void cmb_sede_plan_KeyDown(object sender, KeyEventArgs e)
+        private void cmb_sede_plan_KeyDown(object sender, KeyEventArgs e)                                               // INGRESOS VARIOS - Sede delete
         {
             if (e.KeyCode == Keys.Delete)
             {
@@ -448,12 +540,12 @@ namespace TransCarga
                 tx_dat_sede_plan.Text = "";
             }
         }
-        private void cmb_estad_plan_SelectionChangeCommitted(object sender, EventArgs e)
+        private void cmb_estad_plan_SelectionChangeCommitted(object sender, EventArgs e)                                // INGRESOS VARIOS - Estados
         {
             if (cmb_estad_plan.SelectedValue != null) tx_dat_estad_plan.Text = cmb_estad_plan.SelectedValue.ToString();
             else tx_dat_estad_plan.Text = "";
         }
-        private void cmb_estad_plan_KeyDown(object sender, KeyEventArgs e)
+        private void cmb_estad_plan_KeyDown(object sender, KeyEventArgs e)                                              // INGRESOS VARIOS - Estados delete
         {
             if (e.KeyCode == Keys.Delete)
             {
@@ -461,12 +553,12 @@ namespace TransCarga
                 tx_dat_estad_plan.Text = "";
             }
         }
-        private void cmb_sede_guias_SelectionChangeCommitted(object sender, EventArgs e)
+        private void cmb_sede_guias_SelectionChangeCommitted(object sender, EventArgs e)                                // EGRESOS - Sede
         {
             if (cmb_sede_guias.SelectedValue != null) tx_sede_guias.Text = cmb_sede_guias.SelectedValue.ToString();
             else tx_sede_guias.Text = "";
         }
-        private void cmb_sede_guias_KeyDown(object sender, KeyEventArgs e)
+        private void cmb_sede_guias_KeyDown(object sender, KeyEventArgs e)                                              // EGRESOS - Sede delete
         {
             if (e.KeyCode == Keys.Delete)
             {
@@ -474,12 +566,12 @@ namespace TransCarga
                 tx_sede_guias.Text = "";
             }
         }
-        private void cmb_estad_guias_SelectionChangeCommitted(object sender, EventArgs e)
+        private void cmb_estad_guias_SelectionChangeCommitted(object sender, EventArgs e)                               // EGRESOS - Estados
         {
             if (cmb_estad_guias.SelectedValue != null) tx_estad_guias.Text = cmb_estad_guias.SelectedValue.ToString();
             else tx_estad_guias.Text = "";
         }
-        private void cmb_estad_guias_KeyDown(object sender, KeyEventArgs e)
+        private void cmb_estad_guias_KeyDown(object sender, KeyEventArgs e)                                             // EGRESOS - Estados delete
         {
             if (e.KeyCode == Keys.Delete)
             {
@@ -590,12 +682,22 @@ namespace TransCarga
         {
             Tx_modo.Text = "IMPRIMIR";
             tabControl1.Enabled = true;
+            // caja
+            cmb_sedeCaj.SelectedIndex = -1;
+            cmb_estCaj.SelectedIndex = -1;
+            chk_excCaj.Checked = false;
+            // cobranzas
             cmb_estad.SelectedIndex = -1;
             cmb_vtasloc.SelectedIndex = -1;
             chk_excluye.Checked = false;
-            //
+            // egresos
             cmb_sede_guias.SelectedIndex = -1;
             cmb_estad_guias.SelectedIndex = -1;
+            chk_excl_guias.Checked = false;
+            // ingresos varios
+            cmb_sede_plan.SelectedIndex = -1;
+            cmb_estad_plan.SelectedIndex = -1;
+            chk_exclu_plan.Checked = false;
         }
         private void Bt_anul_Click(object sender, EventArgs e)
         {
@@ -603,9 +705,9 @@ namespace TransCarga
         }
         private void bt_exc_Click(object sender, EventArgs e)
         {
-            // segun la pestanha activa debe exportar
-            string nombre = "";
             if (tabControl1.Enabled == false) return;
+            // CAJA
+            string nombre = "";
             if (tabControl1.SelectedTab == tabres && dgv_ccaja.Rows.Count > 0)
             {
                 nombre = "reporte_cajas_" + "<local>" +"_" + DateTime.Now.Date.ToString("yyyy-MM-dd") + ".xlsx";
@@ -621,6 +723,7 @@ namespace TransCarga
                     this.Close();
                 }
             }
+            // COBRANZAS
             if (tabControl1.SelectedTab == tabvtas && dgv_vtas.Rows.Count > 0)
             {
                 nombre = "Reportes_Cobranzas_" + DateTime.Now.Date.ToString("yyyy-MM-dd") + ".xlsx";
@@ -630,7 +733,39 @@ namespace TransCarga
                 {
                     var wb = new XLWorkbook();
                     DataTable dt = (DataTable)dgv_vtas.DataSource;
-                    wb.Worksheets.Add(dt, "PreGuias");
+                    wb.Worksheets.Add(dt, "Cobranzas");
+                    wb.SaveAs(v_ruta + nombre);
+                    MessageBox.Show("Archivo generado con exito!");
+                    this.Close();
+                }
+            }
+            // EGRESOS
+            if (tabControl1.SelectedTab == tabgrti && dgv_guias.Rows.Count > 0)
+            {
+                nombre = "Reportes_Egresos_" + DateTime.Now.Date.ToString("yyyy-MM-dd") + ".xlsx";
+                var aa = MessageBox.Show("Confirma que desea generar la hoja de calculo?",
+                    "Archivo: " + nombre, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (aa == DialogResult.Yes)
+                {
+                    var wb = new XLWorkbook();
+                    DataTable dt = (DataTable)dgv_guias.DataSource;
+                    wb.Worksheets.Add(dt, "Egresos");
+                    wb.SaveAs(v_ruta + nombre);
+                    MessageBox.Show("Archivo generado con exito!");
+                    this.Close();
+                }
+            }
+            // INGRESOS VARIOS
+            if (tabControl1.SelectedTab == tabplacar && dgv_plan.Rows.Count > 0)
+            {
+                nombre = "Reportes_IngVarios_" + DateTime.Now.Date.ToString("yyyy-MM-dd") + ".xlsx";
+                var aa = MessageBox.Show("Confirma que desea generar la hoja de calculo?",
+                    "Archivo: " + nombre, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (aa == DialogResult.Yes)
+                {
+                    var wb = new XLWorkbook();
+                    DataTable dt = (DataTable)dgv_plan.DataSource;
+                    wb.Worksheets.Add(dt, "IngVarios");
                     wb.SaveAs(v_ruta + nombre);
                     MessageBox.Show("Archivo generado con exito!");
                     this.Close();
@@ -639,7 +774,7 @@ namespace TransCarga
         }
         #endregion
 
-        #region crystal
+        #region crystal             // pendiente al 07/12/2020
         private void button2_Click(object sender, EventArgs e)      // resumen de contrato
         {
             setParaCrystal("resumen");
@@ -649,7 +784,6 @@ namespace TransCarga
             if (rb_listado.Checked == true) setParaCrystal("vtasxclte");
             else setParaCrystal("ventas");
         }
-
         private void setParaCrystal(string repo)                    // genera el set para el reporte de crystal
         {
             if (repo== "resumen")
@@ -789,18 +923,26 @@ namespace TransCarga
         #endregion
 
         #region leaves y enter
-        private void tabvtas_Enter(object sender, EventArgs e)
+        private void tabvtas_Enter(object sender, EventArgs e)           // COBRANZAS
         {
             cmb_vtasloc.Focus();
         }
-        private void tabres_Enter(object sender, EventArgs e)
+        private void tabres_Enter(object sender, EventArgs e)            // CAJA
         {
-            //cmb_tidoc.Focus();
+            cmb_sedeCaj.Focus();
+        }
+        private void tabgrti_Enter(object sender, EventArgs e)           // EGRESOS
+        {
+            cmb_sede_guias.Focus();
+        }
+        private void tabplacar_Enter(object sender, EventArgs e)         // INGRESOS VARIOS
+        {
+            cmb_sede_plan.Focus();
         }
         #endregion
 
         #region advancedatagridview
-        private void advancedDataGridView1_FilterStringChanged(object sender, EventArgs e)                  // filtro de las columnas
+        private void advancedDataGridView1_FilterStringChanged(object sender, EventArgs e)                  // filtro COBRANZAS
         {
             DataTable dtg = (DataTable)dgv_vtas.DataSource;
             dtg.DefaultView.RowFilter = dgv_vtas.FilterString;
@@ -825,7 +967,16 @@ namespace TransCarga
                 jalaoc("tx_idr");
             }*/
         }
-
+        private void dgv_guias_FilterStringChanged(object sender, EventArgs e)                              // filtro EGRESOS
+        {
+            DataTable dtg = (DataTable)dgv_guias.DataSource;
+            dtg.DefaultView.RowFilter = dgv_guias.FilterString;
+        }
+        private void dgv_plan_FilterStringChanged(object sender, EventArgs e)                               // filtro INGRESOS VARIOS
+        {
+            DataTable dtg = (DataTable)dgv_plan.DataSource;
+            dtg.DefaultView.RowFilter = dgv_plan.FilterString;
+        }
         private void advancedDataGridView1_CellValidating(object sender, DataGridViewCellValidatingEventArgs e) // no usamos
         {
             /*if (e.RowIndex > -1 && e.ColumnIndex > 0 
