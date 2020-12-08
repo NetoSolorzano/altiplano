@@ -48,7 +48,7 @@ form planicarga: (planilla de carga)
 - La EDICION de una planilla, NO recalcula el flete, pagado y saldo x pagar de las guías pre existentes en la planilla.
   Los saldos y flete de cada guía se calculan SOLO AL MOMENTO DE REGISTRAR UNA GUIA EN LA PLANILLA.
 form transbord: (proceso de transbordos, no usa tablas propias) 
-- Unico boton de NUEVO, transborda parcial o total guias de una planilla a otra existente .......... ME QUEDE ACA
+- Unico boton de NUEVO, transborda parcial o total guias de una planilla a otra existente .......... ME QUEDE ACA FALTA
 form facelect: (facturacion electrónica, se integra con sist propio del cliente)
 - desarrollo del form .............................................................................. ok
 -- falta: formato impresion (al 28/10/2020) ........................................................ FALTA
@@ -58,7 +58,7 @@ form vtipcam, ventana para realizar calculo de tipo de cambio ..................
 form guiati: temas de monedas y tipos de cambio .................................................... ok 05/11/2020
 form cobranzas: (el pago DEBE SER en la moneda del documento) 14/11/2020
 - desarrollo del form .............................................................................. ok 18/11/2020
-- formato de impresion notas de cobranza ........................................................... falta
+- formato de impresion notas de cobranza ........................................................... FALTA
 ***** SOLO PAGOS TOTALES DE DOCS.VENTA
 ***** GUIAS SI PERMITE PAGOS PARCIALES O TOTALES
 ***** LOS PAGOS SE HACEN EN ORDEN: 1 DOCS.VENTA 2 GUIAS, SI LA GR TIENE DOV.VTA. SE DEBE PAGAR DESDE EL DOC.VENTA
@@ -71,9 +71,9 @@ form repsoper: Arreglos en inicializacion de combos de guias, ampliacion de repo
 form repadmcaja:
 - desarrollo del form, paneles, combos, grillas, etc. .............................................. ok 20/11/2020
 - desarrollo de panel grillas y opciones de cobranzas .............................................. OK 21/11/2020
-- desarrollo de panel grilla y opciones de apertura/cierre de caja ................................. 
-- desarrollo de panel grilla y opciones de Egresos / Depositos ..................................... 
-- desarrollo de panel grilla y opciones de ingresos varios ......................................... 
+- desarrollo de panel grilla y opciones de apertura/cierre de caja ................................. ok 06/12/2020
+- desarrollo de panel grilla y opciones de Egresos / Depositos ..................................... ok 07/12/2020
+- desarrollo de panel grilla y opciones de ingresos varios ......................................... ok 07/12/2020
 form egresosdep: Egresos y depositos (salidas de dinero a cta de la empresa) 
 - desarrollo del form .............................................................................. ok 30/11/2020
 ** validaciones de caja abierta .................................................................... ok 06/12/2020
