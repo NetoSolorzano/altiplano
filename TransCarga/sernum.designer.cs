@@ -62,6 +62,11 @@
             this.label15 = new System.Windows.Forms.Label();
             this.label14 = new System.Windows.Forms.Label();
             this.label13 = new System.Windows.Forms.Label();
+            this.tx_x_pie = new TransCarga.NumericTextBox();
+            this.tx_x_detrac = new TransCarga.NumericTextBox();
+            this.tx_x_detall = new TransCarga.NumericTextBox();
+            this.tx_x_fecha = new TransCarga.NumericTextBox();
+            this.tx_y_inicial = new TransCarga.NumericTextBox();
             this.tx_dat_zdes = new System.Windows.Forms.TextBox();
             this.label12 = new System.Windows.Forms.Label();
             this.groupBox23 = new System.Windows.Forms.GroupBox();
@@ -118,11 +123,6 @@
             this.textBox3 = new System.Windows.Forms.TextBox();
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.button1 = new System.Windows.Forms.Button();
-            this.tx_x_pie = new TransCarga.NumericTextBox();
-            this.tx_x_detrac = new TransCarga.NumericTextBox();
-            this.tx_x_detall = new TransCarga.NumericTextBox();
-            this.tx_x_fecha = new TransCarga.NumericTextBox();
-            this.tx_y_inicial = new TransCarga.NumericTextBox();
             this.toolStrip1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabgrilla.SuspendLayout();
@@ -537,6 +537,51 @@
             this.label13.TabIndex = 5;
             this.label13.Text = "Pto.Inicial";
             // 
+            // tx_x_pie
+            // 
+            this.tx_x_pie.AllowSpace = false;
+            this.tx_x_pie.Location = new System.Drawing.Point(335, 46);
+            this.tx_x_pie.Name = "tx_x_pie";
+            this.tx_x_pie.Size = new System.Drawing.Size(57, 20);
+            this.tx_x_pie.TabIndex = 4;
+            this.tx_x_pie.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // tx_x_detrac
+            // 
+            this.tx_x_detrac.AllowSpace = false;
+            this.tx_x_detrac.Location = new System.Drawing.Point(278, 46);
+            this.tx_x_detrac.Name = "tx_x_detrac";
+            this.tx_x_detrac.Size = new System.Drawing.Size(57, 20);
+            this.tx_x_detrac.TabIndex = 3;
+            this.tx_x_detrac.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // tx_x_detall
+            // 
+            this.tx_x_detall.AllowSpace = false;
+            this.tx_x_detall.Location = new System.Drawing.Point(221, 46);
+            this.tx_x_detall.Name = "tx_x_detall";
+            this.tx_x_detall.Size = new System.Drawing.Size(57, 20);
+            this.tx_x_detall.TabIndex = 2;
+            this.tx_x_detall.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // tx_x_fecha
+            // 
+            this.tx_x_fecha.AllowSpace = false;
+            this.tx_x_fecha.Location = new System.Drawing.Point(164, 46);
+            this.tx_x_fecha.Name = "tx_x_fecha";
+            this.tx_x_fecha.Size = new System.Drawing.Size(57, 20);
+            this.tx_x_fecha.TabIndex = 1;
+            this.tx_x_fecha.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // tx_y_inicial
+            // 
+            this.tx_y_inicial.AllowSpace = false;
+            this.tx_y_inicial.Location = new System.Drawing.Point(107, 46);
+            this.tx_y_inicial.Name = "tx_y_inicial";
+            this.tx_y_inicial.Size = new System.Drawing.Size(57, 20);
+            this.tx_y_inicial.TabIndex = 0;
+            this.tx_y_inicial.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
             // tx_dat_zdes
             // 
             this.tx_dat_zdes.BackColor = System.Drawing.SystemColors.Window;
@@ -589,6 +634,7 @@
             this.cmb_zdes.Size = new System.Drawing.Size(116, 21);
             this.cmb_zdes.TabIndex = 10;
             this.cmb_zdes.SelectedIndexChanged += new System.EventHandler(this.cmb_zdes_SelectedIndexChanged);
+            this.cmb_zdes.KeyDown += new System.Windows.Forms.KeyEventHandler(this.cmb_zdes_KeyDown);
             // 
             // label11
             // 
@@ -1090,51 +1136,6 @@
             this.button1.TabIndex = 14;
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
-            // 
-            // tx_x_pie
-            // 
-            this.tx_x_pie.AllowSpace = false;
-            this.tx_x_pie.Location = new System.Drawing.Point(335, 46);
-            this.tx_x_pie.Name = "tx_x_pie";
-            this.tx_x_pie.Size = new System.Drawing.Size(57, 20);
-            this.tx_x_pie.TabIndex = 4;
-            this.tx_x_pie.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // tx_x_detrac
-            // 
-            this.tx_x_detrac.AllowSpace = false;
-            this.tx_x_detrac.Location = new System.Drawing.Point(278, 46);
-            this.tx_x_detrac.Name = "tx_x_detrac";
-            this.tx_x_detrac.Size = new System.Drawing.Size(57, 20);
-            this.tx_x_detrac.TabIndex = 3;
-            this.tx_x_detrac.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // tx_x_detall
-            // 
-            this.tx_x_detall.AllowSpace = false;
-            this.tx_x_detall.Location = new System.Drawing.Point(221, 46);
-            this.tx_x_detall.Name = "tx_x_detall";
-            this.tx_x_detall.Size = new System.Drawing.Size(57, 20);
-            this.tx_x_detall.TabIndex = 2;
-            this.tx_x_detall.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // tx_x_fecha
-            // 
-            this.tx_x_fecha.AllowSpace = false;
-            this.tx_x_fecha.Location = new System.Drawing.Point(164, 46);
-            this.tx_x_fecha.Name = "tx_x_fecha";
-            this.tx_x_fecha.Size = new System.Drawing.Size(57, 20);
-            this.tx_x_fecha.TabIndex = 1;
-            this.tx_x_fecha.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // tx_y_inicial
-            // 
-            this.tx_y_inicial.AllowSpace = false;
-            this.tx_y_inicial.Location = new System.Drawing.Point(107, 46);
-            this.tx_y_inicial.Name = "tx_y_inicial";
-            this.tx_y_inicial.Size = new System.Drawing.Size(57, 20);
-            this.tx_y_inicial.TabIndex = 0;
-            this.tx_y_inicial.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // sernum
             // 

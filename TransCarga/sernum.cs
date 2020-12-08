@@ -314,7 +314,7 @@ namespace TransCarga
             // DATOS DEL COMBOBOX1  Razón social
             comboBox1.Items.Clear();
             const string contpu = "select idcodice,descrizione from descrittive " +
-                "where idtabella='RAZ' order by idcodice";
+                "where idtabella='RAZ' and numero=1 order by idcodice";
             MySqlCommand micom = new MySqlCommand(contpu, conn);
             DataTable dttpu = new DataTable();
             using (MySqlDataAdapter datpu = new MySqlDataAdapter(micom))
@@ -327,7 +327,7 @@ namespace TransCarga
             // DATOS DEL COMBOBOX2  tipo documento
             comboBox2.Items.Clear();
             const string selcmb2 = "select idcodice,descrizione from descrittive " +
-                "where idtabella='TDV' order by idcodice";
+                "where idtabella='TDV' and numero=1 order by idcodice";
             micom = new MySqlCommand(selcmb2, conn);
             DataTable dtcmb2 = new DataTable();
             using (MySqlDataAdapter dacmb2 = new MySqlDataAdapter(micom))
@@ -340,7 +340,7 @@ namespace TransCarga
             // DATOS DEL COMBOBOX3   
             comboBox3.Items.Clear();
             const string selcmb3 = "select idcodice,descrizione from descrittive " +
-                "where idtabella='LOC' order by idcodice";
+                "where idtabella='LOC' and numero=1 order by idcodice";
             micom = new MySqlCommand(selcmb3, conn);
             DataTable dtcmb3 = new DataTable();
             using (MySqlDataAdapter dacmb3 = new MySqlDataAdapter(micom))
@@ -353,7 +353,7 @@ namespace TransCarga
             // datos combo zona
             cmb_zdes.Items.Clear();
             string conzona = "select idcodice,descrizione from descrittive " +
-                "where idtabella='ZON' order by idcodice";
+                "where idtabella='ZON' and numero=1 order by idcodice";
             micom = new MySqlCommand(conzona, conn);
             DataTable dtzona = new DataTable();
             using (MySqlDataAdapter dazona = new MySqlDataAdapter(micom))
@@ -975,6 +975,14 @@ namespace TransCarga
             if (cmb_zdes.SelectedIndex > -1)
             {
                 tx_dat_zdes.Text = cmb_zdes.SelectedValue.ToString();
+            }
+        }
+        private void cmb_zdes_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Delete)
+            {
+                tx_dat_zdes.Text = "";
+                cmb_zdes.SelectedIndex = -1;
             }
         }
         #endregion comboboxes
