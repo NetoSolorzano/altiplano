@@ -38,7 +38,7 @@ namespace TransCarga
         static libreria lib = new libreria();
         string verapp = System.Diagnostics.FileVersionInfo.GetVersionInfo(Application.ExecutablePath).FileVersion;
         string iplan = lib.iplan();
-        string ipwan = lib.ipwan();
+        string ipwan = TransCarga.Program.vg_ipwan;
         //
         DataTable dataUbig = (DataTable)CacheManager.GetItem("ubigeos");
         AutoCompleteStringCollection paises = new AutoCompleteStringCollection();       // autocompletado paises

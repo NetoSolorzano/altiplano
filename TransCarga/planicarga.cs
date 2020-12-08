@@ -1061,7 +1061,7 @@ namespace TransCarga
                     micon.Parameters.AddWithValue("@verApp", verapp);
                     micon.Parameters.AddWithValue("@asd", asd);
                     micon.Parameters.AddWithValue("@iplan", lib.iplan());
-                    micon.Parameters.AddWithValue("@ipwan", lib.ipwan());
+                    micon.Parameters.AddWithValue("@ipwan", TransCarga.Program.vg_ipwan);
                     micon.Parameters.AddWithValue("@nbnam", Environment.MachineName);
                     try
                     {
@@ -1118,7 +1118,7 @@ namespace TransCarga
                                     micon.Parameters.AddWithValue("@verApp", verapp);
                                     micon.Parameters.AddWithValue("@asd", asd);
                                     micon.Parameters.AddWithValue("@iplan", lib.iplan());
-                                    micon.Parameters.AddWithValue("@ipwan", lib.ipwan());
+                                    micon.Parameters.AddWithValue("@ipwan", TransCarga.Program.vg_ipwan);
                                     micon.Parameters.AddWithValue("@nbnam", Environment.MachineName);
                                     micon.Parameters.AddWithValue("@platr", tx_pla_placa.Text);
                                     micon.Parameters.AddWithValue("@placa", tx_pla_carret.Text);
@@ -1203,7 +1203,7 @@ namespace TransCarga
                         micon.Parameters.AddWithValue("@verApp", verapp);
                         micon.Parameters.AddWithValue("@asd", asd);
                         micon.Parameters.AddWithValue("@iplan", lib.iplan());
-                        micon.Parameters.AddWithValue("@ipwan", lib.ipwan());
+                        micon.Parameters.AddWithValue("@ipwan", TransCarga.Program.vg_ipwan);
                         micon.Parameters.AddWithValue("@nbnam", Environment.MachineName);
                         micon.ExecuteNonQuery();
                         //
@@ -1265,7 +1265,7 @@ namespace TransCarga
                                 micon.Parameters.AddWithValue("@verApp", verapp);
                                 micon.Parameters.AddWithValue("@asd", asd);
                                 micon.Parameters.AddWithValue("@iplan", lib.iplan());
-                                micon.Parameters.AddWithValue("@ipwan", lib.ipwan());
+                                micon.Parameters.AddWithValue("@ipwan", TransCarga.Program.vg_ipwan);
                                 micon.Parameters.AddWithValue("@nbnam", Environment.MachineName);
                                 micon.ExecuteNonQuery();
                             }
@@ -1339,7 +1339,7 @@ namespace TransCarga
                         micon.Parameters.AddWithValue("@estser", codAnul);
                         micon.Parameters.AddWithValue("@asd", asd);
                         micon.Parameters.AddWithValue("@dil4", lib.iplan());
-                        micon.Parameters.AddWithValue("@diw4", lib.ipwan());
+                        micon.Parameters.AddWithValue("@diw4", TransCarga.Program.vg_ipwan);
                         micon.Parameters.AddWithValue("@nbnp", Environment.MachineName);
                         micon.Parameters.AddWithValue("@veap", verapp);
                         micon.Parameters.AddWithValue("@eirA0", (vint_A0 == codAnul) ? "A0" : "");  // codigo anulacion interna en DB A0

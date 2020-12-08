@@ -39,7 +39,7 @@ namespace TransCarga
         DataTable dataUbig = (DataTable)CacheManager.GetItem("ubigeos");
         string verapp = System.Diagnostics.FileVersionInfo.GetVersionInfo(Application.ExecutablePath).FileVersion;
         string iplan = lib.iplan();
-        string ipwan = lib.ipwan();
+        string ipwan = TransCarga.Program.vg_ipwan;
         //
         AutoCompleteStringCollection paises = new AutoCompleteStringCollection();       // autocompletado paises
         AutoCompleteStringCollection departamentos = new AutoCompleteStringCollection();// autocompletado departamentos

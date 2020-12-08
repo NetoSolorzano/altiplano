@@ -116,7 +116,7 @@ namespace TransCarga
                 ult_mov.Parameters.AddWithValue("@tab", tabla);
                 ult_mov.Parameters.AddWithValue("@usu", usuar);
                 ult_mov.Parameters.AddWithValue("@uipl", iplan());
-                ult_mov.Parameters.AddWithValue("@uipw", ipwan());
+                ult_mov.Parameters.AddWithValue("@uipw", TransCarga.Program.vg_ipwan);
                 try
                 {
                     ult_mov.ExecuteNonQuery();

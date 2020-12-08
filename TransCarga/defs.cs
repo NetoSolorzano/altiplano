@@ -332,7 +332,7 @@ namespace TransCarga
                     lb_det4.Text = "Distrito";
                     lb_ubigeo.Text = "Ubigeo";
                     chk_marc1.Text = "Usa Pre Guías";
-                    chk_marc2.Text = "Marca2";
+                    chk_marc2.Text = "Usa Num.GR Automat.";
                     chk_marc3.Text = "Marca3";
                     lb_enla1.Text = "Zona destino";
                     break;
@@ -523,7 +523,7 @@ namespace TransCarga
                     mycomand.Parameters.AddWithValue("@veap", verapp);
                     mycomand.Parameters.AddWithValue("@asd", asd);
                     mycomand.Parameters.AddWithValue("@dipl", lib.iplan());
-                    mycomand.Parameters.AddWithValue("@dipw", lib.ipwan());
+                    mycomand.Parameters.AddWithValue("@dipw", TransCarga.Program.vg_ipwan);
                     mycomand.Parameters.AddWithValue("@nbna", Environment.MachineName);
                     try
                     {
@@ -601,7 +601,7 @@ namespace TransCarga
                     mycom.Parameters.AddWithValue("@veap", verapp);
                     mycom.Parameters.AddWithValue("@asd", asd);
                     mycom.Parameters.AddWithValue("@dipl", lib.iplan());
-                    mycom.Parameters.AddWithValue("@dipw", lib.ipwan());
+                    mycom.Parameters.AddWithValue("@dipw", TransCarga.Program.vg_ipwan);
                     mycom.Parameters.AddWithValue("@nbna", Environment.MachineName);
                     mycom.Parameters.AddWithValue("@idc", tx_idr.Text);
                     try

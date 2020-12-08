@@ -215,6 +215,7 @@
             this.tx_totcant = new TransCarga.NumericTextBox();
             this.tx_fletMN = new System.Windows.Forms.TextBox();
             this.tx_tipcam = new System.Windows.Forms.TextBox();
+            this.tx_n_auto = new System.Windows.Forms.TextBox();
             this.toolStrip1.SuspendLayout();
             this.groupBox11.SuspendLayout();
             this.groupBox7.SuspendLayout();
@@ -870,6 +871,7 @@
             // gbox_serie
             // 
             this.gbox_serie.BackColor = System.Drawing.Color.Transparent;
+            this.gbox_serie.Controls.Add(this.tx_n_auto);
             this.gbox_serie.Controls.Add(this.groupBox25);
             this.gbox_serie.Controls.Add(this.groupBox23);
             this.gbox_serie.Controls.Add(this.groupBox9);
@@ -944,7 +946,7 @@
             // 
             this.label17.AutoSize = true;
             this.label17.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label17.Location = new System.Drawing.Point(6, 14);
+            this.label17.Location = new System.Drawing.Point(6, 13);
             this.label17.Name = "label17";
             this.label17.Size = new System.Drawing.Size(50, 13);
             this.label17.TabIndex = 329;
@@ -999,7 +1001,7 @@
             // 
             this.label14.AutoSize = true;
             this.label14.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label14.Location = new System.Drawing.Point(5, 35);
+            this.label14.Location = new System.Drawing.Point(5, 36);
             this.label14.Name = "label14";
             this.label14.Size = new System.Drawing.Size(31, 13);
             this.label14.TabIndex = 289;
@@ -2134,6 +2136,15 @@
             this.tx_tipcam.TabIndex = 351;
             this.tx_tipcam.Visible = false;
             // 
+            // tx_n_auto
+            // 
+            this.tx_n_auto.BackColor = System.Drawing.SystemColors.Window;
+            this.tx_n_auto.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_n_auto.Location = new System.Drawing.Point(100, 34);
+            this.tx_n_auto.Name = "tx_n_auto";
+            this.tx_n_auto.Size = new System.Drawing.Size(27, 18);
+            this.tx_n_auto.TabIndex = 353;
+            // 
             // guiati
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -2458,5 +2469,6 @@
         private System.Windows.Forms.TextBox tx_clteDV;
         private System.Windows.Forms.TextBox tx_fletMN;
         private System.Windows.Forms.TextBox tx_tipcam;
+        private System.Windows.Forms.TextBox tx_n_auto;
     }
 }

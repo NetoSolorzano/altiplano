@@ -86,3 +86,6 @@ form ayccaja:
 form cobranzas:
 - validaciones de caja abierta ..................................................................... ok 05/12/2020
 form facelect: cuando se cobra en automatico, debe tener el id de caja ............................. ok 05/12/2020 
+**** todos los form donde se graba cambio de ipwan a variable publica .............................. ok 08/12/2020
+form guiati: (mejoras en base a pruebas con Carrión)
+- numeracion automatica / manual de las GR ......................................................... ok 08/12/2020

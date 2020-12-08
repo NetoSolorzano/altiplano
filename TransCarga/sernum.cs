@@ -525,7 +525,7 @@ namespace TransCarga
                         mycomand.Parameters.AddWithValue("@asd", asd);
                         mycomand.Parameters.AddWithValue("@vapp", verapp);
                         mycomand.Parameters.AddWithValue("@dil4", lib.iplan());
-                        mycomand.Parameters.AddWithValue("@diw4", lib.ipwan());
+                        mycomand.Parameters.AddWithValue("@diw4", TransCarga.Program.vg_ipwan);
                         mycomand.Parameters.AddWithValue("@nbn", Environment.MachineName);
                         mycomand.Parameters.AddWithValue("@imp_ini", tx_y_inicial.Text);
                         mycomand.Parameters.AddWithValue("@imp_fec", tx_x_fecha.Text);
@@ -626,7 +626,7 @@ namespace TransCarga
                         mycom.Parameters.AddWithValue("@asd", asd);
                         mycom.Parameters.AddWithValue("@vapp", verapp);
                         mycom.Parameters.AddWithValue("@dil4", lib.iplan());
-                        mycom.Parameters.AddWithValue("@diw4", lib.ipwan());
+                        mycom.Parameters.AddWithValue("@diw4", TransCarga.Program.vg_ipwan);
                         mycom.Parameters.AddWithValue("@imp_ini", tx_y_inicial.Text);
                         mycom.Parameters.AddWithValue("@imp_fec", tx_x_fecha.Text);
                         mycom.Parameters.AddWithValue("@imp_det", tx_x_detall.Text);

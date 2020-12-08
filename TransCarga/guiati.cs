@@ -338,7 +338,7 @@ namespace TransCarga
                         "ifnull(b.chocamcar,'') as chocamcar,ifnull(b.fecplacar,'') as fecplacar,ifnull(b.fecdocvta,'') as fecdocvta,ifnull(b.tipdocvta,'') as tipdocvta," +
                         "ifnull(b.serdocvta,'') as serdocvta,ifnull(b.numdocvta,'') as numdocvta,ifnull(b.codmonvta,'') as codmonvta," +
                         "ifnull(b.totdocvta,0) as totdocvta,ifnull(b.codmonpag,'') as codmonpag,ifnull(b.totpagado,0) as totpagado,ifnull(b.saldofina,0) as saldofina," +
-                        "ifnull(b.feculpago,'') as feculpago,ifnull(b.estadoser,'') as estadoser,ifnull(c.razonsocial,'') as razonsocial " +
+                        "ifnull(b.feculpago,'') as feculpago,ifnull(b.estadoser,'') as estadoser,ifnull(c.razonsocial,'') as razonsocial,a.grinumaut " +
                         "from cabguiai a left join controlg b on b.serguitra=a.sergui and b.numguitra=a.numgui " + 
                         "left join anag_for c on c.ruc=a.proplagri and c.tipdoc=@tdep " + parte;
                     MySqlCommand micon = new MySqlCommand(consulta, conn);
@@ -387,6 +387,7 @@ namespace TransCarga
                             tx_pregr_num.Text = dr.GetString("numpregui");
                             claveSeg = dr.GetString("seguroE");
                             chk_flete.Checked = (dr.GetString("fleteimp") == "S") ? true : false;
+                            tx_n_auto.Text = dr.GetString("grinumaut");     // numeracion de GR autom o manual
                             //
                             tx_pla_fech.Text = dr.GetString("fecplacar");   //.Substring(0, 10);
                             tx_pla_plani.Text = dr.GetString("serplagri") + dr.GetString("numplagri");
@@ -568,7 +569,7 @@ namespace TransCarga
             }
             //  datos para los combos de locales origen y destino
             cmb_origen.Items.Clear();
-            MySqlCommand ccl = new MySqlCommand("select idcodice,descrizionerid,ubidir,marca1 from desc_loc where numero=@bloq",conn);
+            MySqlCommand ccl = new MySqlCommand("select idcodice,descrizionerid,ubidir,marca1,marca2 from desc_loc where numero=@bloq",conn);
             ccl.Parameters.AddWithValue("@bloq", 1);
             MySqlDataAdapter dacu = new MySqlDataAdapter(ccl);
             dtu.Clear();
@@ -891,6 +892,8 @@ namespace TransCarga
             tx_disDrio.ReadOnly = true;
             gbox_planilla.Enabled = false;
             gbox_docvta.Enabled = false;
+            //
+            cmb_origen.Enabled = false;
         }
         private void limpiar()
         {
@@ -922,6 +925,12 @@ namespace TransCarga
             if (tx_serie.Text.Trim() == "")
             {
                 tx_serie.Focus();
+                return;
+            }
+            // aca va la validacion de la numeracion
+            if (tx_n_auto.Text == "M" && tx_numero.Text.Trim() == "")
+            {
+                tx_numero.Focus();
                 return;
             }
             if (tx_dat_locori.Text.Trim() == "")
@@ -1112,7 +1121,7 @@ namespace TransCarga
                     // si tiene cobranza y no esta impreso => NO modifica y NO anula
                     if (tx_idr.Text.Trim() != "")
                     {
-                        var aa = MessageBox.Show("Confirma que desea modificar la Pre-guía?", "Confirme por favor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                        var aa = MessageBox.Show("Confirma que desea modificar la Guía?", "Confirme por favor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                         if (aa == DialogResult.Yes)
                         {
                             edita();    // modificacion total
@@ -1131,7 +1140,7 @@ namespace TransCarga
                     }
                     else
                     {
-                        MessageBox.Show("La Pre-guía ya debe existir para editar", "Debe ser edición", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+                        MessageBox.Show("La Guía ya debe existir para editar", "Debe ser edición", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
                         return;
                     }
                 }
@@ -1257,23 +1266,30 @@ namespace TransCarga
                 // asunto de la serie para la zona
                 // la zona se jala del desc_loc del destino
                 // 
-                // EL NUMERO DE GUIA SIEMPRE DEBE SER AUTOMÁTICO
-                //
-                string todo = "corre_serie";
-                using (MySqlCommand micon = new MySqlCommand(todo, conn))
+                // EL NUMERO DE GUIA SIEMPRE DEBE SER AUTOMÁTICO ... ya no desde el 08/12/2020
+                if (tx_n_auto.Text == "A")
                 {
-                    micon.CommandType = CommandType.StoredProcedure;
-                    micon.Parameters.AddWithValue("td", v_cid);
-                    micon.Parameters.AddWithValue("ser", tx_serie.Text);
-                    using (MySqlDataReader dr0 = micon.ExecuteReader())
+                    string todo = "corre_serie";
+                    using (MySqlCommand micon = new MySqlCommand(todo, conn))
                     {
-                        if (dr0.Read())
+                        micon.CommandType = CommandType.StoredProcedure;
+                        micon.Parameters.AddWithValue("td", v_cid);
+                        micon.Parameters.AddWithValue("ser", tx_serie.Text);
+                        using (MySqlDataReader dr0 = micon.ExecuteReader())
                         {
-                            if (dr0[0] != null && dr0.GetString(0) != "")
+                            if (dr0.Read())
                             {
-                                tx_numero.Text = lib.Right("00000000" + dr0.GetString(0), 8);
+                                if (dr0[0] != null && dr0.GetString(0) != "")
+                                {
+                                    tx_numero.Text = lib.Right("00000000" + dr0.GetString(0), 8);
+                                }
                             }
                         }
+                    }
+                    if (tx_numero.Text == "00000000")
+                    {
+                        MessageBox.Show("Falta configurar numeración", "Error en configuración", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return retorna;
                     }
                 }
                 if (tx_tipcam.Text.Trim() == "") tx_tipcam.Text = "0";
@@ -1300,14 +1316,14 @@ namespace TransCarga
                     "locdestin,dirdestin,ubidestin,docsremit,obspregri,clifingri,cantotgri,pestotgri," +
                     "tipmongri,tipcamgri,subtotgri,igvgri,totgri,totpag,salgri,estadoser,cantfilas," +
                     "frase1,frase2,fleteimp,tipintrem,tipintdes,tippagpre,seguroE,m1cliente,m2cliente," +
-                    "subtotMN,igvMN,totgrMN,codMN," +
+                    "subtotMN,igvMN,totgrMN,codMN,grinumaut," +
                     "verApp,userc,fechc,diriplan4,diripwan4,netbname) " +
                     "values (@fechop,@sergr,@numgr,@npregr,@tdcdes,@ndcdes,@nomdes,@dircde,@ubicde," +
                     "@tdcrem,@ndcrem,@nomrem,@dircre,@ubicre,@locpgr,@dirpgr,@ubopgr," +
                     "@ldcpgr,@didegr,@ubdegr,@dooprg,@obsprg,@conprg,@totcpr,@totppr," +
                     "@monppr,@tcprgr,@subpgr,@igvpgr,@totpgr,@pagpgr,@totpgr,@estpgr,@canfil," +
                     "@frase1,@frase2,@fleimp,@ticlre,@ticlde,@tipacc,@clavse,@m1clte,@m2clte," +
-                    "@stMN,@igMN,@tgMN,@codmn," +
+                    "@stMN,@igMN,@tgMN,@codmn,@grinau," +
                     "@verApp,@asd,now(),@iplan,@ipwan,@nbnam)";
                 using (MySqlCommand micon = new MySqlCommand(inserta, conn))
                 {
@@ -1357,10 +1373,11 @@ namespace TransCarga
                     micon.Parameters.AddWithValue("@igMN", igvMN.ToString());
                     micon.Parameters.AddWithValue("@tgMN", tx_fletMN.Text);
                     micon.Parameters.AddWithValue("@codmn", MonDeft);           // codigo moneda local es la moneda por defecto 08/11/2020
+                    micon.Parameters.AddWithValue("@grinau", tx_n_auto.Text);
                     micon.Parameters.AddWithValue("@verApp", verapp);
                     micon.Parameters.AddWithValue("@asd", asd);
                     micon.Parameters.AddWithValue("@iplan", lib.iplan());
-                    micon.Parameters.AddWithValue("@ipwan", lib.ipwan());
+                    micon.Parameters.AddWithValue("@ipwan", TransCarga.Program.vg_ipwan);
                     micon.Parameters.AddWithValue("@nbnam", Environment.MachineName);
                     micon.ExecuteNonQuery();
                 }
@@ -1494,7 +1511,7 @@ namespace TransCarga
                         micon.Parameters.AddWithValue("@verApp", verapp);
                         micon.Parameters.AddWithValue("@asd", asd);
                         micon.Parameters.AddWithValue("@iplan", lib.iplan());
-                        micon.Parameters.AddWithValue("@ipwan", lib.ipwan());
+                        micon.Parameters.AddWithValue("@ipwan", TransCarga.Program.vg_ipwan);
                         micon.Parameters.AddWithValue("@nbnam", Environment.MachineName);
                         micon.ExecuteNonQuery();
                         //
@@ -1532,7 +1549,7 @@ namespace TransCarga
                                 micon.Parameters.AddWithValue("@verApp", verapp);
                                 micon.Parameters.AddWithValue("@asd", asd);
                                 micon.Parameters.AddWithValue("@iplan", lib.iplan());
-                                micon.Parameters.AddWithValue("@ipwan", lib.ipwan());
+                                micon.Parameters.AddWithValue("@ipwan", TransCarga.Program.vg_ipwan);
                                 micon.Parameters.AddWithValue("@nbnam", Environment.MachineName);
                                 micon.ExecuteNonQuery();
                             }
@@ -1585,7 +1602,7 @@ namespace TransCarga
                         micon.Parameters.AddWithValue("@estser", codAnul);
                         micon.Parameters.AddWithValue("@asd", asd);
                         micon.Parameters.AddWithValue("@dil4", lib.iplan());
-                        micon.Parameters.AddWithValue("@diw4", lib.ipwan());
+                        micon.Parameters.AddWithValue("@diw4", TransCarga.Program.vg_ipwan);
                         micon.Parameters.AddWithValue("@nbnp", Environment.MachineName);
                         micon.Parameters.AddWithValue("@veap", verapp);
                         micon.Parameters.AddWithValue("@eiar", (vint_A0 == codAnul) ? "A0" : "");  // codigo anulacion interna en DB A0
@@ -1893,6 +1910,11 @@ namespace TransCarga
         }
         private void tx_numero_Leave(object sender, EventArgs e)
         {
+            if (Tx_modo.Text == "NUEVO" && tx_numero.Text.Trim() != "")
+            {
+                tx_numero.Text = lib.Right("00000000" + tx_numero.Text, 8);
+                cmb_destino.Focus();
+            }
             if (Tx_modo.Text != "NUEVO" && tx_numero.Text.Trim() != "")
             {
                 // en el caso de las pre guias el numero es el mismo que el ID del registro
@@ -2092,11 +2114,11 @@ namespace TransCarga
         {
             Tx_modo.Text = "NUEVO";
             button1.Image = Image.FromFile(img_grab);
-            // local usa o no pre-guias
+            // local usa o no: pre-guias, numeracion automatica de GR
             DataRow[] fila = dtu.Select("idcodice='" + v_clu + "'");
             if(fila.Length > 0)
             {
-                if (fila[0][3].ToString() == "1")
+                if (fila[0][3].ToString() == "1")   // usa pre guias y consecuentemente la num de las guias automaticas
                 {
                     sololee();
                     gbox_serie.Enabled = true;
@@ -2107,14 +2129,26 @@ namespace TransCarga
                     initIngreso();  // limpiamos/preparamos todo para el ingreso
                     tx_pregr_num.Focus();
                 }
-                if (fila[0][3].ToString() == "0")
+                if (fila[0][3].ToString() == "0")   // no usa pre guias
                 {
                     escribe();
                     tx_serie.Text = "";
-                    initIngreso();  // limpiamos/preparamos todo para el ingreso
+                    initIngreso();
                     gbox_flete.Enabled = true;
-                    tx_numero.Text = "";
-                    cmb_destino.Focus();
+                    if (fila[0][4].ToString() == "1")   // usa numeracion de guias automáticas
+                    {
+                        tx_numero.Text = "";
+                        tx_n_auto.Text = "A";   // numeracion automatica
+                        cmb_destino.Focus();
+                    }
+                    else
+                    {                                   // usamos numeracion de guias manual
+                        tx_n_auto.Text = "M";   // numeracion manual
+                        tx_numero.Enabled = true;
+                        tx_numero.ReadOnly = false;
+                        tx_numero.Text = "";
+                        tx_numero.Focus();
+                    }
                 }
             }
             // Guía va con flete impreso?

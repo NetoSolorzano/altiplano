@@ -96,6 +96,15 @@ namespace TransCarga
                                 dr.Close();
                                 // cambiamos la contraseña si fue hecha
                                 cambiacont();
+                                // jala la ip wan del cliente
+                                try
+                                {
+                                    TransCarga.Program.vg_ipwan = lib.ipwan();
+                                }
+                                catch
+                                {
+                                    TransCarga.Program.vg_ipwan = "";
+                                }
                                 // nos vamos al form principal
                                 Program.vg_user = this.Tx_user.Text;
                                 //main Main = new main();

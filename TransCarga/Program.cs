@@ -29,6 +29,7 @@ namespace TransCarga
         public static string ruc = "";          // ruc del cliente
         public static string tituloF = "SOLORSOFT - TransCarga" + Environment.NewLine +
             "Solución para empresas de Transporte de Carga";      // titulo del sistema
+        public static string vg_ipwan = "";     // ip wan del cliente
         public static bool vg_conSol = false;   // usa conector solorsoft para ruc y dni
 
         [STAThread]

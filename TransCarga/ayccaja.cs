@@ -482,7 +482,7 @@ namespace TransCarga
                         micon.Parameters.AddWithValue("@verApp", verapp);
                         micon.Parameters.AddWithValue("@asd", asd);
                         micon.Parameters.AddWithValue("@iplan", lib.iplan());
-                        micon.Parameters.AddWithValue("@ipwan", lib.ipwan());
+                        micon.Parameters.AddWithValue("@ipwan", TransCarga.Program.vg_ipwan);
                         micon.Parameters.AddWithValue("@nbnam", Environment.MachineName);
                         micon.ExecuteNonQuery();
                         retorna = true;
@@ -502,7 +502,7 @@ namespace TransCarga
                         micon.Parameters.AddWithValue("@asd", asd);
                         micon.Parameters.AddWithValue("@verApp", verapp);
                         micon.Parameters.AddWithValue("@iplan", lib.iplan());
-                        micon.Parameters.AddWithValue("@ipwan", lib.ipwan());
+                        micon.Parameters.AddWithValue("@ipwan", TransCarga.Program.vg_ipwan);
                         micon.Parameters.AddWithValue("@nbnam", Environment.MachineName);
                         micon.ExecuteNonQuery();
                         retorna = true;
