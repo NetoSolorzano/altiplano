@@ -92,6 +92,7 @@
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
             this.gbox_serie = new System.Windows.Forms.GroupBox();
+            this.tx_n_auto = new System.Windows.Forms.TextBox();
             this.groupBox25 = new System.Windows.Forms.GroupBox();
             this.groupBox26 = new System.Windows.Forms.GroupBox();
             this.groupBox23 = new System.Windows.Forms.GroupBox();
@@ -215,7 +216,10 @@
             this.tx_totcant = new TransCarga.NumericTextBox();
             this.tx_fletMN = new System.Windows.Forms.TextBox();
             this.tx_tipcam = new System.Windows.Forms.TextBox();
-            this.tx_n_auto = new System.Windows.Forms.TextBox();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.rb_ent_ofic = new System.Windows.Forms.RadioButton();
+            this.rb_ent_clte = new System.Windows.Forms.RadioButton();
+            this.label33 = new System.Windows.Forms.Label();
             this.toolStrip1.SuspendLayout();
             this.groupBox11.SuspendLayout();
             this.groupBox7.SuspendLayout();
@@ -244,6 +248,7 @@
             this.gbox_docvta.SuspendLayout();
             this.groupBox41.SuspendLayout();
             this.groupBox42.SuspendLayout();
+            this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // toolStrip1
@@ -586,9 +591,9 @@
             this.label5.ForeColor = System.Drawing.SystemColors.ControlText;
             this.label5.Location = new System.Drawing.Point(12, 135);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(52, 13);
+            this.label5.Size = new System.Drawing.Size(71, 13);
             this.label5.TabIndex = 261;
-            this.label5.Text = "Dirección";
+            this.label5.Text = "Direc. Partida";
             // 
             // tx_dirRem
             // 
@@ -888,6 +893,16 @@
             this.gbox_serie.TabIndex = 289;
             this.gbox_serie.TabStop = false;
             // 
+            // tx_n_auto
+            // 
+            this.tx_n_auto.BackColor = System.Drawing.SystemColors.Window;
+            this.tx_n_auto.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_n_auto.Location = new System.Drawing.Point(100, 34);
+            this.tx_n_auto.Name = "tx_n_auto";
+            this.tx_n_auto.Size = new System.Drawing.Size(27, 18);
+            this.tx_n_auto.TabIndex = 353;
+            this.tx_n_auto.Visible = false;
+            // 
             // groupBox25
             // 
             this.groupBox25.BackColor = System.Drawing.Color.White;
@@ -1154,9 +1169,9 @@
             this.label1.ForeColor = System.Drawing.SystemColors.ControlText;
             this.label1.Location = new System.Drawing.Point(12, 191);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(52, 13);
+            this.label1.Size = new System.Drawing.Size(77, 13);
             this.label1.TabIndex = 305;
-            this.label1.Text = "Dirección";
+            this.label1.Text = "Direc.LLegada";
             // 
             // tx_dirDrio
             // 
@@ -1498,9 +1513,9 @@
             // 
             this.tx_dat_locdes.BackColor = System.Drawing.SystemColors.Window;
             this.tx_dat_locdes.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_dat_locdes.Location = new System.Drawing.Point(279, 81);
+            this.tx_dat_locdes.Location = new System.Drawing.Point(242, 81);
             this.tx_dat_locdes.Name = "tx_dat_locdes";
-            this.tx_dat_locdes.Size = new System.Drawing.Size(81, 18);
+            this.tx_dat_locdes.Size = new System.Drawing.Size(51, 18);
             this.tx_dat_locdes.TabIndex = 317;
             this.tx_dat_locdes.Visible = false;
             // 
@@ -2136,14 +2151,52 @@
             this.tx_tipcam.TabIndex = 351;
             this.tx_tipcam.Visible = false;
             // 
-            // tx_n_auto
+            // panel1
             // 
-            this.tx_n_auto.BackColor = System.Drawing.SystemColors.Window;
-            this.tx_n_auto.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_n_auto.Location = new System.Drawing.Point(100, 34);
-            this.tx_n_auto.Name = "tx_n_auto";
-            this.tx_n_auto.Size = new System.Drawing.Size(27, 18);
-            this.tx_n_auto.TabIndex = 353;
+            this.panel1.Controls.Add(this.label33);
+            this.panel1.Controls.Add(this.rb_ent_clte);
+            this.panel1.Controls.Add(this.rb_ent_ofic);
+            this.panel1.Location = new System.Drawing.Point(314, 84);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(282, 23);
+            this.panel1.TabIndex = 352;
+            // 
+            // rb_ent_ofic
+            // 
+            this.rb_ent_ofic.AutoSize = true;
+            this.rb_ent_ofic.ForeColor = System.Drawing.Color.Black;
+            this.rb_ent_ofic.Location = new System.Drawing.Point(105, 3);
+            this.rb_ent_ofic.Name = "rb_ent_ofic";
+            this.rb_ent_ofic.Size = new System.Drawing.Size(67, 17);
+            this.rb_ent_ofic.TabIndex = 0;
+            this.rb_ent_ofic.TabStop = true;
+            this.rb_ent_ofic.Text = "OFICINA";
+            this.rb_ent_ofic.UseVisualStyleBackColor = true;
+            this.rb_ent_ofic.Click += new System.EventHandler(this.rb_ent_ofic_Click);
+            // 
+            // rb_ent_clte
+            // 
+            this.rb_ent_clte.AutoSize = true;
+            this.rb_ent_clte.ForeColor = System.Drawing.Color.Black;
+            this.rb_ent_clte.Location = new System.Drawing.Point(182, 3);
+            this.rb_ent_clte.Name = "rb_ent_clte";
+            this.rb_ent_clte.Size = new System.Drawing.Size(95, 17);
+            this.rb_ent_clte.TabIndex = 1;
+            this.rb_ent_clte.TabStop = true;
+            this.rb_ent_clte.Text = "DIR. CLIENTE";
+            this.rb_ent_clte.UseVisualStyleBackColor = true;
+            this.rb_ent_clte.Click += new System.EventHandler(this.rb_ent_clte_Click);
+            // 
+            // label33
+            // 
+            this.label33.AutoSize = true;
+            this.label33.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label33.ForeColor = System.Drawing.Color.Black;
+            this.label33.Location = new System.Drawing.Point(3, 3);
+            this.label33.Name = "label33";
+            this.label33.Size = new System.Drawing.Size(95, 15);
+            this.label33.TabIndex = 2;
+            this.label33.Text = "Despacho en:";
             // 
             // guiati
             // 
@@ -2152,6 +2205,7 @@
             this.AutoSize = true;
             this.BackColor = System.Drawing.Color.LightSteelBlue;
             this.ClientSize = new System.Drawing.Size(770, 614);
+            this.Controls.Add(this.panel1);
             this.Controls.Add(this.tx_tipcam);
             this.Controls.Add(this.tx_fletMN);
             this.Controls.Add(this.groupBox17);
@@ -2277,6 +2331,8 @@
             this.gbox_docvta.PerformLayout();
             this.groupBox41.ResumeLayout(false);
             this.groupBox42.ResumeLayout(false);
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -2470,5 +2526,9 @@
         private System.Windows.Forms.TextBox tx_fletMN;
         private System.Windows.Forms.TextBox tx_tipcam;
         private System.Windows.Forms.TextBox tx_n_auto;
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Label label33;
+        private System.Windows.Forms.RadioButton rb_ent_clte;
+        private System.Windows.Forms.RadioButton rb_ent_ofic;
     }
 }

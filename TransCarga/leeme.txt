@@ -46,7 +46,7 @@ form guiati: (guias transportista individuales)
 form planicarga: (planilla de carga)
 - Desarrollo del form .............................................................................. ok
 - La EDICION de una planilla, NO recalcula el flete, pagado y saldo x pagar de las guías pre existentes en la planilla.
-  Los saldos y flete de cada guía se calculan SOLO AL MOMENTO DE REGISTRAR UNA GUIA EN LA PLANILLA.
+  Los saldos y flete de cada guía se calculan SOLO AL MOMENTO DE REGISTRAR UNA GUIA EN LA PLANILLA.. ok 09/12/2020
 form transbord: (proceso de transbordos, no usa tablas propias) 
 - Unico boton de NUEVO, transborda parcial o total guias de una planilla a otra existente .......... ME QUEDE ACA FALTA
 form facelect: (facturacion electrónica, se integra con sist propio del cliente)
@@ -89,3 +89,5 @@ form facelect: cuando se cobra en automatico, debe tener el id de caja .........
 **** todos los form donde se graba cambio de ipwan a variable publica .............................. ok 08/12/2020
 form guiati: (mejoras en base a pruebas con Carrión)
 - numeracion automatica / manual de las GR ......................................................... ok 08/12/2020
+- agregar botones para despacho en oficina o dir.cliente ........................................... 
+formato de impresion A5 de guias ...................................................................

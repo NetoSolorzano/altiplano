@@ -1042,6 +1042,7 @@
             this.dgv_guias.Size = new System.Drawing.Size(1015, 322);
             this.dgv_guias.TabIndex = 385;
             this.dgv_guias.TimeFilter = false;
+            this.dgv_guias.FilterStringChanged += new System.EventHandler(this.advancedDataGridView1_FilterStringChanged);
             // 
             // label1
             // 

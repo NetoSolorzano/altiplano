@@ -1246,9 +1246,11 @@ namespace TransCarga
                             if (dataGridView1.Rows[i].Cells[11].Value == null)   // fila nueva, se inserta  || .ToString() != "X"
                             {
                                 string inserd2 = "insert into detplacar (idc,serplacar,numplacar,fila,numpreg,serguia,numguia,totcant,totpeso,totflet,codmone,estadoser," +
-                                "verApp,userc,fechc,diriplan4,diripwan4,netbname) " +
+                                "verApp,userc,fechc,diriplan4,diripwan4,netbname," +
+                                "platracto,placarret,autorizac,confvehic,brevchofe,brevayuda,rucpropiet,fechope,pagado,salxcob) " +
                                 "values (@idr,@serpl,@numpl,@fila,@numpr,@sergu,@numgu,@totca,@totpe,@totfl,@codmo,@estad," +
-                                "@verApp,@asd,now(),@iplan,@ipwan,@nbnam)";
+                                "@verApp,@asd,now(),@iplan,@ipwan,@nbnam," +
+                                "@platr,@placa,@autor,@confv,@brevc,@breva,@rucpr,@fecho,@paga,@xcob)";
                                 micon = new MySqlCommand(inserd2, conn);
                                 micon.Parameters.AddWithValue("@idr", tx_idr.Text);
                                 micon.Parameters.AddWithValue("@serpl", tx_serie.Text);
@@ -1267,40 +1269,31 @@ namespace TransCarga
                                 micon.Parameters.AddWithValue("@iplan", lib.iplan());
                                 micon.Parameters.AddWithValue("@ipwan", TransCarga.Program.vg_ipwan);
                                 micon.Parameters.AddWithValue("@nbnam", Environment.MachineName);
+                                micon.Parameters.AddWithValue("@platr", tx_pla_placa.Text);
+                                micon.Parameters.AddWithValue("@placa", tx_pla_carret.Text);
+                                micon.Parameters.AddWithValue("@autor", tx_pla_autor.Text);
+                                micon.Parameters.AddWithValue("@confv", tx_pla_confv.Text);
+                                micon.Parameters.AddWithValue("@brevc", tx_pla_brevet.Text);
+                                micon.Parameters.AddWithValue("", tx_pla_nomcho.Text);           // nombre del chofer
+                                micon.Parameters.AddWithValue("@breva", tx_pla_ayud.Text);
+                                micon.Parameters.AddWithValue("", tx_pla_nomayu.Text);           // nombre del ayudante
+                                micon.Parameters.AddWithValue("@rucpr", (tx_pla_ruc.Text.Trim() == "") ? tx_car3ro_ruc.Text : tx_pla_ruc.Text);
+                                micon.Parameters.AddWithValue("@fecho", tx_fechope.Text.Substring(6, 4) + "-" + tx_fechope.Text.Substring(3, 2) + "-" + tx_fechope.Text.Substring(0, 2));
+                                micon.Parameters.AddWithValue("@paga", dataGridView1.Rows[i].Cells[8].Value.ToString());    // 
+                                micon.Parameters.AddWithValue("@xcob", dataGridView1.Rows[i].Cells[9].Value.ToString());    // 
                                 micon.ExecuteNonQuery();
                             }
                         }
-                        /*
-                        for (int i = 0; i < dataGridView1.Rows.Count - 1; i++)
+                        micon.Dispose();
+                        string conupd = "numdetpla";                                    // numeramos las filas de la planilla
+                        using (MySqlCommand comup = new MySqlCommand(conupd, conn))     // secuencialmente del 1 al infinito
                         {
-                            if (dataGridView1.Rows[i].Cells[13].Value == null)
-                            {
-                                // actualiza contador fila en detplacar
-                                fila += 1;
-                                string consulta = "update detplacar set fila=@fi where serguia=@ser and numguia=@num";
-                                using (MySqlCommand comup = new MySqlCommand(consulta , conn))
-                                {
-                                    comup.Parameters.AddWithValue("@fi", fila);
-                                    comup.Parameters.AddWithValue("@ser", dataGridView1.Rows[i].Cells[5].Value.ToString());
-                                    comup.Parameters.AddWithValue("@num", dataGridView1.Rows[i].Cells[6].Value.ToString());
-                                    comup.ExecuteNonQuery();
-                                }
-                            }
-                        }
-                        */
-                        // actualiza contador fila en detplacar
-                        fila += 1;
-                        string conupd = "UPDATE detplacar SET fila = (@rownum:= 1 + @rownum) " +
-                            "WHERE serplacar = @ser AND numplacar = @num + (@rownum:= 0) ORDER BY id";
-                        using (MySqlCommand comup = new MySqlCommand(conupd, conn))
-                        {
-                            comup.Parameters.AddWithValue("@fi", fila);
-                            comup.Parameters.AddWithValue("@ser", tx_serie.Text);
-                            comup.Parameters.AddWithValue("@num", tx_numero.Text);
+                            comup.CommandType = CommandType.StoredProcedure;
+                            comup.Parameters.AddWithValue("@vseri", tx_serie.Text);
+                            comup.Parameters.AddWithValue("@vnume", tx_numero.Text);
                             comup.ExecuteNonQuery();
                         }
                         retorna = true;
-                        micon.Dispose();
                     }
                     conn.Close();
                 }

@@ -189,11 +189,11 @@ namespace TransCarga
             tx_docsOr.MaxLength = 100;          // documentos origen del traslado
             tx_consig.MaxLength = 100;
             tx_obser1.MaxLength = 150;
-            
             // grilla
             dataGridView1.Columns[0].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dataGridView1.Columns[3].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             // todo desabilidado
+            rb_ent_ofic.Checked = true;
             sololee();
         }
         private void initIngreso()
@@ -569,7 +569,7 @@ namespace TransCarga
             }
             //  datos para los combos de locales origen y destino
             cmb_origen.Items.Clear();
-            MySqlCommand ccl = new MySqlCommand("select idcodice,descrizionerid,ubidir,marca1,marca2 from desc_loc where numero=@bloq",conn);
+            MySqlCommand ccl = new MySqlCommand("select idcodice,descrizionerid,ubidir,marca1,marca2,deta1,deta2,deta3,deta4 from desc_loc where numero=@bloq",conn);
             ccl.Parameters.AddWithValue("@bloq", 1);
             MySqlDataAdapter dacu = new MySqlDataAdapter(ccl);
             dtu.Clear();
@@ -1614,7 +1614,7 @@ namespace TransCarga
         }
         #endregion boton_form;
 
-        #region leaves y checks
+        #region leaves, checks y BotonRadio
         private void tx_idr_Leave(object sender, EventArgs e)
         {
             if (Tx_modo.Text != "NUEVO" && tx_idr.Text != "")
@@ -1845,21 +1845,27 @@ namespace TransCarga
                 if (Tx_modo.Text == "NUEVO" || Tx_modo.Text == "EDITAR")
                 {
                     v_clte_des = "";                // variable para marcar si destinatario es nuevo
-                    tx_nomDrio.Text = "";
-                    tx_dirDrio.Text = "";
-                    tx_dptoDrio.Text = "";
-                    tx_proDrio.Text = "";
-                    tx_disDrio.Text = "";
-                    tx_ubigDtt.Text = "";
+                    if (rb_ent_clte.Checked == true)
+                    {
+                        tx_nomDrio.Text = "";
+                        tx_dirDrio.Text = "";
+                        tx_dptoDrio.Text = "";
+                        tx_proDrio.Text = "";
+                        tx_disDrio.Text = "";
+                        tx_ubigDtt.Text = "";
+                    }
                     string[] datos = lib.datossn("CLI", tx_dat_tDdest.Text.Trim(), tx_numDocDes.Text.Trim());
                     if (datos[0] != "")   // datos.Length > 0
                     {
                         tx_nomDrio.Text = datos[0];
-                        tx_dirDrio.Text = datos[1];
-                        tx_dptoDrio.Text = datos[2];
-                        tx_proDrio.Text = datos[3];
-                        tx_disDrio.Text = datos[4];
-                        tx_ubigDtt.Text = datos[5];
+                        if (rb_ent_clte.Checked == true)
+                        {
+                            tx_dirDrio.Text = datos[1];
+                            tx_dptoDrio.Text = datos[2];
+                            tx_proDrio.Text = datos[3];
+                            tx_disDrio.Text = datos[4];
+                            tx_ubigDtt.Text = datos[5];
+                        }
                         encuentra = "si";
                     }
                     if (tx_dat_tDdest.Text == vtc_ruc)
@@ -1870,12 +1876,15 @@ namespace TransCarga
                             {
                                 string[] rl = lib.conectorSolorsoft("RUC", tx_numDocDes.Text);
                                 tx_nomDrio.Text = rl[0];      // razon social
-                                tx_ubigDtt.Text = rl[1];     // ubigeo
-                                tx_dirDrio.Text = rl[2];      // direccion
-                                tx_dptoDrio.Text = rl[3];      // departamento
-                                tx_proDrio.Text = rl[4];      // provincia
-                                tx_disDrio.Text = rl[5];      // distrito
-                                v_clte_des = "N";
+                                if (rb_ent_clte.Checked == true)
+                                {
+                                    tx_ubigDtt.Text = rl[1];     // ubigeo
+                                    tx_dirDrio.Text = rl[2];      // direccion
+                                    tx_dptoDrio.Text = rl[3];      // departamento
+                                    tx_proDrio.Text = rl[4];      // provincia
+                                    tx_disDrio.Text = rl[5];      // distrito
+                                    v_clte_des = "N";
+                                }
                             }
                         }
                     }
@@ -2040,6 +2049,36 @@ namespace TransCarga
                     claveSeg = ayu1.ReturnValue1;
                     if (claveSeg == "") chk_seguridad.Checked = false;
                 }
+            }
+        }
+        private void rb_ent_ofic_Click(object sender, EventArgs e)
+        {
+            if (Tx_modo.Text == "NUEVO" && rb_ent_ofic.Checked == true)
+            {
+                // idcodice,descrizionerid,ubidir,marca1,marca2,deta1,deta2,deta3,deta4
+                DataRow[] fila = dtd.Select("idcodice='" + tx_dat_locdes.Text + "'");
+                tx_dirDrio.Text = fila[0][5].ToString();
+                tx_dptoDrio.Text = fila[0][6].ToString();
+                tx_proDrio.Text = fila[0][7].ToString();
+                tx_disDrio.Text = fila[0][8].ToString();
+                tx_dirDrio.ReadOnly = true;
+                tx_dptoDrio.ReadOnly = true;
+                tx_proDrio.ReadOnly = true;
+                tx_disDrio.ReadOnly = true;
+            }
+        }
+        private void rb_ent_clte_Click(object sender, EventArgs e)
+        {
+            if (Tx_modo.Text == "NUEVO" && rb_ent_clte.Checked == true)
+            {
+                tx_dirDrio.Text = "";
+                tx_dptoDrio.Text = "";
+                tx_proDrio.Text = "";
+                tx_disDrio.Text = "";
+                tx_dirDrio.ReadOnly = false;
+                tx_dptoDrio.ReadOnly = false;
+                tx_proDrio.ReadOnly = false;
+                tx_disDrio.ReadOnly = false;
             }
         }
         #endregion
@@ -2377,10 +2416,11 @@ namespace TransCarga
                 if (Tx_modo.Text == "NUEVO")
                 {
                     // vamos por la serie
-                    string consul = "SELECT tipdoc,serie,actual,final,format,glosaser,dir_pe,ubigeo," +
-                        "imp_ini,imp_fec,imp_det,imp_dtr,imp_pie " +
-                        "FROM series WHERE STATUS<> @ean and " +
-                        "tipdoc = @td AND sede = @ori AND zona = (SELECT zona FROM desc_loc WHERE idcodice = @des)";
+                    string consul = "SELECT s.tipdoc,s.serie,s.actual,s.final,s.format,s.glosaser,s.dir_pe,s.ubigeo," +
+                        "s.imp_ini,s.imp_fec,s.imp_det,s.imp_dtr,s.imp_pie " +
+                        "FROM series s " +
+                        "WHERE s.STATUS<> @ean and " +
+                        "s.tipdoc = @td AND s.sede = @ori AND s.zona = (SELECT zona FROM desc_loc WHERE idcodice = @des)";
                     using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
                     {
                         conn.Open();
@@ -2408,6 +2448,7 @@ namespace TransCarga
                 DataRow[] fila = dtd.Select("idcodice='" + tx_dat_locdes.Text + "'");
                 tx_ubigD.Text = fila[0][2].ToString();
             }
+            rb_ent_ofic.PerformClick();
         }
         #endregion comboboxes
 

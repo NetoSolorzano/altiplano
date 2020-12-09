@@ -961,8 +961,16 @@ namespace TransCarga
         #region advancedatagridview
         private void advancedDataGridView1_FilterStringChanged(object sender, EventArgs e)                  // filtro de las columnas
         {
-            DataTable dtg = (DataTable)dgv_vtas.DataSource;
-            dtg.DefaultView.RowFilter = dgv_vtas.FilterString;
+            if (tabControl1.SelectedTab.Name == "tabvtas")
+            {
+                DataTable dtg = (DataTable)dgv_vtas.DataSource;
+                dtg.DefaultView.RowFilter = dgv_vtas.FilterString;
+            }
+            if (tabControl1.SelectedTab.Name == "tabgrti")
+            {
+                DataTable dtg = (DataTable)dgv_guias.DataSource;
+                dtg.DefaultView.RowFilter = dgv_guias.FilterString;
+            }
         }
         private void advancedDataGridView1_CellEnter(object sender, DataGridViewCellEventArgs e)            // no usamos
         {
