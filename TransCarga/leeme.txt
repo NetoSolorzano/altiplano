@@ -91,4 +91,7 @@ form guiati: (mejoras en base a pruebas con Carrión)
 - numeracion automatica / manual de las GR ......................................................... ok 08/12/2020
 - agregar botones para despacho en oficina o dir.cliente ........................................... ok 09/12/2020
 formato de impresion A5 de guias ................................................................... 
-OJO, 09/12/2020 COMENTE EL CONECTOR DE DNI HASTA ARREGLAR EL PROB. PC CARRION 
+OJO, 09/12/2020 COMENTE EL CONECTOR DE DNI HASTA ARREGLAR EL PROB. PC CARRION ...................... OK 09/12/2020
+OJO2, 10/02/2020 regresé la configuracion anterior porque ya arregle cambiando de del rop jnd
+a eldni.pe ......................................................................................... ok 10/12/2020 laptop
+
