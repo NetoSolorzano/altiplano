@@ -1777,6 +1777,7 @@ namespace TransCarga
                         tx_distRtt.Text = datos[4];
                         tx_ubigRtt.Text = datos[5];
                         encuentra = "si";
+                        tx_numDocRem.ReadOnly = true;
                     }
                     if (tx_dat_tdRem.Text == vtc_ruc)
                     {
@@ -1801,10 +1802,12 @@ namespace TransCarga
                         {
                             if (TransCarga.Program.vg_conSol == true) // conector solorsoft para dni
                             {
-                                string[] rl = lib.conectorSolorsoft("DNI", tx_numDocRem.Text);
-                                tx_nomRem.Text = rl[0];      // nombre
-                                tx_numDocRem.Text = rl[1];     // num dni
+                                // COMENTADO TEMPORALMENTE PARA CARRION, HASTA ARREGLAR EL ASUNTO DEL ... 09/12/2020
+                                //string[] rl = lib.conectorSolorsoft("DNI", tx_numDocRem.Text);
+                                //tx_nomRem.Text = rl[0];      // nombre
+                                //tx_numDocRem.Text = rl[1];     // num dni
                                 v_clte_rem = "N";             // marca de cliente nuevo  
+                                tx_numDocRem.ReadOnly = false;
                             }
                         }
                     }
@@ -1867,6 +1870,7 @@ namespace TransCarga
                             tx_ubigDtt.Text = datos[5];
                         }
                         encuentra = "si";
+                        tx_nomDrio.ReadOnly = true;
                     }
                     if (tx_dat_tDdest.Text == vtc_ruc)
                     {
@@ -1894,9 +1898,12 @@ namespace TransCarga
                         {
                             if (TransCarga.Program.vg_conSol == true) // conector solorsoft para dni
                             {
+                                /*  // COMENTADO TEMPORALMENTE PARA CARRION, HASTA ARREGLAR EL ASUNTO DEL ... 09/12/2020
                                 string[] rl = lib.conectorSolorsoft("DNI", tx_numDocDes.Text);
                                 tx_nomDrio.Text = rl[0];      // nombre
                                 //tx_numDocDes.Text = rl[1];     // num dni
+                                */
+                                tx_nomDrio.ReadOnly = false;
                                 v_clte_des = "N";
                             }
                         }
