@@ -87,6 +87,8 @@ namespace TransCarga
         DataTable dttd0 = new DataTable();
         DataTable dttd1 = new DataTable();
         DataTable dtm = new DataTable();
+        string[] datosR = { "" };
+        string[] datosD = { "" };
         public guiati()
         {
             InitializeComponent();
@@ -207,6 +209,7 @@ namespace TransCarga
             dataGridView1.Columns[3].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             // todo desabilidado
             rb_ent_clte.Checked = true;
+            rb_car_ofi.Checked = true;
             sololee();
         }
         private void initIngreso()
@@ -225,6 +228,8 @@ namespace TransCarga
             tx_serie.Text = v_slu;
             tx_numero.ReadOnly = true;
             tx_dat_locori.Text = v_clu;
+            rb_car_ofi.Checked = true;
+            rb_ent_clte.Checked = true;
             cmb_origen.SelectedValue = tx_dat_locori.Text;
             cmb_origen_SelectionChangeCommitted(null, null);
             tx_dat_mone.Text = MonDeft;
@@ -1341,6 +1346,7 @@ namespace TransCarga
                     "tipmongri,tipcamgri,subtotgri,igvgri,totgri,totpag,salgri,estadoser,cantfilas," +
                     "frase1,frase2,fleteimp,tipintrem,tipintdes,tippagpre,seguroE,m1cliente,m2cliente," +
                     "subtotMN,igvMN,totgrMN,codMN,grinumaut,teleregri,teledegri," +
+                    "idplani,fechplani,serplagri,numplagri,plaplagri,carplagri,autplagri,confvegri,breplagri,proplagri," +
                     "verApp,userc,fechc,diriplan4,diripwan4,netbname) " +
                     "values (@fechop,@sergr,@numgr,@npregr,@tdcdes,@ndcdes,@nomdes,@dircde,@ubicde," +
                     "@tdcrem,@ndcrem,@nomrem,@dircre,@ubicre,@locpgr,@dirpgr,@ubopgr," +
@@ -1348,6 +1354,7 @@ namespace TransCarga
                     "@monppr,@tcprgr,@subpgr,@igvpgr,@totpgr,@pagpgr,@totpgr,@estpgr,@canfil," +
                     "@frase1,@frase2,@fleimp,@ticlre,@ticlde,@tipacc,@clavse,@m1clte,@m2clte," +
                     "@stMN,@igMN,@tgMN,@codmn,@grinau,@telrem,@teldes," +
+                    "@idplan,@fecpla,@serpla,@numpla,@plapla,@carpla,@autpla,@confve,@brepla,@propla," +
                     "@verApp,@asd,now(),@iplan,@ipwan,@nbnam)";
                 using (MySqlCommand micon = new MySqlCommand(inserta, conn))
                 {
@@ -1400,6 +1407,16 @@ namespace TransCarga
                     micon.Parameters.AddWithValue("@grinau", tx_n_auto.Text);
                     micon.Parameters.AddWithValue("@telrem", tx_telR.Text);
                     micon.Parameters.AddWithValue("@teldes", tx_telD.Text);
+                    micon.Parameters.AddWithValue("@idplan", tx_idplan.Text);
+                    micon.Parameters.AddWithValue("@fecpla", tx_pla_fech.Text.Substring(6, 4) + "-" + tx_pla_fech.Text.Substring(3, 2) + "-" + tx_pla_fech.Text.Substring(0, 2));
+                    micon.Parameters.AddWithValue("@serpla", tx_pla_plani.Text.Substring(0, 4));
+                    micon.Parameters.AddWithValue("@numpla", tx_pla_plani.Text.Substring(4, 8));
+                    micon.Parameters.AddWithValue("@plapla", tx_pla_placa.Text);
+                    micon.Parameters.AddWithValue("@carpla", tx_pla_carret.Text);
+                    micon.Parameters.AddWithValue("@autpla", tx_pla_autor.Text);
+                    micon.Parameters.AddWithValue("@confve", tx_pla_confv.Text);
+                    micon.Parameters.AddWithValue("@brepla", tx_pla_brevet.Text);
+                    micon.Parameters.AddWithValue("@propla", tx_pla_ruc.Text);
                     micon.Parameters.AddWithValue("@verApp", verapp);
                     micon.Parameters.AddWithValue("@asd", asd);
                     micon.Parameters.AddWithValue("@iplan", lib.iplan());
@@ -1791,23 +1808,29 @@ namespace TransCarga
                 if (Tx_modo.Text == "NUEVO" || Tx_modo.Text == "EDITAR")
                 {
                     v_clte_rem = "";            // variable cliente remitente
-                    tx_nomRem.Text = "";
-                    tx_dirRem.Text = "";
-                    tx_dptoRtt.Text = "";
-                    tx_provRtt.Text = "";
-                    tx_distRtt.Text = "";
-                    tx_ubigRtt.Text = "";
-                    tx_telR.Text = "";
-                    string[] datos = lib.datossn("CLI", tx_dat_tdRem.Text.Trim(), tx_numDocRem.Text.Trim());
-                    if (datos[0] != "")   // datos.Length > 0
+                    if (rb_car_clte.Checked == true)
                     {
-                        tx_nomRem.Text = datos[0];
-                        tx_dirRem.Text = datos[1];
-                        tx_dptoRtt.Text = datos[2];
-                        tx_provRtt.Text = datos[3];
-                        tx_distRtt.Text = datos[4];
-                        tx_ubigRtt.Text = datos[5];
-                        tx_telR.Text = datos[6];
+                        tx_nomRem.Text = "";
+                        tx_dirRem.Text = "";
+                        tx_dptoRtt.Text = "";
+                        tx_provRtt.Text = "";
+                        tx_distRtt.Text = "";
+                        tx_ubigRtt.Text = "";
+                        tx_telR.Text = "";
+                    }
+                    datosR = lib.datossn("CLI", tx_dat_tdRem.Text.Trim(), tx_numDocRem.Text.Trim());
+                    if (datosR[0] != "")   // datos.Length > 0
+                    {
+                        tx_nomRem.Text = datosR[0];
+                        tx_telR.Text = datosR[6];
+                        if (rb_car_clte.Checked == true)
+                        {
+                            tx_dirRem.Text = datosR[1];
+                            tx_dptoRtt.Text = datosR[2];
+                            tx_provRtt.Text = datosR[3];
+                            tx_distRtt.Text = datosR[4];
+                            tx_ubigRtt.Text = datosR[5];
+                        }
                         encuentra = "si";
                         //tx_numDocRem.ReadOnly = true;
                     }
@@ -1819,11 +1842,14 @@ namespace TransCarga
                             {
                                 string[] rl = lib.conectorSolorsoft("RUC", tx_numDocRem.Text);
                                 tx_nomRem.Text = rl[0];      // razon social
-                                tx_ubigRtt.Text = rl[1];     // ubigeo
-                                tx_dirRem.Text = rl[2];      // direccion
-                                tx_dptoRtt.Text = rl[3];      // departamento
-                                tx_provRtt.Text = rl[4];      // provincia
-                                tx_distRtt.Text = rl[5];      // distrito
+                                if (rb_car_clte.Checked == true)
+                                {
+                                    tx_ubigRtt.Text = rl[1];     // ubigeo
+                                    tx_dirRem.Text = rl[2];      // direccion
+                                    tx_dptoRtt.Text = rl[3];      // departamento
+                                    tx_provRtt.Text = rl[4];      // provincia
+                                    tx_distRtt.Text = rl[5];      // distrito
+                                }
                                 v_clte_rem = "N";             // marca de cliente nuevo  
                             }
                         }
@@ -1892,18 +1918,19 @@ namespace TransCarga
                         tx_ubigDtt.Text = "";
                         tx_telD.Text = "";
                     }
-                    string[] datos = lib.datossn("CLI", tx_dat_tDdest.Text.Trim(), tx_numDocDes.Text.Trim());
-                    if (datos[0] != "")   // datos.Length > 0
+                    datosD = lib.datossn("CLI", tx_dat_tDdest.Text.Trim(), tx_numDocDes.Text.Trim());
+                    if (datosD[0] != "")   // datos.Length > 0
                     {
-                        tx_nomDrio.Text = datos[0];
+                        tx_nomDrio.Text = datosD[0];
+                        tx_telD.Text = datosD[6];
                         if (rb_ent_clte.Checked == true)
                         {
-                            tx_dirDrio.Text = datos[1];
-                            tx_dptoDrio.Text = datos[2];
-                            tx_proDrio.Text = datos[3];
-                            tx_disDrio.Text = datos[4];
-                            tx_ubigDtt.Text = datos[5];
-                            tx_telD.Text = datos[6];
+                            tx_dirDrio.Text = datosD[1];
+                            tx_dptoDrio.Text = datosD[2];
+                            tx_proDrio.Text = datosD[3];
+                            tx_disDrio.Text = datosD[4];
+                            tx_ubigDtt.Text = datosD[5];
+                            
                         }
                         encuentra = "si";
                         tx_nomDrio.ReadOnly = true;
@@ -1966,6 +1993,7 @@ namespace TransCarga
             {
                 tx_numero.Text = lib.Right("00000000" + tx_numero.Text, 8);
                 cmb_destino.Focus();
+                cmb_destino.DroppedDown = true;
             }
             if (Tx_modo.Text != "NUEVO" && tx_numero.Text.Trim() != "")
             {
@@ -2098,21 +2126,24 @@ namespace TransCarga
         {
             if (Tx_modo.Text == "NUEVO" && rb_ent_ofic.Checked == true)
             {
-                // idcodice,descrizionerid,ubidir,marca1,marca2,deta1,deta2,deta3,deta4
-                DataRow[] fila = dtd.Select("idcodice='" + tx_dat_locdes.Text + "'");
-                tx_dirDrio.Text = fila[0][5].ToString();
-                tx_dptoDrio.Text = fila[0][6].ToString();
-                tx_proDrio.Text = fila[0][7].ToString();
-                tx_disDrio.Text = fila[0][8].ToString();
-                tx_dirDrio.ReadOnly = true;
-                tx_dptoDrio.ReadOnly = true;
-                tx_proDrio.ReadOnly = true;
-                tx_disDrio.ReadOnly = true;
+                if (tx_dat_locdes.Text != "")
+                {
+                    // idcodice,descrizionerid,ubidir,marca1,marca2,deta1,deta2,deta3,deta4
+                    DataRow[] fila = dtd.Select("idcodice='" + tx_dat_locdes.Text + "'");
+                    tx_dirDrio.Text = fila[0][5].ToString();
+                    tx_dptoDrio.Text = fila[0][6].ToString();
+                    tx_proDrio.Text = fila[0][7].ToString();
+                    tx_disDrio.Text = fila[0][8].ToString();
+                    tx_dirDrio.ReadOnly = true;
+                    tx_dptoDrio.ReadOnly = true;
+                    tx_proDrio.ReadOnly = true;
+                    tx_disDrio.ReadOnly = true;
+                }
             }
         }
         private void rb_ent_clte_Click(object sender, EventArgs e)
         {
-            if (Tx_modo.Text == "NUEVO" && rb_ent_clte.Checked == true)
+            if (("NUEVO,EDITAR").Contains(Tx_modo.Text) && rb_ent_clte.Checked == true)
             {
                 tx_dirDrio.Text = "";
                 tx_dptoDrio.Text = "";
@@ -2122,6 +2153,56 @@ namespace TransCarga
                 tx_dptoDrio.ReadOnly = false;
                 tx_proDrio.ReadOnly = false;
                 tx_disDrio.ReadOnly = false;
+                if (datosD[0] != "")
+                {
+                    tx_dirDrio.Text = datosD[1];
+                    tx_dptoDrio.Text = datosD[2];
+                    tx_proDrio.Text = datosD[3];
+                    tx_disDrio.Text = datosD[4];
+                }
+            }
+        }
+        private void rb_car_ofi_Click(object sender, EventArgs e)
+        {
+            if (tx_dat_locori.Text != "" && Tx_modo.Text == "NUEVO")    // el origen y su direccion solo se ponen en modo NUEVO
+            {
+                DataRow[] fila = dtu.Select("idcodice='" + tx_dat_locori.Text + "'");
+                tx_ubigO.Text = fila[0][2].ToString();
+                tx_dirRem.Text = fila[0][5].ToString();
+                tx_dptoRtt.Text = fila[0][6].ToString();
+                tx_provRtt.Text = fila[0][7].ToString();
+                tx_distRtt.Text = fila[0][8].ToString();
+                tx_ubigO.ReadOnly = true;
+                tx_dirRem.ReadOnly = true;
+                tx_dptoRtt.ReadOnly = true;
+                tx_provRtt.ReadOnly = true;
+                tx_distRtt.ReadOnly = true;
+            }
+        }
+        private void rb_car_clte_Click(object sender, EventArgs e)
+        {
+            if (("NUEVO,EDITAR").Contains(Tx_modo.Text))    // la direccion de origen si puede cambiar en EDICION   
+            {
+                //tx_ubigO.Text = "";
+                tx_dirRem.Text = "";
+                tx_dptoRtt.Text = "";
+                tx_provRtt.Text = "";
+                tx_distRtt.Text = "";
+                tx_ubigRtt.Text = "";
+                //tx_ubigO.ReadOnly = false;
+                tx_dirRem.ReadOnly = false;
+                tx_dptoRtt.ReadOnly = false;
+                tx_provRtt.ReadOnly = false;
+                tx_distRtt.ReadOnly = false;
+                tx_ubigRtt.ReadOnly = false;
+                if (rb_car_clte.Checked == true && datosR[0] != "")
+                {
+                    tx_dirRem.Text = datosR[1];
+                    tx_dptoRtt.Text = datosR[2];
+                    tx_provRtt.Text = datosR[3];
+                    tx_distRtt.Text = datosR[4];
+                    tx_ubigRtt.Text = datosR[5];
+                }
             }
         }
         #endregion
@@ -2241,7 +2322,7 @@ namespace TransCarga
             Bt_sig.Enabled = false;
             Bt_ret.Enabled = false;
             Bt_fin.Enabled = false;
-            //cmb_destino.Focus();
+            tx_numero.Focus();              //cmb_destino.Focus();
         }
         private void Bt_edit_Click(object sender, EventArgs e)
         {
@@ -2447,7 +2528,14 @@ namespace TransCarga
             if (tx_dat_locori.Text.Trim() != "")
             {
                 DataRow[] fila = dtu.Select("idcodice='" + tx_dat_locori.Text + "'");
-                tx_ubigO.Text = fila[0][2].ToString();
+                if (rb_car_ofi.Checked == true)
+                {
+                    rb_car_ofi.PerformClick();
+                }
+                else
+                {
+                    rb_car_clte.PerformClick();
+                }
             }
         }
         private void cmb_destino_SelectionChangeCommitted(object sender, EventArgs e)
@@ -2484,7 +2572,7 @@ namespace TransCarga
                             }
                         }
                         // validamos que exista planilla abierta hacia el mismo destino
-                        consul = "SELECT a.fechope,a.serplacar,a.numplacar,a.platracto,a.placarret,a.autorizac,a.confvehic,a.brevchofe,a.nomchofe,a.brevayuda," +
+                        consul = "SELECT a.id,a.fechope,a.serplacar,a.numplacar,a.platracto,a.placarret,a.autorizac,a.confvehic,a.brevchofe,a.nomchofe,a.brevayuda," +
                             "a.nomayuda,a.rucpropie,b.razonsocial " +
                             "from cabplacar a left join anag_for b on b.ruc=a.rucpropie and b.tipdoc=@tdruc " +
                             "WHERE a.estadoser = @estab AND a.locorigen = @locor AND a.locdestin = @locde";
@@ -2507,7 +2595,8 @@ namespace TransCarga
                                             "El sistema usará la primera planilla", " Atención ", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                                     }
                                     DataRow row = data.Rows[0];
-                                    tx_pla_fech.Text = row["fechope"].ToString();
+                                    tx_idplan.Text = row["id"].ToString();
+                                    tx_pla_fech.Text = row["fechope"].ToString().Substring(0, 10);
                                     tx_pla_plani.Text = row["serplacar"].ToString() + row["numplacar"].ToString();
                                     tx_pla_placa.Text = row["platracto"].ToString();
                                     tx_pla_carret.Text = row["placarret"].ToString();
@@ -2523,6 +2612,7 @@ namespace TransCarga
                                 {
                                     MessageBox.Show("No existe planilla de carga abierta" + Environment.NewLine +
                                         "para el destino seleccionado"," Atención ",MessageBoxButtons.OK,MessageBoxIcon.Information);
+                                    tx_idplan.Text = "";
                                     tx_pla_fech.Text = "";
                                     tx_pla_plani.Text = "";
                                     tx_pla_placa.Text = "";
@@ -2536,8 +2626,9 @@ namespace TransCarga
                                 }
                             }
                         }
-
                     }
+                    cmb_docRem.Focus();
+                    cmb_docRem.DroppedDown = true;
                 }
             }
             if (tx_dat_locdes.Text.Trim() != "")

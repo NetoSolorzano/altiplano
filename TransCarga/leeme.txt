@@ -47,6 +47,8 @@ form planicarga: (planilla de carga)
 - Desarrollo del form .............................................................................. ok
 - La EDICION de una planilla, NO recalcula el flete, pagado y saldo x pagar de las guías pre existentes en la planilla.
   Los saldos y flete de cada guía se calculan SOLO AL MOMENTO DE REGISTRAR UNA GUIA EN LA PLANILLA.. ok 09/12/2020
+- Cierre de la planilla, es un proceso manual en modo edicion del form ............................. 
+- Reapertura de una planilla en cualquier momento y fecha, debe ser usuario del local de origen .... 
 form transbord: (proceso de transbordos, no usa tablas propias) 
 - Unico boton de NUEVO, transborda parcial o total guias de una planilla a otra existente .......... ME QUEDE ACA FALTA
 form facelect: (facturacion electrónica, se integra con sist propio del cliente)
@@ -90,8 +92,10 @@ form facelect: cuando se cobra en automatico, debe tener el id de caja .........
 form guiati: (mejoras en base a pruebas con Carrión)
 - numeracion automatica / manual de las GR ......................................................... ok 08/12/2020
 - agregar botones para despacho en oficina o dir.cliente ........................................... ok 09/12/2020
-formato de impresion A5 de guias ................................................................... 
+- formato de impresion A5 de guias ................................................................. falta terminar
+- adecuaciones en telefonos y direcciones de envio y recojo ........................................ ok 12/12/2020
 OJO, 09/12/2020 COMENTE EL CONECTOR DE DNI HASTA ARREGLAR EL PROB. PC CARRION ...................... OK 09/12/2020
 OJO2, 10/02/2020 regresé la configuracion anterior porque ya arregle cambiando de del rop jnd
 a eldni.pe ......................................................................................... ok 10/12/2020 laptop
+- forms guiati y planicarga, arreglos obs. 10/12 con carrion ....................................... ok 13/12/2020
 

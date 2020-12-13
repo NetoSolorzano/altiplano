@@ -37,6 +37,7 @@ namespace TransCarga
         string img_ver = "";
         string codAnul = "";            // codigo de documento anulado
         string codGene = "";            // codigo documento nuevo generado
+        string codCier = "";            // codigo planilla cerrada
         string v_clu = "";              // codigo del local del usuario
         string v_slu = "";              // serie del local del usuario
         string v_nbu = "";              // nombre del usuario
@@ -260,6 +261,7 @@ namespace TransCarga
                         {
                             if (row["param"].ToString() == "anulado") codAnul = row["valor"].ToString().Trim();         // codigo doc anulado
                             if (row["param"].ToString() == "generado") codGene = row["valor"].ToString().Trim();        // codigo doc generado
+                            if (row["param"].ToString() == "cerrado") codCier = row["valor"].ToString().Trim();        // codigo planilla cerrada
                         }
                     }
                     if (row["formulario"].ToString() == nomform)
@@ -398,16 +400,46 @@ namespace TransCarga
                         cmb_destino.SelectedValue = tx_dat_locdes.Text;
                         cmb_origen.SelectedValue = tx_dat_locori.Text;
                         cmb_mon.SelectedValue = tx_dat_mone.Text;
-                        // si el documento esta ANULADO o un estado que no permite EDICION, se pone todo en sololee
+                        // si el documento esta ANULADO o un estado que no permite EDICION, se pone todo en sololee (ANULADO O RECIBIDO)
                         if (tx_dat_estad.Text != codGene)
                         {
                             sololee();
+                            dataGridView1.ReadOnly = true;
                             MessageBox.Show("Este documento no puede ser editado/anulado", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         }
                         else
                         {
                             tx_serie.ReadOnly = true;   // despues de una jalada exitosa
                             tx_numero.ReadOnly = true;  // estos numeros no deben modificarse
+                            if (tx_dat_estad.Text == codGene) chk_cierea.Text = "CIERRA PLANILLA";          // SOLAMENTE se cierran o re-abren
+                            else
+                            {
+                                if (tx_dat_estad.Text == codCier) chk_cierea.Text = "REABRE PLANILLA";      // las planillas abiertas o cerradas
+                                else
+                                {
+                                    chk_cierea.Text = "";
+                                    chk_cierea.Visible = false;
+                                }
+                            }
+                        }
+                        button1.Enabled = true;
+                        // validamos usuario y local para modos EDICION y ANULACION
+                        if (("EDITAR,ANULAR").Contains(Tx_modo.Text))
+                        {
+                            if (tx_dat_locori.Text == v_clu)
+                            {
+                                escribe();
+                                dataGridView1.ReadOnly = false;
+                                button1.Enabled = true;
+                            }
+                            else
+                            {
+                                MessageBox.Show("La planilla no puede Editada o Anulada" + Environment.NewLine +
+                                    "revise el estado del documento y/o el local", "No puede continuar", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                sololee();
+                                button1.Enabled = false;
+                                dataGridView1.ReadOnly = true;
+                            }
                         }
                     }
                     else
@@ -437,6 +469,7 @@ namespace TransCarga
                     {
                         DataTable dt = new DataTable();
                         da.Fill(dt);
+                        dataGridView1.Rows.Clear();
                         foreach (DataRow row in dt.Rows)
                         {
                             if (Tx_modo.Text != "EDITAR")
@@ -481,6 +514,7 @@ namespace TransCarga
                     }
                 }
             }
+            operaciones();
         }
         private void dataload()                  // jala datos para los combos 
         {
@@ -692,7 +726,7 @@ namespace TransCarga
             {
                 if (Tx_modo.Text == "EDITAR")
                 {
-                    if (dataGridView1.Rows[i].Cells[13].Value != null)
+                    if (dataGridView1.Rows.Count == 13 && dataGridView1.Rows[i].Cells[13].Value != null)
                     {
                         if (dataGridView1.Rows[i].Cells[13].Value.ToString() == "False")
                         {
@@ -1096,9 +1130,9 @@ namespace TransCarga
                         {
                             if (dataGridView1.Rows[i].Cells[0].Value.ToString().Trim() != "")
                             {
-                                string inserd2 = "insert into detplacar (idc,serplacar,numplacar,fila,numpreg,serguia,numguia,totcant,totpeso,totflet,codmone,estadoser," +
+                                string inserd2 = "insert into detplacar (idc,serplacar,numplacar,fila,numpreg,serguia,numguia,totcant,totpeso,totflet,codmone,estadoser,origreg," +
                                     "verApp,userc,fechc,diriplan4,diripwan4,netbname,platracto,placarret,autorizac,confvehic,brevchofe,brevayuda,rucpropiet,fechope,pagado,salxcob) " +
-                                    "values (@idr,@serpl,@numpl,@fila,@numpr,@sergu,@numgu,@totca,@totpe,@totfl,@codmo,@estad," +
+                                    "values (@idr,@serpl,@numpl,@fila,@numpr,@sergu,@numgu,@totca,@totpe,@totfl,@codmo,@estad,@orireg," +
                                     "@verApp,@asd,now(),@iplan,@ipwan,@nbnam,@platr,@placa,@autor,@confv,@brevc,@breva,@rucpr,@fecho,@paga,@xcob)";
                                 using (MySqlCommand micon = new MySqlCommand(inserd2, conn))
                                 {
@@ -1115,6 +1149,7 @@ namespace TransCarga
                                     micon.Parameters.AddWithValue("@totfl", dataGridView1.Rows[i].Cells[7].Value.ToString());
                                     micon.Parameters.AddWithValue("@codmo", dataGridView1.Rows[i].Cells[10].Value.ToString());
                                     micon.Parameters.AddWithValue("@estad", tx_dat_estad.Text);
+                                    micon.Parameters.AddWithValue("@orireg", "M");              // origen del registro manual, cuando viene desde el form de guias es A
                                     micon.Parameters.AddWithValue("@verApp", verapp);
                                     micon.Parameters.AddWithValue("@asd", asd);
                                     micon.Parameters.AddWithValue("@iplan", lib.iplan());
@@ -1157,19 +1192,19 @@ namespace TransCarga
             conn.Open();
             if (conn.State == ConnectionState.Open)
             {
-                try
+                //try
                 {
                     if (tx_dat_estad.Text == codGene)               // solo edita estado GENERADO, otro estado no se edita
                     {                                               // El estado cambia solo cuando: SE CIERRA MANUALMENTE ó CUANDO SE RECEPCIONA LA PLANILLA
                         int vtip = 0;                               // los datos que NO SE EDITAN son: serie,numero,origen y destino
                         if (rb_propio.Checked == true) vtip = 1;    // los totales filas ,peso y bultos si cambian con la edicion
                         if (rb_3ro.Checked == true) vtip = 2;       // los fletes y saldos de cada guía NO CAMBIAN al editar, salvo si se borra y vuelte a registrar la GR
-                        if (rb_bus.Checked == true) vtip = 3;   // locorigen=@locor,locdestin=@locde,estadoser=@estad,
+                        if (rb_bus.Checked == true) vtip = 3;       // locorigen=@locor,locdestin=@locde,
                         string actua = "update cabplacar set " +
                             "fechope=@fecho,obsplacar=@obspl,cantfilas=@cantf,cantotpla=@canto,pestotpla=@pesto,tipmonpla=@tipmo," +
                             "tipcampla=@tipca,subtotpla=@subto,igvplacar=@igvpl,totplacar=@totpl,totpagado=@totpa,salxpagar=@salxp,fleteimp=@fleim," +
                             "platracto=@platr,placarret=@placa,autorizac=@autor,confvehic=@confv,brevchofe=@brevc,brevayuda=@breva,rucpropie=@rucpr,tipoplani=@tipop," +
-                            "verApp=@verApp,userm=@asd,fechm=now(),diriplan4=@iplan,diripwan4=@ipwan,netbname=@nbnam,nomchofe=@nocho,nomayuda=@noayu " +
+                            "verApp=@verApp,userm=@asd,fechm=now(),diriplan4=@iplan,diripwan4=@ipwan,netbname=@nbnam,nomchofe=@nocho,nomayuda=@noayu,estadoser=@estad " +
                             "where serplacar=@serpl and numplacar=@numpl";
                         MySqlCommand micon = new MySqlCommand(actua, conn);
                         micon.Parameters.AddWithValue("@fecho", tx_fechope.Text.Substring(6, 4) + "-" + tx_fechope.Text.Substring(3, 2) + "-" + tx_fechope.Text.Substring(0, 2));
@@ -1188,7 +1223,6 @@ namespace TransCarga
                         micon.Parameters.AddWithValue("@totpl", tx_flete.Text);
                         micon.Parameters.AddWithValue("@totpa", tx_pagado.Text);
                         micon.Parameters.AddWithValue("@salxp", tx_salxcob.Text);   // saldo por cobrar al momento de grabar la planilla
-                        //micon.Parameters.AddWithValue("@estad", tx_dat_estad.Text);
                         micon.Parameters.AddWithValue("@fleim", tx_dat_detflete.Text);      // variable si detalle lleva valores flete guias
                         micon.Parameters.AddWithValue("@platr", tx_pla_placa.Text);
                         micon.Parameters.AddWithValue("@placa", tx_pla_carret.Text);
@@ -1200,6 +1234,21 @@ namespace TransCarga
                         micon.Parameters.AddWithValue("@noayu", tx_pla_nomayu.Text);           // nombre del ayudante
                         micon.Parameters.AddWithValue("@rucpr", (tx_pla_ruc.Text.Trim() == "") ? tx_car3ro_ruc.Text : tx_pla_ruc.Text);
                         micon.Parameters.AddWithValue("@tipop", vtip);              // tipo planilla, tipo transporte/transportista
+                        if (tx_dat_estad.Text == codGene && chk_cierea.Checked == true)     // Planilla abierta y checkeado ==> CIERRA LA PLANILLA
+                        {
+                            micon.Parameters.AddWithValue("@estad", codCier);
+                        }
+                        else
+                        {
+                            if (tx_dat_estad.Text == codCier && chk_cierea.Checked == true)     // planilla cerrada y con check ==> REABRE PLANILLA
+                            {
+                                micon.Parameters.AddWithValue("@estad", codGene);
+                            }
+                            else
+                            {
+                                micon.Parameters.AddWithValue("@estad", codGene);
+                            }
+                        }
                         micon.Parameters.AddWithValue("@verApp", verapp);
                         micon.Parameters.AddWithValue("@asd", asd);
                         micon.Parameters.AddWithValue("@iplan", lib.iplan());
@@ -1245,10 +1294,10 @@ namespace TransCarga
                             }
                             if (dataGridView1.Rows[i].Cells[11].Value == null)   // fila nueva, se inserta  || .ToString() != "X"
                             {
-                                string inserd2 = "insert into detplacar (idc,serplacar,numplacar,fila,numpreg,serguia,numguia,totcant,totpeso,totflet,codmone,estadoser," +
+                                string inserd2 = "insert into detplacar (idc,serplacar,numplacar,fila,numpreg,serguia,numguia,totcant,totpeso,totflet,codmone,estadoser,origreg," +
                                 "verApp,userc,fechc,diriplan4,diripwan4,netbname," +
                                 "platracto,placarret,autorizac,confvehic,brevchofe,brevayuda,rucpropiet,fechope,pagado,salxcob) " +
-                                "values (@idr,@serpl,@numpl,@fila,@numpr,@sergu,@numgu,@totca,@totpe,@totfl,@codmo,@estad," +
+                                "values (@idr,@serpl,@numpl,@fila,@numpr,@sergu,@numgu,@totca,@totpe,@totfl,@codmo,@estad,@orireg," +
                                 "@verApp,@asd,now(),@iplan,@ipwan,@nbnam," +
                                 "@platr,@placa,@autor,@confv,@brevc,@breva,@rucpr,@fecho,@paga,@xcob)";
                                 micon = new MySqlCommand(inserd2, conn);
@@ -1264,6 +1313,7 @@ namespace TransCarga
                                 micon.Parameters.AddWithValue("@totfl", dataGridView1.Rows[i].Cells[7].Value.ToString());
                                 micon.Parameters.AddWithValue("@codmo", tx_dat_mone.Text);
                                 micon.Parameters.AddWithValue("@estad", tx_dat_estad.Text);
+                                micon.Parameters.AddWithValue("@orireg", "M");              // origen del registro manual, cuando viene desde el form de guias es A
                                 micon.Parameters.AddWithValue("@verApp", verapp);
                                 micon.Parameters.AddWithValue("@asd", asd);
                                 micon.Parameters.AddWithValue("@iplan", lib.iplan());
@@ -1297,12 +1347,12 @@ namespace TransCarga
                     }
                     conn.Close();
                 }
-                catch (MySqlException ex)
+                /*catch (MySqlException ex)
                 {
                     MessageBox.Show(ex.Message, "Error en modificar la planilla");
                     Application.Exit();
                     return retorna;
-                }
+                }*/
             }
             else
             {
@@ -1578,9 +1628,11 @@ namespace TransCarga
             Bt_sig.Enabled = false;
             Bt_ret.Enabled = false;
             Bt_fin.Enabled = false;
+            chk_cierea.Visible = false;
             //
             dataGridView1.Columns.Clear();
             dataGridView1.Rows.Clear();
+            button1.Enabled = true;
             initIngreso();
             escribe();
             splitContainer1.Enabled = true;
@@ -1606,6 +1658,8 @@ namespace TransCarga
             Bt_sig.Enabled = true;
             Bt_ret.Enabled = true;
             Bt_fin.Enabled = true;
+            chk_cierea.Visible = true;
+            chk_cierea.Text = "";
             //
             dataGridView1.Columns.Clear();
             dataGridView1.Rows.Clear();
@@ -1659,6 +1713,7 @@ namespace TransCarga
             Bt_sig.Enabled = true;
             Bt_ret.Enabled = true;
             Bt_fin.Enabled = true;
+            chk_cierea.Visible = false;
             //
             dataGridView1.Columns.Clear();
             dataGridView1.Rows.Clear();
@@ -1681,6 +1736,7 @@ namespace TransCarga
             Bt_sig.Enabled = true;
             Bt_ret.Enabled = true;
             Bt_fin.Enabled = true;
+            chk_cierea.Visible = false;
         }
         private void Bt_first_Click(object sender, EventArgs e)
         {
@@ -1707,13 +1763,16 @@ namespace TransCarga
         }
         private void Bt_next_Click(object sender, EventArgs e)
         {
-            int aca = int.Parse(tx_idr.Text) + 1;
-            limpiar();
-            limpia_chk();
-            limpia_combos();
-            limpia_otros();
-            tx_idr.Text = aca.ToString();
-            tx_idr_Leave(null, null);
+            if (tx_idr.Text.Trim() != "")
+            {
+                int aca = int.Parse(tx_idr.Text) + 1;
+                limpiar();
+                limpia_chk();
+                limpia_combos();
+                limpia_otros();
+                tx_idr.Text = aca.ToString();
+                tx_idr_Leave(null, null);
+            }
         }
         private void Bt_last_Click(object sender, EventArgs e)
         {

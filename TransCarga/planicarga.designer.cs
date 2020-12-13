@@ -161,6 +161,7 @@
             this.tx_totcant = new TransCarga.NumericTextBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
+            this.chk_cierea = new System.Windows.Forms.CheckBox();
             this.toolStrip1.SuspendLayout();
             this.pn_usloc.SuspendLayout();
             this.groupBox5.SuspendLayout();
@@ -462,7 +463,7 @@
             // button1
             // 
             this.button1.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.button1.Location = new System.Drawing.Point(654, 417);
+            this.button1.Location = new System.Drawing.Point(659, 443);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(62, 56);
             this.button1.TabIndex = 24;
@@ -1561,12 +1562,24 @@
             this.groupBox7.TabIndex = 113;
             this.groupBox7.TabStop = false;
             // 
+            // chk_cierea
+            // 
+            this.chk_cierea.AutoSize = true;
+            this.chk_cierea.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.chk_cierea.ForeColor = System.Drawing.Color.Black;
+            this.chk_cierea.Location = new System.Drawing.Point(630, 414);
+            this.chk_cierea.Name = "chk_cierea";
+            this.chk_cierea.Size = new System.Drawing.Size(15, 14);
+            this.chk_cierea.TabIndex = 398;
+            this.chk_cierea.UseVisualStyleBackColor = true;
+            // 
             // planicarga
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.LightSteelBlue;
             this.ClientSize = new System.Drawing.Size(770, 646);
+            this.Controls.Add(this.chk_cierea);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.tx_dat_detflete);
             this.Controls.Add(this.gbox_flete);
@@ -1786,5 +1799,6 @@
         private System.Windows.Forms.GroupBox groupBox29;
         private System.Windows.Forms.GroupBox groupBox4;
         private System.Windows.Forms.GroupBox groupBox7;
+        private System.Windows.Forms.CheckBox chk_cierea;
     }
 }

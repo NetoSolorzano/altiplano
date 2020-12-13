@@ -224,6 +224,11 @@
             this.label34 = new System.Windows.Forms.Label();
             this.tx_telD = new System.Windows.Forms.TextBox();
             this.label35 = new System.Windows.Forms.Label();
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.label36 = new System.Windows.Forms.Label();
+            this.rb_car_clte = new System.Windows.Forms.RadioButton();
+            this.rb_car_ofi = new System.Windows.Forms.RadioButton();
+            this.tx_idplan = new System.Windows.Forms.TextBox();
             this.toolStrip1.SuspendLayout();
             this.groupBox11.SuspendLayout();
             this.groupBox7.SuspendLayout();
@@ -253,6 +258,7 @@
             this.groupBox41.SuspendLayout();
             this.groupBox42.SuspendLayout();
             this.panel1.SuspendLayout();
+            this.panel2.SuspendLayout();
             this.SuspendLayout();
             // 
             // toolStrip1
@@ -1507,7 +1513,7 @@
             // 
             this.tx_dat_locori.BackColor = System.Drawing.SystemColors.Window;
             this.tx_dat_locori.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_dat_locori.Location = new System.Drawing.Point(215, 81);
+            this.tx_dat_locori.Location = new System.Drawing.Point(177, 23);
             this.tx_dat_locori.Name = "tx_dat_locori";
             this.tx_dat_locori.Size = new System.Drawing.Size(26, 18);
             this.tx_dat_locori.TabIndex = 316;
@@ -1517,7 +1523,7 @@
             // 
             this.tx_dat_locdes.BackColor = System.Drawing.SystemColors.Window;
             this.tx_dat_locdes.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_dat_locdes.Location = new System.Drawing.Point(242, 81);
+            this.tx_dat_locdes.Location = new System.Drawing.Point(177, 53);
             this.tx_dat_locdes.Name = "tx_dat_locdes";
             this.tx_dat_locdes.Size = new System.Drawing.Size(51, 18);
             this.tx_dat_locdes.TabIndex = 317;
@@ -1682,6 +1688,7 @@
             // 
             // gbox_planilla
             // 
+            this.gbox_planilla.Controls.Add(this.tx_idplan);
             this.gbox_planilla.Controls.Add(this.groupBox33);
             this.gbox_planilla.Controls.Add(this.groupBox29);
             this.gbox_planilla.Controls.Add(this.tx_pla_propiet);
@@ -2160,7 +2167,7 @@
             this.panel1.Controls.Add(this.label33);
             this.panel1.Controls.Add(this.rb_ent_clte);
             this.panel1.Controls.Add(this.rb_ent_ofic);
-            this.panel1.Location = new System.Drawing.Point(314, 84);
+            this.panel1.Location = new System.Drawing.Point(451, 83);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(282, 23);
             this.panel1.TabIndex = 352;
@@ -2242,6 +2249,63 @@
             this.label35.TabIndex = 362;
             this.label35.Text = "Tel.";
             // 
+            // panel2
+            // 
+            this.panel2.Controls.Add(this.label36);
+            this.panel2.Controls.Add(this.rb_car_clte);
+            this.panel2.Controls.Add(this.rb_car_ofi);
+            this.panel2.Location = new System.Drawing.Point(153, 83);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(253, 23);
+            this.panel2.TabIndex = 363;
+            // 
+            // label36
+            // 
+            this.label36.AutoSize = true;
+            this.label36.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label36.ForeColor = System.Drawing.Color.Black;
+            this.label36.Location = new System.Drawing.Point(3, 3);
+            this.label36.Name = "label36";
+            this.label36.Size = new System.Drawing.Size(69, 15);
+            this.label36.TabIndex = 2;
+            this.label36.Text = "Carga en:";
+            // 
+            // rb_car_clte
+            // 
+            this.rb_car_clte.AutoSize = true;
+            this.rb_car_clte.ForeColor = System.Drawing.Color.Black;
+            this.rb_car_clte.Location = new System.Drawing.Point(152, 3);
+            this.rb_car_clte.Name = "rb_car_clte";
+            this.rb_car_clte.Size = new System.Drawing.Size(95, 17);
+            this.rb_car_clte.TabIndex = 1;
+            this.rb_car_clte.TabStop = true;
+            this.rb_car_clte.Text = "DIR. CLIENTE";
+            this.rb_car_clte.UseVisualStyleBackColor = true;
+            this.rb_car_clte.Click += new System.EventHandler(this.rb_car_clte_Click);
+            // 
+            // rb_car_ofi
+            // 
+            this.rb_car_ofi.AutoSize = true;
+            this.rb_car_ofi.ForeColor = System.Drawing.Color.Black;
+            this.rb_car_ofi.Location = new System.Drawing.Point(75, 3);
+            this.rb_car_ofi.Name = "rb_car_ofi";
+            this.rb_car_ofi.Size = new System.Drawing.Size(67, 17);
+            this.rb_car_ofi.TabIndex = 0;
+            this.rb_car_ofi.TabStop = true;
+            this.rb_car_ofi.Text = "OFICINA";
+            this.rb_car_ofi.UseVisualStyleBackColor = true;
+            this.rb_car_ofi.Click += new System.EventHandler(this.rb_car_ofi_Click);
+            // 
+            // tx_idplan
+            // 
+            this.tx_idplan.BackColor = System.Drawing.SystemColors.Window;
+            this.tx_idplan.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_idplan.Location = new System.Drawing.Point(287, 9);
+            this.tx_idplan.Name = "tx_idplan";
+            this.tx_idplan.Size = new System.Drawing.Size(24, 18);
+            this.tx_idplan.TabIndex = 363;
+            this.tx_idplan.Visible = false;
+            // 
             // guiati
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -2249,6 +2313,7 @@
             this.AutoSize = true;
             this.BackColor = System.Drawing.Color.LightSteelBlue;
             this.ClientSize = new System.Drawing.Size(766, 614);
+            this.Controls.Add(this.panel2);
             this.Controls.Add(this.tx_telD);
             this.Controls.Add(this.label35);
             this.Controls.Add(this.tx_telR);
@@ -2381,6 +2446,8 @@
             this.groupBox42.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
+            this.panel2.ResumeLayout(false);
+            this.panel2.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -2582,5 +2649,10 @@
         private System.Windows.Forms.Label label34;
         private System.Windows.Forms.TextBox tx_telD;
         private System.Windows.Forms.Label label35;
+        private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.Label label36;
+        private System.Windows.Forms.RadioButton rb_car_clte;
+        private System.Windows.Forms.RadioButton rb_car_ofi;
+        private System.Windows.Forms.TextBox tx_idplan;
     }
 }
