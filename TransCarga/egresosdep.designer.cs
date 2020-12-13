@@ -92,6 +92,8 @@
             this.status = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.userc = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.nom_user = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.codgrpe = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.tipegre = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tx_dat_mone = new System.Windows.Forms.TextBox();
             this.cmb_mon = new System.Windows.Forms.ComboBox();
             this.tx_estado = new System.Windows.Forms.TextBox();
@@ -173,8 +175,8 @@
             this.Bt_sig,
             this.toolStripSeparator10,
             this.Bt_ret,
-            this.toolStripSeparator9,
             this.Bt_fin,
+            this.toolStripSeparator9,
             this.toolStripSeparator11});
             this.toolStrip1.Location = new System.Drawing.Point(0, 401);
             this.toolStrip1.Name = "toolStrip1";
@@ -334,6 +336,7 @@
             this.Bt_ini.Size = new System.Drawing.Size(32, 32);
             this.Bt_ini.Text = "Bt_close";
             this.Bt_ini.ToolTipText = "Ir al inicio";
+            this.Bt_ini.Visible = false;
             this.Bt_ini.Click += new System.EventHandler(this.Bt_first_Click);
             // 
             // toolStripSeparator12
@@ -354,6 +357,7 @@
             this.Bt_sig.Size = new System.Drawing.Size(32, 32);
             this.Bt_sig.Text = "Bt_close";
             this.Bt_sig.ToolTipText = "Siguiente";
+            this.Bt_sig.Visible = false;
             this.Bt_sig.Click += new System.EventHandler(this.Bt_next_Click);
             // 
             // toolStripSeparator10
@@ -374,6 +378,7 @@
             this.Bt_ret.Size = new System.Drawing.Size(32, 32);
             this.Bt_ret.Text = "Bt_close";
             this.Bt_ret.ToolTipText = "Regresar";
+            this.Bt_ret.Visible = false;
             this.Bt_ret.Click += new System.EventHandler(this.Bt_back_Click);
             // 
             // toolStripSeparator9
@@ -394,6 +399,7 @@
             this.Bt_fin.Size = new System.Drawing.Size(32, 32);
             this.Bt_fin.Text = "Bt_close";
             this.Bt_fin.ToolTipText = "Ir al final";
+            this.Bt_fin.Visible = false;
             this.Bt_fin.Click += new System.EventHandler(this.Bt_last_Click);
             // 
             // toolStripSeparator11
@@ -578,7 +584,9 @@
             this.ctaprop,
             this.status,
             this.userc,
-            this.nom_user});
+            this.nom_user,
+            this.codgrpe,
+            this.tipegre});
             this.dataGridView1.Location = new System.Drawing.Point(6, 151);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.Size = new System.Drawing.Size(745, 183);
@@ -730,6 +738,18 @@
             this.nom_user.HeaderText = "nom_user";
             this.nom_user.Name = "nom_user";
             this.nom_user.Visible = false;
+            // 
+            // codgrpe
+            // 
+            this.codgrpe.HeaderText = "codgrpe";
+            this.codgrpe.Name = "codgrpe";
+            this.codgrpe.Visible = false;
+            // 
+            // tipegre
+            // 
+            this.tipegre.HeaderText = "tipegre";
+            this.tipegre.Name = "tipegre";
+            this.tipegre.Visible = false;
             // 
             // tx_dat_mone
             // 
@@ -1405,5 +1425,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn status;
         private System.Windows.Forms.DataGridViewTextBoxColumn userc;
         private System.Windows.Forms.DataGridViewTextBoxColumn nom_user;
+        private System.Windows.Forms.DataGridViewTextBoxColumn codgrpe;
+        private System.Windows.Forms.DataGridViewTextBoxColumn tipegre;
     }
 }

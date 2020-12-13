@@ -1148,16 +1148,14 @@ namespace TransCarga
                                 {
                                     MessageBox.Show(resulta, "Error en actualización de seguimiento", MessageBoxButtons.OK, MessageBoxIcon.Error);
                                 }
-                                /*  TODO DOC.VTA. SE ENVIA A LA ETIQUETERA DE FRENTE ... 28/10/2020
-                                 *  AL GRABAR SE ASUME IMPRESA 28/10/2020
+                                //  TODO DOC.VTA. SE ENVIA A LA ETIQUETERA DE FRENTE ... 28/10/2020
+                                //  AL GRABAR SE ASUME IMPRESA 28/10/2020 ... ya no 13/12/2020
                                 var bb = MessageBox.Show("Desea imprimir el documento?" + Environment.NewLine +
                                     "El formato actual es " + vi_formato, "Confirme por favor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                                 if (bb == DialogResult.Yes)
                                 {
                                     Bt_print.PerformClick();
                                 }
-                                */
-                                Bt_print.PerformClick();
                             }
                         }
                         else
