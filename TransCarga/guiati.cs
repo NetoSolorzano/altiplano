@@ -356,9 +356,13 @@ namespace TransCarga
                         "ifnull(b.chocamcar,'') as chocamcar,ifnull(b.fecplacar,'') as fecplacar,ifnull(b.fecdocvta,'') as fecdocvta,ifnull(b.tipdocvta,'') as tipdocvta," +
                         "ifnull(b.serdocvta,'') as serdocvta,ifnull(b.numdocvta,'') as numdocvta,ifnull(b.codmonvta,'') as codmonvta," +
                         "ifnull(b.totdocvta,0) as totdocvta,ifnull(b.codmonpag,'') as codmonpag,ifnull(b.totpagado,0) as totpagado,ifnull(b.saldofina,0) as saldofina," +
-                        "ifnull(b.feculpago,'') as feculpago,ifnull(b.estadoser,'') as estadoser,ifnull(c.razonsocial,'') as razonsocial,a.grinumaut " +
+                        "ifnull(b.feculpago,'') as feculpago,ifnull(b.estadoser,'') as estadoser,ifnull(c.razonsocial,'') as razonsocial,a.grinumaut," +
+                        "ifnull(d.marca,'') as marca,ifnull(d.modelo,'') as modelo,ifnull(er.numerotel1,'') as telrem,ifnull(ed.numerotel1,'') as teldes " +
                         "from cabguiai a left join controlg b on b.serguitra=a.sergui and b.numguitra=a.numgui " + 
-                        "left join anag_for c on c.ruc=a.proplagri and c.tipdoc=@tdep " + parte;
+                        "left join anag_for c on c.ruc=a.proplagri and c.tipdoc=@tdep " +
+                        "left join vehiculos d on d.placa=a.plaplagri " +
+                        "left join anag_cli er on er.ruc=a.nudoregri and er.tipdoc=a.tidoregri " +
+                        "left join anag_cli ed on ed.ruc=a.nudodegri and ed.tipdoc=a.tidodegri " + parte;
                     MySqlCommand micon = new MySqlCommand(consulta, conn);
                     micon.Parameters.AddWithValue("@tdep", vtc_ruc);
                     if (campo == "tx_idr") micon.Parameters.AddWithValue("@ida", tx_idr.Text);
@@ -387,11 +391,13 @@ namespace TransCarga
                             tx_nomRem.Text = dr.GetString("nombregri");
                             tx_dirRem.Text = dr.GetString("direregri");
                             tx_ubigRtt.Text = dr.GetString("ubigregri");
+                            tx_telR.Text = dr.GetString("telrem");
                             tx_dat_tDdest.Text = dr.GetString("tidodegri");
                             tx_numDocDes.Text = dr.GetString("nudodegri");
                             tx_nomDrio.Text = dr.GetString("nombdegri");
                             tx_dirDrio.Text = dr.GetString("diredegri");
                             tx_ubigDtt.Text = dr.GetString("ubigdegri");
+                            tx_telD.Text = dr.GetString("teldes");
                             tx_docsOr.Text = dr.GetString("docsremit");
                             tx_obser1.Text = dr.GetString("obspregri");
                             tx_consig.Text = dr.GetString("clifingri");
@@ -407,6 +413,7 @@ namespace TransCarga
                             chk_flete.Checked = (dr.GetString("fleteimp") == "S") ? true : false;
                             tx_n_auto.Text = dr.GetString("grinumaut");     // numeracion de GR autom o manual
                             //
+                            tx_marcamion.Text = dr.GetString("marca");
                             tx_pla_fech.Text = dr.GetString("fecplacar");   //.Substring(0, 10);
                             tx_pla_plani.Text = dr.GetString("serplagri") + dr.GetString("numplagri");
                             tx_pla_placa.Text = dr.GetString("plaplagri");
@@ -926,6 +933,7 @@ namespace TransCarga
             tx_pla_plani.Text = "";
             tx_pla_placa.Text = "";
             tx_pla_carret.Text = "";
+            tx_marcamion.Text = "";
             tx_pla_autor.Text = "";
             tx_pla_confv.Text = "";
             tx_pla_brevet.Text = "";
@@ -1104,6 +1112,13 @@ namespace TransCarga
                                 "El formato actual es " + vi_formato, "Confirme por favor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                             if (bb == DialogResult.Yes)
                             {
+                                for(int i = 0; i<dataGridView1.Rows.Count -1; i++)    // foreach (DataGridViewRow row in dataGridView1.Rows)
+                                {
+                                    if (dataGridView1.Rows[i].Cells[2].FormattedValue.ToString().Trim() != "")   // dataGridView1.Rows[0].Cells[2].Value.ToString() != ""
+                                    {
+                                        dataGridView1.Rows[i].Cells[2].Value = gloDeta + " " + dataGridView1.Rows[i].Cells[2].FormattedValue.ToString();
+                                    }
+                                }
                                 Bt_print.PerformClick();
                             }
                         }
@@ -1461,7 +1476,7 @@ namespace TransCarga
                                 micon.Parameters.AddWithValue("@can", dataGridView1.Rows[i].Cells[0].Value.ToString());
                                 micon.Parameters.AddWithValue("@uni", dataGridView1.Rows[i].Cells[1].Value.ToString());
                                 micon.Parameters.AddWithValue("@cod", "");
-                                micon.Parameters.AddWithValue("@des", gloDeta + dataGridView1.Rows[i].Cells[2].Value.ToString().Trim());
+                                micon.Parameters.AddWithValue("@des", gloDeta + " " + dataGridView1.Rows[i].Cells[2].Value.ToString().Trim());
                                 micon.Parameters.AddWithValue("@pes", dataGridView1.Rows[i].Cells[3].Value.ToString());
                                 micon.Parameters.AddWithValue("@preu", "0");
                                 micon.Parameters.AddWithValue("@pret", "0");
@@ -2573,8 +2588,9 @@ namespace TransCarga
                         }
                         // validamos que exista planilla abierta hacia el mismo destino
                         consul = "SELECT a.id,a.fechope,a.serplacar,a.numplacar,a.platracto,a.placarret,a.autorizac,a.confvehic,a.brevchofe,a.nomchofe,a.brevayuda," +
-                            "a.nomayuda,a.rucpropie,b.razonsocial " +
+                            "a.nomayuda,a.rucpropie,b.razonsocial,c.marca,c.modelo " +
                             "from cabplacar a left join anag_for b on b.ruc=a.rucpropie and b.tipdoc=@tdruc " +
+                            "left join vehiculos c on c.placa=a.platracto " +
                             "WHERE a.estadoser = @estab AND a.locorigen = @locor AND a.locdestin = @locde";
                         using (MySqlCommand micon = new MySqlCommand(consul, conn))
                         {
@@ -2607,6 +2623,7 @@ namespace TransCarga
                                     // row["nomayuda"].ToString();
                                     tx_pla_ruc.Text = row["rucpropie"].ToString();
                                     tx_pla_propiet.Text = row["razonsocial"].ToString();
+                                    tx_marcamion.Text = row["marca"].ToString();
                                 }
                                 else
                                 {
@@ -2617,6 +2634,7 @@ namespace TransCarga
                                     tx_pla_plani.Text = "";
                                     tx_pla_placa.Text = "";
                                     tx_pla_carret.Text = "";
+                                    tx_marcamion.Text = "";
                                     tx_pla_autor.Text = "";
                                     tx_pla_confv.Text = "";
                                     tx_pla_brevet.Text = "";
@@ -2917,6 +2935,7 @@ namespace TransCarga
             rowcabeza.dptoRemit = tx_dptoRtt.Text;
             rowcabeza.provRemit = tx_provRtt.Text;
             rowcabeza.distRemit = tx_distRtt.Text;
+            rowcabeza.telremit = tx_telR.Text;
             // destinatario
             rowcabeza.docDestinat = cmb_docDes.Text;
             rowcabeza.numDestinat = tx_numDocDes.Text;
@@ -2925,6 +2944,7 @@ namespace TransCarga
             rowcabeza.distDestinat = tx_disDrio.Text;
             rowcabeza.provDestinat = tx_proDrio.Text;
             rowcabeza.dptoDestinat = tx_dptoDrio.Text;
+            rowcabeza.teldesti = tx_telD.Text;
             // importes
             rowcabeza.nomMoneda = cmb_mon.Text;
             rowcabeza.igv = "";         // no hay campo
@@ -2933,15 +2953,18 @@ namespace TransCarga
             rowcabeza.docscarga = tx_docsOr.Text;
             rowcabeza.consignat = tx_consig.Text;
             // pie
+            rowcabeza.marcamodelo = tx_marcamion.Text;
             rowcabeza.autoriz = tx_pla_autor.Text;
             rowcabeza.brevAyuda = "";   // falta este campo
             rowcabeza.brevChofer = tx_pla_brevet.Text;
             rowcabeza.nomChofer = tx_pla_nomcho.Text;
             rowcabeza.placa = tx_pla_placa.Text;
-            rowcabeza.camion = tx_pla_placa.Text;
+            rowcabeza.camion = tx_pla_carret.Text;
             rowcabeza.confvehi = tx_pla_confv.Text;
             rowcabeza.rucPropiet = tx_pla_ruc.Text;
             rowcabeza.nomPropiet = tx_pla_propiet.Text;
+            rowcabeza.fechora_imp = DateTime.Now.ToString();
+            rowcabeza.userc = tx_digit.Text.Trim();
             //
             guiaT.gr_ind_cab.Addgr_ind_cabRow(rowcabeza);
             //

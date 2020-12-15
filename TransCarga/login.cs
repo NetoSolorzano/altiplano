@@ -73,7 +73,8 @@ namespace TransCarga
                 if (lib.procConn(cn) == true)
                 {
                     //validamos que el usuario y passw son los correctos
-                    string query = "select a.bloqueado,a.local,a.nombre,concat(trim(b.deta1),' - ',b.deta2,' - ',b.deta3,' - ',b.deta4) AS direcc,b.ubiDir,b.descrizione " +
+                    string query = "select a.bloqueado,a.local,a.nombre,concat(trim(b.deta1),' - ',b.deta2,' - ',b.deta3,' - ',b.deta4) AS direcc,b.ubiDir," +
+                        "b.descrizione,a.tipuser,a.nivel " +
                         "from usuarios a LEFT JOIN desc_loc b ON b.idcodice=a.local " +
                         "where a.nom_user=@usuario and a.pwd_user=@contra";
                     MySqlCommand mycomand = new MySqlCommand(query, cn);
@@ -93,6 +94,8 @@ namespace TransCarga
                                 TransCarga.Program.vg_duse = dr.GetString(3);
                                 TransCarga.Program.vg_luse = dr.GetString(1);
                                 TransCarga.Program.vg_nlus = dr.GetString(5);
+                                TransCarga.Program.vg_tius = dr.GetString(6);       // codigo de tipo de usuario
+                                TransCarga.Program.vg_nius = dr.GetString(7);       // codigo nivel de usuario
                                 dr.Close();
                                 // cambiamos la contraseña si fue hecha
                                 cambiacont();

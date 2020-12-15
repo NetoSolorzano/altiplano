@@ -188,8 +188,14 @@ namespace TransCarga
             if (quien == "todos")
             {
                 // ***************** seleccion de la sede 
-                const string contaller = "select descrizionerid,idcodice,codigo from desc_loc " +
-                                       "where numero=1 order by idcodice";
+                string parte = "";
+                if (("NIV002,NIV003").Contains(TransCarga.Program.vg_nius))
+                {
+                    parte = parte + "and idcodice='" + TransCarga.Program.vg_luse + "' ";
+                }
+
+                string contaller = "select descrizionerid,idcodice,codigo from desc_loc " +
+                                       "where numero=1 " + parte + "order by idcodice";
                 MySqlCommand cmd = new MySqlCommand(contaller, conn);
                 MySqlDataAdapter dataller = new MySqlDataAdapter(cmd);
                 // panel PRE GUIAS

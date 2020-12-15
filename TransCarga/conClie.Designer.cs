@@ -1086,6 +1086,16 @@ namespace TransCarga {
             
             private global::System.Data.DataColumn columnfechTraslado;
             
+            private global::System.Data.DataColumn columntelremit;
+            
+            private global::System.Data.DataColumn columnteldesti;
+            
+            private global::System.Data.DataColumn columnfechora_imp;
+            
+            private global::System.Data.DataColumn columnuserc;
+            
+            private global::System.Data.DataColumn columnmarcamodelo;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public gr_ind_cabDataTable() {
@@ -1505,6 +1515,46 @@ namespace TransCarga {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn telremitColumn {
+                get {
+                    return this.columntelremit;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn teldestiColumn {
+                get {
+                    return this.columnteldesti;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn fechora_impColumn {
+                get {
+                    return this.columnfechora_imp;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn usercColumn {
+                get {
+                    return this.columnuserc;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn marcamodeloColumn {
+                get {
+                    return this.columnmarcamodelo;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -1588,7 +1638,12 @@ namespace TransCarga {
                         string brevAyuda, 
                         string rucPropiet, 
                         string nomPropiet, 
-                        string fechTraslado) {
+                        string fechTraslado, 
+                        string telremit, 
+                        string teldesti, 
+                        string fechora_imp, 
+                        string userc, 
+                        string marcamodelo) {
                 gr_ind_cabRow rowgr_ind_cabRow = ((gr_ind_cabRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         id,
@@ -1638,7 +1693,12 @@ namespace TransCarga {
                         brevAyuda,
                         rucPropiet,
                         nomPropiet,
-                        fechTraslado};
+                        fechTraslado,
+                        telremit,
+                        teldesti,
+                        fechora_imp,
+                        userc,
+                        marcamodelo};
                 rowgr_ind_cabRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowgr_ind_cabRow);
                 return rowgr_ind_cabRow;
@@ -1709,6 +1769,11 @@ namespace TransCarga {
                 this.columnrucPropiet = base.Columns["rucPropiet"];
                 this.columnnomPropiet = base.Columns["nomPropiet"];
                 this.columnfechTraslado = base.Columns["fechTraslado"];
+                this.columntelremit = base.Columns["telremit"];
+                this.columnteldesti = base.Columns["teldesti"];
+                this.columnfechora_imp = base.Columns["fechora_imp"];
+                this.columnuserc = base.Columns["userc"];
+                this.columnmarcamodelo = base.Columns["marcamodelo"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -1810,6 +1875,16 @@ namespace TransCarga {
                 base.Columns.Add(this.columnnomPropiet);
                 this.columnfechTraslado = new global::System.Data.DataColumn("fechTraslado", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnfechTraslado);
+                this.columntelremit = new global::System.Data.DataColumn("telremit", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columntelremit);
+                this.columnteldesti = new global::System.Data.DataColumn("teldesti", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnteldesti);
+                this.columnfechora_imp = new global::System.Data.DataColumn("fechora_imp", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnfechora_imp);
+                this.columnuserc = new global::System.Data.DataColumn("userc", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnuserc);
+                this.columnmarcamodelo = new global::System.Data.DataColumn("marcamodelo", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnmarcamodelo);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -3403,6 +3478,86 @@ namespace TransCarga {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string telremit {
+                get {
+                    try {
+                        return ((string)(this[this.tablegr_ind_cab.telremitColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("El valor de la columna \'telremit\' de la tabla \'gr_ind_cab\' es DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tablegr_ind_cab.telremitColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string teldesti {
+                get {
+                    try {
+                        return ((string)(this[this.tablegr_ind_cab.teldestiColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("El valor de la columna \'teldesti\' de la tabla \'gr_ind_cab\' es DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tablegr_ind_cab.teldestiColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string fechora_imp {
+                get {
+                    try {
+                        return ((string)(this[this.tablegr_ind_cab.fechora_impColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("El valor de la columna \'fechora_imp\' de la tabla \'gr_ind_cab\' es DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tablegr_ind_cab.fechora_impColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string userc {
+                get {
+                    try {
+                        return ((string)(this[this.tablegr_ind_cab.usercColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("El valor de la columna \'userc\' de la tabla \'gr_ind_cab\' es DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tablegr_ind_cab.usercColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string marcamodelo {
+                get {
+                    try {
+                        return ((string)(this[this.tablegr_ind_cab.marcamodeloColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("El valor de la columna \'marcamodelo\' de la tabla \'gr_ind_cab\' es DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tablegr_ind_cab.marcamodeloColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public bool IsidNull() {
                 return this.IsNull(this.tablegr_ind_cab.idColumn);
             }
@@ -3975,6 +4130,66 @@ namespace TransCarga {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public void SetfechTrasladoNull() {
                 this[this.tablegr_ind_cab.fechTrasladoColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IstelremitNull() {
+                return this.IsNull(this.tablegr_ind_cab.telremitColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SettelremitNull() {
+                this[this.tablegr_ind_cab.telremitColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsteldestiNull() {
+                return this.IsNull(this.tablegr_ind_cab.teldestiColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetteldestiNull() {
+                this[this.tablegr_ind_cab.teldestiColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool Isfechora_impNull() {
+                return this.IsNull(this.tablegr_ind_cab.fechora_impColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void Setfechora_impNull() {
+                this[this.tablegr_ind_cab.fechora_impColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsusercNull() {
+                return this.IsNull(this.tablegr_ind_cab.usercColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetusercNull() {
+                this[this.tablegr_ind_cab.usercColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsmarcamodeloNull() {
+                return this.IsNull(this.tablegr_ind_cab.marcamodeloColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetmarcamodeloNull() {
+                this[this.tablegr_ind_cab.marcamodeloColumn] = global::System.Convert.DBNull;
             }
         }
         

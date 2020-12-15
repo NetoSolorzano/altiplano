@@ -171,6 +171,8 @@
             this.chk_flete = new System.Windows.Forms.CheckBox();
             this.label28 = new System.Windows.Forms.Label();
             this.gbox_planilla = new System.Windows.Forms.GroupBox();
+            this.tx_marcamion = new System.Windows.Forms.TextBox();
+            this.tx_idplan = new System.Windows.Forms.TextBox();
             this.groupBox33 = new System.Windows.Forms.GroupBox();
             this.groupBox34 = new System.Windows.Forms.GroupBox();
             this.groupBox35 = new System.Windows.Forms.GroupBox();
@@ -211,9 +213,6 @@
             this.tx_clteDV = new System.Windows.Forms.TextBox();
             this.tx_dat_tcr = new System.Windows.Forms.TextBox();
             this.tx_dat_tcd = new System.Windows.Forms.TextBox();
-            this.tx_tfil = new TransCarga.NumericTextBox();
-            this.tx_totpes = new TransCarga.NumericTextBox();
-            this.tx_totcant = new TransCarga.NumericTextBox();
             this.tx_fletMN = new System.Windows.Forms.TextBox();
             this.tx_tipcam = new System.Windows.Forms.TextBox();
             this.panel1 = new System.Windows.Forms.Panel();
@@ -228,7 +227,9 @@
             this.label36 = new System.Windows.Forms.Label();
             this.rb_car_clte = new System.Windows.Forms.RadioButton();
             this.rb_car_ofi = new System.Windows.Forms.RadioButton();
-            this.tx_idplan = new System.Windows.Forms.TextBox();
+            this.tx_tfil = new TransCarga.NumericTextBox();
+            this.tx_totpes = new TransCarga.NumericTextBox();
+            this.tx_totcant = new TransCarga.NumericTextBox();
             this.toolStrip1.SuspendLayout();
             this.groupBox11.SuspendLayout();
             this.groupBox7.SuspendLayout();
@@ -1688,6 +1689,7 @@
             // 
             // gbox_planilla
             // 
+            this.gbox_planilla.Controls.Add(this.tx_marcamion);
             this.gbox_planilla.Controls.Add(this.tx_idplan);
             this.gbox_planilla.Controls.Add(this.groupBox33);
             this.gbox_planilla.Controls.Add(this.groupBox29);
@@ -1714,6 +1716,26 @@
             this.gbox_planilla.Size = new System.Drawing.Size(746, 55);
             this.gbox_planilla.TabIndex = 345;
             this.gbox_planilla.TabStop = false;
+            // 
+            // tx_marcamion
+            // 
+            this.tx_marcamion.BackColor = System.Drawing.SystemColors.Window;
+            this.tx_marcamion.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_marcamion.Location = new System.Drawing.Point(434, 4);
+            this.tx_marcamion.Name = "tx_marcamion";
+            this.tx_marcamion.Size = new System.Drawing.Size(60, 18);
+            this.tx_marcamion.TabIndex = 364;
+            this.tx_marcamion.Visible = false;
+            // 
+            // tx_idplan
+            // 
+            this.tx_idplan.BackColor = System.Drawing.SystemColors.Window;
+            this.tx_idplan.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_idplan.Location = new System.Drawing.Point(287, 9);
+            this.tx_idplan.Name = "tx_idplan";
+            this.tx_idplan.Size = new System.Drawing.Size(24, 18);
+            this.tx_idplan.TabIndex = 363;
+            this.tx_idplan.Visible = false;
             // 
             // groupBox33
             // 
@@ -2109,39 +2131,6 @@
             this.tx_dat_tcd.TabIndex = 349;
             this.tx_dat_tcd.Visible = false;
             // 
-            // tx_tfil
-            // 
-            this.tx_tfil.AllowSpace = false;
-            this.tx_tfil.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_tfil.Location = new System.Drawing.Point(190, 434);
-            this.tx_tfil.Name = "tx_tfil";
-            this.tx_tfil.ReadOnly = true;
-            this.tx_tfil.Size = new System.Drawing.Size(41, 20);
-            this.tx_tfil.TabIndex = 347;
-            this.tx_tfil.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // tx_totpes
-            // 
-            this.tx_totpes.AllowSpace = false;
-            this.tx_totpes.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_totpes.Location = new System.Drawing.Point(483, 434);
-            this.tx_totpes.Name = "tx_totpes";
-            this.tx_totpes.ReadOnly = true;
-            this.tx_totpes.Size = new System.Drawing.Size(41, 20);
-            this.tx_totpes.TabIndex = 26;
-            this.tx_totpes.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // tx_totcant
-            // 
-            this.tx_totcant.AllowSpace = false;
-            this.tx_totcant.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_totcant.Location = new System.Drawing.Point(344, 434);
-            this.tx_totcant.Name = "tx_totcant";
-            this.tx_totcant.ReadOnly = true;
-            this.tx_totcant.Size = new System.Drawing.Size(41, 20);
-            this.tx_totcant.TabIndex = 25;
-            this.tx_totcant.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
             // tx_fletMN
             // 
             this.tx_fletMN.BackColor = System.Drawing.SystemColors.Window;
@@ -2296,15 +2285,38 @@
             this.rb_car_ofi.UseVisualStyleBackColor = true;
             this.rb_car_ofi.Click += new System.EventHandler(this.rb_car_ofi_Click);
             // 
-            // tx_idplan
+            // tx_tfil
             // 
-            this.tx_idplan.BackColor = System.Drawing.SystemColors.Window;
-            this.tx_idplan.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_idplan.Location = new System.Drawing.Point(287, 9);
-            this.tx_idplan.Name = "tx_idplan";
-            this.tx_idplan.Size = new System.Drawing.Size(24, 18);
-            this.tx_idplan.TabIndex = 363;
-            this.tx_idplan.Visible = false;
+            this.tx_tfil.AllowSpace = false;
+            this.tx_tfil.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_tfil.Location = new System.Drawing.Point(190, 434);
+            this.tx_tfil.Name = "tx_tfil";
+            this.tx_tfil.ReadOnly = true;
+            this.tx_tfil.Size = new System.Drawing.Size(41, 20);
+            this.tx_tfil.TabIndex = 347;
+            this.tx_tfil.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // tx_totpes
+            // 
+            this.tx_totpes.AllowSpace = false;
+            this.tx_totpes.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_totpes.Location = new System.Drawing.Point(483, 434);
+            this.tx_totpes.Name = "tx_totpes";
+            this.tx_totpes.ReadOnly = true;
+            this.tx_totpes.Size = new System.Drawing.Size(41, 20);
+            this.tx_totpes.TabIndex = 26;
+            this.tx_totpes.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // tx_totcant
+            // 
+            this.tx_totcant.AllowSpace = false;
+            this.tx_totcant.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_totcant.Location = new System.Drawing.Point(344, 434);
+            this.tx_totcant.Name = "tx_totcant";
+            this.tx_totcant.ReadOnly = true;
+            this.tx_totcant.Size = new System.Drawing.Size(41, 20);
+            this.tx_totcant.TabIndex = 25;
+            this.tx_totcant.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // guiati
             // 
@@ -2654,5 +2666,6 @@
         private System.Windows.Forms.RadioButton rb_car_clte;
         private System.Windows.Forms.RadioButton rb_car_ofi;
         private System.Windows.Forms.TextBox tx_idplan;
+        private System.Windows.Forms.TextBox tx_marcamion;
     }
 }

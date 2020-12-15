@@ -85,6 +85,11 @@
               <xs:element name="rucPropiet" msprop:Generator_ColumnVarNameInTable="columnrucPropiet" msprop:Generator_ColumnPropNameInRow="rucPropiet" msprop:Generator_ColumnPropNameInTable="rucPropietColumn" msprop:Generator_UserColumnName="rucPropiet" type="xs:string" minOccurs="0" />
               <xs:element name="nomPropiet" msprop:Generator_ColumnVarNameInTable="columnnomPropiet" msprop:Generator_ColumnPropNameInRow="nomPropiet" msprop:Generator_ColumnPropNameInTable="nomPropietColumn" msprop:Generator_UserColumnName="nomPropiet" type="xs:string" minOccurs="0" />
               <xs:element name="fechTraslado" msprop:Generator_ColumnVarNameInTable="columnfechTraslado" msprop:Generator_ColumnPropNameInRow="fechTraslado" msprop:Generator_ColumnPropNameInTable="fechTrasladoColumn" msprop:Generator_UserColumnName="fechTraslado" type="xs:string" minOccurs="0" />
+              <xs:element name="telremit" msprop:Generator_ColumnVarNameInTable="columntelremit" msprop:Generator_ColumnPropNameInRow="telremit" msprop:Generator_ColumnPropNameInTable="telremitColumn" msprop:Generator_UserColumnName="telremit" type="xs:string" minOccurs="0" />
+              <xs:element name="teldesti" msprop:Generator_ColumnVarNameInTable="columnteldesti" msprop:Generator_ColumnPropNameInRow="teldesti" msprop:Generator_ColumnPropNameInTable="teldestiColumn" msprop:Generator_UserColumnName="teldesti" type="xs:string" minOccurs="0" />
+              <xs:element name="fechora_imp" msprop:Generator_ColumnVarNameInTable="columnfechora_imp" msprop:Generator_ColumnPropNameInRow="fechora_imp" msprop:Generator_ColumnPropNameInTable="fechora_impColumn" msprop:Generator_UserColumnName="fechora_imp" type="xs:string" minOccurs="0" />
+              <xs:element name="userc" msprop:Generator_ColumnVarNameInTable="columnuserc" msprop:Generator_ColumnPropNameInRow="userc" msprop:Generator_ColumnPropNameInTable="usercColumn" msprop:Generator_UserColumnName="userc" type="xs:string" minOccurs="0" />
+              <xs:element name="marcamodelo" msprop:Generator_ColumnVarNameInTable="columnmarcamodelo" msprop:Generator_ColumnPropNameInRow="marcamodelo" msprop:Generator_ColumnPropNameInTable="marcamodeloColumn" msprop:Generator_UserColumnName="marcamodelo" type="xs:string" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>

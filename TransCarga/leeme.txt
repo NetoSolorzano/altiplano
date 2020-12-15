@@ -103,3 +103,5 @@ a eldni.pe .....................................................................
 - forms ayccaja,cobranzas,egresosdep,ingresosv no van botones de desplazamiento .................... ok 13/12/2020
 - forms ayccaja,cobranzas,egresosdep,ingresosv, si el usuario no es del local que desea 
   visualizar, modificar o anular, no debe poder .................................................... ok 13/12/2020 verificado
+- forms reportes, usuarios con nivel medio o bajo, solo pueden ver su local ........................ ok 14/12/2020
+- forms reportes, usuarios con nivel alto o admin pueden ver de todos los locales .................. ok 14/12/2020

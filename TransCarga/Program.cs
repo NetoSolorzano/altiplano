@@ -10,6 +10,8 @@ namespace TransCarga
         /// </summary>
         public static string vg_user = "";      // codigo de usuario
         public static string vg_nuse = "";      // nombre de usuario
+        public static string vg_tius = "";      // tipo de usuario
+        public static string vg_nius = "";      // nivel del usuario
         public static string vg_luse = "";      // codigo local usuario
         public static string vg_nlus = "";      // nombre local usuario
         public static string vg_duse = "";      // dirección locar usuario
