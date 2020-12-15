@@ -1422,10 +1422,13 @@ namespace TransCarga
                     micon.Parameters.AddWithValue("@grinau", tx_n_auto.Text);
                     micon.Parameters.AddWithValue("@telrem", tx_telR.Text);
                     micon.Parameters.AddWithValue("@teldes", tx_telD.Text);
-                    micon.Parameters.AddWithValue("@idplan", tx_idplan.Text);
-                    micon.Parameters.AddWithValue("@fecpla", tx_pla_fech.Text.Substring(6, 4) + "-" + tx_pla_fech.Text.Substring(3, 2) + "-" + tx_pla_fech.Text.Substring(0, 2));
-                    micon.Parameters.AddWithValue("@serpla", tx_pla_plani.Text.Substring(0, 4));
-                    micon.Parameters.AddWithValue("@numpla", tx_pla_plani.Text.Substring(4, 8));
+                    micon.Parameters.AddWithValue("@idplan", (tx_idplan.Text.Trim() == "") ? "0" : tx_idplan.Text);
+                    if (tx_idplan.Text.Trim() == "") micon.Parameters.AddWithValue("@fecpla", null);
+                    else micon.Parameters.AddWithValue("@fecpla", tx_pla_fech.Text.Substring(6, 4) + "-" + tx_pla_fech.Text.Substring(3, 2) + "-" + tx_pla_fech.Text.Substring(0, 2));
+                    if (tx_idplan.Text.Trim() == "") micon.Parameters.AddWithValue("@serpla", "");
+                    else micon.Parameters.AddWithValue("@serpla", tx_pla_plani.Text.Substring(0, 4));
+                    if (tx_idplan.Text.Trim() == "") micon.Parameters.AddWithValue("@numpla", "");
+                    else micon.Parameters.AddWithValue("@numpla", tx_pla_plani.Text.Substring(4, 8));
                     micon.Parameters.AddWithValue("@plapla", tx_pla_placa.Text);
                     micon.Parameters.AddWithValue("@carpla", tx_pla_carret.Text);
                     micon.Parameters.AddWithValue("@autpla", tx_pla_autor.Text);
