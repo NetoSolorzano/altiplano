@@ -293,8 +293,8 @@ namespace TransCarga
                         {
                             if (row["param"].ToString() == "flete") vtc_flete = row["valor"].ToString().Trim();           // imprime precio del flete ?
                             if (row["param"].ToString() == "c_int") v_cid = row["valor"].ToString().Trim();               // codigo interno pre guias
-                            if (row["param"].ToString() == "frase1") v_fra1 = row["valor"].ToString().Trim();               // frase de si va con clave la guia
-                            if (row["param"].ToString() == "frase2") v_fra2 = row["valor"].ToString().Trim();               // frase otro dato
+                            if (row["param"].ToString() == "frase1") v_fra1 = row["valor"].ToString().Trim();               // frase para documento anulado
+                            if (row["param"].ToString() == "frase2") v_fra2 = row["valor"].ToString().Trim();               // frase de si va con clave la guia
                             if (row["param"].ToString() == "serieAnu") v_sanu = row["valor"].ToString().Trim();               // serie anulacion interna
                         }
                         if (row["campo"].ToString() == "impresion")
@@ -557,7 +557,7 @@ namespace TransCarga
         }
         private void jaladet(string idr)         // jala el detalle
         {
-            string jalad = "select id,sergui,numgui,cantprodi,unimedpro,codiprodi,descprodi,pesoprodi,precprodi,totaprodi " +
+            string jalad = "select id,sergui,numgui,cantprodi,unimedpro,codiprodi,descprodi,round(pesoprodi,1),precprodi,totaprodi " +
                 "from detguiai where idc=@idr";
             using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
             {
@@ -1119,7 +1119,26 @@ namespace TransCarga
                                         dataGridView1.Rows[i].Cells[2].Value = gloDeta + " " + dataGridView1.Rows[i].Cells[2].FormattedValue.ToString();
                                     }
                                 }
-                                Bt_print.PerformClick();
+                                try
+                                {
+                                    using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
+                                    {
+                                        conn.Open();
+                                        if (lib.procConn(conn) == true)
+                                        {
+                                            using (MySqlCommand micon = new MySqlCommand("update cabguiai set impreso='S' where id=@idr"))
+                                            {
+                                                micon.Parameters.AddWithValue("@idr", tx_idr.Text);
+                                                micon.ExecuteNonQuery();
+                                            }
+                                        }
+                                    }
+                                    Bt_print.PerformClick();
+                                }
+                                catch(Exception ex)
+                                {
+                                    MessageBox.Show(ex.Message,"Error en proceso de impresión",MessageBoxButtons.OK,MessageBoxIcon.Error);
+                                }
                             }
                         }
                     }
@@ -1360,7 +1379,7 @@ namespace TransCarga
                     "locdestin,dirdestin,ubidestin,docsremit,obspregri,clifingri,cantotgri,pestotgri," +
                     "tipmongri,tipcamgri,subtotgri,igvgri,totgri,totpag,salgri,estadoser,cantfilas," +
                     "frase1,frase2,fleteimp,tipintrem,tipintdes,tippagpre,seguroE,m1cliente,m2cliente," +
-                    "subtotMN,igvMN,totgrMN,codMN,grinumaut,teleregri,teledegri," +
+                    "subtotMN,igvMN,totgrMN,codMN,grinumaut,teleregri,teledegri,igvporc," +
                     "idplani,fechplani,serplagri,numplagri,plaplagri,carplagri,autplagri,confvegri,breplagri,proplagri," +
                     "verApp,userc,fechc,diriplan4,diripwan4,netbname) " +
                     "values (@fechop,@sergr,@numgr,@npregr,@tdcdes,@ndcdes,@nomdes,@dircde,@ubicde," +
@@ -1368,7 +1387,7 @@ namespace TransCarga
                     "@ldcpgr,@didegr,@ubdegr,@dooprg,@obsprg,@conprg,@totcpr,@totppr," +
                     "@monppr,@tcprgr,@subpgr,@igvpgr,@totpgr,@pagpgr,@totpgr,@estpgr,@canfil," +
                     "@frase1,@frase2,@fleimp,@ticlre,@ticlde,@tipacc,@clavse,@m1clte,@m2clte," +
-                    "@stMN,@igMN,@tgMN,@codmn,@grinau,@telrem,@teldes," +
+                    "@stMN,@igMN,@tgMN,@codmn,@grinau,@telrem,@teldes,@igvpor," +
                     "@idplan,@fecpla,@serpla,@numpla,@plapla,@carpla,@autpla,@confve,@brepla,@propla," +
                     "@verApp,@asd,now(),@iplan,@ipwan,@nbnam)";
                 using (MySqlCommand micon = new MySqlCommand(inserta, conn))
@@ -1400,6 +1419,7 @@ namespace TransCarga
                     micon.Parameters.AddWithValue("@totppr", tx_totpes.Text);
                     micon.Parameters.AddWithValue("@canfil", tx_tfil.Text);             // cantidad de filas de detalle
                     micon.Parameters.AddWithValue("@monppr", tx_dat_mone.Text);
+                    micon.Parameters.AddWithValue("@igvpor", v_igv);                    // igv en porcentaje
                     micon.Parameters.AddWithValue("@tcprgr", tx_tipcam.Text);           // tipo de cambio ... falta leer de la tabla de cambios
                     micon.Parameters.AddWithValue("@subpgr", subtgr.ToString());        // sub total
                     micon.Parameters.AddWithValue("@igvpgr", igvtgr.ToString());        // igv
@@ -1407,7 +1427,7 @@ namespace TransCarga
                     micon.Parameters.AddWithValue("@pagpgr", "0");
                     micon.Parameters.AddWithValue("@estpgr", tx_dat_estad.Text);        // estado de la guía
                     micon.Parameters.AddWithValue("@frase1", (claveSeg == "") ? "" : v_fra1);
-                    micon.Parameters.AddWithValue("@frase2", v_fra2);
+                    micon.Parameters.AddWithValue("@frase2", (chk_seguridad.Checked == true)? v_fra2 : "");
                     micon.Parameters.AddWithValue("@fleimp", (chk_flete.Checked == true) ? "S" : "N");
                     micon.Parameters.AddWithValue("@ticlre", tx_dat_tcr.Text);   // tipo de cliente remitente, credito o contado
                     micon.Parameters.AddWithValue("@ticlde", tx_dat_tcd.Text);   // tipo de cliente destinatario, credito o contado
@@ -1529,7 +1549,7 @@ namespace TransCarga
                             "a.obspregri=@obsprg,a.clifingri=@conprg,a.cantotgri=@totcpr,a.pestotgri=@totppr,a.tipmongri=@monppr," +
                             "a.tipcamgri=@tcprgr,a.subtotgri=@subpgr,a.igvgri=@igvpgr,a.totgri=@totpgr,a.totpag=@pagpgr," +
                             "a.salgri=@totpgr,a.estadoser=@estpgr,a.seguroE=@clavse,a.cantfilas=@canfil,m1cliente=@m1clte,m2cliente=@m2clte," +
-                            "a.teleregri=@telrem,a.teledegri=@teldes," +
+                            "a.teleregri=@telrem,a.teledegri=@teldes,a.igvporc=@igvpor," +
                             "a.verApp=@verApp,a.userm=@asd,a.fechm=now(),a.diriplan4=@iplan,a.diripwan4=@ipwan,a.netbname=@nbnam " +
                             "where a.id=@idr";
                         MySqlCommand micon = new MySqlCommand(actua, conn);
@@ -1557,6 +1577,7 @@ namespace TransCarga
                         micon.Parameters.AddWithValue("@totcpr", tx_totcant.Text);
                         micon.Parameters.AddWithValue("@totppr", tx_totpes.Text);
                         micon.Parameters.AddWithValue("@monppr", tx_dat_mone.Text);
+                        micon.Parameters.AddWithValue("@igvpor", v_igv);                    // igv en porcentaje
                         micon.Parameters.AddWithValue("@tcprgr", tx_tipcam.Text);  // tipo de cambio
                         micon.Parameters.AddWithValue("@subpgr", subtgr.ToString()); // sub total de la pre guía
                         micon.Parameters.AddWithValue("@igvpgr", igvtgr.ToString()); // igv
@@ -2295,6 +2316,8 @@ namespace TransCarga
         {
             Tx_modo.Text = "NUEVO";
             button1.Image = Image.FromFile(img_grab);
+            panel1.Enabled = true;
+            panel2.Enabled = true;
             // local usa o no: pre-guias, numeracion automatica de GR
             DataRow[] fila = dtu.Select("idcodice='" + v_clu + "'");
             if(fila.Length > 0)
@@ -2345,6 +2368,8 @@ namespace TransCarga
         private void Bt_edit_Click(object sender, EventArgs e)
         {
             escribe();
+            panel1.Enabled = true;
+            panel2.Enabled = true;
             Tx_modo.Text = "EDITAR";
             button1.Image = Image.FromFile(img_grab);
             initIngreso();
@@ -2422,6 +2447,8 @@ namespace TransCarga
         private void Bt_ver_Click(object sender, EventArgs e)
         {
             sololee();
+            panel1.Enabled = false;
+            panel2.Enabled = false;
             Tx_modo.Text = "VISUALIZAR";
             button1.Image = Image.FromFile(img_ver);
             initIngreso();
@@ -2917,8 +2944,8 @@ namespace TransCarga
             rowcabeza.numpregui = tx_pregr_num.Text;
             rowcabeza.fechope = tx_fechope.Text;
             rowcabeza.fechTraslado = tx_pla_fech.Text;
-            rowcabeza.frase1 = "";  // no hay campo
-            rowcabeza.frase2 = "";  // no hay campo
+            rowcabeza.frase1 = (tx_dat_estad.Text == codAnul)? v_fra1 : "";  // campo para etiqueta "ANULADO"
+            rowcabeza.frase2 = (chk_seguridad.Checked == true)? v_fra2 : "";  // campo para etiqueta "TIENE CLAVE"
             // origen - destino
             rowcabeza.nomDestino = cmb_destino.Text;
             rowcabeza.direDestino = tx_dirDestino.Text;
@@ -2983,7 +3010,7 @@ namespace TransCarga
                 rowdetalle.descrip = dataGridView1.Rows[i].Cells[2].Value.ToString();
                 rowdetalle.precio = "";     // no estamos usando
                 rowdetalle.total = "";      // no estamos usando
-                rowdetalle.peso = dataGridView1.Rows[i].Cells[3].Value.ToString();
+                rowdetalle.peso = string.Format("{0:#0.0} Kg.", dataGridView1.Rows[i].Cells[3].Value.ToString());  // dataGridView1.Rows[i].Cells[3].Value.ToString() + "Kg."
                 guiaT.gr_ind_det.Addgr_ind_detRow(rowdetalle);
             }
             //

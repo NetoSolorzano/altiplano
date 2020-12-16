@@ -700,7 +700,7 @@
             this.button1.Location = new System.Drawing.Point(672, 401);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(62, 56);
-            this.button1.TabIndex = 21;
+            this.button1.TabIndex = 25;
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
@@ -1357,7 +1357,7 @@
             // 
             // peso
             // 
-            this.peso.HeaderText = "PESO";
+            this.peso.HeaderText = "PESO Kg.";
             this.peso.Name = "peso";
             // 
             // gbox_flete
@@ -2577,10 +2577,6 @@
         private System.Windows.Forms.TextBox tx_estado;
         private System.Windows.Forms.TextBox tx_impreso;
         private System.Windows.Forms.TextBox tx_dat_estad;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Cant;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Umed;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Descrip;
-        private System.Windows.Forms.DataGridViewTextBoxColumn peso;
         private System.Windows.Forms.Label label18;
         private System.Windows.Forms.GroupBox groupBox17;
         private System.Windows.Forms.GroupBox groupBox18;
@@ -2667,5 +2663,9 @@
         private System.Windows.Forms.RadioButton rb_car_ofi;
         private System.Windows.Forms.TextBox tx_idplan;
         private System.Windows.Forms.TextBox tx_marcamion;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Cant;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Umed;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Descrip;
+        private System.Windows.Forms.DataGridViewTextBoxColumn peso;
     }
 }
