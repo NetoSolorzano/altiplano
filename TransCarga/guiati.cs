@@ -180,17 +180,19 @@ namespace TransCarga
             tx_numero.MaxLength = 8;        // numero pre guia
             tx_dirRem.MaxLength = 100;
             tx_nomRem.MaxLength = 100;           // nombre remitente
-            tx_distRtt.MaxLength = 25;
-            tx_provRtt.MaxLength = 25;
-            tx_dptoRtt.MaxLength = 25;
+            tx_distRtt.MaxLength = 45;
+            tx_provRtt.MaxLength = 45;
+            tx_dptoRtt.MaxLength = 45;
             tx_nomDrio.MaxLength = 100;           // nombre destinatario
             tx_dirDrio.MaxLength = 100;
-            tx_disDrio.MaxLength = 25;
-            tx_proDrio.MaxLength = 25;
-            tx_dptoDrio.MaxLength = 25;
+            tx_disDrio.MaxLength = 45;
+            tx_proDrio.MaxLength = 45;
+            tx_dptoDrio.MaxLength = 45;
             tx_docsOr.MaxLength = 100;          // documentos origen del traslado
             tx_consig.MaxLength = 100;
             tx_obser1.MaxLength = 150;
+            tx_telD.MaxLength = 19;
+            tx_telR.MaxLength = 19;
             // 
             tx_nomRem.CharacterCasing = CharacterCasing.Upper;
             tx_dirRem.CharacterCasing = CharacterCasing.Upper;
@@ -1908,6 +1910,10 @@ namespace TransCarga
                             }
                         }
                     }
+                    if (tx_nomRem.Text.Trim() == "")
+                    {
+                        tx_nomRem.ReadOnly = false;
+                    }
                     // si la direccion esta en blanco, debe permitir escribir
                     if (tx_dirRem.Text.Trim() == "" || tx_dirRem.Text.Trim().Substring(0,3) == "- -")
                     {
@@ -2008,6 +2014,10 @@ namespace TransCarga
                                 v_clte_des = "N";
                             }
                         }
+                    }
+                    if (tx_nomDrio.Text.Trim() == "")
+                    {
+                        tx_nomDrio.ReadOnly = false;
                     }
                     // si la direccion esta en blanco debe permitir actualizar
                     if (tx_dirDrio.Text.Trim() == "" || tx_dirDrio.Text.Trim().Substring(0,3) == "- -")   // tx_dirDrio.Text.Trim() == ""
