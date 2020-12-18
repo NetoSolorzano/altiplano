@@ -1532,6 +1532,12 @@ namespace TransCarga
                 MessageBox.Show("Debe aperturar caja para poder cobrar","Caja no abierta",MessageBoxButtons.OK,MessageBoxIcon.Hand);
                 return;
             }
+            // validamos la fecha de la caja
+            if (lib.fechaServ() != TransCarga.Program.vg_fcaj)  // ambas fecahs formato yyyy-mm-dd
+            {
+                MessageBox.Show("Debe cerrar la caja anterior!", "Caja fuera de fecha", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+                return;
+            }
             Tx_modo.Text = "NUEVO";
             button1.Image = Image.FromFile(img_grab);
             escribe();

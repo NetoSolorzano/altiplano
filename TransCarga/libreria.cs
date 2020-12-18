@@ -2397,7 +2397,7 @@ namespace TransCarga
             }
             return retorna;
         }
-        public string fechaserv()                                           // retorna fecha actual del servidor
+        public string fechaserv()                                           // retorna fecha del servidor FORMATO DD/MM/AAAA
         {
             string retorna = "";
             string consulta = "select DATE_FORMAT(NOW(), '%d/%m/%Y') AS fecha_actual";
@@ -2421,6 +2421,25 @@ namespace TransCarga
             {
                 MessageBox.Show("Se perdió conexión con el servidor en librerías", "Error en conectividad");
                 Application.Exit();
+            }
+            return retorna;
+        }
+        public string fechaServ()                                           // retorna fecha del servidor FORMATO AAAA-MM-DD
+        {
+            string retorna = "";
+            using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
+            {
+                conn.Open();
+                using (MySqlCommand micon = new MySqlCommand("SELECT DATE(NOW())", conn))
+                {
+                    using (MySqlDataReader dr = micon.ExecuteReader())
+                    {
+                        if (dr.Read())
+                        {
+                            retorna = dr.GetString(0);
+                        }
+                    }
+                }
             }
             return retorna;
         }
@@ -3065,6 +3084,11 @@ namespace TransCarga
                         config.AppSettings.Settings["rapater"].Value + " " +
                         config.AppSettings.Settings["ramater"].Value;   // textBox9.Text NOMBRE
                     retorna[1] = config.AppSettings.Settings["rnumero"].Value;  // textBox3.Text NUMERO DNI
+                    //
+                    config.AppSettings.Settings["rnombre"].Value = "";
+                    config.AppSettings.Settings["rapater"].Value = "";
+                    config.AppSettings.Settings["ramater"].Value = "";
+                    config.Save();
                     p.Close();
                 }
             }
