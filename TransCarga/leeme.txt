@@ -47,13 +47,12 @@ form planicarga: (planilla de carga)
 - Desarrollo del form .............................................................................. ok
 - La EDICION de una planilla, NO recalcula el flete, pagado y saldo x pagar de las guías pre existentes en la planilla.
   Los saldos y flete de cada guía se calculan SOLO AL MOMENTO DE REGISTRAR UNA GUIA EN LA PLANILLA.. ok 09/12/2020
-- Cierre de la planilla, es un proceso manual en modo edicion del form ............................. 
+- Cierre de la planilla, es un proceso manual en modo edicion del form ............................. OK 18/12/2020
 - Reapertura de una planilla en cualquier momento y fecha, debe ser usuario del local de origen .... 
 form transbord: (proceso de transbordos, no usa tablas propias) 
 - Unico boton de NUEVO, transborda parcial o total guias de una planilla a otra existente .......... ME QUEDE ACA FALTA
 form facelect: (facturacion electrónica, se integra con sist propio del cliente)
 - desarrollo del form .............................................................................. ok
--- falta: formato impresion (al 28/10/2020) ........................................................ FALTA
 form tipcamref: (tipo de cambio)
 - Desarrollo del form .............................................................................. ok 02/11/2020
 form vtipcam, ventana para realizar calculo de tipo de cambio ...................................... ok 05/11/2020
@@ -92,7 +91,7 @@ form facelect: cuando se cobra en automatico, debe tener el id de caja .........
 form guiati: (mejoras en base a pruebas con Carrión)
 - numeracion automatica / manual de las GR ......................................................... ok 08/12/2020
 - agregar botones para despacho en oficina o dir.cliente ........................................... ok 09/12/2020
-- formato de impresion A5 de guias ................................................................. falta terminar
+- formato de impresion A5 de guias ................................................................. OK 18/12/2020
 - adecuaciones en telefonos y direcciones de envio y recojo ........................................ ok 12/12/2020
 OJO, 09/12/2020 COMENTE EL CONECTOR DE DNI HASTA ARREGLAR EL PROB. PC CARRION ...................... OK 09/12/2020
 OJO2, 10/02/2020 regresé la configuracion anterior porque ya arregle cambiando de del rop jnd
@@ -108,4 +107,7 @@ a eldni.pe .....................................................................
 - form planicarga, mejoras en validaciones y F1 .................................................... falta terminar, me quede aca
 - form guiati, mejora para permitir digitar el nombre si los conectores no jalan ................... ok 16/12/2020
 - form guiati, ampliar ancho campo de telefono y limitar ........................................... ok 16/12/2020
-- form cobranzas, cerrar caja si la fecha es anterior.... .......................................... 
+- form cobranzas, cerrar caja si la fecha es anterior.... .......................................... falta 
+form facelect: (facturacion electrónica, se integra con sist propio del cliente)
+- procesos de grabar TXT ........................................................................... 
+- formato impresion ................................................................................ FALTA

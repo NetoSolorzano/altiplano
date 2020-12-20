@@ -66,11 +66,15 @@ namespace TransCarga
         string v_idcaj = "";            // id de la caja actual
         string codAbie = "";            // codigo estado de caja abierta
         //
+        string rutatxt = "";            // ruta de los txt para la fact. electronica
+        string tipdo = "";              // CODIGO SUNAT tipo de documento
+        //
         static libreria lib = new libreria();   // libreria de procedimientos
         publico lp = new publico();             // libreria de clases
         string verapp = System.Diagnostics.FileVersionInfo.GetVersionInfo(Application.ExecutablePath).FileVersion;
         string nomclie = Program.cliente;           // cliente usuario del sistema
         string rucclie = Program.ruc;               // ruc del cliente usuario del sistema
+        string ubiclie = Program.ubidirfis;         // ubigeo direc fiscal
         string asd = TransCarga.Program.vg_user;    // usuario conectado al sistema
         string dirloc = TransCarga.Program.vg_duse; // direccion completa del local usuario conectado
         string ubiloc = TransCarga.Program.vg_uuse; // ubigeo local del usuario conectado
@@ -266,6 +270,10 @@ namespace TransCarga
                             if (row["param"].ToString() == "anulado") codAnul = row["valor"].ToString().Trim();         // codigo doc anulado
                             if (row["param"].ToString() == "generado") codGene = row["valor"].ToString().Trim();        // codigo doc generado
                             if (row["param"].ToString() == "cancelado") codCanc = row["valor"].ToString().Trim();        // codigo doc cancelado
+                        }
+                        if (row["campo"].ToString() == "rutas")
+                        {
+                            if (row["param"].ToString() == "fe_txt") rutatxt = row["valor"].ToString().Trim();         // ruta de los txt para la fact. electronica
                         }
                     }
                     if (row["formulario"].ToString() == "clients" && row["campo"].ToString() == "documento")
@@ -487,7 +495,7 @@ namespace TransCarga
                 }
                 // datos para el combobox documento de venta
                 cmb_tdv.Items.Clear();
-                using (MySqlCommand cdv = new MySqlCommand("select idcodice,descrizionerid,enlace1 from desc_tdv where numero=@bloq and codigo=@codv", conn))
+                using (MySqlCommand cdv = new MySqlCommand("select idcodice,descrizionerid,enlace1,codsunat from desc_tdv where numero=@bloq and codigo=@codv", conn))
                 {
                     cdv.Parameters.AddWithValue("@bloq", 1);
                     cdv.Parameters.AddWithValue("@codv", v_codidv);
@@ -794,91 +802,244 @@ namespace TransCarga
             tx_igv.Text = tigv.ToString("#0.00");
             tx_subt.Text = tsub.ToString("#0.00");
         }
+        
+        #region facturacion electronica
         private bool factElec(string provee, string tipo)                 // conexion a facturacion electrónica provee=proveedor | tipo=txt ó json
         {
             bool retorna = false;
-            if (provee == "NubeFact")
+            
+            DataRow[] row = dttd1.Select("idcodice='"+tx_dat_tdv.Text+"'");             // tipo de documento 
+            tipdo = row[0][8].ToString();
+            string serie = row[0][3].ToString().Substring(0,1) + lib.Right(tx_serie.Text,3);
+            string corre = tx_numero.Text;
+            if (provee == "Horizont")
             {
-                /* NubeFacT nubeFacT = new NubeFacT();                
-                Invoice invoice = new Invoice();
-                invoice.operacion = "generar_comprobante";
-                invoice.tipo_de_comprobante = 1;
-                invoice.serie = "FFF1";
-                invoice.numero = 1;
-                invoice.sunat_transaction = 1;
-                invoice.cliente_tipo_de_documento = 6;
-                invoice.cliente_numero_de_documento = tx_numDocRem.Text;
-                invoice.cliente_denominacion = tx_nomRem.Text;
-                invoice.cliente_direccion = tx_dirRem.Text;
-                invoice.cliente_email = tx_email.Text;
-                invoice.cliente_email_1 = "";
-                invoice.cliente_email_2 = "";
-                invoice.fecha_de_emision = DateTime.Parse(tx_fechope.Text);
-                invoice.fecha_de_vencimiento = DateTime.Now.AddDays(1);         // ponerlo en variable 
-                invoice.moneda = 1;                                             // ponerlo en desc_mon
-                invoice.tipo_de_cambio = tx_tipcam.Text;
-                invoice.porcentaje_de_igv = double.Parse(v_igv);
-                invoice.descuento_global = "";
-                invoice.total_descuento = "";
-                invoice.total_anticipo = "";
-                invoice.total_gravada = double.Parse(tx_flete.Text);
-                invoice.total_inafecta = "";
-                invoice.total_exonerada = "";
-                invoice.total_igv = Math.Round(double.Parse(tx_flete.Text) * 18 / 100, 2);          // falta DEBE JALARSE DE UN TEXTBOX
-                invoice.total_gratuita = "";
-                invoice.total_otros_cargos = "";
-                invoice.total = double.Parse(tx_flete.Text);
-                invoice.percepcion_tipo = "";
-                invoice.percepcion_base_imponible = "";
-                invoice.total_percepcion = "";
-                invoice.detraccion = false;                                         // validar si es o no
-                invoice.observaciones = tx_obser1.Text;
-                invoice.documento_que_se_modifica_tipo = "";
-                invoice.documento_que_se_modifica_serie = "";
-                invoice.documento_que_se_modifica_numero = "";
-                invoice.tipo_de_nota_de_credito = "";
-                invoice.tipo_de_nota_de_debito = "";
-                invoice.enviar_automaticamente_a_la_sunat = true;
-                invoice.enviar_automaticamente_al_cliente = false;
-                invoice.codigo_unico = "";
-                invoice.condiciones_de_pago = "";
-                invoice.medio_de_pago = "";
-                invoice.placa_vehiculo = "";
-                invoice.orden_compra_servicio = "";
-                invoice.tabla_personalizada_codigo = "";
-                invoice.formato_de_pdf = "";
-                invoice.items = new List<Items>()                               // meterlo en un bucle
-            {
-                new Items()
+                string ruta = rutatxt + "/TXT/";
+                string archi = rucclie + "-" + tipdo + "-" + serie + "-" + corre;
+                if (crearTXT(tipdo, serie, corre, ruta + archi) == true)
                 {
-                    unidad_de_medida = "ZZ",
-                    codigo = "001",
-                    descripcion = dataGridView1.Rows[0].Cells[1].Value.ToString(),
-                    cantidad = int.Parse(dataGridView1.Rows[0].Cells[2].Value.ToString()),
-                    valor_unitario = double.Parse(dataGridView1.Rows[0].Cells[4].Value.ToString()),
-                    precio_unitario = double.Parse(dataGridView1.Rows[0].Cells[4].Value.ToString()),
-                    descuento = "",
-                    subtotal = double.Parse(dataGridView1.Rows[0].Cells[4].Value.ToString())/1.18,      // ponerlo en variable
-                    tipo_de_igv = 1,                                                                    // meterlo en una variable
-                    igv = double.Parse(dataGridView1.Rows[0].Cells[4].Value.ToString())*18/100,         // meterlo en una variable
-                    total = double.Parse(dataGridView1.Rows[0].Cells[4].Value.ToString()),
-                    anticipo_regularizacion = false,
-                    anticipo_comprobante_serie = "",
-                    anticipo_comprobante_numero = ""
-                },
-            };
-                string json = JsonConvert.SerializeObject(invoice, Formatting.Indented);
-                Console.WriteLine(json);
-                byte[] bytes = Encoding.Default.GetBytes(json);
-                string json_en_utf_8 = Encoding.UTF8.GetString(bytes);
-                // me quede aCA!
-                // en desarrollo 09/11/2020
-            */
-            }
 
-            retorna = true;
+                }
+                retorna = true;
+            }
             return retorna;
         }
+        private bool crearTXT(string tipdo, string serie, string corre, string file_path)
+        {
+            bool retorna;
+            retorna = false;
+                {
+                    string _fecemi = string.Format("{0:yyyy-MM-dd}", tx_fechope.Text);          // fecha de emision   yyyy-mm-dd
+                    // 02 firma digital             3000
+                    string Prazsoc = nomclie.Trim();                                            // razon social del emisor
+                    string Pnomcom = "";                                                        // nombre comercial del emisor
+                    string ubigEmi = ubiclie;                                                   // UBIGEO DOMICILIO FISCAL
+                    string Pdf_dir = dirloc.Trim();                                             // DOMICILIO FISCAL - direccion
+                    string Pdf_urb = "";                                                        // DOMICILIO FISCAL - Urbanizacion
+                    string Pdf_pro = Program.provfis.Trim();                                    // DOMICILIO FISCAL - provincia
+                    string Pdf_dep = Program.depfisc.Trim();                                    // DOMICILIO FISCAL - departamento
+                    string Pdf_dis = Program.distfis.Trim();                                    // DOMICILIO FISCAL - distrito
+                    string paisEmi = grilla.Rows[i].Cells["paisEmisor"].Value.ToString();    // 05 DOMICILIO FISCAL - código de país              2
+                    string Prucpro = grilla.Rows[i].Cells["numeDocEmi"].Value.ToString();    // 06 Ruc del emisor                                11
+                    string Pcrupro = grilla.Rows[i].Cells["tipoDocEmi"].Value.ToString();    // 06 codigo Ruc emisor                              1
+                    string _tipdoc = grilla.Rows[i].Cells["tipoDocumento"].Value.ToString();    // 07 Tipo de documento de venta                     1
+                    string _moneda = grilla.Rows[i].Cells["tipoMoneda"].Value.ToString();    // 28 Moneda del doc. de venta                       3
+                    string _sercor = grilla.Rows[i].Cells["servta"].Value.ToString() + "-" + grilla.Rows[i].Cells["corrvta"].Value.ToString();    // 08 Serie y correlat concatenado F001-00000001    13
+                    string Cnumdoc = grilla.Rows[i].Cells["numdcli"].Value.ToString().Trim();    // 09 numero de doc. del cliente                    15
+                    string Ctipdoc = grilla.Rows[i].Cells["tipoDocAdq"].Value.ToString();    // 09 tipo de doc. del cliente                       1
+                    string Cnomcli = grilla.Rows[i].Cells["razSocAdq"].Value.ToString().Trim();    // 10 nombre del cliente                           100
+                    string ubigAdq = grilla.Rows[i].Cells["ubigeoAdq"].Value.ToString();    // ubigeo del adquiriente
+                    string dir1Adq = grilla.Rows[i].Cells["direc1"].Value.ToString().Trim();       // direccion del adquiriente 1
+                    string dir2Adq = grilla.Rows[i].Cells["direc2"].Value.ToString().Trim();       // direccion del adquiriente 2
+                    string provAdq = grilla.Rows[i].Cells["provAdq"].Value.ToString().Trim();      // provincia del adquiriente
+                    string depaAdq = grilla.Rows[i].Cells["dptoAdq"].Value.ToString().Trim();      // departamento del adquiriente
+                    string distAdq = grilla.Rows[i].Cells["distAdq"].Value.ToString().Trim();      // distrito del adquiriente
+                    string paisAdq = grilla.Rows[i].Cells["paisAdq"].Value.ToString().Trim();      // pais del adquiriente
+                    string _totoin = "0.00";                                                       // total operaciones inafectas
+                    string _totoex = "0.00";                                                       // total operaciones exoneradas
+                    string _toisc = "0.00";                                                        // total impuesto selectivo consumo
+                    string _totogr = grilla.Rows[i].Cells["totValVtaNetGrav"].Value.ToString();    // 18 Tot valor venta operaciones grabadas n(12,2)  15
+                    string _totven = grilla.Rows[i].Cells["totalVenta"].Value.ToString();    // 27 Importe total de la venta n(12,2)             15
+                    string tipOper = grilla.Rows[i].Cells["tipoOperac"].Value.ToString();    // tipo de operacion
+                    string codLocE = grilla.Rows[i].Cells["codiLocAnEmi"].Value.ToString();  // codigo local emisor
+                    string conPago = "01";                                                   // condicion de pago, ALTIPLANO CONTADO
+                    string _codgui = "";
+                    if (grilla.Rows[i].Cells["grem"].Value.ToString().Trim() != "")
+                    {
+                        _codgui = "31";  //grilla.Rows[i].Cells[""].Value.ToString();             // 29 Código de la guia de remision TRANSPORTISTA
+                    }
+                    string _scotro = grilla.Rows[i].Cells["grem"].Value.ToString();    // 30 serie y numero concatenado de la guia
+                    string obser1 = grilla.Rows[i].Cells["observ"].Value.ToString().Trim();                // observacion del documento
+                    string obser2 = grilla.Rows[i].Cells["observ2"].Value.ToString().Trim();               // idem anterior
+                    string maiAdq = grilla.Rows[i].Cells["correoAdquiriente"].Value.ToString().Trim();     // correo del adquiriente
+                    string totImp = grilla.Rows[i].Cells["totalImp"].Value.ToString();                     // total impuestos del documento
+                    string codImp = grilla.Rows[i].Cells["codTipoImp"].Value.ToString();                   // codigo impuesto
+                    string nomImp = grilla.Rows[i].Cells["nomTipoImp"].Value.ToString();                   // nombre del tipo de impuesto
+                    string tipTri = grilla.Rows[i].Cells["tipoTributo"].Value.ToString();                  // tipo de tributo
+                    string monLet = grilla.Rows[i].Cells["texLeyen1"].Value.ToString().Trim();             // monto en letras
+                    // detracciones
+                    string d_porde = grilla.Rows[i].Cells["pordetra"].Value.ToString();               // porcentaje de detraccion
+                    string d_valde = grilla.Rows[i].Cells["valdetra"].Value.ToString();               // valor de la detraccion
+                    string d_codse = grilla.Rows[i].Cells["codserd"].Value.ToString();                // codigo de servicio
+                    string d_ctade = grilla.Rows[i].Cells["ctadetra"].Value.ToString();               // cuenta detraccion BN
+                    string d_valre = grilla.Rows[i].Cells["valref1"].Value.ToString();                // valor referencial
+                    string d_numre = grilla.Rows[i].Cells["numregt"].Value.ToString();                // numero registro mtc del camion
+                    string d_confv = grilla.Rows[i].Cells["confveh"].Value.ToString();                // config. vehicular del camion
+                    string d_ptori = grilla.Rows[i].Cells["ptorigt"].Value.ToString();                // Pto de origen
+                    string d_ptode = grilla.Rows[i].Cells["ptodest"].Value.ToString();                // Pto de destino
+                    string d_vrepr = grilla.Rows[i].Cells["valrefpre"].Value.ToString();              // valor referencial preliminar
+                    //
+                    char sep = (char)31;
+                    StreamWriter writer;
+                    file_path = file_path + ".txt";
+                    writer = new StreamWriter(file_path);
+                    writer.WriteLine("CONTROL" + sep + "31006");
+                    writer.WriteLine("ENCABEZADO" + sep +
+                        "" + sep +          // id del erp emisor
+                        _tipdoc + sep +     // Tipo de Comprobante Electrónico
+                        _sercor + sep +     // Numeración de Comprobante Electrónico
+                        _fecemi + sep +     // Fecha de emisión
+                        _moneda + sep +     // Tipo de moneda
+                        "" + sep + "" + sep + "" + sep +                 // tcambio, vendedor, unidad de negocio
+                        tipOper + sep +     // Tipo de Operación
+                        "" + sep + "" + sep + "" + sep + "" + sep +     // monto anticipos, numero, ruc emisor, total anticipos
+                        "" + sep + "" + sep + "" + sep + "" + sep +     // Tipo de nota(Crédito/Débito),Tipo del documento afectado,Numeración de documento afectado,Motivo del documento afectado
+                        conPago + sep +     // Condición de Pago
+                        "" + sep +          // Plazo de Pago
+                        "" + sep +          // Fecha de vencimiento
+                        "" + sep + "" + sep + "" + sep + "" + sep + "" + sep + "" + sep +           // Forma de Pago del 1 al 6
+                        "" + sep + "" + sep +                           // Número del pedido, Número de la orden de compra
+                        "" + sep + "" + sep + "" + sep + "" + sep +     // sector publico: Numero de Expediente,Código de unidad ejecutora, Nº de contrato,Nº de proceso de selección
+                        _codgui + sep + _scotro + sep +       // tipo de guia y serie+numero
+                        "" + sep + "" + sep + "" + sep + "" + sep + "" + sep + "" + sep + "" + sep + "" + sep + "" + sep +  // varios campos opcionales
+                        obser1 + sep + obser2 + sep + "" + sep +        // observaciones del documento 1 y 2
+                        _totogr + sep +                  // Total operaciones gravadas
+                        _totoin + sep +                  // Total operaciones inafectas
+                        _totoex + sep +                  // total operaciones exoneradas
+                        "" + sep +                       // total operaciones gratuitas gratuitas
+                        "" + sep +                       // Monto Fondo Inclusión Social Energético FISE
+                        totImp + sep +                   // Total IGV
+                        _toisc + sep +                          // Total ISC
+                        "" + sep + "" + sep + "" + sep + "" + sep +  // Total otros tributos,Total otros,Descuento Global,Total descuento
+                        _totven + sep +     // Importe total de la venta
+                        monLet + sep +      // Leyenda: Monto expresado en Letras
+                        "" + sep +      // Leyenda: Transferencia gratuita o servicio prestado gratuitamente
+                        "" + sep +      // Leyenda: Bienes transferidos en la Amazonía
+                        "" + sep +      // Leyenda: Servicios prestados en la Amazonía
+                        "" + sep +      // Leyenda: Contratos de construcción ejecutados en la Amazonía
+                        "" + sep + "" + sep + "");  // Leyenda: Exoneradas,Leyenda: Inafectas,Leyenda: Emisor itinerante
+                    writer.WriteLine("ENCABEZADO-EMISOR" + sep +
+                        Prucpro + sep +     // ruc emisor
+                        Prazsoc + sep +     // razon social emisor
+                        Pnomcom + sep +     // nombre comercial emisor
+                        paisEmi + sep +     // pais del emisor
+                        ubigEmi + sep +     // ubigeo del emisor
+                        Pdf_dep + sep +     // Departamento
+                        Pdf_pro + sep +     // Provincia
+                        Pdf_dis + sep +     //Distrito
+                        Pdf_urb + sep +     // Urbanización
+                        Pdf_dir + sep +     // Dirección detallada
+                        "" + sep +          // Punto de emisión ... aca deberia ser la serie asignada por sunat al local emisor
+                        "" + sep +          // Dirección de emisión ... aca deberia ir la direc del local emisor
+                        te1clie + sep +          // Teléfono
+                        "" + sep +          // Fax
+                        corclie);                // Correo-Emisor
+                    if (Ctipdoc == "0") Cnumdoc = "";
+                    writer.WriteLine("ENCABEZADO-RECEPTOR" + sep +
+                    Ctipdoc + sep +              // Tipo de documento del cliente
+                    Cnumdoc + sep +              // Nro. Documento del cliente
+                    Cnomcli + sep +              // Razón social del cliente
+                    "" + sep +                   // Identificador del cliente
+                    paisAdq + sep +              // Código país
+                    ubigAdq + sep +              // Ubigeo
+                    depaAdq + sep +              // Departamento
+                    provAdq + sep +              // Provincia
+                    distAdq + sep +              // Distrito
+                    "" + sep +                   // Urbanización   dir2Adq
+                    dir1Adq + sep +              // Dirección
+                    maiAdq);                    // Correo-Receptor
+                    if (d_porde != "0.00")
+                    {
+                        writer.WriteLine("ENCABEZADO-DETRACCION" + sep +
+                        d_porde + sep +              // porcentaje de detraccion
+                        d_valde + sep +               // valor de la detraccion
+                        d_codse + sep +                // codigo de servicio
+                        d_ctade + sep +               // cuenta detraccion BN
+                        "" + sep +                    // no aplica a transportes (embarcacion pesquera)
+                        "" + sep +                      // no aplica a transportes
+                        "" + sep +                      // no aplica a transportes (lugar de la descarga)
+                        "" + sep +                      // no aplica a transportes (fecha de la descarga)
+                        "" + sep +                      // no aplica a transportes
+                        "" + sep +                      // no aplica a transportes
+                        "" + sep +                      // no aplica a transportes (especie vendida)
+                        "" + sep +                      // no aplica a transportes (lugar de la descarga +1)
+                        "" + sep +                      // no aplica a transportes (fecha de la descarga +1)
+                        d_valre + sep +                // valor referencial
+                        d_numre + sep +                // numero registro mtc del camion
+                        d_confv + sep +                // config. vehicular del camion
+                        d_ptori + sep +                // Pto de origen
+                        d_ptode + sep +                // Pto de destino
+                        d_vrepr + sep +                      // valor referencial preliminar
+                        "" + sep +
+                        "" + sep +
+                        "" + sep +
+                        "" + sep +
+                        "" + sep +
+                        "" + sep +
+                        "" + sep +
+                        "" + sep +
+                        "" + sep +
+                        "" + sep +
+                        glosdet + " " + d_ctade);                // leyenda de la detración
+                    }
+                    for (int s = 0; s < grillad.Rows.Count - 1; s++)
+                    {
+                        DataGridViewRow row = grillad.Rows[s];
+                        if (row.Cells["tipoDocumento"].Value.ToString() == tipdo && row.Cells["servta"].Value.ToString() == serie && row.Cells["corvta"].Value.ToString() == corre)
+                        {
+                            string Iumeded = grillad.Rows[s].Cells["unidadmed"].Value.ToString();       // 11 DETALLE - Unidad de medida                     3
+                            string Icantid = grillad.Rows[s].Cells["cantidad"].Value.ToString();        // 12 DETALLE - Cantidad de items   n(12,3)         16
+                            string Idescri = grillad.Rows[s].Cells["descripcion"].Value.ToString();     // 13 DETALLE - Nombre o descripcion               250
+                            string Ivaluni = grillad.Rows[s].Cells["impUniSinImp"].Value.ToString();    // 14 DETALLE - Valor unitario del item n(12,2)     15
+                            string Ipreuni = grillad.Rows[s].Cells["impUniConImp"].Value.ToString();    // 15 DETALLE - Precio de venta unitario n(12,2)    15
+                            string Icodpre = grillad.Rows[s].Cells["codImpUniConImp"].Value.ToString(); // 15 DETALLE - Código tipo de precio                2
+                            string Iigvite = grillad.Rows[s].Cells["impTotalImp"].Value.ToString();     // 16 DETALLE - monto IGV del item  n(12,2)         15
+                            string Isubigv = grillad.Rows[s].Cells["impTotSinImp"].Value.ToString();    // 16 DETALLE - sub tot igv n(12,2)                 15
+                            string Icatigv = grillad.Rows[s].Cells["identifIgv"].Value.ToString();      // 16 DETALLE - Afectacion al igv                    2
+                            string Icodigv = grillad.Rows[s].Cells["codigoIgv"].Value.ToString();       // 16 DETALLE - Código de tributo                    4
+                            string Inomtig = grillad.Rows[s].Cells["nombreIgv"].Value.ToString();       // 16 DETALLE - Nombre del tributo                   6
+                            string Iinttri = grillad.Rows[s].Cells["tipoTribIgv"].Value.ToString();     // 16 DETALLE - Codigo internacional del tributo     3
+                            string _sumigv = grillad.Rows[s].Cells["importeIgv"].Value.ToString();      // 22 Sumatoria de igv                              15
+                            string Inumord = grillad.Rows[s].Cells["numOrdenItem"].Value.ToString();    // 33 numero de orden del item                       3
+                            string Icodpro = grillad.Rows[s].Cells["codprd"].Value.ToString();          // 34 codigo del producto                           30
+                            //
+                            writer.WriteLine(
+                                "ITEM" + sep +
+                                Inumord + sep +     // orden
+                                "" + sep +          // libre para algo que no lo entendi
+                                Iumeded + sep +     // medida ...... servicio ZZ
+                                Icantid + sep +     // cantidad .... altiplano 1 servicio de transporte
+                                Idescri + sep +     // descripcion del servicio
+                                "" + sep +          // glosa del item
+                                "" + sep +          // codigo del producto
+                                Ivaluni + sep +     // Valor unitario por ítem
+                                Ipreuni + sep +     // Precio de venta unitario por ítem
+                                "" + sep +          // Valor referencial unitario por ítem en operaciones no onerosas
+                                Icodigv + sep +     // Tipo Afectación IGV
+                                Iigvite + sep +     // Monto IGV
+                                "" + sep +          // Tipo Afectación ISC
+                                "" + sep +          // Monto ISC
+                                "" + sep +          // Descuentos por ítem
+                                Isubigv);           // Valor de venta por ítem
+                        }
+                    }
+                    writer.Flush();
+                    writer.Close();
+                    retorna = true;
+                }
+            return retorna;
+        }
+        #endregion
 
         #region autocompletados
         private void autodepa()                 // se jala en el load
@@ -1138,7 +1299,7 @@ namespace TransCarga
                     var aa = MessageBox.Show("Confirma que desea crear el documento?", "Confirme por favor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                     if (aa == DialogResult.Yes)
                     {
-                        if (factElec("NubeFact","txt") == true)       // facturacion electrónica
+                        if (factElec("Horizont","txt") == true)       // facturacion electrónica
                         {
                             if (graba() == true)
                             {

@@ -27,9 +27,16 @@ namespace TransCarga
         public static string colsfc = "";       // grids color seleccion contenido
         public static string colstr = "";       // strip color
         public static string colpnc = "";       // panel cabecera color
+
         public static string cliente = "";      // cliente del sistema
-        public static string retorna1 = "";
         public static string ruc = "";          // ruc del cliente
+        public static string dirfisc = "";      // direccion fiscal del cliente
+        public static string ubidirfis = "";    // ubigeo de la direccion fiscal
+        public static string distfis = "";      // distrito 
+        public static string provfis = "";      // provincia
+        public static string depfisc = "";      // departamento
+
+        public static string retorna1 = "";
         public static string tituloF = "SOLORSOFT - TransCarga" + Environment.NewLine +
             "Solución para empresas de Transporte de Carga";      // titulo del sistema
         public static string vg_ipwan = "";     // ip wan del cliente

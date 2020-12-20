@@ -257,7 +257,7 @@ namespace TransCarga
             MySqlConnection cn = new MySqlConnection(DB_CONN_STR);
             if (lib.procConn(cn) == true)
             {
-                string consulta = "SELECT a.param,a.value,a.used,b.cliente,b.ruc,b.igv from confmod a INNER JOIN baseconf b";
+                string consulta = "SELECT a.param,a.value,a.used,b.cliente,b.ruc,b.igv,b.direcc,b.distrit,b.provin,b.depart,b.ubigeo from confmod a INNER JOIN baseconf b";
                 MySqlCommand micon = new MySqlCommand(consulta, cn);
                 MySqlDataReader dr = micon.ExecuteReader();
                 if (dr.HasRows)
@@ -287,6 +287,11 @@ namespace TransCarga
                         Program.cliente = dr.GetString(3);
                         TransCarga.Program.ruc = dr.GetString(4);
                         TransCarga.Program.cliente = dr.GetString(3);
+                        TransCarga.Program.dirfisc = dr.GetString(6).Trim() + " - " + dr.GetString(7).Trim() + " - " + dr.GetString(8).Trim() + " - " + dr.GetString(9).Trim();      // direccion fiscal del cliente
+                        TransCarga.Program.ubidirfis = dr.GetString(10);    // ubigeo dir fiscal
+                        TransCarga.Program.distfis = dr.GetString(7).Trim();
+                        TransCarga.Program.provfis = dr.GetString(8).Trim();
+                        TransCarga.Program.depfisc = dr.GetString(9).Trim();
                     }
                     dr.Close();
                     micon.Dispose();
