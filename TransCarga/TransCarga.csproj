@@ -163,6 +163,7 @@
     <Compile Include="login.designer.cs">
       <DependentUpon>login.cs</DependentUpon>
     </Compile>
+    <Compile Include="NumLetra.cs" />
     <Compile Include="permisos.cs">
       <SubType>Form</SubType>
     </Compile>

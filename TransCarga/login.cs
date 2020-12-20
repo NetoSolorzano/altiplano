@@ -74,7 +74,7 @@ namespace TransCarga
                 {
                     //validamos que el usuario y passw son los correctos
                     string query = "select a.bloqueado,a.local,a.nombre,concat(trim(b.deta1),' - ',b.deta2,' - ',b.deta3,' - ',b.deta4) AS direcc,b.ubiDir," +
-                        "b.descrizione,a.tipuser,a.nivel " +
+                        "b.descrizione,a.tipuser,a.nivel,b.codsunat " +
                         "from usuarios a LEFT JOIN desc_loc b ON b.idcodice=a.local " +
                         "where a.nom_user=@usuario and a.pwd_user=@contra";
                     MySqlCommand mycomand = new MySqlCommand(query, cn);
@@ -96,6 +96,7 @@ namespace TransCarga
                                 TransCarga.Program.vg_nlus = dr.GetString(5);
                                 TransCarga.Program.vg_tius = dr.GetString(6);       // codigo de tipo de usuario
                                 TransCarga.Program.vg_nius = dr.GetString(7);       // codigo nivel de usuario
+                                TransCarga.Program.codlocsunat = dr.GetString(8);   // codigo sunat pto. emision DV
                                 dr.Close();
                                 // cambiamos la contraseña si fue hecha
                                 cambiacont();
@@ -257,7 +258,8 @@ namespace TransCarga
             MySqlConnection cn = new MySqlConnection(DB_CONN_STR);
             if (lib.procConn(cn) == true)
             {
-                string consulta = "SELECT a.param,a.value,a.used,b.cliente,b.ruc,b.igv,b.direcc,b.distrit,b.provin,b.depart,b.ubigeo from confmod a INNER JOIN baseconf b";
+                string consulta = "SELECT a.param,a.value,a.used,b.cliente,b.ruc,b.igv,b.direcc,b.distrit,b.provin,b.depart,b.ubigeo,b.ctadetra,b.valdetra,b.detra,b.coddetra,b.email " +
+                    "from confmod a INNER JOIN baseconf b";
                 MySqlCommand micon = new MySqlCommand(consulta, cn);
                 MySqlDataReader dr = micon.ExecuteReader();
                 if (dr.HasRows)
@@ -292,6 +294,12 @@ namespace TransCarga
                         TransCarga.Program.distfis = dr.GetString(7).Trim();
                         TransCarga.Program.provfis = dr.GetString(8).Trim();
                         TransCarga.Program.depfisc = dr.GetString(9).Trim();
+                        TransCarga.Program.ctadetra = dr.GetString(11);         // cuenta de detraccion
+                        TransCarga.Program.valdetra = dr.GetString(12);         // valor flete desde donde origina la detraccion
+                        TransCarga.Program.pordetra = dr.GetString(13);         // valor en % de la detraccion
+                        TransCarga.Program.coddetra = dr.GetString(14);         // codigo detraccion sunat
+                        TransCarga.Program.mailclte = dr.GetString(15);         // correo electronico emisor
+
                     }
                     dr.Close();
                     micon.Dispose();

@@ -176,6 +176,7 @@
             this.groupBox30 = new System.Windows.Forms.GroupBox();
             this.tx_idcaja = new TransCarga.NumericTextBox();
             this.label16 = new System.Windows.Forms.Label();
+            this.tx_fletLetras = new System.Windows.Forms.TextBox();
             this.toolStrip1.SuspendLayout();
             this.groupBox11.SuspendLayout();
             this.groupBox7.SuspendLayout();
@@ -1021,7 +1022,7 @@
             // 
             this.label7.AutoSize = true;
             this.label7.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label7.Location = new System.Drawing.Point(14, 88);
+            this.label7.Location = new System.Drawing.Point(9, 88);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(48, 13);
             this.label7.TabIndex = 411;
@@ -1050,7 +1051,7 @@
             // 
             this.label6.AutoSize = true;
             this.label6.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label6.Location = new System.Drawing.Point(14, 63);
+            this.label6.Location = new System.Drawing.Point(9, 63);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(25, 13);
             this.label6.TabIndex = 409;
@@ -1696,6 +1697,15 @@
             this.label16.Text = "Id Caja";
             this.label16.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
+            // tx_fletLetras
+            // 
+            this.tx_fletLetras.BackColor = System.Drawing.SystemColors.Window;
+            this.tx_fletLetras.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_fletLetras.Location = new System.Drawing.Point(91, 427);
+            this.tx_fletLetras.Name = "tx_fletLetras";
+            this.tx_fletLetras.Size = new System.Drawing.Size(512, 18);
+            this.tx_fletLetras.TabIndex = 411;
+            // 
             // facelect
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1703,6 +1713,7 @@
             this.AutoSize = true;
             this.BackColor = System.Drawing.Color.LightSteelBlue;
             this.ClientSize = new System.Drawing.Size(770, 557);
+            this.Controls.Add(this.tx_fletLetras);
             this.Controls.Add(this.groupBox29);
             this.Controls.Add(this.tx_idcaja);
             this.Controls.Add(this.label16);
@@ -1958,5 +1969,6 @@
         private System.Windows.Forms.GroupBox groupBox30;
         private NumericTextBox tx_idcaja;
         private System.Windows.Forms.Label label16;
+        private System.Windows.Forms.TextBox tx_fletLetras;
     }
 }

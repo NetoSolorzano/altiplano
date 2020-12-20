@@ -19,6 +19,7 @@ namespace TransCarga
         public static string almuser = "";      // codigo almacen del usuario
         public static string vg_fcaj = "";      // fecha de la caja abierta (vacio si no hay caja abierta)
         public static string bd = "";           // base de datos seleccionada
+        // colores formularios y objetos
         public static string colbac = "";       // back color
         public static string colpag = "";       // pagaframe color
         public static string colgri = "";       // grids color fondo sin grilla
@@ -27,7 +28,7 @@ namespace TransCarga
         public static string colsfc = "";       // grids color seleccion contenido
         public static string colstr = "";       // strip color
         public static string colpnc = "";       // panel cabecera color
-
+        // datos del cliente implementado
         public static string cliente = "";      // cliente del sistema
         public static string ruc = "";          // ruc del cliente
         public static string dirfisc = "";      // direccion fiscal del cliente
@@ -35,7 +36,14 @@ namespace TransCarga
         public static string distfis = "";      // distrito 
         public static string provfis = "";      // provincia
         public static string depfisc = "";      // departamento
-
+        public static string codlocsunat = "";  // codigo sunat del local de emisión del DV
+        public static string mailclte = "";     // correo electronico del cliente del sistema
+        // datos de impuestos, detracciones, sunat
+        public static string ctadetra = "";     // cuenta de detraccion
+        public static string valdetra = "";     // valor flete desde donde origina la detraccion
+        public static string pordetra = "";     // valor en % de la detraccion
+        public static string coddetra = "";     // codigo sunat detraccion
+        //
         public static string retorna1 = "";
         public static string tituloF = "SOLORSOFT - TransCarga" + Environment.NewLine +
             "Solución para empresas de Transporte de Carga";      // titulo del sistema
