@@ -177,6 +177,10 @@
             this.tx_idcaja = new TransCarga.NumericTextBox();
             this.label16 = new System.Windows.Forms.Label();
             this.tx_fletLetras = new System.Windows.Forms.TextBox();
+            this.tx_dat_monsunat = new System.Windows.Forms.TextBox();
+            this.groupBox21 = new System.Windows.Forms.GroupBox();
+            this.groupBox22 = new System.Windows.Forms.GroupBox();
+            this.label9 = new System.Windows.Forms.Label();
             this.toolStrip1.SuspendLayout();
             this.groupBox11.SuspendLayout();
             this.groupBox7.SuspendLayout();
@@ -199,6 +203,7 @@
             this.panel1.SuspendLayout();
             this.groupBox9.SuspendLayout();
             this.groupBox29.SuspendLayout();
+            this.groupBox21.SuspendLayout();
             this.SuspendLayout();
             // 
             // toolStrip1
@@ -1342,7 +1347,7 @@
             // 
             this.label19.AutoSize = true;
             this.label19.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label19.Location = new System.Drawing.Point(12, 452);
+            this.label19.Location = new System.Drawing.Point(12, 453);
             this.label19.Name = "label19";
             this.label19.Size = new System.Drawing.Size(78, 13);
             this.label19.TabIndex = 333;
@@ -1703,8 +1708,46 @@
             this.tx_fletLetras.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tx_fletLetras.Location = new System.Drawing.Point(91, 427);
             this.tx_fletLetras.Name = "tx_fletLetras";
+            this.tx_fletLetras.ReadOnly = true;
             this.tx_fletLetras.Size = new System.Drawing.Size(512, 18);
             this.tx_fletLetras.TabIndex = 411;
+            // 
+            // tx_dat_monsunat
+            // 
+            this.tx_dat_monsunat.BackColor = System.Drawing.SystemColors.Window;
+            this.tx_dat_monsunat.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_dat_monsunat.Location = new System.Drawing.Point(617, 193);
+            this.tx_dat_monsunat.Name = "tx_dat_monsunat";
+            this.tx_dat_monsunat.Size = new System.Drawing.Size(75, 18);
+            this.tx_dat_monsunat.TabIndex = 412;
+            // 
+            // groupBox21
+            // 
+            this.groupBox21.BackColor = System.Drawing.Color.White;
+            this.groupBox21.Controls.Add(this.groupBox22);
+            this.groupBox21.Location = new System.Drawing.Point(12, 444);
+            this.groupBox21.Name = "groupBox21";
+            this.groupBox21.Size = new System.Drawing.Size(592, 1);
+            this.groupBox21.TabIndex = 414;
+            this.groupBox21.TabStop = false;
+            // 
+            // groupBox22
+            // 
+            this.groupBox22.Location = new System.Drawing.Point(0, -26);
+            this.groupBox22.Name = "groupBox22";
+            this.groupBox22.Size = new System.Drawing.Size(164, 1);
+            this.groupBox22.TabIndex = 113;
+            this.groupBox22.TabStop = false;
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.label9.Location = new System.Drawing.Point(12, 429);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(80, 13);
+            this.label9.TabIndex = 413;
+            this.label9.Text = "Monto en letras";
             // 
             // facelect
             // 
@@ -1713,6 +1756,9 @@
             this.AutoSize = true;
             this.BackColor = System.Drawing.Color.LightSteelBlue;
             this.ClientSize = new System.Drawing.Size(770, 557);
+            this.Controls.Add(this.groupBox21);
+            this.Controls.Add(this.label9);
+            this.Controls.Add(this.tx_dat_monsunat);
             this.Controls.Add(this.tx_fletLetras);
             this.Controls.Add(this.groupBox29);
             this.Controls.Add(this.tx_idcaja);
@@ -1816,6 +1862,7 @@
             this.panel1.PerformLayout();
             this.groupBox9.ResumeLayout(false);
             this.groupBox29.ResumeLayout(false);
+            this.groupBox21.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1970,5 +2017,9 @@
         private NumericTextBox tx_idcaja;
         private System.Windows.Forms.Label label16;
         private System.Windows.Forms.TextBox tx_fletLetras;
+        private System.Windows.Forms.TextBox tx_dat_monsunat;
+        private System.Windows.Forms.GroupBox groupBox21;
+        private System.Windows.Forms.GroupBox groupBox22;
+        private System.Windows.Forms.Label label9;
     }
 }
