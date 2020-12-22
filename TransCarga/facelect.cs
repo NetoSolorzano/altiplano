@@ -72,6 +72,7 @@ namespace TransCarga
         string tipdo = "";              // CODIGO SUNAT tipo de documento de venta
         string tipoDocEmi = "";         // CODIGO SUNAT tipo de documento RUC/DNI
         string tipoMoneda = "";         // CODIGO SUNAT tipo de moneda
+        string glosdet = "";            // glosa para las operaciones con detraccion
         //
         static libreria lib = new libreria();   // libreria de procedimientos
         publico lp = new publico();             // libreria de clases
@@ -309,7 +310,8 @@ namespace TransCarga
                             if (row["param"].ToString() == "impTK") v_impTK = row["valor"].ToString().Trim();
                             if (row["param"].ToString() == "nomfor_cr") v_CR_gr_ind = row["valor"].ToString().Trim();
                         }
-                        if (row["campo"].ToString() == "moneda" && row["param"].ToString() == "default") MonDeft = row["valor"].ToString().Trim();             // moneda por defecto
+                        if (row["campo"].ToString() == "moneda" && row["param"].ToString() == "default") MonDeft = row["valor"].ToString().Trim();      // moneda por defecto
+                        if (row["campo"].ToString() == "detraccion" && row["param"].ToString() == "glosa") glosdet = row["valor"].ToString().Trim();    // glosa detraccion
                     }
                     if (row["formulario"].ToString() == "ayccaja" && row["campo"].ToString() == "estado")
                     {
@@ -707,7 +709,7 @@ namespace TransCarga
                     {
                         string consulta = "SELECT a.tidoregri,a.nudoregri,a.nombregri,a.direregri,a.ubigregri,ifnull(b1.email,'') as emailR,ifnull(b1.numerotel1,'') as numtel1R," +
                             "ifnull(b1.numerotel2,'') as numtel2R,a.tidodegri,a.nudodegri,a.nombdegri,a.diredegri,a.ubigdegri,ifnull(b2.email,'') as emailD," +
-                            "ifnull(b2.numerotel1,'') as numtel1D,ifnull(b2.numerotel2,'') as numtel2D,a.tipmongri,a.totgri,a.salgri,SUM(d.cantprodi) AS bultos,a.fechopegr,a.tipcamgri," +
+                            "ifnull(b2.numerotel1,'') as numtel1D,ifnull(b2.numerotel2,'') as numtel2D,a.tipmongri,a.totgri,a.salgri,SUM(d.cantprodi) AS bultos,date(a.fechopegr) as fechopegr,a.tipcamgri," +
                             "max(d.descprodi) AS descrip,ifnull(m.descrizionerid,'') as mon,a.totgrMN,a.codMN,c.fecdocvta,b1.tiposocio as tipsrem,b2.tiposocio as tipsdes " +
                             "from cabguiai a left join detguiai d on d.idc=a.id " +
                             "LEFT JOIN controlg c ON c.serguitra = a.sergui AND c.numguitra = a.numgui " +
@@ -755,7 +757,8 @@ namespace TransCarga
                                         datguias[6] = dr.GetString("codMN");            // codigo moneda local
                                         datguias[7] = dr.GetString("tipmongri");        // codigo moneda de la guía
                                         datguias[8] = dr.GetString("tipcamgri");     // tipo de cambio de la GR
-                                        datguias[9] = dr.GetString("fechopegr");     // fecha de la GR
+                                        var a = dr.GetString("fechopegr").Substring(0, 10);
+                                        datguias[9] = a.Substring(6,4) + "-" + a.Substring(3,2) + "-" + a.Substring(0,2);     // fecha de la GR
                                         //
                                         tx_dat_saldoGR.Text = dr.GetString("salgri");
                                         retorna = true;
@@ -910,6 +913,7 @@ namespace TransCarga
             string d_ptode = "";                                                        // Pto de destino
             string d_vrepr = "";                                                        // valor referencial preliminar
             string codleyt = "1000";                                                    // codigoLeyenda 1 - valor en letras
+            string codleyd = "";                                                        // codigo leyenda detraccion
 
             if (double.Parse(tx_flete.Text) > double.Parse(Program.valdetra) && tx_dat_tdv.Text == codfact && tx_dat_mone.Text == MonDeft)    // soles
             {
@@ -935,7 +939,9 @@ namespace TransCarga
                 d_ptode = "";                // Pto de destino
                 d_vrepr = "0";               // valor referencial preliminar
                 codleyt = "1000";            // codigoLeyenda 1 - valor en letras
-                totdet = double.Parse(tx_flete.Text) * double.Parse(Program.pordetra) / 100;    // totalDetraccion
+                totdet = Math.Round(double.Parse(tx_flete.Text) * double.Parse(Program.pordetra) / 100,2);    // totalDetraccion
+                codleyd = "2006";
+                glosdet = glosdet + " " + d_ctade;                // leyenda de la detración
             }
 
             if (tx_dat_mone.Text != MonDeft)
@@ -961,7 +967,8 @@ namespace TransCarga
                     d_ptode = "";                // Pto de destino
                     d_vrepr = "0";               // valor referencial preliminar
                     codleyt = "1000";            // codigoLeyenda 1 - valor en letras
-                    totdet = double.Parse(tx_fletMN.Text) * double.Parse(Program.pordetra) / 100;    // totalDetraccion
+                    codleyd = "2006";
+                    totdet = Math.Round(double.Parse(tx_fletMN.Text) * double.Parse(Program.pordetra) / 100,2);    // totalDetraccion
                 }
             }
             // GENERAMOS EL TXT
@@ -1029,7 +1036,7 @@ namespace TransCarga
                 d_codse + sep +                 // DETRACCION - codigo de servicio
                 d_ctade + sep +                 // DETRACCION - cuenta detraccion BN
                 d_medpa + sep +                 // DETRACCION - medio de pago
-                d_valde + sep +                 // DETRACCION - valor
+                totdet + sep +                  // DETRACCION - valor
                 d_porde + sep +                 // DETRACCION - porcentaje
                 d_monde + sep +                 // DETRACCION - moneda
                 d_conpa + sep +                 // DETRACCION - condicion de pago
@@ -1112,11 +1119,23 @@ namespace TransCarga
                     "" + sep + "" + sep + "" + sep + "" + sep +         // DESCUENTO, codigo, factor, etc
                     "" + sep + "" + sep + "" + sep                      // BOLSAS DE PLASTICO
                 );
+                writer.WriteLine("T" + sep +
+                    "31" + sep +
+                    dataGridView1.Rows[s].Cells["guias"].Value.ToString() + sep +
+                    dataGridView1.Rows[s].Cells["fechaGR"].Value.ToString() + sep
+                ) ;
             }
             writer.WriteLine("L" + sep +
                 codleyt + sep +         // codigo leyenda monto en letras
                 monLet + sep            // Leyenda: Monto expresado en Letras
             );
+            if (codleyd != "")
+            {
+                writer.WriteLine("L" + sep +
+                codleyd + sep +         // codigo leyenda monto en letras
+                glosdet + sep            // Leyenda: Monto expresado en Letras
+            );
+            }
             writer.Flush();
             writer.Close();
             retorna = true;
@@ -1128,7 +1147,6 @@ namespace TransCarga
                     d_ptori + sep +                // Pto de origen
                     d_ptode + sep +                // Pto de destino
                     d_vrepr + sep +                      // valor referencial preliminar
-                    glosdet + " " + d_ctade +                // leyenda de la detración
                     "" + sep + "" + sep + "" + sep + "" + sep +     // monto anticipos, numero, ruc emisor, total anticipos
                         "" + sep + "" + sep + "" + sep + "" + sep +     // Tipo de nota(Crédito/Débito),Tipo del documento afectado,Numeración de documento afectado,Motivo del documento afectado
                         conPago + sep +     // Condición de Pago
@@ -1244,7 +1262,7 @@ namespace TransCarga
                 {
                     rb_desGR.PerformClick();
                 }
-                dataGridView1.Rows.Add(datguias[0], datguias[1], datguias[2], datguias[3], datguias[4], datguias[5], datguias[6]);     // insertamos en la grilla los datos de la GR
+                dataGridView1.Rows.Add(datguias[0], datguias[1], datguias[2], datguias[3], datguias[4], datguias[5], datguias[6], datguias[9]);     // insertamos en la grilla los datos de la GR
                 int totfil = 0;
                 int totcant = 0;
                 decimal totflet = 0;    // acumulador en moneda de la GR
@@ -2027,18 +2045,20 @@ namespace TransCarga
             tx_numDocRem.Text = datcltsD[1];
             tx_nomRem.Text = datcltsD[2];
             tx_dirRem.Text = datcltsD[3];
-            //
-            DataRow[] row = dataUbig.Select("depart='" + datcltsD[4].Substring(0, 2) + "' and provin='00' and distri='00'");
-            tx_dptoRtt.Text = row[0].ItemArray[4].ToString();
-            row = dataUbig.Select("depart='" + datcltsD[4].Substring(0, 2) + "' and provin ='" + datcltsD[4].Substring(2, 2) + "' and distri='00'");
-            tx_provRtt.Text = row[0].ItemArray[4].ToString();
-            row = dataUbig.Select("depart='" + datcltsD[4].Substring(0, 2) + "' and provin ='" + datcltsD[4].Substring(2, 2) + "' and distri='" + datcltsD[4].Substring(4, 2) + "'");
-            tx_distRtt.Text = row[0].ItemArray[4].ToString();
-            //
-            tx_email.Text = datcltsD[5];
-            tx_telc1.Text = datcltsD[6];
-            tx_telc2.Text = datcltsD[7];
-            tx_ubigRtt.Text = datcltsD[4];
+            if (datcltsD[4].ToString() != "")
+            {
+                DataRow[] row = dataUbig.Select("depart='" + datcltsD[4].Substring(0, 2) + "' and provin='00' and distri='00'");
+                tx_dptoRtt.Text = row[0].ItemArray[4].ToString();
+                row = dataUbig.Select("depart='" + datcltsD[4].Substring(0, 2) + "' and provin ='" + datcltsD[4].Substring(2, 2) + "' and distri='00'");
+                tx_provRtt.Text = row[0].ItemArray[4].ToString();
+                row = dataUbig.Select("depart='" + datcltsD[4].Substring(0, 2) + "' and provin ='" + datcltsD[4].Substring(2, 2) + "' and distri='" + datcltsD[4].Substring(4, 2) + "'");
+                tx_distRtt.Text = row[0].ItemArray[4].ToString();
+                //
+                tx_email.Text = datcltsD[5];
+                tx_telc1.Text = datcltsD[6];
+                tx_telc2.Text = datcltsD[7];
+                tx_ubigRtt.Text = datcltsD[4];
+            }
             //
             cmb_docRem.Enabled = false;
             tx_numDocRem.ReadOnly = true;
