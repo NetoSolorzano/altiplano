@@ -757,6 +757,9 @@
             // 
             // dgv_vtas
             // 
+            this.dgv_vtas.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.dgv_vtas.AutoGenerateContextFilters = true;
             this.dgv_vtas.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgv_vtas.DateWithTime = false;
@@ -765,6 +768,7 @@
             this.dgv_vtas.Size = new System.Drawing.Size(1015, 322);
             this.dgv_vtas.TabIndex = 367;
             this.dgv_vtas.TimeFilter = false;
+            this.dgv_vtas.SortStringChanged += new System.EventHandler(this.advancedDataGridView1_SortStringChanged);
             this.dgv_vtas.FilterStringChanged += new System.EventHandler(this.advancedDataGridView1_FilterStringChanged);
             // 
             // label27
@@ -1034,6 +1038,9 @@
             // 
             // dgv_guias
             // 
+            this.dgv_guias.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.dgv_guias.AutoGenerateContextFilters = true;
             this.dgv_guias.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgv_guias.DateWithTime = false;
@@ -1042,6 +1049,7 @@
             this.dgv_guias.Size = new System.Drawing.Size(1015, 322);
             this.dgv_guias.TabIndex = 385;
             this.dgv_guias.TimeFilter = false;
+            this.dgv_guias.SortStringChanged += new System.EventHandler(this.advancedDataGridView1_SortStringChanged);
             this.dgv_guias.FilterStringChanged += new System.EventHandler(this.advancedDataGridView1_FilterStringChanged);
             // 
             // label1
@@ -1337,6 +1345,9 @@
             // 
             // dgv_plan
             // 
+            this.dgv_plan.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.dgv_plan.AutoGenerateContextFilters = true;
             this.dgv_plan.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgv_plan.DateWithTime = false;
@@ -1345,6 +1356,8 @@
             this.dgv_plan.Size = new System.Drawing.Size(1015, 322);
             this.dgv_plan.TabIndex = 394;
             this.dgv_plan.TimeFilter = false;
+            this.dgv_plan.SortStringChanged += new System.EventHandler(this.advancedDataGridView1_SortStringChanged);
+            this.dgv_plan.FilterStringChanged += new System.EventHandler(this.advancedDataGridView1_FilterStringChanged);
             // 
             // button3
             // 

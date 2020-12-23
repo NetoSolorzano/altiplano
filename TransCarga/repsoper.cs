@@ -256,7 +256,7 @@ namespace TransCarga
                     dgv_vtas.RowTemplate.Height = 15;
                     //dgv_vtas.DefaultCellStyle.BackColor = Color.MediumAquamarine;
                     dgv_vtas.AllowUserToAddRows = false;
-                    dgv_vtas.Width = 1015;
+                    dgv_vtas.Width = this.Parent.Width - 50; // 1015;
                     if (dgv_vtas.DataSource == null) dgv_vtas.ColumnCount = 11;
                     if (dgv_vtas.Rows.Count > 0)
                     {
@@ -283,7 +283,7 @@ namespace TransCarga
                     dgv_guias.DefaultCellStyle.Font = tiplg;
                     dgv_guias.RowTemplate.Height = 15;
                     dgv_guias.AllowUserToAddRows = false;
-                    dgv_guias.Width = 1015;
+                    dgv_guias.Width = Parent.Width - 50; // 1015;
                     if (dgv_guias.DataSource == null) dgv_guias.ColumnCount = 11;
                     if (dgv_guias.Rows.Count > 0)
                     {
@@ -310,7 +310,7 @@ namespace TransCarga
                     dgv_plan.DefaultCellStyle.Font = tiplg;
                     dgv_plan.RowTemplate.Height = 15;
                     dgv_plan.AllowUserToAddRows = false;
-                    dgv_plan.Width = 1015;
+                    dgv_guias.Width = Parent.Width - 50; // 1015;
                     if (dgv_plan.DataSource == null) dgv_plan.ColumnCount = 11;
                     if (dgv_plan.Rows.Count > 0)
                     {
@@ -340,10 +340,10 @@ namespace TransCarga
             dgv_resumen.Font = tiplg;
             dgv_resumen.DefaultCellStyle.Font = tiplg;
             dgv_resumen.RowTemplate.Height = 15;
-            dgv_vtas.DefaultCellStyle.BackColor = Color.MediumAquamarine;
+            dgv_resumen.DefaultCellStyle.BackColor = Color.MediumAquamarine;
             dgv_resumen.AllowUserToAddRows = false;
             //dgv_resumen.EnableHeadersVisualStyles = false;
-            dgv_resumen.Width = 1015;
+            dgv_resumen.Width = Parent.Width - 50; // 1015;
             if (dgv_resumen.DataSource == null) dgv_resumen.ColumnCount = 11;
             for (int i = 0; i < dgv_resumen.Columns.Count; i++)
             {
@@ -965,6 +965,24 @@ namespace TransCarga
         #endregion
 
         #region advancedatagridview
+        private void advancedDataGridView1_SortStringChanged(object sender, EventArgs e)
+        {
+            if (tabControl1.SelectedTab.Name == "tabgrti")
+            {
+                DataTable dtg = (DataTable)dgv_guias.DataSource;
+                dtg.DefaultView.Sort = dgv_guias.SortString;
+            }
+            if (tabControl1.SelectedTab.Name == "tabvtas")
+            {
+                DataTable dtg = (DataTable)dgv_vtas.DataSource;
+                dtg.DefaultView.Sort = dgv_vtas.SortString;
+            }
+            if (tabControl1.SelectedTab.Name == "tabplacar")
+            {
+                DataTable dtg = (DataTable)dgv_plan.DataSource;
+                dtg.DefaultView.Sort = dgv_plan.SortString;
+            }
+        }
         private void advancedDataGridView1_FilterStringChanged(object sender, EventArgs e)                  // filtro de las columnas
         {
             if (tabControl1.SelectedTab.Name == "tabvtas")
@@ -976,6 +994,11 @@ namespace TransCarga
             {
                 DataTable dtg = (DataTable)dgv_guias.DataSource;
                 dtg.DefaultView.RowFilter = dgv_guias.FilterString;
+            }
+            if (tabControl1.SelectedTab.Name == "tabplacar")
+            {
+                DataTable dtg = (DataTable)dgv_plan.DataSource;
+                dtg.DefaultView.RowFilter = dgv_plan.FilterString;
             }
         }
         private void advancedDataGridView1_CellEnter(object sender, DataGridViewCellEventArgs e)            // no usamos
@@ -998,7 +1021,6 @@ namespace TransCarga
                 jalaoc("tx_idr");
             }*/
         }
-
         private void advancedDataGridView1_CellValidating(object sender, DataGridViewCellValidatingEventArgs e) // no usamos
         {
             /*if (e.RowIndex > -1 && e.ColumnIndex > 0 
