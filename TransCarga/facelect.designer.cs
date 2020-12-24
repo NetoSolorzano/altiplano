@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(facelect));
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
@@ -182,6 +183,8 @@
             this.valorMN = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.codmonloc = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.fechaGR = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.guiasclte = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.codmondoc = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.toolStrip1.SuspendLayout();
             this.groupBox11.SuspendLayout();
             this.groupBox7.SuspendLayout();
@@ -926,7 +929,9 @@
             this.valor,
             this.valorMN,
             this.codmonloc,
-            this.fechaGR});
+            this.fechaGR,
+            this.guiasclte,
+            this.codmondoc});
             this.dataGridView1.Location = new System.Drawing.Point(6, 217);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.Size = new System.Drawing.Size(597, 162);
@@ -1734,6 +1739,8 @@
             // 
             // valor
             // 
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            this.valor.DefaultCellStyle = dataGridViewCellStyle1;
             this.valor.FillWeight = 80F;
             this.valor.HeaderText = "  VALOR";
             this.valor.Name = "valor";
@@ -1755,6 +1762,18 @@
             // 
             this.fechaGR.HeaderText = "FechaGR";
             this.fechaGR.Name = "fechaGR";
+            // 
+            // guiasclte
+            // 
+            this.guiasclte.HeaderText = "guiasclte";
+            this.guiasclte.Name = "guiasclte";
+            this.guiasclte.Visible = false;
+            // 
+            // codmondoc
+            // 
+            this.codmondoc.HeaderText = "codmondoc";
+            this.codmondoc.Name = "codmondoc";
+            this.codmondoc.Visible = false;
             // 
             // facelect
             // 
@@ -2029,5 +2048,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn valorMN;
         private System.Windows.Forms.DataGridViewTextBoxColumn codmonloc;
         private System.Windows.Forms.DataGridViewTextBoxColumn fechaGR;
+        private System.Windows.Forms.DataGridViewTextBoxColumn guiasclte;
+        private System.Windows.Forms.DataGridViewTextBoxColumn codmondoc;
     }
 }

@@ -9,6 +9,9 @@ using System.Windows.Forms;
 using CrystalDecisions.CrystalReports.Engine;
 using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
+using Gma.QrCodeNet.Encoding;
+using Gma.QrCodeNet.Encoding.Windows.Render;
+using System.Drawing.Imaging;
 
 namespace TransCarga
 {
@@ -67,12 +70,17 @@ namespace TransCarga
         string v_estcaj = "";           // estado de la caja
         string v_idcaj = "";            // id de la caja actual
         string codAbie = "";            // codigo estado de caja abierta
+        string logoclt = "";            // ruta y nombre archivo logo
         //
         string rutatxt = "";            // ruta de los txt para la fact. electronica
         string tipdo = "";              // CODIGO SUNAT tipo de documento de venta
         string tipoDocEmi = "";         // CODIGO SUNAT tipo de documento RUC/DNI
         string tipoMoneda = "";         // CODIGO SUNAT tipo de moneda
         string glosdet = "";            // glosa para las operaciones con detraccion
+        string restexto = "xxx";        // texto resolucion sunat autorizando prov. fact electronica
+        string autoriz_OSE_PSE = "yyy"; // numero resolucion sunat autorizando prov. fact electronica
+        string despedida = "";          // texto para mensajes al cliente al final de la impresión del doc.vta. 
+        string webose = "";             // direccion web del ose o pse para la descarga del 
         //
         static libreria lib = new libreria();   // libreria de procedimientos
         publico lp = new publico();             // libreria de clases
@@ -104,7 +112,7 @@ namespace TransCarga
         DataTable dtm = new DataTable();
         string[] datcltsR = { "", "", "", "", "", "", "", "", "" };
         string[] datcltsD = { "", "", "", "", "", "", "", "", "" };
-        string[] datguias = { "", "", "", "", "", "", "", "", "", "" };
+        string[] datguias = { "", "", "", "", "", "", "", "", "", "", "" };
 
         public facelect()
         {
@@ -158,7 +166,8 @@ namespace TransCarga
             //
             tx_user.Text += asd;
             tx_nomuser.Text = TransCarga.Program.vg_nuse;   // lib.nomuser(asd);
-            tx_locuser.Text = TransCarga.Program.vg_luse;  // lib.locuser(asd);
+            //tx_locuser.Text = TransCarga.Program.vg_luse;  // lib.locuser(asd);
+            tx_locuser.Text = tx_locuser.Text + " " + TransCarga.Program.vg_nlus;
             tx_fechact.Text = DateTime.Today.ToString();
             //
             Bt_add.Image = Image.FromFile(img_btN);
@@ -270,7 +279,8 @@ namespace TransCarga
                             if (row["param"].ToString() == "img_btf") img_btf = row["valor"].ToString().Trim();         // imagen del boton de accion IR AL FINAL
                             if (row["param"].ToString() == "img_gra") img_grab = row["valor"].ToString().Trim();         // imagen del boton grabar nuevo
                             if (row["param"].ToString() == "img_anu") img_anul = row["valor"].ToString().Trim();         // imagen del boton grabar anular
-                            if (row["param"].ToString() == "img_preview") img_ver = row["valor"].ToString().Trim();         // imagen del boton grabar visualizar
+                            if (row["param"].ToString() == "img_preview") img_ver = row["valor"].ToString().Trim();      // imagen del boton grabar visualizar
+                            if (row["param"].ToString() == "logoPrin") logoclt = row["valor"].ToString().Trim();         // logo emisor
                         }
                         if (row["campo"].ToString() == "estado")
                         {
@@ -312,6 +322,13 @@ namespace TransCarga
                         }
                         if (row["campo"].ToString() == "moneda" && row["param"].ToString() == "default") MonDeft = row["valor"].ToString().Trim();      // moneda por defecto
                         if (row["campo"].ToString() == "detraccion" && row["param"].ToString() == "glosa") glosdet = row["valor"].ToString().Trim();    // glosa detraccion
+                        if (row["campo"].ToString() == "factelect")
+                        {
+                            if (row["param"].ToString() == "textaut") restexto = row["valor"].ToString().Trim();
+                            if (row["param"].ToString() == "autoriz") autoriz_OSE_PSE = row["valor"].ToString().Trim();
+                            if (row["param"].ToString() == "despedi") despedida = row["valor"].ToString().Trim();
+                            if (row["param"].ToString() == "webose") webose = row["valor"].ToString().Trim();
+                        }
                     }
                     if (row["formulario"].ToString() == "ayccaja" && row["campo"].ToString() == "estado")
                     {
@@ -671,6 +688,7 @@ namespace TransCarga
                 datguias[7] = "";   // codigo moneda de la guia
                 datguias[8] = "";   // tipo de cambio
                 datguias[9] = "";   // fecha de la GR
+                datguias[10] = "";  // guia del cliente, sustento del cliente
                 // validamos que la GR: 1.exista, 2.No este facturada, 3.No este anulada
                 // y devolvemos una fila con los datos del remitente y otra fila los datos del destinatario
                 string hay = "no";
@@ -710,7 +728,7 @@ namespace TransCarga
                         string consulta = "SELECT a.tidoregri,a.nudoregri,a.nombregri,a.direregri,a.ubigregri,ifnull(b1.email,'') as emailR,ifnull(b1.numerotel1,'') as numtel1R," +
                             "ifnull(b1.numerotel2,'') as numtel2R,a.tidodegri,a.nudodegri,a.nombdegri,a.diredegri,a.ubigdegri,ifnull(b2.email,'') as emailD," +
                             "ifnull(b2.numerotel1,'') as numtel1D,ifnull(b2.numerotel2,'') as numtel2D,a.tipmongri,a.totgri,a.salgri,SUM(d.cantprodi) AS bultos,date(a.fechopegr) as fechopegr,a.tipcamgri," +
-                            "max(d.descprodi) AS descrip,ifnull(m.descrizionerid,'') as mon,a.totgrMN,a.codMN,c.fecdocvta,b1.tiposocio as tipsrem,b2.tiposocio as tipsdes " +
+                            "max(d.descprodi) AS descrip,ifnull(m.descrizionerid,'') as mon,a.totgrMN,a.codMN,c.fecdocvta,b1.tiposocio as tipsrem,b2.tiposocio as tipsdes,a.docsremit " +
                             "from cabguiai a left join detguiai d on d.idc=a.id " +
                             "LEFT JOIN controlg c ON c.serguitra = a.sergui AND c.numguitra = a.numgui " +
                             "left join anag_cli b1 on b1.tipdoc=a.tidoregri and b1.ruc=a.nudoregri " +
@@ -759,6 +777,7 @@ namespace TransCarga
                                         datguias[8] = dr.GetString("tipcamgri");     // tipo de cambio de la GR
                                         var a = dr.GetString("fechopegr").Substring(0, 10);
                                         datguias[9] = a.Substring(6,4) + "-" + a.Substring(3,2) + "-" + a.Substring(0,2);     // fecha de la GR
+                                        datguias[10] = dr.GetString("docsremit");
                                         //
                                         tx_dat_saldoGR.Text = dr.GetString("salgri");
                                         retorna = true;
@@ -812,7 +831,16 @@ namespace TransCarga
             tx_igv.Text = tigv.ToString("#0.00");
             tx_subt.Text = tsub.ToString("#0.00");
         }
-        
+        int CentimeterToPixel(double Centimeter)
+        {
+            double pixel = -1;
+            using (Graphics g = this.CreateGraphics())
+            {
+                pixel = Centimeter * g.DpiY / 2.54d;
+            }
+            return (int)pixel;
+        }
+
         #region facturacion electronica
         private bool factElec(string provee, string tipo)                 // conexion a facturacion electrónica provee=proveedor | tipo=txt ó json
         {
@@ -914,10 +942,10 @@ namespace TransCarga
             string d_vrepr = "";                                                        // valor referencial preliminar
             string codleyt = "1000";                                                    // codigoLeyenda 1 - valor en letras
             string codleyd = "";                                                        // codigo leyenda detraccion
-
+            /* *********************   calculo y campos de detracciones   ****************************** */
             if (double.Parse(tx_flete.Text) > double.Parse(Program.valdetra) && tx_dat_tdv.Text == codfact && tx_dat_mone.Text == MonDeft)    // soles
             {
-                // *********************   calculo y campos de detracciones   ******************************
+
                 // Están sujetos a las detracciones los servicios de transporte de bienes por vía terrestre gravado con el IGV, 
                 // siempre que el importe de la operación o el valor referencial, según corresponda, sea mayor a 
                 // S/ 400.00 o su equivalente en dólares ........ DICE SUNAT
@@ -926,7 +954,7 @@ namespace TransCarga
                 // coddetra;                                                            // codigoDetraccion
                 // pordetra;                                                            // porcentajeDetraccion
                 d_medpa = "001";                                    // medio de pago de la detraccion (001 = deposito en cuenta)
-                d_monde = MonDeft;                                  // moneda de la detraccion
+                d_monde = "PEN"; // MonDeft;                                  // moneda de la detraccion
                 d_conpa = "CONTADO";                                // condicion de pago
                 d_porde = Program.pordetra;                         // porcentaje de detraccion
                 d_valde = Program.valdetra;                         // valor de la detraccion
@@ -941,20 +969,20 @@ namespace TransCarga
                 codleyt = "1000";            // codigoLeyenda 1 - valor en letras
                 totdet = Math.Round(double.Parse(tx_flete.Text) * double.Parse(Program.pordetra) / 100,2);    // totalDetraccion
                 codleyd = "2006";
+                tipOper = "1001";
                 glosdet = glosdet + " " + d_ctade;                // leyenda de la detración
             }
-
             if (tx_dat_mone.Text != MonDeft)
             {
                 _morefD = tx_dat_monsunat.Text;                                      // moneda de refencia para el tipo de cambio
-                _monobj = tipoMoneda;                                                // moneda objetivo del tipo de cambio
+                _monobj = "PEN";        //tipoMoneda;                                // moneda objetivo del tipo de cambio
                 _tipcam = tx_tipcam.Text;                                            // tipo de cambio con 3 decimales
-                _fechca = string.Format("{0:yyyy-MM-dd}", tx_fechope.Text);          // fecha del tipo de cambio
-
+                //_fechca = string.Format("{0:yyyy-MM-dd}", tx_fechope.Text);          // fecha del tipo de cambio
+                _fechca = tx_fechope.Text.Substring(6, 4) + "-" + tx_fechope.Text.Substring(3, 2) + "-" + tx_fechope.Text.Substring(0, 2);
                 if (double.Parse(tx_flete.Text) > (double.Parse(Program.valdetra) / double.Parse(tx_tipcam.Text)) && tx_dat_tdv.Text == codfact)
                 {
                     d_medpa = "001";                                    // medio de pago de la detraccion (001 = deposito en cuenta)
-                    d_monde = MonDeft;                                  // moneda de la detraccion
+                    d_monde = "PEN";                                    // moneda de la detraccion SIEMPRE ES PEN moneda nacional
                     d_conpa = "CONTADO";                                // condicion de pago
                     d_porde = Program.pordetra;                         // porcentaje de detraccion
                     d_valde = Program.valdetra;                         // valor de la detraccion
@@ -968,15 +996,16 @@ namespace TransCarga
                     d_vrepr = "0";               // valor referencial preliminar
                     codleyt = "1000";            // codigoLeyenda 1 - valor en letras
                     codleyd = "2006";
+                    tipOper = "1001";
                     totdet = Math.Round(double.Parse(tx_fletMN.Text) * double.Parse(Program.pordetra) / 100,2);    // totalDetraccion
                 }
             }
-            // GENERAMOS EL TXT
+            /* ********************************************** GENERAMOS EL TXT    ************************************* */
             string sep = "|";    // char sep = (char)31;
             StreamWriter writer;
             file_path = file_path + ".txt";
             writer = new StreamWriter(file_path);
-            writer.WriteLine("V|2.1|");
+            writer.WriteLine("V|2.1|2.0||");
             writer.WriteLine("G" + sep +
                 tipdo + sep +                   // Tipo de Comprobante Electrónico
                 serie + sep +                   // Serie del Comprobante Electrónico
@@ -1058,7 +1087,17 @@ namespace TransCarga
             for (int s = 0; s < dataGridView1.Rows.Count - 1; s++)  // DETALLE
             {
                 double _msigv = double.Parse(dataGridView1.Rows[s].Cells["valor"].Value.ToString()) / (1 + (double.Parse(v_igv) / 100));
-
+                string Ipreuni = double.Parse(dataGridView1.Rows[s].Cells["valor"].Value.ToString()).ToString("#0.00");     // Precio de venta unitario CON IGV
+                if (tx_dat_mone.Text != MonDeft && dataGridView1.Rows[s].Cells["codmondoc"].Value.ToString() == MonDeft)   // 
+                {
+                    _msigv = Math.Round(_msigv / double.Parse(tx_tipcam.Text),2);
+                    Ipreuni = Math.Round(double.Parse(dataGridView1.Rows[s].Cells["valor"].Value.ToString())/ double.Parse(tx_tipcam.Text), 2).ToString("#0.00");
+                }
+                if (tx_dat_mone.Text == MonDeft && dataGridView1.Rows[s].Cells["codmondoc"].Value.ToString() != MonDeft)
+                {
+                    _msigv = Math.Round(_msigv * double.Parse(tx_tipcam.Text), 2);
+                    Ipreuni = Math.Round(double.Parse(dataGridView1.Rows[s].Cells["valor"].Value.ToString()) * double.Parse(tx_tipcam.Text), 2).ToString("#0.00");
+                }
                 string Inumord = (s + 1).ToString();                                        // numero de orden del item             5
                 string Iumeded = "ZZ";                                                      // Unidad de medida                     3
                 string Icantid = "1.00";                                                    // Cantidad de items   n(12,3)         16
@@ -1069,7 +1108,6 @@ namespace TransCarga
                 string Inplaca = "";                                                        // numero placa de vehiculo
                 string Idescri = dataGridView1.Rows[s].Cells["Descrip"].Value.ToString();   // Descripcion
                 string Ivaluni = _msigv.ToString("#0.00");                                  // Valor unitario del item SIN IMPUESTO 
-                string Ipreuni = double.Parse(dataGridView1.Rows[s].Cells["valor"].Value.ToString()).ToString("#0.00");     // Precio de venta unitario CON IGV
                 string Ivalref = "";                                                        // valor referencial del item cuando la venta es gratuita
                 string Iigvite = Math.Round(double.Parse(Ipreuni) - double.Parse(Ivaluni),2).ToString("#0.00");     // monto IGV del item
                 string Imonbas = Ivaluni;                                                   // monto base (valor sin igv * cantidad)
@@ -1119,11 +1157,14 @@ namespace TransCarga
                     "" + sep + "" + sep + "" + sep + "" + sep +         // DESCUENTO, codigo, factor, etc
                     "" + sep + "" + sep + "" + sep                      // BOLSAS DE PLASTICO
                 );
+            }
+            for (int s = 0; s < dataGridView1.Rows.Count - 1; s++)
+            {
                 writer.WriteLine("T" + sep +
                     "31" + sep +
                     dataGridView1.Rows[s].Cells["guias"].Value.ToString() + sep +
                     dataGridView1.Rows[s].Cells["fechaGR"].Value.ToString() + sep
-                ) ;
+                );
             }
             writer.WriteLine("L" + sep +
                 codleyt + sep +         // codigo leyenda monto en letras
@@ -1155,7 +1196,6 @@ namespace TransCarga
                         "" + sep + "" + sep + "" + sep + "" + sep + "" + sep + "" + sep +           // Forma de Pago del 1 al 6
                         "" + sep + "" + sep +                           // Número del pedido, Número de la orden de compra
                         "" + sep + "" + sep + "" + sep + "" + sep +     // sector publico: Numero de Expediente,Código de unidad ejecutora, Nº de contrato,Nº de proceso de selección
-                        _codgui + sep + _scotro + sep +       // tipo de guia y serie+numero
                         "" + sep + "" + sep + "" + sep + "" + sep + "" + sep + "" + sep + "" + sep + "" + sep + "" + sep +  // varios campos opcionales
                         obser1 + sep + obser2 + sep + "" + sep +        // observaciones del documento 1 y 2
                         _totoin + sep +                  // Total operaciones inafectas
@@ -1262,7 +1302,7 @@ namespace TransCarga
                 {
                     rb_desGR.PerformClick();
                 }
-                dataGridView1.Rows.Add(datguias[0], datguias[1], datguias[2], datguias[3], datguias[4], datguias[5], datguias[6], datguias[9]);     // insertamos en la grilla los datos de la GR
+                dataGridView1.Rows.Add(datguias[0], datguias[1], datguias[2], datguias[3], datguias[4], datguias[5], datguias[6], datguias[9], datguias[10], datguias[7]);     // insertamos en la grilla los datos de la GR
                 int totfil = 0;
                 int totcant = 0;
                 decimal totflet = 0;    // acumulador en moneda de la GR
@@ -2427,7 +2467,7 @@ namespace TransCarga
         private bool imprimeA5()
         {
             bool retorna = false;
-            llenaDataSet();                         // metemos los datos al dataset de la impresion
+            //llenaDataSet();                         // metemos los datos al dataset de la impresion
             return retorna;
         }
         private bool imprimeTK()
@@ -2526,7 +2566,303 @@ namespace TransCarga
         }
         private void imprime_TK(object sender, System.Drawing.Printing.PrintPageEventArgs e)
         {
-            // no hay guias en TK
+            {
+                // DATOS PARA EL TICKET
+                string nomclie = Program.cliente;
+                string rasclie = Program.cliente;
+                string rucclie = Program.ruc;
+                string dirclie = Program.dirfisc;
+                // TIPOS DE LETRA PARA EL DOCUMENTO FORMATO TICKET
+                Font lt_gra = new Font("Arial", 11);                // grande
+                Font lt_tit = new Font("Lucida Console", 10);       // mediano
+                Font lt_med = new Font("Arial", 9);                // normal textos
+                Font lt_peq = new Font("Arial", 8);                 // pequeño
+                                                                    //
+                float anchTik = 7.8F;                               // ancho del TK en centimetros
+                int coli = 5;                                      // columna inicial
+                float posi = 20;                                    // posicion x,y inicial
+                int alfi = 15;                                      // alto de cada fila
+                float ancho = 360.0F;                                // ancho de la impresion
+                int copias = 1;                                     // cantidad de copias del ticket
+                Image photo = Image.FromFile(logoclt);
+                for (int i = 1; i <= copias; i++)
+                {
+                    PointF puntoF = new PointF(coli, posi);
+                    // imprimimos el logo o el nombre comercial del emisor
+                    if (logoclt != "")
+                    {
+                        SizeF cuadLogo = new SizeF(CentimeterToPixel(anchTik) - 10.0F, alfi * 6);
+                        RectangleF reclogo = new RectangleF(puntoF, cuadLogo);
+                        e.Graphics.DrawImage(photo, reclogo);
+                    }
+                    else
+                    {
+                        e.Graphics.DrawString(nomclie, lt_gra, Brushes.Black, puntoF, StringFormat.GenericTypographic);     // nombre comercial
+                    }
+                    float lt = (CentimeterToPixel(anchTik) - e.Graphics.MeasureString(nomclie, lt_gra).Width) / 2;
+                    posi = posi + alfi * 7;
+                    lt = (ancho - e.Graphics.MeasureString(rasclie, lt_gra).Width) / 2;
+                    puntoF = new PointF(lt, posi);
+                    e.Graphics.DrawString(rasclie, lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);     // razon social
+                    posi = posi + alfi;
+                    puntoF = new PointF(coli, posi);
+                    e.Graphics.DrawString("Dom.Fiscal", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);     // direccion emisor
+                    puntoF = new PointF(coli + 65, posi);
+                    e.Graphics.DrawString(":", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                    puntoF = new PointF(coli + 70, posi);
+                    SizeF cuad = new SizeF(CentimeterToPixel(anchTik) - (coli + 70), alfi * 2);
+                    RectangleF recdom = new RectangleF(puntoF, cuad);
+                    e.Graphics.DrawString(dirclie, lt_med, Brushes.Black, recdom, StringFormat.GenericTypographic);     // direccion emisor
+                    posi = posi + alfi * 2;
+                    puntoF = new PointF(coli, posi);
+                    e.Graphics.DrawString("Sucursal", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);     // direccion emisor
+                    puntoF = new PointF(coli + 65, posi);
+                    e.Graphics.DrawString(":", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                    puntoF = new PointF(coli + 70, posi);
+                    cuad = new SizeF(CentimeterToPixel(anchTik) - (coli + 70), alfi * 2);
+                    recdom = new RectangleF(puntoF, cuad);
+                    e.Graphics.DrawString(dirloc, lt_med, Brushes.Black, recdom, StringFormat.GenericTypographic);     // direccion emisor
+                    posi = posi + alfi * 2;
+                    puntoF = new PointF(coli, posi);
+                    e.Graphics.DrawString("RUC ", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);     // ruc de emisor
+                    puntoF = new PointF(coli + 65, posi);
+                    e.Graphics.DrawString(":", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                    puntoF = new PointF(coli + 70, posi);
+                    e.Graphics.DrawString(rucclie, lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);     // ruc de emisor
+                    string tipdo = cmb_tdv.Text;                                  // tipo de documento
+                    string serie = lib.Right(tx_serie.Text,3);                    // serie electrónica
+                    string corre = tx_numero.Text;                                // numero del documento electrónico
+                    string nota = tipdo + "-" + serie + "-" + corre;
+                    string titdoc = "";
+                    if (tx_dat_tdv.Text != codfact) titdoc = "Boleta de Venta Electrónica";
+                    if (tx_dat_tdv.Text == codfact) titdoc = "Factura Electrónica";
+                    posi = posi + alfi + 8;
+                    lt = (CentimeterToPixel(anchTik) - e.Graphics.MeasureString(titdoc, lt_gra).Width) / 2;
+                    puntoF = new PointF(lt, posi);
+                    e.Graphics.DrawString(titdoc, lt_gra, Brushes.Black, puntoF, StringFormat.GenericTypographic);                  // tipo de documento
+                    posi = posi + alfi + 8;
+                    string titnum = cmb_tdv.Text.Substring(0,1).ToUpper() + serie + " - " + corre;    // cFe + serie + " - " + corre;
+                    lt = (CentimeterToPixel(anchTik) - e.Graphics.MeasureString(titnum, lt_gra).Width) / 2;
+                    puntoF = new PointF(lt, posi);
+                    e.Graphics.DrawString(titnum, lt_gra, Brushes.Black, puntoF, StringFormat.GenericTypographic);   // serie y numero
+                    posi = posi + alfi + alfi;
+                    puntoF = new PointF(coli, posi);
+                    e.Graphics.DrawString("F. Emisión", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic); // fecha y hora emision
+                    puntoF = new PointF(coli + 65, posi);
+                    e.Graphics.DrawString(":", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                    puntoF = new PointF(coli + 70, posi);
+                    e.Graphics.DrawString(tx_fechope.Text, lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic); // fecha y hora emision
+                    posi = posi + alfi;
+                    puntoF = new PointF(coli, posi);
+                    e.Graphics.DrawString("Cliente", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);                  // DNI/RUC cliente
+                    puntoF = new PointF(coli + 65, posi);
+                    e.Graphics.DrawString(":", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                    puntoF = new PointF(coli + 70, posi);
+                    if (tx_nomRem.Text.Trim().Length > 39) cuad = new SizeF(CentimeterToPixel(anchTik) - (coli + 70), alfi * 2);
+                    else cuad = new SizeF(CentimeterToPixel(anchTik) - (coli + 70), alfi * 1);
+                    recdom = new RectangleF(puntoF, cuad);
+                    e.Graphics.DrawString(tx_nomRem.Text.Trim(), lt_peq, Brushes.Black, recdom, StringFormat.GenericTypographic);                  // DNI/RUC cliente
+                    if (tx_nomRem.Text.Trim().Length > 39) posi = posi + alfi + alfi;
+                    else posi = posi + alfi;
+                    puntoF = new PointF(coli, posi);
+                    e.Graphics.DrawString("RUC", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);    // nombre del cliente
+                    puntoF = new PointF(coli + 65, posi);
+                    e.Graphics.DrawString(":", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                    puntoF = new PointF(coli + 70, posi);
+                    e.Graphics.DrawString(tx_numDocRem.Text, lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);    // ruc/dni del cliente
+                    posi = posi + alfi;
+                    puntoF = new PointF(coli, posi);
+                    e.Graphics.DrawString("Dirección", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);  // direccion
+                    puntoF = new PointF(coli + 65, posi);
+                    e.Graphics.DrawString(":", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                    puntoF = new PointF(coli + 70, posi);
+                    string dipa = tx_dirRem.Text.Trim() + Environment.NewLine + tx_distRtt.Text.Trim() + " - " + tx_provRtt.Text.Trim() + " - " + tx_dptoRtt.Text.Trim();
+                    if (dipa.Length < 60) cuad = new SizeF(CentimeterToPixel(anchTik) - (coli + 70), alfi * 2);
+                    else cuad = new SizeF(CentimeterToPixel(anchTik) - (coli + 70), alfi * 3);
+                    RectangleF recdir = new RectangleF(puntoF, cuad);
+                    e.Graphics.DrawString(tx_dirRem.Text.Trim() + Environment.NewLine +
+                        tx_distRtt.Text.Trim() + " - " + tx_provRtt.Text.Trim() + " - " + tx_dptoRtt.Text.Trim(),
+                        lt_peq, Brushes.Black, recdir, StringFormat.GenericTypographic);  // direccion
+                    if (dipa.Length < 60) posi = posi + alfi + alfi;
+                    else posi = posi + alfi + alfi + alfi;
+                    puntoF = new PointF(coli, posi);
+                    e.Graphics.DrawString(" ", lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                    posi = posi + alfi;
+                    // **************** detalle del documento ****************//
+                    StringFormat alder = new StringFormat(StringFormatFlags.DirectionRightToLeft);
+                    SizeF siz = new SizeF(70, 15);
+                    RectangleF recto = new RectangleF(puntoF, siz);
+                    for (int l = 0; l < dataGridView1.Rows.Count - 1; l++)
+                    {
+                        if (!string.IsNullOrEmpty(dataGridView1.Rows[l].Cells[0].Value.ToString()))
+                        {
+                            puntoF = new PointF(coli, posi);
+                            //recto = new RectangleF(puntoF, siz);
+                            e.Graphics.DrawString(dataGridView1.Rows[l].Cells[0].Value.ToString() + " " + dataGridView1.Rows[l].Cells[1].Value.ToString(), lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                            posi = posi + alfi;
+                            puntoF = new PointF(coli, posi);
+                            e.Graphics.DrawString("Según doc.cliente: " + dataGridView1.Rows[l].Cells[8].Value.ToString(), lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                            posi = posi + alfi;
+                        }
+                    }
+                    // pie del documento ;
+                    if (tx_dat_tdv.Text != codfact)
+                    {
+                        //SizeF siz = new SizeF(70, 15);
+                        posi = posi + alfi;
+                        puntoF = new PointF(coli, posi);
+                        e.Graphics.DrawString("OP. GRAVADA", lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                        puntoF = new PointF(coli + 190, posi);
+                        RectangleF recst = new RectangleF(puntoF, siz);
+                        e.Graphics.DrawString(tx_flete.Text, lt_peq, Brushes.Black, recst, alder);
+                        posi = posi + alfi;
+                        puntoF = new PointF(coli, posi);
+                        e.Graphics.DrawString("OP. INAFECTA", lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                        puntoF = new PointF(coli + 190, posi);
+                        RectangleF recig = new RectangleF(puntoF, siz);
+                        e.Graphics.DrawString("0.00", lt_peq, Brushes.Black, recig, alder);
+                        posi = posi + alfi;
+                        puntoF = new PointF(coli, posi);
+                        e.Graphics.DrawString("OP. EXONERADA", lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                        puntoF = new PointF(coli + 190, posi);
+                        RectangleF recex = new RectangleF(puntoF, siz);
+                        e.Graphics.DrawString("0.00", lt_peq, Brushes.Black, recex, alder);
+                        posi = posi + alfi;
+                        puntoF = new PointF(coli, posi);
+                        e.Graphics.DrawString("IGV", lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                        puntoF = new PointF(coli + 190, posi);
+                        RectangleF recgv = new RectangleF(puntoF, siz);
+                        e.Graphics.DrawString(tx_igv.Text, lt_peq, Brushes.Black, recgv, alder);
+                        posi = posi + alfi;
+                        puntoF = new PointF(coli, posi);
+                        e.Graphics.DrawString("IMPORTE TOTAL " + cmb_mon.Text, lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                        puntoF = new PointF(coli + 190, posi);
+                        recto = new RectangleF(puntoF, siz);
+                        e.Graphics.DrawString(tx_flete.Text, lt_peq, Brushes.Black, recto, alder);
+                    }
+                    if (tx_dat_tdv.Text == codfact)
+                    {
+                        //SizeF siz = new SizeF(70, 15);
+                        //StringFormat alder = new StringFormat(StringFormatFlags.DirectionRightToLeft);
+                        posi = posi + alfi;
+                        puntoF = new PointF(coli, posi);
+                        e.Graphics.DrawString("OP. GRAVADA", lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                        puntoF = new PointF(coli + 190, posi);
+                        RectangleF recst = new RectangleF(puntoF, siz);
+                        e.Graphics.DrawString(tx_flete.Text, lt_peq, Brushes.Black, recst, alder);
+                        posi = posi + alfi;
+                        puntoF = new PointF(coli, posi);
+                        e.Graphics.DrawString("OP. INAFECTA", lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                        puntoF = new PointF(coli + 190, posi);
+                        RectangleF recig = new RectangleF(puntoF, siz);
+                        e.Graphics.DrawString("0.00", lt_peq, Brushes.Black, recig, alder);
+                        posi = posi + alfi;
+                        puntoF = new PointF(coli, posi);
+                        e.Graphics.DrawString("OP. EXONERADA", lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                        puntoF = new PointF(coli + 190, posi);
+                        RectangleF recex = new RectangleF(puntoF, siz);
+                        e.Graphics.DrawString("0.00", lt_peq, Brushes.Black, recex, alder);
+                        posi = posi + alfi;
+                        puntoF = new PointF(coli, posi);
+                        e.Graphics.DrawString("IGV", lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                        puntoF = new PointF(coli + 190, posi);
+                        RectangleF recgv = new RectangleF(puntoF, siz);
+                        e.Graphics.DrawString(tx_igv.Text, lt_peq, Brushes.Black, recgv, alder);
+                        posi = posi + alfi;
+                        puntoF = new PointF(coli, posi);
+                        e.Graphics.DrawString("IMPORTE TOTAL " + cmb_mon.Text, lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                        puntoF = new PointF(coli + 190, posi);
+                        recto = new RectangleF(puntoF, siz);
+                        e.Graphics.DrawString(tx_flete.Text, lt_peq, Brushes.Black, recto, alder);
+                    }
+                    posi = posi + alfi * 2;
+                    puntoF = new PointF(coli, posi);
+                    NumLetra nl = new NumLetra();
+                    string monlet = "SON: " + tx_fletLetras.Text;
+                    if (monlet.Length <= 30) siz = new SizeF(CentimeterToPixel(anchTik), alfi);
+                    else siz = new SizeF(CentimeterToPixel(anchTik), alfi * 2);
+                    recto = new RectangleF(puntoF, siz);
+                    e.Graphics.DrawString(monlet, lt_peq, Brushes.Black, recto, StringFormat.GenericTypographic);
+                    if (monlet.Length <= 30) posi = posi + alfi;
+                    else posi = posi + alfi + alfi;
+                    if (double.Parse(tx_flete.Text) > double.Parse(Program.valdetra))                // leyenda de detracción
+                    {
+                        siz = new SizeF(CentimeterToPixel(anchTik), 15 * 3);
+                        puntoF = new PointF(coli, posi);
+                        recto = new RectangleF(puntoF, siz);
+                        e.Graphics.DrawString(glosdet.Trim() + " " + Program.ctadetra.Trim(), lt_peq, Brushes.Black, recto, StringFormat.GenericTypographic);
+                        posi = posi + alfi * 3;
+                    }
+                    puntoF = new PointF(coli, posi);
+                    string repre = "Representación impresa de la";
+                    lt = (CentimeterToPixel(anchTik) - e.Graphics.MeasureString(repre, lt_med).Width) / 2;
+                    puntoF = new PointF(lt, posi);
+                    e.Graphics.DrawString(repre, lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                    posi = posi + alfi;
+                    puntoF = new PointF(coli, posi);
+                    string previo = "";
+                    if (tx_dat_tdv.Text != codfact) previo = "boleta de venta electrónica";
+                    if (tx_dat_tdv.Text == codfact) previo = "factura electrónica";
+                    lt = (CentimeterToPixel(anchTik) - e.Graphics.MeasureString(previo, lt_med).Width) / 2;
+                    puntoF = new PointF(lt, posi);
+                    e.Graphics.DrawString(previo, lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                    //posi = posi + alfi;
+                    string separ = "|";
+                    string codigo = rucclie + separ + tipdo + separ +
+                        serie + separ + tx_numero.Text + separ +
+                        tx_igv.Text + separ + tx_flete.Text + separ +
+                        string.Format("{0:yyyy-MM-dd}", tx_fechope.Text) + separ + tipoDocEmi + separ +
+                        tx_numDocRem.Text;
+                    //
+                    var rnd = Path.GetRandomFileName();
+                    var otro = Path.GetFileNameWithoutExtension(rnd);
+                    otro = otro + ".png";
+                    //
+                    var qrEncoder = new QrEncoder(ErrorCorrectionLevel.H);
+                    var qrCode = qrEncoder.Encode(codigo);
+                    var renderer = new GraphicsRenderer(new FixedModuleSize(5, QuietZoneModules.Two), Brushes.Black, Brushes.White);
+                    using (var stream = new FileStream(otro, FileMode.Create))
+                        renderer.WriteToStream(qrCode.Matrix, ImageFormat.Png, stream);
+                    Bitmap png = new Bitmap(otro);
+                    posi = posi + alfi + 7;
+                    lt = (CentimeterToPixel(anchTik) - lib.CentimeterToPixel(3)) / 2;
+                    puntoF = new PointF(lt, posi);
+                    SizeF cuadro = new SizeF(lib.CentimeterToPixel(3), lib.CentimeterToPixel(3));    // 5x5 cm
+                    RectangleF rec = new RectangleF(puntoF, cuadro);
+                    e.Graphics.DrawImage(png, rec);
+                    // leyenda 2
+                    posi = posi + lib.CentimeterToPixel(3);
+                    lt = (CentimeterToPixel(anchTik) - e.Graphics.MeasureString(restexto, lt_med).Width) / 2;
+                    puntoF = new PointF(lt, posi);
+                    e.Graphics.DrawString(restexto, lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                    posi = posi + alfi;
+                    lt = (CentimeterToPixel(anchTik) - e.Graphics.MeasureString(autoriz_OSE_PSE, lt_med).Width) / 2;
+                    puntoF = new PointF(lt, posi);
+                    e.Graphics.DrawString(autoriz_OSE_PSE, lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                    // centrado en rectangulo   *********************
+                    StringFormat sf = new StringFormat();       //  *
+                    sf.Alignment = StringAlignment.Center;      //  *
+                    posi = posi + alfi + 5;
+                    SizeF leyen = new SizeF(CentimeterToPixel(anchTik) - 20, alfi * 3);
+                    puntoF = new PointF(coli, posi);
+                    leyen = new SizeF(CentimeterToPixel(anchTik) - 20, alfi * 3);
+                    RectangleF recley5 = new RectangleF(puntoF, leyen);
+                    e.Graphics.DrawString(webose, lt_med, Brushes.Black, recley5, sf);
+                    posi = posi + alfi;
+                    string locyus = tx_locuser.Text + " - " + tx_user.Text;
+                    puntoF = new PointF(coli, posi);
+                    e.Graphics.DrawString(locyus, lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);                  // tienda y vendedor
+                    posi = posi + alfi;
+                    puntoF = new PointF(coli, posi);
+                    e.Graphics.DrawString("Imp. " + DateTime.Now, lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                    posi = posi + alfi + alfi;
+                    puntoF = new PointF((CentimeterToPixel(anchTik) - e.Graphics.MeasureString(despedida, lt_med).Width) / 2, posi);
+                    e.Graphics.DrawString(despedida, lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                    posi = posi + alfi + alfi;
+                    puntoF = new PointF(coli, posi);
+                    e.Graphics.DrawString(".", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                }
+            }
         }
         private void updateprint(string sn)  // actualiza el campo impreso de la GR = S
         {   // S=si impreso || N=no impreso
