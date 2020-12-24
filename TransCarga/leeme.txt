@@ -109,5 +109,7 @@ a eldni.pe .....................................................................
 - form guiati, ampliar ancho campo de telefono y limitar ........................................... ok 16/12/2020
 - form cobranzas, cerrar caja si la fecha es anterior.... .......................................... falta 
 form facelect: (facturacion electrónica, se integra con sist propio del cliente)
-- procesos de grabar TXT ........................................................................... 
-- formato impresion ................................................................................ FALTA
+- procesos de grabar TXT ........................................................................... ok 24/12/2020
+- formato impresion ................................................................................ ok 24/12/2020
+form guiati, no debe grabar la direccion de sede origen o sede de llegada como si 
+  fueran direccion del cliente ..................................................................... ok 24/12/2020

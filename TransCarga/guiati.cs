@@ -1328,6 +1328,8 @@ namespace TransCarga
             conn.Open();
             if(conn.State == ConnectionState.Open)
             {
+                if (v_clte_rem == "N" && rb_car_ofi.Checked == true) v_clte_rem = "P";  // N=nombre y direccion | P=solo nombre
+                if (v_clte_des == "N" && rb_ent_ofic.Checked == true) v_clte_des = "P";  // N=nombre y direccion | P=solo nombre
                 // asunto de la serie para la zona
                 // la zona se jala del desc_loc del destino
                 // 

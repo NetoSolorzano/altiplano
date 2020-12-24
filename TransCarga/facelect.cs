@@ -81,6 +81,7 @@ namespace TransCarga
         string autoriz_OSE_PSE = "yyy"; // numero resolucion sunat autorizando prov. fact electronica
         string despedida = "";          // texto para mensajes al cliente al final de la impresión del doc.vta. 
         string webose = "";             // direccion web del ose o pse para la descarga del 
+        string correo_gen = "";         // correo generico del emisor cuando el cliente no tiene correo propio
         //
         static libreria lib = new libreria();   // libreria de procedimientos
         publico lp = new publico();             // libreria de clases
@@ -328,6 +329,7 @@ namespace TransCarga
                             if (row["param"].ToString() == "autoriz") autoriz_OSE_PSE = row["valor"].ToString().Trim();
                             if (row["param"].ToString() == "despedi") despedida = row["valor"].ToString().Trim();
                             if (row["param"].ToString() == "webose") webose = row["valor"].ToString().Trim();
+                            if (row["param"].ToString() == "correo_c1") correo_gen = row["valor"].ToString().Trim();
                         }
                     }
                     if (row["formulario"].ToString() == "ayccaja" && row["campo"].ToString() == "estado")
@@ -725,8 +727,8 @@ namespace TransCarga
                     }
                     if (hay == "sin")
                     {
-                        string consulta = "SELECT a.tidoregri,a.nudoregri,a.nombregri,a.direregri,a.ubigregri,ifnull(b1.email,'') as emailR,ifnull(b1.numerotel1,'') as numtel1R," +
-                            "ifnull(b1.numerotel2,'') as numtel2R,a.tidodegri,a.nudodegri,a.nombdegri,a.diredegri,a.ubigdegri,ifnull(b2.email,'') as emailD," +
+                        string consulta = "SELECT a.tidoregri,a.nudoregri,b1.razonsocial as nombregri,b1.direcc1 as direregri,b1.ubigeo as ubigregri,ifnull(b1.email,'') as emailR,ifnull(b1.numerotel1,'') as numtel1R," +
+                            "ifnull(b1.numerotel2,'') as numtel2R,a.tidodegri,a.nudodegri,b2.razonsocial as nombdegri,b2.direcc1 as diredegri,b2.ubigeo as ubigdegri,ifnull(b2.email,'') as emailD," +
                             "ifnull(b2.numerotel1,'') as numtel1D,ifnull(b2.numerotel2,'') as numtel2D,a.tipmongri,a.totgri,a.salgri,SUM(d.cantprodi) AS bultos,date(a.fechopegr) as fechopegr,a.tipcamgri," +
                             "max(d.descprodi) AS descrip,ifnull(m.descrizionerid,'') as mon,a.totgrMN,a.codMN,c.fecdocvta,b1.tiposocio as tipsrem,b2.tiposocio as tipsdes,a.docsremit " +
                             "from cabguiai a left join detguiai d on d.idc=a.id " +
@@ -2060,7 +2062,7 @@ namespace TransCarga
             tx_numDocRem.Text = datcltsR[1];
             tx_nomRem.Text = datcltsR[2];
             tx_dirRem.Text = datcltsR[3];
-            if (datcltsR[4] != "")
+            if (datcltsR[4].ToString().Trim() != "")
             {
                 DataRow[] row = dataUbig.Select("depart='" + datcltsR[4].Substring(0, 2) + "' and provin='00' and distri='00'");
                 tx_dptoRtt.Text = row[0].ItemArray[4].ToString();
@@ -2085,7 +2087,7 @@ namespace TransCarga
             tx_numDocRem.Text = datcltsD[1];
             tx_nomRem.Text = datcltsD[2];
             tx_dirRem.Text = datcltsD[3];
-            if (datcltsD[4].ToString() != "")
+            if (datcltsD[4].ToString().Trim() != "")
             {
                 DataRow[] row = dataUbig.Select("depart='" + datcltsD[4].Substring(0, 2) + "' and provin='00' and distri='00'");
                 tx_dptoRtt.Text = row[0].ItemArray[4].ToString();
@@ -2181,6 +2183,19 @@ namespace TransCarga
             tx_pagado.Text = "0.00";
             tx_salxcob.Text = tx_flete.Text;
             tx_salxcob.BackColor = Color.Red;
+        }
+        private void chk_sinco_CheckedChanged(object sender, EventArgs e)
+        {
+            if (chk_sinco.Checked == true)
+            {
+                if (tx_email.Text.Trim() != "") chk_sinco.Checked = false;
+                else tx_email.Text = correo_gen;
+            }
+            else
+            {
+                if (tx_email.Text.Trim() != "") tx_email.Text = "";
+                //else 
+            }
         }
         #endregion
 
@@ -2749,7 +2764,7 @@ namespace TransCarga
                         e.Graphics.DrawString("OP. GRAVADA", lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                         puntoF = new PointF(coli + 190, posi);
                         RectangleF recst = new RectangleF(puntoF, siz);
-                        e.Graphics.DrawString(tx_flete.Text, lt_peq, Brushes.Black, recst, alder);
+                        e.Graphics.DrawString(tx_subt.Text, lt_peq, Brushes.Black, recst, alder);
                         posi = posi + alfi;
                         puntoF = new PointF(coli, posi);
                         e.Graphics.DrawString("OP. INAFECTA", lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);
@@ -2951,5 +2966,6 @@ namespace TransCarga
             return guiaT;
         }
         #endregion
+
     }
 }

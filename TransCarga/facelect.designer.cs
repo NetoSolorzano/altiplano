@@ -94,13 +94,21 @@
             this.groupBox26 = new System.Windows.Forms.GroupBox();
             this.groupBox23 = new System.Windows.Forms.GroupBox();
             this.groupBox24 = new System.Windows.Forms.GroupBox();
-            this.tx_numero = new TransCarga.NumericTextBox();
-            this.tx_serie = new TransCarga.NumericTextBox();
             this.label8 = new System.Windows.Forms.Label();
             this.label14 = new System.Windows.Forms.Label();
             this.groupBox10 = new System.Windows.Forms.GroupBox();
             this.tx_ubigRtt = new System.Windows.Forms.TextBox();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.guias = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Descrip = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Cant = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.moneda = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.valor = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.valorMN = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.codmonloc = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.fechaGR = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.guiasclte = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.codmondoc = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.gbox_flete = new System.Windows.Forms.GroupBox();
             this.groupBox19 = new System.Windows.Forms.GroupBox();
             this.groupBox20 = new System.Windows.Forms.GroupBox();
@@ -108,8 +116,6 @@
             this.groupBox14 = new System.Windows.Forms.GroupBox();
             this.groupBox15 = new System.Windows.Forms.GroupBox();
             this.label6 = new System.Windows.Forms.Label();
-            this.tx_subt = new TransCarga.NumericTextBox();
-            this.tx_igv = new TransCarga.NumericTextBox();
             this.groupBox37 = new System.Windows.Forms.GroupBox();
             this.groupBox38 = new System.Windows.Forms.GroupBox();
             this.pan_pago = new System.Windows.Forms.Panel();
@@ -118,12 +124,9 @@
             this.groupBox39 = new System.Windows.Forms.GroupBox();
             this.groupBox40 = new System.Windows.Forms.GroupBox();
             this.label24 = new System.Windows.Forms.Label();
-            this.tx_salxcob = new TransCarga.NumericTextBox();
             this.label32 = new System.Windows.Forms.Label();
-            this.tx_pagado = new TransCarga.NumericTextBox();
             this.tx_dat_mone = new System.Windows.Forms.TextBox();
             this.cmb_mon = new System.Windows.Forms.ComboBox();
-            this.tx_flete = new TransCarga.NumericTextBox();
             this.label15 = new System.Windows.Forms.Label();
             this.groupBox16 = new System.Windows.Forms.GroupBox();
             this.label12 = new System.Windows.Forms.Label();
@@ -162,29 +165,27 @@
             this.tx_dat_saldoGR = new System.Windows.Forms.TextBox();
             this.tx_idcob = new System.Windows.Forms.TextBox();
             this.tx_tfmn = new System.Windows.Forms.TextBox();
-            this.tx_numGR = new TransCarga.NumericTextBox();
-            this.tx_serGR = new TransCarga.NumericTextBox();
-            this.tx_tfil = new TransCarga.NumericTextBox();
-            this.tx_totcant = new TransCarga.NumericTextBox();
             this.groupBox29 = new System.Windows.Forms.GroupBox();
             this.groupBox30 = new System.Windows.Forms.GroupBox();
-            this.tx_idcaja = new TransCarga.NumericTextBox();
             this.label16 = new System.Windows.Forms.Label();
             this.tx_fletLetras = new System.Windows.Forms.TextBox();
             this.tx_dat_monsunat = new System.Windows.Forms.TextBox();
             this.groupBox21 = new System.Windows.Forms.GroupBox();
             this.groupBox22 = new System.Windows.Forms.GroupBox();
             this.label9 = new System.Windows.Forms.Label();
-            this.guias = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Descrip = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Cant = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.moneda = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.valor = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.valorMN = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.codmonloc = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.fechaGR = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.guiasclte = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.codmondoc = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.tx_idcaja = new TransCarga.NumericTextBox();
+            this.tx_numGR = new TransCarga.NumericTextBox();
+            this.tx_serGR = new TransCarga.NumericTextBox();
+            this.tx_tfil = new TransCarga.NumericTextBox();
+            this.tx_totcant = new TransCarga.NumericTextBox();
+            this.tx_subt = new TransCarga.NumericTextBox();
+            this.tx_igv = new TransCarga.NumericTextBox();
+            this.tx_salxcob = new TransCarga.NumericTextBox();
+            this.tx_pagado = new TransCarga.NumericTextBox();
+            this.tx_flete = new TransCarga.NumericTextBox();
+            this.tx_numero = new TransCarga.NumericTextBox();
+            this.tx_serie = new TransCarga.NumericTextBox();
+            this.chk_sinco = new System.Windows.Forms.CheckBox();
             this.toolStrip1.SuspendLayout();
             this.groupBox11.SuspendLayout();
             this.groupBox7.SuspendLayout();
@@ -855,28 +856,6 @@
             this.groupBox24.TabIndex = 113;
             this.groupBox24.TabStop = false;
             // 
-            // tx_numero
-            // 
-            this.tx_numero.AllowSpace = false;
-            this.tx_numero.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_numero.Location = new System.Drawing.Point(55, 66);
-            this.tx_numero.Name = "tx_numero";
-            this.tx_numero.Size = new System.Drawing.Size(73, 20);
-            this.tx_numero.TabIndex = 2;
-            this.tx_numero.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.tx_numero.Leave += new System.EventHandler(this.tx_numero_Leave);
-            // 
-            // tx_serie
-            // 
-            this.tx_serie.AllowSpace = false;
-            this.tx_serie.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_serie.Location = new System.Drawing.Point(63, 40);
-            this.tx_serie.Name = "tx_serie";
-            this.tx_serie.Size = new System.Drawing.Size(65, 20);
-            this.tx_serie.TabIndex = 1;
-            this.tx_serie.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.tx_serie.Leave += new System.EventHandler(this.tx_serie_Leave);
-            // 
             // label8
             // 
             this.label8.AutoSize = true;
@@ -936,6 +915,73 @@
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.Size = new System.Drawing.Size(597, 162);
             this.dataGridView1.TabIndex = 21;
+            // 
+            // guias
+            // 
+            this.guias.FillWeight = 90F;
+            this.guias.HeaderText = "GUIA";
+            this.guias.Name = "guias";
+            this.guias.Width = 90;
+            // 
+            // Descrip
+            // 
+            this.Descrip.FillWeight = 300F;
+            this.Descrip.HeaderText = "DESCRIPCION";
+            this.Descrip.Name = "Descrip";
+            this.Descrip.Width = 300;
+            // 
+            // Cant
+            // 
+            this.Cant.FillWeight = 40F;
+            this.Cant.HeaderText = "C.BUL";
+            this.Cant.Name = "Cant";
+            this.Cant.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.Cant.Width = 40;
+            // 
+            // moneda
+            // 
+            this.moneda.FillWeight = 40F;
+            this.moneda.HeaderText = "MON";
+            this.moneda.Name = "moneda";
+            this.moneda.Width = 40;
+            // 
+            // valor
+            // 
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            this.valor.DefaultCellStyle = dataGridViewCellStyle1;
+            this.valor.FillWeight = 80F;
+            this.valor.HeaderText = "  VALOR";
+            this.valor.Name = "valor";
+            this.valor.Width = 80;
+            // 
+            // valorMN
+            // 
+            this.valorMN.HeaderText = "VALMONLOC";
+            this.valorMN.Name = "valorMN";
+            this.valorMN.Visible = false;
+            // 
+            // codmonloc
+            // 
+            this.codmonloc.HeaderText = "CODMN";
+            this.codmonloc.Name = "codmonloc";
+            this.codmonloc.Visible = false;
+            // 
+            // fechaGR
+            // 
+            this.fechaGR.HeaderText = "FechaGR";
+            this.fechaGR.Name = "fechaGR";
+            // 
+            // guiasclte
+            // 
+            this.guiasclte.HeaderText = "guiasclte";
+            this.guiasclte.Name = "guiasclte";
+            this.guiasclte.Visible = false;
+            // 
+            // codmondoc
+            // 
+            this.codmondoc.HeaderText = "codmondoc";
+            this.codmondoc.Name = "codmondoc";
+            this.codmondoc.Visible = false;
             // 
             // gbox_flete
             // 
@@ -1022,28 +1068,6 @@
             this.label6.Text = "IGV";
             this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // tx_subt
-            // 
-            this.tx_subt.AllowSpace = false;
-            this.tx_subt.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_subt.Location = new System.Drawing.Point(65, 84);
-            this.tx_subt.Name = "tx_subt";
-            this.tx_subt.ReadOnly = true;
-            this.tx_subt.Size = new System.Drawing.Size(73, 20);
-            this.tx_subt.TabIndex = 408;
-            this.tx_subt.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // tx_igv
-            // 
-            this.tx_igv.AllowSpace = false;
-            this.tx_igv.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_igv.Location = new System.Drawing.Point(65, 60);
-            this.tx_igv.Name = "tx_igv";
-            this.tx_igv.ReadOnly = true;
-            this.tx_igv.Size = new System.Drawing.Size(73, 20);
-            this.tx_igv.TabIndex = 407;
-            this.tx_igv.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
             // groupBox37
             // 
             this.groupBox37.BackColor = System.Drawing.Color.White;
@@ -1126,17 +1150,6 @@
             this.label24.Text = "Por cobrar";
             this.label24.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // tx_salxcob
-            // 
-            this.tx_salxcob.AllowSpace = false;
-            this.tx_salxcob.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_salxcob.Location = new System.Drawing.Point(65, 111);
-            this.tx_salxcob.Name = "tx_salxcob";
-            this.tx_salxcob.ReadOnly = true;
-            this.tx_salxcob.Size = new System.Drawing.Size(73, 20);
-            this.tx_salxcob.TabIndex = 403;
-            this.tx_salxcob.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
             // label32
             // 
             this.label32.AutoSize = true;
@@ -1148,18 +1161,6 @@
             this.label32.TabIndex = 402;
             this.label32.Text = "Cancela";
             this.label32.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // tx_pagado
-            // 
-            this.tx_pagado.AllowSpace = false;
-            this.tx_pagado.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_pagado.Location = new System.Drawing.Point(42, 130);
-            this.tx_pagado.Name = "tx_pagado";
-            this.tx_pagado.ReadOnly = true;
-            this.tx_pagado.Size = new System.Drawing.Size(69, 20);
-            this.tx_pagado.TabIndex = 16;
-            this.tx_pagado.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.tx_pagado.Visible = false;
             // 
             // tx_dat_mone
             // 
@@ -1180,17 +1181,6 @@
             this.cmb_mon.Size = new System.Drawing.Size(40, 21);
             this.cmb_mon.TabIndex = 22;
             this.cmb_mon.SelectedIndexChanged += new System.EventHandler(this.cmb_mon_SelectedIndexChanged);
-            // 
-            // tx_flete
-            // 
-            this.tx_flete.AllowSpace = false;
-            this.tx_flete.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_flete.Location = new System.Drawing.Point(65, 37);
-            this.tx_flete.Name = "tx_flete";
-            this.tx_flete.Size = new System.Drawing.Size(73, 20);
-            this.tx_flete.TabIndex = 16;
-            this.tx_flete.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.tx_flete.Leave += new System.EventHandler(this.tx_flete_Leave);
             // 
             // label15
             // 
@@ -1451,7 +1441,7 @@
             // 
             this.label2.AutoSize = true;
             this.label2.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label2.Location = new System.Drawing.Point(147, 127);
+            this.label2.Location = new System.Drawing.Point(158, 127);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(38, 13);
             this.label2.TabIndex = 355;
@@ -1580,50 +1570,6 @@
             this.tx_tfmn.TabIndex = 368;
             this.tx_tfmn.Visible = false;
             // 
-            // tx_numGR
-            // 
-            this.tx_numGR.AllowSpace = false;
-            this.tx_numGR.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_numGR.Location = new System.Drawing.Point(283, 35);
-            this.tx_numGR.Name = "tx_numGR";
-            this.tx_numGR.Size = new System.Drawing.Size(73, 20);
-            this.tx_numGR.TabIndex = 3;
-            this.tx_numGR.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.tx_numGR.Leave += new System.EventHandler(this.tx_numGR_Leave);
-            // 
-            // tx_serGR
-            // 
-            this.tx_serGR.AllowSpace = false;
-            this.tx_serGR.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_serGR.Location = new System.Drawing.Point(237, 35);
-            this.tx_serGR.Name = "tx_serGR";
-            this.tx_serGR.Size = new System.Drawing.Size(46, 20);
-            this.tx_serGR.TabIndex = 2;
-            this.tx_serGR.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.tx_serGR.Leave += new System.EventHandler(this.tx_serGR_Leave);
-            // 
-            // tx_tfil
-            // 
-            this.tx_tfil.AllowSpace = false;
-            this.tx_tfil.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_tfil.Location = new System.Drawing.Point(263, 384);
-            this.tx_tfil.Name = "tx_tfil";
-            this.tx_tfil.ReadOnly = true;
-            this.tx_tfil.Size = new System.Drawing.Size(41, 20);
-            this.tx_tfil.TabIndex = 347;
-            this.tx_tfil.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // tx_totcant
-            // 
-            this.tx_totcant.AllowSpace = false;
-            this.tx_totcant.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_totcant.Location = new System.Drawing.Point(418, 384);
-            this.tx_totcant.Name = "tx_totcant";
-            this.tx_totcant.ReadOnly = true;
-            this.tx_totcant.Size = new System.Drawing.Size(41, 20);
-            this.tx_totcant.TabIndex = 25;
-            this.tx_totcant.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
             // groupBox29
             // 
             this.groupBox29.BackColor = System.Drawing.Color.White;
@@ -1641,14 +1587,6 @@
             this.groupBox30.Size = new System.Drawing.Size(164, 1);
             this.groupBox30.TabIndex = 113;
             this.groupBox30.TabStop = false;
-            // 
-            // tx_idcaja
-            // 
-            this.tx_idcaja.AllowSpace = false;
-            this.tx_idcaja.Location = new System.Drawing.Point(50, 384);
-            this.tx_idcaja.Name = "tx_idcaja";
-            this.tx_idcaja.Size = new System.Drawing.Size(51, 20);
-            this.tx_idcaja.TabIndex = 409;
             // 
             // label16
             // 
@@ -1708,72 +1646,145 @@
             this.label9.TabIndex = 413;
             this.label9.Text = "Monto en letras";
             // 
-            // guias
+            // tx_idcaja
             // 
-            this.guias.FillWeight = 90F;
-            this.guias.HeaderText = "GUIA";
-            this.guias.Name = "guias";
-            this.guias.Width = 90;
+            this.tx_idcaja.AllowSpace = false;
+            this.tx_idcaja.Location = new System.Drawing.Point(50, 384);
+            this.tx_idcaja.Name = "tx_idcaja";
+            this.tx_idcaja.Size = new System.Drawing.Size(51, 20);
+            this.tx_idcaja.TabIndex = 409;
             // 
-            // Descrip
+            // tx_numGR
             // 
-            this.Descrip.FillWeight = 300F;
-            this.Descrip.HeaderText = "DESCRIPCION";
-            this.Descrip.Name = "Descrip";
-            this.Descrip.Width = 300;
+            this.tx_numGR.AllowSpace = false;
+            this.tx_numGR.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_numGR.Location = new System.Drawing.Point(283, 35);
+            this.tx_numGR.Name = "tx_numGR";
+            this.tx_numGR.Size = new System.Drawing.Size(73, 20);
+            this.tx_numGR.TabIndex = 3;
+            this.tx_numGR.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.tx_numGR.Leave += new System.EventHandler(this.tx_numGR_Leave);
             // 
-            // Cant
+            // tx_serGR
             // 
-            this.Cant.FillWeight = 40F;
-            this.Cant.HeaderText = "C.BUL";
-            this.Cant.Name = "Cant";
-            this.Cant.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.Cant.Width = 40;
+            this.tx_serGR.AllowSpace = false;
+            this.tx_serGR.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_serGR.Location = new System.Drawing.Point(237, 35);
+            this.tx_serGR.Name = "tx_serGR";
+            this.tx_serGR.Size = new System.Drawing.Size(46, 20);
+            this.tx_serGR.TabIndex = 2;
+            this.tx_serGR.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.tx_serGR.Leave += new System.EventHandler(this.tx_serGR_Leave);
             // 
-            // moneda
+            // tx_tfil
             // 
-            this.moneda.FillWeight = 40F;
-            this.moneda.HeaderText = "MON";
-            this.moneda.Name = "moneda";
-            this.moneda.Width = 40;
+            this.tx_tfil.AllowSpace = false;
+            this.tx_tfil.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_tfil.Location = new System.Drawing.Point(263, 384);
+            this.tx_tfil.Name = "tx_tfil";
+            this.tx_tfil.ReadOnly = true;
+            this.tx_tfil.Size = new System.Drawing.Size(41, 20);
+            this.tx_tfil.TabIndex = 347;
+            this.tx_tfil.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
-            // valor
+            // tx_totcant
             // 
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            this.valor.DefaultCellStyle = dataGridViewCellStyle1;
-            this.valor.FillWeight = 80F;
-            this.valor.HeaderText = "  VALOR";
-            this.valor.Name = "valor";
-            this.valor.Width = 80;
+            this.tx_totcant.AllowSpace = false;
+            this.tx_totcant.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_totcant.Location = new System.Drawing.Point(418, 384);
+            this.tx_totcant.Name = "tx_totcant";
+            this.tx_totcant.ReadOnly = true;
+            this.tx_totcant.Size = new System.Drawing.Size(41, 20);
+            this.tx_totcant.TabIndex = 25;
+            this.tx_totcant.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
-            // valorMN
+            // tx_subt
             // 
-            this.valorMN.HeaderText = "VALMONLOC";
-            this.valorMN.Name = "valorMN";
-            this.valorMN.Visible = false;
+            this.tx_subt.AllowSpace = false;
+            this.tx_subt.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_subt.Location = new System.Drawing.Point(65, 84);
+            this.tx_subt.Name = "tx_subt";
+            this.tx_subt.ReadOnly = true;
+            this.tx_subt.Size = new System.Drawing.Size(73, 20);
+            this.tx_subt.TabIndex = 408;
+            this.tx_subt.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
-            // codmonloc
+            // tx_igv
             // 
-            this.codmonloc.HeaderText = "CODMN";
-            this.codmonloc.Name = "codmonloc";
-            this.codmonloc.Visible = false;
+            this.tx_igv.AllowSpace = false;
+            this.tx_igv.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_igv.Location = new System.Drawing.Point(65, 60);
+            this.tx_igv.Name = "tx_igv";
+            this.tx_igv.ReadOnly = true;
+            this.tx_igv.Size = new System.Drawing.Size(73, 20);
+            this.tx_igv.TabIndex = 407;
+            this.tx_igv.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
-            // fechaGR
+            // tx_salxcob
             // 
-            this.fechaGR.HeaderText = "FechaGR";
-            this.fechaGR.Name = "fechaGR";
+            this.tx_salxcob.AllowSpace = false;
+            this.tx_salxcob.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_salxcob.Location = new System.Drawing.Point(65, 111);
+            this.tx_salxcob.Name = "tx_salxcob";
+            this.tx_salxcob.ReadOnly = true;
+            this.tx_salxcob.Size = new System.Drawing.Size(73, 20);
+            this.tx_salxcob.TabIndex = 403;
+            this.tx_salxcob.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
-            // guiasclte
+            // tx_pagado
             // 
-            this.guiasclte.HeaderText = "guiasclte";
-            this.guiasclte.Name = "guiasclte";
-            this.guiasclte.Visible = false;
+            this.tx_pagado.AllowSpace = false;
+            this.tx_pagado.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_pagado.Location = new System.Drawing.Point(42, 130);
+            this.tx_pagado.Name = "tx_pagado";
+            this.tx_pagado.ReadOnly = true;
+            this.tx_pagado.Size = new System.Drawing.Size(69, 20);
+            this.tx_pagado.TabIndex = 16;
+            this.tx_pagado.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.tx_pagado.Visible = false;
             // 
-            // codmondoc
+            // tx_flete
             // 
-            this.codmondoc.HeaderText = "codmondoc";
-            this.codmondoc.Name = "codmondoc";
-            this.codmondoc.Visible = false;
+            this.tx_flete.AllowSpace = false;
+            this.tx_flete.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_flete.Location = new System.Drawing.Point(65, 37);
+            this.tx_flete.Name = "tx_flete";
+            this.tx_flete.Size = new System.Drawing.Size(73, 20);
+            this.tx_flete.TabIndex = 16;
+            this.tx_flete.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.tx_flete.Leave += new System.EventHandler(this.tx_flete_Leave);
+            // 
+            // tx_numero
+            // 
+            this.tx_numero.AllowSpace = false;
+            this.tx_numero.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_numero.Location = new System.Drawing.Point(55, 66);
+            this.tx_numero.Name = "tx_numero";
+            this.tx_numero.Size = new System.Drawing.Size(73, 20);
+            this.tx_numero.TabIndex = 2;
+            this.tx_numero.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.tx_numero.Leave += new System.EventHandler(this.tx_numero_Leave);
+            // 
+            // tx_serie
+            // 
+            this.tx_serie.AllowSpace = false;
+            this.tx_serie.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_serie.Location = new System.Drawing.Point(63, 40);
+            this.tx_serie.Name = "tx_serie";
+            this.tx_serie.Size = new System.Drawing.Size(65, 20);
+            this.tx_serie.TabIndex = 1;
+            this.tx_serie.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.tx_serie.Leave += new System.EventHandler(this.tx_serie_Leave);
+            // 
+            // chk_sinco
+            // 
+            this.chk_sinco.AutoSize = true;
+            this.chk_sinco.Location = new System.Drawing.Point(142, 126);
+            this.chk_sinco.Name = "chk_sinco";
+            this.chk_sinco.Size = new System.Drawing.Size(15, 14);
+            this.chk_sinco.TabIndex = 415;
+            this.chk_sinco.UseVisualStyleBackColor = true;
+            this.chk_sinco.CheckedChanged += new System.EventHandler(this.chk_sinco_CheckedChanged);
             // 
             // facelect
             // 
@@ -1782,6 +1793,7 @@
             this.AutoSize = true;
             this.BackColor = System.Drawing.Color.LightSteelBlue;
             this.ClientSize = new System.Drawing.Size(770, 557);
+            this.Controls.Add(this.chk_sinco);
             this.Controls.Add(this.groupBox21);
             this.Controls.Add(this.label9);
             this.Controls.Add(this.tx_dat_monsunat);
@@ -2050,5 +2062,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn fechaGR;
         private System.Windows.Forms.DataGridViewTextBoxColumn guiasclte;
         private System.Windows.Forms.DataGridViewTextBoxColumn codmondoc;
+        private System.Windows.Forms.CheckBox chk_sinco;
     }
 }
