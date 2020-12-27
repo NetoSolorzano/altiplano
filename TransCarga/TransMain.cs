@@ -449,7 +449,17 @@ namespace TransCarga
         }
         private void fac_reportes_Click(object sender, EventArgs e)     // reportes de facturas
         {
-            MessageBox.Show("Form de reportes de facturas","En desarrollo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            //MessageBox.Show("Form de reportes de facturas","En desarrollo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            repsventas fpe = new repsventas();
+            fpe.TopLevel = false;
+            fpe.Parent = this;
+            pn_centro.Controls.Add(fpe);
+            fpe.Show();
+            if (fpe.Parent.Width < fpe.Width)
+            {
+                this.Width = this.Width + (this.Width - fpe.Width) + 20;
+            }
+            fpe.BringToFront();
         }
         //
         private void bt_ventas_Click(object sender, EventArgs e)        // Operaciones

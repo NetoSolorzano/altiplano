@@ -206,6 +206,12 @@
     <Compile Include="repsoper.designer.cs">
       <DependentUpon>repsoper.cs</DependentUpon>
     </Compile>
+    <Compile Include="repsventas.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="repsventas.designer.cs">
+      <DependentUpon>repsventas.cs</DependentUpon>
+    </Compile>
     <Compile Include="Resource1.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -329,6 +335,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="repsoper.resx">
       <DependentUpon>repsoper.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="repsventas.resx">
+      <DependentUpon>repsventas.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Resource1.resx">
       <Generator>ResXFileCodeGenerator</Generator>

@@ -1665,6 +1665,27 @@ namespace TransCarga
                     subtMN = Math.Round(decimal.Parse(tx_subt.Text), 3);
                     igvtMN = Math.Round(decimal.Parse(tx_igv.Text), 3);
                 }
+                // comprobamos si los datos del cliente tienen cambios
+                if (rb_remGR.Checked == true)
+                {
+                    if (datcltsR[3].ToString().Trim() != tx_dirRem.Text.Trim() ||
+                        datcltsR[6].ToString().Trim() != tx_telc1.Text.Trim() ||
+                        datcltsR[5].ToString().Trim() != tx_email.Text.Trim() ||
+                        datcltsR[4].ToString().Trim() != tx_ubigRtt.Text.Trim())
+                    {
+                        tx_dat_m1clte.Text = "E";
+                    }
+                }
+                if (rb_desGR.Checked == true)
+                {
+                    if (datcltsD[3].ToString().Trim() != tx_dirRem.Text.Trim() ||
+                        datcltsD[6].ToString().Trim() != tx_telc1.Text.Trim() ||
+                        datcltsD[5].ToString().Trim() != tx_email.Text.Trim() ||
+                        datcltsD[4].ToString().Trim() != tx_ubigRtt.Text.Trim())
+                    {
+                        tx_dat_m1clte.Text = "E";
+                    }
+                }
                 string inserta = "insert into cabfactu (" +
                     "fechope,martdve,tipdvta,serdvta,numdvta,ticltgr,tidoclt,nudoclt,nombclt,direclt,dptoclt,provclt,distclt,ubigclt,corrclt,teleclt," +
                     "locorig,dirorig,ubiorig,obsdvta,canfidt,canbudt,mondvta,tcadvta,subtota,igvtota,porcigv,totdvta,totpags,saldvta,estdvta,frase01," +
@@ -2062,6 +2083,9 @@ namespace TransCarga
             tx_numDocRem.Text = datcltsR[1];
             tx_nomRem.Text = datcltsR[2];
             tx_dirRem.Text = datcltsR[3];
+            tx_dptoRtt.Text = "";
+            tx_provRtt.Text = "";
+            tx_distRtt.Text = "";
             if (datcltsR[4].ToString().Trim() != "")
             {
                 DataRow[] row = dataUbig.Select("depart='" + datcltsR[4].Substring(0, 2) + "' and provin='00' and distri='00'");
@@ -2087,6 +2111,9 @@ namespace TransCarga
             tx_numDocRem.Text = datcltsD[1];
             tx_nomRem.Text = datcltsD[2];
             tx_dirRem.Text = datcltsD[3];
+            tx_dptoRtt.Text = "";
+            tx_provRtt.Text = "";
+            tx_distRtt.Text = "";
             if (datcltsD[4].ToString().Trim() != "")
             {
                 DataRow[] row = dataUbig.Select("depart='" + datcltsD[4].Substring(0, 2) + "' and provin='00' and distri='00'");

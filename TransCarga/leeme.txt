@@ -20,11 +20,9 @@ form preguiat:
   una fila en la tabla detalle de la pre guía
 - permite poner clave de seguridad al envío
 form repsoper: (Reportes para todo el modulo de operaciones)
-- Falta considerar MONEDA y TIPO DE CAMBIO EN ESTOS REPORTES  .....................................
 - No debe considerar en sumas a los registros anulados ............................................ ok
 - Mejorar el reporte resumen por cliente .......................................................... ok
-- Mejorar reporte de pre guías ....................................................................
-- Hacer el reporte de guias transp. individuales .................................................. 
+- Hacer el reporte de guias transp. individuales .................................................. ok
 - Hacer el reporte de planillas de carga .......................................................... ok
 form defs:
 - Se crea defininion de zonas "ZON" ............................................................... OK
@@ -113,3 +111,8 @@ form facelect: (facturacion electrónica, se integra con sist propio del cliente
 - formato impresion ................................................................................ ok 24/12/2020
 form guiati, no debe grabar la direccion de sede origen o sede de llegada como si 
   fueran direccion del cliente ..................................................................... ok 24/12/2020
+form repsventas: (reportes de ventas, notas credito, etc)
+- desarrollo del form .............................................................................. ok 25/12/2020
+form repsoper
+- Falta considerar MONEDA y TIPO DE CAMBIO EN ESTOS REPORTES  ...................................... falta
+- Agregar pestaña para revalorizaciones ............................................................ ok 25/12/2020

@@ -8,9 +8,9 @@ using ClosedXML.Excel;
 
 namespace TransCarga
 {
-    public partial class repsoper : Form
+    public partial class repsventas : Form
     {
-        static string nomform = "repsoper";           // nombre del formulario
+        static string nomform = "repsventas";           // nombre del formulario
         string colback = TransCarga.Program.colbac;   // color de fondo
         string colpage = TransCarga.Program.colpag;   // color de los pageframes
         string colgrid = TransCarga.Program.colgri;   // color de las grillas
@@ -18,7 +18,7 @@ namespace TransCarga
         string colsfon = TransCarga.Program.colsbg;   // color fondo seleccion
         string colsfgr = TransCarga.Program.colsfc;   // color seleccion grilla
         string colstrp = TransCarga.Program.colstr;   // color del strip
-        static string nomtab = "cabpregr";            // 
+        static string nomtab = "cabfactu";            // 
         #region variables
         string asd = TransCarga.Program.vg_user;      // usuario conectado al sistema
         public int totfilgrid, cta;             // variables para impresion
@@ -58,7 +58,7 @@ namespace TransCarga
         static string data = ConfigurationManager.AppSettings["data"].ToString();
         string DB_CONN_STR = "server=" + login.serv + ";uid=" + login.usua + ";pwd=" + login.cont + ";database=" + data + ";";
 
-        public repsoper()
+        public repsventas()
         {
             InitializeComponent();
         }
@@ -67,11 +67,11 @@ namespace TransCarga
             // en este form no usamos
             return base.ProcessCmdKey(ref msg, keyData);
         }
-        private void repsoper_KeyDown(object sender, KeyEventArgs e)
+        private void repsventas_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter) SendKeys.Send("{TAB}");
         }
-        private void repsoper_Load(object sender, EventArgs e)
+        private void repsventas_Load(object sender, EventArgs e)
         {
             /*
             ToolTip toolTipNombre = new ToolTip();           // Create the ToolTip and associate with the Form container.
@@ -89,23 +89,16 @@ namespace TransCarga
             KeyPreview = true;
             tabControl1.Enabled = false;
             //
-            tx_codped.CharacterCasing = CharacterCasing.Upper;
-            tx_codped.TextAlign = HorizontalAlignment.Center;
         }
         private void init()
         {
             tabControl1.BackColor = Color.FromName(TransCarga.Program.colgri);
             this.BackColor = Color.FromName(colback);
             toolStrip1.BackColor = Color.FromName(colstrp);
-            dgv_resumen.DefaultCellStyle.BackColor = Color.FromName(colgrid);
-            //dgv_resumen.DefaultCellStyle.ForeColor = Color.FromName(colfogr);
-            //dgv_resumen.DefaultCellStyle.SelectionBackColor = Color.FromName(colsfon);
-            //dgv_resumen.DefaultCellStyle.SelectionForeColor = Color.FromName(colsfgr);
             //
-            dgv_vtas.DefaultCellStyle.BackColor = Color.FromName(colgrid);
-            dgv_guias.DefaultCellStyle.BackColor = Color.FromName(colgrid);
-            dgv_plan.DefaultCellStyle.BackColor = Color.FromName(colgrid);
-            dgv_reval.DefaultCellStyle.BackColor = Color.FromName(colgrid);
+            dgv_facts.DefaultCellStyle.BackColor = Color.FromName(colgrid);
+            //
+            dgv_notcre.DefaultCellStyle.BackColor = Color.FromName(colgrid);
             //
             Bt_add.Image = Image.FromFile(img_btN);
             Bt_edit.Image = Image.FromFile(img_btE);
@@ -194,16 +187,12 @@ namespace TransCarga
                                        "where numero=1 " + parte + "order by idcodice";
                 MySqlCommand cmd = new MySqlCommand(contaller, conn);
                 MySqlDataAdapter dataller = new MySqlDataAdapter(cmd);
-                // panel PRE GUIAS
                 dataller.Fill(dttaller);
-                cmb_vtasloc.DataSource = dttaller;
-                cmb_vtasloc.DisplayMember = "descrizionerid";
-                cmb_vtasloc.ValueMember = "idcodice";
-                // PANEL GUIAS
+                // PANEL facturacion
                 cmb_sede_guias.DataSource = dttaller;
                 cmb_sede_guias.DisplayMember = "descrizionerid";
                 cmb_sede_guias.ValueMember = "idcodice";
-                // PANEL PLANILLA CARGA
+                // PANEL notas de credito
                 cmb_sede_plan.DataSource = dttaller;
                 cmb_sede_plan.DisplayMember = "descrizionerid"; ;
                 cmb_sede_plan.ValueMember = "idcodice";
@@ -213,30 +202,15 @@ namespace TransCarga
                 cmd = new MySqlCommand(conestad, conn);
                 MySqlDataAdapter daestad = new MySqlDataAdapter(cmd);
                 daestad.Fill(dtestad);
-                // PANEL GUIAS
-                cmb_estad.DataSource = dtestad;
-                cmb_estad.DisplayMember = "descrizionerid";
-                cmb_estad.ValueMember = "idcodice";
-                // PANEL GUIAS
+                // PANEL facturacion
                 cmb_estad_guias.DataSource = dtestad;
                 cmb_estad_guias.DisplayMember = "descrizionerid";
                 cmb_estad_guias.ValueMember = "idcodice";
-                // PANEL PLANILLA CARGA
+                // PANEL notas de credito
                 cmb_estad_plan.DataSource = dtestad;
                 cmb_estad_plan.DisplayMember = "descrizionerid";
                 cmb_estad_plan.ValueMember = "idcodice";
-                // ***************** seleccion del tipo de documento cliente
-                const string contidoc = "select descrizionerid,idcodice,codigo from desc_doc " +
-                                       "where numero=1 order by idcodice";
-                cmd = new MySqlCommand(contidoc, conn);
-                MySqlDataAdapter datad = new MySqlDataAdapter(cmd);
-                DataTable dttd = new DataTable();
-                datad.Fill(dttd);
-                cmb_tidoc.DataSource = dttd;
-                cmb_tidoc.DisplayMember = "descrizionerid";
-                cmb_tidoc.ValueMember = "idcodice";
                 //
-                datad.Dispose();
             }
             conn.Close();
         }
@@ -246,298 +220,68 @@ namespace TransCarga
             int b;
             switch (dgv)
             {
-                case "dgv_vtas":
-                    dgv_vtas.Font = tiplg;
-                    dgv_vtas.DefaultCellStyle.Font = tiplg;
-                    dgv_vtas.RowTemplate.Height = 15;
-                    //dgv_vtas.DefaultCellStyle.BackColor = Color.MediumAquamarine;
-                    dgv_vtas.AllowUserToAddRows = false;
-                    dgv_vtas.Width = this.Parent.Width - 50; // 1015;
-                    if (dgv_vtas.DataSource == null) dgv_vtas.ColumnCount = 11;
-                    if (dgv_vtas.Rows.Count > 0)
-                    {
-                        for (int i = 0; i < dgv_vtas.Columns.Count; i++)
-                        {
-                            dgv_vtas.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-                            _ = decimal.TryParse(dgv_vtas.Rows[0].Cells[i].Value.ToString(), out decimal vd);
-                            if (vd != 0) dgv_vtas.Columns[i].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
-                        }
-                        b = 0;
-                        for (int i = 0; i < dgv_vtas.Columns.Count; i++)
-                        {
-                            int a = dgv_vtas.Columns[i].Width;
-                            b += a;
-                            dgv_vtas.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-                            dgv_vtas.Columns[i].Width = a;
-                        }
-                        if (b < dgv_vtas.Width) dgv_vtas.Width = b + 60;
-                        dgv_vtas.ReadOnly = true;
-                    }
-                    break;
                 case "dgv_guias":
-                    dgv_guias.Font = tiplg;
-                    dgv_guias.DefaultCellStyle.Font = tiplg;
-                    dgv_guias.RowTemplate.Height = 15;
-                    dgv_guias.AllowUserToAddRows = false;
-                    dgv_guias.Width = Parent.Width - 50; // 1015;
-                    if (dgv_guias.DataSource == null) dgv_guias.ColumnCount = 11;
-                    if (dgv_guias.Rows.Count > 0)
+                    dgv_facts.Font = tiplg;
+                    dgv_facts.DefaultCellStyle.Font = tiplg;
+                    dgv_facts.RowTemplate.Height = 15;
+                    dgv_facts.AllowUserToAddRows = false;
+                    dgv_facts.Width = Parent.Width - 50; // 1015;
+                    if (dgv_facts.DataSource == null) dgv_facts.ColumnCount = 11;
+                    if (dgv_facts.Rows.Count > 0)
                     {
-                        for (int i = 0; i < dgv_guias.Columns.Count; i++)
+                        for (int i = 0; i < dgv_facts.Columns.Count; i++)
                         {
-                            dgv_guias.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-                            _ = decimal.TryParse(dgv_guias.Rows[0].Cells[i].Value.ToString(), out decimal vd);
-                            if (vd != 0) dgv_guias.Columns[i].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+                            dgv_facts.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                            _ = decimal.TryParse(dgv_facts.Rows[0].Cells[i].Value.ToString(), out decimal vd);
+                            if (vd != 0) dgv_facts.Columns[i].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
                         }
                         b = 0;
-                        for (int i = 0; i < dgv_guias.Columns.Count; i++)
+                        for (int i = 0; i < dgv_facts.Columns.Count; i++)
                         {
-                            int a = dgv_guias.Columns[i].Width;
+                            int a = dgv_facts.Columns[i].Width;
                             b += a;
-                            dgv_guias.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-                            dgv_guias.Columns[i].Width = a;
+                            dgv_facts.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+                            dgv_facts.Columns[i].Width = a;
                         }
-                        if (b < dgv_guias.Width) dgv_guias.Width = b + 60;
-                        dgv_guias.ReadOnly = true;
+                        if (b < dgv_facts.Width) dgv_facts.Width = b + 60;
+                        dgv_facts.ReadOnly = true;
                     }
                     break;
                 case "dgv_plan":
-                    dgv_plan.Font = tiplg;
-                    dgv_plan.DefaultCellStyle.Font = tiplg;
-                    dgv_plan.RowTemplate.Height = 15;
-                    dgv_plan.AllowUserToAddRows = false;
-                    dgv_guias.Width = Parent.Width - 50; // 1015;
-                    if (dgv_plan.DataSource == null) dgv_plan.ColumnCount = 11;
-                    if (dgv_plan.Rows.Count > 0)
+                    dgv_notcre.Font = tiplg;
+                    dgv_notcre.DefaultCellStyle.Font = tiplg;
+                    dgv_notcre.RowTemplate.Height = 15;
+                    dgv_notcre.AllowUserToAddRows = false;
+                    dgv_facts.Width = Parent.Width - 50; // 1015;
+                    if (dgv_notcre.DataSource == null) dgv_notcre.ColumnCount = 11;
+                    if (dgv_notcre.Rows.Count > 0)
                     {
-                        for (int i = 0; i < dgv_plan.Columns.Count; i++)
+                        for (int i = 0; i < dgv_notcre.Columns.Count; i++)
                         {
-                            dgv_plan.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-                            _ = decimal.TryParse(dgv_plan.Rows[0].Cells[i].Value.ToString(), out decimal vd);
-                            if (vd != 0) dgv_plan.Columns[i].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+                            dgv_notcre.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                            _ = decimal.TryParse(dgv_notcre.Rows[0].Cells[i].Value.ToString(), out decimal vd);
+                            if (vd != 0) dgv_notcre.Columns[i].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
                         }
                         b = 0;
-                        for (int i = 0; i < dgv_plan.Columns.Count; i++)
+                        for (int i = 0; i < dgv_notcre.Columns.Count; i++)
                         {
-                            int a = dgv_plan.Columns[i].Width;
+                            int a = dgv_notcre.Columns[i].Width;
                             b += a;
-                            dgv_plan.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-                            dgv_plan.Columns[i].Width = a;
+                            dgv_notcre.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+                            dgv_notcre.Columns[i].Width = a;
                         }
-                        if (b < dgv_plan.Width) dgv_plan.Width = b + 60;
-                        dgv_plan.ReadOnly = true;
-                    }
-                    break;
-                case "dgv_reval":
-                    dgv_reval.Font = tiplg;
-                    dgv_reval.DefaultCellStyle.Font = tiplg;
-                    dgv_reval.RowTemplate.Height = 15;
-                    dgv_reval.AllowUserToAddRows = false;
-                    dgv_reval.Width = Parent.Width - 50; // 1015;
-                    if (dgv_reval.DataSource == null) dgv_reval.ColumnCount = 11;
-                    if (dgv_reval.Rows.Count > 0)
-                    {
-                        for (int i = 0; i < dgv_reval.Columns.Count; i++)
-                        {
-                            dgv_reval.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-                            _ = decimal.TryParse(dgv_reval.Rows[0].Cells[i].Value.ToString(), out decimal vd);
-                            if (vd != 0) dgv_reval.Columns[i].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
-                        }
-                        b = 0;
-                        for (int i = 0; i < dgv_reval.Columns.Count; i++)
-                        {
-                            int a = dgv_reval.Columns[i].Width;
-                            b += a;
-                            dgv_reval.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-                            dgv_reval.Columns[i].Width = a;
-                        }
-                        if (b < dgv_reval.Width) dgv_reval.Width = b + 60;
-                        dgv_reval.ReadOnly = true;
+                        if (b < dgv_notcre.Width) dgv_notcre.Width = b + 60;
+                        dgv_notcre.ReadOnly = true;
                     }
                     break;
             }
-        }
-        private void grillares()                                    // FALTA arma la grilla del resumen
-        {
-            Font tiplg = new Font("Arial", 7, FontStyle.Bold);
-            dgv_resumen.Font = tiplg;
-            dgv_resumen.DefaultCellStyle.Font = tiplg;
-            dgv_resumen.RowTemplate.Height = 15;
-            dgv_resumen.DefaultCellStyle.BackColor = Color.MediumAquamarine;
-            dgv_resumen.AllowUserToAddRows = false;
-            //dgv_resumen.EnableHeadersVisualStyles = false;
-            dgv_resumen.Width = Parent.Width - 50; // 1015;
-            if (dgv_resumen.DataSource == null) dgv_resumen.ColumnCount = 11;
-            for (int i = 0; i < dgv_resumen.Columns.Count; i++)
-            {
-                dgv_resumen.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-                if (dgv_resumen.Rows.Count > 0)
-                {
-                    _ = decimal.TryParse(dgv_resumen.Rows[0].Cells[i].Value.ToString(), out decimal vd);
-                    if (vd != 0) dgv_resumen.Columns[i].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
-                }
-            }
-            int b = 0;
-            for (int i = 0; i < dgv_resumen.Columns.Count; i++)
-            {
-                int a = dgv_resumen.Columns[i].Width;
-                b += a;
-                dgv_resumen.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-                dgv_resumen.Columns[i].Width = a;
-            }
-            if (b < dgv_resumen.Width) dgv_resumen.Width = b + 60;
-            dgv_resumen.ReadOnly = true;
-        }
-        private void sumaGrilla(string grilla)
-        {
-            if (tx_cliente.Text.Trim() != "")
-            {
-                switch (grilla)
-                {
-                    case "grillares":
-                        //object sumPRE, sumGR, sumsaldos;
-                        Decimal sumPRE = 0;
-                        var sdf = dt.Compute("Sum(TOT_PRE)", "ESTADO <> '" + nomAnul + "' and TOT_GUIA = 0");
-                        if (sdf.ToString() != "") sumPRE = decimal.Parse(sdf.ToString());   // string.Empty
-                        Decimal sumGR = decimal.Parse(dt.Compute("Sum(TOT_GUIA)", "ESTADO <> '" + nomAnul + "' and TOT_PRE < TOT_GUIA").ToString());
-                        Decimal sumsaldos = decimal.Parse(dt.Compute("Sum(SALDO)", "ESTADO <> '" + nomAnul + "'").ToString());      // string.Empty
-                        tx_valor.Text = (sumPRE + sumGR).ToString();
-                        tx_pendien.Text = sumsaldos.ToString();
-                        //tx_nser.Text = dt.Rows.Count.ToString();
-                        tx_nser.Text = dt.Select("ESTADO <> '" + nomAnul + "'").Length.ToString();
-                        break;
-                }
-            }
-        }
-        private void bt_vtasfiltra_Click(object sender, EventArgs e)    // genera reporte pre guias
-        {
-            using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
-            {
-                conn.Open();
-                string consulta = "rep_oper_pregr1";
-                using (MySqlCommand micon = new MySqlCommand(consulta, conn))
-                {
-                    micon.CommandType = CommandType.StoredProcedure;
-                    micon.Parameters.AddWithValue("@loca", (tx_dat_vtasloc.Text != "") ? tx_dat_vtasloc.Text : "");
-                    micon.Parameters.AddWithValue("@fecini", dtp_vtasfini.Value.ToString("yyyy-MM-dd"));
-                    micon.Parameters.AddWithValue("@fecfin", dtp_vtasfina.Value.ToString("yyyy-MM-dd"));
-                    micon.Parameters.AddWithValue("@esta", (tx_dat_estad.Text != "") ? tx_dat_estad.Text : "");
-                    micon.Parameters.AddWithValue("@excl", (chk_excluye.Checked == true) ? "1" : "0");
-                    using (MySqlDataAdapter da = new MySqlDataAdapter(micon))
-                    {
-                        dgv_vtas.DataSource = null;
-                        DataTable dt = new DataTable();
-                        da.Fill(dt);
-                        dgv_vtas.DataSource = dt;
-                        grilla("dgv_vtas");
-                    }
-                    string resulta = lib.ult_mov(nomform, nomtab, asd);
-                    if (resulta != "OK")                                        // actualizamos la tabla usuarios
-                    {
-                        MessageBox.Show(resulta, "Error en actualización de tabla usuarios", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-                }
-            }
-        }
-        private void tx_codped_Leave(object sender, EventArgs e)    // RESUMEN CLIENTE valida existencia de # documento
-        {
-            if(tx_codped.Text != "" && tx_dat_tido.Text != "")
-            {
-                try
-                {
-                    MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
-                    conn.Open();
-                    if (conn.State == ConnectionState.Open)
-                    {
-                        string consu = "select b.id,b.ruc,b.razonsocial,b.estado,b.tiposocio " +
-                            "from anag_cli b " +
-                            "where b.tipdoc=@td and ruc=@nd";
-                        MySqlCommand micon = new MySqlCommand(consu, conn);
-                        micon.Parameters.AddWithValue("@td", tx_dat_tido.Text);
-                        micon.Parameters.AddWithValue("@nd", tx_codped.Text.Trim());
-                        MySqlDataReader dr = micon.ExecuteReader();
-                        if (dr.Read())
-                        {
-                            if(dr[0] == null)
-                            {
-                                MessageBox.Show("No existe el cliente", "Atención verifique", MessageBoxButtons.OK, MessageBoxIcon.Hand);
-                                tx_codped.Text = "";
-                                tx_docu.Text = "";
-                                tx_cliente.Text = "";
-                                tx_valor.Text = "";
-                                tx_pendien.Text = "";
-                                tx_nser.Text = "";
-                                tx_codped.Focus();
-                                dr.Close();
-                                conn.Close();
-                                return;
-                            }
-                            else
-                            {
-                                tx_cliente.Text = dr.GetString(2);
-                                tx_docu.Text = dr.GetString(1);
-                                dr.Close();
-                            }
-                        }
-                        micon.Dispose();
-                    }
-                    conn.Close();
-                }
-                catch (MySqlException ex)
-                {
-                    MessageBox.Show(ex.Message, "Error de conectividad", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    Application.Exit();
-                    return;
-                }
-            }
-        }
-        private void bt_resumen_Click(object sender, EventArgs e)   // genera resumen de cliente
-        {
-            if(tx_codped.Text != "" && tx_dat_tido.Text != "")
-            {
-                tx_codped_Leave(null, null);
-                string consulta = "res_serv_clte";
-                try
-                {
-                    MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
-                    conn.Open();
-                    if (conn.State == ConnectionState.Open)
-                    {
-                        dgv_resumen.DataSource = null;
-                        MySqlCommand micon = new MySqlCommand(consulta, conn);
-                        micon.CommandType = CommandType.StoredProcedure;
-                        micon.Parameters.AddWithValue("@tido", tx_dat_tido.Text);
-                        micon.Parameters.AddWithValue("@nudo", tx_codped.Text.Trim());
-                        MySqlDataAdapter da = new MySqlDataAdapter(micon);
-                        da.Fill(dt);
-                        dgv_resumen.DataSource = dt;
-                        dt.Dispose();
-                        da.Dispose();
-                        grillares();
-                    }
-                    else
-                    {
-                        conn.Close();
-                        MessageBox.Show("No se puede conectar al servidor", "Error de conexión", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        return;
-                    }
-                    conn.Close();
-                }
-                catch (MySqlException ex)
-                {
-                    MessageBox.Show(ex.Message, "Error en obtener datos");
-                    Application.Exit();
-                    return;
-                }
-            }
-            sumaGrilla("grillares");
         }
         private void bt_guias_Click(object sender, EventArgs e)         // genera reporte guias
         {
             using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
             {
                 conn.Open();
-                string consulta = "rep_oper_guiai1";
+                string consulta = "rep_vtas_fact1";
                 using (MySqlCommand micon = new MySqlCommand(consulta,conn))
                 {
                     micon.CommandType = CommandType.StoredProcedure;
@@ -548,10 +292,10 @@ namespace TransCarga
                     micon.Parameters.AddWithValue("@excl", (chk_excl_guias.Checked == true) ? "1" : "0");
                     using (MySqlDataAdapter da = new MySqlDataAdapter(micon))
                     {
-                        dgv_guias.DataSource = null;
+                        dgv_facts.DataSource = null;
                         DataTable dt = new DataTable();
                         da.Fill(dt);
-                        dgv_guias.DataSource = dt;
+                        dgv_facts.DataSource = dt;
                         grilla("dgv_guias");
                     }
                     string resulta = lib.ult_mov(nomform, nomtab, asd);
@@ -567,7 +311,7 @@ namespace TransCarga
             using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
             {
                 conn.Open();
-                string consulta = "rep_oper_plan1";
+                string consulta = "rep_vtas_ncred1";
                 using (MySqlCommand micon = new MySqlCommand(consulta, conn))
                 {
                     micon.CommandType = CommandType.StoredProcedure;
@@ -578,38 +322,11 @@ namespace TransCarga
                     micon.Parameters.AddWithValue("@excl", (chk_exclu_plan.Checked == true)? "1" : "0");
                     using (MySqlDataAdapter da = new MySqlDataAdapter(micon))
                     {
-                        dgv_plan.DataSource = null;
+                        dgv_notcre.DataSource = null;
                         DataTable dt = new DataTable();
                         da.Fill(dt);
-                        dgv_plan.DataSource = dt;
+                        dgv_notcre.DataSource = dt;
                         grilla("dgv_plan");
-                    }
-                    string resulta = lib.ult_mov(nomform, nomtab, asd);
-                    if (resulta != "OK")                                        // actualizamos la tabla usuarios
-                    {
-                        MessageBox.Show(resulta, "Error en actualización de tabla usuarios", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-                }
-            }
-        }
-        private void bt_reval_Click(object sender, EventArgs e)
-        {
-            using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
-            {
-                conn.Open();
-                string consulta = "rep_oper_reval1";
-                using (MySqlCommand micon = new MySqlCommand(consulta, conn))
-                {
-                    micon.CommandType = CommandType.StoredProcedure;
-                    micon.Parameters.AddWithValue("@fecini", dtp_rev_fecini.Value.ToString("yyyy-MM-dd"));
-                    micon.Parameters.AddWithValue("@fecfin", dtp_rev_fecfin.Value.ToString("yyyy-MM-dd"));
-                    using (MySqlDataAdapter da = new MySqlDataAdapter(micon))
-                    {
-                        dgv_reval.DataSource = null;
-                        DataTable dt = new DataTable();
-                        da.Fill(dt);
-                        dgv_reval.DataSource = dt;
-                        grilla("dgv_reval");
                     }
                     string resulta = lib.ult_mov(nomform, nomtab, asd);
                     if (resulta != "OK")                                        // actualizamos la tabla usuarios
@@ -621,41 +338,6 @@ namespace TransCarga
         }
 
         #region combos
-        private void cmb_estad_ing_SelectionChangeCommitted(object sender, EventArgs e)
-        {
-            if (cmb_estad.SelectedValue != null) tx_dat_estad.Text = cmb_estad.SelectedValue.ToString();
-            else
-            {
-                tx_dat_estad.Text = "";    // cmb_estad.SelectedItem.ToString().PadRight(6).Substring(0, 6).Trim();
-                chk_excluye.Checked = false;
-            }
-        }
-        private void cmb_vtasloc_SelectionChangeCommitted(object sender, EventArgs e)
-        {
-            if (cmb_vtasloc.SelectedValue != null) tx_dat_vtasloc.Text = cmb_vtasloc.SelectedValue.ToString();
-            else tx_dat_vtasloc.Text = ""; // cmb_vtasloc.SelectedItem.ToString().PadRight(6).Substring(0, 6).Trim();
-        }
-        private void cmb_estad_ing_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Delete)
-            {
-                cmb_estad.SelectedIndex = -1;
-                tx_dat_estad.Text = "";
-            }
-        }
-        private void cmb_vtasloc_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Delete)
-            {
-                cmb_vtasloc.SelectedIndex = -1;
-                tx_dat_vtasloc.Text = "";
-            }
-        }
-        private void cmb_tidoc_SelectionChangeCommitted(object sender, EventArgs e)
-        {
-            if (cmb_tidoc.SelectedValue != null) tx_dat_tido.Text = cmb_tidoc.SelectedValue.ToString();
-            else tx_dat_tido.Text = "";
-        }
         private void cmb_sede_plan_SelectionChangeCommitted(object sender, EventArgs e)
         {
             if (cmb_sede_plan.SelectedValue != null) tx_dat_sede_plan.Text = cmb_sede_plan.SelectedValue.ToString();
@@ -708,7 +390,6 @@ namespace TransCarga
                 tx_estad_guias.Text = "";
             }
         }
-
         #endregion
 
         #region botones de comando
@@ -812,10 +493,6 @@ namespace TransCarga
         {
             Tx_modo.Text = "IMPRIMIR";
             tabControl1.Enabled = true;
-            cmb_estad.SelectedIndex = -1;
-            cmb_vtasloc.SelectedIndex = -1;
-            cmb_tidoc.SelectedIndex = -1;
-            chk_excluye.Checked = false;
             //
             cmb_sede_guias.SelectedIndex = -1;
             cmb_estad_guias.SelectedIndex = -1;
@@ -829,31 +506,31 @@ namespace TransCarga
             // segun la pestanha activa debe exportar
             string nombre = "";
             if (tabControl1.Enabled == false) return;
-            if (tabControl1.SelectedTab == tabres && dgv_resumen.Rows.Count > 0)
+            if (tabControl1.SelectedTab == tabfacts && dgv_facts.Rows.Count > 0)
             {
-                nombre = "resumen_cliente_" + tx_codped.Text.Trim() +"_" + DateTime.Now.Date.ToString("yyyy-MM-dd") + ".xlsx";
+                nombre = "Reportes_facturacion_" + cmb_sede_guias.Text.Trim() +"_" + DateTime.Now.Date.ToString("yyyy-MM-dd") + ".xlsx";
                 var aa = MessageBox.Show("Confirma que desea generar la hoja de calculo?",
                     "Archivo: " + nombre, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (aa == DialogResult.Yes)
                 {
                     var wb = new XLWorkbook();
-                    DataTable dt = (DataTable)dgv_resumen.DataSource;
-                    wb.Worksheets.Add(dt, "Resumen");
+                    DataTable dt = (DataTable)dgv_facts.DataSource;
+                    wb.Worksheets.Add(dt, "Ventas");
                     wb.SaveAs(nombre);
                     MessageBox.Show("Archivo generado con exito!");
                     this.Close();
                 }
             }
-            if (tabControl1.SelectedTab == tabvtas && dgv_vtas.Rows.Count > 0)
+            if (tabControl1.SelectedTab == tabnotas && dgv_notcre.Rows.Count > 0)
             {
-                nombre = "Reportes_PreGuias_" + DateTime.Now.Date.ToString("yyyy-MM-dd") + ".xlsx";
+                nombre = "Reportes_NotasCred_" + DateTime.Now.Date.ToString("yyyy-MM-dd") + ".xlsx";
                 var aa = MessageBox.Show("Confirma que desea generar la hoja de calculo?",
                     "Archivo: " + nombre, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (aa == DialogResult.Yes)
                 {
                     var wb = new XLWorkbook();
-                    DataTable dt = (DataTable)dgv_vtas.DataSource;
-                    wb.Worksheets.Add(dt, "PreGuias");
+                    DataTable dt = (DataTable)dgv_notcre.DataSource;
+                    wb.Worksheets.Add(dt, "Notas");
                     wb.SaveAs(nombre);
                     MessageBox.Show("Archivo generado con exito!");
                     this.Close();
@@ -869,8 +546,8 @@ namespace TransCarga
         }
         private void button4_Click(object sender, EventArgs e)      // reporte de ventas
         {
-            if (rb_listado.Checked == true) setParaCrystal("vtasxclte");
-            else setParaCrystal("ventas");
+            //if (rb_listado.Checked == true) setParaCrystal("vtasxclte");
+            //else setParaCrystal("ventas");
         }
 
         private void setParaCrystal(string repo)                    // genera el set para el reporte de crystal
@@ -889,75 +566,10 @@ namespace TransCarga
             }
             if (repo == "vtasxclte")
             {
-                conClie datos = generarepvtasxclte();
-                frmvizoper visualizador = new frmvizoper(datos);
-                visualizador.Show();
+                //conClie datos = generarepvtasxclte();
+                //frmvizoper visualizador = new frmvizoper(datos);
+                //visualizador.Show();
             }
-        }
-        private conClie generarepvtasxclte()
-        {
-            conClie repvtas = new conClie();                        // xsd
-            conClie.repvtas_cabRow cabrow = repvtas.repvtas_cab.Newrepvtas_cabRow();
-            cabrow.id = "0";
-            cabrow.fecini = dtp_vtasfini.Value.ToString("dd/MM/yyyy");
-            cabrow.fecfin = dtp_vtasfina.Value.ToString("dd/MM/yyyy");
-            if (rb_listado.Checked == true) cabrow.modo = "listado";
-            //if (rb_resumen.Checked == true) cabrow.modo = "resumen";
-            repvtas.repvtas_cab.Addrepvtas_cabRow(cabrow);
-            // detalle
-            foreach (DataGridViewRow row in dgv_vtas.Rows)
-            {
-                if (rb_listado.Checked == true) 
-                {
-                    if (row.Cells["item"].Value != null && row.Cells["item"].Value.ToString().Trim() != "")
-                    {
-                        conClie.repvtas_detRow detrow = repvtas.repvtas_det.Newrepvtas_detRow();
-                        detrow.id = "0";
-                        detrow.tienda = row.Cells["tienda"].Value.ToString();
-                        detrow.fecha = row.Cells["fecha"].Value.ToString().Substring(0,2) + "/" + row.Cells["fecha"].Value.ToString().Substring(3, 2) + "/" + row.Cells["fecha"].Value.ToString().Substring(6, 4); 
-                        repvtas.repvtas_det.Addrepvtas_detRow(detrow);
-                    }
-                }
-            }
-            return repvtas;
-        }
-        private conClie generarepvtas()
-        {
-            conClie repvtas = new conClie();                        // xsd
-            conClie.repvtas_cabRow cabrow = repvtas.repvtas_cab.Newrepvtas_cabRow();
-            cabrow.id = "0";
-            cabrow.fecini = dtp_vtasfini.Value.ToString("dd/MM/yyyy");
-            cabrow.fecfin = dtp_vtasfina.Value.ToString("dd/MM/yyyy");
-            cabrow.tienda = tx_dat_vtasloc.Text.Trim();
-            if (rb_listado.Checked == true) cabrow.modo = "listado";
-            if (rb_resumen.Checked == true) cabrow.modo = "resumen";
-            repvtas.repvtas_cab.Addrepvtas_cabRow(cabrow);
-            // detalle
-            foreach(DataGridViewRow row in dgv_vtas.Rows)
-            {
-                if (rb_resumen.Checked == true)
-                {
-                    if (row.Cells["item"].Value != null && row.Cells["item"].Value.ToString().Trim() != "")
-                    {
-                        conClie.repvtas_detRow detrow = repvtas.repvtas_det.Newrepvtas_detRow();
-                        detrow.id = "0";
-                        detrow.tienda = row.Cells["tienda"].Value.ToString();
-                        repvtas.repvtas_det.Addrepvtas_detRow(detrow);
-                    }
-                }
-                if (rb_listado.Checked == true)
-                {
-                    if (row.Cells["item"].Value != null && row.Cells["item"].Value.ToString().Trim() != "")
-                    {
-                        conClie.repvtas_detRow detrow = repvtas.repvtas_det.Newrepvtas_detRow();
-                        detrow.id = "0";
-                        detrow.tienda = row.Cells["tienda"].Value.ToString();
-                        detrow.fecha = row.Cells["fecha"].Value.ToString().Substring(0,10);
-                        repvtas.repvtas_det.Addrepvtas_detRow(detrow);
-                    }
-                }
-            }
-            return repvtas;
         }
         private conClie generareporte()
         {
@@ -1014,59 +626,39 @@ namespace TransCarga
         #region leaves y enter
         private void tabvtas_Enter(object sender, EventArgs e)
         {
-            cmb_vtasloc.Focus();
+            //cmb_vtasloc.Focus();
         }
         private void tabres_Enter(object sender, EventArgs e)
         {
-            cmb_tidoc.Focus();
+            //cmb_tidoc.Focus();
         }
         #endregion
 
         #region advancedatagridview
         private void advancedDataGridView1_SortStringChanged(object sender, EventArgs e)
         {
-            if (tabControl1.SelectedTab.Name == "tabgrti")
+            if (tabControl1.SelectedTab.Name == "tabfacts")
             {
-                DataTable dtg = (DataTable)dgv_guias.DataSource;
-                dtg.DefaultView.Sort = dgv_guias.SortString;
+                DataTable dtg = (DataTable)dgv_facts.DataSource;
+                dtg.DefaultView.Sort = dgv_facts.SortString;
             }
-            if (tabControl1.SelectedTab.Name == "tabvtas")
+            if (tabControl1.SelectedTab.Name == "tabnotas")
             {
-                DataTable dtg = (DataTable)dgv_vtas.DataSource;
-                dtg.DefaultView.Sort = dgv_vtas.SortString;
-            }
-            if (tabControl1.SelectedTab.Name == "tabplacar")
-            {
-                DataTable dtg = (DataTable)dgv_plan.DataSource;
-                dtg.DefaultView.Sort = dgv_plan.SortString;
-            }
-            if (tabControl1.SelectedTab.Name == "tabreval")
-            {
-                DataTable dtg = (DataTable)dgv_reval.DataSource;
-                dtg.DefaultView.Sort = dgv_reval.SortString;
+                DataTable dtg = (DataTable)dgv_notcre.DataSource;
+                dtg.DefaultView.Sort = dgv_notcre.SortString;
             }
         }
         private void advancedDataGridView1_FilterStringChanged(object sender, EventArgs e)                  // filtro de las columnas
         {
-            if (tabControl1.SelectedTab.Name == "tabvtas")
+            if (tabControl1.SelectedTab.Name == "tabfacts")
             {
-                DataTable dtg = (DataTable)dgv_vtas.DataSource;
-                dtg.DefaultView.RowFilter = dgv_vtas.FilterString;
+                DataTable dtg = (DataTable)dgv_facts.DataSource;
+                dtg.DefaultView.RowFilter = dgv_facts.FilterString;
             }
-            if (tabControl1.SelectedTab.Name == "tabgrti")
+            if (tabControl1.SelectedTab.Name == "tabnotas")
             {
-                DataTable dtg = (DataTable)dgv_guias.DataSource;
-                dtg.DefaultView.RowFilter = dgv_guias.FilterString;
-            }
-            if (tabControl1.SelectedTab.Name == "tabplacar")
-            {
-                DataTable dtg = (DataTable)dgv_plan.DataSource;
-                dtg.DefaultView.RowFilter = dgv_plan.FilterString;
-            }
-            if (tabControl1.SelectedTab.Name == "tabreval")
-            {
-                DataTable dtg = (DataTable)dgv_reval.DataSource;
-                dtg.DefaultView.RowFilter = dgv_reval.FilterString;
+                DataTable dtg = (DataTable)dgv_notcre.DataSource;
+                dtg.DefaultView.RowFilter = dgv_notcre.FilterString;
             }
         }
         private void advancedDataGridView1_CellEnter(object sender, DataGridViewCellEventArgs e)            // no usamos
