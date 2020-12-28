@@ -11,7 +11,7 @@
     <Shape ID="DesignTable:gr_ind_cab" ZOrder="4" X="87" Y="97" Height="638" Width="150" AdapterExpanded="true" DataTableExpanded="true" OldAdapterHeight="0" OldDataTableHeight="0" SplitterPosition="634" />
     <Shape ID="DesignTable:gr_ind_det" ZOrder="3" X="244" Y="511" Height="219" Width="150" AdapterExpanded="true" DataTableExpanded="true" OldAdapterHeight="0" OldDataTableHeight="0" SplitterPosition="215" />
     <Shape ID="DesignTable:placar_cab" ZOrder="2" X="455" Y="108" Height="448" Width="150" AdapterExpanded="true" DataTableExpanded="true" OldAdapterHeight="0" OldDataTableHeight="0" SplitterPosition="444" />
-    <Shape ID="DesignTable:placar_det" ZOrder="1" X="615" Y="110" Height="238" Width="150" AdapterExpanded="true" DataTableExpanded="true" OldAdapterHeight="0" OldDataTableHeight="0" SplitterPosition="234" />
+    <Shape ID="DesignTable:placar_det" ZOrder="1" X="615" Y="110" Height="372" Width="150" AdapterExpanded="true" DataTableExpanded="true" OldAdapterHeight="0" OldDataTableHeight="0" SplitterPosition="368" />
   </Shapes>
   <Connectors />
 </DiagramLayout>

@@ -154,7 +154,7 @@ namespace TransCarga
         {
             dataGridView1.Rows.Clear();
             dataGridView1.Columns.Clear();
-            dataGridView1.ColumnCount = 13;
+            dataGridView1.ColumnCount = 16;
             dataGridView1.Columns[0].Name = "fila";
             dataGridView1.Columns[0].HeaderText = "Fila";
             dataGridView1.Columns[0].ReadOnly = true;
@@ -198,6 +198,12 @@ namespace TransCarga
             dataGridView1.Columns[10].Visible = false;  // codigo moneda
             dataGridView1.Columns[11].Visible = false;  // marca para edicion
             dataGridView1.Columns[12].Visible = false;  // id de la fila
+            dataGridView1.Columns[13].Visible = true;  // nombre destinatario
+            dataGridView1.Columns[13].ReadOnly = true;
+            dataGridView1.Columns[14].Visible = true;  // direccion destinat
+            dataGridView1.Columns[14].ReadOnly = true;
+            dataGridView1.Columns[15].Visible = true;  // telef destinatario
+            dataGridView1.Columns[15].ReadOnly = true;
             if (Tx_modo.Text == "EDITAR")
             {
                 DataGridViewCheckBoxColumn marca = new DataGridViewCheckBoxColumn();
@@ -457,8 +463,11 @@ namespace TransCarga
         private void jaladet(string idr)         // jala el detalle
         {
             string jalad = "select a.idc,a.serplacar,a.numplacar,a.fila,a.numpreg,a.serguia,a.numguia,a.totcant,a.totpeso,b.descrizionerid as MON,a.totflet," +
-                "a.estadoser,a.codmone,'X' as marca,a.id,a.pagado,a.salxcob " +
-                "from detplacar a left join desc_mon b on b.idcodice=a.codmone where a.idc=@idr";
+                "a.estadoser,a.codmone,'X' as marca,a.id,a.pagado,a.salxcob,g.nombdegri,g.diredegri,g.teledegri " +
+                "from detplacar a " +
+                "left join desc_mon b on b.idcodice=a.codmone " +
+                "left join cabguiai g on g.sergui=a.serguia and g.numgui=a.numguia " +
+                "where a.idc=@idr";
             using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
             {
                 conn.Open();
@@ -487,7 +496,10 @@ namespace TransCarga
                                     row[16].ToString(),
                                     row[12].ToString(),
                                     row[13].ToString(),
-                                    row[14].ToString()
+                                    row[14].ToString(),
+                                    row[17].ToString(),
+                                    row[18].ToString(),
+                                    row[19].ToString()
                                     );
                             }
                             else
@@ -506,6 +518,9 @@ namespace TransCarga
                                     row[12].ToString(),
                                     row[13].ToString(),
                                     row[14].ToString(),
+                                    row[17].ToString(),
+                                    row[18].ToString(),
+                                    row[19].ToString(),
                                     false
                                     );
                             }
@@ -1937,6 +1952,9 @@ namespace TransCarga
             conClie PlaniC = new conClie();
             // CABECERA
             conClie.placar_cabRow rowcabeza = PlaniC.placar_cab.Newplacar_cabRow();
+            rowcabeza.rucEmisor = rucclie;
+            rowcabeza.nomEmisor = nomclie;
+            rowcabeza.dirEmisor = Program.dirfisc;  // + " " + Program.distfis + " " + Program.provfis + " " + Program.depfisc;
             rowcabeza.id = tx_idr.Text;
             rowcabeza.autoriz = tx_pla_autor.Text;
             rowcabeza.brevAyudante = tx_pla_ayud.Text;
@@ -1969,12 +1987,15 @@ namespace TransCarga
                     rowdetalle.idc = "";
                     rowdetalle.moneda = row.Cells["MON"].Value.ToString();
                     rowdetalle.numguia = row.Cells["numguia"].Value.ToString();
-                    rowdetalle.pagado = "";
-                    rowdetalle.salxcob = "";
+                    rowdetalle.pagado = 0;
+                    rowdetalle.salxcob = 0;
                     rowdetalle.serguia = row.Cells["serguia"].Value.ToString();
-                    rowdetalle.totcant = row.Cells["totcant"].Value.ToString();
-                    rowdetalle.totflete = row.Cells["totflet"].Value.ToString();
-                    rowdetalle.totpeso = row.Cells["totpeso"].Value.ToString();
+                    rowdetalle.totcant = Int16.Parse(row.Cells["totcant"].Value.ToString());
+                    rowdetalle.totflete = Double.Parse(row.Cells["totflet"].Value.ToString());
+                    rowdetalle.totpeso = Double.Parse(row.Cells["totpeso"].Value.ToString());
+                    rowdetalle.nomdest = row.Cells[13].Value.ToString();
+                    rowdetalle.dirdest = row.Cells[14].Value.ToString();
+                    rowdetalle.teldest = row.Cells[15].Value.ToString();
                     PlaniC.placar_det.Addplacar_detRow(rowdetalle);
                 }
             }

@@ -2499,6 +2499,12 @@ namespace TransCarga {
             
             private global::System.Data.DataColumn columnmarcaModelo;
             
+            private global::System.Data.DataColumn columnrucEmisor;
+            
+            private global::System.Data.DataColumn columnnomEmisor;
+            
+            private global::System.Data.DataColumn columndirEmisor;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public placar_cabDataTable() {
@@ -2686,6 +2692,30 @@ namespace TransCarga {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn rucEmisorColumn {
+                get {
+                    return this.columnrucEmisor;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn nomEmisorColumn {
+                get {
+                    return this.columnnomEmisor;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn dirEmisorColumn {
+                get {
+                    return this.columndirEmisor;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -2740,7 +2770,10 @@ namespace TransCarga {
                         string nomAyudante, 
                         string rucPropiet, 
                         string nomPropiet, 
-                        string marcaModelo) {
+                        string marcaModelo, 
+                        string rucEmisor, 
+                        string nomEmisor, 
+                        string dirEmisor) {
                 placar_cabRow rowplacar_cabRow = ((placar_cabRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         id,
@@ -2761,7 +2794,10 @@ namespace TransCarga {
                         nomAyudante,
                         rucPropiet,
                         nomPropiet,
-                        marcaModelo};
+                        marcaModelo,
+                        rucEmisor,
+                        nomEmisor,
+                        dirEmisor};
                 rowplacar_cabRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowplacar_cabRow);
                 return rowplacar_cabRow;
@@ -2803,6 +2839,9 @@ namespace TransCarga {
                 this.columnrucPropiet = base.Columns["rucPropiet"];
                 this.columnnomPropiet = base.Columns["nomPropiet"];
                 this.columnmarcaModelo = base.Columns["marcaModelo"];
+                this.columnrucEmisor = base.Columns["rucEmisor"];
+                this.columnnomEmisor = base.Columns["nomEmisor"];
+                this.columndirEmisor = base.Columns["dirEmisor"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -2846,6 +2885,12 @@ namespace TransCarga {
                 base.Columns.Add(this.columnnomPropiet);
                 this.columnmarcaModelo = new global::System.Data.DataColumn("marcaModelo", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnmarcaModelo);
+                this.columnrucEmisor = new global::System.Data.DataColumn("rucEmisor", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnrucEmisor);
+                this.columnnomEmisor = new global::System.Data.DataColumn("nomEmisor", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnnomEmisor);
+                this.columndirEmisor = new global::System.Data.DataColumn("dirEmisor", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columndirEmisor);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -3001,6 +3046,12 @@ namespace TransCarga {
             
             private global::System.Data.DataColumn columnmoneda;
             
+            private global::System.Data.DataColumn columndirdest;
+            
+            private global::System.Data.DataColumn columnteldest;
+            
+            private global::System.Data.DataColumn columnnomdest;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public placar_detDataTable() {
@@ -3124,6 +3175,30 @@ namespace TransCarga {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn dirdestColumn {
+                get {
+                    return this.columndirdest;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn teldestColumn {
+                get {
+                    return this.columnteldest;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn nomdestColumn {
+                get {
+                    return this.columnnomdest;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -3159,7 +3234,7 @@ namespace TransCarga {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
-            public placar_detRow Addplacar_detRow(string id, string idc, string fila, string serguia, string numguia, string totcant, string totpeso, string totflete, string pagado, string salxcob, string moneda) {
+            public placar_detRow Addplacar_detRow(string id, string idc, string fila, string serguia, string numguia, short totcant, double totpeso, double totflete, double pagado, double salxcob, string moneda, string dirdest, string teldest, string nomdest) {
                 placar_detRow rowplacar_detRow = ((placar_detRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         id,
@@ -3172,7 +3247,10 @@ namespace TransCarga {
                         totflete,
                         pagado,
                         salxcob,
-                        moneda};
+                        moneda,
+                        dirdest,
+                        teldest,
+                        nomdest};
                 rowplacar_detRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowplacar_detRow);
                 return rowplacar_detRow;
@@ -3206,6 +3284,9 @@ namespace TransCarga {
                 this.columnpagado = base.Columns["pagado"];
                 this.columnsalxcob = base.Columns["salxcob"];
                 this.columnmoneda = base.Columns["moneda"];
+                this.columndirdest = base.Columns["dirdest"];
+                this.columnteldest = base.Columns["teldest"];
+                this.columnnomdest = base.Columns["nomdest"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -3221,18 +3302,24 @@ namespace TransCarga {
                 base.Columns.Add(this.columnserguia);
                 this.columnnumguia = new global::System.Data.DataColumn("numguia", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnnumguia);
-                this.columntotcant = new global::System.Data.DataColumn("totcant", typeof(string), null, global::System.Data.MappingType.Element);
+                this.columntotcant = new global::System.Data.DataColumn("totcant", typeof(short), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columntotcant);
-                this.columntotpeso = new global::System.Data.DataColumn("totpeso", typeof(string), null, global::System.Data.MappingType.Element);
+                this.columntotpeso = new global::System.Data.DataColumn("totpeso", typeof(double), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columntotpeso);
-                this.columntotflete = new global::System.Data.DataColumn("totflete", typeof(string), null, global::System.Data.MappingType.Element);
+                this.columntotflete = new global::System.Data.DataColumn("totflete", typeof(double), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columntotflete);
-                this.columnpagado = new global::System.Data.DataColumn("pagado", typeof(string), null, global::System.Data.MappingType.Element);
+                this.columnpagado = new global::System.Data.DataColumn("pagado", typeof(double), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnpagado);
-                this.columnsalxcob = new global::System.Data.DataColumn("salxcob", typeof(string), null, global::System.Data.MappingType.Element);
+                this.columnsalxcob = new global::System.Data.DataColumn("salxcob", typeof(double), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnsalxcob);
                 this.columnmoneda = new global::System.Data.DataColumn("moneda", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnmoneda);
+                this.columndirdest = new global::System.Data.DataColumn("dirdest", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columndirdest);
+                this.columnteldest = new global::System.Data.DataColumn("teldest", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnteldest);
+                this.columnnomdest = new global::System.Data.DataColumn("nomdest", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnnomdest);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -5783,6 +5870,54 @@ namespace TransCarga {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string rucEmisor {
+                get {
+                    try {
+                        return ((string)(this[this.tableplacar_cab.rucEmisorColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("El valor de la columna \'rucEmisor\' de la tabla \'placar_cab\' es DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableplacar_cab.rucEmisorColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string nomEmisor {
+                get {
+                    try {
+                        return ((string)(this[this.tableplacar_cab.nomEmisorColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("El valor de la columna \'nomEmisor\' de la tabla \'placar_cab\' es DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableplacar_cab.nomEmisorColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string dirEmisor {
+                get {
+                    try {
+                        return ((string)(this[this.tableplacar_cab.dirEmisorColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("El valor de la columna \'dirEmisor\' de la tabla \'placar_cab\' es DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableplacar_cab.dirEmisorColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public bool IsidNull() {
                 return this.IsNull(this.tableplacar_cab.idColumn);
             }
@@ -6008,6 +6143,42 @@ namespace TransCarga {
             public void SetmarcaModeloNull() {
                 this[this.tableplacar_cab.marcaModeloColumn] = global::System.Convert.DBNull;
             }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsrucEmisorNull() {
+                return this.IsNull(this.tableplacar_cab.rucEmisorColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetrucEmisorNull() {
+                this[this.tableplacar_cab.rucEmisorColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsnomEmisorNull() {
+                return this.IsNull(this.tableplacar_cab.nomEmisorColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetnomEmisorNull() {
+                this[this.tableplacar_cab.nomEmisorColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsdirEmisorNull() {
+                return this.IsNull(this.tableplacar_cab.dirEmisorColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetdirEmisorNull() {
+                this[this.tableplacar_cab.dirEmisorColumn] = global::System.Convert.DBNull;
+            }
         }
         
         /// <summary>
@@ -6106,10 +6277,10 @@ namespace TransCarga {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
-            public string totcant {
+            public short totcant {
                 get {
                     try {
-                        return ((string)(this[this.tableplacar_det.totcantColumn]));
+                        return ((short)(this[this.tableplacar_det.totcantColumn]));
                     }
                     catch (global::System.InvalidCastException e) {
                         throw new global::System.Data.StrongTypingException("El valor de la columna \'totcant\' de la tabla \'placar_det\' es DBNull.", e);
@@ -6122,10 +6293,10 @@ namespace TransCarga {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
-            public string totpeso {
+            public double totpeso {
                 get {
                     try {
-                        return ((string)(this[this.tableplacar_det.totpesoColumn]));
+                        return ((double)(this[this.tableplacar_det.totpesoColumn]));
                     }
                     catch (global::System.InvalidCastException e) {
                         throw new global::System.Data.StrongTypingException("El valor de la columna \'totpeso\' de la tabla \'placar_det\' es DBNull.", e);
@@ -6138,10 +6309,10 @@ namespace TransCarga {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
-            public string totflete {
+            public double totflete {
                 get {
                     try {
-                        return ((string)(this[this.tableplacar_det.totfleteColumn]));
+                        return ((double)(this[this.tableplacar_det.totfleteColumn]));
                     }
                     catch (global::System.InvalidCastException e) {
                         throw new global::System.Data.StrongTypingException("El valor de la columna \'totflete\' de la tabla \'placar_det\' es DBNull.", e);
@@ -6154,10 +6325,10 @@ namespace TransCarga {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
-            public string pagado {
+            public double pagado {
                 get {
                     try {
-                        return ((string)(this[this.tableplacar_det.pagadoColumn]));
+                        return ((double)(this[this.tableplacar_det.pagadoColumn]));
                     }
                     catch (global::System.InvalidCastException e) {
                         throw new global::System.Data.StrongTypingException("El valor de la columna \'pagado\' de la tabla \'placar_det\' es DBNull.", e);
@@ -6170,10 +6341,10 @@ namespace TransCarga {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
-            public string salxcob {
+            public double salxcob {
                 get {
                     try {
-                        return ((string)(this[this.tableplacar_det.salxcobColumn]));
+                        return ((double)(this[this.tableplacar_det.salxcobColumn]));
                     }
                     catch (global::System.InvalidCastException e) {
                         throw new global::System.Data.StrongTypingException("El valor de la columna \'salxcob\' de la tabla \'placar_det\' es DBNull.", e);
@@ -6197,6 +6368,54 @@ namespace TransCarga {
                 }
                 set {
                     this[this.tableplacar_det.monedaColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string dirdest {
+                get {
+                    try {
+                        return ((string)(this[this.tableplacar_det.dirdestColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("El valor de la columna \'dirdest\' de la tabla \'placar_det\' es DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableplacar_det.dirdestColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string teldest {
+                get {
+                    try {
+                        return ((string)(this[this.tableplacar_det.teldestColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("El valor de la columna \'teldest\' de la tabla \'placar_det\' es DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableplacar_det.teldestColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string nomdest {
+                get {
+                    try {
+                        return ((string)(this[this.tableplacar_det.nomdestColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("El valor de la columna \'nomdest\' de la tabla \'placar_det\' es DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableplacar_det.nomdestColumn] = value;
                 }
             }
             
@@ -6330,6 +6549,42 @@ namespace TransCarga {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public void SetmonedaNull() {
                 this[this.tableplacar_det.monedaColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsdirdestNull() {
+                return this.IsNull(this.tableplacar_det.dirdestColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetdirdestNull() {
+                this[this.tableplacar_det.dirdestColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsteldestNull() {
+                return this.IsNull(this.tableplacar_det.teldestColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetteldestNull() {
+                this[this.tableplacar_det.teldestColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsnomdestNull() {
+                return this.IsNull(this.tableplacar_det.nomdestColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetnomdestNull() {
+                this[this.tableplacar_det.nomdestColumn] = global::System.Convert.DBNull;
             }
         }
         
