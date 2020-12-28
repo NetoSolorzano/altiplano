@@ -43,7 +43,7 @@ namespace TransCarga
         string v_nbu = "";              // nombre del usuario
         string vi_formato = "";         // formato de impresion del documento
         string vi_copias = "";          // cant copias impresion
-        string v_impA5 = "";            // nombre de la impresora matricial
+        string v_impA4 = "";            // nombre de la impresora matricial
         string v_impTK = "";            // nombre de la ticketera
         string vtc_flete = "";          // el detalle va con el flete impreso ?? SI || NO
         string v_cid = "";              // codigo interno de tipo de documento
@@ -279,7 +279,7 @@ namespace TransCarga
                             if (row["param"].ToString() == "formato") vi_formato = row["valor"].ToString().Trim();
                             if (row["param"].ToString() == "filasDet") v_mfildet = row["valor"].ToString().Trim();       // maxima cant de filas de detalle
                             if (row["param"].ToString() == "copias") vi_copias = row["valor"].ToString().Trim();
-                            if (row["param"].ToString() == "impMatris") v_impA5 = row["valor"].ToString().Trim();
+                            if (row["param"].ToString() == "impMatris") v_impA4 = row["valor"].ToString().Trim();
                             if (row["param"].ToString() == "impTK") v_impTK = row["valor"].ToString().Trim();
                             if (row["param"].ToString() == "nomGRi_cr") v_CR_gr_ind = row["valor"].ToString().Trim();
                         }
@@ -634,7 +634,7 @@ namespace TransCarga
                 lib.messagebox("# copias impresas de la GR interna");
                 retorna = false;
             }
-            if (v_impA5 == "")          // nombre de la impresora matricial
+            if (v_impA4 == "")          // nombre de la impresora matricial
             {
                 lib.messagebox("Nombre de impresora matricial");
                 retorna = false;
@@ -1685,7 +1685,7 @@ namespace TransCarga
             // Impresion ó Re-impresion ??
             //if (tx_impreso.Text == "S")
             {
-                var aa = MessageBox.Show("Desea re imprimir el documento?", "Confirme por favor", 
+                var aa = MessageBox.Show("Desea imprimir el documento?", "Confirme por favor", 
                     MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (aa == DialogResult.Yes)
                 {
@@ -1853,29 +1853,19 @@ namespace TransCarga
         private bool imprimeA4()
         {
             bool retorna = false;
-
+            llenaDataSet();                         // metemos los datos al dataset de la impresion
             return retorna;
         }
         private bool imprimeA5()
         {
             bool retorna = false;
-            llenaDataSet();                         // metemos los datos al dataset de la impresion
+            //
             return retorna;
         }
         private bool imprimeTK()
         {
             bool retorna = false;
-            try
-            {
-                printDocument1.PrinterSettings.PrinterName = v_impTK;
-                printDocument1.Print();
-                retorna = true;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message,"Error en imprimir TK");
-                retorna = false;
-            }
+            // 
             return retorna;
         }
         private void printDoc_PrintPage(object sender, System.Drawing.Printing.PrintPageEventArgs e)
@@ -1939,38 +1929,57 @@ namespace TransCarga
             ReportDocument repo = new ReportDocument();
             repo.Load(v_CR_gr_ind);
             repo.SetDataSource(data);
-            repo.PrintOptions.PrinterName = v_impA5;
+            repo.PrintOptions.PrinterName = v_impA4;
             repo.PrintToPrinter(int.Parse(vi_copias),false,1,1);
         }
         private conClie generaReporte()
         {
-            conClie guiaT = new conClie();
-            conClie.gr_ind_cabRow rowcabeza = guiaT.gr_ind_cab.Newgr_ind_cabRow();
-            //
+            conClie PlaniC = new conClie();
             // CABECERA
+            conClie.placar_cabRow rowcabeza = PlaniC.placar_cab.Newplacar_cabRow();
             rowcabeza.id = tx_idr.Text;
-            rowcabeza.estadoser = tx_estado.Text;
-            rowcabeza.fechope = tx_fechope.Text;
-            rowcabeza.frase1 = "";  // no hay campo
-            rowcabeza.frase2 = "";  // no hay campo
-            // origen - destino
-            rowcabeza.dptoDestino = ""; // no hay campo
-            rowcabeza.provDestino = "";
-            rowcabeza.distDestino = ""; // no hay campo
-            rowcabeza.dptoOrigen = "";  // no hay campo
-            rowcabeza.provOrigen = "";
-            rowcabeza.distOrigen = "";  // no hay campo
-            // importes
-            rowcabeza.igv = "";         // no hay campo
-            rowcabeza.subtotal = "";    // no hay campo
-            // pie
-            rowcabeza.brevAyuda = "";   // falta este campo
-            //
-            guiaT.gr_ind_cab.Addgr_ind_cabRow(rowcabeza);
+            rowcabeza.autoriz = tx_pla_autor.Text;
+            rowcabeza.brevAyudante = tx_pla_ayud.Text;
+            rowcabeza.brevChofer = tx_pla_brevet.Text;
+            rowcabeza.camion = tx_pla_carret.Text;
+            rowcabeza.confvehi = tx_pla_confv.Text;
+            rowcabeza.direDest = "";
+            rowcabeza.direOrigen = "";
+            rowcabeza.fechope = tx_pla_fech.Text;    // tx_fechope.Text.Substring(0, 10);
+            rowcabeza.marcaModelo = "";
+            rowcabeza.nomAyudante = tx_pla_nomayu.Text;
+            rowcabeza.nomChofer = tx_pla_nomcho.Text;
+            rowcabeza.nomDest = cmb_destino.Text;
+            rowcabeza.nomOrigen = cmb_origen.Text;
+            rowcabeza.nomPropiet = tx_pla_propiet.Text;
+            rowcabeza.numpla = tx_numero.Text;
+            rowcabeza.placa = tx_pla_placa.Text;
+            rowcabeza.rucPropiet = tx_pla_ruc.Text;
+            rowcabeza.serpla = tx_serie.Text;
+            PlaniC.placar_cab.Addplacar_cabRow(rowcabeza);
             //
             // DETALLE  
-            // ...
-            return guiaT;
+            foreach (DataGridViewRow row in dataGridView1.Rows)
+            {
+                if (row.Cells[0].Value != null)
+                {
+                    conClie.placar_detRow rowdetalle = PlaniC.placar_det.Newplacar_detRow();
+                    rowdetalle.fila = row.Cells["fila"].Value.ToString();
+                    rowdetalle.id = tx_idr.Text;
+                    rowdetalle.idc = "";
+                    rowdetalle.moneda = row.Cells["MON"].Value.ToString();
+                    rowdetalle.numguia = row.Cells["numguia"].Value.ToString();
+                    rowdetalle.pagado = "";
+                    rowdetalle.salxcob = "";
+                    rowdetalle.serguia = row.Cells["serguia"].Value.ToString();
+                    rowdetalle.totcant = row.Cells["totcant"].Value.ToString();
+                    rowdetalle.totflete = row.Cells["totflet"].Value.ToString();
+                    rowdetalle.totpeso = row.Cells["totpeso"].Value.ToString();
+                    PlaniC.placar_det.Addplacar_detRow(rowdetalle);
+                }
+            }
+            //
+            return PlaniC;
         }
 
         #endregion

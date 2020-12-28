@@ -173,6 +173,12 @@
     <Compile Include="permisos.designer.cs">
       <DependentUpon>permisos.cs</DependentUpon>
     </Compile>
+    <Compile Include="plancarga1.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>plancarga1.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="planicarga.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -310,6 +316,10 @@
     </EmbeddedResource>
     <EmbeddedResource Include="permisos.resx">
       <DependentUpon>permisos.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="plancarga1.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>plancarga1.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="planicarga.resx">
       <DependentUpon>planicarga.cs</DependentUpon>

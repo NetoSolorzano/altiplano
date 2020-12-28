@@ -59,7 +59,7 @@ namespace TransCarga
         string vint_A0 = "";            // variable codigo anulacion interna por BD
         string v_clte_rem = "";         // variable para marcar si el remitente es cliente nuevo "N" o para actualizar sus datos "E"
         string v_clte_des = "";         // variable para marcar si el destinatario es cliente nuevo "N" o para actualizar sus datos "E"
-        string v_igv = "";
+        string v_igv = "";              // igv
         //
         static libreria lib = new libreria();   // libreria de procedimientos
         publico lp = new publico();             // libreria de clases
@@ -224,6 +224,8 @@ namespace TransCarga
             dataGridView1.Rows.Clear();
             dataGridView1.ReadOnly = false;
             tx_flete.Text = "";
+            tx_pagado.Text = "";
+            tx_salxcob.Text = "";
             tx_numero.Text = "";
             tx_totcant.Text = "";
             tx_totpes.Text = "";
@@ -960,6 +962,7 @@ namespace TransCarga
         #region boton_form GRABA EDITA ANULA
         private void button1_Click(object sender, EventArgs e)
         {
+            dataGridView1_RowLeave(null, null);
             #region validaciones
             if (tx_serie.Text.Trim() == "")
             {
@@ -2181,10 +2184,12 @@ namespace TransCarga
                 {
                     // idcodice,descrizionerid,ubidir,marca1,marca2,deta1,deta2,deta3,deta4
                     DataRow[] fila = dtd.Select("idcodice='" + tx_dat_locdes.Text + "'");
+                    tx_ubigDtt.Text = fila[0][2].ToString();
                     tx_dirDrio.Text = fila[0][5].ToString();
                     tx_dptoDrio.Text = fila[0][6].ToString();
                     tx_proDrio.Text = fila[0][7].ToString();
                     tx_disDrio.Text = fila[0][8].ToString();
+                    tx_ubigDtt.ReadOnly = true;
                     tx_dirDrio.ReadOnly = true;
                     tx_dptoDrio.ReadOnly = true;
                     tx_proDrio.ReadOnly = true;
@@ -2196,6 +2201,7 @@ namespace TransCarga
         {
             if (("NUEVO,EDITAR").Contains(Tx_modo.Text) && rb_ent_clte.Checked == true)
             {
+                tx_ubigDtt.Text = "";
                 tx_dirDrio.Text = "";
                 tx_dptoDrio.Text = "";
                 tx_proDrio.Text = "";
@@ -2218,12 +2224,12 @@ namespace TransCarga
             if (tx_dat_locori.Text != "" && Tx_modo.Text == "NUEVO")    // el origen y su direccion solo se ponen en modo NUEVO
             {
                 DataRow[] fila = dtu.Select("idcodice='" + tx_dat_locori.Text + "'");
-                tx_ubigO.Text = fila[0][2].ToString();
+                tx_ubigRtt.Text = fila[0][2].ToString();
                 tx_dirRem.Text = fila[0][5].ToString();
                 tx_dptoRtt.Text = fila[0][6].ToString();
                 tx_provRtt.Text = fila[0][7].ToString();
                 tx_distRtt.Text = fila[0][8].ToString();
-                tx_ubigO.ReadOnly = true;
+                tx_ubigRtt.ReadOnly = true;
                 tx_dirRem.ReadOnly = true;
                 tx_dptoRtt.ReadOnly = true;
                 tx_provRtt.ReadOnly = true;
@@ -2580,6 +2586,8 @@ namespace TransCarga
             {
                 tx_dat_locori.Text = cmb_origen.SelectedValue.ToString();
                 tx_dirOrigen.Text = lib.dirloca(lib.codloc(asd));
+                DataRow[] fila = dtu.Select("idcodice='" + tx_dat_locori.Text + "'");
+                tx_ubigO.Text = fila[0][2].ToString();
             }
             // lo de arriba viene del selectedindexhcnaged
             if (tx_dat_locori.Text.Trim() != "")
@@ -2778,26 +2786,17 @@ namespace TransCarga
         }
         private bool imprimeA5()
         {
-            bool retorna = false;
-            llenaDataSet();                         // metemos los datos al dataset de la impresion
-            /* / jala los parametros de impresion
+            bool retorna = true;
             try
             {
-                PrintDocument printDoc = new PrintDocument();
-                printDoc.PrinterSettings.PrinterName = v_impA5;
-                var paperSize = printDoc.PrinterSettings.PaperSizes.Cast<PaperSize>().FirstOrDefault(e => e.PaperName == "A5");
-                printDoc.PrinterSettings.DefaultPageSettings.PaperSize = paperSize;
-                //printDocument1.Print();
-                printDoc.PrintPage += new PrintPageEventHandler(imprime_A5);
-                printDoc.Print();
-                retorna = true;
+                llenaDataSet();                         // metemos los datos al dataset de la impresion
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Error en impresión A5");
+                MessageBox.Show("No fue posible generar el formato e imprimir"+  Environment.NewLine +
+                    ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 retorna = false;
             }
-            */
             return retorna;
         }
         private bool imprimeTK()
@@ -2837,68 +2836,6 @@ namespace TransCarga
         }
         private void imprime_A5(object sender, System.Drawing.Printing.PrintPageEventArgs e)
         {
-            float alfi = 20.0F;     // alto de cada fila
-            float alin = 50.0F;     // alto inicial
-            float posi = 80.0F;     // posición de impresión
-            float coli = 20.0F;     // columna mas a la izquierda
-            float cold = 80.0F;
-            Font lt_tit = new Font("Arial", 11);
-            Font lt_titB = new Font("Arial", 11, FontStyle.Bold);
-            PointF puntoF = new PointF(coli, alin);
-            e.Graphics.DrawString(nomclie, lt_titB, Brushes.Black, puntoF, StringFormat.GenericTypographic);                      // titulo del reporte
-            posi = posi + alfi;
-            string numguia = "GR " + tx_serie.Text + "-" + tx_numero.Text;
-            float lt = (lp.CentimeterToPixel(this,21F) - e.Graphics.MeasureString(numguia, lt_titB).Width) / 2;
-            puntoF = new PointF(lt, posi);
-            e.Graphics.DrawString(numguia, lt_titB, Brushes.Black, puntoF, StringFormat.GenericTypographic);                      // titulo del reporte
-            posi = posi + alfi*2;
-            PointF ptoimp = new PointF(coli, posi);                     // fecha de emision
-            e.Graphics.DrawString("EMITIDO: " + tx_fechope.Text.Substring(0,10), lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
-            posi = posi + alfi + 30.0F;                                         // avance de fila
-            ptoimp = new PointF(coli, posi);                               // direccion partida
-            e.Graphics.DrawString("PARTIDA: " + tx_dirOrigen.Text.Trim(), lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
-            posi = posi + alfi + 30.0F;
-            ptoimp = new PointF(coli, posi);                      // direccion llegada
-            e.Graphics.DrawString("DESTINO: " + tx_dirDestino.Text.Trim(), lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
-            posi = posi + alfi + 30.0F;
-            ptoimp = new PointF(coli, posi);                                // remitente
-            e.Graphics.DrawString("REMITENTE: " + tx_nomRem.Text.Trim(), lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
-            posi = posi + alfi;
-            ptoimp = new PointF(coli, posi);                       // destinatario
-            e.Graphics.DrawString("DESTINATARIO: " + tx_nomDrio.Text.Trim(), lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
-            posi = posi + alfi * 2;
-            /*
-            // seleccion de impresion en ruc u otro tipo
-            ptoimp = new PointF(coli + 50.0F, posi);
-            e.Graphics.DrawString(tx_numDocRem.Text, lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
-            ptoimp = new PointF(colm + 185.0F, posi);
-            e.Graphics.DrawString(tx_numDocDes.Text, lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
-            posi = 330.0F;             // avance de fila
-            */
-            // detalle de la pre guia
-            for (int fila = 0; fila < dataGridView1.Rows.Count - 1; fila++)
-            {
-                ptoimp = new PointF(coli + 20.0F, posi);
-                e.Graphics.DrawString(dataGridView1.Rows[fila].Cells[0].Value.ToString(), lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
-                ptoimp = new PointF(cold, posi);
-                e.Graphics.DrawString(dataGridView1.Rows[fila].Cells[1].Value.ToString(), lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
-                ptoimp = new PointF(cold + 80.0F, posi);
-                e.Graphics.DrawString(dataGridView1.Rows[fila].Cells[2].Value.ToString(), lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
-                ptoimp = new PointF(cold + 400.0F, posi);
-                e.Graphics.DrawString("KGs." + dataGridView1.Rows[fila].Cells[3].Value.ToString(), lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
-                posi = posi + alfi;             // avance de fila
-            }
-            // guias del cliente
-            posi = posi + alfi;
-            ptoimp = new PointF(coli, posi);
-            e.Graphics.DrawString("Docs. de remisión: " + tx_docsOr.Text, lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
-            // imprime el flete
-            posi = posi + alfi * 2;
-            string gtotal = "FLETE " + cmb_mon.Text + " " + tx_flete.Text;
-            lt = (lp.CentimeterToPixel(this,21F) - e.Graphics.MeasureString(gtotal, lt_titB).Width) / 2;
-            ptoimp = new PointF(lt, posi);
-            e.Graphics.DrawString(gtotal, lt_titB, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
-            posi = posi + alfi;
 
         }
         private void imprime_TK(object sender, System.Drawing.Printing.PrintPageEventArgs e)
@@ -2991,7 +2928,7 @@ namespace TransCarga
             rowcabeza.nomMoneda = cmb_mon.Text;
             rowcabeza.igv = "";         // no hay campo
             rowcabeza.subtotal = "";    // no hay campo
-            rowcabeza.total = tx_flete.Text;
+            rowcabeza.total = (chk_flete.Checked == true)? tx_flete.Text : "";
             rowcabeza.docscarga = tx_docsOr.Text;
             rowcabeza.consignat = tx_consig.Text;
             // pie
