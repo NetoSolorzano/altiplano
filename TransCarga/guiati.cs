@@ -138,7 +138,7 @@ namespace TransCarga
             //dataGridView1.DefaultCellStyle.SelectionBackColor = Color.FromName(colsfon);
             //dataGridView1.DefaultCellStyle.SelectionForeColor = Color.FromName(colsfgr);
             gbox_planilla.BackColor = Color.FromName(colpage);
-            gbox_docvta.BackColor = Color.FromName(colpage);
+            gbox_docvta.BackColor = Color.FromName(colsfon);
             //
             tx_user.Text += asd;
             tx_nomuser.Text = lib.nomuser(asd);
@@ -222,7 +222,8 @@ namespace TransCarga
             limpia_combos();
             claveSeg = "";
             dataGridView1.Rows.Clear();
-            dataGridView1.ReadOnly = false;
+            if (Tx_modo.Text == "NUEVO") dataGridView1.ReadOnly = false;
+            else dataGridView1.ReadOnly = true;
             tx_flete.Text = "";
             tx_pagado.Text = "";
             tx_salxcob.Text = "";
@@ -357,12 +358,15 @@ namespace TransCarga
                         "a.tipmongri,a.tipcamgri,a.subtotgri,a.igvgri,a.totgri,a.totpag,a.salgri,a.estadoser,a.impreso," +
                         "a.frase1,a.frase2,a.fleteimp,a.tipintrem,a.tipintdes,a.tippagpre,a.seguroE,a.userc,a.userm,a.usera," +
                         "a.serplagri,a.numplagri,a.plaplagri,a.carplagri,a.autplagri,a.confvegri,a.breplagri,a.proplagri," +
-                        "ifnull(b.chocamcar,'') as chocamcar,ifnull(b.fecplacar,'') as fecplacar,ifnull(b.fecdocvta,'') as fecdocvta,ifnull(b.tipdocvta,'') as tipdocvta," +
+                        "ifnull(b.chocamcar,'') as chocamcar,ifnull(b.fecplacar,'') as fecplacar,ifnull(b.fecdocvta,'') as fecdocvta,ifnull(f.descrizionerid,'') as tipdocvta," +
                         "ifnull(b.serdocvta,'') as serdocvta,ifnull(b.numdocvta,'') as numdocvta,ifnull(b.codmonvta,'') as codmonvta," +
                         "ifnull(b.totdocvta,0) as totdocvta,ifnull(b.codmonpag,'') as codmonpag,ifnull(b.totpagado,0) as totpagado,ifnull(b.saldofina,0) as saldofina," +
                         "ifnull(b.feculpago,'') as feculpago,ifnull(b.estadoser,'') as estadoser,ifnull(c.razonsocial,'') as razonsocial,a.grinumaut," +
-                        "ifnull(d.marca,'') as marca,ifnull(d.modelo,'') as modelo,ifnull(er.numerotel1,'') as telrem,ifnull(ed.numerotel1,'') as teldes " +
-                        "from cabguiai a left join controlg b on b.serguitra=a.sergui and b.numguitra=a.numgui " + 
+                        "ifnull(d.marca,'') as marca,ifnull(d.modelo,'') as modelo,ifnull(er.numerotel1,'') as telrem,ifnull(ed.numerotel1,'') as teldes,ifnull(t.nombclt,'') as clifact " +
+                        "from cabguiai a " +
+                        "left join controlg b on b.serguitra=a.sergui and b.numguitra=a.numgui " +
+                        "left join desc_tdv f on f.idcodice=b.tipdocvta " +
+                        "left join cabfactu t on t.tipdvta=a.tipdocvta and t.serdvta=a.serdocvta and t.numdvta=a.numdocvta " +
                         "left join anag_for c on c.ruc=a.proplagri and c.tipdoc=@tdep " +
                         "left join vehiculos d on d.placa=a.plaplagri " +
                         "left join anag_cli er on er.ruc=a.nudoregri and er.tipdoc=a.tidoregri " +
@@ -431,7 +435,7 @@ namespace TransCarga
                             //
                             tx_fecDV.Text = dr.GetString("fecdocvta");  //.Substring(0,10);
                             tx_DV.Text = dr.GetString("tipdocvta") + "-" + dr.GetString("serdocvta") + "-" + dr.GetString("numdocvta");
-                            //tx_clteDV.Text = dr.GetString("");
+                            tx_clteDV.Text = dr.GetString("clifact");
                             DataRow[] row = dtm.Select("idcodice='" + dr.GetString("codmonvta") + "'");
                             lb_impDV.Text = lb_impDV.Text + ((row.Length > 0)? row[0][1].ToString() : "");
                             tx_impDV.Text = dr.GetDecimal("totdocvta").ToString("#.##");

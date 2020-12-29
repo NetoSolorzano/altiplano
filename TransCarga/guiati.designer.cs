@@ -2049,7 +2049,7 @@
             this.tx_fecDV.ReadOnly = true;
             this.tx_fecDV.Size = new System.Drawing.Size(79, 20);
             this.tx_fecDV.TabIndex = 363;
-            this.tx_fecDV.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.tx_fecDV.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // label29
             // 
@@ -2091,7 +2091,7 @@
             this.tx_DV.ReadOnly = true;
             this.tx_DV.Size = new System.Drawing.Size(128, 20);
             this.tx_DV.TabIndex = 365;
-            this.tx_DV.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.tx_DV.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // tx_impDV
             // 
@@ -2100,7 +2100,7 @@
             this.tx_impDV.ReadOnly = true;
             this.tx_impDV.Size = new System.Drawing.Size(79, 20);
             this.tx_impDV.TabIndex = 366;
-            this.tx_impDV.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.tx_impDV.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // tx_clteDV
             // 
@@ -2109,7 +2109,6 @@
             this.tx_clteDV.ReadOnly = true;
             this.tx_clteDV.Size = new System.Drawing.Size(265, 20);
             this.tx_clteDV.TabIndex = 367;
-            this.tx_clteDV.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
             // tx_dat_tcr
             // 

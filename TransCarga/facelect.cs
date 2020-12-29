@@ -944,6 +944,7 @@ namespace TransCarga
             string d_vrepr = "";                                                        // valor referencial preliminar
             string codleyt = "1000";                                                    // codigoLeyenda 1 - valor en letras
             string codleyd = "";                                                        // codigo leyenda detraccion
+            string codobs = "107";                                                      // codigo del ose para las observaciones, caso carrion documentos origen del remitente
             /* *********************   calculo y campos de detracciones   ****************************** */
             if (double.Parse(tx_flete.Text) > double.Parse(Program.valdetra) && tx_dat_tdv.Text == codfact && tx_dat_mone.Text == MonDeft)    // soles
             {
@@ -1176,8 +1177,13 @@ namespace TransCarga
             {
                 writer.WriteLine("L" + sep +
                 codleyd + sep +         // codigo leyenda monto en letras
-                glosdet + sep            // Leyenda: Monto expresado en Letras
-            );
+                glosdet + sep);            // Leyenda: Monto expresado en Letras
+            }
+            for (int s = 0; s < dataGridView1.Rows.Count - 1; s++)
+            {
+                writer.WriteLine("E" + sep +
+                codobs + sep +
+                dataGridView1.Rows[s].Cells["guiasclte"].Value.ToString() + sep);
             }
             writer.Flush();
             writer.Close();
