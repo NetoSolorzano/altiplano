@@ -1945,7 +1945,7 @@ namespace TransCarga
             repo.Load(v_CR_gr_ind);
             repo.SetDataSource(data);
             repo.PrintOptions.PrinterName = v_impA4;
-            repo.PrintToPrinter(int.Parse(vi_copias),false,1,1);
+            repo.PrintToPrinter(int.Parse(vi_copias),false,0,0);    // ,1,1
         }
         private conClie generaReporte()
         {
@@ -1974,15 +1974,22 @@ namespace TransCarga
             rowcabeza.placa = tx_pla_placa.Text;
             rowcabeza.rucPropiet = tx_pla_ruc.Text;
             rowcabeza.serpla = tx_serie.Text;
+            rowcabeza.fechSalida = "";
+            rowcabeza.fechLlegada = "";
+            rowcabeza.estado = tx_estado.Text;
             PlaniC.placar_cab.Addplacar_cabRow(rowcabeza);
             //
             // DETALLE  
+            if (rb_orden_gr.Checked == true) dataGridView1.Sort(dataGridView1.Columns["numguia"], System.ComponentModel.ListSortDirection.Ascending);
+            if (rb_orden_dir.Checked == true) dataGridView1.Sort(dataGridView1.Columns[14], System.ComponentModel.ListSortDirection.Ascending);
+            int i = 0;
             foreach (DataGridViewRow row in dataGridView1.Rows)
             {
                 if (row.Cells[0].Value != null)
                 {
+                    i = i + 1;
                     conClie.placar_detRow rowdetalle = PlaniC.placar_det.Newplacar_detRow();
-                    rowdetalle.fila = row.Cells["fila"].Value.ToString();
+                    rowdetalle.fila = i.ToString();  // row.Cells["fila"].Value.ToString();
                     rowdetalle.id = tx_idr.Text;
                     rowdetalle.idc = "";
                     rowdetalle.moneda = row.Cells["MON"].Value.ToString();

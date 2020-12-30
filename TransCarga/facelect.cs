@@ -1104,7 +1104,7 @@ namespace TransCarga
                 string Inumord = (s + 1).ToString();                                        // numero de orden del item             5
                 string Iumeded = "ZZ";                                                      // Unidad de medida                     3
                 string Icantid = "1.00";                                                    // Cantidad de items   n(12,3)         16
-                string Icodprd = "";                                                        // codigo del producto del cliente
+                string Icodprd = "-";                                                       // codigo del producto del cliente
                 string Icodpro = "";                                                        // codigo del producto SUNAT                          30
                 string Icodgs1 = "";                                                        // codigo del producto GS1
                 string Icogtin = "";                                                        // tipo de producto GTIN

@@ -10,8 +10,8 @@
     <Shape ID="DesignTable:repvtas_det" ZOrder="5" X="266" Y="284" Height="86" Width="150" AdapterExpanded="true" DataTableExpanded="true" OldAdapterHeight="0" OldDataTableHeight="0" SplitterPosition="82" />
     <Shape ID="DesignTable:gr_ind_cab" ZOrder="4" X="87" Y="97" Height="638" Width="150" AdapterExpanded="true" DataTableExpanded="true" OldAdapterHeight="0" OldDataTableHeight="0" SplitterPosition="634" />
     <Shape ID="DesignTable:gr_ind_det" ZOrder="3" X="244" Y="511" Height="219" Width="150" AdapterExpanded="true" DataTableExpanded="true" OldAdapterHeight="0" OldDataTableHeight="0" SplitterPosition="215" />
-    <Shape ID="DesignTable:placar_cab" ZOrder="2" X="455" Y="108" Height="448" Width="150" AdapterExpanded="true" DataTableExpanded="true" OldAdapterHeight="0" OldDataTableHeight="0" SplitterPosition="444" />
-    <Shape ID="DesignTable:placar_det" ZOrder="1" X="615" Y="110" Height="372" Width="150" AdapterExpanded="true" DataTableExpanded="true" OldAdapterHeight="0" OldDataTableHeight="0" SplitterPosition="368" />
+    <Shape ID="DesignTable:placar_cab" ZOrder="2" X="455" Y="108" Height="581" Width="150" AdapterExpanded="true" DataTableExpanded="true" OldAdapterHeight="0" OldDataTableHeight="24" SplitterPosition="577" />
+    <Shape ID="DesignTable:placar_det" ZOrder="1" X="615" Y="110" Height="524" Width="150" AdapterExpanded="true" DataTableExpanded="true" OldAdapterHeight="0" OldDataTableHeight="0" SplitterPosition="520" />
   </Shapes>
   <Connectors />
 </DiagramLayout>
