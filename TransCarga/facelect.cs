@@ -77,6 +77,7 @@ namespace TransCarga
         string tipoDocEmi = "";         // CODIGO SUNAT tipo de documento RUC/DNI
         string tipoMoneda = "";         // CODIGO SUNAT tipo de moneda
         string glosdet = "";            // glosa para las operaciones con detraccion
+        string glosser = "";            // glosa que va en el detalle del doc. de venta
         string restexto = "xxx";        // texto resolucion sunat autorizando prov. fact electronica
         string autoriz_OSE_PSE = "yyy"; // numero resolucion sunat autorizando prov. fact electronica
         string despedida = "";          // texto para mensajes al cliente al final de la impresión del doc.vta. 
@@ -523,7 +524,7 @@ namespace TransCarga
                 }
                 // datos para el combobox documento de venta
                 cmb_tdv.Items.Clear();
-                using (MySqlCommand cdv = new MySqlCommand("select idcodice,descrizionerid,enlace1,codsunat from desc_tdv where numero=@bloq and codigo=@codv", conn))
+                using (MySqlCommand cdv = new MySqlCommand("select distinct a.idcodice,a.descrizionerid,a.enlace1,a.codsunat,b.glosaser from desc_tdv a LEFT JOIN series b ON b.tipdoc = a.IDCodice where numero=@bloq and codigo=@codv", conn))
                 {
                     cdv.Parameters.AddWithValue("@bloq", 1);
                     cdv.Parameters.AddWithValue("@codv", v_codidv);
@@ -1109,7 +1110,7 @@ namespace TransCarga
                 string Icodgs1 = "";                                                        // codigo del producto GS1
                 string Icogtin = "";                                                        // tipo de producto GTIN
                 string Inplaca = "";                                                        // numero placa de vehiculo
-                string Idescri = dataGridView1.Rows[s].Cells["Descrip"].Value.ToString();   // Descripcion
+                string Idescri = glosser + " " + dataGridView1.Rows[s].Cells["Descrip"].Value.ToString();   // Descripcion
                 string Ivaluni = _msigv.ToString("#0.00");                                  // Valor unitario del item SIN IMPUESTO 
                 string Ivalref = "";                                                        // valor referencial del item cuando la venta es gratuita
                 string Iigvite = Math.Round(double.Parse(Ipreuni) - double.Parse(Ivaluni),2).ToString("#0.00");     // monto IGV del item
@@ -2497,7 +2498,7 @@ namespace TransCarga
                 {
                     tx_dat_tdv.Text = row[0].ItemArray[0].ToString();
                     tx_dat_tdec.Text = row[0].ItemArray[2].ToString();
-                    //
+                    glosser = row[0].ItemArray[4].ToString();
                     //tx_serie.Text = "";
                     tx_numero.Text = "";
                 }
@@ -2639,7 +2640,7 @@ namespace TransCarga
                     // imprimimos el logo o el nombre comercial del emisor
                     if (logoclt != "")
                     {
-                        SizeF cuadLogo = new SizeF(CentimeterToPixel(anchTik) - 10.0F, alfi * 6);
+                        SizeF cuadLogo = new SizeF(CentimeterToPixel(anchTik) - 20.0F, alfi * 6);
                         RectangleF reclogo = new RectangleF(puntoF, cuadLogo);
                         e.Graphics.DrawImage(photo, reclogo);
                     }
@@ -2677,10 +2678,10 @@ namespace TransCarga
                     e.Graphics.DrawString(":", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                     puntoF = new PointF(coli + 70, posi);
                     e.Graphics.DrawString(rucclie, lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);     // ruc de emisor
-                    string tipdo = cmb_tdv.Text;                                  // tipo de documento
-                    string serie = lib.Right(tx_serie.Text,3);                    // serie electrónica
+                    //string tipdo = cmb_tdv.Text;                                  // tipo de documento
+                    string serie = cmb_tdv.Text.Substring(0, 1).ToUpper() + lib.Right(tx_serie.Text,3);                    // serie electrónica
                     string corre = tx_numero.Text;                                // numero del documento electrónico
-                    string nota = tipdo + "-" + serie + "-" + corre;
+                    //string nota = tipdo + "-" + serie + "-" + corre;
                     string titdoc = "";
                     if (tx_dat_tdv.Text != codfact) titdoc = "Boleta de Venta Electrónica";
                     if (tx_dat_tdv.Text == codfact) titdoc = "Factura Electrónica";
@@ -2689,7 +2690,7 @@ namespace TransCarga
                     puntoF = new PointF(lt, posi);
                     e.Graphics.DrawString(titdoc, lt_gra, Brushes.Black, puntoF, StringFormat.GenericTypographic);                  // tipo de documento
                     posi = posi + alfi + 8;
-                    string titnum = cmb_tdv.Text.Substring(0,1).ToUpper() + serie + " - " + corre;    // cFe + serie + " - " + corre;
+                    string titnum = serie + " - " + corre;
                     lt = (CentimeterToPixel(anchTik) - e.Graphics.MeasureString(titnum, lt_gra).Width) / 2;
                     puntoF = new PointF(lt, posi);
                     e.Graphics.DrawString(titnum, lt_gra, Brushes.Black, puntoF, StringFormat.GenericTypographic);   // serie y numero
@@ -2745,6 +2746,9 @@ namespace TransCarga
                         if (!string.IsNullOrEmpty(dataGridView1.Rows[l].Cells[0].Value.ToString()))
                         {
                             puntoF = new PointF(coli, posi);
+                            e.Graphics.DrawString(glosser, lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                            posi = posi + alfi;
+                            puntoF = new PointF(coli, posi);
                             //recto = new RectangleF(puntoF, siz);
                             e.Graphics.DrawString(dataGridView1.Rows[l].Cells[0].Value.ToString() + " " + dataGridView1.Rows[l].Cells[1].Value.ToString(), lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                             posi = posi + alfi;
@@ -2762,7 +2766,7 @@ namespace TransCarga
                         e.Graphics.DrawString("OP. GRAVADA", lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                         puntoF = new PointF(coli + 190, posi);
                         RectangleF recst = new RectangleF(puntoF, siz);
-                        e.Graphics.DrawString(tx_flete.Text, lt_peq, Brushes.Black, recst, alder);
+                        e.Graphics.DrawString(tx_subt.Text, lt_peq, Brushes.Black, recst, alder);
                         posi = posi + alfi;
                         puntoF = new PointF(coli, posi);
                         e.Graphics.DrawString("OP. INAFECTA", lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);
@@ -2859,8 +2863,8 @@ namespace TransCarga
                     string codigo = rucclie + separ + tipdo + separ +
                         serie + separ + tx_numero.Text + separ +
                         tx_igv.Text + separ + tx_flete.Text + separ +
-                        string.Format("{0:yyyy-MM-dd}", tx_fechope.Text) + separ + tipoDocEmi + separ +
-                        tx_numDocRem.Text;
+                        tx_fechope.Text.Substring(6,4) + "-" + tx_fechope.Text.Substring(3, 2) + "-" + tx_fechope.Text.Substring(0, 2) + separ + tipoDocEmi + separ +
+                        tx_numDocRem.Text + separ;  // string.Format("{0:yyyy-MM-dd}", tx_fechope.Text)
                     //
                     var rnd = Path.GetRandomFileName();
                     var otro = Path.GetFileNameWithoutExtension(rnd);
@@ -2893,10 +2897,10 @@ namespace TransCarga
                     posi = posi + alfi + 5;
                     SizeF leyen = new SizeF(CentimeterToPixel(anchTik) - 20, alfi * 3);
                     puntoF = new PointF(coli, posi);
-                    leyen = new SizeF(CentimeterToPixel(anchTik) - 20, alfi * 3);
+                    leyen = new SizeF(CentimeterToPixel(anchTik) - 20, alfi * 2);
                     RectangleF recley5 = new RectangleF(puntoF, leyen);
                     e.Graphics.DrawString(webose, lt_med, Brushes.Black, recley5, sf);
-                    posi = posi + alfi;
+                    posi = posi + alfi * 3;
                     string locyus = tx_locuser.Text + " - " + tx_user.Text;
                     puntoF = new PointF(coli, posi);
                     e.Graphics.DrawString(locyus, lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);                  // tienda y vendedor
@@ -2907,8 +2911,8 @@ namespace TransCarga
                     puntoF = new PointF((CentimeterToPixel(anchTik) - e.Graphics.MeasureString(despedida, lt_med).Width) / 2, posi);
                     e.Graphics.DrawString(despedida, lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                     posi = posi + alfi + alfi;
-                    puntoF = new PointF(coli, posi);
-                    e.Graphics.DrawString(".", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                    //puntoF = new PointF(coli, posi);
+                    //e.Graphics.DrawString(".", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                 }
             }
         }
@@ -2925,78 +2929,6 @@ namespace TransCarga
                     micon.ExecuteNonQuery();
                 }
             }
-        }
-        #endregion
-
-        #region crystal
-        private void llenaDataSet()
-        {
-            conClie data = generaReporte();
-            //gr_ind_transp repo = new gr_ind_transp();
-            //repo.SetDataSource(data);
-            //repo.PrintOptions.PrinterName = v_impA5;
-            //repo.PrintToPrinter(int.Parse(vi_copias),false,1,1);
-            ReportDocument repo = new ReportDocument();
-            repo.Load(v_CR_gr_ind);
-            repo.SetDataSource(data);
-            repo.PrintOptions.PrinterName = v_impA5;
-            repo.PrintToPrinter(int.Parse(vi_copias),false,1,1);
-        }
-        private conClie generaReporte()
-        {
-            conClie guiaT = new conClie();
-            conClie.gr_ind_cabRow rowcabeza = guiaT.gr_ind_cab.Newgr_ind_cabRow();
-            //
-            // CABECERA
-            rowcabeza.id = tx_idr.Text;
-            rowcabeza.estadoser = tx_estado.Text;
-            rowcabeza.sergui = tx_serie.Text;
-            rowcabeza.numgui = tx_numero.Text;
-            rowcabeza.fechope = tx_fechope.Text;
-            rowcabeza.frase1 = "";  // no hay campo
-            rowcabeza.frase2 = "";  // no hay campo
-            // origen - destino
-            rowcabeza.dptoDestino = ""; // no hay campo
-            rowcabeza.provDestino = "";
-            rowcabeza.distDestino = ""; // no hay campo
-            rowcabeza.dptoOrigen = "";  // no hay campo
-            rowcabeza.provOrigen = "";
-            rowcabeza.distOrigen = "";  // no hay campo
-            // remitente
-            rowcabeza.docRemit = cmb_docRem.Text;
-            rowcabeza.numRemit = tx_numDocRem.Text;
-            rowcabeza.nomRemit = tx_nomRem.Text;
-            rowcabeza.direRemit = tx_dirRem.Text;
-            rowcabeza.dptoRemit = tx_dptoRtt.Text;
-            rowcabeza.provRemit = tx_provRtt.Text;
-            rowcabeza.distRemit = tx_distRtt.Text;
-            // importes
-            rowcabeza.nomMoneda = cmb_mon.Text;
-            rowcabeza.igv = "";         // no hay campo
-            rowcabeza.subtotal = "";    // no hay campo
-            rowcabeza.total = tx_flete.Text;
-            // pie
-
-            //
-            guiaT.gr_ind_cab.Addgr_ind_cabRow(rowcabeza);
-            //
-            // DETALLE  
-            for (int i=0; i<dataGridView1.Rows.Count -1; i++)   // foreach (DataGridViewRow row in dataGridView1.Rows)
-            {   
-                conClie.gr_ind_detRow rowdetalle = guiaT.gr_ind_det.Newgr_ind_detRow();
-
-                rowdetalle.fila = "";       // no estamos usando
-                rowdetalle.cant = dataGridView1.Rows[i].Cells[0].Value.ToString();
-                rowdetalle.codigo = "";     // no estamos usando
-                rowdetalle.umed = dataGridView1.Rows[i].Cells[1].Value.ToString();
-                rowdetalle.descrip = dataGridView1.Rows[i].Cells[2].Value.ToString();
-                rowdetalle.precio = "";     // no estamos usando
-                rowdetalle.total = "";      // no estamos usando
-                rowdetalle.peso = dataGridView1.Rows[i].Cells[3].Value.ToString();
-                guiaT.gr_ind_det.Addgr_ind_detRow(rowdetalle);
-            }
-            //
-            return guiaT;
         }
         #endregion
 

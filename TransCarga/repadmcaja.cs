@@ -47,7 +47,7 @@ namespace TransCarga
         //int pageCount = 1, cuenta = 0;
         #endregion
         libreria lib = new libreria();
-
+        DataTable dtcuad = new DataTable();
         DataTable dt = new DataTable();
         DataTable dtestad = new DataTable();
         DataTable dttaller = new DataTable();
@@ -380,6 +380,29 @@ namespace TransCarga
                     if (resulta != "OK")                                        // actualizamos la tabla usuarios
                     {
                         MessageBox.Show(resulta, "Error en actualización de tabla usuarios", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+            }
+        }
+        private void bt_prev_caja_Click(object sender, EventArgs e)     // impresion cuadre de caja
+        {
+            if (dgv_ccaja.Rows.Count > 0 && dgv_ccaja.CurrentRow.Index > -1)
+            {
+                using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
+                {
+                    if (lib.procConn(conn) == true)
+                    {
+                        using (MySqlCommand micon = new MySqlCommand("rep_cuadre_sede", conn))
+                        {
+                            micon.CommandType = CommandType.StoredProcedure;
+                            micon.Parameters.AddWithValue("@idc", dgv_ccaja.CurrentRow.Cells[0].Value.ToString());
+                            using (MySqlDataAdapter da = new MySqlDataAdapter(micon))
+                            {
+                                dtcuad.Rows.Clear(); 
+                                da.Fill(dtcuad);
+                                setParaCrystal("cuadre_caja");
+                            }
+                        }
                     }
                 }
             }
@@ -780,22 +803,18 @@ namespace TransCarga
         #endregion
 
         #region crystal             // pendiente al 07/12/2020
-        private void button2_Click(object sender, EventArgs e)      // resumen de contrato
-        {
-            setParaCrystal("resumen");
-        }
         private void button4_Click(object sender, EventArgs e)      // reporte de ventas
         {
-            if (rb_listado.Checked == true) setParaCrystal("vtasxclte");
-            else setParaCrystal("ventas");
+            //if (rb_listado.Checked == true) setParaCrystal("vtasxclte");
+            //else setParaCrystal("ventas");
         }
         private void setParaCrystal(string repo)                    // genera el set para el reporte de crystal
         {
-            if (repo== "resumen")
+            if (repo== "cuadre_caja")
             {
-                //conClie datos = generareporte();                        // conClie = dataset de impresion de contrato   
-                //frmvizcont visualizador = new frmvizcont(datos);        // POR ESO SE CREO ESTE FORM frmvizcont PARA MOSTRAR AHI. ES MEJOR ASI.  
-                //visualizador.Show();
+                conClie datos = generacuadre();                        // conClie = dataset de impresion de contrato   
+                frmvizoper visualizador = new frmvizoper(datos);        // POR ESO SE CREO ESTE FORM frmvizcont PARA MOSTRAR AHI. ES MEJOR ASI.  
+                visualizador.Show();
             }
             if (repo == "ventas")
             {
@@ -875,55 +894,62 @@ namespace TransCarga
             }
             return repvtas;
         }
-        private conClie generareporte()
+        private conClie generacuadre()
         {
-            conClie rescont = new conClie();                                    // dataset
-            /*
-            conClie.rescont_cabRow rowcabeza = rescont.rescont_cab.Newrescont_cabRow();
-            
-            rowcabeza.id = "0";
-            rowcabeza.contrato = tx_codped.Text;
-            rowcabeza.doccli = tx_docu.Text;
-            rowcabeza.nomcli = tx_cliente.Text.Trim();
-            rowcabeza.estado = tx_estad.Text;
-            rowcabeza.fecha = tx_fecha.Text;
-            rowcabeza.tienda = tx_tiend.Text;
-            rowcabeza.valor = tx_valor.Text;
-            rowcabeza.fent = tx_fent.Text;
-            rescont.rescont_cab.Addrescont_cabRow(rowcabeza);
+            conClie cuadre = new conClie();                                    // dataset
+            conClie.cuadreCaja_cabRow rowcabeza = cuadre.cuadreCaja_cab.NewcuadreCaja_cabRow(); // rescont.rescont_cab.Newrescont_cabRow();
+            //
+            rowcabeza.id = dtcuad.Rows[0].ItemArray[3].ToString();
+            rowcabeza.cajeroA = dtcuad.Rows[0].ItemArray[28].ToString();
+            rowcabeza.cajeroC = dtcuad.Rows[0].ItemArray[30].ToString();
+            rowcabeza.codloc = dtcuad.Rows[0].ItemArray[1].ToString();
+            rowcabeza.corre = dtcuad.Rows[0].ItemArray[9].ToString();
+            rowcabeza.dircloc = ""; // dtcuad.Rows[0].ItemArray[].ToString();
+            rowcabeza.estado = dtcuad.Rows[0].ItemArray[6].ToString();
+            rowcabeza.fechAbier = dtcuad.Rows[0].ItemArray[4].ToString();
+            rowcabeza.fechCierr = dtcuad.Rows[0].ItemArray[5].ToString();
+            rowcabeza.nomCajA = dtcuad.Rows[0].ItemArray[29].ToString();
+            rowcabeza.nomCajC = dtcuad.Rows[0].ItemArray[31].ToString();
+            rowcabeza.nomloc = dtcuad.Rows[0].ItemArray[2].ToString();
+            rowcabeza.saldoAnt = "";    // dtcuad.Rows[0].ItemArray[].ToString();
+            rowcabeza.saldofinal = "";  // dtcuad.Rows[0].ItemArray[].ToString();
+            rowcabeza.serie = dtcuad.Rows[0].ItemArray[8].ToString();
+            cuadre.cuadreCaja_cab.AddcuadreCaja_cabRow(rowcabeza);    //rescont.rescont_cab.Addrescont_cabRow(rowcabeza);
             // detalle
-            foreach(DataGridViewRow row in dgv_resumen.Rows)
+            foreach (DataRow row in dtcuad.Rows)
             {
-                if (row.Cells["codigo"].Value != null && row.Cells["codigo"].Value.ToString().Trim() != "")
+                if (true)
                 {
-                    conClie.rescont_detRow rowdetalle = rescont.rescont_det.Newrescont_detRow();
-                    rowdetalle.id = row.Cells["id"].Value.ToString();
-                    rowdetalle.codigo = row.Cells["codigo"].Value.ToString();
-                    rowdetalle.nombre = row.Cells["nombre"].Value.ToString();
-                    rowdetalle.madera = row.Cells["madera"].Value.ToString();
-                    rowdetalle.cantC = row.Cells["CanC"].Value.ToString();
-                    rowdetalle.sep_id = row.Cells["sep_id"].Value.ToString();
-                    rowdetalle.sep_fecha = row.Cells["sep_fecha"].Value.ToString().PadRight(10).Substring(0,10);
-                    rowdetalle.sep_almac = row.Cells["sep_almac"].Value.ToString();
-                    rowdetalle.sep_cant = row.Cells["canS"].Value.ToString();
-                    rowdetalle.ent_id = row.Cells["ent_id"].Value.ToString();
-                    rowdetalle.ent_fecha = row.Cells["ent_fecha"].Value.ToString().PadRight(10).Substring(0,10);
-                    rowdetalle.ent_cant = row.Cells["canE"].Value.ToString();
-                    rowdetalle.tallerped = row.Cells["tallerped"].Value.ToString();
-                    rowdetalle.ped_pedido = row.Cells["codped"].Value.ToString();
-                    rowdetalle.ped_fecha = row.Cells["ped_fecha"].Value.ToString().PadRight(10).Substring(0,10);
-                    rowdetalle.ped_cant = row.Cells["canP"].Value.ToString();
-                    rowdetalle.ing_id = row.Cells["ing_id"].Value.ToString();
-                    rowdetalle.ing_fecha = row.Cells["ing_fecha"].Value.ToString().PadRight(10).Substring(0,10);
-                    rowdetalle.ing_cant = row.Cells["canI"].Value.ToString();
-                    rowdetalle.sal_id = row.Cells["sal_id"].Value.ToString();
-                    rowdetalle.sal_fecha = row.Cells["sal_fecha"].Value.ToString().PadRight(10).Substring(0,10);
-                    rowdetalle.sal_cant = row.Cells["canA"].Value.ToString();
-                    rescont.rescont_det.Addrescont_detRow(rowdetalle);
+                    conClie.cuadreCaja_detRow rowdetalle = cuadre.cuadreCaja_det.NewcuadreCaja_detRow();
+                    rowdetalle.segmento = row.ItemArray[0].ToString();       // nombre del segmento
+                    rowdetalle.id = row.ItemArray[3].ToString();             // id de la caja
+                    rowdetalle.fecha = row.ItemArray[4].ToString();          // fecha del doc del segmento
+                    rowdetalle.estado = row.ItemArray[6].ToString();         // estado del doc del segmento
+                    rowdetalle.nomEst = row.ItemArray[7].ToString();         // nombre del estado
+                    rowdetalle.serSeg = row.ItemArray[8].ToString();         // serie del doc del segmento
+                    rowdetalle.numSeg = row.ItemArray[9].ToString();         // numero del doc del segmento
+                    rowdetalle.tipDoc = row.ItemArray[10].ToString();        // tipo del documento
+                    rowdetalle.nomTdoc = row.ItemArray[11].ToString();       // nombre del tipo de doc
+                    rowdetalle.serDoc = row.ItemArray[12].ToString();        // serie del documento
+                    rowdetalle.numDoc = row.ItemArray[13].ToString();        // numero del documento
+                    rowdetalle.tmepag = row.ItemArray[14].ToString();        // codigo moneda del documento
+                    rowdetalle.nomMond = row.ItemArray[15].ToString();       // nombre moneda del documento
+                    rowdetalle.codTipg = row.ItemArray[16].ToString();       // codigo tipo pago/cobranza
+                    rowdetalle.nomTipg = row.ItemArray[17].ToString();       // nombre del tipo
+                    rowdetalle.codCtag = row.ItemArray[18].ToString();       // codigo cuenta depositos
+                    rowdetalle.nomCtag = row.ItemArray[19].ToString();       // nombre de cuenta
+                    rowdetalle.refpago = row.ItemArray[20].ToString();       // referencia de pago/deposito/ingreso
+                    rowdetalle.totdoco = row.ItemArray[21].ToString();       // total del documento
+                    rowdetalle.totpags = row.ItemArray[22].ToString();       // total pagado
+                    rowdetalle.saldvta = row.ItemArray[23].ToString();       // saldo del doc
+                    rowdetalle.codmopa = row.ItemArray[24].ToString();       // codigo moneda de pago
+                    rowdetalle.nomMonp = row.ItemArray[25].ToString();       // nombre de la moneda de pago
+                    rowdetalle.totpago = row.ItemArray[26].ToString();       // total pagado/cobrado
+                    rowdetalle.totpaMN = row.ItemArray[27].ToString();       // total pagado/cobrado en MN
+                    cuadre.cuadreCaja_det.AddcuadreCaja_detRow(rowdetalle);
                 }
             }
-            */
-            return rescont;
+            return cuadre;
         }
         #endregion
 

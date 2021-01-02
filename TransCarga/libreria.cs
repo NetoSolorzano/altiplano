@@ -1936,16 +1936,16 @@ namespace TransCarga
             }
             return retorna;
         }
-        public string valiplaca(string placa)                               // valida placa, retorna 0 si no existe, 1 si
+        public string valientabla(string tabla, string campo, string dato)  // valida en tabla y campo, retorna 0 si no existe, 1 si
         {
             string retorna = "0";   // 0 = no existe - 1 = si existe
             MySqlConnection conl = new MySqlConnection(DB_CONN_STR);
             conl.Open();
             if (conl.State == ConnectionState.Open)
             {
-                string consulta = "select count(*) from matrans where placa=@pla";
+                string consulta = "select count(*) from " + tabla + " where " + campo + " = @dat";
                 MySqlCommand micon = new MySqlCommand(consulta, conl);
-                micon.Parameters.AddWithValue("@pla", placa);
+                micon.Parameters.AddWithValue("@dat", dato);
                 try
                 {
                     MySqlDataReader dr = micon.ExecuteReader();
@@ -1957,7 +1957,7 @@ namespace TransCarga
                 }
                 catch (MySqlException ex)
                 {
-                    MessageBox.Show(ex.Message, "error en buscar placa");
+                    MessageBox.Show(ex.Message, "error en buscar dato en tabla");
                     Application.Exit();
                 }
                 finally { conl.Close(); }

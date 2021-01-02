@@ -2050,6 +2050,13 @@ namespace TransCarga
             if (Tx_modo.Text == "NUEVO" && tx_numero.Text.Trim() != "")
             {
                 tx_numero.Text = lib.Right("00000000" + tx_numero.Text, 8);
+                if (lib.valientabla("cabguiai", "concat(sergui,numgui)", tx_serie.Text + tx_numero.Text) == "1")
+                {
+                    MessageBox.Show("El número de Guía ya Existe!"," Atención ", MessageBoxButtons.OK,MessageBoxIcon.Exclamation);
+                    tx_numero.Text = "";
+                    tx_numero.Focus();
+                    return;
+                }
                 cmb_destino.Focus();
                 cmb_destino.DroppedDown = true;
             }
@@ -2963,7 +2970,7 @@ namespace TransCarga
                 rowdetalle.descrip = dataGridView1.Rows[i].Cells[2].Value.ToString();
                 rowdetalle.precio = "";     // no estamos usando
                 rowdetalle.total = "";      // no estamos usando
-                rowdetalle.peso = string.Format("{0:#0.0} Kg.", dataGridView1.Rows[i].Cells[3].Value.ToString());  // dataGridView1.Rows[i].Cells[3].Value.ToString() + "Kg."
+                rowdetalle.peso = string.Format("{0:#0.0}", dataGridView1.Rows[i].Cells[3].Value.ToString());  // dataGridView1.Rows[i].Cells[3].Value.ToString() + "Kg."
                 guiaT.gr_ind_det.Addgr_ind_detRow(rowdetalle);
             }
             //

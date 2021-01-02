@@ -70,7 +70,7 @@
             this.label9 = new System.Windows.Forms.Label();
             this.tx_dat_sedecaj = new System.Windows.Forms.TextBox();
             this.cmb_sedeCaj = new System.Windows.Forms.ComboBox();
-            this.button2 = new System.Windows.Forms.Button();
+            this.bt_prev_caja = new System.Windows.Forms.Button();
             this.dtp_finCaj = new System.Windows.Forms.DateTimePicker();
             this.dtp_iniCaj = new System.Windows.Forms.DateTimePicker();
             this.bt_caja = new System.Windows.Forms.Button();
@@ -460,7 +460,7 @@
             this.tabres.Controls.Add(this.label9);
             this.tabres.Controls.Add(this.tx_dat_sedecaj);
             this.tabres.Controls.Add(this.cmb_sedeCaj);
-            this.tabres.Controls.Add(this.button2);
+            this.tabres.Controls.Add(this.bt_prev_caja);
             this.tabres.Controls.Add(this.dtp_finCaj);
             this.tabres.Controls.Add(this.dtp_iniCaj);
             this.tabres.Controls.Add(this.bt_caja);
@@ -623,15 +623,15 @@
             this.cmb_sedeCaj.SelectionChangeCommitted += new System.EventHandler(this.cmb_sedeCaj_SelectionChangeCommitted);
             this.cmb_sedeCaj.KeyDown += new System.Windows.Forms.KeyEventHandler(this.cmb_sedeCaj_KeyDown);
             // 
-            // button2
+            // bt_prev_caja
             // 
-            this.button2.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.button2.Enabled = false;
-            this.button2.Location = new System.Drawing.Point(767, 8);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(50, 41);
-            this.button2.TabIndex = 378;
-            this.button2.UseVisualStyleBackColor = true;
+            this.bt_prev_caja.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.bt_prev_caja.Location = new System.Drawing.Point(767, 8);
+            this.bt_prev_caja.Name = "bt_prev_caja";
+            this.bt_prev_caja.Size = new System.Drawing.Size(50, 41);
+            this.bt_prev_caja.TabIndex = 378;
+            this.bt_prev_caja.UseVisualStyleBackColor = true;
+            this.bt_prev_caja.Click += new System.EventHandler(this.bt_prev_caja_Click);
             // 
             // dtp_finCaj
             // 
@@ -1628,7 +1628,7 @@
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.TextBox tx_dat_sedecaj;
         private System.Windows.Forms.ComboBox cmb_sedeCaj;
-        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button bt_prev_caja;
         private System.Windows.Forms.DateTimePicker dtp_finCaj;
         private System.Windows.Forms.DateTimePicker dtp_iniCaj;
         private System.Windows.Forms.Button bt_caja;
