@@ -1533,7 +1533,8 @@ namespace TransCarga
                 return;
             }
             // validamos la fecha de la caja
-            if (lib.fechaServ() != TransCarga.Program.vg_fcaj)  // ambas fecahs formato yyyy-mm-dd
+            string fhoy = lib.fechaServ("ansi");
+            if (fhoy != TransCarga.Program.vg_fcaj)  // ambas fecahs formato yyyy-mm-dd
             {
                 MessageBox.Show("Debe cerrar la caja anterior!", "Caja fuera de fecha", MessageBoxButtons.OK, MessageBoxIcon.Hand);
                 return;

@@ -601,31 +601,35 @@ namespace TransCarga
                 // validaciones de egresos PAGOS EFECTUADOS
                 if (rb_pago.Checked == true)
                 {
-                    /*
-                    if (tx_dat_comp.Text.Trim() == "")
-                    {
-                        MessageBox.Show("Seleccione el comprobante del egreso", " Atención ", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                        cmb_comp.Focus();
-                        return;
-                    }
-                    if (tx_serGR.Text.Trim() == "")
-                    {
-                        MessageBox.Show("Ingrese la serie del comprobante", " Atención ", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                        tx_serGR.Focus();
-                        return;
-                    }
-                    if (tx_numGR.Text.Trim() == "")
-                    {
-                        MessageBox.Show("Ingrese el número del comprobante", " Atención ", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                        tx_numGR.Focus();
-                        return;
-                    }
-                    */
                     if (tx_dat_grupo.Text.Trim() == "")
                     {
                         MessageBox.Show("Seleccione el grupo de egreso", " Atención ", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         cmb_grupo.Focus();
                         return;
+                    }
+                    // valimos que el vale/recibo no este repitiendo
+                    using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
+                    {
+                        if (lib.procConn(conn) == true)
+                        {
+                            string consulta = "select count(id) from cabegresos where concat(serdoco,numdoco)=@doco";
+                            using (MySqlCommand micon = new MySqlCommand(consulta, conn))
+                            {
+                                micon.Parameters.AddWithValue("@doco", tx_serie.Text + tx_numero.Text);
+                                using (MySqlDataReader dr = micon.ExecuteReader())
+                                {
+                                    if (dr.Read())
+                                    {
+                                        if (dr.GetInt32(0) > 0)
+                                        {
+                                            MessageBox.Show("El vale/recibo esta repetido!","Atención",MessageBoxButtons.OK,MessageBoxIcon.Warning);
+                                            tx_numero.Focus();
+                                            return;
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
                 if (rb_depo.Checked == true)
@@ -1177,8 +1181,22 @@ namespace TransCarga
             tx_serie.ReadOnly = true;
             tx_idcaja.Text = "";
             if (v_estcaj == codAbie)    // valida existencia de caja abierta en fecha y sede
-            { 
-                tx_idcaja.Text = v_idcaj;   // aca debe ir el verdadero id de la caja abierta
+            {
+                // validamos la fecha de la caja
+                string fhoy = lib.fechaServ("ansi");
+                if (fhoy != TransCarga.Program.vg_fcaj)  // ambas fecahs formato yyyy-mm-dd
+                {
+                    MessageBox.Show("Debe cerrar la caja anterior!", "Caja fuera de fecha", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+                    return;
+                }
+                else
+                {
+                    tx_idcaja.Text = v_idcaj;   // aca debe ir el verdadero id de la caja abierta
+                }
+            }
+            else
+            {
+                MessageBox.Show("No existe caja abierta!","Atención",MessageBoxButtons.OK,MessageBoxIcon.Information);
             }
             jalaoc("tx_idcaja");
             rb_pago.Focus();

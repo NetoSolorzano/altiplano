@@ -117,5 +117,5 @@ form repsoper
 - Falta considerar MONEDA y TIPO DE CAMBIO EN ESTOS REPORTES  ...................................... falta
 - Agregar pestaña para revalorizaciones ............................................................ ok 25/12/2020
 form repadmcaja
-- formato de impresion CR del cuadre ............................................................... 
-- adecuacion del form para la generacion del reporte ............................................... 
+- formato de impresion CR del cuadre ............................................................... ok 02/01/2021
+- adecuacion del form para la generacion del reporte ............................................... ok 02/01/2021

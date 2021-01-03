@@ -74,8 +74,10 @@ namespace TransCarga
                 {
                     //validamos que el usuario y passw son los correctos
                     string query = "select a.bloqueado,a.local,a.nombre,concat(trim(b.deta1),' - ',b.deta2,' - ',b.deta3,' - ',b.deta4) AS direcc,b.ubiDir," +
-                        "b.descrizione,a.tipuser,a.nivel,b.codsunat " +
-                        "from usuarios a LEFT JOIN desc_loc b ON b.idcodice=a.local " +
+                        "b.descrizione,a.tipuser,a.nivel,b.codsunat,ifnull(c.fechope,'') " +
+                        "from usuarios a " +
+                        "LEFT JOIN desc_loc b ON b.idcodice=a.local " +
+                        "left join cabccaja c on c.loccaja=a.local and c.fechcie is null " +
                         "where a.nom_user=@usuario and a.pwd_user=@contra";
                     MySqlCommand mycomand = new MySqlCommand(query, cn);
                     mycomand.Parameters.AddWithValue("@usuario", Tx_user.Text);
@@ -97,6 +99,7 @@ namespace TransCarga
                                 TransCarga.Program.vg_tius = dr.GetString(6);       // codigo de tipo de usuario
                                 TransCarga.Program.vg_nius = dr.GetString(7);       // codigo nivel de usuario
                                 TransCarga.Program.codlocsunat = dr.GetString(8);   // codigo sunat pto. emision DV
+                                TransCarga.Program.vg_fcaj = dr.GetString(9);       // fecha de la caja abierta del local
                                 dr.Close();
                                 // cambiamos la contraseña si fue hecha
                                 cambiacont();

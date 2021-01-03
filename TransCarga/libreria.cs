@@ -2364,73 +2364,16 @@ namespace TransCarga
             }
             return retorna;
         }
-        public string fechacaja(string local)                               // retorna fecha de la caja del local
+        public string fechaServ(string forma)                                           // retorna fecha del servidor FORMATO AAAA-MM-DD
         {
             string retorna = "";
-            string consulta = "select fecha,status from macajas where local=@loc order by id desc limit 1";
-            MySqlConnection conl = new MySqlConnection(DB_CONN_STR);
-            conl.Open();
-            if (conl.State == ConnectionState.Open)
-            {
-                MySqlCommand micon = new MySqlCommand(consulta, conl);
-                micon.Parameters.AddWithValue("@loc", local);
-                MySqlDataReader dr = micon.ExecuteReader();
-                if (dr.HasRows)
-                {
-                    if (dr.Read())
-                    {
-                        if (dr.GetString(1) != enlaces("frmcajas", "tx_status", "Default"))
-                        {
-                            //retorna = "01/01/1901";
-                            retorna = fechaserv();
-                        } 
-                        else retorna = dr.GetDateTime(0).ToString("dd/MM/yyyy");
-                    }
-                }
-                dr.Close();
-                conl.Close();
-            }
-            else
-            {
-                MessageBox.Show("Se perdió conexión con el servidor en librerías", "Error en conectividad");
-                Application.Exit();
-            }
-            return retorna;
-        }
-        public string fechaserv()                                           // retorna fecha del servidor FORMATO DD/MM/AAAA
-        {
-            string retorna = "";
-            string consulta = "select DATE_FORMAT(NOW(), '%d/%m/%Y') AS fecha_actual";
-            MySqlConnection conl = new MySqlConnection(DB_CONN_STR);
-            conl.Open();
-            if (conl.State == ConnectionState.Open)
-            {
-                MySqlCommand micon = new MySqlCommand(consulta, conl);
-                MySqlDataReader dr = micon.ExecuteReader();
-                if (dr.HasRows)
-                {
-                    if (dr.Read())
-                    {
-                        retorna = dr.GetString(0);
-                    }
-                }
-                dr.Close();
-                conl.Close();
-            }
-            else
-            {
-                MessageBox.Show("Se perdió conexión con el servidor en librerías", "Error en conectividad");
-                Application.Exit();
-            }
-            return retorna;
-        }
-        public string fechaServ()                                           // retorna fecha del servidor FORMATO AAAA-MM-DD
-        {
-            string retorna = "";
+            string consulta = "";
+            if (forma == "latin") consulta = "select DATE_FORMAT(NOW(), '%d/%m/%Y') AS fecha_actual";
+            if (forma == "ansi") consulta = "SELECT DATE_FORMAT(NOW(), '%Y-%m-%d') as fecha_Actual";
             using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
             {
                 conn.Open();
-                using (MySqlCommand micon = new MySqlCommand("SELECT DATE(NOW())", conn))
+                using (MySqlCommand micon = new MySqlCommand(consulta, conn))
                 {
                     using (MySqlDataReader dr = micon.ExecuteReader())
                     {

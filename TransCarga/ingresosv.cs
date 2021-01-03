@@ -594,6 +594,10 @@ namespace TransCarga
                                 }
                                 jalaoc("tx_idcaja");
                             }
+                            else
+                            {
+                                iserror = "si";
+                            }
                         }
                     }
                     else
@@ -731,7 +735,17 @@ namespace TransCarga
                     micon.Parameters.AddWithValue("@iplan", lib.iplan());
                     micon.Parameters.AddWithValue("@ipwan", TransCarga.Program.vg_ipwan);
                     micon.Parameters.AddWithValue("@nbnam", Environment.MachineName);
-                    micon.ExecuteNonQuery();
+                    try
+                    {
+                        micon.ExecuteNonQuery();
+                    }
+                    catch (MySqlException ex)
+                    {
+                        MessageBox.Show("Error: " + ex.Number.ToString() + Environment.NewLine +
+                            "Revise que el vale/recibo no este repetido","Error en insertar");
+                        retorna = false;
+                        return retorna;
+                    }
                 }
                 using (MySqlCommand micon = new MySqlCommand("select last_insert_id()", conn))
                 {
@@ -741,6 +755,7 @@ namespace TransCarga
                         {
                             tx_idr.Text = dr.GetString(0);
                             //tx_numero.Text = lib.Right(tx_idr.Text, 8);
+                            retorna = true;
                         }
                     }
                 }
@@ -1002,7 +1017,21 @@ namespace TransCarga
             tx_idcaja.Text = "";
             if (v_estcaj == codAbie)    // valida existencia de caja abierta en fecha y sede
             {
-                tx_idcaja.Text = v_idcaj;   // aca debe ir el verdadero id de la caja abierta
+                // validamos la fecha de la caja
+                string fhoy = lib.fechaServ("ansi");
+                if (fhoy != TransCarga.Program.vg_fcaj)  // ambas fecahs formato yyyy-mm-dd
+                {
+                    MessageBox.Show("Debe cerrar la caja anterior!", "Caja fuera de fecha", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+                    return;
+                }
+                else
+                {
+                    tx_idcaja.Text = v_idcaj;   // aca debe ir el verdadero id de la caja abierta
+                }
+            }
+            else
+            {
+                MessageBox.Show("No existe caja abierta!","Atención",MessageBoxButtons.OK,MessageBoxIcon.Information);
             }
             jalaoc("tx_idcaja");
             tx_serGR.ReadOnly = true;

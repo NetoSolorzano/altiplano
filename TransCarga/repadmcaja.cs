@@ -101,14 +101,9 @@ namespace TransCarga
             //dgv_resumen.DefaultCellStyle.SelectionForeColor = Color.FromName(colsfgr);
             //
             dgv_vtas.DefaultCellStyle.BackColor = Color.FromName(colgrid);
-            //dgv_vtas.DefaultCellStyle.ForeColor = Color.FromName(colfogr);
-            //dgv_vtas.DefaultCellStyle.SelectionBackColor = Color.FromName(colsfon);
-            //dgv_vtas.DefaultCellStyle.SelectionForeColor = Color.FromName(colsfgr);
-            //
             dgv_guias.DefaultCellStyle.BackColor = Color.FromName(colgrid);
-            //
             dgv_plan.DefaultCellStyle.BackColor = Color.FromName(colgrid);
-            //
+            dgv_pend.DefaultCellStyle.BackColor = Color.FromName(colgrid);
             Bt_add.Image = Image.FromFile(img_btN);
             Bt_edit.Image = Image.FromFile(img_btE);
             Bt_anul.Image = Image.FromFile(img_btA);
@@ -210,6 +205,10 @@ namespace TransCarga
                 cmb_sede_plan.DataSource = dttaller;
                 cmb_sede_plan.DisplayMember = "descrizionerid"; ;
                 cmb_sede_plan.ValueMember = "idcodice";
+                // PANEL PENDIENTES DE COBRANZAS
+                cmb_sede_pend.DataSource = dttaller;
+                cmb_sede_pend.DisplayMember = "descrizionerid"; ;
+                cmb_sede_pend.ValueMember = "idcodice";
                 // ***************** seleccion de estado de servicios
                 string conestad = "select descrizionerid,idcodice,codigo from desc_est " +
                                        "where numero=1 order by idcodice";
@@ -232,7 +231,8 @@ namespace TransCarga
                 cmb_estad_plan.DataSource = dtestad;
                 cmb_estad_plan.DisplayMember = "descrizionerid";
                 cmb_estad_plan.ValueMember = "idcodice";
-                //
+                // PANEL DE PENDIENTES DE COB
+                // no hay ...
             }
             conn.Close();
         }
@@ -352,6 +352,33 @@ namespace TransCarga
                         dgv_plan.ReadOnly = true;
                     }
                     break;
+                case "dgv_pend":
+                    dgv_pend.Font = tiplg;
+                    dgv_pend.DefaultCellStyle.Font = tiplg;
+                    dgv_pend.RowTemplate.Height = 15;
+                    dgv_pend.AllowUserToAddRows = false;
+                    dgv_pend.Width = Parent.Width - 20;
+                    if (dgv_pend.DataSource == null) dgv_pend.ColumnCount = 11;
+                    if (dgv_pend.Rows.Count > 0)
+                    {
+                        for (int i = 0; i < dgv_pend.Columns.Count; i++)
+                        {
+                            dgv_pend.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                            _ = decimal.TryParse(dgv_pend.Rows[0].Cells[i].Value.ToString(), out decimal vd);
+                            if (vd != 0) dgv_pend.Columns[i].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+                        }
+                        b = 0;
+                        for (int i = 0; i < dgv_pend.Columns.Count; i++)
+                        {
+                            int a = dgv_pend.Columns[i].Width;
+                            b += a;
+                            dgv_pend.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+                            dgv_pend.Columns[i].Width = a;
+                        }
+                        if (b < dgv_pend.Width) dgv_pend.Width = b + 60;
+                        dgv_pend.ReadOnly = true;
+                    }
+                    break;
             }
         }
         private void bt_caja_Click(object sender, EventArgs e)          // CUADRE DE CAJA
@@ -406,6 +433,10 @@ namespace TransCarga
                     }
                 }
             }
+        }
+        private void bt_prev_pend_Click(object sender, EventArgs e)     // impresion pendientes de cobranza
+        {
+            setParaCrystal("pend_cob");
         }
         private void bt_vtasfiltra_Click(object sender, EventArgs e)    // COBRANZAS
         {
@@ -497,19 +528,48 @@ namespace TransCarga
                 }
             }
         }
+        private void bt_pend_Click(object sender, EventArgs e)          // PENDIENTES DE COBRANZA
+        {
+            using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
+            {
+                conn.Open();
+                string consulta = "rep_adm_pendcob1";
+                using (MySqlCommand micon = new MySqlCommand(consulta, conn))
+                {
+                    micon.CommandType = CommandType.StoredProcedure;
+                    micon.Parameters.AddWithValue("@loca", (tx_dat_sed_pend.Text != "") ? tx_dat_sed_pend.Text : "");
+                    micon.Parameters.AddWithValue("@fecini", dtp_fini_pend.Value.ToString("yyyy-MM-dd"));
+                    micon.Parameters.AddWithValue("@fecfin", dtp_fina_pend.Value.ToString("yyyy-MM-dd"));
+                    micon.Parameters.AddWithValue("@esta", codAnul);
+                    using (MySqlDataAdapter da = new MySqlDataAdapter(micon))
+                    {
+                        dgv_pend.DataSource = null;
+                        DataTable dt = new DataTable();
+                        da.Fill(dt);
+                        dgv_pend.DataSource = dt;
+                        grilla("dgv_pend");
+                    }
+                    string resulta = lib.ult_mov(nomform, nomtab, asd);
+                    if (resulta != "OK")                                        // actualizamos la tabla usuarios
+                    {
+                        MessageBox.Show(resulta, "Error en actualización de tabla usuarios", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+            }
+        }
 
         #region combos
-        private void cmb_sedeCaj_SelectionChangeCommitted(object sender, EventArgs e)                                   // CAJA - Sede
+        private void cmb_sedeCaj_SelectionChangeCommitted(object sender, EventArgs e)             // CAJA - Sede
         {
             if (cmb_sedeCaj.SelectedValue != null) tx_dat_sedecaj.Text = cmb_sedeCaj.SelectedValue.ToString();
             else tx_dat_sedecaj.Text = "";
         }
-        private void cmb_estCaj_SelectionChangeCommitted(object sender, EventArgs e)                                    // CAJA - Estados
+        private void cmb_estCaj_SelectionChangeCommitted(object sender, EventArgs e)              // CAJA - Estados
         {
             if (cmb_estCaj.SelectedValue != null) tx_dat_estCaj.Text = cmb_estCaj.SelectedValue.ToString();
             else tx_dat_estCaj.Text = "";
         }
-        private void cmb_sedeCaj_KeyDown(object sender, KeyEventArgs e)                                                 // CAJA - Sede delete
+        private void cmb_sedeCaj_KeyDown(object sender, KeyEventArgs e)                           // CAJA - Sede delete
         {
             if (e.KeyCode == Keys.Delete)
             {
@@ -517,7 +577,7 @@ namespace TransCarga
                 tx_dat_sedecaj.Text = "";
             }
         }
-        private void cmb_estCaj_KeyDown(object sender, KeyEventArgs e)                                                  // CAJA - Estados delete
+        private void cmb_estCaj_KeyDown(object sender, KeyEventArgs e)                            // CAJA - Estados delete
         {
             if (e.KeyCode == Keys.Delete)
             {
@@ -525,7 +585,7 @@ namespace TransCarga
                 tx_dat_estCaj.Text = "";
             }
         }
-        private void cmb_estad_ing_SelectionChangeCommitted(object sender, EventArgs e)                                 // COBRANZAS - Estados
+        private void cmb_estad_ing_SelectionChangeCommitted(object sender, EventArgs e)           // COBRANZAS - Estados
         {
             if (cmb_estad.SelectedValue != null) tx_dat_estad.Text = cmb_estad.SelectedValue.ToString();
             else
@@ -534,12 +594,12 @@ namespace TransCarga
                 chk_excluye.Checked = false;
             }
         }
-        private void cmb_vtasloc_SelectionChangeCommitted(object sender, EventArgs e)                                   // COBRANZAS - Sede
+        private void cmb_vtasloc_SelectionChangeCommitted(object sender, EventArgs e)             // COBRANZAS - Sede
         {
             if (cmb_vtasloc.SelectedValue != null) tx_dat_vtasloc.Text = cmb_vtasloc.SelectedValue.ToString();
             else tx_dat_vtasloc.Text = ""; // cmb_vtasloc.SelectedItem.ToString().PadRight(6).Substring(0, 6).Trim();
         }
-        private void cmb_estad_ing_KeyDown(object sender, KeyEventArgs e)                                               // COBRANZAS - Estados delete
+        private void cmb_estad_ing_KeyDown(object sender, KeyEventArgs e)                         // COBRANZAS - Estados delete
         {
             if (e.KeyCode == Keys.Delete)
             {
@@ -547,7 +607,7 @@ namespace TransCarga
                 tx_dat_estad.Text = "";
             }
         }
-        private void cmb_vtasloc_KeyDown(object sender, KeyEventArgs e)                                                 // COBRANZAS - Sede delete
+        private void cmb_vtasloc_KeyDown(object sender, KeyEventArgs e)                           // COBRANZAS - Sede delete
         {
             if (e.KeyCode == Keys.Delete)
             {
@@ -555,12 +615,12 @@ namespace TransCarga
                 tx_dat_vtasloc.Text = "";
             }
         }
-        private void cmb_sede_plan_SelectionChangeCommitted(object sender, EventArgs e)                                 // INGRESOS VARIOS - Sede
+        private void cmb_sede_plan_SelectionChangeCommitted(object sender, EventArgs e)           // INGRESOS VARIOS - Sede
         {
             if (cmb_sede_plan.SelectedValue != null) tx_dat_sede_plan.Text = cmb_sede_plan.SelectedValue.ToString();
             else tx_dat_sede_plan.Text = "";
         }
-        private void cmb_sede_plan_KeyDown(object sender, KeyEventArgs e)                                               // INGRESOS VARIOS - Sede delete
+        private void cmb_sede_plan_KeyDown(object sender, KeyEventArgs e)                         // INGRESOS VARIOS - Sede delete
         {
             if (e.KeyCode == Keys.Delete)
             {
@@ -568,12 +628,12 @@ namespace TransCarga
                 tx_dat_sede_plan.Text = "";
             }
         }
-        private void cmb_estad_plan_SelectionChangeCommitted(object sender, EventArgs e)                                // INGRESOS VARIOS - Estados
+        private void cmb_estad_plan_SelectionChangeCommitted(object sender, EventArgs e)          // INGRESOS VARIOS - Estados
         {
             if (cmb_estad_plan.SelectedValue != null) tx_dat_estad_plan.Text = cmb_estad_plan.SelectedValue.ToString();
             else tx_dat_estad_plan.Text = "";
         }
-        private void cmb_estad_plan_KeyDown(object sender, KeyEventArgs e)                                              // INGRESOS VARIOS - Estados delete
+        private void cmb_estad_plan_KeyDown(object sender, KeyEventArgs e)                        // INGRESOS VARIOS - Estados delete
         {
             if (e.KeyCode == Keys.Delete)
             {
@@ -581,12 +641,12 @@ namespace TransCarga
                 tx_dat_estad_plan.Text = "";
             }
         }
-        private void cmb_sede_guias_SelectionChangeCommitted(object sender, EventArgs e)                                // EGRESOS - Sede
+        private void cmb_sede_guias_SelectionChangeCommitted(object sender, EventArgs e)          // EGRESOS - Sede
         {
             if (cmb_sede_guias.SelectedValue != null) tx_sede_guias.Text = cmb_sede_guias.SelectedValue.ToString();
             else tx_sede_guias.Text = "";
         }
-        private void cmb_sede_guias_KeyDown(object sender, KeyEventArgs e)                                              // EGRESOS - Sede delete
+        private void cmb_sede_guias_KeyDown(object sender, KeyEventArgs e)                        // EGRESOS - Sede delete
         {
             if (e.KeyCode == Keys.Delete)
             {
@@ -594,17 +654,30 @@ namespace TransCarga
                 tx_sede_guias.Text = "";
             }
         }
-        private void cmb_estad_guias_SelectionChangeCommitted(object sender, EventArgs e)                               // EGRESOS - Estados
+        private void cmb_estad_guias_SelectionChangeCommitted(object sender, EventArgs e)         // EGRESOS - Estados
         {
             if (cmb_estad_guias.SelectedValue != null) tx_estad_guias.Text = cmb_estad_guias.SelectedValue.ToString();
             else tx_estad_guias.Text = "";
         }
-        private void cmb_estad_guias_KeyDown(object sender, KeyEventArgs e)                                             // EGRESOS - Estados delete
+        private void cmb_estad_guias_KeyDown(object sender, KeyEventArgs e)                       // EGRESOS - Estados delete
         {
             if (e.KeyCode == Keys.Delete)
             {
                 cmb_estad_guias.SelectedIndex = -1;
                 tx_estad_guias.Text = "";
+            }
+        }
+        private void cmb_sede_pend_SelectionChangeCommitted(object sender, EventArgs e)           // PENDIENTES - sedes
+        {
+            if (cmb_sede_pend.SelectedValue != null) tx_dat_sed_pend.Text = cmb_sede_pend.SelectedValue.ToString();
+            else tx_dat_sed_pend.Text = "";
+        }
+        private void cmb_sede_pend_KeyDown(object sender, KeyEventArgs e)                         // PENDIENTES - delete
+        {
+            if (e.KeyCode == Keys.Delete)
+            {
+                cmb_sede_pend.SelectedIndex = -1;
+                tx_dat_sed_pend.Text = "";
             }
         }
         #endregion
@@ -726,6 +799,8 @@ namespace TransCarga
             cmb_sede_plan.SelectedIndex = -1;
             cmb_estad_plan.SelectedIndex = -1;
             chk_exclu_plan.Checked = false;
+            // pendientes de cob
+            cmb_sede_pend.SelectedIndex = -1;
         }
         private void Bt_anul_Click(object sender, EventArgs e)
         {
@@ -799,10 +874,26 @@ namespace TransCarga
                     this.Close();
                 }
             }
+            // PENDIENTES DE PAGO
+            if (tabControl1.SelectedTab == tabpend && dgv_pend.Rows.Count > 0)
+            {
+                nombre = "Pendientes_Cobranza_" + DateTime.Now.Date.ToString("yyyy-MM-dd") + ".xlsx";
+                var aa = MessageBox.Show("Confirma que desea generar la hoja de calculo?",
+                    "Archivo: " + nombre, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (aa == DialogResult.Yes)
+                {
+                    var wb = new XLWorkbook();
+                    DataTable dt = (DataTable)dgv_pend.DataSource;
+                    wb.Worksheets.Add(dt, "Pendientes");
+                    wb.SaveAs(v_ruta + nombre);
+                    MessageBox.Show("Archivo generado con exito!");
+                    this.Close();
+                }
+            }
         }
         #endregion
 
-        #region crystal             // pendiente al 07/12/2020
+        #region crystal
         private void button4_Click(object sender, EventArgs e)      // reporte de ventas
         {
             //if (rb_listado.Checked == true) setParaCrystal("vtasxclte");
@@ -816,11 +907,11 @@ namespace TransCarga
                 frmvizoper visualizador = new frmvizoper(datos);        // POR ESO SE CREO ESTE FORM frmvizcont PARA MOSTRAR AHI. ES MEJOR ASI.  
                 visualizador.Show();
             }
-            if (repo == "ventas")
+            if (repo == "pend_cob")
             {
-                //conClie datos = generarepvtas();
-                //frmvizcont visualizador = new frmvizcont(datos);
-                //visualizador.Show();
+                conClie datos = generareppend();
+                frmvizoper visualizador = new frmvizoper(datos);
+                visualizador.Show();
             }
             if (repo == "vtasxclte")
             {
@@ -829,7 +920,7 @@ namespace TransCarga
                 visualizador.Show();
             }
         }
-        private conClie generarepvtasxclte()
+        private conClie generarepvtasxclte()                        // libre .. esta solo como modelo
         {
             conClie repvtas = new conClie();                        // xsd
             conClie.repvtas_cabRow cabrow = repvtas.repvtas_cab.Newrepvtas_cabRow();
@@ -856,45 +947,41 @@ namespace TransCarga
             }
             return repvtas;
         }
-        private conClie generarepvtas()
+        private conClie generareppend()                             // genera el set para los pendientes de cobranza
         {
-            conClie repvtas = new conClie();                        // xsd
-            conClie.repvtas_cabRow cabrow = repvtas.repvtas_cab.Newrepvtas_cabRow();
-            cabrow.id = "0";
-            cabrow.fecini = dtp_vtasfini.Value.ToString("dd/MM/yyyy");
-            cabrow.fecfin = dtp_vtasfina.Value.ToString("dd/MM/yyyy");
-            cabrow.tienda = tx_dat_vtasloc.Text.Trim();
-            if (rb_listado.Checked == true) cabrow.modo = "listado";
-            if (rb_resumen.Checked == true) cabrow.modo = "resumen";
-            repvtas.repvtas_cab.Addrepvtas_cabRow(cabrow);
-            // detalle
-            foreach(DataGridViewRow row in dgv_vtas.Rows)
+            conClie repPend = new conClie();
+            conClie.pendCobRow pendrow = repPend.pendCob.NewpendCobRow();
+            foreach (DataGridViewRow row in dgv_pend.Rows)
             {
-                if (rb_resumen.Checked == true)
-                {
-                    if (row.Cells["item"].Value != null && row.Cells["item"].Value.ToString().Trim() != "")
-                    {
-                        conClie.repvtas_detRow detrow = repvtas.repvtas_det.Newrepvtas_detRow();
-                        detrow.id = "0";
-                        detrow.tienda = row.Cells["tienda"].Value.ToString();
-                        repvtas.repvtas_det.Addrepvtas_detRow(detrow);
-                    }
-                }
-                if (rb_listado.Checked == true)
-                {
-                    if (row.Cells["item"].Value != null && row.Cells["item"].Value.ToString().Trim() != "")
-                    {
-                        conClie.repvtas_detRow detrow = repvtas.repvtas_det.Newrepvtas_detRow();
-                        detrow.id = "0";
-                        detrow.tienda = row.Cells["tienda"].Value.ToString();
-                        detrow.fecha = row.Cells["fecha"].Value.ToString().Substring(0,10);
-                        repvtas.repvtas_det.Addrepvtas_detRow(detrow);
-                    }
-                }
+                pendrow.rucEmisor = Program.ruc;
+                pendrow.dirEmisor = Program.dirfisc;
+                pendrow.nomEmisor = Program.cliente;
+                pendrow.sede = cmb_sede_pend.Text;
+                pendrow.fechRep = DateTime.Now.ToString();
+                pendrow.origen = row.Cells["ORIGEN"].Value.ToString();
+                pendrow.destino = row.Cells["DESTINO"].Value.ToString();
+                pendrow.fecha = row.Cells["FECHA"].Value.ToString();
+                pendrow.serie = row.Cells["SER"].Value.ToString();
+                pendrow.numero = row.Cells["NUMERO"].Value.ToString();
+                pendrow.docr = row.Cells["DOCR"].Value.ToString();
+                pendrow.remitente = row.Cells["REMITENTE"].Value.ToString();
+                pendrow.nombrer = row.Cells["NOMBRER"].Value.ToString();
+                pendrow.docd = row.Cells["DOCD"].Value.ToString();
+                pendrow.destinat = row.Cells["DESTINAT"].Value.ToString();
+                pendrow.nombred = row.Cells["NOMBRED"].Value.ToString();
+                pendrow.mon = row.Cells["MON"].Value.ToString();
+                pendrow.flete = double.Parse(row.Cells["FLETE"].Value.ToString());
+                pendrow.tdv = row.Cells["TDV"].Value.ToString();
+                pendrow.servta = row.Cells["SERVTA"].Value.ToString();
+                pendrow.numvta = row.Cells["NUMVTA"].Value.ToString();
+                pendrow.pagado = double.Parse(row.Cells["PAGADO"].Value.ToString());
+                pendrow.saldo = double.Parse(row.Cells["SALDO"].Value.ToString());
+                pendrow.atraso = int.Parse(row.Cells["ATRASO"].Value.ToString());
+                repPend.pendCob.AddpendCobRow(pendrow);
             }
-            return repvtas;
+            return repPend;
         }
-        private conClie generacuadre()
+        private conClie generacuadre()                              // genera cuadre de caja
         {
             conClie cuadre = new conClie();                                    // dataset
             conClie.cuadreCaja_cabRow rowcabeza = cuadre.cuadreCaja_cab.NewcuadreCaja_cabRow(); // rescont.rescont_cab.Newrescont_cabRow();
@@ -916,8 +1003,11 @@ namespace TransCarga
             rowcabeza.nomCajA = dtcuad.Rows[0].ItemArray[29].ToString();
             rowcabeza.nomCajC = dtcuad.Rows[0].ItemArray[31].ToString();
             rowcabeza.nomloc = dtcuad.Rows[0].ItemArray[2].ToString();
-            rowcabeza.saldoAnt = 0;    // dtcuad.Rows[0].ItemArray[].ToString();
-            rowcabeza.saldofinal = 0;  // dtcuad.Rows[0].ItemArray[].ToString();
+            rowcabeza.cobranzas = double.Parse(dtcuad.Rows[0].ItemArray[21].ToString());
+            rowcabeza.ingvarios = double.Parse(dtcuad.Rows[0].ItemArray[22].ToString());
+            rowcabeza.egresos = double.Parse(dtcuad.Rows[0].ItemArray[23].ToString());
+            rowcabeza.saldoAnt = double.Parse(dtcuad.Rows[0].ItemArray[26].ToString());
+            rowcabeza.saldofinal = double.Parse(dtcuad.Rows[0].ItemArray[27].ToString());
             rowcabeza.serie = dtcuad.Rows[0].ItemArray[8].ToString();
             cuadre.cuadreCaja_cab.AddcuadreCaja_cabRow(rowcabeza);    //rescont.rescont_cab.Addrescont_cabRow(rowcabeza);
             // detalle
@@ -1012,6 +1102,16 @@ namespace TransCarga
         {
             DataTable dtg = (DataTable)dgv_plan.DataSource;
             dtg.DefaultView.RowFilter = dgv_plan.FilterString;
+        }
+        private void dgv_pend_FilterStringChanged(object sender, EventArgs e)                               // filtro PENDIENTES
+        {
+            DataTable dtg = (DataTable)dgv_pend.DataSource;
+            dtg.DefaultView.RowFilter = dgv_pend.FilterString;
+        }
+        private void dgv_pend_SortStringChanged(object sender, EventArgs e)                                 // sort PENDIENTES
+        {
+            DataTable dtg = (DataTable)dgv_pend.DataSource;
+            dtg.DefaultView.Sort = dgv_pend.SortString;
         }
         private void advancedDataGridView1_CellValidating(object sender, DataGridViewCellValidatingEventArgs e) // no usamos
         {

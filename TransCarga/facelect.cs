@@ -71,6 +71,7 @@ namespace TransCarga
         string v_idcaj = "";            // id de la caja actual
         string codAbie = "";            // codigo estado de caja abierta
         string logoclt = "";            // ruta y nombre archivo logo
+        string fshoy = "";              // fecha hoy del servidor en formato ansi
         //
         string rutatxt = "";            // ruta de los txt para la fact. electronica
         string tipdo = "";              // CODIGO SUNAT tipo de documento de venta
@@ -242,7 +243,15 @@ namespace TransCarga
             tx_fletLetras.ReadOnly = true;
             if (Tx_modo.Text == "NUEVO" && v_estcaj == codAbie)      // caja esta abierta?
             {
-                tx_idcaja.Text = v_idcaj;
+                if (fshoy != TransCarga.Program.vg_fcaj)  // fecha de la caja vs fecha de hoy
+                {
+                    MessageBox.Show("Las fechas no coinciden", "Caja fuera de fecha", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+                    return;
+                }
+                else
+                {
+                    tx_idcaja.Text = v_idcaj;
+                }
             }
         }
         private void jalainfo()                 // obtiene datos de imagenes y variables
@@ -2310,6 +2319,8 @@ namespace TransCarga
             Bt_ret.Enabled = false;
             Bt_fin.Enabled = false;
             tx_salxcob.BackColor = Color.White;
+            // validamos la fecha de la caja
+            fshoy = lib.fechaServ("ansi");
             //
             initIngreso();
             tx_numero.ReadOnly = true;
