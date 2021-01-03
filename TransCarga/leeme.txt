@@ -116,3 +116,6 @@ form repsventas: (reportes de ventas, notas credito, etc)
 form repsoper
 - Falta considerar MONEDA y TIPO DE CAMBIO EN ESTOS REPORTES  ...................................... falta
 - Agregar pestaña para revalorizaciones ............................................................ ok 25/12/2020
+form repadmcaja
+- formato de impresion CR del cuadre ............................................................... 
+- adecuacion del form para la generacion del reporte ............................................... 

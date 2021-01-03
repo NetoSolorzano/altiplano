@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Data;
+using CrystalDecisions.CrystalReports.Engine;
 using System.Windows.Forms;
 
 namespace TransCarga
@@ -22,10 +22,10 @@ namespace TransCarga
         {
             if (_datosReporte.cuadreCaja_cab.Rows.Count > 0)
             {
-
-                    //repvtas_resumen _ventas = new repvtas_resumen();
-                    //_ventas.SetDataSource(_datosReporte);
-                    //crystalReportViewer1.ReportSource = _ventas;
+                ReportDocument rpt = new ReportDocument();
+                rpt.Load("formatos/cuadreCaja1.rpt");
+                rpt.SetDataSource(_datosReporte);
+                crystalReportViewer1.ReportSource = rpt;
             }
         }
     }
