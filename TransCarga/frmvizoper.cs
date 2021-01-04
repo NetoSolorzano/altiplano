@@ -27,6 +27,13 @@ namespace TransCarga
                 rpt.SetDataSource(_datosReporte);
                 crystalReportViewer1.ReportSource = rpt;
             }
+            if (_datosReporte.pendCob.Rows.Count > 0)
+            {
+                ReportDocument rpt = new ReportDocument();
+                rpt.Load("formatos/pendCob1.rpt");
+                rpt.SetDataSource(_datosReporte);
+                crystalReportViewer1.ReportSource = rpt;
+            }
         }
     }
 }

@@ -4956,6 +4956,12 @@ namespace TransCarga {
             
             private global::System.Data.DataColumn columnatraso;
             
+            private global::System.Data.DataColumn columnfecini;
+            
+            private global::System.Data.DataColumn columnfecfin;
+            
+            private global::System.Data.DataColumn columncta;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public pendCobDataTable() {
@@ -5183,6 +5189,30 @@ namespace TransCarga {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn feciniColumn {
+                get {
+                    return this.columnfecini;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn fecfinColumn {
+                get {
+                    return this.columnfecfin;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn ctaColumn {
+                get {
+                    return this.columncta;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -5242,7 +5272,10 @@ namespace TransCarga {
                         string numvta, 
                         double pagado, 
                         double saldo, 
-                        int atraso) {
+                        int atraso, 
+                        string fecini, 
+                        string fecfin, 
+                        string cta) {
                 pendCobRow rowpendCobRow = ((pendCobRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         rucEmisor,
@@ -5268,7 +5301,10 @@ namespace TransCarga {
                         numvta,
                         pagado,
                         saldo,
-                        atraso};
+                        atraso,
+                        fecini,
+                        fecfin,
+                        cta};
                 rowpendCobRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowpendCobRow);
                 return rowpendCobRow;
@@ -5315,6 +5351,9 @@ namespace TransCarga {
                 this.columnpagado = base.Columns["pagado"];
                 this.columnsaldo = base.Columns["saldo"];
                 this.columnatraso = base.Columns["atraso"];
+                this.columnfecini = base.Columns["fecini"];
+                this.columnfecfin = base.Columns["fecfin"];
+                this.columncta = base.Columns["cta"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -5368,6 +5407,12 @@ namespace TransCarga {
                 base.Columns.Add(this.columnsaldo);
                 this.columnatraso = new global::System.Data.DataColumn("atraso", typeof(int), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnatraso);
+                this.columnfecini = new global::System.Data.DataColumn("fecini", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnfecini);
+                this.columnfecfin = new global::System.Data.DataColumn("fecfin", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnfecfin);
+                this.columncta = new global::System.Data.DataColumn("cta", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columncta);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -10690,6 +10735,54 @@ namespace TransCarga {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string fecini {
+                get {
+                    try {
+                        return ((string)(this[this.tablependCob.feciniColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("El valor de la columna \'fecini\' de la tabla \'pendCob\' es DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tablependCob.feciniColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string fecfin {
+                get {
+                    try {
+                        return ((string)(this[this.tablependCob.fecfinColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("El valor de la columna \'fecfin\' de la tabla \'pendCob\' es DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tablependCob.fecfinColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string cta {
+                get {
+                    try {
+                        return ((string)(this[this.tablependCob.ctaColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("El valor de la columna \'cta\' de la tabla \'pendCob\' es DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tablependCob.ctaColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public bool IsrucEmisorNull() {
                 return this.IsNull(this.tablependCob.rucEmisorColumn);
             }
@@ -10974,6 +11067,42 @@ namespace TransCarga {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public void SetatrasoNull() {
                 this[this.tablependCob.atrasoColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsfeciniNull() {
+                return this.IsNull(this.tablependCob.feciniColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetfeciniNull() {
+                this[this.tablependCob.feciniColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsfecfinNull() {
+                return this.IsNull(this.tablependCob.fecfinColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetfecfinNull() {
+                this[this.tablependCob.fecfinColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsctaNull() {
+                return this.IsNull(this.tablependCob.ctaColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetctaNull() {
+                this[this.tablependCob.ctaColumn] = global::System.Convert.DBNull;
             }
         }
         

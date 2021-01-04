@@ -167,6 +167,12 @@
       <DependentUpon>login.cs</DependentUpon>
     </Compile>
     <Compile Include="NumLetra.cs" />
+    <Compile Include="pendCob1.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>pendCob1.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="permisos.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -313,6 +319,10 @@
     </EmbeddedResource>
     <EmbeddedResource Include="login.resx">
       <DependentUpon>login.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="pendCob1.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>pendCob1.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="permisos.resx">
       <DependentUpon>permisos.cs</DependentUpon>

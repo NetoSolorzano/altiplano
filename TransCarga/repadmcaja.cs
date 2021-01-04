@@ -950,12 +950,17 @@ namespace TransCarga
         private conClie generareppend()                             // genera el set para los pendientes de cobranza
         {
             conClie repPend = new conClie();
-            conClie.pendCobRow pendrow = repPend.pendCob.NewpendCobRow();
+            int cta = 0;
             foreach (DataGridViewRow row in dgv_pend.Rows)
             {
+                cta = cta + 1;
+                conClie.pendCobRow pendrow = repPend.pendCob.NewpendCobRow();
                 pendrow.rucEmisor = Program.ruc;
                 pendrow.dirEmisor = Program.dirfisc;
                 pendrow.nomEmisor = Program.cliente;
+                pendrow.fecini = dtp_fini_pend.Text.Substring(0, 10);
+                pendrow.fecfin = dtp_fina_pend.Text.Substring(0, 10);
+                pendrow.cta = cta.ToString();
                 pendrow.sede = cmb_sede_pend.Text;
                 pendrow.fechRep = DateTime.Now.ToString();
                 pendrow.origen = row.Cells["ORIGEN"].Value.ToString();
