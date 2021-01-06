@@ -1752,6 +1752,13 @@ namespace TransCarga
             Bt_ret.Enabled = true;
             Bt_fin.Enabled = true;
             chk_cierea.Visible = false;
+            chk_cierea.Text = "";
+            //
+            gbox_serie.Enabled = true;
+            tx_serie.ReadOnly = false;
+            tx_numero.ReadOnly = false;
+            tx_pla_fech.ReadOnly = true;
+            tx_serie.Focus();
         }
         private void Bt_first_Click(object sender, EventArgs e)
         {
@@ -1940,12 +1947,21 @@ namespace TransCarga
         #region crystal
         private void llenaDataSet()
         {
-            conClie data = generaReporte();
-            ReportDocument repo = new ReportDocument();
-            repo.Load(v_CR_gr_ind);
-            repo.SetDataSource(data);
-            repo.PrintOptions.PrinterName = v_impA4;
-            repo.PrintToPrinter(int.Parse(vi_copias),false,0,0);    // ,1,1
+            try
+            {
+                conClie data = generaReporte();
+                ReportDocument repo = new ReportDocument();
+                repo.Load(v_CR_gr_ind);
+                repo.SetDataSource(data);
+                repo.PrintOptions.PrinterName = v_impA4;
+                repo.PrintToPrinter(int.Parse(vi_copias), false, 0, 0);    // ,1,1
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Confirme su configuración de impresión" + Environment.NewLine + 
+                    ex.Message,"Error en Impresión");
+                return;
+            }
         }
         private conClie generaReporte()
         {
@@ -1977,6 +1993,7 @@ namespace TransCarga
             rowcabeza.fechSalida = "";
             rowcabeza.fechLlegada = "";
             rowcabeza.estado = tx_estado.Text;
+            rowcabeza.tituloF = Program.tituloF;
             PlaniC.placar_cab.Addplacar_cabRow(rowcabeza);
             //
             // DETALLE  

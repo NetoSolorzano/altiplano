@@ -46,8 +46,7 @@ namespace TransCarga
         public static string coddetra = "";     // codigo sunat detraccion
         //
         public static string retorna1 = "";
-        public static string tituloF = "SOLORSOFT - TransCarga" + Environment.NewLine +
-            "Solución para empresas de Transporte de Carga";      // titulo del sistema
+        public static string tituloF = "SOLORSOFT - TransCarga";      // titulo del sistema
         public static string vg_ipwan = "";     // ip wan del cliente
         public static bool vg_conSol = false;   // usa conector solorsoft para ruc y dni
 

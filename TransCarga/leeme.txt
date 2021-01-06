@@ -119,3 +119,6 @@ form repsoper
 form repadmcaja
 - formato de impresion CR del cuadre ............................................................... ok 02/01/2021
 - adecuacion del form para la generacion del reporte ............................................... ok 02/01/2021
+form guiati
+- en modo edicion debe permitir poner observ y consignatario ....................................... ok 06/01/2021
+- en modo anulacion, no esta dejando anular a pesar de estar todo conforme ......................... ok 06/01/2021

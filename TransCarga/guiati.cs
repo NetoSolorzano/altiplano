@@ -473,12 +473,12 @@ namespace TransCarga
                     }
                     dr.Dispose();
                     micon.Dispose();
-                    //
+                    /*
                     if (Tx_modo.Text == "EDITAR" && (tx_pla_plani.Text != "" || tx_DV.Text != ""))
                     {
                         sololee();
                         dataGridView1.ReadOnly = true;
-                    }
+                    } */
                 }
                 conn.Close();
             }
@@ -1177,14 +1177,38 @@ namespace TransCarga
                     tx_numero.Focus();
                     return;
                 }
-                if (tx_numDocRem.Enabled == false)
+                /*if (tx_numDocRem.Enabled == false)
                 {
                     MessageBox.Show("La guía no se puede modificar", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                     return;
-                }
-                if ((tx_pregr_num.Text.Trim() == "") && tx_impreso.Text == "N")
+                }*/
+                if ((tx_pregr_num.Text.Trim() == "") && tx_impreso.Text == "S")
                 {
-                    // SI ESTA IMPRESO NO SE PUEDE MODIFICAR, SOLO ANULAR
+                    // no tiene guía y SI esta impreso => NO se puede modificar y SI anular
+                    //sololee();
+                    MessageBox.Show("Se modifica observaciones y consignatario", "La Guía esta impresa", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    //tx_dat_tdRem.Focus();
+                    //return;
+                }
+                if ((tx_pregr_num.Text.Trim() != "") && tx_impreso.Text == "N")
+                {
+                    // si tiene guía y no esta impreso => NO se puede modificar NO anular
+                    sololee();
+                    MessageBox.Show("No se puede Modificar", "Tiene guía enlazada", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+                    tx_dat_tdRem.Focus();
+                    return;
+                }
+                if ((tx_pregr_num.Text.Trim() != "") && tx_impreso.Text == "S")
+                {
+                    // si tiene guía y si esta impreso => NO se puede modificar NO anular
+                    sololee();
+                    MessageBox.Show("No se puede Modificar", "Tiene guía enlazada", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+                    tx_dat_tdRem.Focus();
+                    return;
+                }
+                if (true)   // (tx_pregr_num.Text.Trim() == "") && tx_impreso.Text == "N"
+                {
+                    // SI ESTA IMPRESO NO SE PUEDE MODIFICAR, SOLO ANULAR, SALVO LOS COMENTARIOS Y CONSIGNADO
                     // no tiene pre guía y no esta impreso => se puede modificar todo y SI anular
                     // si tiene pre guía y no esta impreso => se modifica parcial y SI anular
                     // si tiene planilla y no esta impreso => NO modifica parcial y NO anular
@@ -1216,30 +1240,6 @@ namespace TransCarga
                         return;
                     }
                 }
-                if ((tx_pregr_num.Text.Trim() == "") && tx_impreso.Text == "S")
-                {
-                    // no tiene guía y SI esta impreso => NO se puede modificar y SI anular
-                    sololee();
-                    MessageBox.Show("No se puede Modificar", "La Guía esta impresa", MessageBoxButtons.OK, MessageBoxIcon.Hand);
-                    tx_dat_tdRem.Focus();
-                    return;
-                }
-                if ((tx_pregr_num.Text.Trim() != "") && tx_impreso.Text == "N")
-                {
-                    // si tiene guía y no esta impreso => NO se puede modificar NO anular
-                    sololee();
-                    MessageBox.Show("No se puede Modificar", "Tiene guía enlazada", MessageBoxButtons.OK, MessageBoxIcon.Hand);
-                    tx_dat_tdRem.Focus();
-                    return;
-                }
-                if ((tx_pregr_num.Text.Trim() != "") && tx_impreso.Text == "S")
-                {
-                    // si tiene guía y si esta impreso => NO se puede modificar NO anular
-                    sololee();
-                    MessageBox.Show("No se puede Modificar", "Tiene guía enlazada", MessageBoxButtons.OK, MessageBoxIcon.Hand);
-                    tx_dat_tdRem.Focus();
-                    return;
-                }
             }
             if (modo == "ANULAR")
             {
@@ -1249,7 +1249,7 @@ namespace TransCarga
                     MessageBox.Show("Ingrese el número de la guía", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                     return;
                 }
-                if ((tx_pla_plani.Text.Trim() == "") && tx_DV.Text.Trim() == "")   // tx_impreso.Text == "N"
+                if (tx_pla_plani.Text.Trim() == "" && tx_DV.Text.Trim() == "- -")   // tx_impreso.Text == "N"
                 {
                     // no tiene planilla y no esta impreso => se puede modificar todo y SI anular
                     if (tx_idr.Text.Trim() != "")
@@ -1311,7 +1311,7 @@ namespace TransCarga
                 {
                     sololee();
                     MessageBox.Show("No se puede Anular" + Environment.NewLine +
-                        "Tiene planilla de carga y/o Doc.Venta","Atención",MessageBoxButtons.OK, MessageBoxIcon.Hand);
+                        "Tiene planilla de carga y/o Doc.Venta","Atención|" + tx_DV.Text.Trim()+"|", MessageBoxButtons.OK, MessageBoxIcon.Hand);
                     tx_dat_tdRem.Focus();
                     return;
                 }
@@ -1546,7 +1546,7 @@ namespace TransCarga
             {
                 try
                 {
-                    if (tx_impreso.Text == "N")     // EDICION DE CABECERA
+                    if (tx_impreso.Text != "S")     // EDICION DE CABECERA ... Al 06/01/2021 solo se permite editar observ y consignatario
                     {
                         decimal subtgr = Math.Round(decimal.Parse(tx_flete.Text) / (decimal.Parse(v_igv) / 100 + 1), 3);
                         decimal igvtgr = Math.Round(decimal.Parse(tx_flete.Text) - subtgr, 3);
@@ -1655,7 +1655,23 @@ namespace TransCarga
                     }
                     if (tx_impreso.Text == "S")
                     {
-                        // de momento no cambiamos nada 16/08/2020
+                        // EDICION DE CABECERA ... Al 06/01/2021 solo se permite editar observ y consignatario
+                        string actua = "update cabguiai a set " +
+                            "a.docsremit=@dooprg,a.obspregri=@obsprg,a.clifingri=@conprg," +
+                            "a.verApp=@verApp,a.userm=@asd,a.fechm=now(),a.diriplan4=@iplan,a.diripwan4=@ipwan,a.netbname=@nbnam " +
+                            "where a.id=@idr";
+                        MySqlCommand micon = new MySqlCommand(actua, conn);
+                        micon.Parameters.AddWithValue("@idr", tx_idr.Text);
+                        micon.Parameters.AddWithValue("@dooprg", tx_docsOr.Text);
+                        micon.Parameters.AddWithValue("@obsprg", tx_obser1.Text);
+                        micon.Parameters.AddWithValue("@conprg", tx_consig.Text);
+                        micon.Parameters.AddWithValue("@verApp", verapp);
+                        micon.Parameters.AddWithValue("@asd", asd);
+                        micon.Parameters.AddWithValue("@iplan", lib.iplan());
+                        micon.Parameters.AddWithValue("@ipwan", TransCarga.Program.vg_ipwan);
+                        micon.Parameters.AddWithValue("@nbnam", Environment.MachineName);
+                        micon.ExecuteNonQuery();
+                        micon.Dispose();
                     }
                     conn.Close();
                 }
@@ -1718,6 +1734,8 @@ namespace TransCarga
                 dataGridView1.Rows.Clear();
                 jalaoc("tx_idr");
                 jaladet(tx_idr.Text);
+                tx_numero_Leave(null,null);
+                /*
                 chk_seguridad_CheckStateChanged(null,null);
                 if ((tx_pregr_num.Text.Trim() == "") && tx_impreso.Text == "N")
                 {
@@ -1727,17 +1745,24 @@ namespace TransCarga
                 {
                     // no tiene pre guía y SI esta impreso => NO se puede modificar y SI anular
                     sololee();
+                    tx_obser1.Enabled = true;
+                    tx_consig.Enabled = true;
                 }
                 if ((tx_pregr_num.Text.Trim() != "") && tx_impreso.Text == "N")
                 {
                     // si tiene pre guía y no esta impreso => NO se puede modificar NO anular
                     sololee();
+                    tx_obser1.Enabled = true;
+                    tx_consig.Enabled = true;
                 }
                 if ((tx_pregr_num.Text.Trim() != "") && tx_impreso.Text == "S")
                 {
                     // si tiene pre guía y si esta impreso => NO se puede modificar NO anular
                     sololee();
+                    tx_obser1.Enabled = true;
+                    tx_consig.Enabled = true;
                 }
+                */
             }
         }
         private void textBox7_Leave(object sender, EventArgs e)         // departamento del remitente, jala provincia
@@ -2069,24 +2094,31 @@ namespace TransCarga
                 dataGridView1.Rows.Clear();
                 jaladet(tx_idr.Text);
                 chk_seguridad_CheckStateChanged(null, null);
-                if ((tx_pregr_num.Text.Trim() == "") && tx_impreso.Text == "N")
+                sololee();
+                if (Tx_modo.Text == "EDITAR")
                 {
-                    // no tiene guía y no esta impreso => se puede modificar todo y SI anular
-                }
-                if ((tx_pregr_num.Text.Trim() == "") && tx_impreso.Text == "S")
-                {
-                    // no tiene pre guía y SI esta impreso => NO se puede modificar y SI anular
-                    sololee();
-                }
-                if ((tx_pregr_num.Text.Trim() != "") && tx_impreso.Text == "N")
-                {
-                    // si tiene pre guía y no esta impreso => NO se puede modificar NO anular
-                    sololee();
-                }
-                if ((tx_pregr_num.Text.Trim() != "") && tx_impreso.Text == "S")
-                {
-                    // si tiene pre guía y si esta impreso => NO se puede modificar NO anular
-                    sololee();
+                    if ((tx_pregr_num.Text.Trim() == "") && tx_impreso.Text == "N")
+                    {
+                        // no tiene guía y no esta impreso => se puede modificar todo y SI anular
+                    }
+                    if ((tx_pregr_num.Text.Trim() == "") && tx_impreso.Text == "S")
+                    {
+                        // no tiene pre guía y SI esta impreso => NO se puede modificar y SI anular
+                        tx_obser1.Enabled = true;
+                        tx_consig.Enabled = true;
+                    }
+                    if ((tx_pregr_num.Text.Trim() != "") && tx_impreso.Text == "N")
+                    {
+                        // si tiene pre guía y no esta impreso => NO se puede modificar NO anular
+                        tx_obser1.Enabled = true;
+                        tx_consig.Enabled = true;
+                    }
+                    if ((tx_pregr_num.Text.Trim() != "") && tx_impreso.Text == "S")
+                    {
+                        // si tiene pre guía y si esta impreso => NO se puede modificar NO anular
+                        tx_obser1.Enabled = true;
+                        tx_consig.Enabled = true;
+                    }
                 }
             }
         }
@@ -2601,7 +2633,7 @@ namespace TransCarga
                 tx_ubigO.Text = fila[0][2].ToString();
             }
             // lo de arriba viene del selectedindexhcnaged
-            if (tx_dat_locori.Text.Trim() != "")
+            if (tx_dat_locori.Text.Trim() != "" && Tx_modo.Text == "NUEVO")
             {
                 DataRow[] fila = dtu.Select("idcodice='" + tx_dat_locori.Text + "'");
                 if (rb_car_ofi.Checked == true)
@@ -2715,7 +2747,7 @@ namespace TransCarga
                 DataRow[] fila = dtd.Select("idcodice='" + tx_dat_locdes.Text + "'");
                 tx_ubigD.Text = fila[0][2].ToString();
             }
-            rb_ent_clte.PerformClick();
+            if(Tx_modo.Text == "NUEVO") rb_ent_clte.PerformClick();
         }
         #endregion comboboxes
 
