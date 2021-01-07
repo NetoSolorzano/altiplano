@@ -122,3 +122,5 @@ form repadmcaja
 form guiati
 - en modo edicion debe permitir poner observ y consignatario ....................................... ok 06/01/2021
 - en modo anulacion, no esta dejando anular a pesar de estar todo conforme ......................... ok 06/01/2021
+form repsventas, agregar pestaña para reg. de ventas ............................................... ok 07/01/2021
+form ayccaja, agregar reporte de cierre de caja .................................................... ok 07/01/2021

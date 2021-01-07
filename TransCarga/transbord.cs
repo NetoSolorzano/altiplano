@@ -42,6 +42,7 @@ namespace TransCarga
         string codAnul = "";            // codigo de documento anulado
         string codGene = "";            // codigo documento nuevo generado
         string codCrrdo = "";           // codigo de documento cerrado
+        string codRecep = "";           // codigo doc recepcionado
         string v_clu = "";              // codigo del local del usuario
         string v_slu = "";              // serie del local del usuario
         string v_nbu = "";              // nombre del usuario
@@ -79,6 +80,16 @@ namespace TransCarga
                 return;
             }
             lp.sololee(this);
+        }
+        private void transbord_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter) SendKeys.Send("{TAB}");
+            if (Control.ModifierKeys == Keys.Control && e.KeyCode == Keys.N) Bt_add.PerformClick();
+            if (Control.ModifierKeys == Keys.Control && e.KeyCode == Keys.E) Bt_edit.PerformClick();
+            //if (Control.ModifierKeys == Keys.Control && e.KeyCode == Keys.P) Bt_print.PerformClick();
+            //if (Control.ModifierKeys == Keys.Control && e.KeyCode == Keys.A) Bt_anul.PerformClick();
+            if (Control.ModifierKeys == Keys.Control && e.KeyCode == Keys.O) Bt_ver.PerformClick();
+            //if (Control.ModifierKeys == Keys.Control && e.KeyCode == Keys.S) Bt_close.PerformClick();
         }
         private void jalainfo()                 // obtiene datos de imagenes y variables
         {
@@ -120,7 +131,8 @@ namespace TransCarga
                         {
                             if (row["param"].ToString() == "anulado") codAnul = row["valor"].ToString().Trim();         // codigo doc anulado
                             if (row["param"].ToString() == "generado") codGene = row["valor"].ToString().Trim();        // codigo doc generado
-                            if (row["param"].ToString() == "cerrado") codCrrdo = row["valor"].ToString().Trim();        // codigo doc cerrado                        
+                            if (row["param"].ToString() == "cerrado") codCrrdo = row["valor"].ToString().Trim();        // codigo doc cerrado
+                            if (row["param"].ToString() == "recepcionado") codRecep = row["valor"].ToString().Trim();   // codigo doc recepcionado
                         }
                     }
                     if (row["formulario"].ToString() == nomform)
@@ -313,22 +325,23 @@ namespace TransCarga
                 {
                     if (con.Name.ToString() == "tx_numero")
                     {
-                        MessageBox.Show(Convert.ToDateTime(tx_pla_fech.Text).ToString());
                         jaladet(tx_serie.Text, tx_numero.Text);
-                        if (tx_estado.Text != codGene)
+                        if (tx_estado.Text == codRecep || tx_estado.Text == codAnul)
                         {
                             retorna = false;
-                            MessageBox.Show("La planilla origen no tiene el estado correcto", "No puede transbordar", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            MessageBox.Show("La planilla origen esta Anulada o Recepcionada", "No puede transbordar", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         }
+                        else retorna = true;
                     }
                     else
                     {
                         // validamos que ambas planillas:
                         // - tengan el mismo destino/origen
-                        // - tengan estado generado
+                        // - la planilla destino tenga estado generado
                         // - que no sean iguales
                         // - alguna validacion de fecha ???
-                        if (tx_estad_des.Text != codGene)
+                        retorna = true;
+                        if (tx_estad_des.Text == codRecep || tx_estado.Text == codAnul)
                         {
                             retorna = false;
                             MessageBox.Show("La planilla destino no tiene el estado correcto", "No puede transbordar", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -396,13 +409,14 @@ namespace TransCarga
                                 tx_pla_confv.Text = dr.GetString(12);
                                 tx_pla_autor.Text = dr.GetString(13);
                                 retorna = true;
+                                jaladet(tx_serie.Text, tx_numero.Text);
                             }
                             if (tipo == "tx_num_pla_des")   // jalamos datos de planilla destino
                             {
                                 tx_estad_des.Text = dr.GetString(0);
-                                tx_orig_des.Text = dr.GetString(1);
-                                tx_dest_des.Text = dr.GetString(2);
-                                tx_fech_des.Text = dr.GetString(3);
+                                tx_fech_des.Text = dr.GetString(1).Substring(0, 10); ;
+                                tx_orig_des.Text = dr.GetString(2);
+                                tx_dest_des.Text = dr.GetString(3);
                                 tx_chof_des.Text = dr.GetString(4);
                                 tx_nomChof_des.Text = dr.GetString(5);
                                 tx_ayu_des.Text = dr.GetString(6);
@@ -423,7 +437,11 @@ namespace TransCarga
         }
         private void jaladet(string ser, string num)                  // jala datos a la grilla
         {
-
+            dataGridView1.Rows.Clear();
+            dataGridView1.ReadOnly = true;
+            string consulta = "select a.serguia,a.numguia,a.totcant,a.totpeso,a.totflet,a.pagado,a.salxcob,a.codmone " +
+                "from detplacar a " +
+                "WHERE a.serplacar = @ser AND a.numplacar = @num";
         }
         #region botones_de_comando
         public void toolboton()
@@ -479,6 +497,7 @@ namespace TransCarga
             lp.limpiagbox(gbox_serie);
             lp.limpiagbox(gbox_dest);
             dataGridView1.Rows.Clear();
+            Tx_modo.Text = "NUEVO";
             tx_serie.Focus();
         }
         private void Bt_close_Click(object sender, EventArgs e)
@@ -509,6 +528,10 @@ namespace TransCarga
                     tx_numero.Text = "";
                     e.Cancel = true;
                 }
+                else
+                {
+                    tx_ser_pla_des.Focus();
+                }
             }
         }
         private void tx_ser_pla_des_Validating(object sender, CancelEventArgs e)
@@ -528,7 +551,25 @@ namespace TransCarga
                 if (valids_leave("numero", tx_num_pla_des.Text.Trim(), tx_num_pla_des) == false)
                 {
                     tx_num_pla_des.Text = "";
+                    tx_orig_des.Text = "";
+                    tx_dest_des.Text = "";
+                    tx_fech_des.Text = "";
+                    tx_estad_des.Text = "";
+                    tx_chof_des.Text = "";
+                    tx_nomChof_des.Text = "";
+                    tx_ayu_des.Text = "";
+                    tx_nomAyu_des.Text = "";
+                    tx_prop_des.Text = "";
+                    tx_nomProp_des.Text = "";
+                    tx_plac_des.Text = "";
+                    tx_carret_des.Text = "";
+                    tx_confv_des.Text = "";
+                    tx_aut_des.Text = "";
                     e.Cancel = true;
+                }
+                else
+                {
+                    button1.Focus();
                 }
             }
         }

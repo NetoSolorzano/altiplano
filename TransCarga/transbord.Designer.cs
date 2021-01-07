@@ -59,6 +59,7 @@
             this.tx_nomuser = new System.Windows.Forms.TextBox();
             this.tx_user = new System.Windows.Forms.TextBox();
             this.gbox_serie = new System.Windows.Forms.GroupBox();
+            this.tx_estado = new System.Windows.Forms.TextBox();
             this.groupBox21 = new System.Windows.Forms.GroupBox();
             this.groupBox22 = new System.Windows.Forms.GroupBox();
             this.label7 = new System.Windows.Forms.Label();
@@ -96,13 +97,12 @@
             this.groupBox26 = new System.Windows.Forms.GroupBox();
             this.groupBox23 = new System.Windows.Forms.GroupBox();
             this.groupBox24 = new System.Windows.Forms.GroupBox();
-            this.tx_numero = new TransCarga.NumericTextBox();
-            this.tx_serie = new TransCarga.NumericTextBox();
             this.label14 = new System.Windows.Forms.Label();
             this.groupBox10 = new System.Windows.Forms.GroupBox();
             this.tx_destino = new System.Windows.Forms.TextBox();
             this.tx_origen = new System.Windows.Forms.TextBox();
             this.gbox_dest = new System.Windows.Forms.GroupBox();
+            this.tx_estad_des = new System.Windows.Forms.TextBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.label1 = new System.Windows.Forms.Label();
@@ -140,16 +140,16 @@
             this.groupBox32 = new System.Windows.Forms.GroupBox();
             this.groupBox33 = new System.Windows.Forms.GroupBox();
             this.groupBox34 = new System.Windows.Forms.GroupBox();
-            this.tx_num_pla_des = new TransCarga.NumericTextBox();
-            this.tx_ser_pla_des = new TransCarga.NumericTextBox();
             this.label15 = new System.Windows.Forms.Label();
             this.groupBox35 = new System.Windows.Forms.GroupBox();
             this.tx_dest_des = new System.Windows.Forms.TextBox();
             this.tx_orig_des = new System.Windows.Forms.TextBox();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.button1 = new System.Windows.Forms.Button();
-            this.tx_estado = new System.Windows.Forms.TextBox();
-            this.tx_estad_des = new System.Windows.Forms.TextBox();
+            this.tx_num_pla_des = new TransCarga.NumericTextBox();
+            this.tx_ser_pla_des = new TransCarga.NumericTextBox();
+            this.tx_numero = new TransCarga.NumericTextBox();
+            this.tx_serie = new TransCarga.NumericTextBox();
             this.toolStrip1.SuspendLayout();
             this.pn_usloc.SuspendLayout();
             this.gbox_serie.SuspendLayout();
@@ -522,6 +522,14 @@
             this.gbox_serie.TabStop = false;
             this.gbox_serie.Text = " Planilla Origen";
             // 
+            // tx_estado
+            // 
+            this.tx_estado.Location = new System.Drawing.Point(136, 88);
+            this.tx_estado.Name = "tx_estado";
+            this.tx_estado.Size = new System.Drawing.Size(55, 20);
+            this.tx_estado.TabIndex = 428;
+            this.tx_estado.Visible = false;
+            // 
             // groupBox21
             // 
             this.groupBox21.BackColor = System.Drawing.Color.White;
@@ -873,28 +881,6 @@
             this.groupBox24.TabIndex = 113;
             this.groupBox24.TabStop = false;
             // 
-            // tx_numero
-            // 
-            this.tx_numero.AllowSpace = false;
-            this.tx_numero.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_numero.Location = new System.Drawing.Point(100, 14);
-            this.tx_numero.Name = "tx_numero";
-            this.tx_numero.Size = new System.Drawing.Size(73, 20);
-            this.tx_numero.TabIndex = 2;
-            this.tx_numero.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.tx_numero.Validating += new System.ComponentModel.CancelEventHandler(this.tx_numero_Validating);
-            // 
-            // tx_serie
-            // 
-            this.tx_serie.AllowSpace = false;
-            this.tx_serie.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_serie.Location = new System.Drawing.Point(57, 14);
-            this.tx_serie.Name = "tx_serie";
-            this.tx_serie.Size = new System.Drawing.Size(44, 20);
-            this.tx_serie.TabIndex = 1;
-            this.tx_serie.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.tx_serie.Validating += new System.ComponentModel.CancelEventHandler(this.tx_serie_Validating);
-            // 
             // label14
             // 
             this.label14.AutoSize = true;
@@ -977,6 +963,14 @@
             this.gbox_dest.TabIndex = 329;
             this.gbox_dest.TabStop = false;
             this.gbox_dest.Text = " Planilla Destino";
+            // 
+            // tx_estad_des
+            // 
+            this.tx_estad_des.Location = new System.Drawing.Point(135, 87);
+            this.tx_estad_des.Name = "tx_estad_des";
+            this.tx_estad_des.Size = new System.Drawing.Size(52, 20);
+            this.tx_estad_des.TabIndex = 429;
+            this.tx_estad_des.Visible = false;
             // 
             // groupBox4
             // 
@@ -1329,28 +1323,6 @@
             this.groupBox34.TabIndex = 113;
             this.groupBox34.TabStop = false;
             // 
-            // tx_num_pla_des
-            // 
-            this.tx_num_pla_des.AllowSpace = false;
-            this.tx_num_pla_des.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_num_pla_des.Location = new System.Drawing.Point(100, 14);
-            this.tx_num_pla_des.Name = "tx_num_pla_des";
-            this.tx_num_pla_des.Size = new System.Drawing.Size(73, 20);
-            this.tx_num_pla_des.TabIndex = 2;
-            this.tx_num_pla_des.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.tx_num_pla_des.Validating += new System.ComponentModel.CancelEventHandler(this.tx_num_pla_des_Validating);
-            // 
-            // tx_ser_pla_des
-            // 
-            this.tx_ser_pla_des.AllowSpace = false;
-            this.tx_ser_pla_des.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_ser_pla_des.Location = new System.Drawing.Point(57, 14);
-            this.tx_ser_pla_des.Name = "tx_ser_pla_des";
-            this.tx_ser_pla_des.Size = new System.Drawing.Size(44, 20);
-            this.tx_ser_pla_des.TabIndex = 1;
-            this.tx_ser_pla_des.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.tx_ser_pla_des.Validating += new System.ComponentModel.CancelEventHandler(this.tx_ser_pla_des_Validating);
-            // 
             // label15
             // 
             this.label15.AutoSize = true;
@@ -1406,21 +1378,49 @@
             this.button1.TabIndex = 331;
             this.button1.UseVisualStyleBackColor = true;
             // 
-            // tx_estado
+            // tx_num_pla_des
             // 
-            this.tx_estado.Location = new System.Drawing.Point(136, 88);
-            this.tx_estado.Name = "tx_estado";
-            this.tx_estado.Size = new System.Drawing.Size(37, 20);
-            this.tx_estado.TabIndex = 428;
-            this.tx_estado.Visible = false;
+            this.tx_num_pla_des.AllowSpace = false;
+            this.tx_num_pla_des.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_num_pla_des.Location = new System.Drawing.Point(100, 14);
+            this.tx_num_pla_des.Name = "tx_num_pla_des";
+            this.tx_num_pla_des.Size = new System.Drawing.Size(73, 20);
+            this.tx_num_pla_des.TabIndex = 2;
+            this.tx_num_pla_des.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.tx_num_pla_des.Validating += new System.ComponentModel.CancelEventHandler(this.tx_num_pla_des_Validating);
             // 
-            // tx_estad_des
+            // tx_ser_pla_des
             // 
-            this.tx_estad_des.Location = new System.Drawing.Point(135, 87);
-            this.tx_estad_des.Name = "tx_estad_des";
-            this.tx_estad_des.Size = new System.Drawing.Size(37, 20);
-            this.tx_estad_des.TabIndex = 429;
-            this.tx_estad_des.Visible = false;
+            this.tx_ser_pla_des.AllowSpace = false;
+            this.tx_ser_pla_des.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_ser_pla_des.Location = new System.Drawing.Point(57, 14);
+            this.tx_ser_pla_des.Name = "tx_ser_pla_des";
+            this.tx_ser_pla_des.Size = new System.Drawing.Size(44, 20);
+            this.tx_ser_pla_des.TabIndex = 1;
+            this.tx_ser_pla_des.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.tx_ser_pla_des.Validating += new System.ComponentModel.CancelEventHandler(this.tx_ser_pla_des_Validating);
+            // 
+            // tx_numero
+            // 
+            this.tx_numero.AllowSpace = false;
+            this.tx_numero.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_numero.Location = new System.Drawing.Point(100, 14);
+            this.tx_numero.Name = "tx_numero";
+            this.tx_numero.Size = new System.Drawing.Size(73, 20);
+            this.tx_numero.TabIndex = 2;
+            this.tx_numero.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.tx_numero.Validating += new System.ComponentModel.CancelEventHandler(this.tx_numero_Validating);
+            // 
+            // tx_serie
+            // 
+            this.tx_serie.AllowSpace = false;
+            this.tx_serie.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_serie.Location = new System.Drawing.Point(57, 14);
+            this.tx_serie.Name = "tx_serie";
+            this.tx_serie.Size = new System.Drawing.Size(44, 20);
+            this.tx_serie.TabIndex = 1;
+            this.tx_serie.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.tx_serie.Validating += new System.ComponentModel.CancelEventHandler(this.tx_serie_Validating);
             // 
             // transbord
             // 
@@ -1435,11 +1435,13 @@
             this.Controls.Add(this.pn_usloc);
             this.Controls.Add(this.toolStrip1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.KeyPreview = true;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "transbord";
             this.Text = "Transbordos";
             this.Load += new System.EventHandler(this.transbord_Load);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.transbord_KeyDown);
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
             this.pn_usloc.ResumeLayout(false);

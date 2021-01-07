@@ -26,7 +26,10 @@ namespace TransCarga
         public string perMo = "";
         public string perAn = "";
         public string perIm = "";
-        string tipede = "";
+        string codfact = "";
+        string coddni = "";
+        string codruc = "";
+        string codmon = "";
         string tiesta = "";
         string img_btN = "";
         string img_btE = "";
@@ -97,7 +100,6 @@ namespace TransCarga
             toolStrip1.BackColor = Color.FromName(colstrp);
             //
             dgv_facts.DefaultCellStyle.BackColor = Color.FromName(colgrid);
-            //
             dgv_notcre.DefaultCellStyle.BackColor = Color.FromName(colgrid);
             //
             Bt_add.Image = Image.FromFile(img_btN);
@@ -108,6 +110,15 @@ namespace TransCarga
             Bt_close.Image = Image.FromFile(img_btq);
             bt_exc.Image = Image.FromFile(img_btexc);
             Bt_close.Image = Image.FromFile(img_btq);
+            // 
+            dtp_yea.Format = DateTimePickerFormat.Custom;
+            dtp_yea.CustomFormat = "yyyy";
+            dtp_yea.ShowUpDown = true;
+            //
+            dtp_mes.Format = DateTimePickerFormat.Custom;
+            dtp_mes.CustomFormat = "MM";
+            dtp_mes.ShowUpDown = true;
+
         }
         private void jalainfo()                                     // obtiene datos de imagenes
         {
@@ -115,10 +126,11 @@ namespace TransCarga
             {
                 MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
                 conn.Open();
-                string consulta = "select formulario,campo,param,valor from enlaces where formulario in(@nofo,@ped)";
+                string consulta = "select formulario,campo,param,valor from enlaces where formulario in(@nofo,@ped,@clie)";
                 MySqlCommand micon = new MySqlCommand(consulta, conn);
                 micon.Parameters.AddWithValue("@nofo", "main");
-                micon.Parameters.AddWithValue("@ped", "xxx");
+                micon.Parameters.AddWithValue("@ped", "facelect");
+                micon.Parameters.AddWithValue("@clie","clients");
                 MySqlDataAdapter da = new MySqlDataAdapter(micon);
                 DataTable dt = new DataTable();
                 da.Fill(dt);
@@ -146,11 +158,15 @@ namespace TransCarga
                         DataRow[] fila = dtestad.Select("idcodice='" + codAnul + "'");
                         nomAnul = fila[0][0].ToString();
                     }
-                    if (row["formulario"].ToString() == "xxx")
+                    if (row["formulario"].ToString() == "facelect")
                     {
-                        if (row["campo"].ToString() == "tipoped" && row["param"].ToString() == "almacen") tipede = row["valor"].ToString().Trim();         // tipo de pedido por defecto en almacen
-                        if (row["campo"].ToString() == "estado" && row["param"].ToString() == "default") tiesta = row["valor"].ToString().Trim();         // estado del pedido inicial
-                        if (row["campo"].ToString() == "detalle2" && row["param"].ToString() == "piedra") letpied = row["valor"].ToString().Trim();         // letra identificadora de Piedra en Detalle2
+                        if (row["campo"].ToString() == "documento" && row["param"].ToString() == "factura") codfact = row["valor"].ToString().Trim();         // tipo de pedido por defecto en almacen
+                        if (row["campo"].ToString() == "moneda" && row["param"].ToString() == "default") codmon = row["valor"].ToString().Trim();
+                    }
+                    if (row["formulario"].ToString() == "clients")
+                    {
+                        if (row["campo"].ToString() == "documento" && row["param"].ToString() == "dni") coddni = row["valor"].ToString().Trim();
+                        if (row["campo"].ToString() == "documento" && row["param"].ToString() == "ruc") codruc = row["valor"].ToString().Trim();
                     }
                 }
                 da.Dispose();
@@ -336,7 +352,41 @@ namespace TransCarga
                 }
             }
         }
+        private void bt_regvtas_Click(object sender, EventArgs e)
+        {
+            string consulta = "rep_vtas_regvtas1";
+            using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
+            {
+                if (lib.procConn(conn) == true)
+                {
+                    using (MySqlCommand micon = new MySqlCommand(consulta, conn))
+                    {
+                        micon.CommandType = CommandType.StoredProcedure;
+                        micon.Parameters.AddWithValue("@fini", dtp_yea.Value.Year);
+                        micon.Parameters.AddWithValue("@fter", dtp_mes.Value.Month);
+                        micon.Parameters.AddWithValue("@vanu", codAnul);
+                        micon.Parameters.AddWithValue("@vfac", codfact);
+                        micon.Parameters.AddWithValue("@vruc", coddni);
+                        micon.Parameters.AddWithValue("@vdni", codruc);
+                        micon.Parameters.AddWithValue("@vmon", codmon);
+                        using (MySqlDataAdapter da = new MySqlDataAdapter(micon))
+                        {
+                            dgv_regvtas.DataSource = null;
+                            DataTable dt = new DataTable();
+                            da.Fill(dt);
+                            dgv_regvtas.DataSource = dt;
+                            grilla("dgv_regvtas");
+                        }
+                        string resulta = lib.ult_mov(nomform, nomtab, asd);
+                        if (resulta != "OK")                                        // actualizamos la tabla usuarios
+                        {
+                            MessageBox.Show(resulta, "Error en actualización de tabla usuarios", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                    }
+                }
+            }
 
+        }
         #region combos
         private void cmb_sede_plan_SelectionChangeCommitted(object sender, EventArgs e)
         {
@@ -536,6 +586,21 @@ namespace TransCarga
                     this.Close();
                 }
             }
+            if (tabControl1.SelectedTab == tabregvtas && dgv_regvtas.Rows.Count > 0)
+            {
+                nombre = "Registro_Ventas_" + dtp_yea.Value.Year.ToString() + "-" + dtp_mes.Value.Month.ToString() + "_" + DateTime.Now.Date.ToString("yyyy-MM-dd") + ".xlsx";
+                var aa = MessageBox.Show("Confirma que desea generar la hoja de calculo?",
+                    "Archivo: " + nombre, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (aa == DialogResult.Yes)
+                {
+                    var wb = new XLWorkbook();
+                    DataTable dt = (DataTable)dgv_regvtas.DataSource;
+                    wb.Worksheets.Add(dt, "RegVtas");
+                    wb.SaveAs(nombre);
+                    MessageBox.Show("Archivo generado con exito!");
+                    this.Close();
+                }
+            }
         }
         #endregion
 
@@ -647,6 +712,11 @@ namespace TransCarga
                 DataTable dtg = (DataTable)dgv_notcre.DataSource;
                 dtg.DefaultView.Sort = dgv_notcre.SortString;
             }
+            if (tabControl1.SelectedTab.Name == "tabregvtas")
+            {
+                DataTable dtg = (DataTable)dgv_regvtas.DataSource;
+                dtg.DefaultView.Sort = dgv_regvtas.SortString;
+            }
         }
         private void advancedDataGridView1_FilterStringChanged(object sender, EventArgs e)                  // filtro de las columnas
         {
@@ -659,6 +729,11 @@ namespace TransCarga
             {
                 DataTable dtg = (DataTable)dgv_notcre.DataSource;
                 dtg.DefaultView.RowFilter = dgv_notcre.FilterString;
+            }
+            if (tabControl1.SelectedTab.Name == "tabregvtas")
+            {
+                DataTable dtg = (DataTable)dgv_regvtas.DataSource;
+                dtg.DefaultView.RowFilter = dgv_regvtas.FilterString;
             }
         }
         private void advancedDataGridView1_CellEnter(object sender, DataGridViewCellEventArgs e)            // no usamos

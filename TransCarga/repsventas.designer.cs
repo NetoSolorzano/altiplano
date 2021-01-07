@@ -100,6 +100,15 @@
             this.bt_filtra_plan = new System.Windows.Forms.Button();
             this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
+            this.tabregvtas = new System.Windows.Forms.TabPage();
+            this.bt_regvtas = new System.Windows.Forms.Button();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.label8 = new System.Windows.Forms.Label();
+            this.label9 = new System.Windows.Forms.Label();
+            this.dtp_mes = new System.Windows.Forms.DateTimePicker();
+            this.dtp_yea = new System.Windows.Forms.DateTimePicker();
+            this.dgv_regvtas = new ADGV.AdvancedDataGridView();
             this.toolStrip1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabfacts.SuspendLayout();
@@ -114,6 +123,9 @@
             this.groupBox15.SuspendLayout();
             this.groupBox21.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgv_notcre)).BeginInit();
+            this.tabregvtas.SuspendLayout();
+            this.groupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgv_regvtas)).BeginInit();
             this.SuspendLayout();
             // 
             // toolStrip1
@@ -376,6 +388,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tabControl1.Controls.Add(this.tabfacts);
             this.tabControl1.Controls.Add(this.tabnotas);
+            this.tabControl1.Controls.Add(this.tabregvtas);
             this.tabControl1.Location = new System.Drawing.Point(3, 3);
             this.tabControl1.Multiline = true;
             this.tabControl1.Name = "tabControl1";
@@ -879,6 +892,106 @@
             this.label6.TabIndex = 391;
             this.label6.Text = "Fech Inicial";
             // 
+            // tabregvtas
+            // 
+            this.tabregvtas.Controls.Add(this.bt_regvtas);
+            this.tabregvtas.Controls.Add(this.groupBox1);
+            this.tabregvtas.Controls.Add(this.label8);
+            this.tabregvtas.Controls.Add(this.label9);
+            this.tabregvtas.Controls.Add(this.dtp_mes);
+            this.tabregvtas.Controls.Add(this.dtp_yea);
+            this.tabregvtas.Controls.Add(this.dgv_regvtas);
+            this.tabregvtas.Location = new System.Drawing.Point(4, 22);
+            this.tabregvtas.Name = "tabregvtas";
+            this.tabregvtas.Size = new System.Drawing.Size(1026, 377);
+            this.tabregvtas.TabIndex = 9;
+            this.tabregvtas.Text = "Registro de Ventas";
+            this.tabregvtas.UseVisualStyleBackColor = true;
+            // 
+            // bt_regvtas
+            // 
+            this.bt_regvtas.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.bt_regvtas.Location = new System.Drawing.Point(601, 10);
+            this.bt_regvtas.Name = "bt_regvtas";
+            this.bt_regvtas.Size = new System.Drawing.Size(59, 29);
+            this.bt_regvtas.TabIndex = 401;
+            this.bt_regvtas.Text = "Filtra";
+            this.bt_regvtas.UseVisualStyleBackColor = true;
+            this.bt_regvtas.Click += new System.EventHandler(this.bt_regvtas_Click);
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.BackColor = System.Drawing.Color.DimGray;
+            this.groupBox1.Controls.Add(this.groupBox2);
+            this.groupBox1.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.groupBox1.Location = new System.Drawing.Point(356, 33);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(210, 1);
+            this.groupBox1.TabIndex = 400;
+            this.groupBox1.TabStop = false;
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Location = new System.Drawing.Point(0, -26);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(164, 1);
+            this.groupBox2.TabIndex = 113;
+            this.groupBox2.TabStop = false;
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.ForeColor = System.Drawing.Color.Black;
+            this.label8.Location = new System.Drawing.Point(481, 18);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(27, 13);
+            this.label8.TabIndex = 399;
+            this.label8.Text = "Mes";
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.ForeColor = System.Drawing.Color.Black;
+            this.label9.Location = new System.Drawing.Point(359, 18);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(26, 13);
+            this.label9.TabIndex = 398;
+            this.label9.Text = "Año";
+            // 
+            // dtp_mes
+            // 
+            this.dtp_mes.Checked = false;
+            this.dtp_mes.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+            this.dtp_mes.Location = new System.Drawing.Point(510, 14);
+            this.dtp_mes.Name = "dtp_mes";
+            this.dtp_mes.Size = new System.Drawing.Size(55, 20);
+            this.dtp_mes.TabIndex = 397;
+            // 
+            // dtp_yea
+            // 
+            this.dtp_yea.Checked = false;
+            this.dtp_yea.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+            this.dtp_yea.Location = new System.Drawing.Point(388, 14);
+            this.dtp_yea.Name = "dtp_yea";
+            this.dtp_yea.Size = new System.Drawing.Size(66, 20);
+            this.dtp_yea.TabIndex = 396;
+            // 
+            // dgv_regvtas
+            // 
+            this.dgv_regvtas.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.dgv_regvtas.AutoGenerateContextFilters = true;
+            this.dgv_regvtas.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgv_regvtas.DateWithTime = false;
+            this.dgv_regvtas.Location = new System.Drawing.Point(3, 52);
+            this.dgv_regvtas.Name = "dgv_regvtas";
+            this.dgv_regvtas.Size = new System.Drawing.Size(1020, 322);
+            this.dgv_regvtas.TabIndex = 395;
+            this.dgv_regvtas.TimeFilter = false;
+            this.dgv_regvtas.SortStringChanged += new System.EventHandler(this.advancedDataGridView1_SortStringChanged);
+            this.dgv_regvtas.FilterStringChanged += new System.EventHandler(this.advancedDataGridView1_FilterStringChanged);
+            // 
             // repsventas
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -909,6 +1022,10 @@
             this.groupBox15.ResumeLayout(false);
             this.groupBox21.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgv_notcre)).EndInit();
+            this.tabregvtas.ResumeLayout(false);
+            this.tabregvtas.PerformLayout();
+            this.groupBox1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dgv_regvtas)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -987,5 +1104,14 @@
         private System.Windows.Forms.Button bt_filtra_plan;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.TabPage tabregvtas;
+        private ADGV.AdvancedDataGridView dgv_regvtas;
+        private System.Windows.Forms.Button bt_regvtas;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.DateTimePicker dtp_mes;
+        private System.Windows.Forms.DateTimePicker dtp_yea;
     }
 }

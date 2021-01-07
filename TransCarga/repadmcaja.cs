@@ -982,6 +982,7 @@ namespace TransCarga
                 pendrow.pagado = double.Parse(row.Cells["PAGADO"].Value.ToString());
                 pendrow.saldo = double.Parse(row.Cells["SALDO"].Value.ToString());
                 pendrow.atraso = int.Parse(row.Cells["ATRASO"].Value.ToString());
+                pendrow.tituloF = Program.tituloF;
                 repPend.pendCob.AddpendCobRow(pendrow);
             }
             return repPend;
@@ -1014,6 +1015,7 @@ namespace TransCarga
             rowcabeza.saldoAnt = double.Parse(dtcuad.Rows[0].ItemArray[26].ToString());
             rowcabeza.saldofinal = double.Parse(dtcuad.Rows[0].ItemArray[27].ToString());
             rowcabeza.serie = dtcuad.Rows[0].ItemArray[8].ToString();
+            rowcabeza.tituloF = Program.tituloF;
             cuadre.cuadreCaja_cab.AddcuadreCaja_cabRow(rowcabeza);    //rescont.rescont_cab.Addrescont_cabRow(rowcabeza);
             // detalle
             foreach (DataRow row in dtcuad.Rows)
