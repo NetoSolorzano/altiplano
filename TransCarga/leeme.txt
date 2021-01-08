@@ -48,7 +48,7 @@ form planicarga: (planilla de carga)
 - Cierre de la planilla, es un proceso manual en modo edicion del form ............................. OK 18/12/2020
 - Reapertura de una planilla en cualquier momento y fecha, debe ser usuario del local de origen .... 
 form transbord: (proceso de transbordos, no usa tablas propias) 
-- Unico boton de NUEVO, transborda parcial o total guias de una planilla a otra existente .......... ME QUEDE ACA FALTA
+- Unico boton de NUEVO, transborda parcial o total guias de una planilla a otra existente .......... ok 08/01/2021
 form facelect: (facturacion electrónica, se integra con sist propio del cliente)
 - desarrollo del form .............................................................................. ok
 form tipcamref: (tipo de cambio)
@@ -102,10 +102,10 @@ a eldni.pe .....................................................................
   visualizar, modificar o anular, no debe poder .................................................... ok 13/12/2020 verificado
 - forms reportes, usuarios con nivel medio o bajo, solo pueden ver su local ........................ ok 14/12/2020
 - forms reportes, usuarios con nivel alto o admin pueden ver de todos los locales .................. ok 14/12/2020
-- form planicarga, mejoras en validaciones y F1 .................................................... falta terminar, me quede aca
+- form planicarga, mejoras en validaciones y F1 .................................................... falta
 - form guiati, mejora para permitir digitar el nombre si los conectores no jalan ................... ok 16/12/2020
 - form guiati, ampliar ancho campo de telefono y limitar ........................................... ok 16/12/2020
-- form cobranzas, cerrar caja si la fecha es anterior.... .......................................... falta 
+- form cobranzas, cerrar caja si la fecha es anterior.... .......................................... ok en alguna fecha de dic.2020 
 form facelect: (facturacion electrónica, se integra con sist propio del cliente)
 - procesos de grabar TXT ........................................................................... ok 24/12/2020
 - formato impresion ................................................................................ ok 24/12/2020
@@ -124,3 +124,4 @@ form guiati
 - en modo anulacion, no esta dejando anular a pesar de estar todo conforme ......................... ok 06/01/2021
 form repsventas, agregar pestaña para reg. de ventas ............................................... ok 07/01/2021
 form ayccaja, agregar reporte de cierre de caja .................................................... ok 07/01/2021
+form clients, agregar opcion de rejalar datos del cliente .......................................... ok 08/01/2021

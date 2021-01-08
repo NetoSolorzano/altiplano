@@ -572,7 +572,7 @@ namespace TransCarga
         }
         private bool valiGri()                  // valida filas completas en la grilla - 8 columnas
         {
-            bool retorna = false;
+            bool retorna = true;
             for (int i = 0; i < dataGridView1.Rows.Count; i++)
             {
                 if (dataGridView1.Rows[i].Cells[0].Value == null &&
@@ -807,7 +807,7 @@ namespace TransCarga
             tx_flete.Text = totfle.ToString("0.00");
             tx_pagado.Text = totpag.ToString("0.00");
             tx_salxcob.Text = totsal.ToString("0.00");
-            if (int.Parse(tx_tfil.Text) == int.Parse(v_mfildet))
+            if (int.Parse(tx_tfil.Text) == int.Parse(v_mfildet) && int.Parse(v_mfildet)>0)
             {
                 MessageBox.Show("Número máximo de filas en planilla", "El formato no permite mas", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 dataGridView1.AllowUserToAddRows = false;

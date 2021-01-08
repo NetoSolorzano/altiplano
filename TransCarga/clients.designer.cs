@@ -106,6 +106,7 @@
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.button1 = new System.Windows.Forms.Button();
+            this.bt_jala = new System.Windows.Forms.Button();
             this.toolStrip1.SuspendLayout();
             this.groupBox23.SuspendLayout();
             this.groupBox21.SuspendLayout();
@@ -351,7 +352,7 @@
             // 
             this.tx_mld.BackColor = System.Drawing.SystemColors.Window;
             this.tx_mld.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_mld.Location = new System.Drawing.Point(639, 99);
+            this.tx_mld.Location = new System.Drawing.Point(432, 78);
             this.tx_mld.Name = "tx_mld";
             this.tx_mld.Size = new System.Drawing.Size(26, 18);
             this.tx_mld.TabIndex = 274;
@@ -874,6 +875,16 @@
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
+            // bt_jala
+            // 
+            this.bt_jala.Image = global::TransCarga.Properties.Resources.reload30;
+            this.bt_jala.Location = new System.Drawing.Point(642, 93);
+            this.bt_jala.Name = "bt_jala";
+            this.bt_jala.Size = new System.Drawing.Size(32, 31);
+            this.bt_jala.TabIndex = 275;
+            this.bt_jala.UseVisualStyleBackColor = true;
+            this.bt_jala.Click += new System.EventHandler(this.bt_jala_Click);
+            // 
             // clients
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -881,6 +892,7 @@
             this.AutoSize = true;
             this.BackColor = System.Drawing.Color.LightSteelBlue;
             this.ClientSize = new System.Drawing.Size(770, 408);
+            this.Controls.Add(this.bt_jala);
             this.Controls.Add(this.tx_mld);
             this.Controls.Add(this.groupBox23);
             this.Controls.Add(this.label12);
@@ -1032,5 +1044,6 @@
         private System.Windows.Forms.TextBox textBox2;
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button bt_jala;
     }
 }

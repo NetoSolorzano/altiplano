@@ -1204,7 +1204,7 @@ namespace TransCarga
         private void Bt_edit_Click(object sender, EventArgs e)
         {
             sololee();          
-            Tx_modo.Text = "EDITAR";                    // solo puede editarse la observacion 28/10/2020
+            Tx_modo.Text = "EDITAR";                    // solo puede editarse la observacion 28/10/2020 ni eso si la caja esta cerrada 
             button1.Image = Image.FromFile(img_grab);
             initIngreso();
             tx_obser1.Enabled = true;

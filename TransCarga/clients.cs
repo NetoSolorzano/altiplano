@@ -255,7 +255,40 @@ namespace TransCarga
             dacu.Dispose();
             conn.Close();
         }
-
+        public void bt_jala_Click(object sender, EventArgs e)   // reconecta y jala datos de conectores
+        {
+            if (textBox2.Text != "" && textBox3.Text != "" && Tx_modo.Text == "EDITAR")
+            {
+                if (textBox2.Text == vtc_ruc)
+                {
+                    if (lib.valiruc(textBox3.Text, vtc_ruc) == false)
+                    {
+                        MessageBox.Show("Número de RUC inválido", "Atención - revise", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        textBox3.Focus();
+                        return;
+                    }
+                    if (TransCarga.Program.vg_conSol == true) // conector solorsoft para ruc
+                    {
+                        string[] rl = lib.conectorSolorsoft("RUC", textBox3.Text);
+                        textBox4.Text = rl[0];      // razon social
+                        textBox13.Text = rl[1];     // ubigeo
+                        textBox6.Text = rl[2];      // direccion
+                        textBox7.Text = rl[3];      // departamento
+                        textBox8.Text = rl[4];      // provincia
+                        textBox9.Text = rl[5];      // distrito
+                    }
+                }
+                if (textBox2.Text == vtc_dni)
+                {
+                    if (TransCarga.Program.vg_conSol == true) // conector solorsoft para dni
+                    {
+                        string[] rl = lib.conectorSolorsoft("DNI", textBox3.Text);
+                        textBox4.Text = rl[0];      // nombre
+                        textBox3.Text = rl[1];     // num dni
+                    }
+                }
+            }
+        }
         #region autocompletados
         private void autopais()
         {

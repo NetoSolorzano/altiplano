@@ -2197,17 +2197,29 @@ namespace TransCarga
         {
             if (tx_idcaja.Text != "")
             {
-                if (tx_dat_saldoGR.Text.Trim() != "")
+                // validamos la fecha de la caja
+                string fhoy = lib.fechaServ("ansi");
+                if (fhoy != TransCarga.Program.vg_fcaj)  // ambas fecahs formato yyyy-mm-dd
                 {
-                    if (decimal.Parse(tx_dat_saldoGR.Text) > 0)
+                    MessageBox.Show("Debe cerrar la caja anterior!", "Caja fuera de fecha", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+                    rb_si.Checked = false;
+                    rb_no.PerformClick();
+                    return;
+                }
+                else
+                {
+                    if (tx_dat_saldoGR.Text.Trim() != "")
                     {
-                        tx_pagado.Text = tx_flete.Text;
-                        tx_salxcob.Text = "0.00";
-                        tx_salxcob.BackColor = Color.Green;
-                    }
-                    else
-                    {
-                        tx_salxcob.Text = "0.00";
+                        if (decimal.Parse(tx_dat_saldoGR.Text) > 0)
+                        {
+                            tx_pagado.Text = tx_flete.Text;
+                            tx_salxcob.Text = "0.00";
+                            tx_salxcob.BackColor = Color.Green;
+                        }
+                        else
+                        {
+                            tx_salxcob.Text = "0.00";
+                        }
                     }
                 }
             }

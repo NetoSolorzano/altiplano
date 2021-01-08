@@ -424,6 +424,7 @@
     <None Include="bin\Debug\recursos\service_manager.png" />
     <None Include="bin\Debug\recursos\process24.png" />
     <None Include="bin\Debug\recursos\view24_ex.png" />
+    <None Include="bin\Debug\recursos\reload30.jpg" />
     <Content Include="leeme.txt" />
     <Content Include="Properties\process32.png" />
     <None Include="Resources\logo_solorsoft.png" />
