@@ -39,6 +39,7 @@ namespace TransCarga
         string cn_sup = "";     // codigo nivel usuario superusuario
         string cn_est = "";     // codigo nivel usuario estandar
         string cn_mir = "";     // codigo nivel usuario solo mira
+        string cp_adm = "";     // TIPO de usuario admin
         libreria lib = new libreria();
         // string de conexion
         //static string serv = ConfigurationManager.AppSettings["serv"].ToString();
@@ -203,7 +204,10 @@ namespace TransCarga
                         if (row["param"].ToString() == "estan") cn_est = row["valor"].ToString().Trim();            // codigo estandar
                         if (row["param"].ToString() == "miron") cn_mir = row["valor"].ToString().Trim();            // codigo solo mira
                     }
-                    // falta el tipo de usuario TPU, 
+                    if (row["campo"].ToString() == "tipoUser")
+                    {
+                        if (row["param"].ToString() == "admin") cp_adm = row["valor"].ToString().Trim();            // tipo de usuario administrador
+                    }
                     // admin TODO, 
                     // super NO config. del sistema, 
                     // estandar no anular no panel de control
@@ -1181,12 +1185,20 @@ namespace TransCarga
         #endregion botones_de_comando_y_permisos  ;
 
         #region comboboxes
-        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)     // razon social
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)     // tipo de usuario
         {
-            if(comboBox1.SelectedIndex > -1)
+            if(comboBox1.SelectedIndex > -1 && Tx_modo.Text != "")
             {
                 DataRow row = ((DataTable)comboBox1.DataSource).Rows[comboBox1.SelectedIndex];
                 textBox4.Text = (string)row["idcodice"];
+                // si el usuario actual es del tipo ADMIN, permite seleccionar todos los tipos
+                // si el usuario actual NO es tipo ADMIN, no permite seleccionar ADMIN
+                if (textBox4.Text == cp_adm && Program.vg_tius != cp_adm)
+                {
+                    MessageBox.Show("El tipo Admin no se puede seleccionar","Acción no permitida");
+                    textBox4.Text = "";
+                    comboBox1.SelectedIndex = -1;
+                }
             }
         }
         private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)     // nivel de acceso
