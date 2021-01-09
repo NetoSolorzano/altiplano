@@ -35,6 +35,7 @@ namespace TransCarga
         string img_btq = "";
         string img_grab = "";
         string img_anul = "";
+        string v_tipAdm = "";
         libreria lib = new libreria();
         // string de conexion
         //static string serv = ConfigurationManager.AppSettings["serv"].ToString();
@@ -201,6 +202,10 @@ namespace TransCarga
                         if (row["param"].ToString() == "img_btf") img_btf = row["valor"].ToString().Trim();         // imagen del boton de accion IR AL FINAL
                         if (row["param"].ToString() == "img_gra") img_grab = row["valor"].ToString().Trim();         // imagen del boton grabar nuevo
                         if (row["param"].ToString() == "img_anu") img_anul = row["valor"].ToString().Trim();         // imagen del boton grabar anular
+                    }
+                    if (row["campo"].ToString() == "tipoUser")
+                    {
+                        if (row["param"].ToString() == "admin") v_tipAdm = row["valor"].ToString().Trim();         // tipo de usuario administrador SISTEMAS
                     }
                 }
                 da.Dispose();
@@ -802,44 +807,50 @@ namespace TransCarga
         #region botones
         private void Bt_add_Click(object sender, EventArgs e)
         {
-            advancedDataGridView1.Enabled = true;
-            tabControl1.SelectedTab = tabreg;
-            escribe(this);
-            Tx_modo.Text = "NUEVO";
-            button1.Image = Image.FromFile(img_grab);
-            textBox1.Focus();
-            limpiar(this);
-            limpiatab(tabreg);
-            limpia_chk();
-            limpia_otros();
-            limpia_combos();
+            if (Program.vg_tius == v_tipAdm)
+            {
+                advancedDataGridView1.Enabled = true;
+                tabControl1.SelectedTab = tabreg;
+                escribe(this);
+                Tx_modo.Text = "NUEVO";
+                button1.Image = Image.FromFile(img_grab);
+                textBox1.Focus();
+                limpiar(this);
+                limpiatab(tabreg);
+                limpia_chk();
+                limpia_otros();
+                limpia_combos();
+            }
+            else
+            {
+                MessageBox.Show("Solo el usuario Administrador " + Environment.NewLine +
+                    "puede crear nuevas definiciones", "Error en tipo de usuario", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
         private void Bt_edit_Click(object sender, EventArgs e)
         {
-            advancedDataGridView1.Enabled = true;
-            /*
-            string codu = "";
-            string idr = "";
-            if (advancedDataGridView1.CurrentRow.Index > -1)
+            if (Program.vg_tius == v_tipAdm)
             {
-                codu = advancedDataGridView1.CurrentRow.Cells[1].Value.ToString();
-                idr = advancedDataGridView1.CurrentRow.Cells[0].Value.ToString();
-                tx_rind.Text = advancedDataGridView1.CurrentRow.Index.ToString();
+                advancedDataGridView1.Enabled = true;
+                escribe(this);
+                Tx_modo.Text = "EDITAR";
+                button1.Image = Image.FromFile(img_grab);
+                //var qa = tx_rind.Text;
+                tabControl1.SelectedTab = tabgrilla;
+                limpiar(this);
+                limpiatab(tabreg);
+                //tx_rind.Text = qa;
+                limpia_otros();
+                limpia_combos();
+                limpia_chk();
+                //jalaoc("tx_idr");
+                advancedDataGridView1.Focus();
             }
-            */
-            escribe(this);
-            Tx_modo.Text = "EDITAR";
-            button1.Image = Image.FromFile(img_grab);
-            //var qa = tx_rind.Text;
-            tabControl1.SelectedTab = tabgrilla;
-            limpiar(this);
-            limpiatab(tabreg);
-            //tx_rind.Text = qa;
-            limpia_otros();
-            limpia_combos();
-            limpia_chk();
-            //jalaoc("tx_idr");
-            advancedDataGridView1.Focus();
+            else
+            {
+                MessageBox.Show("Solo el usuario Administrador " + Environment.NewLine +
+                    "puede modificar las definiciones", "Error en tipo de usuario", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
         private void Bt_close_Click(object sender, EventArgs e)
         {
@@ -854,26 +865,7 @@ namespace TransCarga
         }
         private void Bt_anul_Click(object sender, EventArgs e)
         {
-            advancedDataGridView1.Enabled = true;
-            string codu = "";
-            string idr = "";
-            if (advancedDataGridView1.CurrentRow.Index > -1)
-            {
-                codu = advancedDataGridView1.CurrentRow.Cells[1].Value.ToString();
-                idr = advancedDataGridView1.CurrentRow.Cells[0].Value.ToString();
-                tx_rind.Text = advancedDataGridView1.CurrentRow.Index.ToString();
-            }
-            tabControl1.SelectedTab = tabreg;
-            escribe(this);
-            Tx_modo.Text = "ANULAR";
-            button1.Image = Image.FromFile(img_anul);
-            var qa = tx_rind.Text;
-            limpiar(this);
-            limpiatab(tabreg);
-            tx_rind.Text = qa;
-            limpia_otros();
-            limpia_combos();
-            jalaoc("tx_idr");
+            // no hay
         }
         private void Bt_first_Click(object sender, EventArgs e)
         {

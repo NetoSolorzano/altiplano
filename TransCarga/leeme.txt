@@ -125,3 +125,4 @@ form guiati
 form repsventas, agregar pestaña para reg. de ventas ............................................... ok 07/01/2021
 form ayccaja, agregar reporte de cierre de caja .................................................... ok 07/01/2021
 form clients, agregar opcion de rejalar datos del cliente .......................................... ok 08/01/2021
+form users, mejorar la asignacion de permisos a los usuarios ....................................... 

@@ -34,6 +34,7 @@ namespace TransCarga
         string img_btq = "";
         string img_grab = "";
         string img_anul = "";
+        string v_tipAdm = "";
         libreria lib = new libreria();
         publico lp = new publico();
         // string de conexion
@@ -175,6 +176,7 @@ namespace TransCarga
                         if (row["param"].ToString() == "img_gra") img_grab = row["valor"].ToString().Trim();         // imagen del boton grabar nuevo
                         if (row["param"].ToString() == "img_anu") img_anul = row["valor"].ToString().Trim();         // imagen del boton grabar anular
                     }
+                    if (row["campo"].ToString() == "tipoUser" && row["param"].ToString() == "admin") v_tipAdm = row["valor"].ToString().Trim();         // tipo usuario administrador
                 }
                 da.Dispose();
                 dt.Dispose();
@@ -501,25 +503,33 @@ namespace TransCarga
         }
         private void Bt_edit_Click(object sender, EventArgs e)
         {
-            advancedDataGridView1.Enabled = true;
-            string rin = "";
-            if (advancedDataGridView1.CurrentRow.Index > -1)
+            if (Program.vg_tius == v_tipAdm)
             {
-                rin = advancedDataGridView1.CurrentRow.Index.ToString();
+                advancedDataGridView1.Enabled = true;
+                string rin = "";
+                if (advancedDataGridView1.CurrentRow.Index > -1)
+                {
+                    rin = advancedDataGridView1.CurrentRow.Index.ToString();
+                }
+                tabControl1.SelectedTab = tabgrilla;
+                escribe();
+                Tx_modo.Text = "EDITAR";
+                button1.Image = Image.FromFile(img_grab);
+                limpiar();
+                limpia_otros();
+                limpia_combos();
+                limpia_pag();
+                textBox1.ReadOnly = true;
+                textBox2.ReadOnly = true;
+                textBox5.ReadOnly = true;
+                tx_idr.Text = rin;
+                jalaoc("tx_idr");
             }
-            tabControl1.SelectedTab = tabgrilla;
-            escribe();
-            Tx_modo.Text = "EDITAR";
-            button1.Image = Image.FromFile(img_grab);
-            limpiar();
-            limpia_otros();
-            limpia_combos();
-            limpia_pag();
-            textBox1.ReadOnly = true;
-            textBox2.ReadOnly = true;
-            textBox5.ReadOnly = true;
-            tx_idr.Text = rin;
-            jalaoc("tx_idr");
+            else
+            {
+                MessageBox.Show("Solo el usuario Administrador " + Environment.NewLine +
+                    "puede modificar los anlaces de datos", "Error en tipo de usuario", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
         private void Bt_close_Click(object sender, EventArgs e)
         {

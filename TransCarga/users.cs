@@ -203,6 +203,12 @@ namespace TransCarga
                         if (row["param"].ToString() == "estan") cn_est = row["valor"].ToString().Trim();            // codigo estandar
                         if (row["param"].ToString() == "miron") cn_mir = row["valor"].ToString().Trim();            // codigo solo mira
                     }
+                    // falta el tipo de usuario TPU, 
+                    // admin TODO, 
+                    // super NO config. del sistema, 
+                    // estandar no anular no panel de control
+                    // solo mira ... eso
+
                 }
                 da.Dispose();
                 dt.Dispose();
@@ -1102,10 +1108,10 @@ namespace TransCarga
             {
                 case "nuevo":
                     string pedaso = "";
-                    string tuadm = ",'S','S','S','S','S','S',";   // administrador, todo de todo
-                    string tusup = ",'S','S','S','S','S','S',";   // superusuario, todo menos config del sist.
-                    string tuest = ",'S','S','N','S','S','S',";   // estandar, todo menos anular y panel de control
-                    string tusmi = ",'N','N','N','S','S','S',";   // solo mira
+                    string tuadm = ",'S','S','S','S','S','S','S','S',";   // administrador, todo de todo
+                    string tusup = ",'S','S','S','S','S','S','S','S',";   // superusuario, todo menos config del sist.
+                    string tuest = ",'S','S','N','S','S','S','S','S',";   // estandar, todo menos anular y panel de control
+                    string tusmi = ",'N','N','N','S','S','S','S','N',";   // solo mira
                     if (textBox5.Text == cn_adm) pedaso = tuadm;       // administrador del sistema 
                     if (textBox5.Text == cn_sup) pedaso = tusup;       // super usuario 
                     if (textBox5.Text == cn_est) pedaso = tuest;       // usuario estandar
@@ -1115,7 +1121,7 @@ namespace TransCarga
                         DataRow fil = dt.Rows[i];
                         {
                             string inserta = "insert into permisos (" +
-                                "formulario,btn1,btn2,btn3,btn4,btn5,btn6,usuario,coment,rutaf) values ('" +
+                                "formulario,btn1,btn2,btn3,btn4,btn5,btn6,btn7,btn8,usuario,coment,rutaf) values ('" +
                                 fil[0].ToString().Trim() + "'" + pedaso + "'"+ textBox1.Text.Trim() + "','" + fil[2].ToString() + "','"+ fil[9].ToString() + "')";
                             MySqlCommand minser = new MySqlCommand(inserta, conn);
                             minser.ExecuteNonQuery();
@@ -1125,10 +1131,10 @@ namespace TransCarga
                     break;
                 case "edita":
                     string parte = "";
-                    tuadm = "btn1='S',btn2='S',btn3='S',btn4='S',btn5='S' ";   // administrador, todo de todo
-                    tusup = "btn1='S',btn2='S',btn3='S',btn4='S',btn5='S' ";   // superusuario, todo menos config del sist.
-                    tuest = "btn1='S',btn2='S',btn3='N',btn4='S',btn5='S' ";   // estandar, todo menos anular y panel de control
-                    tusmi = "btn1='N',btn2='N',btn3='N',btn4='S',btn5='S' ";   // solo mira
+                    tuadm = "btn1='S',btn2='S',btn3='S',btn4='S',btn5='S',btn6='S',btn7='S',btn8='S' ";   // administrador, todo de todo
+                    tusup = "btn1='S',btn2='S',btn3='S',btn4='S',btn5='S',btn6='S',btn7='S',btn8='S' ";   // superusuario, todo menos config del sist.
+                    tuest = "btn1='S',btn2='S',btn3='N',btn4='S',btn5='S',btn6='S',btn7='S',btn8='S' ";   // estandar, todo menos anular y panel de control
+                    tusmi = "btn1='N',btn2='N',btn3='N',btn4='S',btn5='S',btn6='S',btn7='S',btn8='N' ";   // solo mira
                     if (textBox5.Text == cn_adm) parte = tuadm;       // administrador del sistema 
                     if (textBox5.Text == cn_sup) parte = tusup;       // superusuario
                     if (textBox5.Text == cn_est) parte = tuest;       // estandar
@@ -1141,10 +1147,10 @@ namespace TransCarga
                     break;
                 case "reini":
                     string parter = "";
-                    string rtuadm = ",'S','S','S','S','S','S',";   // administrador, todo de todo
-                    string rtusup = ",'S','S','S','S','S','S',";   // superusuario, todo menos config del sist.
-                    string rtuest = ",'S','S','N','S','S','S',";   // estandar, todo menos anular y panel de control
-                    string rtusmi = ",'N','N','N','S','S','S',";   // solo mira
+                    string rtuadm = ",'S','S','S','S','S','S','S','S',";   // administrador, todo de todo
+                    string rtusup = ",'S','S','S','S','S','S','S','S',";   // superusuario, todo menos config del sist.
+                    string rtuest = ",'S','S','N','S','S','S','S','S',";   // estandar, todo menos anular y panel de control
+                    string rtusmi = ",'N','N','N','S','S','S','S','N',";   // solo mira
                     if (textBox5.Text == cn_adm) parter = rtuadm;       // administrador del sistema 
                     if (textBox5.Text == cn_sup) parter = rtusup;       // superusuario
                     if (textBox5.Text == cn_est) parter = rtuest;       // estandar
@@ -1160,7 +1166,7 @@ namespace TransCarga
                         DataRow fil = dt.Rows[i];
                         {
                             string inserta = "insert into permisos (" +
-                                "formulario,btn1,btn2,btn3,btn4,btn5,btn6,usuario,coment,rutaf) values ('" +
+                                "formulario,btn1,btn2,btn3,btn4,btn5,btn6,btn7,btn8,usuario,coment,rutaf) values ('" +
                                 fil[0].ToString().Trim() + "'" + parter + "'" + textBox1.Text.Trim() + "','" + fil[2].ToString() + "','" + fil[9].ToString() + "')";
                             MySqlCommand minser = new MySqlCommand(inserta, conn);
                             minser.ExecuteNonQuery();
