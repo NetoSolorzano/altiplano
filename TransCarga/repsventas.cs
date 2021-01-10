@@ -241,7 +241,7 @@ namespace TransCarga
                     dgv_facts.DefaultCellStyle.Font = tiplg;
                     dgv_facts.RowTemplate.Height = 15;
                     dgv_facts.AllowUserToAddRows = false;
-                    dgv_facts.Width = Parent.Width - 50; // 1015;
+                    dgv_facts.Width = Parent.Width - 10; // 1015;
                     if (dgv_facts.DataSource == null) dgv_facts.ColumnCount = 11;
                     if (dgv_facts.Rows.Count > 0)
                     {
@@ -268,7 +268,7 @@ namespace TransCarga
                     dgv_notcre.DefaultCellStyle.Font = tiplg;
                     dgv_notcre.RowTemplate.Height = 15;
                     dgv_notcre.AllowUserToAddRows = false;
-                    dgv_facts.Width = Parent.Width - 50; // 1015;
+                    dgv_facts.Width = Parent.Width - 10; // 1015;
                     if (dgv_notcre.DataSource == null) dgv_notcre.ColumnCount = 11;
                     if (dgv_notcre.Rows.Count > 0)
                     {

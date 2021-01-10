@@ -253,6 +253,11 @@ namespace TransCarga
                     tx_idcaja.Text = v_idcaj;
                 }
             }
+            if (Tx_modo.Text == "NUEVO")
+            {
+                rb_si.Enabled = true;
+                rb_no.Enabled = true;
+            }
         }
         private void jalainfo()                 // obtiene datos de imagenes y variables
         {
@@ -854,7 +859,7 @@ namespace TransCarga
         }
 
         #region facturacion electronica
-        private bool factElec(string provee, string tipo)                 // conexion a facturacion electrónica provee=proveedor | tipo=txt ó json
+        private bool factElec(string provee, string tipo, string accion, int ctab)                 // conexion a facturacion electrónica provee=proveedor | tipo=txt ó json
         {
             bool retorna = false;
             
@@ -870,12 +875,24 @@ namespace TransCarga
             if (provee == "Horizont")
             {
                 string ruta = rutatxt + "TXT/";
-                string archi = rucclie + "-" + tipdo + "-" + serie + "-" + corre;
-                if (crearTXT(tipdo, serie, corre, ruta + archi) == true)
+                string archi = "";
+                if (accion == "alta")
                 {
-
+                    archi = rucclie + "-" + tipdo + "-" + serie + "-" + corre;
+                    if (crearTXT(tipdo, serie, corre, ruta + archi) == true)
+                    {
+                        retorna = true;
+                    }
                 }
-                retorna = true;
+                if (accion == "baja")
+                {
+                    //string _fecemi = tx_fechope.Text.Substring(6, 4) + "-" + tx_fechope.Text.Substring(3, 2) + "-" + tx_fechope.Text.Substring(0, 2);   
+                    string _fecemi = tx_fechact.Text.Substring(6, 4) + "-" + tx_fechact.Text.Substring(3, 2) + "-" + tx_fechact.Text.Substring(0, 2);   // fecha de emision   yyyy-mm-dd
+                    string _secuen = lib.Right("00" + ctab.ToString(), 3);
+                    string _codbaj = "RA" + "-" + tx_fechact.Text.Substring(6, 4) + tx_fechact.Text.Substring(3, 2) + tx_fechact.Text.Substring(0, 2);  // codigo comunicacion de baja
+                    archi = rucclie + "-" + _codbaj + "-" + _secuen;
+                    if (bajaTXT(tipdo, _fecemi, _codbaj, _secuen, ruta + archi, ctab, serie, corre) == true) retorna = true;
+                }
             }
             return retorna;
         }
@@ -1229,6 +1246,41 @@ namespace TransCarga
                         "" + sep + "" + sep + "");  // Leyenda: Exoneradas,Leyenda: Inafectas,Leyenda: Emisor itinerante
             */        
         }
+        private bool bajaTXT(string tipdo, string _fecemi, string _codbaj, string _secuen, string file_path, int cuenta, string serie, string corre)
+        {
+            bool retorna = false;
+
+            string Prazsoc = nomclie.Trim();                                            // razon social del emisor
+            string Prucpro = Program.ruc;                                               // Ruc del emisor
+            string Pcrupro = "6";                                                       // codigo Ruc emisor
+            string motivo = "ANULACION";
+            string fecdoc = tx_fechope.Text.Substring(6, 4) + "-" + tx_fechope.Text.Substring(3, 2) + "-" + tx_fechope.Text.Substring(0, 2);   // fecha de emision   yyyy-mm-dd
+            /* ********************************************** GENERAMOS EL TXT    ************************************* */
+            string sep = "|";    // char sep = (char)31;
+            StreamWriter writer;
+            file_path = file_path + ".txt";
+            writer = new StreamWriter(file_path);
+            writer.WriteLine("G" + sep +
+                Pcrupro + sep +                 // tipo de documento del emisor
+                Prucpro + sep +                 // ruc emisor
+                Prazsoc + sep +                 // razon social emisor
+                fecdoc + sep +                 // fecha del documento dado de baja
+                _codbaj + "-" + _secuen + sep +       // codigo identificador de la baja, secuencial dentro de cada día
+                _fecemi + sep                   // fecha de la baja
+            );
+            writer.WriteLine("I" + sep +
+                "1" + sep +
+                tipdo + sep +
+                serie + sep +
+                corre + sep +
+                motivo + sep
+            );
+            writer.Flush();
+            writer.Close();
+            retorna = true;
+
+            return retorna;
+        }
         #endregion
 
         #region autocompletados
@@ -1320,6 +1372,7 @@ namespace TransCarga
                 {
                     rb_desGR.PerformClick();
                 }
+                //dataGridView1.Rows.Clear(); nooooo, se puede hacer una fact de varias guias, n guias
                 dataGridView1.Rows.Add(datguias[0], datguias[1], datguias[2], datguias[3], datguias[4], datguias[5], datguias[6], datguias[9], datguias[10], datguias[7]);     // insertamos en la grilla los datos de la GR
                 int totfil = 0;
                 int totcant = 0;
@@ -1375,8 +1428,12 @@ namespace TransCarga
                 {
                     MessageBox.Show("La GR esta cancelada, el documento de venta"+ Environment.NewLine +
                          "se creará con el estado cancelado","Atención verifique",MessageBoxButtons.OK,MessageBoxIcon.Information);
-                    rb_si.PerformClick();
+                    //rb_si.PerformClick();
+                    rb_si.Checked = false;
                     rb_no.Enabled = false;
+                    rb_si.Enabled = false;
+                    tx_salxcob.Text = "0";
+                    tx_pagado.Text = tx_flete.Text;
                 }
                 tx_flete_Leave(null, null);
             }
@@ -1457,7 +1514,7 @@ namespace TransCarga
             if (modo == "NUEVO")
             {
                 // valida pago y calcula
-                if (rb_si.Checked == false && rb_no.Checked == false)
+                if (rb_si.Checked == false && rb_no.Checked == false && rb_si.Enabled == true)
                 {
                     MessageBox.Show("Seleccione si se cancela la factura o no","Atención - Confirme",MessageBoxButtons.OK,MessageBoxIcon.Warning);
                     rb_si.Focus();
@@ -1491,7 +1548,7 @@ namespace TransCarga
                     {
                         if (graba() == true)
                         {
-                            if (factElec("Horizont", "txt") == true)       // facturacion electrónica
+                            if (factElec("Horizont", "txt", "alta", 0) == true)       // facturacion electrónica
                             {
                                 // actualizamos la tabla seguimiento de usuarios
                                 string resulta = lib.ult_mov(nomform, nomtab, asd);
@@ -1591,23 +1648,28 @@ namespace TransCarga
                 if (tx_idcob.Text != "")
                 {
                     MessageBox.Show("El documento de venta tiene Cobranza activa" + Environment.NewLine +
-                        "No se puede Anular!", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                    tx_numero.Focus();
-                    return;
+                        "La cobranza permanece sin cambios", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    //tx_numero.Focus();
+                    //return;
                 }
                 // SOLO USUARIOS AUTORIZADOS DEBEN ACCEDER A ESTA OPCIÓN
                 // SE ANULA EL DOCUMENTO Y SE HACEN LOS MOVIMIENTOS INTERNOS
-                // LA ANULACION EN EL PROVEEDOR DE FACT. ELECTRONICA SE HACE A MANO POR EL ENCARGADO ... 28/10/2020
+                // LA ANULACION EN EL PROVEEDOR DE FACT. ELECTRONICA SE HACE A MANO POR EL ENCARGADO ... 28/10/2020 ya no al 09/01/2021
+                // la anulacion debe generar un TXT de comunicacion de baja y guardarse en el directorio del prov. de fact. electronica 09/01/2021
                 if (tx_idr.Text.Trim() != "")
                 {
                     var aa = MessageBox.Show("Confirma que desea ANULAR el documento?", "Confirme por favor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                     if (aa == DialogResult.Yes)
                     {
-                        anula();
-                        string resulta = lib.ult_mov(nomform, nomtab, asd);
-                        if (resulta != "OK")
+                        int cta = anula();      // cantidad de doc.vtas anuladas en la fecha
+
+                        if (factElec("Horizont", "txt", "baja", cta) == true)
                         {
-                            MessageBox.Show(resulta, "Error en actualización de seguimiento", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            string resulta = lib.ult_mov(nomform, nomtab, asd);
+                            if (resulta != "OK")
+                            {
+                                MessageBox.Show(resulta, "Error en actualización de seguimiento", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
                         }
                     }
                     else
@@ -1861,12 +1923,13 @@ namespace TransCarga
                 return;
             }
         }
-        private void anula()
+        private int anula()
         {
             // en el caso de documentos de venta HAY 1: ANULACION FISICA ... 28/10/2020
             // tambien podría haber ANULACION interna con la serie ANU1 .... 19/11/2020
             // Anulacion fisica se "anula" el numero del documento en sistema y en fisico se tacha y en prov. fact.electronica se marca anulado 
             // se borran todos los enlaces mediante triggers en la B.D.
+            int ctanul = 0;
             using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
             {
                 conn.Open();
@@ -1888,8 +1951,22 @@ namespace TransCarga
                         micon.Parameters.AddWithValue("@eiar", (vint_A0 == codAnul) ? "A0" : "");  // codigo anulacion interna en DB A0
                         micon.ExecuteNonQuery();
                     }
+                    string consul = "select count(id) from cabfactu where date(fecha)=@fech and estdvta=@estser";
+                    using (MySqlCommand micon = new MySqlCommand(consul, conn))
+                    {
+                        micon.Parameters.AddWithValue("@fech", tx_fechact.Text.Substring(6, 4) + "-" + tx_fechact.Text.Substring(3, 2) + "-" + tx_fechact.Text.Substring(0, 2));
+                        micon.Parameters.AddWithValue("@estser", codAnul);
+                        using (MySqlDataReader dr = micon.ExecuteReader())
+                        {
+                            if (dr.Read())
+                            {
+                                ctanul = dr.GetInt32(0);
+                            }
+                        }
+                    }
                 }
             }
+            return ctanul;
         }
         #endregion boton_form;
 
