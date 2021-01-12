@@ -56,6 +56,12 @@
             this.tabgrilla = new System.Windows.Forms.TabPage();
             this.advancedDataGridView1 = new ADGV.AdvancedDataGridView();
             this.tabreg = new System.Windows.Forms.TabPage();
+            this.groupBox31 = new System.Windows.Forms.GroupBox();
+            this.groupBox32 = new System.Windows.Forms.GroupBox();
+            this.groupBox33 = new System.Windows.Forms.GroupBox();
+            this.groupBox34 = new System.Windows.Forms.GroupBox();
+            this.tx_enla1 = new System.Windows.Forms.TextBox();
+            this.lb_enla1 = new System.Windows.Forms.Label();
             this.chk_marc3 = new System.Windows.Forms.CheckBox();
             this.chk_marc2 = new System.Windows.Forms.CheckBox();
             this.chk_marc1 = new System.Windows.Forms.CheckBox();
@@ -114,17 +120,15 @@
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.button1 = new System.Windows.Forms.Button();
-            this.groupBox31 = new System.Windows.Forms.GroupBox();
-            this.groupBox32 = new System.Windows.Forms.GroupBox();
-            this.groupBox33 = new System.Windows.Forms.GroupBox();
-            this.groupBox34 = new System.Windows.Forms.GroupBox();
-            this.tx_enla1 = new System.Windows.Forms.TextBox();
-            this.lb_enla1 = new System.Windows.Forms.Label();
+            this.Bt_ver = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator12 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStrip1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabgrilla.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.advancedDataGridView1)).BeginInit();
             this.tabreg.SuspendLayout();
+            this.groupBox31.SuspendLayout();
+            this.groupBox33.SuspendLayout();
             this.groupBox27.SuspendLayout();
             this.groupBox29.SuspendLayout();
             this.groupBox23.SuspendLayout();
@@ -140,8 +144,6 @@
             this.groupBox3.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox11.SuspendLayout();
-            this.groupBox31.SuspendLayout();
-            this.groupBox33.SuspendLayout();
             this.SuspendLayout();
             // 
             // toolStrip1
@@ -160,6 +162,8 @@
             this.Bt_edit,
             this.toolStripSeparator1,
             this.Bt_anul,
+            this.toolStripSeparator12,
+            this.Bt_ver,
             this.toolStripSeparator4,
             this.Tx_modo,
             this.toolStripSeparator3,
@@ -471,6 +475,62 @@
             this.tabreg.Size = new System.Drawing.Size(654, 343);
             this.tabreg.TabIndex = 1;
             this.tabreg.Text = "Registro";
+            // 
+            // groupBox31
+            // 
+            this.groupBox31.BackColor = System.Drawing.Color.White;
+            this.groupBox31.Controls.Add(this.groupBox32);
+            this.groupBox31.Location = new System.Drawing.Point(81, 302);
+            this.groupBox31.Name = "groupBox31";
+            this.groupBox31.Size = new System.Drawing.Size(155, 1);
+            this.groupBox31.TabIndex = 218;
+            this.groupBox31.TabStop = false;
+            // 
+            // groupBox32
+            // 
+            this.groupBox32.Location = new System.Drawing.Point(0, -26);
+            this.groupBox32.Name = "groupBox32";
+            this.groupBox32.Size = new System.Drawing.Size(164, 1);
+            this.groupBox32.TabIndex = 113;
+            this.groupBox32.TabStop = false;
+            // 
+            // groupBox33
+            // 
+            this.groupBox33.BackColor = System.Drawing.Color.White;
+            this.groupBox33.Controls.Add(this.groupBox34);
+            this.groupBox33.Location = new System.Drawing.Point(81, 302);
+            this.groupBox33.Name = "groupBox33";
+            this.groupBox33.Size = new System.Drawing.Size(122, 1);
+            this.groupBox33.TabIndex = 217;
+            this.groupBox33.TabStop = false;
+            // 
+            // groupBox34
+            // 
+            this.groupBox34.Location = new System.Drawing.Point(0, -26);
+            this.groupBox34.Name = "groupBox34";
+            this.groupBox34.Size = new System.Drawing.Size(164, 1);
+            this.groupBox34.TabIndex = 113;
+            this.groupBox34.TabStop = false;
+            // 
+            // tx_enla1
+            // 
+            this.tx_enla1.BackColor = System.Drawing.SystemColors.Window;
+            this.tx_enla1.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_enla1.Location = new System.Drawing.Point(167, 285);
+            this.tx_enla1.Name = "tx_enla1";
+            this.tx_enla1.Size = new System.Drawing.Size(70, 18);
+            this.tx_enla1.TabIndex = 11;
+            // 
+            // lb_enla1
+            // 
+            this.lb_enla1.AutoSize = true;
+            this.lb_enla1.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.lb_enla1.Location = new System.Drawing.Point(82, 286);
+            this.lb_enla1.Name = "lb_enla1";
+            this.lb_enla1.Size = new System.Drawing.Size(52, 13);
+            this.lb_enla1.TabIndex = 216;
+            this.lb_enla1.Text = "Enlance1";
+            this.lb_enla1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // chk_marc3
             // 
@@ -1030,61 +1090,24 @@
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
-            // groupBox31
+            // Bt_ver
             // 
-            this.groupBox31.BackColor = System.Drawing.Color.White;
-            this.groupBox31.Controls.Add(this.groupBox32);
-            this.groupBox31.Location = new System.Drawing.Point(81, 302);
-            this.groupBox31.Name = "groupBox31";
-            this.groupBox31.Size = new System.Drawing.Size(155, 1);
-            this.groupBox31.TabIndex = 218;
-            this.groupBox31.TabStop = false;
+            this.Bt_ver.AutoSize = false;
+            this.Bt_ver.BackColor = System.Drawing.SystemColors.Control;
+            this.Bt_ver.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.Bt_ver.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.Bt_ver.Name = "Bt_ver";
+            this.Bt_ver.Size = new System.Drawing.Size(32, 32);
+            this.Bt_ver.Text = "Bt_close";
+            this.Bt_ver.ToolTipText = "Visualizar (Ctrl O)";
+            this.Bt_ver.Click += new System.EventHandler(this.Bt_ver_Click);
             // 
-            // groupBox32
+            // toolStripSeparator12
             // 
-            this.groupBox32.Location = new System.Drawing.Point(0, -26);
-            this.groupBox32.Name = "groupBox32";
-            this.groupBox32.Size = new System.Drawing.Size(164, 1);
-            this.groupBox32.TabIndex = 113;
-            this.groupBox32.TabStop = false;
-            // 
-            // groupBox33
-            // 
-            this.groupBox33.BackColor = System.Drawing.Color.White;
-            this.groupBox33.Controls.Add(this.groupBox34);
-            this.groupBox33.Location = new System.Drawing.Point(81, 302);
-            this.groupBox33.Name = "groupBox33";
-            this.groupBox33.Size = new System.Drawing.Size(122, 1);
-            this.groupBox33.TabIndex = 217;
-            this.groupBox33.TabStop = false;
-            // 
-            // groupBox34
-            // 
-            this.groupBox34.Location = new System.Drawing.Point(0, -26);
-            this.groupBox34.Name = "groupBox34";
-            this.groupBox34.Size = new System.Drawing.Size(164, 1);
-            this.groupBox34.TabIndex = 113;
-            this.groupBox34.TabStop = false;
-            // 
-            // tx_enla1
-            // 
-            this.tx_enla1.BackColor = System.Drawing.SystemColors.Window;
-            this.tx_enla1.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_enla1.Location = new System.Drawing.Point(167, 285);
-            this.tx_enla1.Name = "tx_enla1";
-            this.tx_enla1.Size = new System.Drawing.Size(70, 18);
-            this.tx_enla1.TabIndex = 11;
-            // 
-            // lb_enla1
-            // 
-            this.lb_enla1.AutoSize = true;
-            this.lb_enla1.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.lb_enla1.Location = new System.Drawing.Point(82, 286);
-            this.lb_enla1.Name = "lb_enla1";
-            this.lb_enla1.Size = new System.Drawing.Size(52, 13);
-            this.lb_enla1.TabIndex = 216;
-            this.lb_enla1.Text = "Enlance1";
-            this.lb_enla1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.toolStripSeparator12.AutoSize = false;
+            this.toolStripSeparator12.ForeColor = System.Drawing.Color.Black;
+            this.toolStripSeparator12.Name = "toolStripSeparator12";
+            this.toolStripSeparator12.Size = new System.Drawing.Size(3, 45);
             // 
             // defs
             // 
@@ -1113,6 +1136,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.advancedDataGridView1)).EndInit();
             this.tabreg.ResumeLayout(false);
             this.tabreg.PerformLayout();
+            this.groupBox31.ResumeLayout(false);
+            this.groupBox33.ResumeLayout(false);
             this.groupBox27.ResumeLayout(false);
             this.groupBox29.ResumeLayout(false);
             this.groupBox23.ResumeLayout(false);
@@ -1128,8 +1153,6 @@
             this.groupBox3.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
             this.groupBox11.ResumeLayout(false);
-            this.groupBox31.ResumeLayout(false);
-            this.groupBox33.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -1226,5 +1249,7 @@
         private System.Windows.Forms.GroupBox groupBox34;
         private System.Windows.Forms.TextBox tx_enla1;
         private System.Windows.Forms.Label lb_enla1;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator12;
+        private System.Windows.Forms.ToolStripButton Bt_ver;
     }
 }

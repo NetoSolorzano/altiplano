@@ -102,7 +102,6 @@ a eldni.pe .....................................................................
   visualizar, modificar o anular, no debe poder .................................................... ok 13/12/2020 verificado
 - forms reportes, usuarios con nivel medio o bajo, solo pueden ver su local ........................ ok 14/12/2020
 - forms reportes, usuarios con nivel alto o admin pueden ver de todos los locales .................. ok 14/12/2020
-- form planicarga, mejoras en validaciones y F1 .................................................... falta
 - form guiati, mejora para permitir digitar el nombre si los conectores no jalan ................... ok 16/12/2020
 - form guiati, ampliar ancho campo de telefono y limitar ........................................... ok 16/12/2020
 - form cobranzas, cerrar caja si la fecha es anterior.... .......................................... ok en alguna fecha de dic.2020 
@@ -111,8 +110,8 @@ form facelect: (facturacion electrónica, se integra con sist propio del cliente
 - formato impresion ................................................................................ ok 24/12/2020
 - Anulaciones (bajas de numeración) generación del TXT ............................................. ok 09/01/2021
 - Campos nuevos de los txt para :
--- Doc. vtas ....................................................................................... 
--- Bajas de numeración ............................................................................. 
+-- Doc. vtas ....................................................................................... ok 12/01/2021
+-- Bajas de numeración ............................................................................. no van
 -- Notas de crédito  ............................................................................... 
 form guiati, no debe grabar la direccion de sede origen o sede de llegada como si 
   fueran direccion del cliente ..................................................................... ok 24/12/2020
@@ -131,3 +130,4 @@ form repsventas, agregar pestaña para reg. de ventas ..........................
 form ayccaja, agregar reporte de cierre de caja .................................................... ok 07/01/2021
 form clients, agregar opcion de rejalar datos del cliente .......................................... ok 08/01/2021
 form users, mejorar la asignacion de permisos a los usuarios ....................................... OK 09/01/2021
+- form planicarga, mejoras en validaciones y F1 .................................................... falta

@@ -72,6 +72,7 @@ namespace TransCarga
         string codAbie = "";            // codigo estado de caja abierta
         string logoclt = "";            // ruta y nombre archivo logo
         string fshoy = "";              // fecha hoy del servidor en formato ansi
+        string codppc = "";             // codigo del plazo de pago por defecto para fact a crédito
         //
         string rutatxt = "";            // ruta de los txt para la fact. electronica
         string tipdo = "";              // CODIGO SUNAT tipo de documento de venta
@@ -112,7 +113,8 @@ namespace TransCarga
         DataTable dtu = new DataTable();
         DataTable dttd0 = new DataTable();
         DataTable dttd1 = new DataTable();
-        DataTable dtm = new DataTable();
+        DataTable dtm = new DataTable();        // moneda
+        DataTable dtp = new DataTable();        // plazo de credito 
         string[] datcltsR = { "", "", "", "", "", "", "", "", "" };
         string[] datcltsD = { "", "", "", "", "", "", "", "", "" };
         string[] datguias = { "", "", "", "", "", "", "", "", "", "", "" };
@@ -327,6 +329,7 @@ namespace TransCarga
                             if (row["param"].ToString() == "serieAnu") v_sanu = row["valor"].ToString().Trim();               // serie anulacion interna
                             if (row["param"].ToString() == "mpagdef") v_mpag = row["valor"].ToString().Trim();               // medio de pago x defecto para cobranzas
                             if (row["param"].ToString() == "factura") codfact = row["valor"].ToString().Trim();               // codigo doc.venta factura
+                            if (row["param"].ToString() == "plazocred") codppc = row["valor"].ToString().Trim();               // codigo plazo de pago x defecto para fact. a CREDITO
                         }
                         if (row["campo"].ToString() == "impresion")
                         {
@@ -577,6 +580,19 @@ namespace TransCarga
                         cmb_mon.DataSource = dtm;
                         cmb_mon.DisplayMember = "descrizionerid";
                         cmb_mon.ValueMember = "idcodice";
+                    }
+                }
+                // datos del combo plazo de pago creditos
+                using (MySqlCommand compla = new MySqlCommand("select idcodice,descrizionerid,codsunat,marca1 from desc_tpa where numero=@bloq", conn))
+                {
+                    compla.Parameters.AddWithValue("@bloq", 1);
+                    using (MySqlDataAdapter dapla = new MySqlDataAdapter(compla))
+                    {
+                        dtp.Clear();
+                        dapla.Fill(dtp);
+                        cmb_plazoc.DataSource = dtp;
+                        cmb_plazoc.DisplayMember = "descrizionerid";
+                        cmb_plazoc.ValueMember = "idcodice";
                     }
                 }
                 // jalamos la caja
@@ -972,6 +988,24 @@ namespace TransCarga
             string codleyt = "1000";                                                    // codigoLeyenda 1 - valor en letras
             string codleyd = "";                                                        // codigo leyenda detraccion
             string codobs = "107";                                                      // codigo del ose para las observaciones, caso carrion documentos origen del remitente
+            string _forpa = "";                                                         // glosa de forma de pago SUNAT
+            string _valcr = "";                                                         // valor credito
+            string _fechc = "";                                                         // fecha programada del pago credito
+            if (tx_dat_tdv.Text == codfact)                          // campos solo para facturas "formas de pago"
+            {
+                if (rb_si.Checked == true)
+                {
+                    _forpa = "Contado";
+                    _valcr = "";
+                }
+                if (rb_no.Checked == true)
+                {
+                    _forpa = "Credito";
+                    _valcr = tx_flete.Text; //                     MessageBox.Show(DateTime.Parse(tx_fechope.Text).AddDays(double.Parse(tx_dat_dpla.Text)).ToString());
+                    string fansi = tx_fechope.Text.Substring(6, 4) + "-" + tx_fechope.Text.Substring(3, 2) + "-" + tx_fechope.Text.Substring(0, 2);
+                    _fechc = DateTime.Parse(fansi).AddDays(double.Parse(tx_dat_dpla.Text)).Date.ToString("yyyy-MM-dd");        // fecha de emision + dias plazo credito
+                }
+            }
             /* *********************   calculo y campos de detracciones   ****************************** */
             if (double.Parse(tx_flete.Text) > double.Parse(Program.valdetra) && tx_dat_tdv.Text == codfact && tx_dat_mone.Text == MonDeft)    // soles
             {
@@ -1111,8 +1145,8 @@ namespace TransCarga
                 "" + sep +                      // INCOTERMS
                 "" + sep +                      // INCOTERMS
                 "" + sep +                      // IMPUESTO ICBPER
-                "" + sep +                      // INF.ADICIONAL FORMA DE PAGO
-                "" + sep                        // INF.ADICIONAL FORMA DE PAGO
+                _forpa + sep +                  // INF.ADICIONAL FORMA DE PAGO
+                _valcr + sep                    // INF.ADICIONAL FORMA DE PAGO
             );
             for (int s = 0; s < dataGridView1.Rows.Count - 1; s++)  // DETALLE
             {
@@ -1200,6 +1234,13 @@ namespace TransCarga
                 codleyt + sep +         // codigo leyenda monto en letras
                 monLet + sep            // Leyenda: Monto expresado en Letras
             );
+            if (_forpa == "Credito")
+            {
+                writer.WriteLine("F" + sep +
+                "Cuota001" + sep +
+                _valcr + sep +
+                _fechc + sep);
+            }
             if (codleyd != "")
             {
                 writer.WriteLine("L" + sep +
@@ -1352,6 +1393,7 @@ namespace TransCarga
         private void limpia_combos()
         {
             lp.limpia_cmb(this);
+            cmb_plazoc.SelectedIndex = -1;
         }
         #endregion limpiadores_modos;
 
@@ -1767,11 +1809,11 @@ namespace TransCarga
                 string inserta = "insert into cabfactu (" +
                     "fechope,martdve,tipdvta,serdvta,numdvta,ticltgr,tidoclt,nudoclt,nombclt,direclt,dptoclt,provclt,distclt,ubigclt,corrclt,teleclt," +
                     "locorig,dirorig,ubiorig,obsdvta,canfidt,canbudt,mondvta,tcadvta,subtota,igvtota,porcigv,totdvta,totpags,saldvta,estdvta,frase01," +
-                    "tipoclt,m1clien,tippago,ferecep,impreso,codMN,subtMN,igvtMN,totdvMN,pagauto,tipdcob,idcaja," +
+                    "tipoclt,m1clien,tippago,ferecep,impreso,codMN,subtMN,igvtMN,totdvMN,pagauto,tipdcob,idcaja,plazocred," +
                     "verApp,userc,fechc,diriplan4,diripwan4,netbname) values (" +
                     "@fechop,@mtdvta,@ctdvta,@serdv,@numdv,@tcdvta,@tdcrem,@ndcrem,@nomrem,@dircre,@dptocl,@provcl,@distcl,@ubicre,@mailcl,@telecl," +
                     "@ldcpgr,@didegr,@ubdegr,@obsprg,@canfil,@totcpr,@monppr,@tcoper,@subpgr,@igvpgr,@porcigv,@totpgr,@pagpgr,@salxpa,@estpgr,@frase1," +
-                    "@ticlre,@m1clte,@tipacc,@feredv,@impSN,@codMN,@subMN,@igvMN,@totMN,@pagaut,@tipdco,@idcaj," +
+                    "@ticlre,@m1clte,@tipacc,@feredv,@impSN,@codMN,@subMN,@igvMN,@totMN,@pagaut,@tipdco,@idcaj,@plazc," +
                     "@verApp,@asd,now(),@iplan,@ipwan,@nbnam)";
                 using (MySqlCommand micon = new MySqlCommand(inserta, conn))
                 {
@@ -1819,6 +1861,7 @@ namespace TransCarga
                     micon.Parameters.AddWithValue("@pagaut", (rb_si.Checked == true)? "S" : "N");
                     micon.Parameters.AddWithValue("@tipdco", (rb_si.Checked == true)? v_codcob : "");
                     micon.Parameters.AddWithValue("@idcaj", (rb_si.Checked == true)? tx_idcaja.Text : "0");
+                    micon.Parameters.AddWithValue("@plazc", (rb_no.Checked == true)? codppc : "");
                     micon.Parameters.AddWithValue("@verApp", verapp);
                     micon.Parameters.AddWithValue("@asd", asd);
                     micon.Parameters.AddWithValue("@iplan", lib.iplan());
@@ -2296,6 +2339,8 @@ namespace TransCarga
                         else
                         {
                             tx_salxcob.Text = "0.00";
+                            tx_dat_plazo.Text = "";
+                            cmb_plazoc.SelectedIndex = -1;
                         }
                     }
                 }
@@ -2315,6 +2360,9 @@ namespace TransCarga
             tx_pagado.Text = "0.00";
             tx_salxcob.Text = tx_flete.Text;
             tx_salxcob.BackColor = Color.Red;
+            cmb_plazoc.Enabled = true;
+            cmb_plazoc.SelectedValue = codppc;
+            tx_dat_plazo.Text = codppc;
         }
         private void chk_sinco_CheckedChanged(object sender, EventArgs e)
         {
@@ -2602,6 +2650,40 @@ namespace TransCarga
                     //tx_serie.Text = "";
                     tx_numero.Text = "";
                 }
+            }
+        }
+        private void cmb_plazoc_SelectionChangeCommitted(object sender, EventArgs e)
+        {
+            /*if (cmb_plazoc.SelectedIndex > -1)
+            {
+                tx_dat_plazo.Text = cmb_plazoc.SelectedValue.ToString();
+                DataRow[] dias = dtp.Select("idcodice='" + tx_dat_plazo.Text + "'");
+                foreach (DataRow row in dias)
+                {
+                    tx_dat_dpla.Text = row[3].ToString();
+                }
+            }
+            else
+            {
+                tx_dat_plazo.Text = "";
+                tx_dat_dpla.Text = "";
+            }*/
+        }
+        private void cmb_plazoc_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (cmb_plazoc.SelectedIndex > -1)
+            {
+                tx_dat_plazo.Text = cmb_plazoc.SelectedValue.ToString();
+                DataRow[] dias = dtp.Select("idcodice='" + tx_dat_plazo.Text + "'");
+                foreach (DataRow row in dias)
+                {
+                    tx_dat_dpla.Text = row[3].ToString();
+                }
+            }
+            else
+            {
+                tx_dat_plazo.Text = "";
+                tx_dat_dpla.Text = "";
             }
         }
         #endregion comboboxes

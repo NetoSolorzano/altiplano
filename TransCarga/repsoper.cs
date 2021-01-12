@@ -279,7 +279,7 @@ namespace TransCarga
                     dgv_guias.DefaultCellStyle.Font = tiplg;
                     dgv_guias.RowTemplate.Height = 15;
                     dgv_guias.AllowUserToAddRows = false;
-                    dgv_guias.Width = Parent.Width - 50; // 1015;
+                    dgv_guias.Width = Parent.Width - 10; // 1015;
                     if (dgv_guias.DataSource == null) dgv_guias.ColumnCount = 11;
                     if (dgv_guias.Rows.Count > 0)
                     {

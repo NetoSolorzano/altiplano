@@ -28,6 +28,7 @@ namespace TransCarga
         string img_btN = "";
         string img_btE = "";
         string img_btA = "";
+        string img_btV = "";
         string img_bti = "";
         string img_bts = "";
         string img_btr = "";
@@ -35,6 +36,7 @@ namespace TransCarga
         string img_btq = "";
         string img_grab = "";
         string img_anul = "";
+        string img_ver = "";
         string v_tipAdm = "";
         libreria lib = new libreria();
         // string de conexion
@@ -92,6 +94,7 @@ namespace TransCarga
             jalainfo();
             Bt_add.Image = Image.FromFile(img_btN);
             Bt_edit.Image = Image.FromFile(img_btE);
+            Bt_ver.Image = Image.FromFile(img_btV);
             Bt_anul.Image = Image.FromFile(img_btA);
             Bt_close.Image = Image.FromFile(img_btq);
             Bt_ini.Image = Image.FromFile(img_bti);
@@ -194,7 +197,7 @@ namespace TransCarga
                         if (row["param"].ToString() == "img_btE") img_btE = row["valor"].ToString().Trim();         // imagen del boton de accion EDITAR
                         if (row["param"].ToString() == "img_btA") img_btA = row["valor"].ToString().Trim();         // imagen del boton de accion ANULAR/BORRAR
                         if (row["param"].ToString() == "img_btQ") img_btq = row["valor"].ToString().Trim();         // imagen del boton de accion SALIR
-                        //if (row["param"].ToString() == "img_btP") img_btP = row["valor"].ToString().Trim();         // imagen del boton de accion IMPRIMIR
+                        if (row["param"].ToString() == "img_btV") img_btV = row["valor"].ToString().Trim();         // imagen del boton de accion VISUALIZAR
                         // boton de vista preliminar .... esta por verse su utlidad
                         if (row["param"].ToString() == "img_bti") img_bti = row["valor"].ToString().Trim();         // imagen del boton de accion IR AL INICIO
                         if (row["param"].ToString() == "img_bts") img_bts = row["valor"].ToString().Trim();         // imagen del boton de accion SIGUIENTE
@@ -202,6 +205,7 @@ namespace TransCarga
                         if (row["param"].ToString() == "img_btf") img_btf = row["valor"].ToString().Trim();         // imagen del boton de accion IR AL FINAL
                         if (row["param"].ToString() == "img_gra") img_grab = row["valor"].ToString().Trim();         // imagen del boton grabar nuevo
                         if (row["param"].ToString() == "img_anu") img_anul = row["valor"].ToString().Trim();         // imagen del boton grabar anular
+                        if (row["param"].ToString() == "img_ver") img_ver = row["valor"].ToString().Trim();         // imagen del boton VISUALIZAR
                     }
                     if (row["campo"].ToString() == "tipoUser")
                     {
@@ -851,6 +855,19 @@ namespace TransCarga
                 MessageBox.Show("Solo el usuario Administrador " + Environment.NewLine +
                     "puede modificar las definiciones", "Error en tipo de usuario", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+        private void Bt_ver_Click(object sender, EventArgs e)
+        {
+            sololee(this);
+            advancedDataGridView1.Enabled = true;
+            advancedDataGridView1.ReadOnly = true;
+            Tx_modo.Text = "VISUALIZAR";
+            button1.Image = Image.FromFile(img_ver);
+            //
+            Bt_ini.Enabled = true;
+            Bt_sig.Enabled = true;
+            Bt_ret.Enabled = true;
+            Bt_fin.Enabled = true;
         }
         private void Bt_close_Click(object sender, EventArgs e)
         {
