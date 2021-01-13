@@ -105,6 +105,12 @@
     <Compile Include="ayccaja.designer.cs">
       <DependentUpon>ayccaja.cs</DependentUpon>
     </Compile>
+    <Compile Include="ayuda3.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ayuda3.designer.cs">
+      <DependentUpon>ayuda3.cs</DependentUpon>
+    </Compile>
     <Compile Include="bin\Debug\formatos\gr_ind_trans_1.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -301,6 +307,9 @@
     </Compile>
     <EmbeddedResource Include="ayccaja.resx">
       <DependentUpon>ayccaja.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ayuda3.resx">
+      <DependentUpon>ayuda3.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="bin\Debug\formatos\gr_ind_trans_1.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>

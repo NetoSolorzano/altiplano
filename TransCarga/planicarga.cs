@@ -87,6 +87,12 @@ namespace TransCarga
             if (Control.ModifierKeys == Keys.Control && e.KeyCode == Keys.O) Bt_ver.PerformClick();
             if (Control.ModifierKeys == Keys.Control && e.KeyCode == Keys.P) Bt_print.PerformClick();
             if (Control.ModifierKeys == Keys.Control && e.KeyCode == Keys.S) Bt_close.PerformClick();
+            //
+            if (e.KeyCode == Keys.F1 && tx_pla_ruc.Focused == true)
+            {
+                ayuda3 ayu = new ayuda3("Proveedores","","");
+                ayu.ShowDialog();
+            }
         }
         private void planicarga_Load(object sender, EventArgs e)
         {
