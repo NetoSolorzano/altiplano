@@ -112,7 +112,7 @@ form facelect: (facturacion electrónica, se integra con sist propio del cliente
 - Campos nuevos de los txt para :
 -- Doc. vtas ....................................................................................... ok 12/01/2021
 -- Bajas de numeración ............................................................................. no van
--- Notas de crédito  ............................................................................... 
+-- Notas de crédito  ............................................................................... FALTA
 form guiati, no debe grabar la direccion de sede origen o sede de llegada como si 
   fueran direccion del cliente ..................................................................... ok 24/12/2020
 form repsventas: (reportes de ventas, notas credito, etc)
@@ -130,6 +130,8 @@ form repsventas, agregar pestaña para reg. de ventas ..........................
 form ayccaja, agregar reporte de cierre de caja .................................................... ok 07/01/2021
 form clients, agregar opcion de rejalar datos del cliente .......................................... ok 08/01/2021
 form users, mejorar la asignacion de permisos a los usuarios ....................................... OK 09/01/2021
-- form planicarga, mejoras en validaciones y F1 .................................................... falta
-form ayuda3, desarrollo del form ................................................................... 
-- enlace con planicarga para proveedores, camiones y choferes ...................................... 
+- form planicarga, mejoras en validaciones y F1 .................................................... OK 13/01/2021
+form ayuda3, desarrollo del form ................................................................... OK 13/01/2021
+- enlace con planicarga para proveedores y camiones ................................................ ok 13/01/2021
+form notcredclts (notas de credito de cliente)
+- desarrollo del form ..............................................................................

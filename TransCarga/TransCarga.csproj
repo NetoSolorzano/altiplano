@@ -188,6 +188,12 @@
     <Compile Include="login.designer.cs">
       <DependentUpon>login.cs</DependentUpon>
     </Compile>
+    <Compile Include="notcredclts.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="notcredclts.designer.cs">
+      <DependentUpon>notcredclts.cs</DependentUpon>
+    </Compile>
     <Compile Include="NumLetra.cs" />
     <Compile Include="pendCob1.cs">
       <AutoGen>True</AutoGen>
@@ -344,6 +350,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="login.resx">
       <DependentUpon>login.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="notcredclts.resx">
+      <DependentUpon>notcredclts.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="pendCob1.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>

@@ -47,7 +47,7 @@ namespace TransCarga
         public string ReturnValue0 { get; set; }
         public string ReturnValue1 { get; set; }
         public string ReturnValue2 { get; set; }
-
+        public string[] ReturnValueA { get; set; }
         public void loadgrids()
         {
             // DATOS DE LA GRILLA
@@ -73,6 +73,34 @@ namespace TransCarga
                         dataGridView1.DataSource = dtDatos;
                         dataGridView1.ReadOnly = true;
                     }
+                }
+            }
+            if (para1 == "Placas")
+            {
+                string parte = "";
+                if (para3.Length > 6)
+                {
+                    string[] subs = para3.Split('|');
+                    parte = parte + " and a.tipo in ('" + subs[0] + "','" + subs[1] + "')";
+                }
+                else
+                {
+                    parte = parte + " and a.tipo=@para3";
+                }
+                consulta = "SELECT a.id as ID,a.placa as PLACA,a.marca as MARCA,a.modelo as MODELO,a.confve as CONFIG,a.autor1 as AUTORIZ,b.DescrizioneRid as TIPO,a.tipo as CODTIPO " +
+                    "FROM vehiculos a LEFT JOIN desc_tve b ON b.idcodice = a.tipo " +
+                    "WHERE a.rucpro = @rucp" +  parte;
+                using (MySqlCommand micon = new MySqlCommand(consulta, conn))
+                {
+                    micon.Parameters.AddWithValue("@rucp", para2);              // para2=ruc
+                    micon.Parameters.AddWithValue("@para3", para3);              // para3=trompa|carreta
+                    using (MySqlDataAdapter da = new MySqlDataAdapter(micon))
+                    {
+                        da.Fill(dtDatos);
+                        dataGridView1.DataSource = dtDatos;
+                        dataGridView1.ReadOnly = true;
+                    }
+                    ReturnValueA = new string[5] { "", "", "", "", "" };
                 }
             }
             // formateo de la grilla
@@ -116,12 +144,27 @@ namespace TransCarga
 
         private void dataGridView1_CellContentDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
-
-            tx_id.Text = dataGridView1.CurrentRow.Cells[0].Value.ToString();
-            tx_nombre.Text = dataGridView1.CurrentRow.Cells[1].Value.ToString();
-            string cellva = dataGridView1.CurrentRow.Cells[2].Value.ToString();
-            tx_codigo.Text = cellva;
-            //
+            string cellva = "";
+            if (para1 == "Proveedores")
+            {
+                tx_id.Text = dataGridView1.CurrentRow.Cells[0].Value.ToString();
+                tx_nombre.Text = dataGridView1.CurrentRow.Cells[1].Value.ToString();
+                cellva = dataGridView1.CurrentRow.Cells[2].Value.ToString();
+                tx_codigo.Text = cellva;
+            }
+            if (para1 == "Placas")
+            {
+                tx_id.Text = dataGridView1.CurrentRow.Cells[0].Value.ToString();
+                cellva = dataGridView1.CurrentRow.Cells[1].Value.ToString();
+                tx_nombre.Text = dataGridView1.CurrentRow.Cells[2].Value.ToString();
+                tx_codigo.Text = cellva;
+                //
+                ReturnValueA[0] = dataGridView1.CurrentRow.Cells[1].Value.ToString();   // placa
+                ReturnValueA[1] = dataGridView1.CurrentRow.Cells[2].Value.ToString();   // marca
+                ReturnValueA[2] = dataGridView1.CurrentRow.Cells[3].Value.ToString();   // modelo
+                ReturnValueA[3] = dataGridView1.CurrentRow.Cells[4].Value.ToString();   // conf. vehicular
+                ReturnValueA[4] = dataGridView1.CurrentRow.Cells[5].Value.ToString();   // autoriz.
+            }
             TransCarga.Program.retorna1 = cellva;
             tx_codigo.Focus();
             //this.Close();
@@ -134,6 +177,14 @@ namespace TransCarga
                 ReturnValue0 = tx_id.Text;
                 ReturnValue1 = tx_codigo.Text;
                 ReturnValue2 = tx_nombre.Text;
+                if (para1 == "Placas")
+                {
+                    ReturnValueA[0] = dataGridView1.CurrentRow.Cells[1].Value.ToString();   // placa
+                    ReturnValueA[1] = dataGridView1.CurrentRow.Cells[2].Value.ToString();   // marca
+                    ReturnValueA[2] = dataGridView1.CurrentRow.Cells[3].Value.ToString();   // modelo
+                    ReturnValueA[3] = dataGridView1.CurrentRow.Cells[4].Value.ToString();   // conf. vehicular
+                    ReturnValueA[4] = dataGridView1.CurrentRow.Cells[5].Value.ToString();   // autoriz.
+                }
                 Close();
             }
         }

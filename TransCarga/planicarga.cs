@@ -52,8 +52,9 @@ namespace TransCarga
         string v_sanu = "";             // serie anulacion interna ANU
         string v_CR_gr_ind = "";        // nombre del formato en CR
         string v_mfildet = "";          // maximo numero de filas en el detalle, coord. con el formato
-        string v_trompa = "";           // codigo interno placa de tracto/camion
+        string v_trompa = "";           // codigo interno placa de tracto
         string v_carret = "";           // código interno placa de carreta/furgon
+        string v_camion = "";           // código interno placa de camion
         string v_mondef = "";           // moneda por defecto del form
         string vint_A0 = "";            // variable INTERNA para amarrar el codigo anulacion cliente con A0
         //
@@ -87,12 +88,63 @@ namespace TransCarga
             if (Control.ModifierKeys == Keys.Control && e.KeyCode == Keys.O) Bt_ver.PerformClick();
             if (Control.ModifierKeys == Keys.Control && e.KeyCode == Keys.P) Bt_print.PerformClick();
             if (Control.ModifierKeys == Keys.Control && e.KeyCode == Keys.S) Bt_close.PerformClick();
-            //
-            if (e.KeyCode == Keys.F1 && tx_pla_ruc.Focused == true)
+        }
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)    // F1
+        {
+            string para1 = "";
+            string para2 = "";
+            string para3 = "";
+            if (keyData == Keys.F1 && tx_pla_ruc.Focused == true)    // Tx_modo.Text == "NUEVO" && 
             {
-                ayuda3 ayu = new ayuda3("Proveedores","","");
-                ayu.ShowDialog();
+                para1 = "Proveedores";
+                para2 = "";
+                para3 = "";
+                ayuda3 ayu3 = new ayuda3(para1, para2, para3);
+                var result = ayu3.ShowDialog();
+                if (result == DialogResult.Cancel)
+                {
+                    tx_pla_ruc.Text = ayu3.ReturnValue1;
+                    tx_pla_propiet.Text = ayu3.ReturnValue2;
+                    tx_pla_propiet.Tag = ayu3.ReturnValue2;
+                }
+                return true;    // indicate that you handled this keystroke
             }
+            if (keyData == Keys.F1 && tx_pla_placa.Focused == true)   // Tx_modo.Text != "NUEVO" && 
+            {
+                para1 = "Placas";
+                para2 = (rb_propio.Checked == true) ? Program.ruc : tx_pla_ruc.Text;
+                para3 = v_trompa + "|" + v_camion;   // codigo tipo camion
+                ayuda3 ayu3 = new ayuda3(para1, para2, para3);
+                var result = ayu3.ShowDialog();     //ayu1.Show();
+                if (result == DialogResult.Cancel)  // deberia ser OK, pero que chuuu
+                {
+                    tx_pla_placa.Text = ayu3.ReturnValue1;
+                    tx_pla_marca.Text = ayu3.ReturnValueA[1];
+                    tx_pla_modelo.Text = ayu3.ReturnValueA[2];
+                    tx_pla_confv.Text = ayu3.ReturnValueA[3];
+                    tx_pla_autor.Text = ayu3.ReturnValueA[4];
+                }
+                return true;    // indicate that you handled this keystroke
+            }
+            if (keyData == Keys.F1 && tx_pla_carret.Focused == true)
+            {
+                para1 = "Placas";
+                para2 = (rb_propio.Checked == true) ? Program.ruc : tx_pla_ruc.Text;
+                para3 = v_carret;   // codigo tipo carreta
+                ayuda3 ayu3 = new ayuda3(para1, para2, para3);
+                var result = ayu3.ShowDialog();     //ayu1.Show();
+                if (result == DialogResult.Cancel)  // deberia ser OK, pero que chuuu
+                {
+                    tx_pla_carret.Text = ayu3.ReturnValue1;
+                    tx_carret_marca.Text = ayu3.ReturnValueA[1];
+                    tx_carret_modelo.Text = ayu3.ReturnValueA[2];
+                    tx_carret_conf.Text = ayu3.ReturnValueA[3];
+                    tx_carret_autoriz.Text = ayu3.ReturnValueA[4];
+                }
+                return true;    // indicate that you handled this keystroke
+            }
+            // Call the base class
+            return base.ProcessCmdKey(ref msg, keyData);
         }
         private void planicarga_Load(object sender, EventArgs e)
         {
@@ -155,6 +207,8 @@ namespace TransCarga
             armagrilla();
             // todo desabilidado
             sololee();
+            // prueba evitar busquedas en base de datos inecesarias
+            tx_pla_propiet.Tag = "x";
         }
         private void armagrilla()
         {
@@ -299,6 +353,7 @@ namespace TransCarga
                         {
                             if (row["param"].ToString() == "codTrackto") v_trompa = row["valor"].ToString().Trim();
                             if (row["param"].ToString() == "codCarreta") v_carret = row["valor"].ToString().Trim();
+                            if (row["param"].ToString() == "codCamion") v_camion = row["valor"].ToString().Trim();
                         }
                         if (row["campo"].ToString() == "moneda" && row["param"].ToString() == "default") v_mondef = row["valor"].ToString().Trim();
                     }
@@ -340,7 +395,8 @@ namespace TransCarga
                 {
                     string consulta = "select a.id,a.fechope,a.serplacar,a.numplacar,a.locorigen,a.locdestin,a.obsplacar,a.cantfilas,a.cantotpla,a.pestotpla,a.tipmonpla," +
                         "a.tipcampla,a.subtotpla,a.igvplacar,a.totplacar,a.totpagado,a.salxpagar,a.estadoser,a.impreso,a.fleteimp,a.platracto,a.placarret,a.autorizac," +
-                        "a.confvehic,a.brevchofe,a.nomchofe,a.brevayuda,a.nomayuda,a.rucpropie,a.tipoplani,a.userc,a.userm,a.usera,ifnull(b.razonsocial,'') as razonsocial " +
+                        "a.confvehic,a.brevchofe,a.nomchofe,a.brevayuda,a.nomayuda,a.rucpropie,a.tipoplani,a.userc,a.userm,a.usera,ifnull(b.razonsocial,'') as razonsocial," +
+                        "a.marcaTrac,a.modeloTrac " +
                         "FROM cabplacar a left join anag_for b on a.rucpropie=b.ruc and b.estado=0 " + parte;
                     MySqlCommand micon = new MySqlCommand(consulta, conn);
                     if (campo == "tx_idr") micon.Parameters.AddWithValue("@ida", tx_idr.Text);
@@ -404,6 +460,8 @@ namespace TransCarga
                             tx_pla_propiet.Text = dr.GetString("razonsocial");
                             tx_pla_ruc.Text = dr.GetString("rucpropie");
                             if (tx_pla_ruc.Text == rucclie) tx_pla_propiet.Text = nomclie;
+                            tx_pla_marca.Text = dr.GetString("marcaTrac");
+                            tx_pla_modelo.Text = dr.GetString("modeloTrac");
                             //
                             tx_car3ro_ruc.Text = dr.GetString("rucpropie");
                             tx_car_3ro_nombre.Text = dr.GetString("razonsocial");  // falta en consulta
@@ -1078,11 +1136,11 @@ namespace TransCarga
                 string inserta = "insert into cabplacar (" +
                     "fechope,serplacar,locorigen,locdestin,obsplacar,cantfilas,cantotpla,pestotpla,tipmonpla,tipcampla,subtotpla," +
                     "igvplacar,totplacar,totpagado,salxpagar,estadoser,fleteimp,platracto,placarret,autorizac,confvehic,brevchofe," +
-                    "brevayuda,rucpropie,tipoplani,nomchofe,nomayuda," +
+                    "brevayuda,rucpropie,tipoplani,nomchofe,nomayuda,marcaTrac,modeloTrac," +
                     "verApp,userc,fechc,diriplan4,diripwan4,netbname) " +
                     "values (@fecho,@serpl,@locor,@locde,@obspl,@cantf,@canto,@pesto,@tipmo,@tipca,@subto," +
                     "@igvpl,@totpl,@totpa,@salxp,@estad,@fleim,@platr,@placa,@autor,@confv,@brevc," +
-                    "@breva,@rucpr,@tipop,@nocho,@noayu," +
+                    "@breva,@rucpr,@tipop,@nocho,@noayu,@marca,@model," +
                     "@verApp,@asd,now(),@iplan,@ipwan,@nbnam)";
                 using (MySqlCommand micon = new MySqlCommand(inserta, conn))
                 {
@@ -1113,6 +1171,8 @@ namespace TransCarga
                     micon.Parameters.AddWithValue("@noayu", tx_pla_nomayu.Text);           // nombre del ayudante
                     micon.Parameters.AddWithValue("@rucpr", (tx_pla_ruc.Text.Trim() == "")? tx_car3ro_ruc.Text : tx_pla_ruc.Text);
                     micon.Parameters.AddWithValue("@tipop", vtip);              // tipo planilla, tipo transporte/transportista
+                    micon.Parameters.AddWithValue("@marca", tx_pla_marca.Text);
+                    micon.Parameters.AddWithValue("@model", tx_pla_modelo.Text);
                     micon.Parameters.AddWithValue("@verApp", verapp);
                     micon.Parameters.AddWithValue("@asd", asd);
                     micon.Parameters.AddWithValue("@iplan", lib.iplan());
@@ -1225,7 +1285,8 @@ namespace TransCarga
                             "fechope=@fecho,obsplacar=@obspl,cantfilas=@cantf,cantotpla=@canto,pestotpla=@pesto,tipmonpla=@tipmo," +
                             "tipcampla=@tipca,subtotpla=@subto,igvplacar=@igvpl,totplacar=@totpl,totpagado=@totpa,salxpagar=@salxp,fleteimp=@fleim," +
                             "platracto=@platr,placarret=@placa,autorizac=@autor,confvehic=@confv,brevchofe=@brevc,brevayuda=@breva,rucpropie=@rucpr,tipoplani=@tipop," +
-                            "verApp=@verApp,userm=@asd,fechm=now(),diriplan4=@iplan,diripwan4=@ipwan,netbname=@nbnam,nomchofe=@nocho,nomayuda=@noayu,estadoser=@estad " +
+                            "verApp=@verApp,userm=@asd,fechm=now(),diriplan4=@iplan,diripwan4=@ipwan,netbname=@nbnam,nomchofe=@nocho,nomayuda=@noayu,estadoser=@estad," +
+                            "marcaTrac=@marca,modeloTrac=@model " +
                             "where serplacar=@serpl and numplacar=@numpl";
                         MySqlCommand micon = new MySqlCommand(actua, conn);
                         micon.Parameters.AddWithValue("@fecho", tx_fechope.Text.Substring(6, 4) + "-" + tx_fechope.Text.Substring(3, 2) + "-" + tx_fechope.Text.Substring(0, 2));
@@ -1270,6 +1331,8 @@ namespace TransCarga
                                 micon.Parameters.AddWithValue("@estad", codGene);
                             }
                         }
+                        micon.Parameters.AddWithValue("@marca", tx_pla_marca.Text);
+                        micon.Parameters.AddWithValue("@model", tx_pla_modelo.Text);
                         micon.Parameters.AddWithValue("@verApp", verapp);
                         micon.Parameters.AddWithValue("@asd", asd);
                         micon.Parameters.AddWithValue("@iplan", lib.iplan());
@@ -1507,27 +1570,31 @@ namespace TransCarga
         {
             if (rb_3ro.Checked == true || rb_bus.Checked == true)
             {
-                // validamos que el ruc ingresado se encuentre en la anag_for
-                using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
+                if (tx_pla_propiet.Text != tx_pla_propiet.Tag.ToString())
                 {
-                    conn.Open();
-                    string cruc = (tx_pla_ruc.Text.Trim() == "") ? tx_car3ro_ruc.Text : tx_pla_ruc.Text;
-                    string consulta = "select razonsocial from anag_for where ruc=@ruc";
-                    using (MySqlCommand micon = new MySqlCommand(consulta, conn))
+                    // validamos que el ruc ingresado se encuentre en la anag_for
+                    using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
                     {
-                        micon.Parameters.AddWithValue("@ruc", cruc);
-                        MySqlDataReader dr = micon.ExecuteReader();
-                        if (dr.HasRows)
+                        conn.Open();
+                        string cruc = (tx_pla_ruc.Text.Trim() == "") ? tx_car3ro_ruc.Text : tx_pla_ruc.Text;
+                        string consulta = "select razonsocial from anag_for where ruc=@ruc";
+                        using (MySqlCommand micon = new MySqlCommand(consulta, conn))
                         {
-                            if (dr.Read())
+                            micon.Parameters.AddWithValue("@ruc", cruc);
+                            MySqlDataReader dr = micon.ExecuteReader();
+                            if (dr.HasRows)
                             {
-                                if (rb_3ro.Checked == true) tx_pla_propiet.Text = dr.GetString(0);
-                                else tx_car_3ro_nombre.Text = dr.GetString(0);
+                                if (dr.Read())
+                                {
+                                    if (rb_3ro.Checked == true) tx_pla_propiet.Text = dr.GetString(0);
+                                    else tx_car_3ro_nombre.Text = dr.GetString(0);
+                                }
                             }
+                            dr.Dispose();
                         }
-                        dr.Dispose();
                     }
                 }
+                tx_pla_propiet.Tag = "x";
             }
         }
         private void placa_Leave(object sender, EventArgs e)
