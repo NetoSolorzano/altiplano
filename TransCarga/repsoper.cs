@@ -357,7 +357,7 @@ namespace TransCarga
                     break;
             }
         }
-        private void grillares()                                    // FALTA arma la grilla del resumen
+        private void grillares(string modo)                         // modo 0=todo,1=sin preguias
         {
             Font tiplg = new Font("Arial", 7, FontStyle.Bold);
             dgv_resumen.Font = tiplg;
@@ -387,6 +387,14 @@ namespace TransCarga
             }
             if (b < dgv_resumen.Width) dgv_resumen.Width = b + 60;
             dgv_resumen.ReadOnly = true;
+            //
+            if (modo == "1")
+            {
+                for (int i=1;i<10;i++)
+                {
+                    dgv_resumen.Columns[i].Visible = false;
+                }
+            }
         }
         private void sumaGrilla(string grilla)
         {
@@ -496,6 +504,9 @@ namespace TransCarga
             if(tx_codped.Text != "" && tx_dat_tido.Text != "")
             {
                 tx_codped_Leave(null, null);
+                dt.Clear();
+                //dgv_resumen.Rows.Clear();
+                //dgv_resumen.Columns.Clear();
                 string consulta = "res_serv_clte";
                 try
                 {
@@ -513,7 +524,8 @@ namespace TransCarga
                         dgv_resumen.DataSource = dt;
                         dt.Dispose();
                         da.Dispose();
-                        grillares();
+                        if (checkBox1.Checked == false) grillares("0");
+                        else grillares("1");                            // 0=todo,1=sin preGuias
                     }
                     else
                     {

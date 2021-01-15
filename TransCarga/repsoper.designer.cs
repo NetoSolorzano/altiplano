@@ -157,6 +157,7 @@
             this.bt_reval = new System.Windows.Forms.Button();
             this.label11 = new System.Windows.Forms.Label();
             this.label12 = new System.Windows.Forms.Label();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.toolStrip1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabres.SuspendLayout();
@@ -459,6 +460,7 @@
             // 
             // tabres
             // 
+            this.tabres.Controls.Add(this.checkBox1);
             this.tabres.Controls.Add(this.tx_dat_tido);
             this.tabres.Controls.Add(this.groupBox1);
             this.tabres.Controls.Add(this.cmb_tidoc);
@@ -1562,6 +1564,16 @@
             this.label12.TabIndex = 400;
             this.label12.Text = "Fech Inicial";
             // 
+            // checkBox1
+            // 
+            this.checkBox1.AutoSize = true;
+            this.checkBox1.Location = new System.Drawing.Point(8, 19);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(90, 17);
+            this.checkBox1.TabIndex = 377;
+            this.checkBox1.Text = "Sin Pre-Guias";
+            this.checkBox1.UseVisualStyleBackColor = true;
+            // 
             // repsoper
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1745,5 +1757,6 @@
         private System.Windows.Forms.Button bt_reval;
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.CheckBox checkBox1;
     }
 }

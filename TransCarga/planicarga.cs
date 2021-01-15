@@ -214,7 +214,7 @@ namespace TransCarga
         {
             dataGridView1.Rows.Clear();
             dataGridView1.Columns.Clear();
-            dataGridView1.ColumnCount = 16;
+            dataGridView1.ColumnCount = 17;
             dataGridView1.Columns[0].Name = "fila";
             dataGridView1.Columns[0].HeaderText = "Fila";
             dataGridView1.Columns[0].ReadOnly = true;
@@ -264,6 +264,9 @@ namespace TransCarga
             dataGridView1.Columns[14].ReadOnly = true;
             dataGridView1.Columns[15].Visible = true;  // telef destinatario
             dataGridView1.Columns[15].ReadOnly = true;
+            dataGridView1.Columns[16].Name = "nombul";
+            dataGridView1.Columns[16].HeaderText = "Nombul";
+            dataGridView1.Columns[16].ReadOnly = true;
             if (Tx_modo.Text == "EDITAR")
             {
                 DataGridViewCheckBoxColumn marca = new DataGridViewCheckBoxColumn();
@@ -527,10 +530,12 @@ namespace TransCarga
         private void jaladet(string idr)         // jala el detalle
         {
             string jalad = "select a.idc,a.serplacar,a.numplacar,a.fila,a.numpreg,a.serguia,a.numguia,a.totcant,a.totpeso,b.descrizionerid as MON,a.totflet," +
-                "a.estadoser,a.codmone,'X' as marca,a.id,a.pagado,a.salxcob,g.nombdegri,g.diredegri,g.teledegri " +
+                "a.estadoser,a.codmone,'X' as marca,a.id,a.pagado,a.salxcob,g.nombdegri,g.diredegri,g.teledegri,a.nombult,u1.nombre AS distrit,u2.nombre as provin " +
                 "from detplacar a " +
-                "left join desc_mon b on b.idcodice=a.codmone " +
-                "left join cabguiai g on g.sergui=a.serguia and g.numgui=a.numguia " +
+                "left join desc_mon b on b.idcodice = a.codmone " +
+                "left join cabguiai g on g.sergui = a.serguia and g.numgui = a.numguia " +
+                "LEFT JOIN ubigeos u1 ON CONCAT(u1.depart, u1.provin, u1.distri)= g.ubigdegri " +
+                "LEFT JOIN(SELECT* FROM ubigeos WHERE depart<>'00' AND provin<>'00' AND distri = '00') u2 ON u2.depart = left(g.ubigdegri, 2) AND u2.provin = concat(substr(g.ubigdegri, 3, 2)) " +
                 "where a.idc=@idr";
             using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
             {
@@ -562,8 +567,9 @@ namespace TransCarga
                                     row[13].ToString(),
                                     row[14].ToString(),
                                     row[17].ToString(),
-                                    row[18].ToString(),
-                                    row[19].ToString()
+                                    row[18].ToString() + " - " + row[21].ToString() + " - " + row[22].ToString(),
+                                    row[19].ToString(),
+                                    row[20].ToString()
                                     );
                             }
                             else
@@ -583,8 +589,9 @@ namespace TransCarga
                                     row[13].ToString(),
                                     row[14].ToString(),
                                     row[17].ToString(),
-                                    row[18].ToString(),
+                                    row[18].ToString() + " - " + row[21].ToString() + " - " + row[22].ToString(),
                                     row[19].ToString(),
+                                    row[20].ToString(),
                                     false
                                     );
                             }
@@ -1379,10 +1386,10 @@ namespace TransCarga
                             if (dataGridView1.Rows[i].Cells[11].Value == null)   // fila nueva, se inserta  || .ToString() != "X"
                             {
                                 string inserd2 = "insert into detplacar (idc,serplacar,numplacar,fila,numpreg,serguia,numguia,totcant,totpeso,totflet,codmone,estadoser,origreg," +
-                                "verApp,userc,fechc,diriplan4,diripwan4,netbname," +
+                                "verApp,userc,fechc,diriplan4,diripwan4,netbname,nombult," +
                                 "platracto,placarret,autorizac,confvehic,brevchofe,brevayuda,rucpropiet,fechope,pagado,salxcob) " +
                                 "values (@idr,@serpl,@numpl,@fila,@numpr,@sergu,@numgu,@totca,@totpe,@totfl,@codmo,@estad,@orireg," +
-                                "@verApp,@asd,now(),@iplan,@ipwan,@nbnam," +
+                                "@verApp,@asd,now(),@iplan,@ipwan,@nbnam,@nombu," +
                                 "@platr,@placa,@autor,@confv,@brevc,@breva,@rucpr,@fecho,@paga,@xcob)";
                                 micon = new MySqlCommand(inserd2, conn);
                                 micon.Parameters.AddWithValue("@idr", tx_idr.Text);
@@ -1393,6 +1400,7 @@ namespace TransCarga
                                 micon.Parameters.AddWithValue("@sergu", dataGridView1.Rows[i].Cells[2].Value.ToString());
                                 micon.Parameters.AddWithValue("@numgu", dataGridView1.Rows[i].Cells[3].Value.ToString());
                                 micon.Parameters.AddWithValue("@totca", dataGridView1.Rows[i].Cells[4].Value.ToString());
+                                micon.Parameters.AddWithValue("@nombu", dataGridView1.Rows[i].Cells[16].Value.ToString());
                                 micon.Parameters.AddWithValue("@totpe", dataGridView1.Rows[i].Cells[5].Value.ToString());
                                 micon.Parameters.AddWithValue("@totfl", dataGridView1.Rows[i].Cells[7].Value.ToString());
                                 micon.Parameters.AddWithValue("@codmo", tx_dat_mone.Text);
@@ -2093,13 +2101,14 @@ namespace TransCarga
                     rowdetalle.nomdest = row.Cells[13].Value.ToString();
                     rowdetalle.dirdest = row.Cells[14].Value.ToString();
                     rowdetalle.teldest = row.Cells[15].Value.ToString();
+                    rowdetalle.nombulto = row.Cells[16].Value.ToString();
+                    rowdetalle.nomremi = "";    // row.Cells[].Value.ToString();
                     PlaniC.placar_det.Addplacar_detRow(rowdetalle);
                 }
             }
             //
             return PlaniC;
         }
-
         #endregion
 
         #region datagridview
@@ -2131,8 +2140,9 @@ namespace TransCarga
                     using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
                     {
                         conn.Open();
-                        string consulta = "select a.numpregui,a.cantotgri,a.pestotgri,b.descrizionerid as MON,a.totgri,a.totpag,a.salgri,a.tipmongri,a.numplagri " +
-                            "from cabguiai a left join desc_mon b on b.idcodice=a.tipmongri where a.sergui=@ser and a.numgui=@num";
+                        string consulta = "select a.numpregui,a.cantotgri,a.pestotgri,b.descrizionerid as MON,a.totgri,a.totpag,a.salgri,a.tipmongri,a.numplagri,c.unimedpro " +
+                            "from cabguiai a left join desc_mon b on b.idcodice=a.tipmongri left join detguiai c on c.idc=a.id " +
+                            "where a.sergui=@ser and a.numgui=@num limit 1 ";
                         using (MySqlCommand micon = new MySqlCommand(consulta, conn))
                         {
                             micon.Parameters.AddWithValue("@ser", dataGridView1.Rows[e.RowIndex].Cells[2].Value.ToString().Trim());
@@ -2153,6 +2163,7 @@ namespace TransCarga
                                         dataGridView1.Rows[e.RowIndex].Cells[8].Value = dr.GetString(5);
                                         dataGridView1.Rows[e.RowIndex].Cells[9].Value = dr.GetString(6);
                                         dataGridView1.Rows[e.RowIndex].Cells[10].Value = dr.GetString(7);
+                                        dataGridView1.Rows[e.RowIndex].Cells[16].Value = dr.GetString(9);
                                     }
                                     else
                                     {
