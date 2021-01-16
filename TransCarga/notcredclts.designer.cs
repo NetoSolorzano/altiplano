@@ -86,7 +86,7 @@
             this.gbox_serie = new System.Windows.Forms.GroupBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.cmb_tdv = new System.Windows.Forms.ComboBox();
+            this.cmb_tnota = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
             this.groupBox25 = new System.Windows.Forms.GroupBox();
             this.groupBox26 = new System.Windows.Forms.GroupBox();
@@ -109,7 +109,9 @@
             this.guiasclte = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.codmondoc = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.gbox_flete = new System.Windows.Forms.GroupBox();
-            this.tx_dat_plazo = new System.Windows.Forms.TextBox();
+            this.groupBox33 = new System.Windows.Forms.GroupBox();
+            this.groupBox34 = new System.Windows.Forms.GroupBox();
+            this.label12 = new System.Windows.Forms.Label();
             this.groupBox19 = new System.Windows.Forms.GroupBox();
             this.groupBox20 = new System.Windows.Forms.GroupBox();
             this.label7 = new System.Windows.Forms.Label();
@@ -128,7 +130,6 @@
             this.tx_flete = new TransCarga.NumericTextBox();
             this.label15 = new System.Windows.Forms.Label();
             this.groupBox16 = new System.Windows.Forms.GroupBox();
-            this.label12 = new System.Windows.Forms.Label();
             this.tx_estado = new System.Windows.Forms.TextBox();
             this.tx_impreso = new System.Windows.Forms.TextBox();
             this.tx_dat_estad = new System.Windows.Forms.TextBox();
@@ -148,15 +149,11 @@
             this.groupBox13 = new System.Windows.Forms.GroupBox();
             this.label2 = new System.Windows.Forms.Label();
             this.tx_email = new System.Windows.Forms.TextBox();
-            this.label4 = new System.Windows.Forms.Label();
-            this.tx_telc1 = new System.Windows.Forms.TextBox();
-            this.tx_telc2 = new System.Windows.Forms.TextBox();
             this.tx_dat_tdv = new System.Windows.Forms.TextBox();
             this.tx_dat_tdec = new System.Windows.Forms.TextBox();
             this.tx_tipcam = new System.Windows.Forms.TextBox();
             this.tx_fletMN = new System.Windows.Forms.TextBox();
             this.tx_dat_saldoGR = new System.Windows.Forms.TextBox();
-            this.tx_idcob = new System.Windows.Forms.TextBox();
             this.tx_tfmn = new System.Windows.Forms.TextBox();
             this.groupBox29 = new System.Windows.Forms.GroupBox();
             this.groupBox30 = new System.Windows.Forms.GroupBox();
@@ -165,11 +162,19 @@
             this.groupBox21 = new System.Windows.Forms.GroupBox();
             this.groupBox22 = new System.Windows.Forms.GroupBox();
             this.label9 = new System.Windows.Forms.Label();
+            this.chk_sinco = new System.Windows.Forms.CheckBox();
+            this.cmb_tdv = new System.Windows.Forms.ComboBox();
+            this.tx_dat_tnota = new System.Windows.Forms.TextBox();
+            this.groupBox31 = new System.Windows.Forms.GroupBox();
+            this.groupBox32 = new System.Windows.Forms.GroupBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.tx_fecemi = new System.Windows.Forms.TextBox();
             this.tx_numGR = new TransCarga.NumericTextBox();
             this.tx_serGR = new TransCarga.NumericTextBox();
             this.tx_tfil = new TransCarga.NumericTextBox();
-            this.tx_totcant = new TransCarga.NumericTextBox();
-            this.chk_sinco = new System.Windows.Forms.CheckBox();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.rb_anula = new System.Windows.Forms.RadioButton();
+            this.rb_dscto = new System.Windows.Forms.RadioButton();
             this.toolStrip1.SuspendLayout();
             this.groupBox11.SuspendLayout();
             this.groupBox7.SuspendLayout();
@@ -181,6 +186,7 @@
             this.groupBox23.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.gbox_flete.SuspendLayout();
+            this.groupBox33.SuspendLayout();
             this.groupBox19.SuspendLayout();
             this.groupBox14.SuspendLayout();
             this.groupBox39.SuspendLayout();
@@ -190,6 +196,8 @@
             this.groupBox9.SuspendLayout();
             this.groupBox29.SuspendLayout();
             this.groupBox21.SuspendLayout();
+            this.groupBox31.SuspendLayout();
+            this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // toolStrip1
@@ -463,7 +471,6 @@
             this.tx_distRtt.Name = "tx_distRtt";
             this.tx_distRtt.Size = new System.Drawing.Size(80, 18);
             this.tx_distRtt.TabIndex = 12;
-            this.tx_distRtt.Leave += new System.EventHandler(this.textBox9_Leave);
             // 
             // tx_provRtt
             // 
@@ -474,7 +481,6 @@
             this.tx_provRtt.Name = "tx_provRtt";
             this.tx_provRtt.Size = new System.Drawing.Size(80, 18);
             this.tx_provRtt.TabIndex = 11;
-            this.tx_provRtt.Leave += new System.EventHandler(this.textBox8_Leave);
             // 
             // tx_dptoRtt
             // 
@@ -485,7 +491,6 @@
             this.tx_dptoRtt.Name = "tx_dptoRtt";
             this.tx_dptoRtt.Size = new System.Drawing.Size(80, 18);
             this.tx_dptoRtt.TabIndex = 10;
-            this.tx_dptoRtt.Leave += new System.EventHandler(this.textBox7_Leave);
             // 
             // groupBox11
             // 
@@ -581,7 +586,6 @@
             this.tx_numDocRem.Name = "tx_numDocRem";
             this.tx_numDocRem.Size = new System.Drawing.Size(101, 18);
             this.tx_numDocRem.TabIndex = 7;
-            this.tx_numDocRem.Leave += new System.EventHandler(this.textBox3_Leave);
             // 
             // tx_dat_tdRem
             // 
@@ -699,7 +703,7 @@
             // 
             this.label13.AutoSize = true;
             this.label13.ForeColor = System.Drawing.Color.Black;
-            this.label13.Location = new System.Drawing.Point(357, 6);
+            this.label13.Location = new System.Drawing.Point(363, 6);
             this.label13.Name = "label13";
             this.label13.Size = new System.Drawing.Size(44, 13);
             this.label13.TabIndex = 285;
@@ -727,7 +731,7 @@
             // 
             this.gbox_serie.BackColor = System.Drawing.Color.Transparent;
             this.gbox_serie.Controls.Add(this.groupBox1);
-            this.gbox_serie.Controls.Add(this.cmb_tdv);
+            this.gbox_serie.Controls.Add(this.cmb_tnota);
             this.gbox_serie.Controls.Add(this.label1);
             this.gbox_serie.Controls.Add(this.groupBox25);
             this.gbox_serie.Controls.Add(this.groupBox23);
@@ -748,7 +752,7 @@
             this.groupBox1.Controls.Add(this.groupBox2);
             this.groupBox1.Location = new System.Drawing.Point(6, 32);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(121, 1);
+            this.groupBox1.Size = new System.Drawing.Size(122, 1);
             this.groupBox1.TabIndex = 338;
             this.groupBox1.TabStop = false;
             // 
@@ -760,15 +764,15 @@
             this.groupBox2.TabIndex = 113;
             this.groupBox2.TabStop = false;
             // 
-            // cmb_tdv
+            // cmb_tnota
             // 
-            this.cmb_tdv.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmb_tdv.FormattingEnabled = true;
-            this.cmb_tdv.Location = new System.Drawing.Point(79, 12);
-            this.cmb_tdv.Name = "cmb_tdv";
-            this.cmb_tdv.Size = new System.Drawing.Size(49, 21);
-            this.cmb_tdv.TabIndex = 0;
-            this.cmb_tdv.SelectedIndexChanged += new System.EventHandler(this.cmb_tdv_SelectedIndexChanged);
+            this.cmb_tnota.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmb_tnota.FormattingEnabled = true;
+            this.cmb_tnota.Location = new System.Drawing.Point(79, 12);
+            this.cmb_tnota.Name = "cmb_tnota";
+            this.cmb_tnota.Size = new System.Drawing.Size(49, 21);
+            this.cmb_tnota.TabIndex = 0;
+            this.cmb_tnota.SelectedIndexChanged += new System.EventHandler(this.cmb_tnota_SelectedIndexChanged);
             // 
             // label1
             // 
@@ -778,7 +782,7 @@
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(54, 13);
             this.label1.TabIndex = 337;
-            this.label1.Text = "Tipo Doc.";
+            this.label1.Text = "Tipo Nota";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // groupBox25
@@ -957,7 +961,8 @@
             // gbox_flete
             // 
             this.gbox_flete.BackColor = System.Drawing.Color.Transparent;
-            this.gbox_flete.Controls.Add(this.tx_dat_plazo);
+            this.gbox_flete.Controls.Add(this.groupBox33);
+            this.gbox_flete.Controls.Add(this.label12);
             this.gbox_flete.Controls.Add(this.groupBox19);
             this.gbox_flete.Controls.Add(this.label7);
             this.gbox_flete.Controls.Add(this.groupBox14);
@@ -979,15 +984,34 @@
             this.gbox_flete.TabIndex = 315;
             this.gbox_flete.TabStop = false;
             // 
-            // tx_dat_plazo
+            // groupBox33
             // 
-            this.tx_dat_plazo.BackColor = System.Drawing.SystemColors.Window;
-            this.tx_dat_plazo.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_dat_plazo.Location = new System.Drawing.Point(108, 13);
-            this.tx_dat_plazo.Name = "tx_dat_plazo";
-            this.tx_dat_plazo.Size = new System.Drawing.Size(42, 18);
-            this.tx_dat_plazo.TabIndex = 416;
-            this.tx_dat_plazo.Visible = false;
+            this.groupBox33.BackColor = System.Drawing.Color.White;
+            this.groupBox33.Controls.Add(this.groupBox34);
+            this.groupBox33.Location = new System.Drawing.Point(9, 156);
+            this.groupBox33.Name = "groupBox33";
+            this.groupBox33.Size = new System.Drawing.Size(127, 1);
+            this.groupBox33.TabIndex = 414;
+            this.groupBox33.TabStop = false;
+            // 
+            // groupBox34
+            // 
+            this.groupBox34.Location = new System.Drawing.Point(0, -26);
+            this.groupBox34.Name = "groupBox34";
+            this.groupBox34.Size = new System.Drawing.Size(164, 1);
+            this.groupBox34.TabIndex = 113;
+            this.groupBox34.TabStop = false;
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.label12.Location = new System.Drawing.Point(9, 141);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(54, 13);
+            this.label12.TabIndex = 413;
+            this.label12.Text = "VALOR N";
+            this.label12.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // groupBox19
             // 
@@ -1073,7 +1097,7 @@
             // 
             this.groupBox39.BackColor = System.Drawing.Color.White;
             this.groupBox39.Controls.Add(this.groupBox40);
-            this.groupBox39.Location = new System.Drawing.Point(9, 130);
+            this.groupBox39.Location = new System.Drawing.Point(9, 129);
             this.groupBox39.Name = "groupBox39";
             this.groupBox39.Size = new System.Drawing.Size(127, 1);
             this.groupBox39.TabIndex = 405;
@@ -1093,16 +1117,16 @@
             this.label24.ForeColor = System.Drawing.SystemColors.ControlText;
             this.label24.Location = new System.Drawing.Point(9, 114);
             this.label24.Name = "label24";
-            this.label24.Size = new System.Drawing.Size(56, 13);
+            this.label24.Size = new System.Drawing.Size(34, 13);
             this.label24.TabIndex = 404;
-            this.label24.Text = "Por cobrar";
+            this.label24.Text = "Saldo";
             this.label24.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // tx_salxcob
             // 
             this.tx_salxcob.AllowSpace = false;
             this.tx_salxcob.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_salxcob.Location = new System.Drawing.Point(65, 111);
+            this.tx_salxcob.Location = new System.Drawing.Point(65, 110);
             this.tx_salxcob.Name = "tx_salxcob";
             this.tx_salxcob.ReadOnly = true;
             this.tx_salxcob.Size = new System.Drawing.Size(73, 20);
@@ -1113,13 +1137,11 @@
             // 
             this.tx_pagado.AllowSpace = false;
             this.tx_pagado.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_pagado.Location = new System.Drawing.Point(42, 136);
+            this.tx_pagado.Location = new System.Drawing.Point(65, 137);
             this.tx_pagado.Name = "tx_pagado";
-            this.tx_pagado.ReadOnly = true;
-            this.tx_pagado.Size = new System.Drawing.Size(69, 20);
+            this.tx_pagado.Size = new System.Drawing.Size(73, 20);
             this.tx_pagado.TabIndex = 16;
             this.tx_pagado.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.tx_pagado.Visible = false;
             // 
             // tx_dat_mone
             // 
@@ -1171,17 +1193,6 @@
             this.groupBox16.TabIndex = 113;
             this.groupBox16.TabStop = false;
             // 
-            // label12
-            // 
-            this.label12.AutoSize = true;
-            this.label12.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label12.Location = new System.Drawing.Point(326, 329);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(91, 13);
-            this.label12.TabIndex = 319;
-            this.label12.Text = "Total Cant. Bultos";
-            this.label12.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
             // tx_estado
             // 
             this.tx_estado.BackColor = System.Drawing.SystemColors.Window;
@@ -1232,7 +1243,7 @@
             this.groupBox17.Controls.Add(this.groupBox18);
             this.groupBox17.Location = new System.Drawing.Point(101, 344);
             this.groupBox17.Name = "groupBox17";
-            this.groupBox17.Size = new System.Drawing.Size(358, 1);
+            this.groupBox17.Size = new System.Drawing.Size(160, 1);
             this.groupBox17.TabIndex = 330;
             this.groupBox17.TabStop = false;
             // 
@@ -1299,7 +1310,7 @@
             this.groupBox3.Controls.Add(this.groupBox4);
             this.groupBox3.Location = new System.Drawing.Point(173, 54);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(182, 1);
+            this.groupBox3.Size = new System.Drawing.Size(219, 1);
             this.groupBox3.TabIndex = 351;
             this.groupBox3.TabStop = false;
             // 
@@ -1317,15 +1328,15 @@
             this.lb_GR.ForeColor = System.Drawing.SystemColors.ControlText;
             this.lb_GR.Location = new System.Drawing.Point(176, 39);
             this.lb_GR.Name = "lb_GR";
-            this.lb_GR.Size = new System.Drawing.Size(43, 13);
+            this.lb_GR.Size = new System.Drawing.Size(49, 13);
             this.lb_GR.TabIndex = 352;
-            this.lb_GR.Text = "Factura";
+            this.lb_GR.Text = "Doc.Vta.";
             this.lb_GR.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // bt_agr
             // 
             this.bt_agr.Image = global::TransCarga.Properties.Resources.process24;
-            this.bt_agr.Location = new System.Drawing.Point(359, 30);
+            this.bt_agr.Location = new System.Drawing.Point(395, 30);
             this.bt_agr.Name = "bt_agr";
             this.bt_agr.Size = new System.Drawing.Size(32, 31);
             this.bt_agr.TabIndex = 4;
@@ -1338,7 +1349,7 @@
             this.groupBox9.Controls.Add(this.groupBox13);
             this.groupBox9.Location = new System.Drawing.Point(144, 142);
             this.groupBox9.Name = "groupBox9";
-            this.groupBox9.Size = new System.Drawing.Size(539, 1);
+            this.groupBox9.Size = new System.Drawing.Size(380, 1);
             this.groupBox9.TabIndex = 356;
             this.groupBox9.TabStop = false;
             // 
@@ -1371,43 +1382,11 @@
             this.tx_email.TabIndex = 13;
             this.tx_email.Leave += new System.EventHandler(this.tx_email_Leave);
             // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label4.Location = new System.Drawing.Point(550, 127);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(49, 13);
-            this.label4.TabIndex = 358;
-            this.label4.Text = "Teléfono";
-            // 
-            // tx_telc1
-            // 
-            this.tx_telc1.BackColor = System.Drawing.SystemColors.Window;
-            this.tx_telc1.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_telc1.Location = new System.Drawing.Point(603, 125);
-            this.tx_telc1.MaxLength = 0;
-            this.tx_telc1.Name = "tx_telc1";
-            this.tx_telc1.Size = new System.Drawing.Size(80, 18);
-            this.tx_telc1.TabIndex = 14;
-            this.tx_telc1.Leave += new System.EventHandler(this.tx_telc1_Leave);
-            // 
-            // tx_telc2
-            // 
-            this.tx_telc2.BackColor = System.Drawing.SystemColors.Window;
-            this.tx_telc2.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_telc2.Location = new System.Drawing.Point(683, 125);
-            this.tx_telc2.MaxLength = 0;
-            this.tx_telc2.Name = "tx_telc2";
-            this.tx_telc2.Size = new System.Drawing.Size(80, 18);
-            this.tx_telc2.TabIndex = 15;
-            this.tx_telc2.Visible = false;
-            // 
             // tx_dat_tdv
             // 
             this.tx_dat_tdv.BackColor = System.Drawing.SystemColors.Window;
             this.tx_dat_tdv.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_dat_tdv.Location = new System.Drawing.Point(141, 42);
+            this.tx_dat_tdv.Location = new System.Drawing.Point(150, 27);
             this.tx_dat_tdv.Name = "tx_dat_tdv";
             this.tx_dat_tdv.Size = new System.Drawing.Size(29, 18);
             this.tx_dat_tdv.TabIndex = 361;
@@ -1452,16 +1431,6 @@
             this.tx_dat_saldoGR.Size = new System.Drawing.Size(26, 18);
             this.tx_dat_saldoGR.TabIndex = 366;
             this.tx_dat_saldoGR.Visible = false;
-            // 
-            // tx_idcob
-            // 
-            this.tx_idcob.BackColor = System.Drawing.SystemColors.Window;
-            this.tx_idcob.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_idcob.Location = new System.Drawing.Point(13, 129);
-            this.tx_idcob.Name = "tx_idcob";
-            this.tx_idcob.Size = new System.Drawing.Size(29, 18);
-            this.tx_idcob.TabIndex = 367;
-            this.tx_idcob.Visible = false;
             // 
             // tx_tfmn
             // 
@@ -1539,11 +1508,80 @@
             this.label9.TabIndex = 413;
             this.label9.Text = "Monto en letras";
             // 
+            // chk_sinco
+            // 
+            this.chk_sinco.AutoSize = true;
+            this.chk_sinco.Location = new System.Drawing.Point(142, 126);
+            this.chk_sinco.Name = "chk_sinco";
+            this.chk_sinco.Size = new System.Drawing.Size(15, 14);
+            this.chk_sinco.TabIndex = 415;
+            this.chk_sinco.UseVisualStyleBackColor = true;
+            this.chk_sinco.CheckedChanged += new System.EventHandler(this.chk_sinco_CheckedChanged);
+            // 
+            // cmb_tdv
+            // 
+            this.cmb_tdv.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmb_tdv.FormattingEnabled = true;
+            this.cmb_tdv.Location = new System.Drawing.Point(228, 34);
+            this.cmb_tdv.Name = "cmb_tdv";
+            this.cmb_tdv.Size = new System.Drawing.Size(45, 21);
+            this.cmb_tdv.TabIndex = 416;
+            this.cmb_tdv.SelectedIndexChanged += new System.EventHandler(this.cmb_tdv_SelectedIndexChanged);
+            // 
+            // tx_dat_tnota
+            // 
+            this.tx_dat_tnota.BackColor = System.Drawing.SystemColors.Window;
+            this.tx_dat_tnota.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_dat_tnota.Location = new System.Drawing.Point(12, 123);
+            this.tx_dat_tnota.Name = "tx_dat_tnota";
+            this.tx_dat_tnota.Size = new System.Drawing.Size(29, 18);
+            this.tx_dat_tnota.TabIndex = 417;
+            this.tx_dat_tnota.Visible = false;
+            // 
+            // groupBox31
+            // 
+            this.groupBox31.BackColor = System.Drawing.Color.White;
+            this.groupBox31.Controls.Add(this.groupBox32);
+            this.groupBox31.Location = new System.Drawing.Point(530, 142);
+            this.groupBox31.Name = "groupBox31";
+            this.groupBox31.Size = new System.Drawing.Size(180, 1);
+            this.groupBox31.TabIndex = 419;
+            this.groupBox31.TabStop = false;
+            // 
+            // groupBox32
+            // 
+            this.groupBox32.Location = new System.Drawing.Point(0, -26);
+            this.groupBox32.Name = "groupBox32";
+            this.groupBox32.Size = new System.Drawing.Size(164, 1);
+            this.groupBox32.TabIndex = 113;
+            this.groupBox32.TabStop = false;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.label4.Location = new System.Drawing.Point(533, 127);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(75, 13);
+            this.label4.TabIndex = 418;
+            this.label4.Text = "Fecha emisión";
+            // 
+            // tx_fecemi
+            // 
+            this.tx_fecemi.BackColor = System.Drawing.SystemColors.Window;
+            this.tx_fecemi.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_fecemi.Location = new System.Drawing.Point(617, 123);
+            this.tx_fecemi.MaxLength = 0;
+            this.tx_fecemi.Name = "tx_fecemi";
+            this.tx_fecemi.Size = new System.Drawing.Size(93, 20);
+            this.tx_fecemi.TabIndex = 420;
+            this.tx_fecemi.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
             // tx_numGR
             // 
             this.tx_numGR.AllowSpace = false;
             this.tx_numGR.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_numGR.Location = new System.Drawing.Point(283, 35);
+            this.tx_numGR.Location = new System.Drawing.Point(319, 35);
             this.tx_numGR.Name = "tx_numGR";
             this.tx_numGR.Size = new System.Drawing.Size(73, 20);
             this.tx_numGR.TabIndex = 3;
@@ -1554,7 +1592,7 @@
             // 
             this.tx_serGR.AllowSpace = false;
             this.tx_serGR.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_serGR.Location = new System.Drawing.Point(237, 35);
+            this.tx_serGR.Location = new System.Drawing.Point(273, 35);
             this.tx_serGR.Name = "tx_serGR";
             this.tx_serGR.Size = new System.Drawing.Size(46, 20);
             this.tx_serGR.TabIndex = 2;
@@ -1572,26 +1610,38 @@
             this.tx_tfil.TabIndex = 347;
             this.tx_tfil.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
-            // tx_totcant
+            // panel1
             // 
-            this.tx_totcant.AllowSpace = false;
-            this.tx_totcant.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_totcant.Location = new System.Drawing.Point(418, 325);
-            this.tx_totcant.Name = "tx_totcant";
-            this.tx_totcant.ReadOnly = true;
-            this.tx_totcant.Size = new System.Drawing.Size(41, 20);
-            this.tx_totcant.TabIndex = 25;
-            this.tx_totcant.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.panel1.Controls.Add(this.rb_dscto);
+            this.panel1.Controls.Add(this.rb_anula);
+            this.panel1.Location = new System.Drawing.Point(449, 30);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(204, 37);
+            this.panel1.TabIndex = 421;
             // 
-            // chk_sinco
+            // rb_anula
             // 
-            this.chk_sinco.AutoSize = true;
-            this.chk_sinco.Location = new System.Drawing.Point(142, 126);
-            this.chk_sinco.Name = "chk_sinco";
-            this.chk_sinco.Size = new System.Drawing.Size(15, 14);
-            this.chk_sinco.TabIndex = 415;
-            this.chk_sinco.UseVisualStyleBackColor = true;
-            this.chk_sinco.CheckedChanged += new System.EventHandler(this.chk_sinco_CheckedChanged);
+            this.rb_anula.AutoSize = true;
+            this.rb_anula.ForeColor = System.Drawing.Color.Black;
+            this.rb_anula.Location = new System.Drawing.Point(25, 10);
+            this.rb_anula.Name = "rb_anula";
+            this.rb_anula.Size = new System.Drawing.Size(61, 17);
+            this.rb_anula.TabIndex = 0;
+            this.rb_anula.TabStop = true;
+            this.rb_anula.Text = "ANULA";
+            this.rb_anula.UseVisualStyleBackColor = true;
+            // 
+            // rb_dscto
+            // 
+            this.rb_dscto.AutoSize = true;
+            this.rb_dscto.ForeColor = System.Drawing.Color.Black;
+            this.rb_dscto.Location = new System.Drawing.Point(113, 10);
+            this.rb_dscto.Name = "rb_dscto";
+            this.rb_dscto.Size = new System.Drawing.Size(65, 17);
+            this.rb_dscto.TabIndex = 1;
+            this.rb_dscto.TabStop = true;
+            this.rb_dscto.Text = "DSCTO.";
+            this.rb_dscto.UseVisualStyleBackColor = true;
             // 
             // notcredclts
             // 
@@ -1600,6 +1650,13 @@
             this.AutoSize = true;
             this.BackColor = System.Drawing.Color.LightSteelBlue;
             this.ClientSize = new System.Drawing.Size(770, 497);
+            this.Controls.Add(this.panel1);
+            this.Controls.Add(this.groupBox31);
+            this.Controls.Add(this.tx_fecemi);
+            this.Controls.Add(this.label4);
+            this.Controls.Add(this.tx_dat_tnota);
+            this.Controls.Add(this.groupBox3);
+            this.Controls.Add(this.cmb_tdv);
             this.Controls.Add(this.chk_sinco);
             this.Controls.Add(this.groupBox21);
             this.Controls.Add(this.label9);
@@ -1607,21 +1664,16 @@
             this.Controls.Add(this.tx_fletLetras);
             this.Controls.Add(this.groupBox29);
             this.Controls.Add(this.tx_tfmn);
-            this.Controls.Add(this.tx_idcob);
             this.Controls.Add(this.tx_dat_saldoGR);
             this.Controls.Add(this.tx_fletMN);
             this.Controls.Add(this.tx_tipcam);
             this.Controls.Add(this.tx_dat_tdec);
             this.Controls.Add(this.tx_dat_tdv);
             this.Controls.Add(this.groupBox9);
-            this.Controls.Add(this.tx_telc2);
-            this.Controls.Add(this.tx_telc1);
-            this.Controls.Add(this.label4);
             this.Controls.Add(this.tx_email);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.bt_agr);
             this.Controls.Add(this.lb_GR);
-            this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.tx_numGR);
             this.Controls.Add(this.tx_serGR);
             this.Controls.Add(this.groupBox11);
@@ -1636,8 +1688,6 @@
             this.Controls.Add(this.tx_dat_estad);
             this.Controls.Add(this.tx_impreso);
             this.Controls.Add(this.tx_estado);
-            this.Controls.Add(this.tx_totcant);
-            this.Controls.Add(this.label12);
             this.Controls.Add(this.gbox_flete);
             this.Controls.Add(this.dataGridView1);
             this.Controls.Add(this.gbox_serie);
@@ -1686,6 +1736,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.gbox_flete.ResumeLayout(false);
             this.gbox_flete.PerformLayout();
+            this.groupBox33.ResumeLayout(false);
             this.groupBox19.ResumeLayout(false);
             this.groupBox14.ResumeLayout(false);
             this.groupBox39.ResumeLayout(false);
@@ -1695,6 +1746,9 @@
             this.groupBox9.ResumeLayout(false);
             this.groupBox29.ResumeLayout(false);
             this.groupBox21.ResumeLayout(false);
+            this.groupBox31.ResumeLayout(false);
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1766,8 +1820,6 @@
         private NumericTextBox tx_flete;
         private System.Windows.Forms.Label label15;
         private System.Windows.Forms.GroupBox groupBox16;
-        private NumericTextBox tx_totcant;
-        private System.Windows.Forms.Label label12;
         private System.Windows.Forms.TextBox tx_estado;
         private System.Windows.Forms.TextBox tx_impreso;
         private System.Windows.Forms.TextBox tx_dat_estad;
@@ -1793,7 +1845,7 @@
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.ComboBox cmb_tdv;
+        private System.Windows.Forms.ComboBox cmb_tnota;
         private NumericTextBox tx_serGR;
         private NumericTextBox tx_numGR;
         private System.Windows.Forms.GroupBox groupBox3;
@@ -1804,9 +1856,6 @@
         private System.Windows.Forms.GroupBox groupBox13;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox tx_email;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.TextBox tx_telc1;
-        private System.Windows.Forms.TextBox tx_telc2;
         private System.Windows.Forms.TextBox tx_dat_tdv;
         private System.Windows.Forms.TextBox tx_dat_tdec;
         private System.Windows.Forms.TextBox tx_tipcam;
@@ -1820,7 +1869,6 @@
         private NumericTextBox tx_igv;
         private System.Windows.Forms.TextBox tx_fletMN;
         private System.Windows.Forms.TextBox tx_dat_saldoGR;
-        private System.Windows.Forms.TextBox tx_idcob;
         private System.Windows.Forms.TextBox tx_tfmn;
         private System.Windows.Forms.GroupBox groupBox29;
         private System.Windows.Forms.GroupBox groupBox30;
@@ -1840,6 +1888,17 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn guiasclte;
         private System.Windows.Forms.DataGridViewTextBoxColumn codmondoc;
         private System.Windows.Forms.CheckBox chk_sinco;
-        private System.Windows.Forms.TextBox tx_dat_plazo;
+        private System.Windows.Forms.ComboBox cmb_tdv;
+        private System.Windows.Forms.TextBox tx_dat_tnota;
+        private System.Windows.Forms.GroupBox groupBox31;
+        private System.Windows.Forms.GroupBox groupBox32;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.TextBox tx_fecemi;
+        private System.Windows.Forms.GroupBox groupBox33;
+        private System.Windows.Forms.GroupBox groupBox34;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.RadioButton rb_dscto;
+        private System.Windows.Forms.RadioButton rb_anula;
     }
 }

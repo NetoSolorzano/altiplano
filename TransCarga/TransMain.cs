@@ -428,7 +428,7 @@ namespace TransCarga
             pic_icon_menu.Image = TransCarga.Properties.Resources.fec_elect21;
             menuStrip1.Items.Clear();
             menuStrip1.Items.Add("Boletas/Facturas",img_F1,fac_rapida_Click);           // F1
-            menuStrip1.Items.Add("Notas Cred/Deb",img_F4,fac_anulac_Click);              // F4
+            menuStrip1.Items.Add("Notas Crédito",img_F4,fac_anulac_Click);              // F4
             menuStrip1.Items.Add("Reportes",img_F5,fac_reportes_Click);               // F5
             //
             menuStrip1.Visible = true;
@@ -445,7 +445,14 @@ namespace TransCarga
         }
         private void fac_anulac_Click(object sender, EventArgs e)       // anulaciones de facturas
         {
-            MessageBox.Show("Form Notas de Crédito/Débito","Primavera 2021",MessageBoxButtons.OK,MessageBoxIcon.Information);
+            //MessageBox.Show("Form Notas de Crédito/Débito","Primavera 2021",MessageBoxButtons.OK,MessageBoxIcon.Information);
+            notcredclts fnc = new notcredclts();
+            fnc.TopLevel = false;
+            fnc.Parent = this;
+            fnc.Top = pn_phor.Top + pn_phor.Height + 1;
+            fnc.Left = pn_pver.Left + pn_pver.Width + 70;
+            pn_centro.Controls.Add(fnc);
+            fnc.Show();
         }
         private void fac_reportes_Click(object sender, EventArgs e)     // reportes de facturas
         {
