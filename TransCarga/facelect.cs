@@ -510,7 +510,12 @@ namespace TransCarga
                                 row[4].ToString(),
                                 row[2].ToString(),
                                 row[6].ToString(),
-                                row[7].ToString());
+                                row[7].ToString(),
+                                "",
+                                "",
+                                "",
+                                "",
+                                "");
                         }
                         dt.Dispose();
                     }
@@ -2704,17 +2709,17 @@ namespace TransCarga
         private bool imprimeTK()
         {
             bool retorna = false;
-            try
+            //try
             {
                 printDocument1.PrinterSettings.PrinterName = v_impTK;
                 printDocument1.Print();
                 retorna = true;
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message,"Error en imprimir TK");
-                retorna = false;
-            }
+            //catch (Exception ex)
+            //{
+            //    MessageBox.Show(ex.Message,"Error en imprimir TK");
+            //    retorna = false;
+            //}
             return retorna;
         }
         private void printDoc_PrintPage(object sender, System.Drawing.Printing.PrintPageEventArgs e)

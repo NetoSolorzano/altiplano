@@ -84,6 +84,7 @@ namespace TransCarga
         string correo_gen = "";         // correo generico del emisor cuando el cliente no tiene correo propio
         //
         static libreria lib = new libreria();   // libreria de procedimientos
+        static NumLetra numLetra = new NumLetra();
         publico lp = new publico();             // libreria de clases
         string verapp = System.Diagnostics.FileVersionInfo.GetVersionInfo(Application.ExecutablePath).FileVersion;
         string nomclie = Program.cliente;           // cliente usuario del sistema
@@ -228,6 +229,7 @@ namespace TransCarga
                 cmb_tnota.SelectedValue = v_codnot;
                 cmb_tnota.Enabled = false;
                 tx_serie.ReadOnly = true;
+                cmb_tnota_SelectedIndexChanged(null, null);
             }
         }
         private void jalainfo()                 // obtiene datos de imagenes y variables
@@ -467,7 +469,7 @@ namespace TransCarga
                 }
                 // datos para el combobox documento de venta
                 cmb_tdv.Items.Clear();
-                using (MySqlCommand cdv = new MySqlCommand("select distinct a.idcodice,a.descrizionerid,a.enlace1,a.codsunat,b.glosaser from desc_tdv a LEFT JOIN series b ON b.tipdoc = a.IDCodice where numero=@bloq and codigo=@codv", conn))
+                using (MySqlCommand cdv = new MySqlCommand("select distinct a.idcodice,a.descrizionerid,a.enlace1,a.codsunat,b.glosaser,a.deta1 from desc_tdv a LEFT JOIN series b ON b.tipdoc = a.IDCodice where numero=@bloq and codigo=@codv", conn))
                 {
                     cdv.Parameters.AddWithValue("@bloq", 1);
                     cdv.Parameters.AddWithValue("@codv", v_codidv);
@@ -482,7 +484,7 @@ namespace TransCarga
                 }
                 // datos para combo notas cred/deb
                 cmb_tnota.Items.Clear();
-                using (MySqlCommand cdv = new MySqlCommand("select distinct a.idcodice,a.descrizionerid,a.enlace1,a.codsunat,b.glosaser from desc_tdv a LEFT JOIN series b ON b.tipdoc = a.IDCodice where numero=@bloq and codigo=@codn", conn))
+                using (MySqlCommand cdv = new MySqlCommand("select distinct a.idcodice,a.descrizionerid,a.enlace1,a.codsunat,b.glosaser,a.deta1 from desc_tdv a LEFT JOIN series b ON b.tipdoc = a.IDCodice where numero=@bloq and codigo=@codn", conn))
                 {
                     cdv.Parameters.AddWithValue("@bloq", 1);
                     cdv.Parameters.AddWithValue("@codn", "nota");
@@ -566,7 +568,8 @@ namespace TransCarga
                             {
                                 if (dr.Read())
                                 {
-                                    tx_dat_tdRem.Text = dr.GetString("docC");
+                                    tx_nomtdc.Text = dr.GetString("docC");
+                                    tx_dat_tdRem.Text = dr.GetString("tidoclt");
                                     tx_numDocRem.Text = dr.GetString("nudoclt");
                                     tx_nomRem.Text = dr.GetString("nombclt");
                                     tx_dirRem.Text = dr.GetString("direclt");
@@ -602,6 +605,7 @@ namespace TransCarga
                                 }
                             }
                         }
+                        cmb_mon_SelectedIndexChanged(null, null);
                     }
                 }
             }
@@ -635,7 +639,7 @@ namespace TransCarga
                 }
             }
         }
-        private void calculos(decimal totDoc)
+        private void calculos(string letra,decimal totDoc)
         {
             decimal tigv = 0;
             decimal tsub = 0;
@@ -645,8 +649,16 @@ namespace TransCarga
                 tigv = Math.Round(totDoc - tsub, 2);
                 
             }
-            tx_igv.Text = tigv.ToString("#0.00");
-            tx_subt.Text = tsub.ToString("#0.00");
+            if (letra=="V")
+            {
+                tx_igv.Text = tigv.ToString("#0.00");
+                tx_subt.Text = tsub.ToString("#0.00");
+            }
+            if (letra == "N")
+            {
+                tx_igvNot.Text = tigv.ToString("#0.00");
+                tx_subtNot.Text = tsub.ToString("#0.00");
+            }
         }
         int CentimeterToPixel(double Centimeter)
         {
@@ -665,7 +677,7 @@ namespace TransCarga
             
             DataRow[] row = dttd1.Select("idcodice='"+tx_dat_tdv.Text+"'");             // tipo de documento venta
             tipdo = row[0][3].ToString();
-            string serie = row[0][1].ToString().Substring(0,1) + lib.Right(tx_serie.Text,3);
+            string serie = cmb_tdv.Text.Substring(0, 1) + tx_dat_inot.Text.Trim() + lib.Right(tx_serie.Text, 2);
             string corre = tx_numero.Text;
             DataRow[] rowd = dttd0.Select("idcodice='"+tx_dat_tdRem.Text+"'");          // tipo de documento del cliente
             tipoDocEmi = rowd[0][3].ToString().Trim();
@@ -675,7 +687,7 @@ namespace TransCarga
             if (provee == "Horizont")
             {
                 string ruta = rutatxt + "TXT/";
-                string archi = "";
+                string archi;
                 if (accion == "alta")
                 {
                     archi = rucclie + "-" + tipdo + "-" + serie + "-" + corre;
@@ -863,7 +875,7 @@ namespace TransCarga
                 "" + sep +                      // FERROVIARIO
                 "" + sep +                      // FERROVIARIO
                 "" + sep +                      // FERROVIARIO
-                "" + sep +                      // DOCUMENTOS MODIFICA
+                 + sep +                      // DOCUMENTOS MODIFICA   ................ ME QUEDE ACA
                 "" + sep +                      // DOCUMENTOS MODIFICA
                 "" + sep +                      // DOCUMENTOS MODIFICA
                 "" + sep +                      // DOCUMENTOS MODIFICA
@@ -1066,10 +1078,10 @@ namespace TransCarga
                 cmb_mon.Focus();
                 return;
             }
-            if (tx_flete.Text.Trim() == "" || tx_flete.Text.Trim() == "0")
+            if (tx_pagado.Text.Trim() == "" || tx_pagado.Text.Trim() == "0")
             {
                 MessageBox.Show("No existe valor del documento", " Atención ");
-                tx_flete.Focus();
+                tx_pagado.Focus();
                 return;
             }
             if (tx_tfil.Text.Trim() == "")
@@ -1120,21 +1132,18 @@ namespace TransCarga
             string iserror = "no";
             if (modo == "NUEVO")
             {
-                // valida pago y calcula
+                // valida y calcula
+                if (rb_anula.Checked == false && rb_dscto.Checked == false)
+                {
+                    MessageBox.Show("Seleccione el tipo de nota","Atención - seleccione",MessageBoxButtons.OK,MessageBoxIcon.Warning);
+                    rb_anula.Focus();
+                    return;
+                }
                 if (tx_dat_mone.Text != MonDeft && tx_tipcam.Text == "" || tx_tipcam.Text == "0")
                 {
                     MessageBox.Show("Problemas con el tipo de cambio","Atención",MessageBoxButtons.OK,MessageBoxIcon.Warning);
                     cmb_mon.Focus();
                     return;
-                }
-                if (tx_dat_mone.Text != MonDeft && decimal.Parse(tx_tipcam.Text) > 1)
-                {
-                    if (Math.Round(decimal.Parse(tx_tfmn.Text), 1) != Math.Round(decimal.Parse(tx_fletMN.Text), 1))
-                    {
-                        MessageBox.Show("El valor a facturar no puede ser diferente al valor de la(s) GR");
-                        tx_flete.Focus();
-                        return;
-                    }
                 }
                 if (tx_idr.Text.Trim() == "")
                 {
@@ -1151,30 +1160,30 @@ namespace TransCarga
                                 {
                                     MessageBox.Show(resulta, "Error en actualización de seguimiento", MessageBoxButtons.OK, MessageBoxIcon.Error);
                                 }
-                                //  TODO DOC.VTA. SE ENVIA A LA ETIQUETERA DE FRENTE ... 28/10/2020
-                                //  AL GRABAR SE ASUME IMPRESA 28/10/2020 ... ya no 13/12/2020
+                                /*
                                 var bb = MessageBox.Show("Desea imprimir el documento?" + Environment.NewLine +
                                     "El formato actual es " + vi_formato, "Confirme por favor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                                 if (bb == DialogResult.Yes)
                                 {
                                     Bt_print.PerformClick();
                                 }
+                                */
                             }
                             else
                             {
-                                MessageBox.Show("No se puede generar el documento de venta electrónico", "Error en proveedor de Fact.Electrónica");
+                                MessageBox.Show("No se puede generar la Nota de crédito", "Error en proveedor de Fact.Electrónica");
                                 iserror = "si";
                             }
                         }
                         else
                         {
-                            MessageBox.Show("No se puede grabar el documento de venta electrónico","Error en conexión");
+                            MessageBox.Show("No se puede grabar la nota de crédito","Error en conexión");
                             iserror = "si";
                         }
                     }
                     else
                     {
-                        tx_numDocRem.Focus();
+                        tx_obser1.Focus();
                         return;
                     }
                 }
@@ -1184,7 +1193,7 @@ namespace TransCarga
                     return;
                 }
             }
-            if (modo == "EDITAR")
+            if (modo == "EDITAR")   // solo observaciones
             {
                 if (tx_numero.Text.Trim() == "")
                 {
@@ -1248,63 +1257,25 @@ namespace TransCarga
             conn.Open();
             if(conn.State == ConnectionState.Open)
             {
-                string todo = "corre_serie";
-                using (MySqlCommand micon = new MySqlCommand(todo, conn))
-                {
-                    micon.CommandType = CommandType.StoredProcedure;
-                    micon.Parameters.AddWithValue("td", tx_dat_tdv.Text);
-                    micon.Parameters.AddWithValue("ser", tx_serie.Text);
-                    using (MySqlDataReader dr0 = micon.ExecuteReader())
-                    {
-                        if (dr0.Read())
-                        {
-                            if (dr0[0] != null && dr0.GetString(0) != "")
-                            {
-                                tx_numero.Text = lib.Right("00000000" + dr0.GetString(0), 8);
-                            }
-                        }
-                    }
-                }
-                if (tx_tipcam.Text == "") tx_tipcam.Text = "0";
-                decimal fletMN = 0;
-                decimal subtMN = 0;
-                decimal igvtMN = 0;
-                if (tx_dat_mone.Text != MonDeft)
-                {
-                    if (tx_tipcam.Text == "0" || tx_fletMN.Text == "")
-                    {
-                        MessageBox.Show("Error con el tipo de cambio", "Error interno", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        return retorna;
-                    }
-                    else
-                    {
-                        fletMN = Math.Round(decimal.Parse(tx_fletMN.Text), 3);
-                        subtMN = Math.Round(fletMN / (1 + decimal.Parse(v_igv)/100), 3);
-                        igvtMN = Math.Round(fletMN - subtMN, 3);
-                    }
-                }
-                else
-                {
-                    fletMN = Math.Round(decimal.Parse(tx_flete.Text), 3);
-                    subtMN = Math.Round(decimal.Parse(tx_subt.Text), 3);
-                    igvtMN = Math.Round(decimal.Parse(tx_igv.Text), 3);
-                }
-                string inserta = "insert into cab???? (" +
-                    "fechope,martdve,tipdvta,serdvta,numdvta,ticltgr,tidoclt,nudoclt,nombclt,direclt,dptoclt,provclt,distclt,ubigclt,corrclt,teleclt," +
-                    "locorig,dirorig,ubiorig,obsdvta,canfidt,canbudt,mondvta,tcadvta,subtota,igvtota,porcigv,totdvta,totpags,saldvta,estdvta,frase01," +
-                    "tipoclt,m1clien,tippago,ferecep,impreso,codMN,subtMN,igvtMN,totdvMN,pagauto,tipdcob,idcaja,plazocred," +
+                string inserta = "insert into cabdebcred (" +
+                    "fechope,martnot,tipnota,sernota,tipdvta,serdvta,numdvta,tidoclt,nudoclt,nombclt,direclt,dptoclt,provclt,distclt,ubigclt," +
+                    "corrclt,teleclt,locorig,dirorig,ubiorig,obsdvta,mondvta,tcadvta,subtota,igvtota,porcigv,totnota,totdvta,saldvta," +
+                    "subtMN,igvtMN,totdvMN,codMN,estnota,frase01,impreso,tipncred,canfidt," +
                     "verApp,userc,fechc,diriplan4,diripwan4,netbname) values (" +
-                    "@fechop,@mtdvta,@ctdvta,@serdv,@numdv,@tcdvta,@tdcrem,@ndcrem,@nomrem,@dircre,@dptocl,@provcl,@distcl,@ubicre,@mailcl,@telecl," +
-                    "@ldcpgr,@didegr,@ubdegr,@obsprg,@canfil,@totcpr,@monppr,@tcoper,@subpgr,@igvpgr,@porcigv,@totpgr,@pagpgr,@salxpa,@estpgr,@frase1," +
-                    "@ticlre,@m1clte,@tipacc,@feredv,@impSN,@codMN,@subMN,@igvMN,@totMN,@pagaut,@tipdco,@idcaj,@plazc," +
+                    "@fechop,@mtdvta,@tipnot,@sernot,@ctdvta,@serdv,@numdv,@tdcrem,@ndcrem,@nomrem,@dircre,@dptocl,@provcl,@distcl,@ubicre," +
+                    "@mailcl,@telecl,@ldcpgr,@didegr,@ubdegr,@obsprg,@monppr,@tcoper,@stonot,@igvnot,@porcigv,@pagpgr,@totpgr,@salxpa," +
+                    "@subMN,@igvMN,@totMN,@codMN,@estpgr,@frase1,@impSN,@tipon,@canfi," +
                     "@verApp,@asd,now(),@iplan,@ipwan,@nbnam)";
                 using (MySqlCommand micon = new MySqlCommand(inserta, conn))
                 {
                     micon.Parameters.AddWithValue("@fechop", tx_fechope.Text.Substring(6, 4) + "-" + tx_fechope.Text.Substring(3, 2) + "-" + tx_fechope.Text.Substring(0, 2));
-                    micon.Parameters.AddWithValue("@mtdvta", cmb_tnota.Text.Substring(0,1));
+                    micon.Parameters.AddWithValue("@mtdvta", cmb_tdv.Text.Substring(0, 1) + tx_dat_inot.Text.Trim());
+                    micon.Parameters.AddWithValue("@tipnot", tx_dat_tnota.Text);
+                    micon.Parameters.AddWithValue("@sernot", tx_serie.Text);
+                    //micon.Parameters.AddWithValue("@numnot", tx_numero.Text); // lo hace el trigger de la tabla
                     micon.Parameters.AddWithValue("@ctdvta", tx_dat_tdv.Text);
-                    micon.Parameters.AddWithValue("@serdv", tx_serie.Text);
-                    micon.Parameters.AddWithValue("@numdv", tx_numero.Text);
+                    micon.Parameters.AddWithValue("@serdv", tx_serGR.Text);
+                    micon.Parameters.AddWithValue("@numdv", tx_numGR.Text);
                     micon.Parameters.AddWithValue("@tdcrem", tx_dat_tdRem.Text);
                     micon.Parameters.AddWithValue("@ndcrem", tx_numDocRem.Text);
                     micon.Parameters.AddWithValue("@nomrem", tx_nomRem.Text);
@@ -1312,29 +1283,30 @@ namespace TransCarga
                     micon.Parameters.AddWithValue("@dptocl", tx_dptoRtt.Text);
                     micon.Parameters.AddWithValue("@provcl", tx_provRtt.Text);
                     micon.Parameters.AddWithValue("@distcl", tx_distRtt.Text);
+                    micon.Parameters.AddWithValue("@ubicre", "");                               // este dato no hay
                     micon.Parameters.AddWithValue("@mailcl", tx_email.Text);
-                    micon.Parameters.AddWithValue("@ldcpgr", TransCarga.Program.almuser);         // local origen
-                    micon.Parameters.AddWithValue("@didegr", dirloc);                             // direccion origen
-                    micon.Parameters.AddWithValue("@ubdegr", ubiloc);                             // ubigeo origen
+                    micon.Parameters.AddWithValue("@telecl", "");                               // este dato no hay el form
+                    micon.Parameters.AddWithValue("@ldcpgr", TransCarga.Program.almuser);       // local origen
+                    micon.Parameters.AddWithValue("@didegr", dirloc);                           // direccion origen
+                    micon.Parameters.AddWithValue("@ubdegr", "");                               // este dato no hay en form
                     micon.Parameters.AddWithValue("@obsprg", tx_obser1.Text);
-                    micon.Parameters.AddWithValue("@canfil", tx_tfil.Text);     // cantidad de filas de detalle
                     micon.Parameters.AddWithValue("@monppr", tx_dat_mone.Text);
-                    micon.Parameters.AddWithValue("@tcoper", tx_tipcam.Text);                   // TIPO DE CAMBIO
-                    micon.Parameters.AddWithValue("@subpgr", tx_subt.Text);                     // sub total
-                    micon.Parameters.AddWithValue("@igvpgr", tx_igv.Text);                      // igv
+                    micon.Parameters.AddWithValue("@tcoper", (tx_tipcam.Text.Trim()!="") ? tx_tipcam.Text: "0");                   // TIPO DE CAMBIO
+                    micon.Parameters.AddWithValue("@stonot", tx_subtNot.Text);
+                    micon.Parameters.AddWithValue("@igvnot", tx_igvNot.Text);
                     micon.Parameters.AddWithValue("@porcigv", v_igv);                           // porcentaje en numeros de IGV
+                    micon.Parameters.AddWithValue("@pagpgr", tx_pagado.Text);
                     micon.Parameters.AddWithValue("@totpgr", tx_flete.Text);                    // total inc. igv
-                    micon.Parameters.AddWithValue("@pagpgr", (tx_pagado.Text == "") ? "0" : tx_pagado.Text);
                     micon.Parameters.AddWithValue("@salxpa", (tx_salxcob.Text == "") ? "0" : tx_salxcob.Text);
-                    micon.Parameters.AddWithValue("@estpgr", (tx_pagado.Text == "" || tx_pagado.Text == "0.00") ? tx_dat_estad.Text : codCanc); // estado
+                    micon.Parameters.AddWithValue("@subMN", tx_subMN.Text);
+                    micon.Parameters.AddWithValue("@igvMN", tx_igvMN.Text);
+                    micon.Parameters.AddWithValue("@totMN", tx_pagoMN.Text);
+                    micon.Parameters.AddWithValue("@codMN", MonDeft);                // codigo moneda local
+                    micon.Parameters.AddWithValue("@estpgr", tx_dat_estad.Text);     // estado
                     micon.Parameters.AddWithValue("@frase1", "");                   // no hay nada que poner 19/11/2020
-                    micon.Parameters.AddWithValue("@tipacc", v_mpag);                   // pago del documento x defecto si nace la fact pagada
-                    micon.Parameters.AddWithValue("@feredv", DBNull.Value);         // si es pago contado la fecha de recep del doc. es la misma fecha
                     micon.Parameters.AddWithValue("@impSN", "N");
-                    micon.Parameters.AddWithValue("@codMN", MonDeft);               // codigo moneda local
-                    micon.Parameters.AddWithValue("@subMN", subtMN);
-                    micon.Parameters.AddWithValue("@igvMN", igvtMN);
-                    micon.Parameters.AddWithValue("@totMN", fletMN);
+                    micon.Parameters.AddWithValue("@tipon", (rb_anula.Checked == true)? "ANU" : "DES");
+                    micon.Parameters.AddWithValue("@canfi", tx_tfil.Text);
                     micon.Parameters.AddWithValue("@verApp", verapp);
                     micon.Parameters.AddWithValue("@asd", asd);
                     micon.Parameters.AddWithValue("@iplan", lib.iplan());
@@ -1349,6 +1321,7 @@ namespace TransCarga
                         if (dr.Read())
                         {
                             tx_idr.Text = dr.GetString(0);
+                            tx_numero.Text = lib.Right("0000000" + dr.GetString(0), 8);
                         }
                     }
                 }
@@ -1360,10 +1333,10 @@ namespace TransCarga
                     {
                         if (dataGridView1.Rows[i].Cells[0].Value.ToString().Trim() != "")
                         {
-
-                            string inserd2 = "update det???? set " +
+                            // idc, filadet, marnota, tipnota, sernota, numnota, martdve, tipdocvta, serdvta, numdvta, codmovta, totdvta,fechope, estadoser
+                            string inserd2 = "update detdebcred set " +
                                 "codgror=@guia,cantbul=@bult,unimedp=@unim,descpro=@desc,pesogro=@peso,codmogr=@codm,totalgr=@pret,codMN=@cmnn," +
-                                "totalgrMN=@tgrmn,pagauto=@pagaut " +
+                                "totalgrMN=@tgrmn " +
                                 "where idc=@idr and filadet=@fila";
                             using (MySqlCommand micon = new MySqlCommand(inserd2, conn))
                             {
@@ -1406,7 +1379,7 @@ namespace TransCarga
                 {
                     if (true)     // EDICION DE CABECERA
                     {
-                        string actua = "update cab??? a set obsdvta=@obsprg," +
+                        string actua = "update cabdebcred a set obsdvta=@obsprg," +
                             "a.verApp=@verApp,a.userm=@asd,a.fechm=now(),a.diriplan4=@iplan,a.diripwan4=@ipwan,a.netbname=@nbnam " +
                             "where a.id=@idr";
                         MySqlCommand micon = new MySqlCommand(actua, conn);
@@ -1469,11 +1442,10 @@ namespace TransCarga
         }
         private void tx_flete_Leave(object sender, EventArgs e)
         {
-            /*
             if (tx_flete.Text.Trim() != "" && Tx_modo.Text == "NUEVO")
             {
                 tx_flete.Text = Math.Round(decimal.Parse(tx_flete.Text), 2).ToString("#0.00");
-                calculos(decimal.Parse((tx_flete.Text.Trim() != "") ? tx_flete.Text : "0"));
+                //calculos(decimal.Parse((tx_flete.Text.Trim() != "") ? tx_flete.Text : "0"));
                 //
                 if (tx_dat_mone.Text != MonDeft)
                 {
@@ -1487,21 +1459,13 @@ namespace TransCarga
                     else
                     {
                         tx_fletMN.Text = Math.Round(decimal.Parse(tx_flete.Text) * decimal.Parse(tx_tipcam.Text), 2).ToString();
-                        if (Math.Round(decimal.Parse(tx_tfmn.Text),1) != Math.Round(decimal.Parse(tx_fletMN.Text),1))
-                        {
-                            MessageBox.Show("No coinciden los valores!","Error en calculo",MessageBoxButtons.OK,MessageBoxIcon.Error);
-                            tx_flete.Text = "";
-                            tx_flete.Focus();
-                            return;
-                        }
                     }
                 }
-                DataRow[] row = dtm.Select("idcodice='" + tx_dat_mone.Text + "'");
-                NumLetra numLetra = new NumLetra();
-                tx_fletLetras.Text = numLetra.Convertir(tx_flete.Text,true) + row[0][3].ToString().Trim();
-                button1.Focus();
+                else
+                {
+                    tx_fletMN.Text = tx_flete.Text;
+                }
             }
-            */
         }
         private void tx_serGR_Leave(object sender, EventArgs e)
         {
@@ -1534,6 +1498,76 @@ namespace TransCarga
             else
             {
                 if (tx_email.Text.Trim() != "") tx_email.Text = "";
+            }
+        }
+        private void rb_anula_CheckedChanged(object sender, EventArgs e)
+        {
+            if (Tx_modo.Text == "NUEVO" && rb_anula.Checked == true)
+            {
+                //tx_pagado.Enabled = false;
+                //tx_pagado.ReadOnly = true;
+                gbox_flete.Enabled = false;
+                tx_pagado.Text = tx_flete.Text;
+                tx_salxcob.Text = "0.00";
+                tx_fletLetras.Text = numLetra.Convertir(tx_flete.Text, true) + " " + tx_dat_nomon.Text;
+                tx_flete_Leave(null, null);
+                tx_pagado_Leave(null,null);
+            }
+        }
+        private void rb_dscto_CheckedChanged(object sender, EventArgs e)
+        {
+            if (Tx_modo.Text == "NUEVO" && rb_dscto.Checked == true)
+            {
+                gbox_flete.Enabled = true;
+                cmb_mon.Enabled = false;
+                tx_flete.ReadOnly = true;
+                tx_igv.ReadOnly = true;
+                tx_subt.ReadOnly = true;
+                tx_pagado.Text = "";
+                tx_salxcob.Text = "";
+                tx_fletLetras.Text = "";
+                tx_pagado.Enabled = true;
+                tx_pagado.ReadOnly = false;
+                tx_pagado.Focus();
+            }
+        }
+        private void tx_pagado_Leave(object sender, EventArgs e)
+        {
+            if (tx_pagado.Text.Trim() != "" && Tx_modo.Text == "NUEVO")
+            {
+                tx_pagado.Text = Math.Round(decimal.Parse(tx_pagado.Text), 2).ToString("#0.00");
+                tx_salxcob.Text = Math.Round(decimal.Parse(tx_flete.Text) - decimal.Parse(tx_pagado.Text), 2).ToString("#0.00");
+                calculos("N",decimal.Parse((tx_pagado.Text.Trim() != "") ? tx_pagado.Text : "0"));
+                //
+                if (tx_dat_mone.Text != MonDeft)
+                {
+                    if (tx_tipcam.Text == "" || tx_tipcam.Text.Trim() == "0")
+                    {
+                        MessageBox.Show("Se requiere tipo de cambio");
+                        tx_pagado.Text = "";
+                        tx_pagado.Focus();
+                        return;
+                    }
+                    else
+                    {
+                        tx_pagoMN.Text = Math.Round(decimal.Parse(tx_pagado.Text) * decimal.Parse(tx_tipcam.Text), 2).ToString();
+                        tx_subMN.Text = Math.Round(decimal.Parse(tx_subtNot.Text) * decimal.Parse(tx_tipcam.Text), 2).ToString();
+                        tx_igvMN.Text = Math.Round(decimal.Parse(tx_igvNot.Text) * decimal.Parse(tx_tipcam.Text), 2).ToString();
+                        /*if (Math.Round(decimal.Parse(tx_tfmn.Text), 1) != Math.Round(decimal.Parse(tx_pagoMN.Text), 1))
+                        {
+                            MessageBox.Show("No coinciden los valores!", "Error en calculo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            tx_pagado.Text = "";
+                            tx_pagado.Focus();
+                            return;
+                        }*/
+                    }
+                }
+                else
+                {
+                    tx_pagoMN.Text = tx_pagado.Text;
+                    tx_subMN.Text = tx_subtNot.Text;
+                    tx_igvMN.Text = tx_igvNot.Text;
+                }
             }
         }
         #endregion
@@ -1621,7 +1655,7 @@ namespace TransCarga
             Bt_fin.Enabled = false;
             initIngreso();
             tx_numero.ReadOnly = true;
-            tx_serGR.Focus();
+            cmb_tdv.Focus();
         }
         private void Bt_edit_Click(object sender, EventArgs e)
         {
@@ -1776,8 +1810,9 @@ namespace TransCarga
                     tx_dat_mone.Text = cmb_mon.SelectedValue.ToString();
                     DataRow[] row = dtm.Select("idcodice='"+ tx_dat_mone.Text+"'");
                     tx_dat_monsunat.Text = row[0][2].ToString();
+                    tx_dat_nomon.Text = row[0][3].ToString();
                     tipcambio(tx_dat_mone.Text);
-                    if (tx_flete.Text != "" && tx_flete.Text != "0.00") calculos(decimal.Parse(tx_flete.Text));
+                    if (tx_flete.Text != "" && tx_flete.Text != "0.00") calculos("V",decimal.Parse(tx_flete.Text));
                     tx_flete.Focus();
                 }
             }
@@ -1790,10 +1825,11 @@ namespace TransCarga
                 if (row.Length > 0)
                 {
                     tx_dat_tdv.Text = row[0].ItemArray[0].ToString();
-                    tx_dat_tdec.Text = row[0].ItemArray[2].ToString();
+                    //tx_dat_tdec.Text = row[0].ItemArray[2].ToString();
                     //glosser = row[0].ItemArray[4].ToString();
                     tx_serGR.Text = "";
                     tx_numGR.Text = "";
+                    //tx_dat_inot.Text = 
                 }
             }
         }
@@ -1807,6 +1843,7 @@ namespace TransCarga
                     tx_dat_tnota.Text = row[0].ItemArray[0].ToString();
                     tx_dat_tdec.Text = row[0].ItemArray[2].ToString();
                     glosser = row[0].ItemArray[4].ToString();
+                    tx_dat_inot.Text = row[0].ItemArray[5].ToString();
                     //tx_serie.Text = "";
                     //tx_numero.Text = "";
                 }
