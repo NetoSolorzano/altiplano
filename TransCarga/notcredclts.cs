@@ -106,7 +106,7 @@ namespace TransCarga
         string DB_CONN_STR = "server=" + login.serv + ";uid=" + login.usua + ";pwd=" + login.cont + ";database=" + data + ";";
 
         DataTable dtu = new DataTable();        // detalle del documento
-        DataTable dttd0 = new DataTable();
+        //DataTable dttd0 = new DataTable();
         DataTable dttd1 = new DataTable();
         DataTable dtm = new DataTable();        // moneda
         DataTable dttdn = new DataTable();      // tip doc notas cred
@@ -543,7 +543,7 @@ namespace TransCarga
             }
             return retorna;
         }
-        private bool validGR()    // validamos y devolvemos datos
+        private bool validGR()                  // validamos y devolvemos datos
         {
             bool retorna = false;
             if (tx_dat_tdv.Text != "" && tx_serGR.Text != "" && tx_numGR.Text != "")
@@ -555,7 +555,7 @@ namespace TransCarga
                     if (lib.procConn(conn) == true)
                     {
                         string consulta = "select a.fechope,a.martdve,a.tipdvta,a.serdvta,a.numdvta,a.tidoclt,a.nudoclt,a.nombclt,a.direclt,a.dptoclt,a.provclt,a.distclt,a.ubigclt," +
-                            "a.corrclt,a.teleclt,a.mondvta,a.subtota,a.igvtota,a.porcigv,a.totdvta,a.saldvta,a.subtMN,a.igvtMN,a.totdvMN,b.descrizionerid as docC " +
+                            "a.corrclt,a.teleclt,a.mondvta,a.subtota,a.igvtota,a.porcigv,a.totdvta,a.saldvta,a.subtMN,a.igvtMN,a.totdvMN,b.descrizionerid as docC,b.codsunat " +
                             "from cabfactu a left join desc_doc b on b.idcodice=a.tidoclt " +
                             "WHERE a.tipdvta = @tdv AND a.serdvta = @ser AND a.numdvta = @num AND a.estdvta<> @coda";
                         using (MySqlCommand micon = new MySqlCommand(consulta, conn))
@@ -570,6 +570,7 @@ namespace TransCarga
                                 {
                                     tx_nomtdc.Text = dr.GetString("docC");
                                     tx_dat_tdRem.Text = dr.GetString("tidoclt");
+                                    tx_dat_tdsunat.Text = dr.GetString("codsunat");
                                     tx_numDocRem.Text = dr.GetString("nudoclt");
                                     tx_nomRem.Text = dr.GetString("nombclt");
                                     tx_dirRem.Text = dr.GetString("direclt");
@@ -587,7 +588,7 @@ namespace TransCarga
                                 }
                             }
                         }
-                        consulta = "SELECT a.codgror,a.cantbul,a.unimedp,a.descpro,a.totalgr,a.codMN,a.totalgrMN "+
+                        consulta = "SELECT a.codgror,a.cantbul,a.unimedp,a.descpro,a.totalgr,a.codMN,a.totalgrMN,a.codmovta "+
                             "FROM detfactu a WHERE a.tipdocvta=@tdv AND a.serdvta=@ser AND a.numdvta=@num AND estadoser<>@coda";
                         using (MySqlCommand midet = new MySqlCommand(consulta, conn))
                         {
@@ -601,11 +602,37 @@ namespace TransCarga
                                 da.Fill(dtu);
                                 foreach (DataRow row in dtu.Rows)
                                 {
-                                    dataGridView1.Rows.Add(row[0], row[3], row[1], row[5], row[4], row[6], "", "", "", "");
+                                    dataGridView1.Rows.Add(row[0], row[3], row[1], row[7], row[4], row[6], row[5], "", "", row[7]);
                                 }
                             }
                         }
                         cmb_mon_SelectedIndexChanged(null, null);
+                    }
+                }
+            }
+            return retorna;
+        }
+        private bool validnota()                // validamos que el documento tenga nota de credito, tiene=true, no tiene=false
+        {
+            bool retorna = true;
+            using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
+            {
+                if (lib.procConn(conn) == true)
+                {
+                    string consulta = "select count(id) from cabdebcred where tipdvta=@tipo and serdvta=@serd and numdvta=@nume";
+                    using (MySqlCommand micon = new MySqlCommand(consulta, conn))
+                    {
+                        micon.Parameters.AddWithValue("@tipo", tx_dat_tdv.Text);
+                        micon.Parameters.AddWithValue("@serd", tx_serGR.Text);
+                        micon.Parameters.AddWithValue("@nume", tx_numGR.Text);
+                        using (MySqlDataReader dr = micon.ExecuteReader())
+                        {
+                            if (dr.Read())
+                            {
+                                if (dr.GetInt16(0) > 0) retorna = true;
+                                else retorna = false;
+                            }
+                        }
                     }
                 }
             }
@@ -674,16 +701,23 @@ namespace TransCarga
         private bool factElec(string provee, string tipo, string accion, int ctab)                 // conexion a facturacion electrónica provee=proveedor | tipo=txt ó json
         {
             bool retorna = false;
-            
+            DataRow[] ron = dttdn.Select("idcodice='" + tx_dat_tnota.Text + "'");             // tipo de nota
+            tipdo = ron[0][3].ToString();
             DataRow[] row = dttd1.Select("idcodice='"+tx_dat_tdv.Text+"'");             // tipo de documento venta
-            tipdo = row[0][3].ToString();
+            string tipdv = row[0][3].ToString();
             string serie = cmb_tdv.Text.Substring(0, 1) + tx_dat_inot.Text.Trim() + lib.Right(tx_serie.Text, 2);
+            string serdv = cmb_tdv.Text.Substring(0, 1) + lib.Right(tx_serGR.Text, 3);
             string corre = tx_numero.Text;
-            DataRow[] rowd = dttd0.Select("idcodice='"+tx_dat_tdRem.Text+"'");          // tipo de documento del cliente
-            tipoDocEmi = rowd[0][3].ToString().Trim();
+            string numdv = tx_numGR.Text;
+            //DataRow[] rowd = dttd0.Select("idcodice='"+tx_dat_tdRem.Text+"'");          // tipo de documento del cliente
+            tipoDocEmi = tx_dat_tdsunat.Text;           // rowd[0][3].ToString().Trim();
             DataRow[] rowm = dtm.Select("idcodice='" + tx_dat_mone.Text + "'");         // tipo de moneda
             tipoMoneda = rowm[0][2].ToString().Trim();
             //
+            string ctnota = "01";                                                       // tipo de nota de credito 01=anulacion
+            string ntnota = "Anulación de la operación";                                // nombre del tipo de nota
+            string fedoco = tx_fecemi.Text.Substring(6, 4) + "-" +
+                tx_fecemi.Text.Substring(3, 2) + "-" + tx_fecemi.Text.Substring(0, 2);  // fecha del documento que se anula
             if (provee == "Horizont")
             {
                 string ruta = rutatxt + "TXT/";
@@ -691,7 +725,7 @@ namespace TransCarga
                 if (accion == "alta")
                 {
                     archi = rucclie + "-" + tipdo + "-" + serie + "-" + corre;
-                    if (crearTXT(tipdo, serie, corre, ruta + archi) == true)
+                    if (crearTXT(tipdo, serie, corre, ruta + archi, tipdv, serdv, numdv, ctnota, ntnota, fedoco) == true)
                     {
                         retorna = true;
                     }
@@ -699,7 +733,7 @@ namespace TransCarga
             }
             return retorna;
         }
-        private bool crearTXT(string tipdo, string serie, string corre, string file_path)
+        private bool crearTXT(string tipdo, string serie, string corre, string file_path, string tipdv, string serdv, string numdv, string ctnota, string ntnota, string fedoco)
         {
             bool retorna;
             retorna = false;
@@ -776,6 +810,36 @@ namespace TransCarga
             string _forpa = "";                                                         // glosa de forma de pago SUNAT
             string _valcr = "";                                                         // valor credito
             string _fechc = "";                                                         // fecha programada del pago credito
+            /* *********************   calculo y campos de detracciones   ****************************** */
+            if (double.Parse(tx_flete.Text) > double.Parse(Program.valdetra) && tx_dat_tdv.Text == codfact && tx_dat_mone.Text == MonDeft)    // soles
+            {
+
+                // Están sujetos a las detracciones los servicios de transporte de bienes por vía terrestre gravado con el IGV, 
+                // siempre que el importe de la operación o el valor referencial, según corresponda, sea mayor a 
+                // S/ 400.00 o su equivalente en dólares ........ DICE SUNAT
+                // ctadetra;                                                            // numeroCtaBancoNacion
+                // valdetra;                                                            // monto a partir del cual tiene detraccion la operacion
+                // coddetra;                                                            // codigoDetraccion
+                // pordetra;                                                            // porcentajeDetraccion
+                d_medpa = "001";                                    // medio de pago de la detraccion (001 = deposito en cuenta)
+                d_monde = "PEN"; // MonDeft;                                  // moneda de la detraccion
+                d_conpa = "CONTADO";                                // condicion de pago
+                d_porde = Program.pordetra;                         // porcentaje de detraccion
+                d_valde = Program.valdetra;                         // valor de la detraccion
+                d_codse = Program.coddetra;                         // codigo de servicio
+                d_ctade = Program.ctadetra;                         // cuenta detraccion BN
+                d_valre = "0";                                      // valor referencial
+                d_numre = "";                // numero registro mtc del camion
+                d_confv = "";                // config. vehicular del camion
+                d_ptori = "";                // Pto de origen
+                d_ptode = "";                // Pto de destino
+                d_vrepr = "0";               // valor referencial preliminar
+                codleyt = "1000";            // codigoLeyenda 1 - valor en letras
+                totdet = Math.Round(double.Parse(tx_flete.Text) * double.Parse(Program.pordetra) / 100, 2);    // totalDetraccion
+                codleyd = "2006";
+                tipOper = "1001";
+                glosdet = glosdet + " " + d_ctade;                // leyenda de la detración
+            }
             if (tx_dat_mone.Text != MonDeft)
             {
                 _morefD = tx_dat_monsunat.Text;                                      // moneda de refencia para el tipo de cambio
@@ -875,11 +939,11 @@ namespace TransCarga
                 "" + sep +                      // FERROVIARIO
                 "" + sep +                      // FERROVIARIO
                 "" + sep +                      // FERROVIARIO
-                 + sep +                      // DOCUMENTOS MODIFICA   ................ ME QUEDE ACA
-                "" + sep +                      // DOCUMENTOS MODIFICA
-                "" + sep +                      // DOCUMENTOS MODIFICA
-                "" + sep +                      // DOCUMENTOS MODIFICA
-                "" + sep +                      // DOCUMENTOS MODIFICA
+                tipdv + sep +                   // DOCUMENTOS MODIFICA - tipo documento
+                serdv + "-" + numdv + sep +     // DOCUMENTOS MODIFICA - serie-numero
+                ctnota + sep +                  // DOCUMENTOS MODIFICA - tipo de nota 01=Anulación
+                ntnota + sep +                  // DOCUMENTOS MODIFICA - descripción del tipo
+                fedoco + sep +                  // DOCUMENTOS MODIFICA - fecha emsion del doc que se anula
                 "" + sep +                      // INCOTERMS
                 "" + sep +                      // INCOTERMS
                 "" + sep +                      // IMPUESTO ICBPER
@@ -985,12 +1049,14 @@ namespace TransCarga
                 codleyd + sep +         // codigo leyenda monto en letras
                 glosdet + sep);            // Leyenda: Monto expresado en Letras
             }
+            /*      // en NOTAS DE CREDITO no ponemos guia del cliente
             for (int s = 0; s < dataGridView1.Rows.Count - 1; s++)
             {
                 writer.WriteLine("E" + sep +
                 codobs + sep +
                 dataGridView1.Rows[s].Cells["guiasclte"].Value.ToString() + sep);
             }
+            */
             writer.Flush();
             writer.Close();
             retorna = true;
@@ -1038,9 +1104,19 @@ namespace TransCarga
                 // validamos que la FT: 1.exista, 2.No este anulada
                 if (validGR() == false)
                 {
-                    MessageBox.Show("La Factura no existe o esta anulada", "Error en Factura", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    tx_numGR.Text = "";
-                    tx_numGR.Focus();
+                    MessageBox.Show("La Boleta/Factura no existe o esta anulada", "Error en documento", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    //tx_numGR.Text = "";
+                    initIngreso();
+                    cmb_tdv.Focus();     // tx_numGR.Focus();
+                    return;
+                }
+                // validamos que el doc de venta no tenga nota de credito
+                if (validnota() == true)
+                {
+                    MessageBox.Show("La Boleta/Factura YA tiene nota de crédito", "Error en documento", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    //tx_numGR.Text = "";
+                    initIngreso();
+                    cmb_tdv.Focus();    //tx_numGR.Focus();
                     return;
                 }
                 int totfil = 0;

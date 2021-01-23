@@ -259,7 +259,7 @@ namespace TransCarga
                             dgv_facts.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
                             dgv_facts.Columns[i].Width = a;
                         }
-                        if (b < dgv_facts.Width) dgv_facts.Width = b + 60;
+                        if (b < dgv_facts.Width) dgv_facts.Width = b - 20;  // b + 60;
                         dgv_facts.ReadOnly = true;
                     }
                     break;
@@ -286,7 +286,7 @@ namespace TransCarga
                             dgv_notcre.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
                             dgv_notcre.Columns[i].Width = a;
                         }
-                        if (b < dgv_notcre.Width) dgv_notcre.Width = b + 60;
+                        if (b < dgv_notcre.Width) dgv_notcre.Width = b;    // b + 60 ;
                         dgv_notcre.ReadOnly = true;
                     }
                     break;

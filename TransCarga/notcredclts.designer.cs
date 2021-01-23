@@ -170,6 +170,7 @@
             this.tx_nomtdc = new System.Windows.Forms.TextBox();
             this.tx_subMN = new System.Windows.Forms.TextBox();
             this.tx_igvMN = new System.Windows.Forms.TextBox();
+            this.tx_dat_tdsunat = new System.Windows.Forms.TextBox();
             this.tx_subtNot = new TransCarga.NumericTextBox();
             this.tx_igvNot = new TransCarga.NumericTextBox();
             this.tx_numGR = new TransCarga.NumericTextBox();
@@ -598,10 +599,11 @@
             // 
             this.tx_dat_tdRem.BackColor = System.Drawing.SystemColors.Window;
             this.tx_dat_tdRem.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_dat_tdRem.Location = new System.Drawing.Point(144, 56);
+            this.tx_dat_tdRem.Location = new System.Drawing.Point(142, 58);
             this.tx_dat_tdRem.Name = "tx_dat_tdRem";
-            this.tx_dat_tdRem.Size = new System.Drawing.Size(47, 18);
+            this.tx_dat_tdRem.Size = new System.Drawing.Size(37, 18);
             this.tx_dat_tdRem.TabIndex = 234;
+            this.tx_dat_tdRem.Visible = false;
             // 
             // button1
             // 
@@ -1092,6 +1094,7 @@
             this.tx_dat_mone.Name = "tx_dat_mone";
             this.tx_dat_mone.Size = new System.Drawing.Size(32, 18);
             this.tx_dat_mone.TabIndex = 319;
+            this.tx_dat_mone.Visible = false;
             // 
             // cmb_mon
             // 
@@ -1153,6 +1156,7 @@
             this.tx_dat_estad.Name = "tx_dat_estad";
             this.tx_dat_estad.Size = new System.Drawing.Size(52, 18);
             this.tx_dat_estad.TabIndex = 325;
+            this.tx_dat_estad.Visible = false;
             // 
             // label18
             // 
@@ -1318,6 +1322,7 @@
             this.tx_dat_tdv.Name = "tx_dat_tdv";
             this.tx_dat_tdv.Size = new System.Drawing.Size(29, 18);
             this.tx_dat_tdv.TabIndex = 361;
+            this.tx_dat_tdv.Visible = false;
             // 
             // tx_dat_tdec
             // 
@@ -1327,6 +1332,7 @@
             this.tx_dat_tdec.Name = "tx_dat_tdec";
             this.tx_dat_tdec.Size = new System.Drawing.Size(31, 18);
             this.tx_dat_tdec.TabIndex = 362;
+            this.tx_dat_tdec.Visible = false;
             // 
             // tx_tipcam
             // 
@@ -1336,6 +1342,7 @@
             this.tx_tipcam.Name = "tx_tipcam";
             this.tx_tipcam.Size = new System.Drawing.Size(55, 18);
             this.tx_tipcam.TabIndex = 364;
+            this.tx_tipcam.Visible = false;
             // 
             // tx_fletMN
             // 
@@ -1345,6 +1352,7 @@
             this.tx_fletMN.Name = "tx_fletMN";
             this.tx_fletMN.Size = new System.Drawing.Size(55, 18);
             this.tx_fletMN.TabIndex = 365;
+            this.tx_fletMN.Visible = false;
             // 
             // tx_tfmn
             // 
@@ -1354,6 +1362,7 @@
             this.tx_tfmn.Name = "tx_tfmn";
             this.tx_tfmn.Size = new System.Drawing.Size(55, 18);
             this.tx_tfmn.TabIndex = 368;
+            this.tx_tfmn.Visible = false;
             // 
             // groupBox29
             // 
@@ -1391,6 +1400,7 @@
             this.tx_dat_monsunat.Name = "tx_dat_monsunat";
             this.tx_dat_monsunat.Size = new System.Drawing.Size(38, 18);
             this.tx_dat_monsunat.TabIndex = 412;
+            this.tx_dat_monsunat.Visible = false;
             // 
             // groupBox21
             // 
@@ -1448,6 +1458,7 @@
             this.tx_dat_tnota.Name = "tx_dat_tnota";
             this.tx_dat_tnota.Size = new System.Drawing.Size(29, 18);
             this.tx_dat_tnota.TabIndex = 417;
+            this.tx_dat_tnota.Visible = false;
             // 
             // groupBox31
             // 
@@ -1532,6 +1543,7 @@
             this.tx_dat_nomon.Name = "tx_dat_nomon";
             this.tx_dat_nomon.Size = new System.Drawing.Size(38, 18);
             this.tx_dat_nomon.TabIndex = 422;
+            this.tx_dat_nomon.Visible = false;
             // 
             // tx_pagoMN
             // 
@@ -1541,6 +1553,7 @@
             this.tx_pagoMN.Name = "tx_pagoMN";
             this.tx_pagoMN.Size = new System.Drawing.Size(55, 18);
             this.tx_pagoMN.TabIndex = 423;
+            this.tx_pagoMN.Visible = false;
             // 
             // tx_dat_inot
             // 
@@ -1550,6 +1563,7 @@
             this.tx_dat_inot.Name = "tx_dat_inot";
             this.tx_dat_inot.Size = new System.Drawing.Size(31, 18);
             this.tx_dat_inot.TabIndex = 424;
+            this.tx_dat_inot.Visible = false;
             // 
             // tx_nomtdc
             // 
@@ -1568,6 +1582,7 @@
             this.tx_subMN.Name = "tx_subMN";
             this.tx_subMN.Size = new System.Drawing.Size(43, 18);
             this.tx_subMN.TabIndex = 428;
+            this.tx_subMN.Visible = false;
             // 
             // tx_igvMN
             // 
@@ -1577,6 +1592,17 @@
             this.tx_igvMN.Name = "tx_igvMN";
             this.tx_igvMN.Size = new System.Drawing.Size(43, 18);
             this.tx_igvMN.TabIndex = 429;
+            this.tx_igvMN.Visible = false;
+            // 
+            // tx_dat_tdsunat
+            // 
+            this.tx_dat_tdsunat.BackColor = System.Drawing.SystemColors.Window;
+            this.tx_dat_tdsunat.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_dat_tdsunat.Location = new System.Drawing.Point(185, 59);
+            this.tx_dat_tdsunat.Name = "tx_dat_tdsunat";
+            this.tx_dat_tdsunat.Size = new System.Drawing.Size(37, 18);
+            this.tx_dat_tdsunat.TabIndex = 430;
+            this.tx_dat_tdsunat.Visible = false;
             // 
             // tx_subtNot
             // 
@@ -1588,6 +1614,7 @@
             this.tx_subtNot.Size = new System.Drawing.Size(53, 20);
             this.tx_subtNot.TabIndex = 427;
             this.tx_subtNot.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.tx_subtNot.Visible = false;
             // 
             // tx_igvNot
             // 
@@ -1599,6 +1626,7 @@
             this.tx_igvNot.Size = new System.Drawing.Size(53, 20);
             this.tx_igvNot.TabIndex = 426;
             this.tx_igvNot.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.tx_igvNot.Visible = false;
             // 
             // tx_numGR
             // 
@@ -1717,6 +1745,7 @@
             this.AutoSize = true;
             this.BackColor = System.Drawing.Color.LightSteelBlue;
             this.ClientSize = new System.Drawing.Size(770, 497);
+            this.Controls.Add(this.tx_dat_tdsunat);
             this.Controls.Add(this.tx_igvMN);
             this.Controls.Add(this.tx_subMN);
             this.Controls.Add(this.tx_subtNot);
@@ -1981,5 +2010,6 @@
         private NumericTextBox tx_igvNot;
         private System.Windows.Forms.TextBox tx_subMN;
         private System.Windows.Forms.TextBox tx_igvMN;
+        private System.Windows.Forms.TextBox tx_dat_tdsunat;
     }
 }

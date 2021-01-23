@@ -355,6 +355,33 @@ namespace TransCarga
                         dgv_reval.ReadOnly = true;
                     }
                     break;
+                case "dgv_histGR":
+                    dgv_histGR.Font = tiplg;
+                    dgv_histGR.DefaultCellStyle.Font = tiplg;
+                    dgv_histGR.RowTemplate.Height = 15;
+                    dgv_histGR.AllowUserToAddRows = false;
+                    dgv_histGR.Width = Parent.Width - 50; // 1015;
+                    if (dgv_histGR.DataSource == null) dgv_histGR.ColumnCount = 8;
+                    if (dgv_histGR.Rows.Count > 0)
+                    {
+                        for (int i = 0; i < dgv_histGR.Columns.Count; i++)
+                        {
+                            dgv_histGR.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                            _ = decimal.TryParse(dgv_histGR.Rows[0].Cells[i].Value.ToString(), out decimal vd);
+                            if (vd != 0) dgv_histGR.Columns[i].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+                        }
+                        b = 0;
+                        for (int i = 0; i < dgv_histGR.Columns.Count; i++)
+                        {
+                            int a = dgv_histGR.Columns[i].Width;
+                            b += a;
+                            dgv_histGR.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+                            dgv_histGR.Columns[i].Width = a;
+                        }
+                        if (b < dgv_histGR.Width) dgv_histGR.Width = dgv_histGR.Width - 10;
+                        dgv_histGR.ReadOnly = true;
+                    }
+                    break;
             }
         }
         private void grillares(string modo)                         // modo 0=todo,1=sin preguias
@@ -447,7 +474,7 @@ namespace TransCarga
                 }
             }
         }
-        private void tx_codped_Leave(object sender, EventArgs e)    // RESUMEN CLIENTE valida existencia de # documento
+        private void tx_codped_Leave(object sender, EventArgs e)        // RESUMEN CLIENTE valida existencia de # documento
         {
             if(tx_codped.Text != "" && tx_dat_tido.Text != "")
             {
@@ -499,7 +526,7 @@ namespace TransCarga
                 }
             }
         }
-        private void bt_resumen_Click(object sender, EventArgs e)   // genera resumen de cliente
+        private void bt_resumen_Click(object sender, EventArgs e)       // genera resumen de cliente
         {
             if(tx_codped.Text != "" && tx_dat_tido.Text != "")
             {
@@ -631,7 +658,33 @@ namespace TransCarga
                 }
             }
         }
-
+        private void bt_hisGR_Click(object sender, EventArgs e)         // historial de GR
+        {
+            using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
+            {
+                conn.Open();
+                string consulta = "rep_oper_histGR";
+                using (MySqlCommand micon = new MySqlCommand(consulta, conn))
+                {
+                    micon.CommandType = CommandType.StoredProcedure;
+                    micon.Parameters.AddWithValue("@ser", tx_ser.Text);
+                    micon.Parameters.AddWithValue("@num", tx_num.Text);
+                    using (MySqlDataAdapter da = new MySqlDataAdapter(micon))
+                    {
+                        dgv_histGR.DataSource = null;
+                        DataTable dt = new DataTable();
+                        da.Fill(dt);
+                        dgv_histGR.DataSource = dt;
+                        grilla("dgv_histGR");
+                    }
+                    string resulta = lib.ult_mov(nomform, nomtab, asd);
+                    if (resulta != "OK")                                        // actualizamos la tabla usuarios
+                    {
+                        MessageBox.Show(resulta, "Error en actualización de tabla usuarios", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+            }
+        }
         #region combos
         private void cmb_estad_ing_SelectionChangeCommitted(object sender, EventArgs e)
         {
@@ -1031,6 +1084,14 @@ namespace TransCarga
         private void tabres_Enter(object sender, EventArgs e)
         {
             cmb_tidoc.Focus();
+        }
+        private void tx_ser_Leave(object sender, EventArgs e)
+        {
+            tx_ser.Text = lib.Right("000" + tx_ser.Text, 4);
+        }
+        private void tx_num_Leave(object sender, EventArgs e)
+        {
+            tx_num.Text = lib.Right("0000000" + tx_num.Text, 8);
         }
         #endregion
 
