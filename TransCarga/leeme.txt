@@ -112,7 +112,7 @@ form facelect: (facturacion electrónica, se integra con sist propio del cliente
 - Campos nuevos de los txt para :
 -- Doc. vtas ....................................................................................... ok 12/01/2021
 -- Bajas de numeración ............................................................................. no van
--- Notas de crédito  ............................................................................... FALTA
+-- Notas de crédito  ............................................................................... falta
 form guiati, no debe grabar la direccion de sede origen o sede de llegada como si 
   fueran direccion del cliente ..................................................................... ok 24/12/2020
 form repsventas: (reportes de ventas, notas credito, etc)

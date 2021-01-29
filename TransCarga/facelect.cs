@@ -73,6 +73,7 @@ namespace TransCarga
         string logoclt = "";            // ruta y nombre archivo logo
         string fshoy = "";              // fecha hoy del servidor en formato ansi
         string codppc = "";             // codigo del plazo de pago por defecto para fact a crédito
+        string codsuser_cu = "";        // usuarios autorizados a crear Ft de cargas unicas
         //
         string rutatxt = "";            // ruta de los txt para la fact. electronica
         string tipdo = "";              // CODIGO SUNAT tipo de documento de venta
@@ -117,7 +118,7 @@ namespace TransCarga
         DataTable dtp = new DataTable();        // plazo de credito 
         string[] datcltsR = { "", "", "", "", "", "", "", "", "" };
         string[] datcltsD = { "", "", "", "", "", "", "", "", "" };
-        string[] datguias = { "", "", "", "", "", "", "", "", "", "", "" };
+        string[] datguias = { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" };
 
         public facelect()
         {
@@ -259,7 +260,10 @@ namespace TransCarga
             {
                 rb_si.Enabled = true;
                 rb_no.Enabled = true;
+                if (codsuser_cu.Contains(asd)) chk_cunica.Enabled = true;
+                else chk_cunica.Enabled = false;
             }
+            cargaunica();
         }
         private void jalainfo()                 // obtiene datos de imagenes y variables
         {
@@ -330,6 +334,7 @@ namespace TransCarga
                             if (row["param"].ToString() == "mpagdef") v_mpag = row["valor"].ToString().Trim();               // medio de pago x defecto para cobranzas
                             if (row["param"].ToString() == "factura") codfact = row["valor"].ToString().Trim();               // codigo doc.venta factura
                             if (row["param"].ToString() == "plazocred") codppc = row["valor"].ToString().Trim();               // codigo plazo de pago x defecto para fact. a CREDITO
+                            if (row["param"].ToString() == "usercar_unic") codsuser_cu = row["valor"].ToString().Trim();       // usuarios autorizados a crear Ft de cargas unicas
                         }
                         if (row["campo"].ToString() == "impresion")
                         {
@@ -727,6 +732,10 @@ namespace TransCarga
                 datguias[8] = "";   // tipo de cambio
                 datguias[9] = "";   // fecha de la GR
                 datguias[10] = "";  // guia del cliente, sustento del cliente
+                datguias[11] = "";
+                datguias[12] = "";
+                datguias[13] = "";
+                datguias[14] = "";
                 // validamos que la GR: 1.exista, 2.No este facturada, 3.No este anulada
                 // y devolvemos una fila con los datos del remitente y otra fila los datos del destinatario
                 string hay = "no";
@@ -766,7 +775,8 @@ namespace TransCarga
                         string consulta = "SELECT a.tidoregri,a.nudoregri,b1.razonsocial as nombregri,b1.direcc1 as direregri,b1.ubigeo as ubigregri,ifnull(b1.email,'') as emailR,ifnull(b1.numerotel1,'') as numtel1R," +
                             "ifnull(b1.numerotel2,'') as numtel2R,a.tidodegri,a.nudodegri,b2.razonsocial as nombdegri,b2.direcc1 as diredegri,b2.ubigeo as ubigdegri,ifnull(b2.email,'') as emailD," +
                             "ifnull(b2.numerotel1,'') as numtel1D,ifnull(b2.numerotel2,'') as numtel2D,a.tipmongri,a.totgri,a.salgri,SUM(d.cantprodi) AS bultos,date(a.fechopegr) as fechopegr,a.tipcamgri," +
-                            "max(d.descprodi) AS descrip,ifnull(m.descrizionerid,'') as mon,a.totgrMN,a.codMN,c.fecdocvta,b1.tiposocio as tipsrem,b2.tiposocio as tipsdes,a.docsremit " +
+                            "max(d.descprodi) AS descrip,ifnull(m.descrizionerid,'') as mon,a.totgrMN,a.codMN,c.fecdocvta,b1.tiposocio as tipsrem,b2.tiposocio as tipsdes,a.docsremit," +
+                            "a.plaplagri,a.carplagri,a.autplagri,a.confvegri " +
                             "from cabguiai a left join detguiai d on d.idc=a.id " +
                             "LEFT JOIN controlg c ON c.serguitra = a.sergui AND c.numguitra = a.numgui " +
                             "left join anag_cli b1 on b1.tipdoc=a.tidoregri and b1.ruc=a.nudoregri " +
@@ -816,6 +826,10 @@ namespace TransCarga
                                         var a = dr.GetString("fechopegr").Substring(0, 10);
                                         datguias[9] = a.Substring(6,4) + "-" + a.Substring(3,2) + "-" + a.Substring(0,2);     // fecha de la GR
                                         datguias[10] = dr.GetString("docsremit");
+                                        datguias[11] = dr.GetString("plaplagri"); 
+                                        datguias[12] = dr.GetString("carplagri");
+                                        datguias[13] = dr.GetString("autplagri");
+                                        datguias[14] = dr.GetString("confvegri");
                                         //
                                         tx_dat_saldoGR.Text = dr.GetString("salgri");
                                         retorna = true;
@@ -877,6 +891,51 @@ namespace TransCarga
                 pixel = Centimeter * g.DpiY / 2.54d;
             }
             return (int)pixel;
+        }
+        private void cargaunica()               // campos de carga unica
+        {
+            if (chk_cunica.Checked == true)
+            {
+                panel2.Enabled = true;
+                tx_dat_dpo.Enabled = true;
+                tx_dat_dpd.Enabled = true;
+                if (dataGridView1.Rows[0].Cells[0].Value != null)
+                {
+                    //MessageBox.Show("hay guia");
+                    tx_pla_placa.Text = datguias[11].ToString();
+                    tx_pla_confv.Text = datguias[14].ToString();
+                    tx_pla_autor.Text = datguias[13].ToString();
+                    tx_cetm.Text = "";
+                    tx_cutm.Text = "";
+                    tx_valref1.Text = "";
+                    tx_valref2.Text = "";
+                    tx_valref3.Text = "";
+                    tx_dat_dpo.Text = datcltsR[3].ToString();
+                    tx_dat_dpd.Text = datcltsD[3].ToString();
+                    tx_dat_upo.Text = datcltsR[4].ToString();
+                    tx_dat_upd.Text = datcltsD[4].ToString();
+                }
+            }
+            else
+            {
+                panel2.Enabled = false;
+                tx_dat_dpo.Enabled = false;
+                tx_dat_dpd.Enabled = false;
+                //
+                tx_pla_placa.Text = "";
+                tx_pla_confv.Text = "";
+                tx_pla_autor.Text = "";
+                tx_cetm.Text = "";
+                tx_cutm.Text = "";
+                tx_valref1.Text = "";
+                tx_valref2.Text = "";
+                tx_valref3.Text = "";
+                tx_dat_dpo.Text = "";
+                tx_dat_dpd.Text = "";
+                tx_dat_upo.Text = "";
+                tx_dat_upd.Text = "";
+            }
+
         }
 
         #region facturacion electronica
@@ -2381,6 +2440,10 @@ namespace TransCarga
                 if (tx_email.Text.Trim() != "") tx_email.Text = "";
                 //else 
             }
+        }
+        private void chk_cunica_CheckedChanged(object sender, EventArgs e)
+        {
+            cargaunica();
         }
         #endregion
 
