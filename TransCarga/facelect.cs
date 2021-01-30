@@ -211,6 +211,11 @@ namespace TransCarga
             tx_telc1.MaxLength = 12;
             tx_telc2.MaxLength = 12;
             tx_fletLetras.MaxLength = 249;
+            tx_dat_dpo.MaxLength = 100;
+            tx_dat_dpd.MaxLength = 100;
+            tx_pla_placa.MaxLength = 7;
+            tx_pla_confv.MaxLength = 15;
+            tx_pla_autor.MaxLength = 15;
             // grilla
             dataGridView1.ReadOnly = true;
             dataGridView1.Columns[0].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
@@ -249,7 +254,7 @@ namespace TransCarga
                 if (fshoy != TransCarga.Program.vg_fcaj)  // fecha de la caja vs fecha de hoy
                 {
                     MessageBox.Show("Las fechas no coinciden", "Caja fuera de fecha", MessageBoxButtons.OK, MessageBoxIcon.Hand);
-                    return;
+                    //return;
                 }
                 else
                 {
@@ -401,7 +406,8 @@ namespace TransCarga
                 {
                     string consulta = "select a.id,a.fechope,a.martdve,a.tipdvta,a.serdvta,a.numdvta,a.ticltgr,a.tidoclt,a.nudoclt,a.nombclt,a.direclt,a.dptoclt,a.provclt,a.distclt,a.ubigclt,a.corrclt,a.teleclt," +
                         "a.locorig,a.dirorig,a.ubiorig,a.obsdvta,a.canfidt,a.canbudt,a.mondvta,a.tcadvta,a.subtota,a.igvtota,a.porcigv,a.totdvta,a.totpags,a.saldvta,a.estdvta,a.frase01,a.impreso," +
-                        "a.tipoclt,a.m1clien,a.tippago,a.ferecep,a.userc,a.fechc,a.userm,a.fechm,b.descrizionerid as nomest,ifnull(c.id,'') as cobra,a.idcaja " +
+                        "a.tipoclt,a.m1clien,a.tippago,a.ferecep,a.userc,a.fechc,a.userm,a.fechm,b.descrizionerid as nomest,ifnull(c.id,'') as cobra,a.idcaja," +
+                        "a.cargaunica,a.placa,a.confveh,a.autoriz,a.detPeso,a.detputil,a.detMon1,a.detMon2,a.detMon3,a.dirporig,a.ubiporig,a.dirpdest,a.ubipdest " +
                         "from cabfactu a left join desc_est b on b.idcodice=a.estdvta " +
                         "left join cabcobran c on c.tipdoco=a.tipdvta and c.serdoco=a.serdvta and c.numdoco=a.numdvta and c.estdcob<>@coda "
                         + parte;
@@ -471,7 +477,20 @@ namespace TransCarga
                             else tx_digit.Text = lib.nomuser(dr.GetString("userm"));
                             if (decimal.Parse(tx_salxcob.Text) == decimal.Parse(tx_flete.Text)) rb_no.Checked = true;
                             else rb_si.Checked = true;
-                            //
+                            // campos de carga unica
+                            tx_dat_upd.Text = dr.GetString("ubipdest");
+                            tx_dat_upo.Text = dr.GetString("ubiporig");
+                            tx_dat_dpd.Text = dr.GetString("dirpdest");
+                            tx_dat_dpo.Text = dr.GetString("dirporig");
+                            tx_valref3.Text = dr.GetString("detMon3");
+                            tx_valref2.Text = dr.GetString("detMon2");
+                            tx_valref1.Text = dr.GetString("detMon1");
+                            tx_cutm.Text = dr.GetString("detputil");
+                            tx_cetm.Text = dr.GetString("detPeso");
+                            tx_pla_autor.Text = dr.GetString("autoriz");
+                            tx_pla_confv.Text = dr.GetString("confveh");
+                            tx_pla_placa.Text = dr.GetString("placa");
+                            if (dr.GetInt16("cargaunica") == 1) chk_cunica.Checked = true;
                         }
                         else
                         {
@@ -894,48 +913,50 @@ namespace TransCarga
         }
         private void cargaunica()               // campos de carga unica
         {
-            if (chk_cunica.Checked == true)
+            if (Tx_modo.Text == "NUEVO")
             {
-                panel2.Enabled = true;
-                tx_dat_dpo.Enabled = true;
-                tx_dat_dpd.Enabled = true;
-                if (dataGridView1.Rows[0].Cells[0].Value != null)
+                if (chk_cunica.Checked == true) // .CheckState.ToString() == "True"
                 {
-                    //MessageBox.Show("hay guia");
-                    tx_pla_placa.Text = datguias[11].ToString();
-                    tx_pla_confv.Text = datguias[14].ToString();
-                    tx_pla_autor.Text = datguias[13].ToString();
+                    panel2.Enabled = true;
+                    tx_dat_dpo.Enabled = true;
+                    tx_dat_dpd.Enabled = true;
+                    if (dataGridView1.Rows[0].Cells[0].Value != null)
+                    {
+                        //MessageBox.Show("hay guia");
+                        tx_pla_placa.Text = datguias[11].ToString();
+                        tx_pla_confv.Text = datguias[14].ToString();
+                        tx_pla_autor.Text = datguias[13].ToString();
+                        tx_cetm.Text = "";
+                        tx_cutm.Text = "";
+                        tx_valref1.Text = "";
+                        tx_valref2.Text = "";
+                        tx_valref3.Text = "";
+                        tx_dat_dpo.Text = datcltsR[3].ToString();
+                        tx_dat_dpd.Text = datcltsD[3].ToString();
+                        tx_dat_upo.Text = datcltsR[4].ToString();
+                        tx_dat_upd.Text = datcltsD[4].ToString();
+                    }
+                }
+                else
+                {
+                    panel2.Enabled = false;
+                    tx_dat_dpo.Enabled = false;
+                    tx_dat_dpd.Enabled = false;
+                    //
+                    tx_pla_placa.Text = "";
+                    tx_pla_confv.Text = "";
+                    tx_pla_autor.Text = "";
                     tx_cetm.Text = "";
                     tx_cutm.Text = "";
                     tx_valref1.Text = "";
                     tx_valref2.Text = "";
                     tx_valref3.Text = "";
-                    tx_dat_dpo.Text = datcltsR[3].ToString();
-                    tx_dat_dpd.Text = datcltsD[3].ToString();
-                    tx_dat_upo.Text = datcltsR[4].ToString();
-                    tx_dat_upd.Text = datcltsD[4].ToString();
+                    tx_dat_dpo.Text = "";
+                    tx_dat_dpd.Text = "";
+                    tx_dat_upo.Text = "";
+                    tx_dat_upd.Text = "";
                 }
             }
-            else
-            {
-                panel2.Enabled = false;
-                tx_dat_dpo.Enabled = false;
-                tx_dat_dpd.Enabled = false;
-                //
-                tx_pla_placa.Text = "";
-                tx_pla_confv.Text = "";
-                tx_pla_autor.Text = "";
-                tx_cetm.Text = "";
-                tx_cutm.Text = "";
-                tx_valref1.Text = "";
-                tx_valref2.Text = "";
-                tx_valref3.Text = "";
-                tx_dat_dpo.Text = "";
-                tx_dat_dpd.Text = "";
-                tx_dat_upo.Text = "";
-                tx_dat_upd.Text = "";
-            }
-
         }
 
         #region facturacion electronica
@@ -1095,7 +1116,7 @@ namespace TransCarga
                 d_ptode = "";                // Pto de destino
                 d_vrepr = "0";               // valor referencial preliminar
                 codleyt = "1000";            // codigoLeyenda 1 - valor en letras
-                totdet = Math.Round(double.Parse(tx_flete.Text) * double.Parse(Program.pordetra) / 100,2);    // totalDetraccion
+                totdet = Math.Round(double.Parse(tx_flete.Text) * double.Parse(Program.pordetra) / 100, 2);    // totalDetraccion
                 codleyd = "2006";
                 tipOper = "1001";
                 glosdet = glosdet + " " + d_ctade;                // leyenda de la detración
@@ -1125,7 +1146,7 @@ namespace TransCarga
                     codleyt = "1000";            // codigoLeyenda 1 - valor en letras
                     codleyd = "2006";
                     tipOper = "1001";
-                    totdet = Math.Round(double.Parse(tx_fletMN.Text) * double.Parse(Program.pordetra) / 100,2);    // totalDetraccion
+                    totdet = Math.Round(double.Parse(tx_fletMN.Text) * double.Parse(Program.pordetra) / 100, 2);    // totalDetraccion
                 }
             }
             /* ********************************************** GENERAMOS EL TXT    ************************************* */
@@ -1298,6 +1319,38 @@ namespace TransCarga
                 codleyt + sep +         // codigo leyenda monto en letras
                 monLet + sep            // Leyenda: Monto expresado en Letras
             );
+            if (chk_cunica.Checked == true && double.Parse(tx_flete.Text) > double.Parse(Program.valdetra))     // carga unica con detracción
+            {
+                writer.WriteLine("Q" + sep +
+                "1" + sep +                              // item de detalle, como es carga unica siempre es 1
+                tx_dat_upo.Text + sep +                  // ubigeo punto de origen
+                tx_dat_dpo.Text + sep +                  // direccion detallada del pto de origen
+                tx_dat_upd.Text + sep +                  // ubigeo punto destino
+                tx_dat_dpd.Text + sep +                  // direccion detallada del pto destino
+                "zzzzzz" + sep +                         // detalle del viaje
+                "01" + sep +                             // tipo de valor referencial 1
+                tx_valref1.Text + sep +                  // valor referencial del serv de transporte
+                _moneda + sep +                          // tipo moneda 
+                "02" + sep +                             // tipo de valor referencial 2
+                tx_valref2.Text + sep +                  // valor referencial sobre la carga efectiva
+                _moneda + sep +                          // tipo moneda 
+                "03" + sep +                             // tipo de valor referencial 2
+                tx_valref3.Text + sep +                  // valor referencial sobre la carga util nominal
+                _moneda + sep +                          // tipo moneda 
+                "" + sep +                              // inicio datos de tramo
+                "" + sep +                              // aca no aplica porque todas son de un tramo
+                "" + sep +                              // ..
+                "" + sep +                              // ..
+                "" + sep +                              // ..
+                "" + sep +                              // ..
+                "" + sep +                              // fin datos de tramo
+                "" + sep +                              // inicio detalle del vehiculo
+                "" + sep + "" + sep + "" + sep +        // ..
+                "" + sep + "" + sep + "" + sep +        // ..
+                "" + sep + "" + sep + "" + sep +        // ..
+                "" + sep + "" + sep + "" + sep          // fin detalle del vehiculo
+                );
+            }
             if (_forpa == "Credito")
             {
                 writer.WriteLine("F" + sep +
@@ -1874,10 +1927,12 @@ namespace TransCarga
                     "fechope,martdve,tipdvta,serdvta,numdvta,ticltgr,tidoclt,nudoclt,nombclt,direclt,dptoclt,provclt,distclt,ubigclt,corrclt,teleclt," +
                     "locorig,dirorig,ubiorig,obsdvta,canfidt,canbudt,mondvta,tcadvta,subtota,igvtota,porcigv,totdvta,totpags,saldvta,estdvta,frase01," +
                     "tipoclt,m1clien,tippago,ferecep,impreso,codMN,subtMN,igvtMN,totdvMN,pagauto,tipdcob,idcaja,plazocred," +
+                    "cargaunica,placa,confveh,autoriz,detPeso,detputil,detMon1,detMon2,detMon3,dirporig,ubiporig,dirpdest,ubipdest," +
                     "verApp,userc,fechc,diriplan4,diripwan4,netbname) values (" +
                     "@fechop,@mtdvta,@ctdvta,@serdv,@numdv,@tcdvta,@tdcrem,@ndcrem,@nomrem,@dircre,@dptocl,@provcl,@distcl,@ubicre,@mailcl,@telecl," +
                     "@ldcpgr,@didegr,@ubdegr,@obsprg,@canfil,@totcpr,@monppr,@tcoper,@subpgr,@igvpgr,@porcigv,@totpgr,@pagpgr,@salxpa,@estpgr,@frase1," +
                     "@ticlre,@m1clte,@tipacc,@feredv,@impSN,@codMN,@subMN,@igvMN,@totMN,@pagaut,@tipdco,@idcaj,@plazc," +
+                    "@caruni,@placa,@confv,@autor,@dPeso,@dputil,@dMon1,@dMon2,@dMon3,@dporig,@uporig,@dpdest,@updest," +
                     "@verApp,@asd,now(),@iplan,@ipwan,@nbnam)";
                 using (MySqlCommand micon = new MySqlCommand(inserta, conn))
                 {
@@ -1926,6 +1981,19 @@ namespace TransCarga
                     micon.Parameters.AddWithValue("@tipdco", (rb_si.Checked == true)? v_codcob : "");
                     micon.Parameters.AddWithValue("@idcaj", (rb_si.Checked == true)? tx_idcaja.Text : "0");
                     micon.Parameters.AddWithValue("@plazc", (rb_no.Checked == true)? codppc : "");
+                    micon.Parameters.AddWithValue("@caruni", (chk_cunica.Checked == true)? 1 : 0);
+                    micon.Parameters.AddWithValue("@placa", tx_pla_placa.Text);
+                    micon.Parameters.AddWithValue("@confv", tx_pla_confv.Text);
+                    micon.Parameters.AddWithValue("@autor", tx_pla_autor.Text);
+                    micon.Parameters.AddWithValue("@dPeso", (tx_cetm.Text.Trim() == "")? "0" : tx_cetm.Text);
+                    micon.Parameters.AddWithValue("@dputil", (tx_cutm.Text.Trim() == "")? "0" : tx_cutm.Text);
+                    micon.Parameters.AddWithValue("@dMon1", (tx_valref1.Text.Trim() == "")? "0" : tx_valref1.Text);
+                    micon.Parameters.AddWithValue("@dMon2", (tx_valref2.Text.Trim() == "")? "0" : tx_valref2.Text);
+                    micon.Parameters.AddWithValue("@dMon3", (tx_valref3.Text.Trim() == "")? "0" : tx_valref3.Text);
+                    micon.Parameters.AddWithValue("@dporig", tx_dat_dpo.Text);
+                    micon.Parameters.AddWithValue("@uporig", tx_dat_upo.Text);
+                    micon.Parameters.AddWithValue("@dpdest", tx_dat_dpd.Text);
+                    micon.Parameters.AddWithValue("@updest", tx_dat_upd.Text);
                     micon.Parameters.AddWithValue("@verApp", verapp);
                     micon.Parameters.AddWithValue("@asd", asd);
                     micon.Parameters.AddWithValue("@iplan", lib.iplan());

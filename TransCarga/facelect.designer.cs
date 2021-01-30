@@ -193,27 +193,27 @@
             this.tx_totcant = new TransCarga.NumericTextBox();
             this.chk_sinco = new System.Windows.Forms.CheckBox();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.chk_cunica = new System.Windows.Forms.CheckBox();
+            this.groupBox35 = new System.Windows.Forms.GroupBox();
+            this.groupBox36 = new System.Windows.Forms.GroupBox();
+            this.tx_valref3 = new TransCarga.NumericTextBox();
+            this.tx_valref2 = new TransCarga.NumericTextBox();
+            this.tx_valref1 = new TransCarga.NumericTextBox();
+            this.label29 = new System.Windows.Forms.Label();
+            this.label26 = new System.Windows.Forms.Label();
+            this.label23 = new System.Windows.Forms.Label();
             this.groupBox33 = new System.Windows.Forms.GroupBox();
             this.groupBox34 = new System.Windows.Forms.GroupBox();
+            this.tx_cutm = new System.Windows.Forms.TextBox();
+            this.label22 = new System.Windows.Forms.Label();
+            this.tx_cetm = new System.Windows.Forms.TextBox();
+            this.label20 = new System.Windows.Forms.Label();
             this.tx_pla_autor = new System.Windows.Forms.TextBox();
             this.label25 = new System.Windows.Forms.Label();
             this.tx_pla_confv = new System.Windows.Forms.TextBox();
             this.label27 = new System.Windows.Forms.Label();
             this.tx_pla_placa = new System.Windows.Forms.TextBox();
             this.label21 = new System.Windows.Forms.Label();
-            this.tx_cetm = new System.Windows.Forms.TextBox();
-            this.label20 = new System.Windows.Forms.Label();
-            this.tx_cutm = new System.Windows.Forms.TextBox();
-            this.label22 = new System.Windows.Forms.Label();
-            this.groupBox35 = new System.Windows.Forms.GroupBox();
-            this.groupBox36 = new System.Windows.Forms.GroupBox();
-            this.label23 = new System.Windows.Forms.Label();
-            this.label26 = new System.Windows.Forms.Label();
-            this.label29 = new System.Windows.Forms.Label();
-            this.tx_valref1 = new TransCarga.NumericTextBox();
-            this.tx_valref2 = new TransCarga.NumericTextBox();
-            this.tx_valref3 = new TransCarga.NumericTextBox();
+            this.chk_cunica = new System.Windows.Forms.CheckBox();
             this.groupBox41 = new System.Windows.Forms.GroupBox();
             this.groupBox42 = new System.Windows.Forms.GroupBox();
             this.label30 = new System.Windows.Forms.Label();
@@ -247,8 +247,8 @@
             this.groupBox29.SuspendLayout();
             this.groupBox21.SuspendLayout();
             this.panel2.SuspendLayout();
-            this.groupBox33.SuspendLayout();
             this.groupBox35.SuspendLayout();
+            this.groupBox33.SuspendLayout();
             this.groupBox41.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -676,7 +676,7 @@
             // button1
             // 
             this.button1.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.button1.Location = new System.Drawing.Point(669, 419);
+            this.button1.Location = new System.Drawing.Point(671, 419);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(62, 56);
             this.button1.TabIndex = 18;
@@ -1920,16 +1920,80 @@
             this.panel2.Size = new System.Drawing.Size(702, 62);
             this.panel2.TabIndex = 416;
             // 
-            // chk_cunica
+            // groupBox35
             // 
-            this.chk_cunica.ForeColor = System.Drawing.Color.Black;
-            this.chk_cunica.Location = new System.Drawing.Point(6, 161);
-            this.chk_cunica.Name = "chk_cunica";
-            this.chk_cunica.Size = new System.Drawing.Size(54, 38);
-            this.chk_cunica.TabIndex = 417;
-            this.chk_cunica.Text = "Carga Única";
-            this.chk_cunica.UseVisualStyleBackColor = true;
-            this.chk_cunica.CheckedChanged += new System.EventHandler(this.chk_cunica_CheckedChanged);
+            this.groupBox35.BackColor = System.Drawing.Color.White;
+            this.groupBox35.Controls.Add(this.groupBox36);
+            this.groupBox35.Location = new System.Drawing.Point(9, 54);
+            this.groupBox35.Name = "groupBox35";
+            this.groupBox35.Size = new System.Drawing.Size(681, 1);
+            this.groupBox35.TabIndex = 499;
+            this.groupBox35.TabStop = false;
+            // 
+            // groupBox36
+            // 
+            this.groupBox36.Location = new System.Drawing.Point(0, -26);
+            this.groupBox36.Name = "groupBox36";
+            this.groupBox36.Size = new System.Drawing.Size(164, 1);
+            this.groupBox36.TabIndex = 113;
+            this.groupBox36.TabStop = false;
+            // 
+            // tx_valref3
+            // 
+            this.tx_valref3.AllowSpace = false;
+            this.tx_valref3.Location = new System.Drawing.Point(618, 35);
+            this.tx_valref3.Name = "tx_valref3";
+            this.tx_valref3.Size = new System.Drawing.Size(72, 20);
+            this.tx_valref3.TabIndex = 429;
+            // 
+            // tx_valref2
+            // 
+            this.tx_valref2.AllowSpace = false;
+            this.tx_valref2.Location = new System.Drawing.Point(347, 35);
+            this.tx_valref2.Name = "tx_valref2";
+            this.tx_valref2.Size = new System.Drawing.Size(72, 20);
+            this.tx_valref2.TabIndex = 428;
+            // 
+            // tx_valref1
+            // 
+            this.tx_valref1.AllowSpace = false;
+            this.tx_valref1.Location = new System.Drawing.Point(106, 35);
+            this.tx_valref1.Name = "tx_valref1";
+            this.tx_valref1.Size = new System.Drawing.Size(72, 20);
+            this.tx_valref1.TabIndex = 427;
+            // 
+            // label29
+            // 
+            this.label29.AutoSize = true;
+            this.label29.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.label29.Location = new System.Drawing.Point(487, 39);
+            this.label29.Name = "label29";
+            this.label29.Size = new System.Drawing.Size(131, 13);
+            this.label29.TabIndex = 502;
+            this.label29.Text = "Val.Ref.preli x TM en viaje";
+            this.label29.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // label26
+            // 
+            this.label26.AutoSize = true;
+            this.label26.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.label26.Location = new System.Drawing.Point(228, 39);
+            this.label26.Name = "label26";
+            this.label26.Size = new System.Drawing.Size(118, 13);
+            this.label26.TabIndex = 501;
+            this.label26.Text = "Val.Ref.Preli x vehículo";
+            this.label26.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // label23
+            // 
+            this.label23.AutoSize = true;
+            this.label23.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.label23.Location = new System.Drawing.Point(7, 39);
+            this.label23.Name = "label23";
+            this.label23.Size = new System.Drawing.Size(98, 13);
+            this.label23.TabIndex = 500;
+            this.label23.Text = "Val.Ref.Preli x viaje";
+            this.label23.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // groupBox33
             // 
@@ -1948,6 +2012,44 @@
             this.groupBox34.Size = new System.Drawing.Size(164, 1);
             this.groupBox34.TabIndex = 113;
             this.groupBox34.TabStop = false;
+            // 
+            // tx_cutm
+            // 
+            this.tx_cutm.Location = new System.Drawing.Point(637, 7);
+            this.tx_cutm.Name = "tx_cutm";
+            this.tx_cutm.Size = new System.Drawing.Size(53, 20);
+            this.tx_cutm.TabIndex = 426;
+            this.tx_cutm.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // label22
+            // 
+            this.label22.AutoSize = true;
+            this.label22.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.label22.Location = new System.Drawing.Point(564, 11);
+            this.label22.Name = "label22";
+            this.label22.Size = new System.Drawing.Size(70, 13);
+            this.label22.TabIndex = 432;
+            this.label22.Text = "Carga útil TM";
+            this.label22.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // tx_cetm
+            // 
+            this.tx_cetm.Location = new System.Drawing.Point(483, 7);
+            this.tx_cetm.Name = "tx_cetm";
+            this.tx_cetm.Size = new System.Drawing.Size(53, 20);
+            this.tx_cetm.TabIndex = 425;
+            this.tx_cetm.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // label20
+            // 
+            this.label20.AutoSize = true;
+            this.label20.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.label20.Location = new System.Drawing.Point(386, 11);
+            this.label20.Name = "label20";
+            this.label20.Size = new System.Drawing.Size(95, 13);
+            this.label20.TabIndex = 430;
+            this.label20.Text = "Carga efectiva TM";
+            this.label20.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // tx_pla_autor
             // 
@@ -2006,118 +2108,16 @@
             this.label21.Text = "Placa";
             this.label21.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // tx_cetm
+            // chk_cunica
             // 
-            this.tx_cetm.Location = new System.Drawing.Point(483, 7);
-            this.tx_cetm.Name = "tx_cetm";
-            this.tx_cetm.Size = new System.Drawing.Size(53, 20);
-            this.tx_cetm.TabIndex = 425;
-            this.tx_cetm.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // label20
-            // 
-            this.label20.AutoSize = true;
-            this.label20.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label20.Location = new System.Drawing.Point(386, 11);
-            this.label20.Name = "label20";
-            this.label20.Size = new System.Drawing.Size(95, 13);
-            this.label20.TabIndex = 430;
-            this.label20.Text = "Carga efectiva TM";
-            this.label20.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // tx_cutm
-            // 
-            this.tx_cutm.Location = new System.Drawing.Point(637, 7);
-            this.tx_cutm.Name = "tx_cutm";
-            this.tx_cutm.Size = new System.Drawing.Size(53, 20);
-            this.tx_cutm.TabIndex = 426;
-            this.tx_cutm.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // label22
-            // 
-            this.label22.AutoSize = true;
-            this.label22.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label22.Location = new System.Drawing.Point(564, 11);
-            this.label22.Name = "label22";
-            this.label22.Size = new System.Drawing.Size(70, 13);
-            this.label22.TabIndex = 432;
-            this.label22.Text = "Carga útil TM";
-            this.label22.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // groupBox35
-            // 
-            this.groupBox35.BackColor = System.Drawing.Color.White;
-            this.groupBox35.Controls.Add(this.groupBox36);
-            this.groupBox35.Location = new System.Drawing.Point(9, 54);
-            this.groupBox35.Name = "groupBox35";
-            this.groupBox35.Size = new System.Drawing.Size(681, 1);
-            this.groupBox35.TabIndex = 499;
-            this.groupBox35.TabStop = false;
-            // 
-            // groupBox36
-            // 
-            this.groupBox36.Location = new System.Drawing.Point(0, -26);
-            this.groupBox36.Name = "groupBox36";
-            this.groupBox36.Size = new System.Drawing.Size(164, 1);
-            this.groupBox36.TabIndex = 113;
-            this.groupBox36.TabStop = false;
-            // 
-            // label23
-            // 
-            this.label23.AutoSize = true;
-            this.label23.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label23.Location = new System.Drawing.Point(7, 39);
-            this.label23.Name = "label23";
-            this.label23.Size = new System.Drawing.Size(98, 13);
-            this.label23.TabIndex = 500;
-            this.label23.Text = "Val.Ref.Preli x viaje";
-            this.label23.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // label26
-            // 
-            this.label26.AutoSize = true;
-            this.label26.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label26.Location = new System.Drawing.Point(228, 39);
-            this.label26.Name = "label26";
-            this.label26.Size = new System.Drawing.Size(118, 13);
-            this.label26.TabIndex = 501;
-            this.label26.Text = "Val.Ref.Preli x vehículo";
-            this.label26.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // label29
-            // 
-            this.label29.AutoSize = true;
-            this.label29.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label29.Location = new System.Drawing.Point(487, 39);
-            this.label29.Name = "label29";
-            this.label29.Size = new System.Drawing.Size(131, 13);
-            this.label29.TabIndex = 502;
-            this.label29.Text = "Val.Ref.preli x TM en viaje";
-            this.label29.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // tx_valref1
-            // 
-            this.tx_valref1.AllowSpace = false;
-            this.tx_valref1.Location = new System.Drawing.Point(106, 35);
-            this.tx_valref1.Name = "tx_valref1";
-            this.tx_valref1.Size = new System.Drawing.Size(72, 20);
-            this.tx_valref1.TabIndex = 427;
-            // 
-            // tx_valref2
-            // 
-            this.tx_valref2.AllowSpace = false;
-            this.tx_valref2.Location = new System.Drawing.Point(347, 35);
-            this.tx_valref2.Name = "tx_valref2";
-            this.tx_valref2.Size = new System.Drawing.Size(72, 20);
-            this.tx_valref2.TabIndex = 428;
-            // 
-            // tx_valref3
-            // 
-            this.tx_valref3.AllowSpace = false;
-            this.tx_valref3.Location = new System.Drawing.Point(618, 35);
-            this.tx_valref3.Name = "tx_valref3";
-            this.tx_valref3.Size = new System.Drawing.Size(72, 20);
-            this.tx_valref3.TabIndex = 429;
+            this.chk_cunica.ForeColor = System.Drawing.Color.Black;
+            this.chk_cunica.Location = new System.Drawing.Point(6, 161);
+            this.chk_cunica.Name = "chk_cunica";
+            this.chk_cunica.Size = new System.Drawing.Size(54, 38);
+            this.chk_cunica.TabIndex = 417;
+            this.chk_cunica.Text = "Carga Única";
+            this.chk_cunica.UseVisualStyleBackColor = true;
+            this.chk_cunica.CheckedChanged += new System.EventHandler(this.chk_cunica_CheckedChanged);
             // 
             // groupBox41
             // 
@@ -2324,8 +2324,8 @@
             this.groupBox21.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
-            this.groupBox33.ResumeLayout(false);
             this.groupBox35.ResumeLayout(false);
+            this.groupBox33.ResumeLayout(false);
             this.groupBox41.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();

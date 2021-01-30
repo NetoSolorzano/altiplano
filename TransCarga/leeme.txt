@@ -135,3 +135,4 @@ form ayuda3, desarrollo del form ...............................................
 - enlace con planicarga para proveedores y camiones ................................................ ok 13/01/2021
 form notcredclts (notas de credito de cliente)
 - desarrollo del form .............................................................................. ok 20/01/2021
+form facelect, desarrollo opcion fact cargas unicas ................................................ ok 30/01/2021
