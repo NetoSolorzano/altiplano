@@ -74,6 +74,7 @@ namespace TransCarga
         string fshoy = "";              // fecha hoy del servidor en formato ansi
         string codppc = "";             // codigo del plazo de pago por defecto para fact a crédito
         string codsuser_cu = "";        // usuarios autorizados a crear Ft de cargas unicas
+        int v_cdpa = 0;                 // cantidad de días despues de emitida la fact. en que un usuario normal puede anular
         //
         string rutatxt = "";            // ruta de los txt para la fact. electronica
         string tipdo = "";              // CODIGO SUNAT tipo de documento de venta
@@ -86,6 +87,7 @@ namespace TransCarga
         string despedida = "";          // texto para mensajes al cliente al final de la impresión del doc.vta. 
         string webose = "";             // direccion web del ose o pse para la descarga del 
         string correo_gen = "";         // correo generico del emisor cuando el cliente no tiene correo propio
+        string codusanu = "";           // usuarios que pueden anular fuera de plazo
         //
         static libreria lib = new libreria();   // libreria de procedimientos
         publico lp = new publico();             // libreria de clases
@@ -340,6 +342,8 @@ namespace TransCarga
                             if (row["param"].ToString() == "factura") codfact = row["valor"].ToString().Trim();               // codigo doc.venta factura
                             if (row["param"].ToString() == "plazocred") codppc = row["valor"].ToString().Trim();               // codigo plazo de pago x defecto para fact. a CREDITO
                             if (row["param"].ToString() == "usercar_unic") codsuser_cu = row["valor"].ToString().Trim();       // usuarios autorizados a crear Ft de cargas unicas
+                            if (row["param"].ToString() == "diasanul") v_cdpa = int.Parse(row["valor"].ToString());            // cant dias en que usuario normal puede anular 
+                            if (row["param"].ToString() == "useranul") codusanu = row["valor"].ToString();         // usuarios autorizados a anular fuera de plazo 
                         }
                         if (row["campo"].ToString() == "impresion")
                         {
@@ -1811,36 +1815,50 @@ namespace TransCarga
                     //tx_numero.Focus();
                     //return;
                 }
-                // SOLO USUARIOS AUTORIZADOS DEBEN ACCEDER A ESTA OPCIÓN
-                // SE ANULA EL DOCUMENTO Y SE HACEN LOS MOVIMIENTOS INTERNOS
-                // LA ANULACION EN EL PROVEEDOR DE FACT. ELECTRONICA SE HACE A MANO POR EL ENCARGADO ... 28/10/2020 ya no al 09/01/2021
-                // la anulacion debe generar un TXT de comunicacion de baja y guardarse en el directorio del prov. de fact. electronica 09/01/2021
-                if (tx_idr.Text.Trim() != "")
+                // validaciones de fecha para poder anular
+                DateTime fedv = DateTime.Parse(tx_fechope.Text.Substring(6, 4) + "-" + tx_fechope.Text.Substring(3, 2) + "-" + tx_fechope.Text.Substring(0, 2));
+                TimeSpan span = DateTime.Parse(lib.fechaServ("ansi")) - fedv;
+                if (span.Days > v_cdpa)
                 {
-                    var aa = MessageBox.Show("Confirma que desea ANULAR el documento?", "Confirme por favor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                    if (aa == DialogResult.Yes)
+                    // no se puede anular ... a menos que sea un usuario autorizado
+                    if (codusanu.Contains(asd))
                     {
-                        int cta = anula();      // cantidad de doc.vtas anuladas en la fecha
-
-                        if (factElec("Horizont", "txt", "baja", cta) == true)
+                        // SOLO USUARIOS AUTORIZADOS DEBEN ACCEDER A ESTA OPCIÓN
+                        // SE ANULA EL DOCUMENTO Y SE HACEN LOS MOVIMIENTOS INTERNOS
+                        // LA ANULACION EN EL PROVEEDOR DE FACT. ELECTRONICA SE HACE A MANO POR EL ENCARGADO ... 28/10/2020 ya no al 09/01/2021
+                        // la anulacion debe generar un TXT de comunicacion de baja y guardarse en el directorio del prov. de fact. electronica 09/01/2021
+                        if (tx_idr.Text.Trim() != "")
                         {
-                            string resulta = lib.ult_mov(nomform, nomtab, asd);
-                            if (resulta != "OK")
+                            var aa = MessageBox.Show("Confirma que desea ANULAR el documento?", "Confirme por favor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                            if (aa == DialogResult.Yes)
                             {
-                                MessageBox.Show(resulta, "Error en actualización de seguimiento", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                int cta = anula();      // cantidad de doc.vtas anuladas en la fecha
+
+                                if (factElec("Horizont", "txt", "baja", cta) == true)
+                                {
+                                    string resulta = lib.ult_mov(nomform, nomtab, asd);
+                                    if (resulta != "OK")
+                                    {
+                                        MessageBox.Show(resulta, "Error en actualización de seguimiento", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    }
+                                }
                             }
+                            else
+                            {
+                                tx_serie.Focus();
+                                return;
+                            }
+                        }
+                        else
+                        {
+                            MessageBox.Show("El documento ya debe existir para anular", "No esta el Id del registro", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+                            return;
                         }
                     }
                     else
                     {
-                        tx_serie.Focus();
-                        return;
+                        MessageBox.Show("No se puede anular por estar fuera de plazo","Usuario no permito",MessageBoxButtons.OK,MessageBoxIcon.Asterisk);
                     }
-                }
-                else
-                {
-                    MessageBox.Show("El documento ya debe existir para anular", "No esta el Id del registro", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-                    return;
                 }
             }
             if (iserror == "no")
@@ -2102,7 +2120,7 @@ namespace TransCarga
         {
             // en el caso de documentos de venta HAY 1: ANULACION FISICA ... 28/10/2020
             // tambien podría haber ANULACION interna con la serie ANU1 .... 19/11/2020
-            // Anulacion fisica se "anula" el numero del documento en sistema y en fisico se tacha y en prov. fact.electronica se marca anulado 
+            // Anulacion fisica se "anula" el numero del documento en sistema y en fisico se tacha y en prov. fact.electronica se da baja de numeracion
             // se borran todos los enlaces mediante triggers en la B.D.
             int ctanul = 0;
             using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))

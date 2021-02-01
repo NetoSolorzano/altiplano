@@ -214,7 +214,7 @@ namespace TransCarga
         {
             dataGridView1.Rows.Clear();
             dataGridView1.Columns.Clear();
-            dataGridView1.ColumnCount = 17;
+            dataGridView1.ColumnCount = 18;
             dataGridView1.Columns[0].Name = "fila";
             dataGridView1.Columns[0].HeaderText = "Fila";
             dataGridView1.Columns[0].ReadOnly = true;
@@ -262,11 +262,15 @@ namespace TransCarga
             dataGridView1.Columns[13].ReadOnly = true;
             dataGridView1.Columns[14].Visible = true;  // direccion destinat
             dataGridView1.Columns[14].ReadOnly = true;
-            dataGridView1.Columns[15].Visible = true;  // telef destinatario
+            dataGridView1.Columns[15].Visible = false;  // telef destinatario
             dataGridView1.Columns[15].ReadOnly = true;
             dataGridView1.Columns[16].Name = "nombul";
             dataGridView1.Columns[16].HeaderText = "Nombul";
             dataGridView1.Columns[16].ReadOnly = true;
+            dataGridView1.Columns[16].Visible = false;
+            dataGridView1.Columns[17].Name = "docvta";
+            dataGridView1.Columns[17].HeaderText = "Docvta";
+            dataGridView1.Columns[17].Visible = false;
             if (Tx_modo.Text == "EDITAR")
             {
                 DataGridViewCheckBoxColumn marca = new DataGridViewCheckBoxColumn();
@@ -530,10 +534,12 @@ namespace TransCarga
         private void jaladet(string idr)         // jala el detalle
         {
             string jalad = "select a.idc,a.serplacar,a.numplacar,a.fila,a.numpreg,a.serguia,a.numguia,a.totcant,a.totpeso,b.descrizionerid as MON,a.totflet," +
-                "a.estadoser,a.codmone,'X' as marca,a.id,a.pagado,a.salxcob,g.nombdegri,g.diredegri,g.teledegri,a.nombult,u1.nombre AS distrit,u2.nombre as provin " +
+                "a.estadoser,a.codmone,'X' as marca,a.id,a.pagado,a.salxcob,g.nombdegri,g.diredegri,g.teledegri,a.nombult,u1.nombre AS distrit," +
+                "u2.nombre as provin,concat(d.descrizionerid,'-',if(SUBSTRING(g.serdocvta,1,2)='00',SUBSTRING(g.serdocvta,3,2),g.serdocvta),'-',if(SUBSTRING(g.numdocvta,1,3)='000',SUBSTRING(g.numdocvta,4,5),g.numdocvta)) " +
                 "from detplacar a " +
                 "left join desc_mon b on b.idcodice = a.codmone " +
                 "left join cabguiai g on g.sergui = a.serguia and g.numgui = a.numguia " +
+                "left join desc_tdv d on d.idcodice=g.tipdocvta " + 
                 "LEFT JOIN ubigeos u1 ON CONCAT(u1.depart, u1.provin, u1.distri)= g.ubigdegri " +
                 "LEFT JOIN(SELECT* FROM ubigeos WHERE depart<>'00' AND provin<>'00' AND distri = '00') u2 ON u2.depart = left(g.ubigdegri, 2) AND u2.provin = concat(substr(g.ubigdegri, 3, 2)) " +
                 "where a.idc=@idr";
@@ -569,7 +575,8 @@ namespace TransCarga
                                     row[17].ToString(),
                                     row[18].ToString() + " - " + row[21].ToString() + " - " + row[22].ToString(),
                                     row[19].ToString(),
-                                    row[20].ToString()
+                                    row[20].ToString(),
+                                    row[23].ToString()
                                     );
                             }
                             else
@@ -592,6 +599,7 @@ namespace TransCarga
                                     row[18].ToString() + " - " + row[21].ToString() + " - " + row[22].ToString(),
                                     row[19].ToString(),
                                     row[20].ToString(),
+                                    row[23].ToString(),
                                     false
                                     );
                             }
@@ -2092,8 +2100,8 @@ namespace TransCarga
                     rowdetalle.idc = "";
                     rowdetalle.moneda = row.Cells["MON"].Value.ToString();
                     rowdetalle.numguia = row.Cells["numguia"].Value.ToString();
-                    rowdetalle.pagado = 0;
-                    rowdetalle.salxcob = 0;
+                    rowdetalle.pagado = double.Parse(row.Cells[8].Value.ToString());
+                    rowdetalle.salxcob = double.Parse(row.Cells[9].Value.ToString());
                     rowdetalle.serguia = row.Cells["serguia"].Value.ToString();
                     rowdetalle.totcant = Int16.Parse(row.Cells["totcant"].Value.ToString());
                     rowdetalle.totflete = Double.Parse(row.Cells["totflet"].Value.ToString());
@@ -2103,6 +2111,7 @@ namespace TransCarga
                     rowdetalle.teldest = row.Cells[15].Value.ToString();
                     rowdetalle.nombulto = row.Cells[16].Value.ToString();
                     rowdetalle.nomremi = "";    // row.Cells[].Value.ToString();
+                    rowdetalle.docvta = row.Cells[17].Value.ToString();
                     PlaniC.placar_det.Addplacar_detRow(rowdetalle);
                 }
             }
@@ -2140,8 +2149,12 @@ namespace TransCarga
                     using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
                     {
                         conn.Open();
-                        string consulta = "select a.numpregui,a.cantotgri,a.pestotgri,b.descrizionerid as MON,a.totgri,a.totpag,a.salgri,a.tipmongri,a.numplagri,c.unimedpro " +
-                            "from cabguiai a left join desc_mon b on b.idcodice=a.tipmongri left join detguiai c on c.idc=a.id " +
+                        string consulta = "select a.numpregui,a.cantotgri,a.pestotgri,b.descrizionerid as MON,a.totgri,a.totpag,a.salgri,a.tipmongri,a.numplagri," +
+                            "c.unimedpro," +
+                            "concat(d.descrizionerid,'-',if(SUBSTRING(a.serdocvta,1,2)='00',SUBSTRING(a.serdocvta,3,2),a.serdocvta),'-',if(SUBSTRING(a.numdocvta,1,3)='000',SUBSTRING(a.numdocvta,4,5),a.numdocvta))" + 
+                            "from cabguiai a left join desc_mon b on b.idcodice=a.tipmongri " +
+                            "left join detguiai c on c.idc=a.id " +
+                            "left join desc_tdv d on d.idcodice=a.tipdocvta " +
                             "where a.sergui=@ser and a.numgui=@num limit 1 ";
                         using (MySqlCommand micon = new MySqlCommand(consulta, conn))
                         {
@@ -2164,6 +2177,7 @@ namespace TransCarga
                                         dataGridView1.Rows[e.RowIndex].Cells[9].Value = dr.GetString(6);
                                         dataGridView1.Rows[e.RowIndex].Cells[10].Value = dr.GetString(7);
                                         dataGridView1.Rows[e.RowIndex].Cells[16].Value = dr.GetString(9);
+                                        dataGridView1.Rows[e.RowIndex].Cells[17].Value = dr.GetString(10);
                                     }
                                     else
                                     {

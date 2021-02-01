@@ -58,6 +58,7 @@
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.tx_dat_tido = new System.Windows.Forms.TextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.dataGridView2 = new System.Windows.Forms.DataGridView();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.cmb_tidoc = new System.Windows.Forms.ComboBox();
             this.tx_nser = new System.Windows.Forms.TextBox();
@@ -159,20 +160,20 @@
             this.label11 = new System.Windows.Forms.Label();
             this.label12 = new System.Windows.Forms.Label();
             this.tabgrhist = new System.Windows.Forms.TabPage();
-            this.tx_num = new System.Windows.Forms.TextBox();
-            this.button6 = new System.Windows.Forms.Button();
-            this.bt_hisGR = new System.Windows.Forms.Button();
-            this.dgv_histGR = new System.Windows.Forms.DataGridView();
-            this.dataGridView2 = new System.Windows.Forms.DataGridView();
+            this.tx_ser = new System.Windows.Forms.TextBox();
             this.groupBox31 = new System.Windows.Forms.GroupBox();
             this.dataGridView3 = new System.Windows.Forms.DataGridView();
             this.groupBox32 = new System.Windows.Forms.GroupBox();
             this.label13 = new System.Windows.Forms.Label();
-            this.tx_ser = new System.Windows.Forms.TextBox();
+            this.dgv_histGR = new System.Windows.Forms.DataGridView();
+            this.tx_num = new System.Windows.Forms.TextBox();
+            this.button6 = new System.Windows.Forms.Button();
+            this.bt_hisGR = new System.Windows.Forms.Button();
             this.toolStrip1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabres.SuspendLayout();
             this.groupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgv_resumen)).BeginInit();
             this.tabvtas.SuspendLayout();
             this.groupBox19.SuspendLayout();
@@ -198,10 +199,9 @@
             this.groupBox29.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgv_reval)).BeginInit();
             this.tabgrhist.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgv_histGR)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).BeginInit();
             this.groupBox31.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView3)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgv_histGR)).BeginInit();
             this.SuspendLayout();
             // 
             // toolStrip1
@@ -532,6 +532,17 @@
             this.groupBox1.Size = new System.Drawing.Size(174, 1);
             this.groupBox1.TabIndex = 375;
             this.groupBox1.TabStop = false;
+            // 
+            // dataGridView2
+            // 
+            this.dataGridView2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.dataGridView2.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView2.Location = new System.Drawing.Point(-423, -138);
+            this.dataGridView2.Name = "dataGridView2";
+            this.dataGridView2.Size = new System.Drawing.Size(1020, 276);
+            this.dataGridView2.TabIndex = 114;
             // 
             // groupBox2
             // 
@@ -1405,6 +1416,7 @@
             this.dgv_plan.TimeFilter = false;
             this.dgv_plan.SortStringChanged += new System.EventHandler(this.advancedDataGridView1_SortStringChanged);
             this.dgv_plan.FilterStringChanged += new System.EventHandler(this.advancedDataGridView1_FilterStringChanged);
+            this.dgv_plan.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.advancedDataGridView1_CellDoubleClick);
             // 
             // button3
             // 
@@ -1608,57 +1620,14 @@
             this.tabgrhist.Text = "Seguimiento GR";
             this.tabgrhist.UseVisualStyleBackColor = true;
             // 
-            // tx_num
+            // tx_ser
             // 
-            this.tx_num.Location = new System.Drawing.Point(400, 19);
-            this.tx_num.Name = "tx_num";
-            this.tx_num.Size = new System.Drawing.Size(66, 20);
-            this.tx_num.TabIndex = 379;
-            this.tx_num.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.tx_num.Leave += new System.EventHandler(this.tx_num_Leave);
-            // 
-            // button6
-            // 
-            this.button6.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.button6.Enabled = false;
-            this.button6.Location = new System.Drawing.Point(601, 8);
-            this.button6.Name = "button6";
-            this.button6.Size = new System.Drawing.Size(50, 41);
-            this.button6.TabIndex = 381;
-            this.button6.UseVisualStyleBackColor = true;
-            // 
-            // bt_hisGR
-            // 
-            this.bt_hisGR.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.bt_hisGR.Location = new System.Drawing.Point(483, 14);
-            this.bt_hisGR.Name = "bt_hisGR";
-            this.bt_hisGR.Size = new System.Drawing.Size(59, 29);
-            this.bt_hisGR.TabIndex = 380;
-            this.bt_hisGR.Text = "Genera";
-            this.bt_hisGR.UseVisualStyleBackColor = true;
-            this.bt_hisGR.Click += new System.EventHandler(this.bt_hisGR_Click);
-            // 
-            // dgv_histGR
-            // 
-            this.dgv_histGR.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.dgv_histGR.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgv_histGR.Location = new System.Drawing.Point(3, 57);
-            this.dgv_histGR.Name = "dgv_histGR";
-            this.dgv_histGR.Size = new System.Drawing.Size(1020, 317);
-            this.dgv_histGR.TabIndex = 8;
-            // 
-            // dataGridView2
-            // 
-            this.dataGridView2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.dataGridView2.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView2.Location = new System.Drawing.Point(-423, -138);
-            this.dataGridView2.Name = "dataGridView2";
-            this.dataGridView2.Size = new System.Drawing.Size(1020, 276);
-            this.dataGridView2.TabIndex = 114;
+            this.tx_ser.Location = new System.Drawing.Point(362, 19);
+            this.tx_ser.Name = "tx_ser";
+            this.tx_ser.Size = new System.Drawing.Size(38, 20);
+            this.tx_ser.TabIndex = 378;
+            this.tx_ser.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.tx_ser.Leave += new System.EventHandler(this.tx_ser_Leave);
             // 
             // groupBox31
             // 
@@ -1700,14 +1669,46 @@
             this.label13.TabIndex = 376;
             this.label13.Text = "Guía Rem.T.";
             // 
-            // tx_ser
+            // dgv_histGR
             // 
-            this.tx_ser.Location = new System.Drawing.Point(362, 19);
-            this.tx_ser.Name = "tx_ser";
-            this.tx_ser.Size = new System.Drawing.Size(38, 20);
-            this.tx_ser.TabIndex = 378;
-            this.tx_ser.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.tx_ser.Leave += new System.EventHandler(this.tx_ser_Leave);
+            this.dgv_histGR.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.dgv_histGR.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgv_histGR.Location = new System.Drawing.Point(3, 57);
+            this.dgv_histGR.Name = "dgv_histGR";
+            this.dgv_histGR.Size = new System.Drawing.Size(1020, 317);
+            this.dgv_histGR.TabIndex = 8;
+            // 
+            // tx_num
+            // 
+            this.tx_num.Location = new System.Drawing.Point(400, 19);
+            this.tx_num.Name = "tx_num";
+            this.tx_num.Size = new System.Drawing.Size(66, 20);
+            this.tx_num.TabIndex = 379;
+            this.tx_num.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.tx_num.Leave += new System.EventHandler(this.tx_num_Leave);
+            // 
+            // button6
+            // 
+            this.button6.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.button6.Enabled = false;
+            this.button6.Location = new System.Drawing.Point(601, 8);
+            this.button6.Name = "button6";
+            this.button6.Size = new System.Drawing.Size(50, 41);
+            this.button6.TabIndex = 381;
+            this.button6.UseVisualStyleBackColor = true;
+            // 
+            // bt_hisGR
+            // 
+            this.bt_hisGR.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.bt_hisGR.Location = new System.Drawing.Point(483, 14);
+            this.bt_hisGR.Name = "bt_hisGR";
+            this.bt_hisGR.Size = new System.Drawing.Size(59, 29);
+            this.bt_hisGR.TabIndex = 380;
+            this.bt_hisGR.Text = "Genera";
+            this.bt_hisGR.UseVisualStyleBackColor = true;
+            this.bt_hisGR.Click += new System.EventHandler(this.bt_hisGR_Click);
             // 
             // repsoper
             // 
@@ -1728,6 +1729,7 @@
             this.tabres.ResumeLayout(false);
             this.tabres.PerformLayout();
             this.groupBox1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgv_resumen)).EndInit();
             this.tabvtas.ResumeLayout(false);
             this.tabvtas.PerformLayout();
@@ -1759,10 +1761,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.dgv_reval)).EndInit();
             this.tabgrhist.ResumeLayout(false);
             this.tabgrhist.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgv_histGR)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).EndInit();
             this.groupBox31.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView3)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgv_histGR)).EndInit();
             this.ResumeLayout(false);
 
         }

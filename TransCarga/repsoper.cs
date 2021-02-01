@@ -50,6 +50,8 @@ namespace TransCarga
         DataTable dt = new DataTable();
         DataTable dtestad = new DataTable();
         DataTable dttaller = new DataTable();
+        DataTable dtplanCab = new DataTable();
+        DataTable dtplanDet = new DataTable();
         // string de conexion
         //static string serv = ConfigurationManager.AppSettings["serv"].ToString();
         static string port = ConfigurationManager.AppSettings["port"].ToString();
@@ -685,6 +687,7 @@ namespace TransCarga
                 }
             }
         }
+
         #region combos
         private void cmb_estad_ing_SelectionChangeCommitted(object sender, EventArgs e)
         {
@@ -928,63 +931,100 @@ namespace TransCarga
         #endregion
 
         #region crystal
-        private void button2_Click(object sender, EventArgs e)      // resumen de contrato
+        private void button2_Click(object sender, EventArgs e)      // 
         {
             setParaCrystal("resumen");
         }
-        private void button4_Click(object sender, EventArgs e)      // reporte de ventas
+        private void button4_Click(object sender, EventArgs e)      // 
         {
             if (rb_listado.Checked == true) setParaCrystal("vtasxclte");
             else setParaCrystal("ventas");
         }
-
         private void setParaCrystal(string repo)                    // genera el set para el reporte de crystal
         {
-            if (repo== "resumen")
+            if (repo== "x")
             {
                 //conClie datos = generareporte();                        // conClie = dataset de impresion de contrato   
                 //frmvizcont visualizador = new frmvizcont(datos);        // POR ESO SE CREO ESTE FORM frmvizcont PARA MOSTRAR AHI. ES MEJOR ASI.  
                 //visualizador.Show();
             }
-            if (repo == "ventas")
+            if (repo == "y")
             {
                 //conClie datos = generarepvtas();
                 //frmvizcont visualizador = new frmvizcont(datos);
                 //visualizador.Show();
             }
-            if (repo == "vtasxclte")
+            if (repo == "planC")
             {
-                conClie datos = generarepvtasxclte();
+                conClie datos = generarepplanC();
                 frmvizoper visualizador = new frmvizoper(datos);
                 visualizador.Show();
             }
         }
-        private conClie generarepvtasxclte()
+        private conClie generarepplanC()
         {
-            conClie repvtas = new conClie();                        // xsd
-            conClie.repvtas_cabRow cabrow = repvtas.repvtas_cab.Newrepvtas_cabRow();
-            cabrow.id = "0";
-            cabrow.fecini = dtp_vtasfini.Value.ToString("dd/MM/yyyy");
-            cabrow.fecfin = dtp_vtasfina.Value.ToString("dd/MM/yyyy");
-            if (rb_listado.Checked == true) cabrow.modo = "listado";
-            //if (rb_resumen.Checked == true) cabrow.modo = "resumen";
-            repvtas.repvtas_cab.Addrepvtas_cabRow(cabrow);
-            // detalle
-            foreach (DataGridViewRow row in dgv_vtas.Rows)
+            conClie PlaniC = new conClie();
+            // CABECERA
+            conClie.placar_cabRow rowcabeza = PlaniC.placar_cab.Newplacar_cabRow();
+            rowcabeza.rucEmisor = Program.ruc;
+            rowcabeza.nomEmisor = Program.cliente;
+            rowcabeza.dirEmisor = Program.dirfisc;
+            rowcabeza.id = dtplanCab.Rows[0].ItemArray[0].ToString();
+            rowcabeza.autoriz = dtplanCab.Rows[0].ItemArray[22].ToString();
+            rowcabeza.brevAyudante = dtplanCab.Rows[0].ItemArray[26].ToString();
+            rowcabeza.brevChofer = dtplanCab.Rows[0].ItemArray[24].ToString();
+            rowcabeza.camion = dtplanCab.Rows[0].ItemArray[21].ToString();            // placa de la carreta
+            rowcabeza.confvehi = dtplanCab.Rows[0].ItemArray[23].ToString();
+            rowcabeza.direDest = "";
+            rowcabeza.direOrigen = "";
+            rowcabeza.fechope = dtplanCab.Rows[0].ItemArray[1].ToString();
+            rowcabeza.marcaModelo = "";
+            rowcabeza.nomAyudante = dtplanCab.Rows[0].ItemArray[27].ToString();
+            rowcabeza.nomChofer = dtplanCab.Rows[0].ItemArray[25].ToString();
+            rowcabeza.nomDest = dtplanCab.Rows[0].ItemArray[37].ToString();
+            rowcabeza.nomOrigen = dtplanCab.Rows[0].ItemArray[36].ToString();
+            rowcabeza.nomPropiet = dtplanCab.Rows[0].ItemArray[33].ToString();
+            rowcabeza.numpla = dtplanCab.Rows[0].ItemArray[3].ToString();
+            rowcabeza.placa = dtplanCab.Rows[0].ItemArray[20].ToString();
+            rowcabeza.rucPropiet = dtplanCab.Rows[0].ItemArray[28].ToString();
+            rowcabeza.serpla = dtplanCab.Rows[0].ItemArray[2].ToString();
+            rowcabeza.fechSalida = "";
+            rowcabeza.fechLlegada = "";
+            rowcabeza.estado = dtplanCab.Rows[0].ItemArray[38].ToString();
+            rowcabeza.tituloF = Program.tituloF;
+            PlaniC.placar_cab.Addplacar_cabRow(rowcabeza);
+            // DETALLE  
+            // if (rb_orden_gr.Checked == true) dataGridView1.Sort(dataGridView1.Columns["numguia"], System.ComponentModel.ListSortDirection.Ascending);
+            // if (rb_orden_dir.Checked == true) dataGridView1.Sort(dataGridView1.Columns[14], System.ComponentModel.ListSortDirection.Ascending);
+            int i = 0;
+            foreach (DataRow row in dtplanDet.Rows)
             {
-                if (rb_listado.Checked == true) 
+                if (row.ItemArray[0] != null)
                 {
-                    if (row.Cells["item"].Value != null && row.Cells["item"].Value.ToString().Trim() != "")
-                    {
-                        conClie.repvtas_detRow detrow = repvtas.repvtas_det.Newrepvtas_detRow();
-                        detrow.id = "0";
-                        detrow.tienda = row.Cells["tienda"].Value.ToString();
-                        detrow.fecha = row.Cells["fecha"].Value.ToString().Substring(0,2) + "/" + row.Cells["fecha"].Value.ToString().Substring(3, 2) + "/" + row.Cells["fecha"].Value.ToString().Substring(6, 4); 
-                        repvtas.repvtas_det.Addrepvtas_detRow(detrow);
-                    }
+                    i = i + 1;
+                    conClie.placar_detRow rowdetalle = PlaniC.placar_det.Newplacar_detRow();
+                    rowdetalle.fila = i.ToString();
+                    rowdetalle.id = row.ItemArray[0].ToString();
+                    rowdetalle.idc = "";
+                    rowdetalle.moneda = row.ItemArray[9].ToString();
+                    rowdetalle.numguia = row.ItemArray[6].ToString();
+                    rowdetalle.pagado = double.Parse(row.ItemArray[15].ToString());
+                    rowdetalle.salxcob = double.Parse(row.ItemArray[16].ToString());
+                    rowdetalle.serguia = row.ItemArray[5].ToString();
+                    rowdetalle.totcant = Int16.Parse(row.ItemArray[7].ToString());
+                    rowdetalle.totflete = Double.Parse(row.ItemArray[10].ToString());
+                    rowdetalle.totpeso = Double.Parse(row.ItemArray[8].ToString());
+                    rowdetalle.nomdest = row.ItemArray[17].ToString();
+                    rowdetalle.dirdest = row.ItemArray[18].ToString();
+                    rowdetalle.teldest = row.ItemArray[19].ToString();
+                    rowdetalle.nombulto = row.ItemArray[20].ToString();
+                    rowdetalle.nomremi = "";
+                    rowdetalle.docvta = row.ItemArray[23].ToString();
+                    PlaniC.placar_det.Addplacar_detRow(rowdetalle);
                 }
             }
-            return repvtas;
+            //
+            return PlaniC;
         }
         private conClie generarepvtas()
         {
@@ -1148,19 +1188,70 @@ namespace TransCarga
         }
         private void advancedDataGridView1_CellDoubleClick(object sender, DataGridViewCellEventArgs e)      // no usamos
         {
-            /*if(e.ColumnIndex == 1)
+            if (tabControl1.SelectedTab.Name == "tabvtas")
             {
-                //string codu = "";
-                string idr = "";
-                idr = advancedDataGridView1.CurrentRow.Cells[0].Value.ToString();
-                tx_rind.Text = advancedDataGridView1.CurrentRow.Index.ToString();
-                tabControl1.SelectedTab = tabreg;
-                limpiar(this);
-                limpia_otros();
-                limpia_combos();
-                tx_idr.Text = idr;
-                jalaoc("tx_idr");
-            }*/
+                
+            }
+            if (tabControl1.SelectedTab.Name == "tabgrti")
+            {
+                
+            }
+            if (tabControl1.SelectedTab.Name == "tabplacar")
+            {
+                if (e.ColumnIndex == 2)
+                {
+                    using (MySqlConnection con = new MySqlConnection(DB_CONN_STR))
+                    {
+                        if (lib.procConn(con) == true)
+                        {
+                            string consulta = "select a.id,a.fechope,a.serplacar,a.numplacar,a.locorigen,a.locdestin,a.obsplacar,a.cantfilas,a.cantotpla,a.pestotpla,a.tipmonpla," +
+                                "a.tipcampla,a.subtotpla,a.igvplacar,a.totplacar,a.totpagado,a.salxpagar,a.estadoser,a.impreso,a.fleteimp,a.platracto,a.placarret,a.autorizac," +
+                                "a.confvehic,a.brevchofe,a.nomchofe,a.brevayuda,a.nomayuda,a.rucpropie,a.tipoplani,a.userc,a.userm,a.usera,ifnull(b.razonsocial,'') as razonsocial," +
+                                "a.marcaTrac,a.modeloTrac,c.descrizionerid as nomorigen,d.descrizionerid as nomdestin,e.descrizionerid as nomestad " +
+                                "FROM cabplacar a left join anag_for b on a.rucpropie=b.ruc and b.estado=0 " +
+                                "left join desc_loc c on c.idcodice=a.locorigen " +
+                                "left join desc_loc d on d.idcodice=a.locdestin " +
+                                "left join desc_est e on e.idcodice=a.estadoser " + 
+                                "where a.serplacar=@ser and a.numplacar=@num";
+                            using (MySqlCommand micon = new MySqlCommand(consulta, con))
+                            {
+                                micon.Parameters.AddWithValue("@ser", dgv_plan.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Value.ToString());
+                                micon.Parameters.AddWithValue("@num", dgv_plan.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString());
+                                using (MySqlDataAdapter da = new MySqlDataAdapter(micon))
+                                {
+                                    da.Fill(dtplanCab);
+                                }
+                            }
+                            // detalle
+                            consulta = "select a.idc,a.serplacar,a.numplacar,a.fila,a.numpreg,a.serguia,a.numguia,a.totcant,a.totpeso,b.descrizionerid as MON,a.totflet," +
+                                "a.estadoser,a.codmone,'X' as marca,a.id,a.pagado,a.salxcob,g.nombdegri,g.diredegri,g.teledegri,a.nombult,u1.nombre AS distrit," +
+                                "u2.nombre as provin,concat(d.descrizionerid,'-',if(SUBSTRING(g.serdocvta,1,2)='00',SUBSTRING(g.serdocvta,3,2),g.serdocvta),'-',if(SUBSTRING(g.numdocvta,1,3)='000',SUBSTRING(g.numdocvta,4,5),g.numdocvta)) " +
+                                "from detplacar a " +
+                                "left join desc_mon b on b.idcodice = a.codmone " +
+                                "left join cabguiai g on g.sergui = a.serguia and g.numgui = a.numguia " +
+                                "left join desc_tdv d on d.idcodice=g.tipdocvta " +
+                                "LEFT JOIN ubigeos u1 ON CONCAT(u1.depart, u1.provin, u1.distri)= g.ubigdegri " +
+                                "LEFT JOIN(SELECT* FROM ubigeos WHERE depart<>'00' AND provin<>'00' AND distri = '00') u2 ON u2.depart = left(g.ubigdegri, 2) AND u2.provin = concat(substr(g.ubigdegri, 3, 2)) " +
+                                "where a.serplacar=@ser and a.numplacar=@num";
+                            using (MySqlCommand micon = new MySqlCommand(consulta, con))
+                            {
+                                micon.Parameters.AddWithValue("@ser", dgv_plan.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Value.ToString());
+                                micon.Parameters.AddWithValue("@num", dgv_plan.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString());
+                                using (MySqlDataAdapter da = new MySqlDataAdapter(micon))
+                                {
+                                    da.Fill(dtplanDet);
+                                }
+                            }
+                        }
+                        // llenamos el set
+                        setParaCrystal("planC");
+                    }
+                }
+            }
+            if (tabControl1.SelectedTab.Name == "tabreval")
+            {
+                
+            }
         }
         private void advancedDataGridView1_CellValidating(object sender, DataGridViewCellValidatingEventArgs e) // no usamos
         {

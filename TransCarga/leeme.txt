@@ -136,3 +136,7 @@ form ayuda3, desarrollo del form ...............................................
 form notcredclts (notas de credito de cliente)
 - desarrollo del form .............................................................................. ok 20/01/2021
 form facelect, desarrollo opcion fact cargas unicas ................................................ ok 30/01/2021
+************** adecuaciones ALTIPLANO ******************
+form planicarga, agregar campo de doc.venta de la guia, va al detalle de la planilla ............... ok 01/02/2021
+form repsoper, agregar formato impresion de planilla de carga, doble click en dgv_plan ............. 
+form facelect, usuarios pueden anular doc.vtas hasta n días despues de emitido ..................... ok 01/02/2021
