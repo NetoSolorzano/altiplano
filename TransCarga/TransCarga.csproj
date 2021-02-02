@@ -167,6 +167,12 @@
     <Compile Include="frmvizoper.designer.cs">
       <DependentUpon>frmvizoper.cs</DependentUpon>
     </Compile>
+    <Compile Include="gr_ind_trans_2.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>gr_ind_trans_2.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="guiati.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -347,6 +353,10 @@
     </EmbeddedResource>
     <EmbeddedResource Include="frmvizoper.resx">
       <DependentUpon>frmvizoper.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="gr_ind_trans_2.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>gr_ind_trans_2.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="guiati.resx">
       <DependentUpon>guiati.cs</DependentUpon>

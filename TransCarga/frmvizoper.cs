@@ -34,6 +34,22 @@ namespace TransCarga
                 rpt.SetDataSource(_datosReporte);
                 crystalReportViewer1.ReportSource = rpt;
             }
+            if (_datosReporte.placar_cab.Rows.Count > 0)
+            {
+                string nf = _datosReporte.placar_cab.Rows[0].ItemArray[0].ToString();
+                ReportDocument rpt = new ReportDocument();
+                rpt.Load(nf);    // rpt.Load("formatos/plancarga2.rpt");
+                rpt.SetDataSource(_datosReporte);
+                crystalReportViewer1.ReportSource = rpt;
+            }
+            if (_datosReporte.gr_ind_cab.Rows.Count > 0)
+            {
+                string nf = _datosReporte.gr_ind_cab.Rows[0].ItemArray[0].ToString();
+                ReportDocument rpt = new ReportDocument();
+                rpt.Load(nf);
+                rpt.SetDataSource(_datosReporte);
+                crystalReportViewer1.ReportSource = rpt;
+            }
         }
     }
 }

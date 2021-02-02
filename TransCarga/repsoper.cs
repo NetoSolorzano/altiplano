@@ -19,6 +19,7 @@ namespace TransCarga
         string colsfgr = TransCarga.Program.colsfc;   // color seleccion grilla
         string colstrp = TransCarga.Program.colstr;   // color del strip
         static string nomtab = "cabpregr";            // 
+        
         #region variables
         string asd = TransCarga.Program.vg_user;      // usuario conectado al sistema
         public int totfilgrid, cta;             // variables para impresion
@@ -43,15 +44,22 @@ namespace TransCarga
         string codAnul = "";            // codigo de documento anulado
         string nomAnul = "";            // texto nombre del estado anulado
         string codGene = "";            // codigo documento nuevo generado
+        string rpt_placarga = "";       // ruta y nombre del formato RPT planillas carga
+        string v_tipdocR = "";          // tipo de documento ruc
+        string rpt_grt = "";            // ruta y nombre del formato RPT guias remit
         //int pageCount = 1, cuenta = 0;
         #endregion
+
         libreria lib = new libreria();
 
         DataTable dt = new DataTable();
         DataTable dtestad = new DataTable();
         DataTable dttaller = new DataTable();
-        DataTable dtplanCab = new DataTable();
-        DataTable dtplanDet = new DataTable();
+        DataTable dtplanCab = new DataTable();      // planilla de carga - cabecera
+        DataTable dtplanDet = new DataTable();      // planilla de carga - detalle
+        DataTable dtgrtcab = new DataTable();       // guia rem transpor - cabecera
+        DataTable dtgrtdet = new DataTable();       // guia rem transpor - detalle
+
         // string de conexion
         //static string serv = ConfigurationManager.AppSettings["serv"].ToString();
         static string port = ConfigurationManager.AppSettings["port"].ToString();
@@ -124,42 +132,52 @@ namespace TransCarga
             {
                 MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
                 conn.Open();
-                string consulta = "select formulario,campo,param,valor from enlaces where formulario in(@nofo,@ped)";
+                string consulta = "select formulario,campo,param,valor from enlaces where formulario in(@nofo,@pla,@clie,@grt)";
                 MySqlCommand micon = new MySqlCommand(consulta, conn);
                 micon.Parameters.AddWithValue("@nofo", "main");
-                micon.Parameters.AddWithValue("@ped", "xxx");
+                micon.Parameters.AddWithValue("@pla", "planicarga");
+                micon.Parameters.AddWithValue("@clie", "clients");
+                micon.Parameters.AddWithValue("@grt", "guiati");
                 MySqlDataAdapter da = new MySqlDataAdapter(micon);
                 DataTable dt = new DataTable();
                 da.Fill(dt);
                 for (int t = 0; t < dt.Rows.Count; t++)
                 {
                     DataRow row = dt.Rows[t];
-                    if (row["campo"].ToString() == "imagenes" && row["formulario"].ToString() == "main")
+                    if (row["formulario"].ToString() == "main")
                     {
-                        if (row["param"].ToString() == "img_btN") img_btN = row["valor"].ToString().Trim();         // imagen del boton de accion NUEVO
-                        if (row["param"].ToString() == "img_btE") img_btE = row["valor"].ToString().Trim();         // imagen del boton de accion EDITAR
-                        if (row["param"].ToString() == "img_btP") img_btP = row["valor"].ToString().Trim();         // imagen del boton de accion IMPRIMIR
-                        if (row["param"].ToString() == "img_btA") img_btA = row["valor"].ToString().Trim();         // imagen del boton de accion ANULAR/BORRAR
-                        if (row["param"].ToString() == "img_btexc") img_btexc = row["valor"].ToString().Trim();     // imagen del boton exporta a excel
-                        if (row["param"].ToString() == "img_btQ") img_btq = row["valor"].ToString().Trim();         // imagen del boton de accion SALIR
-                        //if (row["param"].ToString() == "img_btP") img_btP = row["valor"].ToString().Trim();        // imagen del boton de accion IMPRIMIR
-                        if (row["param"].ToString() == "img_gra") img_grab = row["valor"].ToString().Trim();         // imagen del boton grabar nuevo
-                        if (row["param"].ToString() == "img_anu") img_anul = row["valor"].ToString().Trim();         // imagen del boton grabar anular
-                        if (row["param"].ToString() == "img_imprime") img_imprime = row["valor"].ToString().Trim();  // imagen del boton IMPRIMIR REPORTE
-                        if (row["param"].ToString() == "img_pre") img_preview = row["valor"].ToString().Trim();  // imagen del boton VISTA PRELIMINAR
+                        if (row["campo"].ToString() == "imagenes")
+                        {
+                            if (row["param"].ToString() == "img_btN") img_btN = row["valor"].ToString().Trim();         // imagen del boton de accion NUEVO
+                            if (row["param"].ToString() == "img_btE") img_btE = row["valor"].ToString().Trim();         // imagen del boton de accion EDITAR
+                            if (row["param"].ToString() == "img_btP") img_btP = row["valor"].ToString().Trim();         // imagen del boton de accion IMPRIMIR
+                            if (row["param"].ToString() == "img_btA") img_btA = row["valor"].ToString().Trim();         // imagen del boton de accion ANULAR/BORRAR
+                            if (row["param"].ToString() == "img_btexc") img_btexc = row["valor"].ToString().Trim();     // imagen del boton exporta a excel
+                            if (row["param"].ToString() == "img_btQ") img_btq = row["valor"].ToString().Trim();         // imagen del boton de accion SALIR
+                            if (row["param"].ToString() == "img_gra") img_grab = row["valor"].ToString().Trim();         // imagen del boton grabar nuevo
+                            if (row["param"].ToString() == "img_anu") img_anul = row["valor"].ToString().Trim();         // imagen del boton grabar anular
+                            if (row["param"].ToString() == "img_imprime") img_imprime = row["valor"].ToString().Trim();  // imagen del boton IMPRIMIR REPORTE
+                            if (row["param"].ToString() == "img_pre") img_preview = row["valor"].ToString().Trim();  // imagen del boton VISTA PRELIMINAR
+                        }
+                        if (row["campo"].ToString() == "estado")
+                        {
+                            if (row["param"].ToString() == "anulado") codAnul = row["valor"].ToString().Trim();         // codigo doc anulado
+                            if (row["param"].ToString() == "generado") codGene = row["valor"].ToString().Trim();        // codigo doc generado
+                            DataRow[] fila = dtestad.Select("idcodice='" + codAnul + "'");
+                            nomAnul = fila[0][0].ToString();
+                        }
                     }
-                    if (row["campo"].ToString() == "estado" && row["formulario"].ToString() == "main")
+                    if (row["formulario"].ToString() == "planicarga")
                     {
-                        if (row["param"].ToString() == "anulado") codAnul = row["valor"].ToString().Trim();         // codigo doc anulado
-                        if (row["param"].ToString() == "generado") codGene = row["valor"].ToString().Trim();        // codigo doc generado
-                        DataRow[] fila = dtestad.Select("idcodice='" + codAnul + "'");
-                        nomAnul = fila[0][0].ToString();
+                        if (row["campo"].ToString() == "impresion" && row["param"].ToString() == "nomGRi_cr") rpt_placarga = row["valor"].ToString().Trim();         // ruta Y NOMBRE formato rpt
                     }
-                    if (row["formulario"].ToString() == "xxx")
+                    if (row["formulario"].ToString() == "guiati")
                     {
-                        if (row["campo"].ToString() == "tipoped" && row["param"].ToString() == "almacen") tipede = row["valor"].ToString().Trim();         // tipo de pedido por defecto en almacen
-                        if (row["campo"].ToString() == "estado" && row["param"].ToString() == "default") tiesta = row["valor"].ToString().Trim();         // estado del pedido inicial
-                        if (row["campo"].ToString() == "detalle2" && row["param"].ToString() == "piedra") letpied = row["valor"].ToString().Trim();         // letra identificadora de Piedra en Detalle2
+                        if (row["campo"].ToString() == "impresion" && row["param"].ToString() == "nomGRir_cr") rpt_grt = row["valor"].ToString().Trim();         // ruta y nombre formato rpt
+                    }
+                    if (row["formulario"].ToString() == "clients")
+                    {
+                        if (row["campo"].ToString() == "documento" && row["param"].ToString() == "ruc") v_tipdocR = row["valor"].ToString().Trim();         // tipo documento RUC
                     }
                 }
                 da.Dispose();
@@ -948,11 +966,11 @@ namespace TransCarga
                 //frmvizcont visualizador = new frmvizcont(datos);        // POR ESO SE CREO ESTE FORM frmvizcont PARA MOSTRAR AHI. ES MEJOR ASI.  
                 //visualizador.Show();
             }
-            if (repo == "y")
+            if (repo == "GRT")
             {
-                //conClie datos = generarepvtas();
-                //frmvizcont visualizador = new frmvizcont(datos);
-                //visualizador.Show();
+                conClie datos = generarepgrt();
+                frmvizoper visualizador = new frmvizoper(datos);
+                visualizador.Show();
             }
             if (repo == "planC")
             {
@@ -966,6 +984,7 @@ namespace TransCarga
             conClie PlaniC = new conClie();
             // CABECERA
             conClie.placar_cabRow rowcabeza = PlaniC.placar_cab.Newplacar_cabRow();
+            rowcabeza.formatoRPT = rpt_placarga; // "formatos/plancarga2.rpt";
             rowcabeza.rucEmisor = Program.ruc;
             rowcabeza.nomEmisor = Program.cliente;
             rowcabeza.dirEmisor = Program.dirfisc;
@@ -1026,43 +1045,90 @@ namespace TransCarga
             //
             return PlaniC;
         }
-        private conClie generarepvtas()
+        private conClie generarepgrt()
         {
-            conClie repvtas = new conClie();                        // xsd
-            conClie.repvtas_cabRow cabrow = repvtas.repvtas_cab.Newrepvtas_cabRow();
-            cabrow.id = "0";
-            cabrow.fecini = dtp_vtasfini.Value.ToString("dd/MM/yyyy");
-            cabrow.fecfin = dtp_vtasfina.Value.ToString("dd/MM/yyyy");
-            cabrow.tienda = tx_dat_vtasloc.Text.Trim();
-            if (rb_listado.Checked == true) cabrow.modo = "listado";
-            if (rb_resumen.Checked == true) cabrow.modo = "resumen";
-            repvtas.repvtas_cab.Addrepvtas_cabRow(cabrow);
-            // detalle
-            foreach(DataGridViewRow row in dgv_vtas.Rows)
+            conClie guiaT = new conClie();
+            conClie.gr_ind_cabRow rowcabeza = guiaT.gr_ind_cab.Newgr_ind_cabRow();
+            // CABECERA
+            DataRow row = dtgrtcab.Rows[0];
+            rowcabeza.formatoRPT = rpt_grt;
+            rowcabeza.id = row["id"].ToString(); // tx_idr.Text;
+            rowcabeza.estadoser = row["ESTADO"].ToString(); // tx_estado.Text;
+            rowcabeza.sergui = row["sergui"].ToString(); // tx_serie.Text;
+            rowcabeza.numgui = row["numgui"].ToString(); // tx_numero.Text;
+            rowcabeza.numpregui = row["numpregui"].ToString(); // tx_pregr_num.Text;
+            rowcabeza.fechope = row["fechopegr"].ToString().Substring(0, 10); // tx_fechope.Text;
+            rowcabeza.fechTraslado = row["fecplacar"].ToString().Substring(8,2) + "/" + row["fecplacar"].ToString().Substring(5, 2) + "/" + row["fecplacar"].ToString().Substring(0, 4); // tx_pla_fech.Text;
+            rowcabeza.frase1 = row["ESTADO"].ToString(); //(tx_dat_estad.Text == codAnul) ? v_fra1 : "";  // campo para etiqueta "ANULADO"
+            rowcabeza.frase2 = row["frase2"].ToString(); // (chk_seguridad.Checked == true) ? v_fra2 : "";  // campo para etiqueta "TIENE CLAVE"
+            // origen - destino
+            rowcabeza.nomDestino = row["DESTINO"].ToString(); // cmb_destino.Text;
+            rowcabeza.direDestino = row["dirdestin"].ToString(); // tx_dirDestino.Text;
+            rowcabeza.dptoDestino = ""; // 
+            rowcabeza.provDestino = "";
+            rowcabeza.distDestino = ""; // 
+            rowcabeza.nomOrigen = row["ORIGEN"].ToString(); // cmb_origen.Text;
+            rowcabeza.direOrigen = row["dirorigen"].ToString(); // tx_dirOrigen.Text;
+            rowcabeza.dptoOrigen = "";  // no hay campo
+            rowcabeza.provOrigen = "";
+            rowcabeza.distOrigen = "";  // no hay campo
+            // remitente
+            rowcabeza.docRemit = "";    // cmb_docRem.Text;
+            rowcabeza.numRemit = row["nudoregri"].ToString();    // tx_numDocRem.Text;
+            rowcabeza.nomRemit = row["nombregri"].ToString();    // tx_nomRem.Text;
+            rowcabeza.direRemit = row["direregri"].ToString();    // tx_dirRem.Text;
+            rowcabeza.dptoRemit = row["deptrem"].ToString();   // row[""].ToString();    // tx_dptoRtt.Text;
+            rowcabeza.provRemit = row["provrem"].ToString();    // tx_provRtt.Text;
+            rowcabeza.distRemit = row["distrem"].ToString();    // tx_distRtt.Text;
+            rowcabeza.telremit = row["telrem"].ToString();    // tx_telR.Text;
+            // destinatario  
+            rowcabeza.docDestinat = ""; // cmb_docDes.Text;
+            rowcabeza.numDestinat = row["nudodegri"].ToString(); // tx_numDocDes.Text;
+            rowcabeza.nomDestinat = row["nombdegri"].ToString(); // tx_nomDrio.Text;
+            rowcabeza.direDestinat = row["diredegri"].ToString(); // tx_dirDrio.Text;
+            rowcabeza.distDestinat = row["distdes"].ToString(); // tx_disDrio.Text;
+            rowcabeza.provDestinat = row["provdes"].ToString(); // tx_proDrio.Text;
+            rowcabeza.dptoDestinat = row["deptdes"].ToString(); // tx_dptoDrio.Text;
+            rowcabeza.teldesti = row["teldes"].ToString(); // tx_telD.Text;
+            // importes 
+            rowcabeza.nomMoneda = row["MON"].ToString(); // cmb_mon.Text;
+            rowcabeza.igv = row["igvgri"].ToString();         // no hay campo
+            rowcabeza.subtotal = row["subtotgri"].ToString();    // no hay campo
+            rowcabeza.total = row["totgri"].ToString(); // (chk_flete.Checked == true) ? tx_flete.Text : "";
+            rowcabeza.docscarga = row["docsremit"].ToString(); // tx_docsOr.Text;
+            rowcabeza.consignat = row["clifingri"].ToString(); // tx_consig.Text;
+            // pie
+            rowcabeza.marcamodelo = row["marca"].ToString() + " / " + row["modelo"].ToString(); // tx_marcamion.Text;
+            rowcabeza.autoriz = row["autplagri"].ToString(); // tx_pla_autor.Text;
+            rowcabeza.brevAyuda = "";   // falta este campo
+            rowcabeza.brevChofer = row["breplagri"].ToString(); // tx_pla_brevet.Text;
+            rowcabeza.nomChofer = row["chocamcar"].ToString(); // tx_pla_nomcho.Text;
+            rowcabeza.placa = row["plaplagri"].ToString(); // tx_pla_placa.Text;
+            rowcabeza.camion = row["carplagri"].ToString(); // tx_pla_carret.Text;
+            rowcabeza.confvehi = row["confvegri"].ToString(); // tx_pla_confv.Text;
+            rowcabeza.rucPropiet = row["proplagri"].ToString(); // tx_pla_ruc.Text;
+            rowcabeza.nomPropiet = row["razonsocial"].ToString(); // tx_pla_propiet.Text;
+            rowcabeza.fechora_imp = DateTime.Now.ToString();    // fecha de la "reimpresion" en el preview, No de la impresion en papel .. ojo
+            rowcabeza.userc = (row["usera"].ToString() != "")? row["usera"].ToString(): (row["userm"].ToString() != "")? row["userm"].ToString(): row["userc"].ToString();
+            //
+            guiaT.gr_ind_cab.Addgr_ind_cabRow(rowcabeza);
+            //
+            // DETALLE  
+            for (int i = 0; i < dtgrtdet.Rows.Count; i++)
             {
-                if (rb_resumen.Checked == true)
-                {
-                    if (row.Cells["item"].Value != null && row.Cells["item"].Value.ToString().Trim() != "")
-                    {
-                        conClie.repvtas_detRow detrow = repvtas.repvtas_det.Newrepvtas_detRow();
-                        detrow.id = "0";
-                        detrow.tienda = row.Cells["tienda"].Value.ToString();
-                        repvtas.repvtas_det.Addrepvtas_detRow(detrow);
-                    }
-                }
-                if (rb_listado.Checked == true)
-                {
-                    if (row.Cells["item"].Value != null && row.Cells["item"].Value.ToString().Trim() != "")
-                    {
-                        conClie.repvtas_detRow detrow = repvtas.repvtas_det.Newrepvtas_detRow();
-                        detrow.id = "0";
-                        detrow.tienda = row.Cells["tienda"].Value.ToString();
-                        detrow.fecha = row.Cells["fecha"].Value.ToString().Substring(0,10);
-                        repvtas.repvtas_det.Addrepvtas_detRow(detrow);
-                    }
-                }
+                conClie.gr_ind_detRow rowdetalle = guiaT.gr_ind_det.Newgr_ind_detRow();
+                rowdetalle.fila = "";       // no estamos usando
+                rowdetalle.cant = dtgrtdet.Rows[0].ItemArray[3].ToString(); // dataGridView1.Rows[i].Cells[0].Value.ToString();
+                rowdetalle.codigo = "";     // no estamos usando
+                rowdetalle.umed = dtgrtdet.Rows[0].ItemArray[4].ToString(); // dataGridView1.Rows[i].Cells[1].Value.ToString();
+                rowdetalle.descrip = dtgrtdet.Rows[0].ItemArray[6].ToString(); // dataGridView1.Rows[i].Cells[2].Value.ToString();
+                rowdetalle.precio = "";     // no estamos usando
+                rowdetalle.total = "";      // no estamos usando
+                rowdetalle.peso = string.Format("{0:#0.0}", dtgrtdet.Rows[0].ItemArray[7].ToString());  // dataGridView1.Rows[i].Cells[3].Value.ToString() + "Kg."
+                guiaT.gr_ind_det.Addgr_ind_detRow(rowdetalle);
             }
-            return repvtas;
+            //
+            return guiaT;
         }
         private conClie generareporte()
         {
@@ -1194,7 +1260,71 @@ namespace TransCarga
             }
             if (tabControl1.SelectedTab.Name == "tabgrti")
             {
-                
+                if (e.ColumnIndex == 1)
+                {
+                    using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
+                    {
+                        if (lib.procConn(conn) == true)
+                        {
+                            string consulta = "select a.id,a.fechopegr,a.sergui,a.numgui,a.numpregui,a.tidodegri,a.nudodegri,a.nombdegri,a.diredegri," +
+                                "a.ubigdegri,a.tidoregri,a.nudoregri,a.nombregri,a.direregri,a.ubigregri,lo.descrizionerid as ORIGEN,a.dirorigen,a.ubiorigen," +
+                                "ld.descrizionerid as DESTINO,a.dirdestin,a.ubidestin,a.docsremit,a.obspregri,a.clifingri,a.cantotgri,a.pestotgri," +
+                                "a.tipmongri,a.tipcamgri,a.subtotgri,a.igvgri,round(a.totgri,1) as totgri,a.totpag,a.salgri,s.descrizionerid as ESTADO,a.impreso," +
+                                "a.frase1,a.frase2,a.fleteimp,a.tipintrem,a.tipintdes,a.tippagpre,a.seguroE,a.userc,a.userm,a.usera," +
+                                "a.serplagri,a.numplagri,a.plaplagri,a.carplagri,a.autplagri,a.confvegri,a.breplagri,a.proplagri," +
+                                "ifnull(b.chocamcar,'') as chocamcar,ifnull(b.fecplacar,'') as fecplacar,ifnull(b.fecdocvta,'') as fecdocvta,ifnull(f.descrizionerid,'') as tipdocvta," +
+                                "ifnull(b.serdocvta,'') as serdocvta,ifnull(b.numdocvta,'') as numdocvta,ifnull(b.codmonvta,'') as codmonvta," +
+                                "ifnull(b.totdocvta,0) as totdocvta,ifnull(b.codmonpag,'') as codmonpag,ifnull(b.totpagado,0) as totpagado,ifnull(b.saldofina,0) as saldofina," +
+                                "ifnull(b.feculpago,'') as feculpago,ifnull(b.estadoser,'') as estadoser,ifnull(c.razonsocial,'') as razonsocial,a.grinumaut," +
+                                "ifnull(d.marca,'') as marca,ifnull(d.modelo,'') as modelo,a.teleregri as telrem,a.teledegri as teldes,ifnull(t.nombclt,'') as clifact," +
+                                "u1.nombre AS distrem,u2.nombre as provrem,u3.nombre as deptrem,v1.nombre as distdes,v2.nombre as provdes,v3.nombre as deptdes,mo.descrizionerid as MON " +
+                                "from cabguiai a " +
+                                "left join controlg b on b.serguitra=a.sergui and b.numguitra=a.numgui " +
+                                "left join desc_tdv f on f.idcodice=b.tipdocvta " +
+                                "left join cabfactu t on t.tipdvta=a.tipdocvta and t.serdvta=a.serdocvta and t.numdvta=a.numdocvta " +
+                                "left join anag_for c on c.ruc=a.proplagri and c.tipdoc=@tdep " +
+                                "left join vehiculos d on d.placa=a.plaplagri " +
+                                "left join anag_cli er on er.ruc=a.nudoregri and er.tipdoc=a.tidoregri " +
+                                "left join anag_cli ed on ed.ruc=a.nudodegri and ed.tipdoc=a.tidodegri " +
+                                "left join desc_est s on s.idcodice=a.estadoser " +
+                                "left join desc_loc lo on lo.idcodice=a.locorigen " +
+                                "left join desc_loc ld on ld.idcodice=a.locdestin " +
+                                "left join desc_mon mo on mo.idcodice=a.tipmongri " +
+                                "LEFT JOIN ubigeos u1 ON CONCAT(u1.depart, u1.provin, u1.distri)= a.ubigregri " +
+                                "LEFT JOIN(SELECT* FROM ubigeos WHERE depart<>'00' AND provin<>'00' AND distri = '00') u2 ON u2.depart = left(a.ubigregri, 2) AND u2.provin = concat(substr(a.ubigregri, 3, 2)) " +
+                                "LEFT JOIN (SELECT* FROM ubigeos WHERE depart<>'00' AND provin='00' AND distri = '00') u3 ON u3.depart = left(a.ubigregri, 2) " +
+                                "LEFT JOIN ubigeos v1 ON CONCAT(v1.depart, v1.provin, v1.distri)= a.ubigdegri " +
+                                "LEFT JOIN (SELECT* FROM ubigeos WHERE depart<>'00' AND provin<>'00' AND distri = '00') v2 ON v2.depart = left(a.ubigdegri, 2) AND v2.provin = concat(substr(a.ubigdegri, 3, 2)) " +
+                                "LEFT JOIN (SELECT* FROM ubigeos WHERE depart<>'00' AND provin='00' AND distri = '00') v3 ON v3.depart = left(a.ubigdegri, 2) " +
+                                "where a.sergui = @ser and a.numgui = @num";
+                            using (MySqlCommand micon = new MySqlCommand(consulta, conn))
+                            {
+                                micon.Parameters.AddWithValue("@ser", dgv_guias.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Value.ToString());    // tx_serie.Text
+                                micon.Parameters.AddWithValue("@num", dgv_guias.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString());
+                                micon.Parameters.AddWithValue("@tdep", v_tipdocR);
+                                using (MySqlDataAdapter da = new MySqlDataAdapter(micon))
+                                {
+                                    dtgrtcab.Clear();
+                                    da.Fill(dtgrtcab);
+                                }
+                            }
+                            consulta = "select id,sergui,numgui,cantprodi,unimedpro,codiprodi,descprodi,round(pesoprodi,1),precprodi,totaprodi " +
+                                "from detguiai where sergui = @ser and numgui = @num";
+                            using (MySqlCommand micon = new MySqlCommand(consulta, conn))
+                            {
+                                micon.Parameters.AddWithValue("@ser", dgv_guias.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Value.ToString());    // tx_serie.Text
+                                micon.Parameters.AddWithValue("@num", dgv_guias.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString());
+                                using (MySqlDataAdapter da = new MySqlDataAdapter(micon))
+                                {
+                                    dtgrtdet.Clear();
+                                    da.Fill(dtgrtdet);
+                                }
+                            }
+                        }
+                        // llenamos el set
+                        setParaCrystal("GRT");
+                    }
+                }
             }
             if (tabControl1.SelectedTab.Name == "tabplacar")
             {
