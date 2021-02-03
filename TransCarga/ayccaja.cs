@@ -54,12 +54,7 @@ namespace TransCarga
         #endregion
 
         // string de conexion
-        //static string serv = ConfigurationManager.AppSettings["serv"].ToString();
-        static string port = ConfigurationManager.AppSettings["port"].ToString();
-        //static string usua = ConfigurationManager.AppSettings["user"].ToString();
-        //static string cont = ConfigurationManager.AppSettings["pass"].ToString();
-        static string data = ConfigurationManager.AppSettings["data"].ToString();
-        string DB_CONN_STR = "server=" + login.serv + ";uid=" + login.usua + ";pwd=" + login.cont + ";database=" + data + ";";
+        string DB_CONN_STR = "server=" + login.serv + ";uid=" + login.usua + ";pwd=" + login.cont + ";database=" + login.data + ";";
         DataTable dtcuad = new DataTable();
 
         public ayccaja()
@@ -323,6 +318,7 @@ namespace TransCarga
         }
         private void calculos(decimal totDoc)
         {
+            /*
             decimal tigv = 0;
             decimal tsub = 0;
             if (totDoc > 0)
@@ -331,6 +327,7 @@ namespace TransCarga
                 //tigv = Math.Round(totDoc - tsub, 2);
                 
             }
+            */
         }
         private void sumdet()                   // totalizamos detalle
         {

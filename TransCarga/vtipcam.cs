@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Data;
-using System.Configuration;
 using System.Windows.Forms;
 using MySql.Data.MySqlClient;
 using System.Drawing;
@@ -15,12 +14,7 @@ namespace TransCarga
         //
         DataTable dt = new DataTable();
         // string de conexion
-        //static string serv = ConfigurationManager.AppSettings["serv"].ToString();
-        static string port = ConfigurationManager.AppSettings["port"].ToString();
-        //static string usua = ConfigurationManager.AppSettings["user"].ToString();
-        //static string cont = ConfigurationManager.AppSettings["pass"].ToString();
-        static string data = ConfigurationManager.AppSettings["data"].ToString();
-        string DB_CONN_STR = "server=" + login.serv + ";uid=" + login.usua + ";pwd=" + login.cont + ";database=" + data + ";";
+        string DB_CONN_STR = "server=" + login.serv + ";uid=" + login.usua + ";pwd=" + login.cont + ";database=" + login.data + ";";
         //
         libreria lib = new libreria();
         public vtipcam(string param1, string param2, string param3)

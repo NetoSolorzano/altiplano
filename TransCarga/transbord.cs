@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Configuration;
 using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using MySql.Data.MySqlClient;
 
@@ -59,9 +54,7 @@ namespace TransCarga
         #endregion
 
         // string de conexion
-        static string port = ConfigurationManager.AppSettings["port"].ToString();
-        static string data = ConfigurationManager.AppSettings["data"].ToString();
-        string DB_CONN_STR = "server=" + login.serv + ";uid=" + login.usua + ";pwd=" + login.cont + ";database=" + data + ";";
+        string DB_CONN_STR = "server=" + login.serv + ";uid=" + login.usua + ";pwd=" + login.cont + ";database=" + login.data + ";";
         public transbord()
         {
             InitializeComponent();

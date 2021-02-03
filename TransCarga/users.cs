@@ -745,6 +745,11 @@ namespace TransCarga
                 }
             }
         }
+        private void textBox2_Leave(object sender, EventArgs e)
+        {
+            tx_encrip.Text = lib.Encrypt(textBox2.Text.Trim(), true);
+            tx_desenc.Text = lib.Decrypt(tx_encrip.Text.Trim(), true);
+        }
         #endregion leaves;
 
         #region botones_de_comando_y_permisos  

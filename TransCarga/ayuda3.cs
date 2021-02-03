@@ -9,7 +9,7 @@ namespace TransCarga
 {
     public partial class ayuda3 : Form
     {
-        static string nomform = "ayuda3"; // nombre del formulario
+        //static string nomform = "ayuda3"; // nombre del formulario
         string colback = TransCarga.Program.colbac;   // color de fondo
         public string para1 = "";
         public string para2 = "";
@@ -17,12 +17,7 @@ namespace TransCarga
         // Se crea un DataTable que almacenará los datos desde donde se cargaran los datos al DataGridView
         DataTable dtDatos = new DataTable();
         // string de conexion
-        //static string serv = ConfigurationManager.AppSettings["serv"].ToString();
-        static string port = ConfigurationManager.AppSettings["port"].ToString();
-        //static string usua = ConfigurationManager.AppSettings["user"].ToString();
-        //static string cont = ConfigurationManager.AppSettings["pass"].ToString();
-        static string data = ConfigurationManager.AppSettings["data"].ToString();
-        string DB_CONN_STR = "server=" + login.serv + ";uid=" + login.usua + ";pwd=" + login.cont + ";database=" + data + ";";
+        string DB_CONN_STR = "server=" + login.serv + ";uid=" + login.usua + ";pwd=" + login.cont + ";database=" + login.data + ";";
         libreria lib = new libreria();
 
         public ayuda3(string param1, string param2, string param3)

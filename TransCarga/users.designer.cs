@@ -56,6 +56,8 @@
             this.tabgrilla = new System.Windows.Forms.TabPage();
             this.advancedDataGridView1 = new ADGV.AdvancedDataGridView();
             this.tabuser = new System.Windows.Forms.TabPage();
+            this.tx_desenc = new System.Windows.Forms.TextBox();
+            this.tx_encrip = new System.Windows.Forms.TextBox();
             this.chk_permisos = new System.Windows.Forms.CheckBox();
             this.tx_rind = new System.Windows.Forms.TextBox();
             this.comboBox3 = new System.Windows.Forms.ComboBox();
@@ -376,6 +378,8 @@
             // 
             // tabuser
             // 
+            this.tabuser.Controls.Add(this.tx_desenc);
+            this.tabuser.Controls.Add(this.tx_encrip);
             this.tabuser.Controls.Add(this.chk_permisos);
             this.tabuser.Controls.Add(this.tx_rind);
             this.tabuser.Controls.Add(this.comboBox3);
@@ -413,6 +417,22 @@
             this.tabuser.TabIndex = 1;
             this.tabuser.Text = "Registro";
             this.tabuser.UseVisualStyleBackColor = true;
+            // 
+            // tx_desenc
+            // 
+            this.tx_desenc.Location = new System.Drawing.Point(85, 307);
+            this.tx_desenc.Name = "tx_desenc";
+            this.tx_desenc.ReadOnly = true;
+            this.tx_desenc.Size = new System.Drawing.Size(526, 20);
+            this.tx_desenc.TabIndex = 190;
+            // 
+            // tx_encrip
+            // 
+            this.tx_encrip.Location = new System.Drawing.Point(85, 281);
+            this.tx_encrip.Name = "tx_encrip";
+            this.tx_encrip.ReadOnly = true;
+            this.tx_encrip.Size = new System.Drawing.Size(526, 20);
+            this.tx_encrip.TabIndex = 189;
             // 
             // chk_permisos
             // 
@@ -737,6 +757,7 @@
             this.textBox2.PasswordChar = '*';
             this.textBox2.Size = new System.Drawing.Size(94, 18);
             this.textBox2.TabIndex = 2;
+            this.textBox2.Leave += new System.EventHandler(this.textBox2_Leave);
             // 
             // textBox1
             // 
@@ -860,5 +881,7 @@
         private System.Windows.Forms.ComboBox comboBox3;
         private System.Windows.Forms.TextBox tx_rind;
         private System.Windows.Forms.CheckBox chk_permisos;
+        private System.Windows.Forms.TextBox tx_desenc;
+        private System.Windows.Forms.TextBox tx_encrip;
     }
 }

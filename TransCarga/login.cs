@@ -3,21 +3,22 @@ using System.Windows.Forms;
 using MySql.Data.MySqlClient;
 using System.Configuration;
 using System.Drawing;
-using System.Runtime.InteropServices;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace TransCarga
 {
     public partial class login : Form
     {
-        // conexion a la base de datos
-        public static string serv = "solorsoft.com";
-        static string port = ConfigurationManager.AppSettings["port"].ToString();
-        public static string usua = "solorsof_rei";
-        public static string cont = "190969Sorol";
-        static string data = ConfigurationManager.AppSettings["data"].ToString();
-        //static string ctl = ConfigurationManager.AppSettings["ConnectionLifeTime"].ToString();
-        string DB_CONN_STR = "server=" + serv + ";uid=" + usua + ";pwd=" + cont + ";database=" + data + ";";
         libreria lib = new libreria();
+        // conexion a la base de datos
+        public static string serv = Decrypt(ConfigurationManager.AppSettings["serv"].ToString(), true);     // "solorsoft.com";
+        public static string port = ConfigurationManager.AppSettings["port"].ToString();
+        public static string usua = ConfigurationManager.AppSettings["user"].ToString();                    // "solorsof_rei";
+        public static string cont = Decrypt(ConfigurationManager.AppSettings["pass"].ToString(), true);     // "190969Sorol";
+        public static string data = ConfigurationManager.AppSettings["data"].ToString();
+        public static string ctl = ConfigurationManager.AppSettings["ConnectionLifeTime"].ToString();
+        string DB_CONN_STR = "server=" + serv + ";uid=" + usua + ";pwd=" + cont + ";database=" + data + ";";
 
         public login()
         {
@@ -148,7 +149,43 @@ namespace TransCarga
             if (result == DialogResult.Yes)
             { Close(); }
         }
-
+        private static string Decrypt(string cipherString, bool useHashing)
+        {
+            byte[] keyArray;
+            //get the byte code of the string
+            byte[] toEncryptArray = Convert.FromBase64String(cipherString);
+            System.Configuration.AppSettingsReader settingsReader = new AppSettingsReader();
+            //Get your key from config file to open the lock!
+            //string key = (string)settingsReader.GetValue("pass",typeof(String));   // SecurityKey
+            string key = "8312@Sorol";
+            if (useHashing)
+            {
+                //if hashing was used get the hash code with regards to your key
+                MD5CryptoServiceProvider hashmd5 = new MD5CryptoServiceProvider();
+                keyArray = hashmd5.ComputeHash(UTF8Encoding.UTF8.GetBytes(key));
+                //release any resource held by the MD5CryptoServiceProvider
+                hashmd5.Clear();
+            }
+            else
+            {
+                //if hashing was not implemented get the byte code of the key
+                keyArray = UTF8Encoding.UTF8.GetBytes(key);
+            }
+            TripleDESCryptoServiceProvider tdes = new TripleDESCryptoServiceProvider();
+            //set the secret key for the tripleDES algorithm
+            tdes.Key = keyArray;
+            //mode of operation. there are other 4 modes. 
+            //We choose ECB(Electronic code Book)
+            tdes.Mode = CipherMode.ECB;
+            //padding mode(if any extra byte added)
+            tdes.Padding = PaddingMode.PKCS7;
+            ICryptoTransform cTransform = tdes.CreateDecryptor();
+            byte[] resultArray = cTransform.TransformFinalBlock(toEncryptArray, 0, toEncryptArray.Length);
+            //Release resources held by TripleDes Encryptor                
+            tdes.Clear();
+            //return the Clear decrypted TEXT
+            return UTF8Encoding.UTF8.GetString(resultArray);
+        }
         private void Tx_user_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (e.KeyChar == Convert.ToChar(Keys.Enter))

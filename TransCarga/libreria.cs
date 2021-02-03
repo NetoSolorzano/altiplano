@@ -93,16 +93,10 @@ namespace TransCarga
 
     class libreria
     {
-        //public Mysql conn = new Mysql();
         string asd = TransCarga.Program.vg_user;                             // usuario conectado al sistema
-        string verapp = System.Diagnostics.FileVersionInfo.GetVersionInfo(Application.ExecutablePath).FileVersion;
+        //string verapp = System.Diagnostics.FileVersionInfo.GetVersionInfo(Application.ExecutablePath).FileVersion;
         // conexion a la base de datos
-        //static string serv = ConfigurationManager.AppSettings["serv"].ToString();
-        static string port = ConfigurationManager.AppSettings["port"].ToString();
-        //static string usua = ConfigurationManager.AppSettings["user"].ToString();
-        //static string cont = ConfigurationManager.AppSettings["pass"].ToString();
-        static string data = ConfigurationManager.AppSettings["data"].ToString();
-        string DB_CONN_STR = "server=" + login.serv + ";uid=" + login.usua + ";pwd=" + login.cont + ";database=" + data + ";";
+        string DB_CONN_STR = "server=" + login.serv + ";uid=" + login.usua + ";pwd=" + login.cont + ";database=" + login.data + ";";
         //
         public string ult_mov(string formu, string tabla, string usuar)     // ultimo movimiento del usuario
         {
@@ -174,8 +168,7 @@ namespace TransCarga
         {
             return Environment.MachineName;
         }
-
-        public static string Encrypt(string toEncrypt, bool useHashing)
+        public string Encrypt(string toEncrypt, bool useHashing)
         {
             byte[] keyArray;
             byte[] toEncryptArray = UTF8Encoding.UTF8.GetBytes(toEncrypt);
@@ -185,7 +178,7 @@ namespace TransCarga
             // Get the key from config file
 
             //string key = (string)settingsReader.GetValue("pass",typeof(String));   // SecurityKey
-            string key = "Sist_190969";
+            string key = "8312@Sorol";
             //System.Windows.Forms.MessageBox.Show(key);
             //If hashing use get hashcode regards to your key
             if (useHashing)
@@ -220,7 +213,7 @@ namespace TransCarga
             //Return the encrypted data into unreadable string format
             return Convert.ToBase64String(resultArray, 0, resultArray.Length);
         }
-        public static string Decrypt(string cipherString, bool useHashing)
+        public string Decrypt(string cipherString, bool useHashing)
         {
             byte[] keyArray;
             //get the byte code of the string
@@ -231,7 +224,7 @@ namespace TransCarga
                                                 new AppSettingsReader();
             //Get your key from config file to open the lock!
             //string key = (string)settingsReader.GetValue("pass",typeof(String));   // SecurityKey
-            string key = "Sist_190969";
+            string key = "8312@Sorol";
             if (useHashing)
             {
                 //if hashing was used get the hash code with regards to your key
@@ -265,7 +258,6 @@ namespace TransCarga
             //return the Clear decrypted TEXT
             return UTF8Encoding.UTF8.GetString(resultArray);
         }
-
         public string mesletras(int mes)                                    // mes en letras
         {
             string mlet = "";
@@ -3056,8 +3048,9 @@ namespace TransCarga
                     }
                 }
                 catch (MySqlException ex)
-                {
-                    var xx = MessageBox.Show("Tenemos un problema con la conexión al servidor" + Environment.NewLine +
+                {   // con.ConnectionString + Environment.NewLine +
+                    var xx = MessageBox.Show(ex.Message + Environment.NewLine + 
+                        "Tenemos un problema con la conexión al servidor" + Environment.NewLine +
                         "No se puede conectar o esta tardando demasiado" + Environment.NewLine +
                         "DESEA SEGUIR ESPERANDO ....?","Error de conectividad",MessageBoxButtons.YesNo,MessageBoxIcon.Question);
                     if (xx == DialogResult.No)

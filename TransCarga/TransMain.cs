@@ -11,15 +11,16 @@ namespace TransCarga
     public partial class TransMain : Form
     {
         #region conexion a la base de datos
-        // own database connection
+        /* own database connection
         static string serv = "solorsoft.com";
         static string port = ConfigurationManager.AppSettings["port"].ToString();
         static string usua = "solorsof_rei";
         static string cont = "190969Sorol";
         static string data = ConfigurationManager.AppSettings["data"].ToString();
         static string ctl = "300"; // ConfigurationManager.AppSettings["ConnectionLifeTime"].ToString();
-        string DB_CONN_STR = "server=" + serv + ";port=" + port + ";uid=" + usua + ";pwd=" + cont + ";database=" + data +
-            ";ConnectionLifeTime=" + ctl + ";";
+        */
+        string DB_CONN_STR = "server=" + login.serv + ";port=" + login.port + ";uid=" + login.usua + ";pwd=" + login.cont + ";database=" + login.data +
+            ";ConnectionLifeTime=" + login.ctl + ";";
         #endregion
 
         #region variables publicas

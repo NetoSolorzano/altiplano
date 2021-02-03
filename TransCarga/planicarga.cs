@@ -67,13 +67,9 @@ namespace TransCarga
         #endregion
 
         // string de conexion
-        static string port = ConfigurationManager.AppSettings["port"].ToString();
-        static string data = ConfigurationManager.AppSettings["data"].ToString();
-        string DB_CONN_STR = "server=" + login.serv + ";uid=" + login.usua + ";pwd=" + login.cont + ";database=" + data + ";";
+        string DB_CONN_STR = "server=" + login.serv + ";uid=" + login.usua + ";pwd=" + login.cont + ";database=" + login.data + ";";
         DataTable dtu = new DataTable();
         DataTable dtd = new DataTable();
-        DataTable dttd0 = new DataTable();
-        DataTable dttd1 = new DataTable();
         DataTable dtm = new DataTable();
         public planicarga()
         {
@@ -2004,7 +2000,7 @@ namespace TransCarga
             float alin = 50.0F;     // alto inicial
             float posi = 80.0F;     // posición de impresión
             float coli = 20.0F;     // columna mas a la izquierda
-            float cold = 80.0F;
+            //float cold = 80.0F;
             Font lt_tit = new Font("Arial", 11);
             Font lt_titB = new Font("Arial", 11, FontStyle.Bold);
             PointF puntoF = new PointF(coli, alin);

@@ -61,12 +61,7 @@ namespace TransCarga
         DataTable dtgrtdet = new DataTable();       // guia rem transpor - detalle
 
         // string de conexion
-        //static string serv = ConfigurationManager.AppSettings["serv"].ToString();
-        static string port = ConfigurationManager.AppSettings["port"].ToString();
-        //static string usua = ConfigurationManager.AppSettings["user"].ToString();
-        //static string cont = ConfigurationManager.AppSettings["pass"].ToString();
-        static string data = ConfigurationManager.AppSettings["data"].ToString();
-        string DB_CONN_STR = "server=" + login.serv + ";uid=" + login.usua + ";pwd=" + login.cont + ";database=" + data + ";";
+        string DB_CONN_STR = "server=" + login.serv + ";uid=" + login.usua + ";pwd=" + login.cont + ";database=" + login.data + ";";
 
         public repsoper()
         {

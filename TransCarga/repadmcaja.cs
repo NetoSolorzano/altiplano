@@ -26,8 +26,8 @@ namespace TransCarga
         public string perMo = "";
         public string perAn = "";
         public string perIm = "";
-        string tipede = "";
-        string tiesta = "";
+        //string tipede = "";
+        //string tiesta = "";
         string img_btN = "";
         string img_btE = "";
         string img_btP = "";
@@ -39,7 +39,6 @@ namespace TransCarga
         string img_imprime = "";
         string v_ruta = "";             // ruta para los archivos que se exportan, vacio = ruta del sistema
         string img_preview = "";        // imagen del boton preview e imprimir reporte
-        string letpied = "";            // letra indentificadora de piedra en detalle 2
         string cliente = Program.cliente;    // razon social para los reportes
         string codAnul = "";            // codigo de documento anulado
         string nomAnul = "";            // texto nombre del estado anulado
@@ -52,12 +51,7 @@ namespace TransCarga
         DataTable dtestad = new DataTable();
         DataTable dttaller = new DataTable();
         // string de conexion
-        //static string serv = ConfigurationManager.AppSettings["serv"].ToString();
-        static string port = ConfigurationManager.AppSettings["port"].ToString();
-        //static string usua = ConfigurationManager.AppSettings["user"].ToString();
-        //static string cont = ConfigurationManager.AppSettings["pass"].ToString();
-        static string data = ConfigurationManager.AppSettings["data"].ToString();
-        string DB_CONN_STR = "server=" + login.serv + ";uid=" + login.usua + ";pwd=" + login.cont + ";database=" + data + ";";
+        string DB_CONN_STR = "server=" + login.serv + ";uid=" + login.usua + ";pwd=" + login.cont + ";database=" + login.data + ";";
 
         public repadmcaja()
         {
