@@ -30,7 +30,7 @@ namespace TransCarga
         string coddni = "";
         string codruc = "";
         string codmon = "";
-        string tiesta = "";
+        //string tiesta = "";
         string img_btN = "";
         string img_btE = "";
         string img_btP = "";
@@ -41,7 +41,6 @@ namespace TransCarga
         string img_anul = "";
         string img_imprime = "";
         string img_preview = "";        // imagen del boton preview e imprimir reporte
-        string letpied = "";            // letra indentificadora de piedra en detalle 2
         string cliente = Program.cliente;    // razon social para los reportes
         string codAnul = "";            // codigo de documento anulado
         string nomAnul = "";            // texto nombre del estado anulado
@@ -50,7 +49,7 @@ namespace TransCarga
         #endregion
         libreria lib = new libreria();
 
-        DataTable dt = new DataTable();
+        //DataTable dt = new DataTable();
         DataTable dtestad = new DataTable();
         DataTable dttaller = new DataTable();
         // string de conexion

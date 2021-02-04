@@ -9,7 +9,7 @@ namespace TransCarga
 {
     public partial class tipcamref : Form
     {
-        static string nomform = "tipcamref";               // nombre del formulario
+        static string nomform = "vtipcam";               // nombre del formulario
         string asd = TransCarga.Program.vg_user;        // usuario conectado al sistema
         string verapp = System.Diagnostics.FileVersionInfo.GetVersionInfo(Application.ExecutablePath).FileVersion;
         string colback = TransCarga.Program.colbac;   // color de fondo
@@ -19,7 +19,7 @@ namespace TransCarga
         string colsfon = TransCarga.Program.colsbg;   // color fondo seleccion
         string colsfgr = TransCarga.Program.colsfc;   // color seleccion
         string colstrp = TransCarga.Program.colstr;   // color del strip
-        static string nomtab = "tipcamref";
+        //static string nomtab = "tipcamref";
         public int totfilgrid, cta;      // variables para impresion
         public string perAg = "";
         public string perMo = "";

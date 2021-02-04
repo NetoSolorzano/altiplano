@@ -1207,7 +1207,7 @@ namespace TransCarga
             float alin = 50.0F;     // alto inicial
             float posi = 80.0F;     // posición de impresión
             float coli = 20.0F;     // columna mas a la izquierda
-            float cold = 80.0F;
+            //float cold = 80.0F;
             Font lt_tit = new Font("Arial", 11);
             Font lt_titB = new Font("Arial", 11, FontStyle.Bold);
             PointF puntoF = new PointF(coli, alin);

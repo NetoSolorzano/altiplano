@@ -27,8 +27,8 @@ namespace TransCarga
         public string perMo = "";
         public string perAn = "";
         public string perIm = "";
-        string tipede = "";
-        string tiesta = "";
+        //string tipede = "";
+        //string tiesta = "";
         string img_btN = "";
         string img_btE = "";
         string img_btP = "";
@@ -39,7 +39,6 @@ namespace TransCarga
         string img_anul = "";
         string img_imprime = "";
         string img_preview = "";        // imagen del boton preview e imprimir reporte
-        string letpied = "";            // letra indentificadora de piedra en detalle 2
         string cliente = Program.cliente;    // razon social para los reportes
         string codAnul = "";            // codigo de documento anulado
         string nomAnul = "";            // texto nombre del estado anulado
@@ -910,7 +909,7 @@ namespace TransCarga
             // segun la pestanha activa debe exportar
             string nombre = "";
             if (tabControl1.Enabled == false) return;
-            if (tabControl1.SelectedTab == tabres && dgv_resumen.Rows.Count > 0)
+            if (tabControl1.SelectedTab == tabres && dgv_resumen.Rows.Count > 0)        // resumen de cliente
             {
                 nombre = "resumen_cliente_" + tx_codped.Text.Trim() +"_" + DateTime.Now.Date.ToString("yyyy-MM-dd") + ".xlsx";
                 var aa = MessageBox.Show("Confirma que desea generar la hoja de calculo?",
@@ -925,7 +924,7 @@ namespace TransCarga
                     this.Close();
                 }
             }
-            if (tabControl1.SelectedTab == tabvtas && dgv_vtas.Rows.Count > 0)
+            if (tabControl1.SelectedTab == tabvtas && dgv_vtas.Rows.Count > 0)          // pre guias
             {
                 nombre = "Reportes_PreGuias_" + DateTime.Now.Date.ToString("yyyy-MM-dd") + ".xlsx";
                 var aa = MessageBox.Show("Confirma que desea generar la hoja de calculo?",
@@ -935,6 +934,66 @@ namespace TransCarga
                     var wb = new XLWorkbook();
                     DataTable dt = (DataTable)dgv_vtas.DataSource;
                     wb.Worksheets.Add(dt, "PreGuias");
+                    wb.SaveAs(nombre);
+                    MessageBox.Show("Archivo generado con exito!");
+                    this.Close();
+                }
+            }
+            if (tabControl1.SelectedTab == tabgrti && dgv_guias.Rows.Count > 0)         // guias remision transportista
+            {
+                nombre = "Reportes_GuiasTransportista_" + DateTime.Now.Date.ToString("yyyy-MM-dd") + ".xlsx";
+                var aa = MessageBox.Show("Confirma que desea generar la hoja de calculo?",
+                    "Archivo: " + nombre, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (aa == DialogResult.Yes)
+                {
+                    var wb = new XLWorkbook();
+                    DataTable dt = (DataTable)dgv_guias.DataSource;
+                    wb.Worksheets.Add(dt, "GuiasTransp");
+                    wb.SaveAs(nombre);
+                    MessageBox.Show("Archivo generado con exito!");
+                    this.Close();
+                }
+            }
+            if (tabControl1.SelectedTab == tabplacar && dgv_plan.Rows.Count > 0)        // planilla de carga
+            {
+                nombre = "Reportes_PlanillasCarga_" + DateTime.Now.Date.ToString("yyyy-MM-dd") + ".xlsx";
+                var aa = MessageBox.Show("Confirma que desea generar la hoja de calculo?",
+                    "Archivo: " + nombre, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (aa == DialogResult.Yes)
+                {
+                    var wb = new XLWorkbook();
+                    DataTable dt = (DataTable)dgv_plan.DataSource;
+                    wb.Worksheets.Add(dt, "PlanillasC");
+                    wb.SaveAs(nombre);
+                    MessageBox.Show("Archivo generado con exito!");
+                    this.Close();
+                }
+            }
+            if (tabControl1.SelectedTab == tabreval && dgv_reval.Rows.Count > 0)        // revalorizaciones
+            {
+                nombre = "Reportes_Revalorizaciones_" + DateTime.Now.Date.ToString("yyyy-MM-dd") + ".xlsx";
+                var aa = MessageBox.Show("Confirma que desea generar la hoja de calculo?",
+                    "Archivo: " + nombre, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (aa == DialogResult.Yes)
+                {
+                    var wb = new XLWorkbook();
+                    DataTable dt = (DataTable)dgv_reval.DataSource;
+                    wb.Worksheets.Add(dt, "Revalorizaciones");
+                    wb.SaveAs(nombre);
+                    MessageBox.Show("Archivo generado con exito!");
+                    this.Close();
+                }
+            }
+            if (tabControl1.SelectedTab == tabgrhist && dgv_histGR.Rows.Count > 0)      // seguimiento por guía
+            {
+                nombre = "Seguimiento_GuiasTransp_" + DateTime.Now.Date.ToString("yyyy-MM-dd") + ".xlsx";
+                var aa = MessageBox.Show("Confirma que desea generar la hoja de calculo?",
+                    "Archivo: " + nombre, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (aa == DialogResult.Yes)
+                {
+                    var wb = new XLWorkbook();
+                    DataTable dt = (DataTable)dgv_histGR.DataSource;
+                    wb.Worksheets.Add(dt, "Seguimiento");
                     wb.SaveAs(nombre);
                     MessageBox.Show("Archivo generado con exito!");
                     this.Close();

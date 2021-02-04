@@ -48,7 +48,7 @@ namespace TransCarga
         string iFE = "";                                                // identificador de factura electrónica
         // funcionamiento del formulario
         string urlemis = "";                                            // url de la empresa
-        string nomform = "TransMain";                                   // nombre del formulario
+        //string nomform = "TransMain";                                   // nombre del formulario
         string asd = Program.vg_user;                                   // usuario logueado
         string img_log1 = "";                                           // ruta y nombre del logo del applicativo
         string img_sol1 = "";                                           // ruta y nombre del logo de solorsoft.com
@@ -304,7 +304,8 @@ namespace TransCarga
                 }
                 catch (MySqlException ex)
                 {
-                    MessageBox.Show("No fue posible conectarse al servidor","Error en la conexión",MessageBoxButtons.OK,MessageBoxIcon.Error);
+                    MessageBox.Show(ex.Message + Environment.NewLine + 
+                        "No fue posible conectarse al servidor","Error en la conexión",MessageBoxButtons.OK,MessageBoxIcon.Error);
                     Application.Exit();
                 }
                 // tabla de ubigeos - departamentos, provincias, distritos

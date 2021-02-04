@@ -18,7 +18,7 @@ namespace TransCarga
         string colsfgr = TransCarga.Program.colsfc;     // color seleccion grilla
         string colstrp = TransCarga.Program.colstr;     // color del strip
         bool conectS = TransCarga.Program.vg_conSol;    // usa conector solorsoft? true=si; false=no
-        static string nomtab = "";
+        //static string nomtab = "";
 
         #region variables
         string img_btN = "";
