@@ -142,4 +142,7 @@ form repsoper,
 - agregar formato impresion de planilla de carga, doble click en dgv_plan .......................... ok 01/02/2021
 - agregar formato impresion de GR transportista, doble click en numero de gr ....................... ok 02/02/2021
 - arreglar el boton de exportacion ................................................................. ok 04/02/2021
+- agregar fechas inicio y fin en pestaña "servicio por cliente" .................................... ok 08/02/2021
 form facelect, usuarios pueden anular doc.vtas hasta n días despues de emitido ..................... ok 01/02/2021
+form planicarga, ERROR al ingresar manualmente una GR .............................................. ok 08/02/2021
+form facelect, borrar los png del codigo QR despues de imprimir el ticket .......................... ok 08/02/2021

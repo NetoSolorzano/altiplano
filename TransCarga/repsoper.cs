@@ -448,8 +448,13 @@ namespace TransCarga
                         Decimal sumPRE = 0;
                         var sdf = dt.Compute("Sum(TOT_PRE)", "ESTADO <> '" + nomAnul + "' and TOT_GUIA = 0");
                         if (sdf.ToString() != "") sumPRE = decimal.Parse(sdf.ToString());   // string.Empty
-                        Decimal sumGR = decimal.Parse(dt.Compute("Sum(TOT_GUIA)", "ESTADO <> '" + nomAnul + "' and TOT_PRE < TOT_GUIA").ToString());
-                        Decimal sumsaldos = decimal.Parse(dt.Compute("Sum(SALDO)", "ESTADO <> '" + nomAnul + "'").ToString());      // string.Empty
+                        Decimal sumGR = 0;
+                        var spf = dt.Compute("Sum(TOT_GUIA)", "ESTADO <> '" + nomAnul + "' and TOT_PRE < TOT_GUIA");
+                        if (spf != null && spf.ToString() != "") sumGR = decimal.Parse(spf.ToString());
+                        Decimal sumsaldos = 0;
+                        var ssf = dt.Compute("Sum(SALDO)", "ESTADO <> '" + nomAnul + "'").ToString();
+                        if (ssf != null && ssf.ToString() != "") sumsaldos = decimal.Parse(ssf.ToString());
+                        //
                         tx_valor.Text = (sumPRE + sumGR).ToString();
                         tx_pendien.Text = sumsaldos.ToString();
                         //tx_nser.Text = dt.Rows.Count.ToString();
@@ -542,7 +547,7 @@ namespace TransCarga
         }
         private void bt_resumen_Click(object sender, EventArgs e)       // genera resumen de cliente
         {
-            if(tx_codped.Text != "" && tx_dat_tido.Text != "")
+            if(tx_codped.Text.Trim() != "" && tx_dat_tido.Text != "")
             {
                 tx_codped_Leave(null, null);
                 dt.Clear();
@@ -560,6 +565,8 @@ namespace TransCarga
                         micon.CommandType = CommandType.StoredProcedure;
                         micon.Parameters.AddWithValue("@tido", tx_dat_tido.Text);
                         micon.Parameters.AddWithValue("@nudo", tx_codped.Text.Trim());
+                        micon.Parameters.AddWithValue("@fecini", dtp_ser_fini.Value.ToString("yyyy-MM-dd"));
+                        micon.Parameters.AddWithValue("@fecfin", dtp_ser_fina.Value.ToString("yyyy-MM-dd"));
                         MySqlDataAdapter da = new MySqlDataAdapter(micon);
                         da.Fill(dt);
                         dgv_resumen.DataSource = dt;
@@ -582,6 +589,10 @@ namespace TransCarga
                     Application.Exit();
                     return;
                 }
+            }
+            else
+            {
+                tx_codped.Focus();
             }
             sumaGrilla("grillares");
         }
@@ -699,7 +710,71 @@ namespace TransCarga
                 }
             }
         }
-
+        private void muestra_gr(string ser, string cor)                 // muestra la grt 
+        {
+            using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
+            {
+                if (lib.procConn(conn) == true)
+                {
+                    string consulta = "select a.id,a.fechopegr,a.sergui,a.numgui,a.numpregui,a.tidodegri,a.nudodegri,a.nombdegri,a.diredegri," +
+                        "a.ubigdegri,a.tidoregri,a.nudoregri,a.nombregri,a.direregri,a.ubigregri,lo.descrizionerid as ORIGEN,a.dirorigen,a.ubiorigen," +
+                        "ld.descrizionerid as DESTINO,a.dirdestin,a.ubidestin,a.docsremit,a.obspregri,a.clifingri,a.cantotgri,a.pestotgri," +
+                        "a.tipmongri,a.tipcamgri,a.subtotgri,a.igvgri,round(a.totgri,1) as totgri,a.totpag,a.salgri,s.descrizionerid as ESTADO,a.impreso," +
+                        "a.frase1,a.frase2,a.fleteimp,a.tipintrem,a.tipintdes,a.tippagpre,a.seguroE,a.userc,a.userm,a.usera," +
+                        "a.serplagri,a.numplagri,a.plaplagri,a.carplagri,a.autplagri,a.confvegri,a.breplagri,a.proplagri," +
+                        "ifnull(b.chocamcar,'') as chocamcar,ifnull(b.fecplacar,'') as fecplacar,ifnull(b.fecdocvta,'') as fecdocvta,ifnull(f.descrizionerid,'') as tipdocvta," +
+                        "ifnull(b.serdocvta,'') as serdocvta,ifnull(b.numdocvta,'') as numdocvta,ifnull(b.codmonvta,'') as codmonvta," +
+                        "ifnull(b.totdocvta,0) as totdocvta,ifnull(b.codmonpag,'') as codmonpag,ifnull(b.totpagado,0) as totpagado,ifnull(b.saldofina,0) as saldofina," +
+                        "ifnull(b.feculpago,'') as feculpago,ifnull(b.estadoser,'') as estadoser,ifnull(c.razonsocial,'') as razonsocial,a.grinumaut," +
+                        "ifnull(d.marca,'') as marca,ifnull(d.modelo,'') as modelo,a.teleregri as telrem,a.teledegri as teldes,ifnull(t.nombclt,'') as clifact," +
+                        "u1.nombre AS distrem,u2.nombre as provrem,u3.nombre as deptrem,v1.nombre as distdes,v2.nombre as provdes,v3.nombre as deptdes,mo.descrizionerid as MON " +
+                        "from cabguiai a " +
+                        "left join controlg b on b.serguitra=a.sergui and b.numguitra=a.numgui " +
+                        "left join desc_tdv f on f.idcodice=b.tipdocvta " +
+                        "left join cabfactu t on t.tipdvta=a.tipdocvta and t.serdvta=a.serdocvta and t.numdvta=a.numdocvta " +
+                        "left join anag_for c on c.ruc=a.proplagri and c.tipdoc=@tdep " +
+                        "left join vehiculos d on d.placa=a.plaplagri " +
+                        "left join anag_cli er on er.ruc=a.nudoregri and er.tipdoc=a.tidoregri " +
+                        "left join anag_cli ed on ed.ruc=a.nudodegri and ed.tipdoc=a.tidodegri " +
+                        "left join desc_est s on s.idcodice=a.estadoser " +
+                        "left join desc_loc lo on lo.idcodice=a.locorigen " +
+                        "left join desc_loc ld on ld.idcodice=a.locdestin " +
+                        "left join desc_mon mo on mo.idcodice=a.tipmongri " +
+                        "LEFT JOIN ubigeos u1 ON CONCAT(u1.depart, u1.provin, u1.distri)= a.ubigregri " +
+                        "LEFT JOIN(SELECT* FROM ubigeos WHERE depart<>'00' AND provin<>'00' AND distri = '00') u2 ON u2.depart = left(a.ubigregri, 2) AND u2.provin = concat(substr(a.ubigregri, 3, 2)) " +
+                        "LEFT JOIN (SELECT* FROM ubigeos WHERE depart<>'00' AND provin='00' AND distri = '00') u3 ON u3.depart = left(a.ubigregri, 2) " +
+                        "LEFT JOIN ubigeos v1 ON CONCAT(v1.depart, v1.provin, v1.distri)= a.ubigdegri " +
+                        "LEFT JOIN (SELECT* FROM ubigeos WHERE depart<>'00' AND provin<>'00' AND distri = '00') v2 ON v2.depart = left(a.ubigdegri, 2) AND v2.provin = concat(substr(a.ubigdegri, 3, 2)) " +
+                        "LEFT JOIN (SELECT* FROM ubigeos WHERE depart<>'00' AND provin='00' AND distri = '00') v3 ON v3.depart = left(a.ubigdegri, 2) " +
+                        "where a.sergui = @ser and a.numgui = @num";
+                    using (MySqlCommand micon = new MySqlCommand(consulta, conn))
+                    {
+                        micon.Parameters.AddWithValue("@ser", ser);
+                        micon.Parameters.AddWithValue("@num", cor);
+                        micon.Parameters.AddWithValue("@tdep", v_tipdocR);
+                        using (MySqlDataAdapter da = new MySqlDataAdapter(micon))
+                        {
+                            dtgrtcab.Clear();
+                            da.Fill(dtgrtcab);
+                        }
+                    }
+                    consulta = "select id,sergui,numgui,cantprodi,unimedpro,codiprodi,descprodi,round(pesoprodi,1),precprodi,totaprodi " +
+                        "from detguiai where sergui = @ser and numgui = @num";
+                    using (MySqlCommand micon = new MySqlCommand(consulta, conn))
+                    {
+                        micon.Parameters.AddWithValue("@ser", ser);
+                        micon.Parameters.AddWithValue("@num", cor);
+                        using (MySqlDataAdapter da = new MySqlDataAdapter(micon))
+                        {
+                            dtgrtdet.Clear();
+                            da.Fill(dtgrtdet);
+                        }
+                    }
+                }
+                // llenamos el set
+                setParaCrystal("GRT");
+            }
+        }
         #region combos
         private void cmb_estad_ing_SelectionChangeCommitted(object sender, EventArgs e)
         {
@@ -1112,7 +1187,8 @@ namespace TransCarga
             rowcabeza.numgui = row["numgui"].ToString(); // tx_numero.Text;
             rowcabeza.numpregui = row["numpregui"].ToString(); // tx_pregr_num.Text;
             rowcabeza.fechope = row["fechopegr"].ToString().Substring(0, 10); // tx_fechope.Text;
-            rowcabeza.fechTraslado = row["fecplacar"].ToString().Substring(8,2) + "/" + row["fecplacar"].ToString().Substring(5, 2) + "/" + row["fecplacar"].ToString().Substring(0, 4); // tx_pla_fech.Text;
+            if (row["fecplacar"].ToString() == "") rowcabeza.fechTraslado = "";
+            else rowcabeza.fechTraslado = row["fecplacar"].ToString().Substring(8,2) + "/" + row["fecplacar"].ToString().Substring(5, 2) + "/" + row["fecplacar"].ToString().Substring(0, 4); // tx_pla_fech.Text;
             rowcabeza.frase1 = row["ESTADO"].ToString(); //(tx_dat_estad.Text == codAnul) ? v_fra1 : "";  // campo para etiqueta "ANULADO"
             rowcabeza.frase2 = row["frase2"].ToString(); // (chk_seguridad.Checked == true) ? v_fra2 : "";  // campo para etiqueta "TIENE CLAVE"
             // origen - destino
@@ -1258,6 +1334,11 @@ namespace TransCarga
         #region advancedatagridview
         private void advancedDataGridView1_SortStringChanged(object sender, EventArgs e)
         {
+            if (tabControl1.SelectedTab.Name == "tabres")
+            {
+                DataTable dtg = (DataTable)dgv_resumen.DataSource;
+                dtg.DefaultView.Sort = dgv_resumen.SortString;
+            }
             if (tabControl1.SelectedTab.Name == "tabgrti")
             {
                 DataTable dtg = (DataTable)dgv_guias.DataSource;
@@ -1281,6 +1362,11 @@ namespace TransCarga
         }
         private void advancedDataGridView1_FilterStringChanged(object sender, EventArgs e)                  // filtro de las columnas
         {
+            if (tabControl1.SelectedTab.Name == "tabres")
+            {
+                DataTable dtg = (DataTable)dgv_resumen.DataSource;
+                dtg.DefaultView.RowFilter = dgv_resumen.FilterString;
+            }
             if (tabControl1.SelectedTab.Name == "tabvtas")
             {
                 DataTable dtg = (DataTable)dgv_vtas.DataSource;
@@ -1308,6 +1394,15 @@ namespace TransCarga
         }
         private void advancedDataGridView1_CellDoubleClick(object sender, DataGridViewCellEventArgs e)      // no usamos
         {
+            if (tabControl1.SelectedTab.Name == "tabres")
+            {
+                if (dgv_resumen.Columns[e.ColumnIndex].Name == "GUIA")
+                {
+                    string ser = dgv_resumen.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString().Substring(0, 4);
+                    string num = dgv_resumen.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString().Substring(5, 8);
+                    muestra_gr(ser,num);
+                }
+            }
             if (tabControl1.SelectedTab.Name == "tabvtas")
             {
                 
@@ -1316,68 +1411,7 @@ namespace TransCarga
             {
                 if (e.ColumnIndex == 1)
                 {
-                    using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
-                    {
-                        if (lib.procConn(conn) == true)
-                        {
-                            string consulta = "select a.id,a.fechopegr,a.sergui,a.numgui,a.numpregui,a.tidodegri,a.nudodegri,a.nombdegri,a.diredegri," +
-                                "a.ubigdegri,a.tidoregri,a.nudoregri,a.nombregri,a.direregri,a.ubigregri,lo.descrizionerid as ORIGEN,a.dirorigen,a.ubiorigen," +
-                                "ld.descrizionerid as DESTINO,a.dirdestin,a.ubidestin,a.docsremit,a.obspregri,a.clifingri,a.cantotgri,a.pestotgri," +
-                                "a.tipmongri,a.tipcamgri,a.subtotgri,a.igvgri,round(a.totgri,1) as totgri,a.totpag,a.salgri,s.descrizionerid as ESTADO,a.impreso," +
-                                "a.frase1,a.frase2,a.fleteimp,a.tipintrem,a.tipintdes,a.tippagpre,a.seguroE,a.userc,a.userm,a.usera," +
-                                "a.serplagri,a.numplagri,a.plaplagri,a.carplagri,a.autplagri,a.confvegri,a.breplagri,a.proplagri," +
-                                "ifnull(b.chocamcar,'') as chocamcar,ifnull(b.fecplacar,'') as fecplacar,ifnull(b.fecdocvta,'') as fecdocvta,ifnull(f.descrizionerid,'') as tipdocvta," +
-                                "ifnull(b.serdocvta,'') as serdocvta,ifnull(b.numdocvta,'') as numdocvta,ifnull(b.codmonvta,'') as codmonvta," +
-                                "ifnull(b.totdocvta,0) as totdocvta,ifnull(b.codmonpag,'') as codmonpag,ifnull(b.totpagado,0) as totpagado,ifnull(b.saldofina,0) as saldofina," +
-                                "ifnull(b.feculpago,'') as feculpago,ifnull(b.estadoser,'') as estadoser,ifnull(c.razonsocial,'') as razonsocial,a.grinumaut," +
-                                "ifnull(d.marca,'') as marca,ifnull(d.modelo,'') as modelo,a.teleregri as telrem,a.teledegri as teldes,ifnull(t.nombclt,'') as clifact," +
-                                "u1.nombre AS distrem,u2.nombre as provrem,u3.nombre as deptrem,v1.nombre as distdes,v2.nombre as provdes,v3.nombre as deptdes,mo.descrizionerid as MON " +
-                                "from cabguiai a " +
-                                "left join controlg b on b.serguitra=a.sergui and b.numguitra=a.numgui " +
-                                "left join desc_tdv f on f.idcodice=b.tipdocvta " +
-                                "left join cabfactu t on t.tipdvta=a.tipdocvta and t.serdvta=a.serdocvta and t.numdvta=a.numdocvta " +
-                                "left join anag_for c on c.ruc=a.proplagri and c.tipdoc=@tdep " +
-                                "left join vehiculos d on d.placa=a.plaplagri " +
-                                "left join anag_cli er on er.ruc=a.nudoregri and er.tipdoc=a.tidoregri " +
-                                "left join anag_cli ed on ed.ruc=a.nudodegri and ed.tipdoc=a.tidodegri " +
-                                "left join desc_est s on s.idcodice=a.estadoser " +
-                                "left join desc_loc lo on lo.idcodice=a.locorigen " +
-                                "left join desc_loc ld on ld.idcodice=a.locdestin " +
-                                "left join desc_mon mo on mo.idcodice=a.tipmongri " +
-                                "LEFT JOIN ubigeos u1 ON CONCAT(u1.depart, u1.provin, u1.distri)= a.ubigregri " +
-                                "LEFT JOIN(SELECT* FROM ubigeos WHERE depart<>'00' AND provin<>'00' AND distri = '00') u2 ON u2.depart = left(a.ubigregri, 2) AND u2.provin = concat(substr(a.ubigregri, 3, 2)) " +
-                                "LEFT JOIN (SELECT* FROM ubigeos WHERE depart<>'00' AND provin='00' AND distri = '00') u3 ON u3.depart = left(a.ubigregri, 2) " +
-                                "LEFT JOIN ubigeos v1 ON CONCAT(v1.depart, v1.provin, v1.distri)= a.ubigdegri " +
-                                "LEFT JOIN (SELECT* FROM ubigeos WHERE depart<>'00' AND provin<>'00' AND distri = '00') v2 ON v2.depart = left(a.ubigdegri, 2) AND v2.provin = concat(substr(a.ubigdegri, 3, 2)) " +
-                                "LEFT JOIN (SELECT* FROM ubigeos WHERE depart<>'00' AND provin='00' AND distri = '00') v3 ON v3.depart = left(a.ubigdegri, 2) " +
-                                "where a.sergui = @ser and a.numgui = @num";
-                            using (MySqlCommand micon = new MySqlCommand(consulta, conn))
-                            {
-                                micon.Parameters.AddWithValue("@ser", dgv_guias.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Value.ToString());    // tx_serie.Text
-                                micon.Parameters.AddWithValue("@num", dgv_guias.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString());
-                                micon.Parameters.AddWithValue("@tdep", v_tipdocR);
-                                using (MySqlDataAdapter da = new MySqlDataAdapter(micon))
-                                {
-                                    dtgrtcab.Clear();
-                                    da.Fill(dtgrtcab);
-                                }
-                            }
-                            consulta = "select id,sergui,numgui,cantprodi,unimedpro,codiprodi,descprodi,round(pesoprodi,1),precprodi,totaprodi " +
-                                "from detguiai where sergui = @ser and numgui = @num";
-                            using (MySqlCommand micon = new MySqlCommand(consulta, conn))
-                            {
-                                micon.Parameters.AddWithValue("@ser", dgv_guias.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Value.ToString());    // tx_serie.Text
-                                micon.Parameters.AddWithValue("@num", dgv_guias.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString());
-                                using (MySqlDataAdapter da = new MySqlDataAdapter(micon))
-                                {
-                                    dtgrtdet.Clear();
-                                    da.Fill(dtgrtdet);
-                                }
-                            }
-                        }
-                        // llenamos el set
-                        setParaCrystal("GRT");
-                    }
+                    muestra_gr(dgv_guias.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Value.ToString(), dgv_guias.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString());
                 }
             }
             if (tabControl1.SelectedTab.Name == "tabplacar")

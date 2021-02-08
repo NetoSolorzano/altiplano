@@ -2146,8 +2146,8 @@ namespace TransCarga
                     {
                         conn.Open();
                         string consulta = "select a.numpregui,a.cantotgri,a.pestotgri,b.descrizionerid as MON,a.totgri,a.totpag,a.salgri,a.tipmongri,a.numplagri," +
-                            "c.unimedpro," +
-                            "concat(d.descrizionerid,'-',if(SUBSTRING(a.serdocvta,1,2)='00',SUBSTRING(a.serdocvta,3,2),a.serdocvta),'-',if(SUBSTRING(a.numdocvta,1,3)='000',SUBSTRING(a.numdocvta,4,5),a.numdocvta))" + 
+                            "c.unimedpro,ifnull(" +
+                            "concat(d.descrizionerid,'-',if(SUBSTRING(a.serdocvta,1,2)='00',SUBSTRING(a.serdocvta,3,2),a.serdocvta),'-',if(SUBSTRING(a.numdocvta,1,3)='000',SUBSTRING(a.numdocvta,4,5),a.numdocvta)),'')" + 
                             "from cabguiai a left join desc_mon b on b.idcodice=a.tipmongri " +
                             "left join detguiai c on c.idc=a.id " +
                             "left join desc_tdv d on d.idcodice=a.tipdocvta " +

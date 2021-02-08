@@ -88,6 +88,7 @@ namespace TransCarga
         string webose = "";             // direccion web del ose o pse para la descarga del 
         string correo_gen = "";         // correo generico del emisor cuando el cliente no tiene correo propio
         string codusanu = "";           // usuarios que pueden anular fuera de plazo
+        string otro = "";               // ruta y nombre del png código QR
         //
         static libreria lib = new libreria();   // libreria de procedimientos
         publico lp = new publico();             // libreria de clases
@@ -2878,6 +2879,12 @@ namespace TransCarga
             if (vi_formato == "TK")
             {
                 imprime_TK(sender, e);
+                if (File.Exists(@otro))
+                {
+                    //File.Delete(@"C:\test.txt");
+                    File.Delete(@otro);
+                }
+
             }
         }
         private void imprime_A4(object sender, System.Drawing.Printing.PrintPageEventArgs e)
@@ -3197,7 +3204,7 @@ namespace TransCarga
                         tx_numDocRem.Text + separ;  // string.Format("{0:yyyy-MM-dd}", tx_fechope.Text)
                     //
                     var rnd = Path.GetRandomFileName();
-                    var otro = Path.GetFileNameWithoutExtension(rnd);
+                    otro = Path.GetFileNameWithoutExtension(rnd);
                     otro = otro + ".png";
                     //
                     var qrEncoder = new QrEncoder(ErrorCorrectionLevel.H);
@@ -3212,6 +3219,7 @@ namespace TransCarga
                     SizeF cuadro = new SizeF(lib.CentimeterToPixel(3), lib.CentimeterToPixel(3));    // 5x5 cm
                     RectangleF rec = new RectangleF(puntoF, cuadro);
                     e.Graphics.DrawImage(png, rec);
+                    png.Dispose();
                     // leyenda 2
                     posi = posi + lib.CentimeterToPixel(3);
                     lt = (CentimeterToPixel(anchTik) - e.Graphics.MeasureString(restexto, lt_med).Width) / 2;
