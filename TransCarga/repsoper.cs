@@ -598,6 +598,12 @@ namespace TransCarga
         }
         private void bt_guias_Click(object sender, EventArgs e)         // genera reporte guias
         {
+            if (rb_GR_dest.Checked == false && rb_GR_origen.Checked == false && cmb_sede_guias.SelectedIndex > -1)
+            {
+                MessageBox.Show("Seleccione origen o destino?","Atención",MessageBoxButtons.OK,MessageBoxIcon.Information);
+                rb_GR_origen.Focus();
+                return;
+            }
             using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
             {
                 conn.Open();
@@ -610,6 +616,7 @@ namespace TransCarga
                     micon.Parameters.AddWithValue("@fecfin", dtp_fin_guias.Value.ToString("yyyy-MM-dd"));
                     micon.Parameters.AddWithValue("@esta", (tx_estad_guias.Text != "") ? tx_estad_guias.Text : "");
                     micon.Parameters.AddWithValue("@excl", (chk_excl_guias.Checked == true) ? "1" : "0");
+                    micon.Parameters.AddWithValue("@orides", (rb_GR_origen.Checked == true) ? "O" : "D");   // local -> O=origen || D=destino
                     using (MySqlDataAdapter da = new MySqlDataAdapter(micon))
                     {
                         dgv_guias.DataSource = null;
@@ -628,6 +635,12 @@ namespace TransCarga
         }
         private void bt_plan_Click(object sender, EventArgs e)          // genera reporte planilla de carga
         {
+            if (rb_PLA_dest.Checked == false && rb_PLA_origen.Checked == false && cmb_sede_plan.SelectedIndex > -1)
+            {
+                MessageBox.Show("Seleccione origen o destino?", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                rb_PLA_origen.Focus();
+                return;
+            }
             using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
             {
                 conn.Open();
@@ -640,6 +653,7 @@ namespace TransCarga
                     micon.Parameters.AddWithValue("@loca", (tx_dat_sede_plan.Text != "") ? tx_dat_sede_plan.Text : "");
                     micon.Parameters.AddWithValue("@esta", (tx_dat_estad_plan.Text != "") ? tx_dat_estad_plan.Text : "");
                     micon.Parameters.AddWithValue("@excl", (chk_exclu_plan.Checked == true)? "1" : "0");
+                    micon.Parameters.AddWithValue("@orides", (rb_PLA_origen.Checked == true) ? "O" : "D");   // local -> O=origen || D=destino
                     using (MySqlDataAdapter da = new MySqlDataAdapter(micon))
                     {
                         dgv_plan.DataSource = null;
@@ -775,6 +789,7 @@ namespace TransCarga
                 setParaCrystal("GRT");
             }
         }
+
         #region combos
         private void cmb_estad_ing_SelectionChangeCommitted(object sender, EventArgs e)
         {

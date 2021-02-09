@@ -55,6 +55,20 @@
             this.toolStripSeparator11 = new System.Windows.Forms.ToolStripSeparator();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabres = new System.Windows.Forms.TabPage();
+            this.dgv_resumen = new ADGV.AdvancedDataGridView();
+            this.groupBox42 = new System.Windows.Forms.GroupBox();
+            this.groupBox41 = new System.Windows.Forms.GroupBox();
+            this.groupBox40 = new System.Windows.Forms.GroupBox();
+            this.groupBox39 = new System.Windows.Forms.GroupBox();
+            this.groupBox37 = new System.Windows.Forms.GroupBox();
+            this.groupBox33 = new System.Windows.Forms.GroupBox();
+            this.groupBox34 = new System.Windows.Forms.GroupBox();
+            this.groupBox35 = new System.Windows.Forms.GroupBox();
+            this.groupBox36 = new System.Windows.Forms.GroupBox();
+            this.dtp_ser_fina = new System.Windows.Forms.DateTimePicker();
+            this.dtp_ser_fini = new System.Windows.Forms.DateTimePicker();
+            this.label17 = new System.Windows.Forms.Label();
+            this.label18 = new System.Windows.Forms.Label();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.tx_dat_tido = new System.Windows.Forms.TextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
@@ -164,23 +178,18 @@
             this.tx_num = new System.Windows.Forms.TextBox();
             this.button6 = new System.Windows.Forms.Button();
             this.bt_hisGR = new System.Windows.Forms.Button();
-            this.groupBox33 = new System.Windows.Forms.GroupBox();
-            this.groupBox34 = new System.Windows.Forms.GroupBox();
-            this.groupBox35 = new System.Windows.Forms.GroupBox();
-            this.groupBox36 = new System.Windows.Forms.GroupBox();
-            this.dtp_ser_fina = new System.Windows.Forms.DateTimePicker();
-            this.dtp_ser_fini = new System.Windows.Forms.DateTimePicker();
-            this.label17 = new System.Windows.Forms.Label();
-            this.label18 = new System.Windows.Forms.Label();
-            this.groupBox37 = new System.Windows.Forms.GroupBox();
-            this.groupBox39 = new System.Windows.Forms.GroupBox();
-            this.groupBox40 = new System.Windows.Forms.GroupBox();
-            this.groupBox41 = new System.Windows.Forms.GroupBox();
-            this.groupBox42 = new System.Windows.Forms.GroupBox();
-            this.dgv_resumen = new ADGV.AdvancedDataGridView();
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.rb_GR_dest = new System.Windows.Forms.RadioButton();
+            this.rb_GR_origen = new System.Windows.Forms.RadioButton();
+            this.panel3 = new System.Windows.Forms.Panel();
+            this.rb_PLA_dest = new System.Windows.Forms.RadioButton();
+            this.rb_PLA_origen = new System.Windows.Forms.RadioButton();
             this.toolStrip1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabres.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgv_resumen)).BeginInit();
+            this.groupBox33.SuspendLayout();
+            this.groupBox35.SuspendLayout();
             this.tabvtas.SuspendLayout();
             this.groupBox19.SuspendLayout();
             this.groupBox9.SuspendLayout();
@@ -206,9 +215,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.dgv_reval)).BeginInit();
             this.tabgrhist.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgv_histGR)).BeginInit();
-            this.groupBox33.SuspendLayout();
-            this.groupBox35.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgv_resumen)).BeginInit();
+            this.panel2.SuspendLayout();
+            this.panel3.SuspendLayout();
             this.SuspendLayout();
             // 
             // toolStrip1
@@ -520,6 +528,150 @@
             this.tabres.Text = "Servicio por Cliente";
             this.tabres.UseVisualStyleBackColor = true;
             this.tabres.Enter += new System.EventHandler(this.tabres_Enter);
+            // 
+            // dgv_resumen
+            // 
+            this.dgv_resumen.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.dgv_resumen.AutoGenerateContextFilters = true;
+            this.dgv_resumen.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgv_resumen.DateWithTime = false;
+            this.dgv_resumen.Location = new System.Drawing.Point(5, 69);
+            this.dgv_resumen.Name = "dgv_resumen";
+            this.dgv_resumen.Size = new System.Drawing.Size(1017, 275);
+            this.dgv_resumen.TabIndex = 389;
+            this.dgv_resumen.TimeFilter = false;
+            this.dgv_resumen.SortStringChanged += new System.EventHandler(this.advancedDataGridView1_SortStringChanged);
+            this.dgv_resumen.FilterStringChanged += new System.EventHandler(this.advancedDataGridView1_FilterStringChanged);
+            this.dgv_resumen.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.advancedDataGridView1_CellDoubleClick);
+            // 
+            // groupBox42
+            // 
+            this.groupBox42.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.groupBox42.BackColor = System.Drawing.Color.DimGray;
+            this.groupBox42.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.groupBox42.Location = new System.Drawing.Point(597, 369);
+            this.groupBox42.Name = "groupBox42";
+            this.groupBox42.Size = new System.Drawing.Size(166, 1);
+            this.groupBox42.TabIndex = 388;
+            this.groupBox42.TabStop = false;
+            // 
+            // groupBox41
+            // 
+            this.groupBox41.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.groupBox41.BackColor = System.Drawing.Color.DimGray;
+            this.groupBox41.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.groupBox41.Location = new System.Drawing.Point(299, 369);
+            this.groupBox41.Name = "groupBox41";
+            this.groupBox41.Size = new System.Drawing.Size(171, 1);
+            this.groupBox41.TabIndex = 387;
+            this.groupBox41.TabStop = false;
+            // 
+            // groupBox40
+            // 
+            this.groupBox40.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.groupBox40.BackColor = System.Drawing.Color.DimGray;
+            this.groupBox40.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.groupBox40.Location = new System.Drawing.Point(5, 369);
+            this.groupBox40.Name = "groupBox40";
+            this.groupBox40.Size = new System.Drawing.Size(134, 1);
+            this.groupBox40.TabIndex = 386;
+            this.groupBox40.TabStop = false;
+            // 
+            // groupBox39
+            // 
+            this.groupBox39.BackColor = System.Drawing.Color.DimGray;
+            this.groupBox39.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.groupBox39.Location = new System.Drawing.Point(5, 60);
+            this.groupBox39.Name = "groupBox39";
+            this.groupBox39.Size = new System.Drawing.Size(536, 1);
+            this.groupBox39.TabIndex = 385;
+            this.groupBox39.TabStop = false;
+            // 
+            // groupBox37
+            // 
+            this.groupBox37.BackColor = System.Drawing.Color.DimGray;
+            this.groupBox37.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.groupBox37.Location = new System.Drawing.Point(5, 30);
+            this.groupBox37.Name = "groupBox37";
+            this.groupBox37.Size = new System.Drawing.Size(91, 1);
+            this.groupBox37.TabIndex = 384;
+            this.groupBox37.TabStop = false;
+            // 
+            // groupBox33
+            // 
+            this.groupBox33.BackColor = System.Drawing.Color.DimGray;
+            this.groupBox33.Controls.Add(this.groupBox34);
+            this.groupBox33.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.groupBox33.Location = new System.Drawing.Point(631, 30);
+            this.groupBox33.Name = "groupBox33";
+            this.groupBox33.Size = new System.Drawing.Size(161, 1);
+            this.groupBox33.TabIndex = 383;
+            this.groupBox33.TabStop = false;
+            // 
+            // groupBox34
+            // 
+            this.groupBox34.Location = new System.Drawing.Point(0, -26);
+            this.groupBox34.Name = "groupBox34";
+            this.groupBox34.Size = new System.Drawing.Size(164, 1);
+            this.groupBox34.TabIndex = 113;
+            this.groupBox34.TabStop = false;
+            // 
+            // groupBox35
+            // 
+            this.groupBox35.BackColor = System.Drawing.Color.DimGray;
+            this.groupBox35.Controls.Add(this.groupBox36);
+            this.groupBox35.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.groupBox35.Location = new System.Drawing.Point(470, 30);
+            this.groupBox35.Name = "groupBox35";
+            this.groupBox35.Size = new System.Drawing.Size(161, 1);
+            this.groupBox35.TabIndex = 382;
+            this.groupBox35.TabStop = false;
+            // 
+            // groupBox36
+            // 
+            this.groupBox36.Location = new System.Drawing.Point(0, -26);
+            this.groupBox36.Name = "groupBox36";
+            this.groupBox36.Size = new System.Drawing.Size(164, 1);
+            this.groupBox36.TabIndex = 113;
+            this.groupBox36.TabStop = false;
+            // 
+            // dtp_ser_fina
+            // 
+            this.dtp_ser_fina.Checked = false;
+            this.dtp_ser_fina.Format = System.Windows.Forms.DateTimePickerFormat.Short;
+            this.dtp_ser_fina.Location = new System.Drawing.Point(697, 11);
+            this.dtp_ser_fina.Name = "dtp_ser_fina";
+            this.dtp_ser_fina.Size = new System.Drawing.Size(95, 20);
+            this.dtp_ser_fina.TabIndex = 379;
+            // 
+            // dtp_ser_fini
+            // 
+            this.dtp_ser_fini.Checked = false;
+            this.dtp_ser_fini.Format = System.Windows.Forms.DateTimePickerFormat.Short;
+            this.dtp_ser_fini.Location = new System.Drawing.Point(536, 11);
+            this.dtp_ser_fini.Name = "dtp_ser_fini";
+            this.dtp_ser_fini.Size = new System.Drawing.Size(95, 20);
+            this.dtp_ser_fini.TabIndex = 378;
+            // 
+            // label17
+            // 
+            this.label17.AutoSize = true;
+            this.label17.Location = new System.Drawing.Point(641, 16);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(53, 13);
+            this.label17.TabIndex = 381;
+            this.label17.Text = "Fech final";
+            // 
+            // label18
+            // 
+            this.label18.AutoSize = true;
+            this.label18.Location = new System.Drawing.Point(472, 15);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(61, 13);
+            this.label18.TabIndex = 380;
+            this.label18.Text = "Fech Inicial";
             // 
             // checkBox1
             // 
@@ -972,6 +1124,7 @@
             // 
             // tabgrti
             // 
+            this.tabgrti.Controls.Add(this.panel2);
             this.tabgrti.Controls.Add(this.chk_excl_guias);
             this.tabgrti.Controls.Add(this.groupBox3);
             this.tabgrti.Controls.Add(this.tx_estad_guias);
@@ -994,13 +1147,13 @@
             this.tabgrti.Name = "tabgrti";
             this.tabgrti.Size = new System.Drawing.Size(1026, 377);
             this.tabgrti.TabIndex = 7;
-            this.tabgrti.Text = "Guías Transp. Ind.";
+            this.tabgrti.Text = "Guías Transp. ";
             this.tabgrti.UseVisualStyleBackColor = true;
             // 
             // chk_excl_guias
             // 
             this.chk_excl_guias.AutoSize = true;
-            this.chk_excl_guias.Location = new System.Drawing.Point(351, 28);
+            this.chk_excl_guias.Location = new System.Drawing.Point(351, 30);
             this.chk_excl_guias.Name = "chk_excl_guias";
             this.chk_excl_guias.Size = new System.Drawing.Size(63, 17);
             this.chk_excl_guias.TabIndex = 390;
@@ -1012,7 +1165,7 @@
             this.groupBox3.BackColor = System.Drawing.Color.DimGray;
             this.groupBox3.Controls.Add(this.groupBox4);
             this.groupBox3.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.groupBox3.Location = new System.Drawing.Point(173, 45);
+            this.groupBox3.Location = new System.Drawing.Point(173, 47);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(171, 1);
             this.groupBox3.TabIndex = 384;
@@ -1028,7 +1181,7 @@
             // 
             // tx_estad_guias
             // 
-            this.tx_estad_guias.Location = new System.Drawing.Point(153, 28);
+            this.tx_estad_guias.Location = new System.Drawing.Point(153, 30);
             this.tx_estad_guias.Name = "tx_estad_guias";
             this.tx_estad_guias.Size = new System.Drawing.Size(17, 20);
             this.tx_estad_guias.TabIndex = 389;
@@ -1041,7 +1194,7 @@
             this.cmb_estad_guias.DropDownWidth = 100;
             this.cmb_estad_guias.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.cmb_estad_guias.FormattingEnabled = true;
-            this.cmb_estad_guias.Location = new System.Drawing.Point(260, 25);
+            this.cmb_estad_guias.Location = new System.Drawing.Point(260, 27);
             this.cmb_estad_guias.Name = "cmb_estad_guias";
             this.cmb_estad_guias.Size = new System.Drawing.Size(85, 21);
             this.cmb_estad_guias.TabIndex = 388;
@@ -1053,7 +1206,7 @@
             this.groupBox5.BackColor = System.Drawing.Color.DimGray;
             this.groupBox5.Controls.Add(this.groupBox6);
             this.groupBox5.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.groupBox5.Location = new System.Drawing.Point(476, 45);
+            this.groupBox5.Location = new System.Drawing.Point(476, 47);
             this.groupBox5.Name = "groupBox5";
             this.groupBox5.Size = new System.Drawing.Size(161, 1);
             this.groupBox5.TabIndex = 387;
@@ -1106,7 +1259,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(175, 30);
+            this.label1.Location = new System.Drawing.Point(175, 32);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(79, 13);
             this.label1.TabIndex = 383;
@@ -1176,7 +1329,7 @@
             // 
             this.dtp_fin_guias.Checked = false;
             this.dtp_fin_guias.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.dtp_fin_guias.Location = new System.Drawing.Point(542, 26);
+            this.dtp_fin_guias.Location = new System.Drawing.Point(542, 28);
             this.dtp_fin_guias.Name = "dtp_fin_guias";
             this.dtp_fin_guias.Size = new System.Drawing.Size(95, 20);
             this.dtp_fin_guias.TabIndex = 374;
@@ -1204,7 +1357,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(486, 31);
+            this.label3.Location = new System.Drawing.Point(486, 33);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(53, 13);
             this.label3.TabIndex = 377;
@@ -1221,6 +1374,7 @@
             // 
             // tabplacar
             // 
+            this.tabplacar.Controls.Add(this.panel3);
             this.tabplacar.Controls.Add(this.chk_exclu_plan);
             this.tabplacar.Controls.Add(this.groupBox23);
             this.tabplacar.Controls.Add(this.tx_dat_estad_plan);
@@ -1249,7 +1403,7 @@
             // chk_exclu_plan
             // 
             this.chk_exclu_plan.AutoSize = true;
-            this.chk_exclu_plan.Location = new System.Drawing.Point(387, 28);
+            this.chk_exclu_plan.Location = new System.Drawing.Point(387, 30);
             this.chk_exclu_plan.Name = "chk_exclu_plan";
             this.chk_exclu_plan.Size = new System.Drawing.Size(63, 17);
             this.chk_exclu_plan.TabIndex = 3;
@@ -1261,7 +1415,7 @@
             this.groupBox23.BackColor = System.Drawing.Color.DimGray;
             this.groupBox23.Controls.Add(this.groupBox24);
             this.groupBox23.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.groupBox23.Location = new System.Drawing.Point(209, 45);
+            this.groupBox23.Location = new System.Drawing.Point(209, 47);
             this.groupBox23.Name = "groupBox23";
             this.groupBox23.Size = new System.Drawing.Size(154, 1);
             this.groupBox23.TabIndex = 402;
@@ -1277,7 +1431,7 @@
             // 
             // tx_dat_estad_plan
             // 
-            this.tx_dat_estad_plan.Location = new System.Drawing.Point(189, 28);
+            this.tx_dat_estad_plan.Location = new System.Drawing.Point(189, 30);
             this.tx_dat_estad_plan.Name = "tx_dat_estad_plan";
             this.tx_dat_estad_plan.Size = new System.Drawing.Size(17, 20);
             this.tx_dat_estad_plan.TabIndex = 404;
@@ -1290,7 +1444,7 @@
             this.cmb_estad_plan.DropDownWidth = 100;
             this.cmb_estad_plan.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.cmb_estad_plan.FormattingEnabled = true;
-            this.cmb_estad_plan.Location = new System.Drawing.Point(296, 25);
+            this.cmb_estad_plan.Location = new System.Drawing.Point(296, 27);
             this.cmb_estad_plan.Name = "cmb_estad_plan";
             this.cmb_estad_plan.Size = new System.Drawing.Size(85, 21);
             this.cmb_estad_plan.TabIndex = 2;
@@ -1300,7 +1454,7 @@
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(211, 30);
+            this.label7.Location = new System.Drawing.Point(211, 32);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(79, 13);
             this.label7.TabIndex = 401;
@@ -1361,7 +1515,7 @@
             this.groupBox15.BackColor = System.Drawing.Color.DimGray;
             this.groupBox15.Controls.Add(this.groupBox16);
             this.groupBox15.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.groupBox15.Location = new System.Drawing.Point(476, 45);
+            this.groupBox15.Location = new System.Drawing.Point(496, 47);
             this.groupBox15.Name = "groupBox15";
             this.groupBox15.Size = new System.Drawing.Size(161, 1);
             this.groupBox15.TabIndex = 396;
@@ -1380,7 +1534,7 @@
             this.groupBox21.BackColor = System.Drawing.Color.DimGray;
             this.groupBox21.Controls.Add(this.groupBox22);
             this.groupBox21.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.groupBox21.Location = new System.Drawing.Point(476, 23);
+            this.groupBox21.Location = new System.Drawing.Point(496, 23);
             this.groupBox21.Name = "groupBox21";
             this.groupBox21.Size = new System.Drawing.Size(161, 1);
             this.groupBox21.TabIndex = 395;
@@ -1402,7 +1556,7 @@
             this.dgv_plan.AutoGenerateContextFilters = true;
             this.dgv_plan.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgv_plan.DateWithTime = false;
-            this.dgv_plan.Location = new System.Drawing.Point(6, 51);
+            this.dgv_plan.Location = new System.Drawing.Point(6, 52);
             this.dgv_plan.Name = "dgv_plan";
             this.dgv_plan.Size = new System.Drawing.Size(1015, 322);
             this.dgv_plan.TabIndex = 394;
@@ -1415,7 +1569,7 @@
             // 
             this.button3.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.button3.Enabled = false;
-            this.button3.Location = new System.Drawing.Point(753, 5);
+            this.button3.Location = new System.Drawing.Point(773, 5);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(50, 41);
             this.button3.TabIndex = 393;
@@ -1425,7 +1579,7 @@
             // 
             this.dtp_fter_plan.Checked = false;
             this.dtp_fter_plan.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.dtp_fter_plan.Location = new System.Drawing.Point(542, 26);
+            this.dtp_fter_plan.Location = new System.Drawing.Point(562, 28);
             this.dtp_fter_plan.Name = "dtp_fter_plan";
             this.dtp_fter_plan.Size = new System.Drawing.Size(95, 20);
             this.dtp_fter_plan.TabIndex = 5;
@@ -1434,7 +1588,7 @@
             // 
             this.dtp_fini_plan.Checked = false;
             this.dtp_fini_plan.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.dtp_fini_plan.Location = new System.Drawing.Point(542, 4);
+            this.dtp_fini_plan.Location = new System.Drawing.Point(562, 4);
             this.dtp_fini_plan.Name = "dtp_fini_plan";
             this.dtp_fini_plan.Size = new System.Drawing.Size(95, 20);
             this.dtp_fini_plan.TabIndex = 4;
@@ -1442,7 +1596,7 @@
             // bt_filtra_plan
             // 
             this.bt_filtra_plan.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.bt_filtra_plan.Location = new System.Drawing.Point(664, 10);
+            this.bt_filtra_plan.Location = new System.Drawing.Point(684, 10);
             this.bt_filtra_plan.Name = "bt_filtra_plan";
             this.bt_filtra_plan.Size = new System.Drawing.Size(59, 29);
             this.bt_filtra_plan.TabIndex = 6;
@@ -1453,7 +1607,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(486, 31);
+            this.label5.Location = new System.Drawing.Point(506, 33);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(53, 13);
             this.label5.TabIndex = 392;
@@ -1462,7 +1616,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(478, 8);
+            this.label6.Location = new System.Drawing.Point(498, 8);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(61, 13);
             this.label6.TabIndex = 391;
@@ -1682,149 +1836,67 @@
             this.bt_hisGR.UseVisualStyleBackColor = true;
             this.bt_hisGR.Click += new System.EventHandler(this.bt_hisGR_Click);
             // 
-            // groupBox33
+            // panel2
             // 
-            this.groupBox33.BackColor = System.Drawing.Color.DimGray;
-            this.groupBox33.Controls.Add(this.groupBox34);
-            this.groupBox33.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.groupBox33.Location = new System.Drawing.Point(631, 30);
-            this.groupBox33.Name = "groupBox33";
-            this.groupBox33.Size = new System.Drawing.Size(161, 1);
-            this.groupBox33.TabIndex = 383;
-            this.groupBox33.TabStop = false;
+            this.panel2.Controls.Add(this.rb_GR_dest);
+            this.panel2.Controls.Add(this.rb_GR_origen);
+            this.panel2.Location = new System.Drawing.Point(334, 1);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(126, 26);
+            this.panel2.TabIndex = 391;
             // 
-            // groupBox34
+            // rb_GR_dest
             // 
-            this.groupBox34.Location = new System.Drawing.Point(0, -26);
-            this.groupBox34.Name = "groupBox34";
-            this.groupBox34.Size = new System.Drawing.Size(164, 1);
-            this.groupBox34.TabIndex = 113;
-            this.groupBox34.TabStop = false;
+            this.rb_GR_dest.AutoSize = true;
+            this.rb_GR_dest.Location = new System.Drawing.Point(63, 4);
+            this.rb_GR_dest.Name = "rb_GR_dest";
+            this.rb_GR_dest.Size = new System.Drawing.Size(61, 17);
+            this.rb_GR_dest.TabIndex = 359;
+            this.rb_GR_dest.TabStop = true;
+            this.rb_GR_dest.Text = "Destino";
+            this.rb_GR_dest.UseVisualStyleBackColor = true;
             // 
-            // groupBox35
+            // rb_GR_origen
             // 
-            this.groupBox35.BackColor = System.Drawing.Color.DimGray;
-            this.groupBox35.Controls.Add(this.groupBox36);
-            this.groupBox35.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.groupBox35.Location = new System.Drawing.Point(470, 30);
-            this.groupBox35.Name = "groupBox35";
-            this.groupBox35.Size = new System.Drawing.Size(161, 1);
-            this.groupBox35.TabIndex = 382;
-            this.groupBox35.TabStop = false;
+            this.rb_GR_origen.AutoSize = true;
+            this.rb_GR_origen.Location = new System.Drawing.Point(3, 3);
+            this.rb_GR_origen.Name = "rb_GR_origen";
+            this.rb_GR_origen.Size = new System.Drawing.Size(56, 17);
+            this.rb_GR_origen.TabIndex = 358;
+            this.rb_GR_origen.TabStop = true;
+            this.rb_GR_origen.Text = "Origen";
+            this.rb_GR_origen.UseVisualStyleBackColor = true;
             // 
-            // groupBox36
+            // panel3
             // 
-            this.groupBox36.Location = new System.Drawing.Point(0, -26);
-            this.groupBox36.Name = "groupBox36";
-            this.groupBox36.Size = new System.Drawing.Size(164, 1);
-            this.groupBox36.TabIndex = 113;
-            this.groupBox36.TabStop = false;
+            this.panel3.Controls.Add(this.rb_PLA_dest);
+            this.panel3.Controls.Add(this.rb_PLA_origen);
+            this.panel3.Location = new System.Drawing.Point(366, 1);
+            this.panel3.Name = "panel3";
+            this.panel3.Size = new System.Drawing.Size(128, 26);
+            this.panel3.TabIndex = 405;
             // 
-            // dtp_ser_fina
+            // rb_PLA_dest
             // 
-            this.dtp_ser_fina.Checked = false;
-            this.dtp_ser_fina.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.dtp_ser_fina.Location = new System.Drawing.Point(697, 11);
-            this.dtp_ser_fina.Name = "dtp_ser_fina";
-            this.dtp_ser_fina.Size = new System.Drawing.Size(95, 20);
-            this.dtp_ser_fina.TabIndex = 379;
+            this.rb_PLA_dest.AutoSize = true;
+            this.rb_PLA_dest.Location = new System.Drawing.Point(64, 4);
+            this.rb_PLA_dest.Name = "rb_PLA_dest";
+            this.rb_PLA_dest.Size = new System.Drawing.Size(61, 17);
+            this.rb_PLA_dest.TabIndex = 359;
+            this.rb_PLA_dest.TabStop = true;
+            this.rb_PLA_dest.Text = "Destino";
+            this.rb_PLA_dest.UseVisualStyleBackColor = true;
             // 
-            // dtp_ser_fini
+            // rb_PLA_origen
             // 
-            this.dtp_ser_fini.Checked = false;
-            this.dtp_ser_fini.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.dtp_ser_fini.Location = new System.Drawing.Point(536, 11);
-            this.dtp_ser_fini.Name = "dtp_ser_fini";
-            this.dtp_ser_fini.Size = new System.Drawing.Size(95, 20);
-            this.dtp_ser_fini.TabIndex = 378;
-            // 
-            // label17
-            // 
-            this.label17.AutoSize = true;
-            this.label17.Location = new System.Drawing.Point(641, 16);
-            this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(53, 13);
-            this.label17.TabIndex = 381;
-            this.label17.Text = "Fech final";
-            // 
-            // label18
-            // 
-            this.label18.AutoSize = true;
-            this.label18.Location = new System.Drawing.Point(472, 15);
-            this.label18.Name = "label18";
-            this.label18.Size = new System.Drawing.Size(61, 13);
-            this.label18.TabIndex = 380;
-            this.label18.Text = "Fech Inicial";
-            // 
-            // groupBox37
-            // 
-            this.groupBox37.BackColor = System.Drawing.Color.DimGray;
-            this.groupBox37.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.groupBox37.Location = new System.Drawing.Point(5, 30);
-            this.groupBox37.Name = "groupBox37";
-            this.groupBox37.Size = new System.Drawing.Size(91, 1);
-            this.groupBox37.TabIndex = 384;
-            this.groupBox37.TabStop = false;
-            // 
-            // groupBox39
-            // 
-            this.groupBox39.BackColor = System.Drawing.Color.DimGray;
-            this.groupBox39.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.groupBox39.Location = new System.Drawing.Point(5, 60);
-            this.groupBox39.Name = "groupBox39";
-            this.groupBox39.Size = new System.Drawing.Size(536, 1);
-            this.groupBox39.TabIndex = 385;
-            this.groupBox39.TabStop = false;
-            // 
-            // groupBox40
-            // 
-            this.groupBox40.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.groupBox40.BackColor = System.Drawing.Color.DimGray;
-            this.groupBox40.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.groupBox40.Location = new System.Drawing.Point(5, 369);
-            this.groupBox40.Name = "groupBox40";
-            this.groupBox40.Size = new System.Drawing.Size(134, 1);
-            this.groupBox40.TabIndex = 386;
-            this.groupBox40.TabStop = false;
-            // 
-            // groupBox41
-            // 
-            this.groupBox41.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.groupBox41.BackColor = System.Drawing.Color.DimGray;
-            this.groupBox41.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.groupBox41.Location = new System.Drawing.Point(299, 369);
-            this.groupBox41.Name = "groupBox41";
-            this.groupBox41.Size = new System.Drawing.Size(171, 1);
-            this.groupBox41.TabIndex = 387;
-            this.groupBox41.TabStop = false;
-            // 
-            // groupBox42
-            // 
-            this.groupBox42.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.groupBox42.BackColor = System.Drawing.Color.DimGray;
-            this.groupBox42.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.groupBox42.Location = new System.Drawing.Point(597, 369);
-            this.groupBox42.Name = "groupBox42";
-            this.groupBox42.Size = new System.Drawing.Size(166, 1);
-            this.groupBox42.TabIndex = 388;
-            this.groupBox42.TabStop = false;
-            // 
-            // dgv_resumen
-            // 
-            this.dgv_resumen.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.dgv_resumen.AutoGenerateContextFilters = true;
-            this.dgv_resumen.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgv_resumen.DateWithTime = false;
-            this.dgv_resumen.Location = new System.Drawing.Point(5, 69);
-            this.dgv_resumen.Name = "dgv_resumen";
-            this.dgv_resumen.Size = new System.Drawing.Size(1017, 275);
-            this.dgv_resumen.TabIndex = 389;
-            this.dgv_resumen.TimeFilter = false;
-            this.dgv_resumen.SortStringChanged += new System.EventHandler(this.advancedDataGridView1_SortStringChanged);
-            this.dgv_resumen.FilterStringChanged += new System.EventHandler(this.advancedDataGridView1_FilterStringChanged);
-            this.dgv_resumen.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.advancedDataGridView1_CellDoubleClick);
+            this.rb_PLA_origen.AutoSize = true;
+            this.rb_PLA_origen.Location = new System.Drawing.Point(3, 3);
+            this.rb_PLA_origen.Name = "rb_PLA_origen";
+            this.rb_PLA_origen.Size = new System.Drawing.Size(56, 17);
+            this.rb_PLA_origen.TabIndex = 358;
+            this.rb_PLA_origen.TabStop = true;
+            this.rb_PLA_origen.Text = "Origen";
+            this.rb_PLA_origen.UseVisualStyleBackColor = true;
             // 
             // repsoper
             // 
@@ -1844,6 +1916,9 @@
             this.tabControl1.ResumeLayout(false);
             this.tabres.ResumeLayout(false);
             this.tabres.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgv_resumen)).EndInit();
+            this.groupBox33.ResumeLayout(false);
+            this.groupBox35.ResumeLayout(false);
             this.tabvtas.ResumeLayout(false);
             this.tabvtas.PerformLayout();
             this.groupBox19.ResumeLayout(false);
@@ -1875,9 +1950,10 @@
             this.tabgrhist.ResumeLayout(false);
             this.tabgrhist.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgv_histGR)).EndInit();
-            this.groupBox33.ResumeLayout(false);
-            this.groupBox35.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.dgv_resumen)).EndInit();
+            this.panel2.ResumeLayout(false);
+            this.panel2.PerformLayout();
+            this.panel3.ResumeLayout(false);
+            this.panel3.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -2034,5 +2110,11 @@
         private System.Windows.Forms.Label label17;
         private System.Windows.Forms.Label label18;
         private ADGV.AdvancedDataGridView dgv_resumen;
+        private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.RadioButton rb_GR_dest;
+        private System.Windows.Forms.RadioButton rb_GR_origen;
+        private System.Windows.Forms.Panel panel3;
+        private System.Windows.Forms.RadioButton rb_PLA_dest;
+        private System.Windows.Forms.RadioButton rb_PLA_origen;
     }
 }

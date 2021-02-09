@@ -130,7 +130,7 @@ form repsventas, agregar pestaña para reg. de ventas ..........................
 form ayccaja, agregar reporte de cierre de caja .................................................... ok 07/01/2021
 form clients, agregar opcion de rejalar datos del cliente .......................................... ok 08/01/2021
 form users, mejorar la asignacion de permisos a los usuarios ....................................... OK 09/01/2021
-- form planicarga, mejoras en validaciones y F1 .................................................... OK 13/01/2021
+form planicarga, mejoras en validaciones y F1 ...................................................... OK 13/01/2021
 form ayuda3, desarrollo del form ................................................................... OK 13/01/2021
 - enlace con planicarga para proveedores y camiones ................................................ ok 13/01/2021
 form notcredclts (notas de credito de cliente)
@@ -143,6 +143,10 @@ form repsoper,
 - agregar formato impresion de GR transportista, doble click en numero de gr ....................... ok 02/02/2021
 - arreglar el boton de exportacion ................................................................. ok 04/02/2021
 - agregar fechas inicio y fin en pestaña "servicio por cliente" .................................... ok 08/02/2021
+- agregar selección de origen o destino en reporte de guias ........................................ ok 08/02/2021
 form facelect, usuarios pueden anular doc.vtas hasta n días despues de emitido ..................... ok 01/02/2021
 form planicarga, ERROR al ingresar manualmente una GR .............................................. ok 08/02/2021
 form facelect, borrar los png del codigo QR despues de imprimir el ticket .......................... ok 08/02/2021
+form users, arreglar:
+- grilla ........................................................................................... ok 08/02/2021
+- asignacion de permisos ........................................................................... OK 08/02/2021

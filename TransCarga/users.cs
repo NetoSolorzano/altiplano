@@ -118,10 +118,8 @@ namespace TransCarga
             for(int i = 0; i < dtg.Columns.Count; i++)
             {
                 advancedDataGridView1.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-                //if (advancedDataGridView1.Columns[i].Name.ToString() == "pwd_user") advancedDataGridView1.Columns[i].Visible = false;
-                //if (advancedDataGridView1.Columns[i].Name.ToString() == "id") advancedDataGridView1.Columns[i].ReadOnly = true;
-                //if (advancedDataGridView1.Columns[i].Name.ToString() == "nom_user") advancedDataGridView1.Columns[i].ReadOnly = true;
             }
+            //id,nom_user,nombre,pwd_user,bloqueado,nivel,tipuser,local,NomNivel,NomTipo,NomLoc 
             // id del usuario
             advancedDataGridView1.Columns["id"].Visible = false;
             // nom_user
@@ -129,14 +127,12 @@ namespace TransCarga
             advancedDataGridView1.Columns["nom_user"].HeaderText = "USUARIO";    // titulo de la columna
             //advancedDataGridView1.Columns[1].Width = 70;                // ancho
             advancedDataGridView1.Columns["nom_user"].ReadOnly = true;           // lectura o no
-            //advancedDataGridView1.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
             // nombre del usuario
             advancedDataGridView1.Columns["nombre"].Visible = true;       
             advancedDataGridView1.Columns["nombre"].HeaderText = "MOMBRE";
             //advancedDataGridView1.Columns[2].Width = 150;
             advancedDataGridView1.Columns["nombre"].ReadOnly = false;          // las celdas de esta columna pueden cambiarse
             advancedDataGridView1.Columns["nombre"].Tag = "validaNO";          // las celdas de esta columna se NO se validan
-            //advancedDataGridView1.Columns[2].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
             // passw
             advancedDataGridView1.Columns["pwd_user"].Visible = false;
             // bloqueado
@@ -144,28 +140,27 @@ namespace TransCarga
             advancedDataGridView1.Columns["bloqueado"].HeaderText = "BLOQ";
             //advancedDataGridView1.Columns["bloqueado"].Width = 30;
             advancedDataGridView1.Columns["bloqueado"].ReadOnly = true;       // no dejo cambiar aca porque no lo puedo validar
-            //advancedDataGridView1.Columns["bloqueado"].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
             // nivel
-            advancedDataGridView1.Columns["nivel"].Visible = true;       
-            advancedDataGridView1.Columns["nivel"].HeaderText = "NIVEL";
-            //advancedDataGridView1.Columns["nivel"].Width = 30;
-            advancedDataGridView1.Columns["nivel"].ReadOnly = false;
-            advancedDataGridView1.Columns["nivel"].Tag = "validaSI";          // las celdas de esta columna SI se validan
-            //advancedDataGridView1.Columns["nivel"].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            advancedDataGridView1.Columns["nivel"].Visible = false;       
             // tipo de usuario  
             advancedDataGridView1.Columns["tipuser"].Visible = false;    
-            advancedDataGridView1.Columns["tipuser"].HeaderText = "TIPO";
-            //advancedDataGridView1.Columns[6].Width = 60;
-            advancedDataGridView1.Columns["tipuser"].ReadOnly = false;
-            advancedDataGridView1.Columns["tipuser"].Tag = "validaSI";
-            //advancedDataGridView1.Columns[6].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
             // local
-            advancedDataGridView1.Columns["local"].Visible = true;    
-            advancedDataGridView1.Columns["local"].HeaderText = "LOCAL";
+            advancedDataGridView1.Columns["local"].Visible = false;    
+            // NOMBRE nivel
+            advancedDataGridView1.Columns["NomNivel"].Visible = true;
+            advancedDataGridView1.Columns["NomNivel"].HeaderText = "NIVEL";
+            //advancedDataGridView1.Columns["NomNivel"].Width = 30;
+            advancedDataGridView1.Columns["NomNivel"].ReadOnly = true;
+            // NOMBRE TIPO DE USUARIO
+            advancedDataGridView1.Columns["NomTipo"].Visible = true;
+            advancedDataGridView1.Columns["NomTipo"].HeaderText = "TIPO";
+            advancedDataGridView1.Columns["NomTipo"].ReadOnly = true;
+            // NOMBRE LOCAL
+            advancedDataGridView1.Columns["NomLoc"].Visible = true;
+            advancedDataGridView1.Columns["NomLoc"].HeaderText = "LOCAL";
             //advancedDataGridView1.Columns[8].Width = 60;
-            advancedDataGridView1.Columns["local"].ReadOnly = false;
-            advancedDataGridView1.Columns["local"].Tag = "validaSI";
-            //advancedDataGridView1.Columns[8].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            advancedDataGridView1.Columns["NomLoc"].ReadOnly = true;
+            advancedDataGridView1.Columns["NomLoc"].Tag = "validaNO";
         }
         private void jalainfo()                 // obtiene datos de imagenes
         {
@@ -289,8 +284,12 @@ namespace TransCarga
             comboBox3.DisplayMember = "descrizionerid";
             comboBox3.ValueMember = "idcodice";
             // datos de usuarios
-            string datgri = "select id,nom_user,nombre,pwd_user,bloqueado,nivel,tipuser,local " +
-                "from usuarios";
+            string datgri = "select a.id,a.nom_user,a.nombre,a.pwd_user,a.bloqueado,a.nivel,a.tipuser,a.local," +
+                "b.descrizionerid as NomNivel,c.descrizionerid as NomTipo,d.descrizionerid as NomLoc " +
+                "from usuarios a " +
+                "left join desc_niv b on b.idcodice=a.nivel " +
+                "left join desc_tpu c on c.idcodice=a.tipuser " +
+                "left join desc_loc d on d.idcodice=a.local";
             MySqlCommand cdg = new MySqlCommand(datgri, conn);
             MySqlDataAdapter dag = new MySqlDataAdapter(cdg);
             dtg.Clear();
@@ -520,6 +519,9 @@ namespace TransCarga
                             nrow["bloqueado"] = checkBox1.Checked;
                             nrow["local"] = textBox6.Text;
                             nrow["tipuser"] = textBox4.Text;
+                            nrow["NomNivel"] = comboBox2.Text;
+                            nrow["NomTipo"] = comboBox1.Text;
+                            nrow["NomLoc"] = comboBox3.Text; 
                             dtg.Rows.Add(nrow);
                         }
                         catch (MySqlException ex)
@@ -599,6 +601,10 @@ namespace TransCarga
                                 dtg.Rows[int.Parse(tx_rind.Text)]["bloqueado"] = checkBox1.Checked;
                                 dtg.Rows[int.Parse(tx_rind.Text)]["local"] = textBox6.Text;
                                 //dtg.Rows[int.Parse(tx_rind.Text)]["ruc"] = textBox4.Text;
+                                dtg.Rows[int.Parse(tx_rind.Text)]["NomNivel"] = comboBox2.Text;
+                                dtg.Rows[int.Parse(tx_rind.Text)]["NomTipo"] = comboBox1.Text;
+                                dtg.Rows[int.Parse(tx_rind.Text)]["NomLoc"] = comboBox3.Text;
+
                             }
                             else
                             {
@@ -612,6 +618,9 @@ namespace TransCarga
                                         dtg.Rows[i]["bloqueado"] = checkBox1.Checked;
                                         dtg.Rows[i]["local"] = textBox6.Text;
                                         //dtg.Rows[i]["ruc"] = textBox4.Text;
+                                        dtg.Rows[i]["NomNivel"] = comboBox2.Text;
+                                        dtg.Rows[i]["NomTipo"] = comboBox1.Text;
+                                        dtg.Rows[i]["NomLoc"] = comboBox3.Text;
                                     }
                                 }
                             }
@@ -945,152 +954,6 @@ namespace TransCarga
             tx_idr_Leave(null, null);
         }
         #endregion botones;
-        // permisos para habilitar los botones de comando
-        /*private void permisos()
-        {
-            string consulta = "select formulario,nivel,coment,btn1,btn2,btn3,btn4,btn5,btn6 from setupform";
-            DataTable dt = new DataTable();
-            MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
-            conn.Open();
-            if (conn.State == ConnectionState.Open)
-            {
-                try
-                {
-                    MySqlDataAdapter da = new MySqlDataAdapter(consulta, conn);
-                    da.Fill(dt);
-                }
-                catch (MySqlException ex)
-                {
-                    MessageBox.Show(ex.Message, "Error de conexión a setupform", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    Application.Exit();
-                    return;
-                }
-            }
-            string bot1 = "N";
-            string bot2 = "N";
-            string bot3 = "N";
-            string bot4 = "N";
-            string bot5 = "N";
-            string bot6 = "S";
-            string com = "";
-            for (int i = 0; i < dt.Rows.Count; i++)
-            {
-                DataRow fil = dt.Rows[i];
-                if (fil[1].ToString() == "0")
-                { // usuarios de sistemas, acceso total a todo
-                    if (tx_tpu_flag.Text == "0")
-                    {
-                        bot1 = "S";
-                        bot2 = "S";
-                        bot3 = "S";
-                        bot4 = "S";
-                        bot5 = "S";
-                    }
-                }
-                if (fil[1].ToString() == "1")
-                {   // usuario directivo, acceso de usuario avanzado
-                    if (tx_tpu_flag.Text == "0")
-                    {
-                        bot1 = "S";
-                        bot2 = "S";
-                        bot3 = "S";
-                        bot4 = "S";
-                        bot5 = "S";
-                    }
-                    if (tx_tpu_flag.Text == "1" && tx_nvu_flag.Text == "1")
-                    {
-                        bot1 = "S";
-                        bot2 = "S";
-                        bot3 = "S";
-                        bot4 = "S";
-                        bot5 = "S";
-                    }
-                    if (tx_tpu_flag.Text == "1" && tx_nvu_flag.Text == "2")
-                    {
-                        bot1 = "S";
-                        bot2 = "S";
-                        bot3 = "N"; // ANULA
-                        bot4 = "S";
-                        bot5 = "S";
-                    }
-                }
-                if (fil[1].ToString() == "2")
-                {   // usuario secretarias, usuario normal
-                    if (tx_tpu_flag.Text == "2" && tx_nvu_flag.Text == "2")
-                    {
-                        bot1 = "S";
-                        bot2 = "S";
-                        bot3 = "N";
-                        bot4 = "S";
-                        bot5 = "S";
-                    }
-                    if (tx_tpu_flag.Text == "2" && tx_nvu_flag.Text == "3")
-                    {
-                        bot1 = "N";
-                        bot2 = "N";
-                        bot3 = "N";
-                        bot4 = "S";
-                        bot5 = "S";
-                    }
-                }
-                com = fil[2].ToString();    // comentario - descripcion del form
-
-                if (Tx_modo.Text == "NUEVO")
-                {
-                    consulta = "insert into permisos (" +
-                        "formulario,btn1,btn2,btn3,btn4,btn5,btn6,usuario,coment) values (" +
-                        "@for,@bt1,@bt2,@bt3,@bt4,@bt5,@bt6,@use,@com)";
-                    MySqlCommand micon = new MySqlCommand(consulta, conn);
-                    micon.Parameters.AddWithValue("@for", fil[0].ToString());
-                    micon.Parameters.AddWithValue("@bt1", bot1);
-                    micon.Parameters.AddWithValue("@bt2", bot2);
-                    micon.Parameters.AddWithValue("@bt3", bot3);
-                    micon.Parameters.AddWithValue("@bt4", bot4);
-                    micon.Parameters.AddWithValue("@bt5", bot5);
-                    micon.Parameters.AddWithValue("@bt6", bot6);
-                    micon.Parameters.AddWithValue("@use", textBox1.Text);
-                    micon.Parameters.AddWithValue("@com", com);
-                    try
-                    {
-                        micon.ExecuteNonQuery();
-                    }
-                    catch (MySqlException ex)
-                    {
-                        MessageBox.Show(ex.Message, "Error en insertar permisos", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        Application.Exit();
-                        return;
-                    }
-                }
-                //
-                if (Tx_modo.Text == "EDITAR")
-                {
-                    consulta = "update permisos set btn1=@bt1,btn2=@bt2,btn3=@bt3,btn4=@bt4,btn5=@bt5,btn6=@bt6 " +
-                        "where usuario=@use and formulario=@for";
-                    MySqlCommand micon = new MySqlCommand(consulta, conn);
-                    micon.Parameters.AddWithValue("@bt1", bot1);
-                    micon.Parameters.AddWithValue("@bt2", bot2);
-                    micon.Parameters.AddWithValue("@bt3", bot3);
-                    micon.Parameters.AddWithValue("@bt4", bot4);
-                    micon.Parameters.AddWithValue("@bt5", bot5);
-                    micon.Parameters.AddWithValue("@bt6", bot6);
-                    micon.Parameters.AddWithValue("@use", textBox1.Text);
-                    micon.Parameters.AddWithValue("@for", fil[0].ToString());
-                    try
-                    {
-                        micon.ExecuteNonQuery();
-                    }
-                    catch (MySqlException ex)
-                    {
-                        MessageBox.Show(ex.Message, "Error en actualizar permisos", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        Application.Exit();
-                        return;
-                    }
-                }
-            }
-            conn.Close();
-        }
-        */
-        // configurador de permisos
         private bool confper(string tarea, string user)
         {
             bool retorna = false;
@@ -1117,10 +980,10 @@ namespace TransCarga
             {
                 case "nuevo":
                     string pedaso = "";
-                    string tuadm = ",'S','S','S','S','S','S','S','S',";   // administrador, todo de todo
-                    string tusup = ",'S','S','S','S','S','S','S','S',";   // superusuario, todo menos config del sist.
-                    string tuest = ",'S','S','N','S','S','S','S','S',";   // estandar, todo menos anular y panel de control
-                    string tusmi = ",'N','N','N','S','S','S','S','N',";   // solo mira
+                    string tuadm = ",'S','S','S','S','S','S','N','N',";   // administrador, todo de todo
+                    string tusup = ",'S','S','S','S','S','S','N','N',";   // superusuario, todo menos config del sist.
+                    string tuest = ",'S','S','N','S','S','S','N','N',";   // estandar, todo menos anular y panel de control
+                    string tusmi = ",'N','N','N','S','S','S','N','N',";   // solo mira
                     if (textBox5.Text == cn_adm) pedaso = tuadm;       // administrador del sistema 
                     if (textBox5.Text == cn_sup) pedaso = tusup;       // super usuario 
                     if (textBox5.Text == cn_est) pedaso = tuest;       // usuario estandar
@@ -1140,10 +1003,10 @@ namespace TransCarga
                     break;
                 case "edita":
                     string parte = "";
-                    tuadm = "btn1='S',btn2='S',btn3='S',btn4='S',btn5='S',btn6='S',btn7='S',btn8='S' ";   // administrador, todo de todo
-                    tusup = "btn1='S',btn2='S',btn3='S',btn4='S',btn5='S',btn6='S',btn7='S',btn8='S' ";   // superusuario, todo menos config del sist.
-                    tuest = "btn1='S',btn2='S',btn3='N',btn4='S',btn5='S',btn6='S',btn7='S',btn8='S' ";   // estandar, todo menos anular y panel de control
-                    tusmi = "btn1='N',btn2='N',btn3='N',btn4='S',btn5='S',btn6='S',btn7='S',btn8='N' ";   // solo mira
+                    tuadm = "btn1='S',btn2='S',btn3='S',btn4='S',btn5='S',btn6='S',btn7='N',btn8='N' ";   // administrador, todo de todo
+                    tusup = "btn1='S',btn2='S',btn3='S',btn4='S',btn5='S',btn6='S',btn7='N',btn8='N' ";   // superusuario, todo menos config del sist.
+                    tuest = "btn1='S',btn2='S',btn3='N',btn4='S',btn5='S',btn6='S',btn7='N',btn8='N' ";   // estandar, todo menos anular y panel de control
+                    tusmi = "btn1='N',btn2='N',btn3='N',btn4='S',btn5='S',btn6='S',btn7='N',btn8='N' ";   // solo mira
                     if (textBox5.Text == cn_adm) parte = tuadm;       // administrador del sistema 
                     if (textBox5.Text == cn_sup) parte = tusup;       // superusuario
                     if (textBox5.Text == cn_est) parte = tuest;       // estandar
@@ -1156,10 +1019,10 @@ namespace TransCarga
                     break;
                 case "reini":
                     string parter = "";
-                    string rtuadm = ",'S','S','S','S','S','S','S','S',";   // administrador, todo de todo
-                    string rtusup = ",'S','S','S','S','S','S','S','S',";   // superusuario, todo menos config del sist.
-                    string rtuest = ",'S','S','N','S','S','S','S','S',";   // estandar, todo menos anular y panel de control
-                    string rtusmi = ",'N','N','N','S','S','S','S','N',";   // solo mira
+                    string rtuadm = ",'S','S','S','S','S','S','N','N',";   // administrador, todo de todo
+                    string rtusup = ",'S','S','S','S','S','S','N','N',";   // superusuario, todo menos config del sist.
+                    string rtuest = ",'S','S','N','S','S','S','N','N',";   // estandar, todo menos anular y panel de control
+                    string rtusmi = ",'N','N','N','S','S','S','N','N',";   // solo mira
                     if (textBox5.Text == cn_adm) parter = rtuadm;       // administrador del sistema 
                     if (textBox5.Text == cn_sup) parter = rtusup;       // superusuario
                     if (textBox5.Text == cn_est) parter = rtuest;       // estandar
