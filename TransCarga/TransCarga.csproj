@@ -317,6 +317,12 @@
     <Compile Include="vehiculos.designer.cs">
       <DependentUpon>vehiculos.cs</DependentUpon>
     </Compile>
+    <Compile Include="vplancar.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="vplancar.designer.cs">
+      <DependentUpon>vplancar.cs</DependentUpon>
+    </Compile>
     <Compile Include="vtipcam.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -440,6 +446,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="vehiculos.resx">
       <DependentUpon>vehiculos.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="vplancar.resx">
+      <DependentUpon>vplancar.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="vtipcam.resx">
       <DependentUpon>vtipcam.cs</DependentUpon>

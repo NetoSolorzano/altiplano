@@ -2693,13 +2693,22 @@ namespace TransCarga
                                 da.Fill(data);
                                 if (data.Rows.Count > 0)
                                 {
+                                    int nfila = 0;
                                     if (data.Rows.Count > 1)
                                     {
-                                        MessageBox.Show("Tiene más de una planilla abierta" + Environment.NewLine +
+                                        /*  MessageBox.Show("Tiene más de una planilla abierta" + Environment.NewLine +
                                             "para el destino seleccionado" + Environment.NewLine +
                                             "El sistema usará la primera planilla", " Atención ", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                        */
+                                        vplancar manif = new vplancar(data);
+                                        var result = manif.ShowDialog();
+                                        if (result == DialogResult.Cancel)
+                                        {
+                                            nfila = manif.ReturnValue1;
+                                            // aca seleccionamos la fila que sea de la placa seleccionada
+                                        }
                                     }
-                                    DataRow row = data.Rows[0];
+                                    DataRow row = data.Rows[nfila];
                                     tx_idplan.Text = row["id"].ToString();
                                     tx_pla_fech.Text = row["fechope"].ToString().Substring(0, 10);
                                     tx_pla_plani.Text = row["serplacar"].ToString() + row["numplacar"].ToString();
@@ -2736,6 +2745,14 @@ namespace TransCarga
                     }
                     cmb_docRem.Focus();
                     cmb_docRem.DroppedDown = true;
+                }
+                //
+                if (lib.valientabla("cabguiai", "concat(sergui,numgui)", tx_serie.Text + tx_numero.Text) == "1")
+                {
+                    MessageBox.Show("El número de Guía ya Existe!", " Atención ", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    tx_numero.Text = "";
+                    tx_numero.Focus();
+                    return;
                 }
             }
             if (tx_dat_locdes.Text.Trim() != "")
