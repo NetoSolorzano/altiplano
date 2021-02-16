@@ -62,6 +62,7 @@
             this.tx_coment = new System.Windows.Forms.TextBox();
             this.groupBox19 = new System.Windows.Forms.GroupBox();
             this.groupBox20 = new System.Windows.Forms.GroupBox();
+            this.tx_ruc = new TransCarga.NumericTextBox();
             this.tx_propiet = new System.Windows.Forms.TextBox();
             this.label11 = new System.Windows.Forms.Label();
             this.groupBox21 = new System.Windows.Forms.GroupBox();
@@ -105,7 +106,10 @@
             this.tx_modelo = new System.Windows.Forms.TextBox();
             this.tx_marca = new System.Windows.Forms.TextBox();
             this.button1 = new System.Windows.Forms.Button();
-            this.tx_ruc = new TransCarga.NumericTextBox();
+            this.lin_trackAsoc = new System.Windows.Forms.GroupBox();
+            this.groupBox24 = new System.Windows.Forms.GroupBox();
+            this.lb_trackAsoc = new System.Windows.Forms.Label();
+            this.tx_trackAsoc = new System.Windows.Forms.TextBox();
             this.toolStrip1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabgrilla.SuspendLayout();
@@ -122,6 +126,7 @@
             this.groupBox9.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox1.SuspendLayout();
+            this.lin_trackAsoc.SuspendLayout();
             this.SuspendLayout();
             // 
             // toolStrip1
@@ -397,6 +402,9 @@
             // tabreg
             // 
             this.tabreg.BackColor = System.Drawing.Color.LightGray;
+            this.tabreg.Controls.Add(this.lin_trackAsoc);
+            this.tabreg.Controls.Add(this.lb_trackAsoc);
+            this.tabreg.Controls.Add(this.tx_trackAsoc);
             this.tabreg.Controls.Add(this.label4);
             this.tabreg.Controls.Add(this.groupBox5);
             this.tabreg.Controls.Add(this.tx_coment);
@@ -442,6 +450,7 @@
             this.tabreg.Size = new System.Drawing.Size(654, 343);
             this.tabreg.TabIndex = 1;
             this.tabreg.Text = "Registro";
+            this.tabreg.Click += new System.EventHandler(this.tabreg_Click);
             this.tabreg.Enter += new System.EventHandler(this.tabreg_Enter);
             // 
             // label4
@@ -500,6 +509,15 @@
             this.groupBox20.Size = new System.Drawing.Size(164, 1);
             this.groupBox20.TabIndex = 113;
             this.groupBox20.TabStop = false;
+            // 
+            // tx_ruc
+            // 
+            this.tx_ruc.AllowSpace = false;
+            this.tx_ruc.Location = new System.Drawing.Point(168, 56);
+            this.tx_ruc.Name = "tx_ruc";
+            this.tx_ruc.Size = new System.Drawing.Size(93, 20);
+            this.tx_ruc.TabIndex = 2;
+            this.tx_ruc.Leave += new System.EventHandler(this.tx_ruc_Leave);
             // 
             // tx_propiet
             // 
@@ -856,9 +874,9 @@
             // 
             // tx_tipo
             // 
-            this.tx_tipo.Location = new System.Drawing.Point(282, 85);
+            this.tx_tipo.Location = new System.Drawing.Point(23, 84);
             this.tx_tipo.Name = "tx_tipo";
-            this.tx_tipo.Size = new System.Drawing.Size(50, 20);
+            this.tx_tipo.Size = new System.Drawing.Size(43, 20);
             this.tx_tipo.TabIndex = 192;
             this.tx_tipo.Visible = false;
             // 
@@ -919,14 +937,49 @@
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
-            // tx_ruc
+            // lin_trackAsoc
             // 
-            this.tx_ruc.AllowSpace = false;
-            this.tx_ruc.Location = new System.Drawing.Point(168, 56);
-            this.tx_ruc.Name = "tx_ruc";
-            this.tx_ruc.Size = new System.Drawing.Size(93, 20);
-            this.tx_ruc.TabIndex = 2;
-            this.tx_ruc.Leave += new System.EventHandler(this.tx_ruc_Leave);
+            this.lin_trackAsoc.BackColor = System.Drawing.Color.White;
+            this.lin_trackAsoc.Controls.Add(this.groupBox24);
+            this.lin_trackAsoc.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.lin_trackAsoc.Location = new System.Drawing.Point(280, 104);
+            this.lin_trackAsoc.Name = "lin_trackAsoc";
+            this.lin_trackAsoc.Size = new System.Drawing.Size(185, 1);
+            this.lin_trackAsoc.TabIndex = 219;
+            this.lin_trackAsoc.TabStop = false;
+            this.lin_trackAsoc.Visible = false;
+            // 
+            // groupBox24
+            // 
+            this.groupBox24.Location = new System.Drawing.Point(0, -26);
+            this.groupBox24.Name = "groupBox24";
+            this.groupBox24.Size = new System.Drawing.Size(164, 1);
+            this.groupBox24.TabIndex = 113;
+            this.groupBox24.TabStop = false;
+            // 
+            // lb_trackAsoc
+            // 
+            this.lb_trackAsoc.AutoSize = true;
+            this.lb_trackAsoc.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.lb_trackAsoc.Location = new System.Drawing.Point(280, 89);
+            this.lb_trackAsoc.Name = "lb_trackAsoc";
+            this.lb_trackAsoc.Size = new System.Drawing.Size(90, 13);
+            this.lb_trackAsoc.TabIndex = 220;
+            this.lb_trackAsoc.Text = "Trackto asociado";
+            this.lb_trackAsoc.Visible = false;
+            // 
+            // tx_trackAsoc
+            // 
+            this.tx_trackAsoc.BackColor = System.Drawing.SystemColors.Window;
+            this.tx_trackAsoc.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_trackAsoc.Location = new System.Drawing.Point(372, 87);
+            this.tx_trackAsoc.MaxLength = 10;
+            this.tx_trackAsoc.Name = "tx_trackAsoc";
+            this.tx_trackAsoc.Size = new System.Drawing.Size(93, 18);
+            this.tx_trackAsoc.TabIndex = 218;
+            this.tx_trackAsoc.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.tx_trackAsoc.Visible = false;
+            this.tx_trackAsoc.Leave += new System.EventHandler(this.tx_trackAsoc_Leave);
             // 
             // vehiculos
             // 
@@ -966,6 +1019,7 @@
             this.groupBox9.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
+            this.lin_trackAsoc.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -1048,5 +1102,9 @@
         private System.Windows.Forms.GroupBox groupBox5;
         private System.Windows.Forms.GroupBox groupBox6;
         private System.Windows.Forms.TextBox tx_coment;
+        private System.Windows.Forms.GroupBox lin_trackAsoc;
+        private System.Windows.Forms.GroupBox groupBox24;
+        private System.Windows.Forms.Label lb_trackAsoc;
+        private System.Windows.Forms.TextBox tx_trackAsoc;
     }
 }

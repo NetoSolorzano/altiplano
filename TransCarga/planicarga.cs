@@ -773,7 +773,7 @@ namespace TransCarga
         }
         private string[] ValPlaCarr(string pc,string codigo)    // pc=P ó C, codigo=placa de trompa o carreta
         {
-            string[] retorna = { "", "" };      // cofig.vehicular, autorizacion
+            string[] retorna = { "", "", "" };      // cofig.vehicular, autorizacion
             using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
             {
                 conn.Open();
@@ -789,7 +789,7 @@ namespace TransCarga
                     parte1 = "tipo = @tipo";    // variable codigo carreta
                 }
 
-                string consulta = "select confve,autor1 from vehiculos where " + parte0 + " and " + parte1;
+                string consulta = "select confve,autor1,placAsoc from vehiculos where " + parte0 + " and " + parte1;
                 using (MySqlCommand micon = new MySqlCommand(consulta,conn))
                 {
                     micon.Parameters.AddWithValue("@codigo", codigo);
@@ -799,6 +799,7 @@ namespace TransCarga
                     {
                         retorna[0] = dr.GetString(0);
                         retorna[1] = dr.GetString(1);
+                        retorna[2] = dr.GetString(2);
                     }
                     dr.Dispose();
                 }
@@ -901,10 +902,16 @@ namespace TransCarga
         private void escribe()
         {
             lp.escribe(this);
-            tx_pla_propiet.ReadOnly = true;
-            tx_car_3ro_nombre.ReadOnly = true;
+            tx_pla_marca.ReadOnly = true;
+            tx_pla_modelo.ReadOnly = true;
             tx_pla_confv.ReadOnly = true;
             tx_pla_autor.ReadOnly = true;
+            tx_pla_propiet.ReadOnly = true;
+            tx_car_3ro_nombre.ReadOnly = true;
+            tx_carret_marca.ReadOnly = true;
+            tx_carret_modelo.ReadOnly = true;
+            tx_carret_conf.ReadOnly = true;
+            tx_carret_autoriz.ReadOnly = true;
         }
         private void limpiar()
         {
@@ -1627,6 +1634,11 @@ namespace TransCarga
                 {
                     tx_pla_confv.Text = datos[0];
                     tx_pla_autor.Text = datos[1];
+                    tx_pla_carret.Text = datos[2];
+                    if (tx_pla_carret.Text.Trim() != "")
+                    {
+                        carreta_Leave(null,null);
+                    }
                 }
             }
         }
@@ -1646,7 +1658,8 @@ namespace TransCarga
                 }
                 else
                 {
-                    tx_pla_confv.Text = tx_pla_confv.Text.Trim()  + " " + datos[0].Trim();
+                    //tx_pla_confv.Text = tx_pla_confv.Text.Trim()  + " " + datos[0].Trim();
+                    tx_carret_conf.Text = datos[0].Trim();
                     //tx_pla_autor.Text = datos[1];
                 }
             }
