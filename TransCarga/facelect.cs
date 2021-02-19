@@ -1079,13 +1079,19 @@ namespace TransCarga
             {
                 if (rb_si.Checked == true)
                 {
-                    _forpa = "Contado";
-                    _valcr = "";
+                    if (Convert.ToDateTime(fshoy) >= Convert.ToDateTime("2021-04-01"))  // forma de pago, campos para usarse a partir del 01/04/2021 según resolucion sunat
+                    {
+                        _forpa = "Contado";
+                        _valcr = "";
+                    }
                 }
                 if (rb_no.Checked == true)
                 {
-                    _forpa = "Credito";
-                    _valcr = tx_flete.Text; //                     MessageBox.Show(DateTime.Parse(tx_fechope.Text).AddDays(double.Parse(tx_dat_dpla.Text)).ToString());
+                    if (Convert.ToDateTime(fshoy) >= Convert.ToDateTime("2021-04-01"))  // forma de pago, campos para usarse a partir del 01/04/2021 según resolucion sunat
+                    {
+                        _forpa = "Credito";
+                        _valcr = tx_flete.Text;
+                    }
                     string fansi = tx_fechope.Text.Substring(6, 4) + "-" + tx_fechope.Text.Substring(3, 2) + "-" + tx_fechope.Text.Substring(0, 2);
                     _fechc = DateTime.Parse(fansi).AddDays(double.Parse(tx_dat_dpla.Text)).Date.ToString("yyyy-MM-dd");        // fecha de emision + dias plazo credito
                 }

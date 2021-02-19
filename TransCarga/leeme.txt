@@ -136,6 +136,7 @@ form ayuda3, desarrollo del form ...............................................
 form notcredclts (notas de credito de cliente)
 - desarrollo del form .............................................................................. ok 20/01/2021
 form facelect, desarrollo opcion fact cargas unicas ................................................ ok 30/01/2021
+form facelect, adecuaciones para Carrion, forma de pago se habilita desde el 01/04/2021 ............ ok 19/02/2021
 ************** adecuaciones ALTIPLANO ******************
 form planicarga, agregar campo de doc.venta de la guia, va al detalle de la planilla ............... ok 01/02/2021
 form repsoper, 
