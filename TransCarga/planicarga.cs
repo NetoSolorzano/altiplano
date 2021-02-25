@@ -2114,7 +2114,7 @@ namespace TransCarga
                     rowdetalle.serguia = row.Cells["serguia"].Value.ToString();
                     rowdetalle.totcant = Int16.Parse(row.Cells["totcant"].Value.ToString());
                     rowdetalle.totflete = Double.Parse(row.Cells["totflet"].Value.ToString());
-                    rowdetalle.totpeso = Double.Parse(row.Cells["totpeso"].Value.ToString());
+                    rowdetalle.totpeso = int.Parse(row.Cells["totpeso"].Value.ToString());
                     rowdetalle.nomdest = row.Cells[13].Value.ToString();
                     rowdetalle.dirdest = row.Cells[14].Value.ToString();
                     rowdetalle.teldest = row.Cells[15].Value.ToString();

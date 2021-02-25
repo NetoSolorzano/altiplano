@@ -235,7 +235,7 @@ namespace TransCarga
                     dgv_facts.DefaultCellStyle.Font = tiplg;
                     dgv_facts.RowTemplate.Height = 15;
                     dgv_facts.AllowUserToAddRows = false;
-                    dgv_facts.Width = Parent.Width - 10; // 1015;
+                    dgv_facts.Width = Parent.Width - 70; // 1015;
                     if (dgv_facts.DataSource == null) dgv_facts.ColumnCount = 11;
                     if (dgv_facts.Rows.Count > 0)
                     {
@@ -262,7 +262,7 @@ namespace TransCarga
                     dgv_notcre.DefaultCellStyle.Font = tiplg;
                     dgv_notcre.RowTemplate.Height = 15;
                     dgv_notcre.AllowUserToAddRows = false;
-                    dgv_facts.Width = Parent.Width - 10; // 1015;
+                    dgv_facts.Width = Parent.Width - 70; // 1015;
                     if (dgv_notcre.DataSource == null) dgv_notcre.ColumnCount = 11;
                     if (dgv_notcre.Rows.Count > 0)
                     {
@@ -280,7 +280,7 @@ namespace TransCarga
                             dgv_notcre.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
                             dgv_notcre.Columns[i].Width = a;
                         }
-                        if (b < dgv_notcre.Width) dgv_notcre.Width = b;    // b + 60 ;
+                        if (b < dgv_notcre.Width) dgv_notcre.Width = b - 20;    // b + 60 ;
                         dgv_notcre.ReadOnly = true;
                     }
                     break;
@@ -381,6 +381,11 @@ namespace TransCarga
             }
 
         }
+        private void suma_grilla(string dgv)
+        {
+
+        }
+
         #region combos
         private void cmb_sede_plan_SelectionChangeCommitted(object sender, EventArgs e)
         {

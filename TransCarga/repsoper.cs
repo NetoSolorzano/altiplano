@@ -284,7 +284,7 @@ namespace TransCarga
                             dgv_vtas.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
                             dgv_vtas.Columns[i].Width = a;
                         }
-                        if (b < dgv_vtas.Width) dgv_vtas.Width = b + 60;
+                        if (b < dgv_vtas.Width) dgv_vtas.Width = b - 20;
                         dgv_vtas.ReadOnly = true;
                     }
                     break;
@@ -293,7 +293,7 @@ namespace TransCarga
                     dgv_guias.DefaultCellStyle.Font = tiplg;
                     dgv_guias.RowTemplate.Height = 15;
                     dgv_guias.AllowUserToAddRows = false;
-                    dgv_guias.Width = Parent.Width - 10; // 1015;
+                    dgv_guias.Width = Parent.Width - 50; // 1015;
                     if (dgv_guias.DataSource == null) dgv_guias.ColumnCount = 11;
                     if (dgv_guias.Rows.Count > 0)
                     {
@@ -311,7 +311,7 @@ namespace TransCarga
                             dgv_guias.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
                             dgv_guias.Columns[i].Width = a;
                         }
-                        if (b < dgv_guias.Width) dgv_guias.Width = b + 60;
+                        if (b < dgv_guias.Width) dgv_guias.Width = b - 20;
                         dgv_guias.ReadOnly = true;
                     }
                     break;
@@ -338,7 +338,7 @@ namespace TransCarga
                             dgv_plan.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
                             dgv_plan.Columns[i].Width = a;
                         }
-                        if (b < dgv_plan.Width) dgv_plan.Width = b + 60;
+                        if (b < dgv_plan.Width) dgv_plan.Width = b - 20;
                         dgv_plan.ReadOnly = true;
                     }
                     break;
@@ -365,7 +365,7 @@ namespace TransCarga
                             dgv_reval.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
                             dgv_reval.Columns[i].Width = a;
                         }
-                        if (b < dgv_reval.Width) dgv_reval.Width = b + 60;
+                        if (b < dgv_reval.Width) dgv_reval.Width = b - 20;
                         dgv_reval.ReadOnly = true;
                     }
                     break;

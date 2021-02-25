@@ -160,3 +160,4 @@ form guiati, agregar seleccion de placa cuando hay + de 1 planilla para el desti
 form vplancar, desarrollar el form que será llamado por guiati ..................................... ok 12/02/2021
 form vehiculos, agregar campo para asociar placa de carreta con trackto ............................ ok 16/02/2021
 form planicarga, jalar el dato de la carreta asociada a la placa del trackto ....................... ok 16/02/2021
+form facelect, no esta anulando dentro de la misma fecha ... corregir .............................. ok 22/02/2021

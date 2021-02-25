@@ -1861,6 +1861,36 @@ namespace TransCarga
                         MessageBox.Show("No se puede anular por estar fuera de plazo","Usuario no permito",MessageBoxButtons.OK,MessageBoxIcon.Asterisk);
                     }
                 }
+                else
+                {
+                    if (tx_idr.Text.Trim() != "")
+                    {
+                        var aa = MessageBox.Show("Confirma que desea ANULAR el documento?", "Confirme por favor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                        if (aa == DialogResult.Yes)
+                        {
+                            int cta = anula();      // cantidad de doc.vtas anuladas en la fecha
+
+                            if (factElec("Horizont", "txt", "baja", cta) == true)
+                            {
+                                string resulta = lib.ult_mov(nomform, nomtab, asd);
+                                if (resulta != "OK")
+                                {
+                                    MessageBox.Show(resulta, "Error en actualización de seguimiento", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            tx_serie.Focus();
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("El documento ya debe existir para anular", "No esta el Id del registro", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+                        return;
+                    }
+                }
             }
             if (iserror == "no")
             {

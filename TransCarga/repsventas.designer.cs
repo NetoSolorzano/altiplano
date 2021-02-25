@@ -109,6 +109,12 @@
             this.dtp_mes = new System.Windows.Forms.DateTimePicker();
             this.dtp_yea = new System.Windows.Forms.DateTimePicker();
             this.dgv_regvtas = new ADGV.AdvancedDataGridView();
+            this.groupBox7 = new System.Windows.Forms.GroupBox();
+            this.groupBox8 = new System.Windows.Forms.GroupBox();
+            this.tx_tfi_f = new TransCarga.NumericTextBox();
+            this.label28 = new System.Windows.Forms.Label();
+            this.tx_totcant = new TransCarga.NumericTextBox();
+            this.label12 = new System.Windows.Forms.Label();
             this.toolStrip1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabfacts.SuspendLayout();
@@ -126,6 +132,7 @@
             this.tabregvtas.SuspendLayout();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgv_regvtas)).BeginInit();
+            this.groupBox7.SuspendLayout();
             this.SuspendLayout();
             // 
             // toolStrip1
@@ -398,6 +405,11 @@
             // 
             // tabfacts
             // 
+            this.tabfacts.Controls.Add(this.groupBox7);
+            this.tabfacts.Controls.Add(this.tx_tfi_f);
+            this.tabfacts.Controls.Add(this.label28);
+            this.tabfacts.Controls.Add(this.tx_totcant);
+            this.tabfacts.Controls.Add(this.label12);
             this.tabfacts.Controls.Add(this.chk_excl_guias);
             this.tabfacts.Controls.Add(this.groupBox3);
             this.tabfacts.Controls.Add(this.tx_estad_guias);
@@ -520,9 +532,9 @@
             this.dgv_facts.AutoGenerateContextFilters = true;
             this.dgv_facts.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgv_facts.DateWithTime = false;
-            this.dgv_facts.Location = new System.Drawing.Point(6, 52);
+            this.dgv_facts.Location = new System.Drawing.Point(3, 52);
             this.dgv_facts.Name = "dgv_facts";
-            this.dgv_facts.Size = new System.Drawing.Size(1015, 322);
+            this.dgv_facts.Size = new System.Drawing.Size(1020, 295);
             this.dgv_facts.TabIndex = 385;
             this.dgv_facts.TimeFilter = false;
             this.dgv_facts.SortStringChanged += new System.EventHandler(this.advancedDataGridView1_SortStringChanged);
@@ -992,6 +1004,68 @@
             this.dgv_regvtas.SortStringChanged += new System.EventHandler(this.advancedDataGridView1_SortStringChanged);
             this.dgv_regvtas.FilterStringChanged += new System.EventHandler(this.advancedDataGridView1_FilterStringChanged);
             // 
+            // groupBox7
+            // 
+            this.groupBox7.BackColor = System.Drawing.Color.DimGray;
+            this.groupBox7.Controls.Add(this.groupBox8);
+            this.groupBox7.Location = new System.Drawing.Point(260, 371);
+            this.groupBox7.Name = "groupBox7";
+            this.groupBox7.Size = new System.Drawing.Size(394, 1);
+            this.groupBox7.TabIndex = 404;
+            this.groupBox7.TabStop = false;
+            // 
+            // groupBox8
+            // 
+            this.groupBox8.Location = new System.Drawing.Point(0, -26);
+            this.groupBox8.Name = "groupBox8";
+            this.groupBox8.Size = new System.Drawing.Size(164, 1);
+            this.groupBox8.TabIndex = 113;
+            this.groupBox8.TabStop = false;
+            // 
+            // tx_tfi_f
+            // 
+            this.tx_tfi_f.AllowSpace = false;
+            this.tx_tfi_f.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_tfi_f.Location = new System.Drawing.Point(336, 352);
+            this.tx_tfi_f.Name = "tx_tfi_f";
+            this.tx_tfi_f.ReadOnly = true;
+            this.tx_tfi_f.Size = new System.Drawing.Size(41, 20);
+            this.tx_tfi_f.TabIndex = 403;
+            this.tx_tfi_f.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // label28
+            // 
+            this.label28.AutoSize = true;
+            this.label28.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.label28.Location = new System.Drawing.Point(275, 356);
+            this.label28.Name = "label28";
+            this.label28.Size = new System.Drawing.Size(55, 13);
+            this.label28.TabIndex = 402;
+            this.label28.Text = "Total Filas";
+            this.label28.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // tx_totcant
+            // 
+            this.tx_totcant.AllowSpace = false;
+            this.tx_totcant.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_totcant.Location = new System.Drawing.Point(596, 352);
+            this.tx_totcant.Name = "tx_totcant";
+            this.tx_totcant.ReadOnly = true;
+            this.tx_totcant.Size = new System.Drawing.Size(41, 20);
+            this.tx_totcant.TabIndex = 398;
+            this.tx_totcant.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.label12.Location = new System.Drawing.Point(531, 356);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(61, 13);
+            this.label12.TabIndex = 400;
+            this.label12.Text = "Total Valor ";
+            this.label12.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
             // repsventas
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1026,6 +1100,7 @@
             this.tabregvtas.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgv_regvtas)).EndInit();
+            this.groupBox7.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -1113,5 +1188,11 @@
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.DateTimePicker dtp_mes;
         private System.Windows.Forms.DateTimePicker dtp_yea;
+        private System.Windows.Forms.GroupBox groupBox7;
+        private System.Windows.Forms.GroupBox groupBox8;
+        private NumericTextBox tx_tfi_f;
+        private System.Windows.Forms.Label label28;
+        private NumericTextBox tx_totcant;
+        private System.Windows.Forms.Label label12;
     }
 }
