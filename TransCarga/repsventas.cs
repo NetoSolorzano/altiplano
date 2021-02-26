@@ -256,6 +256,7 @@ namespace TransCarga
                         if (b < dgv_facts.Width) dgv_facts.Width = b - 20;  // b + 60;
                         dgv_facts.ReadOnly = true;
                     }
+                    suma_grilla("dgv_facts");
                     break;
                 case "dgv_plan":
                     dgv_notcre.Font = tiplg;
@@ -383,7 +384,29 @@ namespace TransCarga
         }
         private void suma_grilla(string dgv)
         {
-
+            DataRow[] row = dtestad.Select("idcodice='" + codAnul + "'");   // dtestad
+            string etiq_anulado = row[0].ItemArray[0].ToString();
+            switch (dgv)
+            {
+                case "dgv_facts":
+                    int cr = 0; // dgv_facts.Rows.Count;
+                    double tvv = 0;
+                    for (int i=0; i < dgv_facts.Rows.Count; i++)
+                    {
+                        if (dgv_facts.Rows[i].Cells["ESTADO"].Value.ToString() != etiq_anulado)
+                        {
+                            tvv = tvv + Convert.ToDouble(dgv_facts.Rows[i].Cells["TOTAL"].Value);
+                            cr = cr + 1;
+                        }
+                        else
+                        {
+                            dgv_facts.Rows[i].DefaultCellStyle.BackColor = Color.Red;
+                        }
+                    }
+                    tx_tfi_f.Text = cr.ToString();
+                    tx_totval.Text = tvv.ToString("#0.00");
+                    break;
+            }
         }
 
         #region combos
@@ -723,6 +746,7 @@ namespace TransCarga
             {
                 DataTable dtg = (DataTable)dgv_facts.DataSource;
                 dtg.DefaultView.RowFilter = dgv_facts.FilterString;
+                suma_grilla("dgv_facts");
             }
             if (tabControl1.SelectedTab.Name == "tabnotas")
             {
