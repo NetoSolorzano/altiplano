@@ -314,6 +314,7 @@ namespace TransCarga
                         if (b < dgv_guias.Width) dgv_guias.Width = b - 20;
                         dgv_guias.ReadOnly = true;
                     }
+                    sumaGrilla("dgv_guias");
                     break;
                 case "dgv_plan":
                     dgv_plan.Font = tiplg;
@@ -341,6 +342,7 @@ namespace TransCarga
                         if (b < dgv_plan.Width) dgv_plan.Width = b - 20;
                         dgv_plan.ReadOnly = true;
                     }
+                    sumaGrilla("dgv_plan");
                     break;
                 case "dgv_reval":
                     dgv_reval.Font = tiplg;
@@ -368,6 +370,7 @@ namespace TransCarga
                         if (b < dgv_reval.Width) dgv_reval.Width = b - 20;
                         dgv_reval.ReadOnly = true;
                     }
+                    sumaGrilla("dgv_reval");
                     break;
                 case "dgv_histGR":
                     dgv_histGR.Font = tiplg;
@@ -439,26 +442,85 @@ namespace TransCarga
         }
         private void sumaGrilla(string grilla)
         {
-            if (tx_cliente.Text.Trim() != "")
+            if (true)
             {
+                DataRow[] row = dtestad.Select("idcodice='" + codAnul + "'");
+                string etiq_anulado = row[0].ItemArray[0].ToString();
+                int cr = 0, ca = 0, tgr = 0;
+                double tvv = 0, tva = 0;
                 switch (grilla)
                 {
                     case "grillares":
-                        //object sumPRE, sumGR, sumsaldos;
-                        Decimal sumPRE = 0;
-                        var sdf = dt.Compute("Sum(TOT_PRE)", "ESTADO <> '" + nomAnul + "' and TOT_GUIA = 0");
-                        if (sdf.ToString() != "") sumPRE = decimal.Parse(sdf.ToString());   // string.Empty
-                        Decimal sumGR = 0;
-                        var spf = dt.Compute("Sum(TOT_GUIA)", "ESTADO <> '" + nomAnul + "' and TOT_PRE < TOT_GUIA");
-                        if (spf != null && spf.ToString() != "") sumGR = decimal.Parse(spf.ToString());
-                        Decimal sumsaldos = 0;
-                        var ssf = dt.Compute("Sum(SALDO)", "ESTADO <> '" + nomAnul + "'").ToString();
-                        if (ssf != null && ssf.ToString() != "") sumsaldos = decimal.Parse(ssf.ToString());
-                        //
-                        tx_valor.Text = (sumPRE + sumGR).ToString();
-                        tx_pendien.Text = sumsaldos.ToString();
-                        //tx_nser.Text = dt.Rows.Count.ToString();
-                        tx_nser.Text = dt.Select("ESTADO <> '" + nomAnul + "'").Length.ToString();
+                        if (tx_cliente.Text.Trim() != "")
+                        {
+                            //object sumPRE, sumGR, sumsaldos;
+                            Decimal sumPRE = 0;
+                            var sdf = dt.Compute("Sum(TOT_PRE)", "ESTADO <> '" + nomAnul + "' and TOT_GUIA = 0");
+                            if (sdf.ToString() != "") sumPRE = decimal.Parse(sdf.ToString());   // string.Empty
+                            Decimal sumGR = 0;
+                            var spf = dt.Compute("Sum(TOT_GUIA)", "ESTADO <> '" + nomAnul + "' and TOT_PRE < TOT_GUIA");
+                            if (spf != null && spf.ToString() != "") sumGR = decimal.Parse(spf.ToString());
+                            Decimal sumsaldos = 0;
+                            var ssf = dt.Compute("Sum(SALDO)", "ESTADO <> '" + nomAnul + "'").ToString();
+                            if (ssf != null && ssf.ToString() != "") sumsaldos = decimal.Parse(ssf.ToString());
+                            //
+                            tx_valor.Text = (sumPRE + sumGR).ToString();
+                            tx_pendien.Text = sumsaldos.ToString();
+                            //tx_nser.Text = dt.Rows.Count.ToString();
+                            tx_nser.Text = dt.Select("ESTADO <> '" + nomAnul + "'").Length.ToString();
+                        }
+                        break;
+                    case "dgv_guias":
+                        for (int i = 0; i < dgv_guias.Rows.Count; i++)
+                        {
+                            if (dgv_guias.Rows[i].Cells["ESTADO"].Value.ToString() != etiq_anulado)
+                            {
+                                tvv = tvv + Convert.ToDouble(dgv_guias.Rows[i].Cells["FLETE_MN"].Value);
+                                cr = cr + 1;
+                            }
+                            else
+                            {
+                                dgv_guias.Rows[i].DefaultCellStyle.BackColor = Color.Red;
+                                ca = ca + 1;
+                                tva = tva + Convert.ToDouble(dgv_guias.Rows[i].Cells["FLETE_MN"].Value);
+                            }
+                        }
+                        tx_tfi_f.Text = cr.ToString();
+                        tx_totval.Text = tvv.ToString("#0.00");
+                        tx_tfi_a.Text = ca.ToString();
+                        tx_totv_a.Text = tva.ToString("#0.00");
+                        break;
+                    case "dgv_plan":
+                        for (int i = 0; i < dgv_plan.Rows.Count; i++)
+                        {
+                            if (dgv_plan.Rows[i].Cells["ESTADO"].Value.ToString() != etiq_anulado)
+                            {
+                                tvv = tvv + Convert.ToDouble(dgv_plan.Rows[i].Cells["TOTAL"].Value);
+                                tgr = tgr + Convert.ToInt32(dgv_plan.Rows[i].Cells["TGUIAS"].Value);
+                                cr = cr + 1;
+                            }
+                            else
+                            {
+                                dgv_plan.Rows[i].DefaultCellStyle.BackColor = Color.Red;
+                                ca = ca + 1;
+                                tva = tva + Convert.ToDouble(dgv_plan.Rows[i].Cells["TOTAL"].Value);
+                            }
+                        }
+                        tx_tfp_v.Text = cr.ToString();
+                        tx_tflets.Text = tvv.ToString("#0.00");
+                        tx_tgrp.Text = tgr.ToString();
+                        tx_tfp_a.Text = ca.ToString();
+                        break;
+                    case "dgv_reval":
+                        for (int i = 0; i < dgv_reval.Rows.Count; i++)
+                        {
+                            tvv = tvv + Convert.ToDouble(dgv_reval.Rows[i].Cells["SAL_GR"].Value);
+                            tgr = tgr + Convert.ToInt32(dgv_reval.Rows[i].Cells["NVO_SALDO"].Value);
+                            cr = cr + 1;
+                        }
+                        tx_treval.Text = tgr.ToString("#0.00");
+                        tx_trant.Text = tvv.ToString("#0.00");
+                        tx_frv.Text = cr.ToString();
                         break;
                 }
             }
@@ -1391,16 +1453,19 @@ namespace TransCarga
             {
                 DataTable dtg = (DataTable)dgv_guias.DataSource;
                 dtg.DefaultView.RowFilter = dgv_guias.FilterString;
+                sumaGrilla("dgv_guias");
             }
             if (tabControl1.SelectedTab.Name == "tabplacar")
             {
                 DataTable dtg = (DataTable)dgv_plan.DataSource;
                 dtg.DefaultView.RowFilter = dgv_plan.FilterString;
+                sumaGrilla("dgv_plan");
             }
             if (tabControl1.SelectedTab.Name == "tabreval")
             {
                 DataTable dtg = (DataTable)dgv_reval.DataSource;
                 dtg.DefaultView.RowFilter = dgv_reval.FilterString;
+                sumaGrilla("dgv_reval");
             }
         }
         private void advancedDataGridView1_CellEnter(object sender, DataGridViewCellEventArgs e)            // no usamos

@@ -242,7 +242,7 @@ namespace TransCarga
                     dgv_ccaja.RowTemplate.Height = 15;
                     //dgv_ccaja.DefaultCellStyle.BackColor = Color.MediumAquamarine;
                     dgv_ccaja.AllowUserToAddRows = false;
-                    dgv_ccaja.Width = 1015;
+                    dgv_ccaja.Width = Parent.Width - 50;    // 1015;
                     if (dgv_ccaja.DataSource == null) dgv_ccaja.ColumnCount = 1;
                     if (dgv_ccaja.Rows.Count > 0)
                     {
@@ -260,9 +260,10 @@ namespace TransCarga
                             dgv_ccaja.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
                             dgv_ccaja.Columns[i].Width = a;
                         }
-                        if (b < dgv_ccaja.Width) dgv_ccaja.Width = b + 60;
+                        if (b < dgv_ccaja.Width) dgv_ccaja.Width = b - 20;
                         dgv_ccaja.ReadOnly = true;
                     }
+                    suma_grilla("dgv_ccaja");
                     break;
                 case "dgv_vtas":                                    // COBRANZAS
                     dgv_vtas.Font = tiplg;
@@ -270,7 +271,7 @@ namespace TransCarga
                     dgv_vtas.RowTemplate.Height = 15;
                     //dgv_vtas.DefaultCellStyle.BackColor = Color.MediumAquamarine;
                     dgv_vtas.AllowUserToAddRows = false;
-                    dgv_vtas.Width = 1015;
+                    dgv_vtas.Width = Parent.Width - 50; // 1015;
                     if (dgv_vtas.DataSource == null) dgv_vtas.ColumnCount = 11;
                     if (dgv_vtas.Rows.Count > 0)
                     {
@@ -288,16 +289,17 @@ namespace TransCarga
                             dgv_vtas.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
                             dgv_vtas.Columns[i].Width = a;
                         }
-                        if (b < dgv_vtas.Width) dgv_vtas.Width = b + 60;
+                        if (b < dgv_vtas.Width) dgv_vtas.Width = b - 20;
                         dgv_vtas.ReadOnly = true;
                     }
+                    suma_grilla("dgv_vtas");
                     break;
                 case "dgv_guias":                                   // EGRESOS
                     dgv_guias.Font = tiplg;
                     dgv_guias.DefaultCellStyle.Font = tiplg;
                     dgv_guias.RowTemplate.Height = 15;
                     dgv_guias.AllowUserToAddRows = false;
-                    dgv_guias.Width = 1015;
+                    dgv_guias.Width = Parent.Width - 50; // 1015;
                     if (dgv_guias.DataSource == null) dgv_guias.ColumnCount = 11;
                     if (dgv_guias.Rows.Count > 0)
                     {
@@ -315,16 +317,17 @@ namespace TransCarga
                             dgv_guias.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
                             dgv_guias.Columns[i].Width = a;
                         }
-                        if (b < dgv_guias.Width) dgv_guias.Width = b + 60;
+                        if (b < dgv_guias.Width) dgv_guias.Width = b - 20;
                         dgv_guias.ReadOnly = true;
                     }
+                    suma_grilla("dgv_guias");
                     break;
                 case "dgv_plan":                                // INGRESOS VARIOS
                     dgv_plan.Font = tiplg;
                     dgv_plan.DefaultCellStyle.Font = tiplg;
                     dgv_plan.RowTemplate.Height = 15;
                     dgv_plan.AllowUserToAddRows = false;
-                    dgv_plan.Width = 1015;
+                    dgv_plan.Width = Parent.Width - 50; // 1015;
                     if (dgv_plan.DataSource == null) dgv_plan.ColumnCount = 11;
                     if (dgv_plan.Rows.Count > 0)
                     {
@@ -342,16 +345,17 @@ namespace TransCarga
                             dgv_plan.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
                             dgv_plan.Columns[i].Width = a;
                         }
-                        if (b < dgv_plan.Width) dgv_plan.Width = b + 60;
+                        if (b < dgv_plan.Width) dgv_plan.Width = b - 20;
                         dgv_plan.ReadOnly = true;
                     }
+                    suma_grilla("dgv_plan");
                     break;
                 case "dgv_pend":
                     dgv_pend.Font = tiplg;
                     dgv_pend.DefaultCellStyle.Font = tiplg;
                     dgv_pend.RowTemplate.Height = 15;
                     dgv_pend.AllowUserToAddRows = false;
-                    dgv_pend.Width = Parent.Width - 20;
+                    dgv_pend.Width = Parent.Width - 50;
                     if (dgv_pend.DataSource == null) dgv_pend.ColumnCount = 11;
                     if (dgv_pend.Rows.Count > 0)
                     {
@@ -369,9 +373,76 @@ namespace TransCarga
                             dgv_pend.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
                             dgv_pend.Columns[i].Width = a;
                         }
-                        if (b < dgv_pend.Width) dgv_pend.Width = b + 60;
+                        if (b < dgv_pend.Width) dgv_pend.Width = b - 20;
                         dgv_pend.ReadOnly = true;
                     }
+                    suma_grilla("dgv_pend");
+                    break;
+            }
+        }
+        private void suma_grilla(string dgv)
+        {
+            DataRow[] row = dtestad.Select("idcodice='" + codAnul + "'");   // dtestad
+            string etiq_anulado = row[0].ItemArray[0].ToString();
+            int cr = 0; // dgv_facts.Rows.Count;
+            double tvv = 0, tva = 0, tvb = 0;
+            switch (dgv)
+            {
+                case "dgv_pend":
+                    for (int i = 0; i < dgv_pend.Rows.Count; i++)
+                    {
+                        tvv = tvv + Convert.ToDouble(dgv_pend.Rows[i].Cells["SALDO"].Value);
+                        cr = cr + 1;
+                    }
+                    tx_tfi_p.Text = cr.ToString();
+                    tx_totpend.Text = tvv.ToString("#0.00");
+                    break;
+                case "dgv_plan":
+                    for (int i = 0; i < dgv_plan.Rows.Count; i++)
+                    {
+                        tvv = tvv + Convert.ToDouble(dgv_plan.Rows[i].Cells["PAGADO"].Value);
+                        cr = cr + 1;
+                    }
+                    tx_tf_iv.Text = cr.ToString();
+                    tx_ingv.Text = tvv.ToString("#0.00");
+                    break;
+                case "dgv_guias":
+                    for (int i = 0; i < dgv_guias.Rows.Count; i++)
+                    {
+                        tvv = tvv + Convert.ToDouble(dgv_guias.Rows[i].Cells["PAGADO"].Value);
+                        cr = cr + 1;
+                    }
+                    tx_tf_e.Text = cr.ToString();
+                    tx_tegre.Text = tvv.ToString("#0.00");
+                    break;
+                case "dgv_vtas":
+                    for (int i = 0; i < dgv_vtas.Rows.Count; i++)
+                    {
+                        if (dgv_vtas.Rows[i].Cells["ESTADO"].Value.ToString() != etiq_anulado)
+                        {
+                            tvv = tvv + Convert.ToDouble(dgv_vtas.Rows[i].Cells["PAGADO"].Value);
+                            cr = cr + 1;
+                        }
+                        else
+                        {
+                            dgv_vtas.Rows[i].DefaultCellStyle.BackColor = Color.Red;
+                        }
+                    }
+                    tx_tf_c.Text = cr.ToString();
+                    tx_tcob.Text = tvv.ToString("#0.00");
+                    break;
+                case "dgv_ccaja":
+                    for (int i = 0; i < dgv_ccaja.Rows.Count; i++)
+                    {
+                        tvv = tvv + Convert.ToDouble(dgv_ccaja.Rows[i].Cells["T_COB"].Value);       // Cobranzas
+                        tva = tva + Convert.ToDouble(dgv_ccaja.Rows[i].Cells["T_EGRESOS"].Value);    // Egresos
+                        tvb = tvb + Convert.ToDouble(dgv_ccaja.Rows[i].Cells["T_ING_VAR"].Value);    // Ing. varios
+                        cr = cr + 1;
+                    }
+                    tx_tfc.Text = cr.ToString();
+                    tx_tcob_c.Text = tvv.ToString("#0.00");
+                    tx_tegr_c.Text = tva.ToString("#0.00");
+                    tx_ting_c.Text = tvb.ToString("#0.00");
                     break;
             }
         }
@@ -1073,6 +1144,12 @@ namespace TransCarga
         {
             DataTable dtg = (DataTable)dgv_vtas.DataSource;
             dtg.DefaultView.RowFilter = dgv_vtas.FilterString;
+            suma_grilla("dgv_vtas");
+        }
+        private void dgv_vtas_SortStringChanged(object sender, EventArgs e)                                 // sort cobranzas
+        {
+            DataTable dtg = (DataTable)dgv_vtas.DataSource;
+            dtg.DefaultView.Sort = dgv_vtas.SortString;
         }
         private void advancedDataGridView1_CellEnter(object sender, DataGridViewCellEventArgs e)            // no usamos
         {
@@ -1098,16 +1175,29 @@ namespace TransCarga
         {
             DataTable dtg = (DataTable)dgv_guias.DataSource;
             dtg.DefaultView.RowFilter = dgv_guias.FilterString;
+            suma_grilla("dgv_guias");
+        }
+        private void dgv_guias_SortStringChanged(object sender, EventArgs e)                                // sort Egresos
+        {
+            DataTable dtg = (DataTable)dgv_guias.DataSource;
+            dtg.DefaultView.Sort = dgv_guias.SortString;
         }
         private void dgv_plan_FilterStringChanged(object sender, EventArgs e)                               // filtro INGRESOS VARIOS
         {
             DataTable dtg = (DataTable)dgv_plan.DataSource;
             dtg.DefaultView.RowFilter = dgv_plan.FilterString;
+            suma_grilla("dgv_plan");
+        }
+        private void dgv_plan_SortStringChanged(object sender, EventArgs e)                                 // sort ingresos varios
+        {
+            DataTable dtg = (DataTable)dgv_plan.DataSource;
+            dtg.DefaultView.Sort = dgv_plan.SortString;
         }
         private void dgv_pend_FilterStringChanged(object sender, EventArgs e)                               // filtro PENDIENTES
         {
             DataTable dtg = (DataTable)dgv_pend.DataSource;
             dtg.DefaultView.RowFilter = dgv_pend.FilterString;
+            suma_grilla("dgv_pend");
         }
         private void dgv_pend_SortStringChanged(object sender, EventArgs e)                                 // sort PENDIENTES
         {
@@ -1153,7 +1243,7 @@ namespace TransCarga
                 }
             }*/
         }
+        
         #endregion
-
     }
 }

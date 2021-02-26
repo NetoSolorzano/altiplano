@@ -284,6 +284,7 @@ namespace TransCarga
                         if (b < dgv_notcre.Width) dgv_notcre.Width = b - 20;    // b + 60 ;
                         dgv_notcre.ReadOnly = true;
                     }
+                    suma_grilla("dgv_notcre");
                     break;
             }
         }
@@ -386,25 +387,47 @@ namespace TransCarga
         {
             DataRow[] row = dtestad.Select("idcodice='" + codAnul + "'");   // dtestad
             string etiq_anulado = row[0].ItemArray[0].ToString();
+            int cr = 0, ca = 0; // dgv_facts.Rows.Count;
+            double tvv = 0, tva = 0;
             switch (dgv)
             {
                 case "dgv_facts":
-                    int cr = 0; // dgv_facts.Rows.Count;
-                    double tvv = 0;
                     for (int i=0; i < dgv_facts.Rows.Count; i++)
                     {
                         if (dgv_facts.Rows[i].Cells["ESTADO"].Value.ToString() != etiq_anulado)
                         {
-                            tvv = tvv + Convert.ToDouble(dgv_facts.Rows[i].Cells["TOTAL"].Value);
+                            tvv = tvv + Convert.ToDouble(dgv_facts.Rows[i].Cells["TOTAL_MN"].Value);
                             cr = cr + 1;
                         }
                         else
                         {
                             dgv_facts.Rows[i].DefaultCellStyle.BackColor = Color.Red;
+                            ca = ca + 1;
+                            tva = tva + Convert.ToDouble(dgv_facts.Rows[i].Cells["TOTAL_MN"].Value);
                         }
                     }
                     tx_tfi_f.Text = cr.ToString();
                     tx_totval.Text = tvv.ToString("#0.00");
+                    tx_tfi_a.Text = ca.ToString();
+                    tx_totv_a.Text = tva.ToString("#0.00");
+                    break;
+                case "dgv_notcre":
+                    for (int i = 0; i < dgv_notcre.Rows.Count; i++)
+                    {
+                        if (dgv_notcre.Rows[i].Cells["ESTADO"].Value.ToString() != etiq_anulado)
+                        {
+                            tvv = tvv + Convert.ToDouble(dgv_notcre.Rows[i].Cells["TOTAL_MN"].Value);
+                            cr = cr + 1;
+                        }
+                        else
+                        {
+                            dgv_notcre.Rows[i].DefaultCellStyle.BackColor = Color.Red;
+                            ca = ca + 1;
+                            tva = tva + Convert.ToDouble(dgv_notcre.Rows[i].Cells["TOTAL_MN"].Value);
+                        }
+                    }
+                    tx_tfi_n.Text = cr.ToString();
+                    tx_totval_n.Text = tvv.ToString("#0.00");
                     break;
             }
         }
@@ -752,6 +775,7 @@ namespace TransCarga
             {
                 DataTable dtg = (DataTable)dgv_notcre.DataSource;
                 dtg.DefaultView.RowFilter = dgv_notcre.FilterString;
+                suma_grilla("dgv_notcre");
             }
             if (tabControl1.SelectedTab.Name == "tabregvtas")
             {

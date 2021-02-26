@@ -1000,7 +1000,7 @@ namespace TransCarga
         }
         private void tx_pago_Leave(object sender, EventArgs e)
         {
-            if (tx_PAGO.Text.Trim() != "" && Tx_modo.Text == "NUEVO")
+            if (tx_PAGO.Text.Trim() != "" && (Tx_modo.Text == "NUEVO" || Tx_modo.Text == "EDITAR"))
             {
                 decimal vpag = decimal.Parse(tx_PAGO.Text);
                 if (vpag <= 0)

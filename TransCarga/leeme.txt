@@ -161,3 +161,7 @@ form vplancar, desarrollar el form que será llamado por guiati ................
 form vehiculos, agregar campo para asociar placa de carreta con trackto ............................ ok 16/02/2021
 form planicarga, jalar el dato de la carreta asociada a la placa del trackto ....................... ok 16/02/2021
 form facelect, no esta anulando dentro de la misma fecha ... corregir .............................. ok 22/02/2021
+form repsventas, agregar campos totalizadores de la grilla, filas y valores ........................ ok 26/02/2021
+form repsoper, agregar campos totalizadores de la grilla, filas y valores .......................... ok 26/02/2021
+form repadmcaja, agregar campos totalizadores de la grilla, filas y valores ........................ ok 26/02/2021
+form egresosdep, edicion de egresos, correccion .................................................... ok 26/02/2021

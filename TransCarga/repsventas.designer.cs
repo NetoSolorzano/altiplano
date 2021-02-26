@@ -113,8 +113,18 @@
             this.dtp_mes = new System.Windows.Forms.DateTimePicker();
             this.dtp_yea = new System.Windows.Forms.DateTimePicker();
             this.dgv_regvtas = new ADGV.AdvancedDataGridView();
+            this.label11 = new System.Windows.Forms.Label();
+            this.label13 = new System.Windows.Forms.Label();
+            this.tx_totv_a = new TransCarga.NumericTextBox();
+            this.tx_tfi_a = new TransCarga.NumericTextBox();
             this.tx_tfi_f = new TransCarga.NumericTextBox();
             this.tx_totval = new TransCarga.NumericTextBox();
+            this.groupBox9 = new System.Windows.Forms.GroupBox();
+            this.groupBox10 = new System.Windows.Forms.GroupBox();
+            this.tx_tfi_n = new TransCarga.NumericTextBox();
+            this.label16 = new System.Windows.Forms.Label();
+            this.tx_totval_n = new TransCarga.NumericTextBox();
+            this.label17 = new System.Windows.Forms.Label();
             this.toolStrip1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabfacts.SuspendLayout();
@@ -133,6 +143,7 @@
             this.tabregvtas.SuspendLayout();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgv_regvtas)).BeginInit();
+            this.groupBox9.SuspendLayout();
             this.SuspendLayout();
             // 
             // toolStrip1
@@ -405,6 +416,10 @@
             // 
             // tabfacts
             // 
+            this.tabfacts.Controls.Add(this.tx_totv_a);
+            this.tabfacts.Controls.Add(this.tx_tfi_a);
+            this.tabfacts.Controls.Add(this.label13);
+            this.tabfacts.Controls.Add(this.label11);
             this.tabfacts.Controls.Add(this.groupBox7);
             this.tabfacts.Controls.Add(this.tx_tfi_f);
             this.tabfacts.Controls.Add(this.label28);
@@ -441,9 +456,9 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox7.BackColor = System.Drawing.Color.DimGray;
             this.groupBox7.Controls.Add(this.groupBox8);
-            this.groupBox7.Location = new System.Drawing.Point(307, 371);
+            this.groupBox7.Location = new System.Drawing.Point(6, 371);
             this.groupBox7.Name = "groupBox7";
-            this.groupBox7.Size = new System.Drawing.Size(394, 1);
+            this.groupBox7.Size = new System.Drawing.Size(704, 1);
             this.groupBox7.TabIndex = 404;
             this.groupBox7.TabStop = false;
             // 
@@ -457,28 +472,26 @@
             // 
             // label28
             // 
-            this.label28.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.label28.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label28.AutoSize = true;
             this.label28.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label28.Location = new System.Drawing.Point(322, 356);
+            this.label28.Location = new System.Drawing.Point(396, 356);
             this.label28.Name = "label28";
-            this.label28.Size = new System.Drawing.Size(55, 13);
+            this.label28.Size = new System.Drawing.Size(71, 13);
             this.label28.TabIndex = 402;
-            this.label28.Text = "Total Filas";
+            this.label28.Text = "Filas vigentes";
             this.label28.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // label12
             // 
-            this.label12.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.label12.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label12.AutoSize = true;
             this.label12.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label12.Location = new System.Drawing.Point(564, 356);
+            this.label12.Location = new System.Drawing.Point(527, 356);
             this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(61, 13);
+            this.label12.Size = new System.Drawing.Size(104, 13);
             this.label12.TabIndex = 400;
-            this.label12.Text = "Total Valor ";
+            this.label12.Text = "Total Valor Venta S/";
             this.label12.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // chk_excl_guias
@@ -704,6 +717,11 @@
             // 
             // tabnotas
             // 
+            this.tabnotas.Controls.Add(this.groupBox9);
+            this.tabnotas.Controls.Add(this.tx_tfi_n);
+            this.tabnotas.Controls.Add(this.label16);
+            this.tabnotas.Controls.Add(this.tx_totval_n);
+            this.tabnotas.Controls.Add(this.label17);
             this.tabnotas.Controls.Add(this.chk_exclu_plan);
             this.tabnotas.Controls.Add(this.groupBox23);
             this.tabnotas.Controls.Add(this.tx_dat_estad_plan);
@@ -885,9 +903,9 @@
             this.dgv_notcre.AutoGenerateContextFilters = true;
             this.dgv_notcre.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgv_notcre.DateWithTime = false;
-            this.dgv_notcre.Location = new System.Drawing.Point(6, 51);
+            this.dgv_notcre.Location = new System.Drawing.Point(3, 51);
             this.dgv_notcre.Name = "dgv_notcre";
-            this.dgv_notcre.Size = new System.Drawing.Size(1015, 322);
+            this.dgv_notcre.Size = new System.Drawing.Size(1020, 295);
             this.dgv_notcre.TabIndex = 394;
             this.dgv_notcre.TimeFilter = false;
             this.dgv_notcre.SortStringChanged += new System.EventHandler(this.advancedDataGridView1_SortStringChanged);
@@ -1050,13 +1068,60 @@
             this.dgv_regvtas.SortStringChanged += new System.EventHandler(this.advancedDataGridView1_SortStringChanged);
             this.dgv_regvtas.FilterStringChanged += new System.EventHandler(this.advancedDataGridView1_FilterStringChanged);
             // 
+            // label11
+            // 
+            this.label11.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.label11.AutoSize = true;
+            this.label11.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.label11.Location = new System.Drawing.Point(9, 356);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(75, 13);
+            this.label11.TabIndex = 405;
+            this.label11.Text = "Filas Anuladas";
+            this.label11.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // label13
+            // 
+            this.label13.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.label13.AutoSize = true;
+            this.label13.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.label13.Location = new System.Drawing.Point(151, 356);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(124, 13);
+            this.label13.TabIndex = 406;
+            this.label13.Text = "Valor Venta Anuladas S/";
+            this.label13.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // tx_totv_a
+            // 
+            this.tx_totv_a.AllowSpace = false;
+            this.tx_totv_a.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.tx_totv_a.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_totv_a.Location = new System.Drawing.Point(278, 352);
+            this.tx_totv_a.Name = "tx_totv_a";
+            this.tx_totv_a.ReadOnly = true;
+            this.tx_totv_a.Size = new System.Drawing.Size(76, 20);
+            this.tx_totv_a.TabIndex = 408;
+            this.tx_totv_a.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // tx_tfi_a
+            // 
+            this.tx_tfi_a.AllowSpace = false;
+            this.tx_tfi_a.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.tx_tfi_a.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_tfi_a.Location = new System.Drawing.Point(86, 352);
+            this.tx_tfi_a.Name = "tx_tfi_a";
+            this.tx_tfi_a.ReadOnly = true;
+            this.tx_tfi_a.Size = new System.Drawing.Size(41, 20);
+            this.tx_tfi_a.TabIndex = 407;
+            this.tx_tfi_a.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
             // tx_tfi_f
             // 
             this.tx_tfi_f.AllowSpace = false;
-            this.tx_tfi_f.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tx_tfi_f.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.tx_tfi_f.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_tfi_f.Location = new System.Drawing.Point(383, 352);
+            this.tx_tfi_f.Location = new System.Drawing.Point(468, 352);
             this.tx_tfi_f.Name = "tx_tfi_f";
             this.tx_tfi_f.ReadOnly = true;
             this.tx_tfi_f.Size = new System.Drawing.Size(41, 20);
@@ -1066,15 +1131,82 @@
             // tx_totval
             // 
             this.tx_totval.AllowSpace = false;
-            this.tx_totval.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tx_totval.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.tx_totval.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_totval.Location = new System.Drawing.Point(625, 352);
+            this.tx_totval.Location = new System.Drawing.Point(633, 352);
             this.tx_totval.Name = "tx_totval";
             this.tx_totval.ReadOnly = true;
             this.tx_totval.Size = new System.Drawing.Size(76, 20);
             this.tx_totval.TabIndex = 398;
             this.tx_totval.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // groupBox9
+            // 
+            this.groupBox9.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox9.BackColor = System.Drawing.Color.DimGray;
+            this.groupBox9.Controls.Add(this.groupBox10);
+            this.groupBox9.Location = new System.Drawing.Point(356, 370);
+            this.groupBox9.Name = "groupBox9";
+            this.groupBox9.Size = new System.Drawing.Size(316, 1);
+            this.groupBox9.TabIndex = 413;
+            this.groupBox9.TabStop = false;
+            // 
+            // groupBox10
+            // 
+            this.groupBox10.Location = new System.Drawing.Point(0, -26);
+            this.groupBox10.Name = "groupBox10";
+            this.groupBox10.Size = new System.Drawing.Size(164, 1);
+            this.groupBox10.TabIndex = 113;
+            this.groupBox10.TabStop = false;
+            // 
+            // tx_tfi_n
+            // 
+            this.tx_tfi_n.AllowSpace = false;
+            this.tx_tfi_n.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.tx_tfi_n.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_tfi_n.Location = new System.Drawing.Point(430, 351);
+            this.tx_tfi_n.Name = "tx_tfi_n";
+            this.tx_tfi_n.ReadOnly = true;
+            this.tx_tfi_n.Size = new System.Drawing.Size(41, 20);
+            this.tx_tfi_n.TabIndex = 412;
+            this.tx_tfi_n.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // label16
+            // 
+            this.label16.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.label16.AutoSize = true;
+            this.label16.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.label16.Location = new System.Drawing.Point(358, 355);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(71, 13);
+            this.label16.TabIndex = 411;
+            this.label16.Text = "Filas vigentes";
+            this.label16.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // tx_totval_n
+            // 
+            this.tx_totval_n.AllowSpace = false;
+            this.tx_totval_n.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.tx_totval_n.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_totval_n.Location = new System.Drawing.Point(595, 351);
+            this.tx_totval_n.Name = "tx_totval_n";
+            this.tx_totval_n.ReadOnly = true;
+            this.tx_totval_n.Size = new System.Drawing.Size(76, 20);
+            this.tx_totval_n.TabIndex = 409;
+            this.tx_totval_n.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // label17
+            // 
+            this.label17.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.label17.AutoSize = true;
+            this.label17.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.label17.Location = new System.Drawing.Point(493, 355);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(99, 13);
+            this.label17.TabIndex = 410;
+            this.label17.Text = "Total Valor Nota S/";
+            this.label17.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // repsventas
             // 
@@ -1111,6 +1243,7 @@
             this.tabregvtas.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgv_regvtas)).EndInit();
+            this.groupBox9.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -1204,5 +1337,15 @@
         private System.Windows.Forms.Label label28;
         private NumericTextBox tx_totval;
         private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.Label label11;
+        private NumericTextBox tx_totv_a;
+        private NumericTextBox tx_tfi_a;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.GroupBox groupBox9;
+        private System.Windows.Forms.GroupBox groupBox10;
+        private NumericTextBox tx_tfi_n;
+        private System.Windows.Forms.Label label16;
+        private NumericTextBox tx_totval_n;
+        private System.Windows.Forms.Label label17;
     }
 }
