@@ -98,6 +98,20 @@ namespace TransCarga
                     ReturnValueA = new string[5] { "", "", "", "", "" };
                 }
             }
+            if (para1 == "Brevete")
+            {
+                consulta = "SELECT upper(brevchofe),upper(nomchofe),upper(brevayuda),upper(nomayuda),space(1) FROM cabplacar GROUP BY UPPER(brevchofe)";
+                using (MySqlCommand micon = new MySqlCommand(consulta, conn))
+                {
+                    using (MySqlDataAdapter da = new MySqlDataAdapter(micon))
+                    {
+                        da.Fill(dtDatos);
+                        dataGridView1.DataSource = dtDatos;
+                        dataGridView1.ReadOnly = true;
+                    }
+                    ReturnValueA = new string[5] { "", "", "", "", "" };
+                }
+            }
             // formateo de la grilla
             //dataGridView1.Font = tiplg;
             //dataGridView1.DefaultCellStyle.Font = tiplg;
@@ -159,6 +173,19 @@ namespace TransCarga
                 ReturnValueA[2] = dataGridView1.CurrentRow.Cells[3].Value.ToString();   // modelo
                 ReturnValueA[3] = dataGridView1.CurrentRow.Cells[4].Value.ToString();   // conf. vehicular
                 ReturnValueA[4] = dataGridView1.CurrentRow.Cells[5].Value.ToString();   // autoriz.
+            }
+            if (para1 == "Brevete")
+            {
+                tx_id.Text = "0";
+                cellva = dataGridView1.CurrentRow.Cells[0].Value.ToString();
+                tx_nombre.Text = dataGridView1.CurrentRow.Cells[1].Value.ToString();
+                tx_codigo.Text = cellva;
+                //
+                ReturnValueA[0] = dataGridView1.CurrentRow.Cells[0].Value.ToString();   // brevete chofer
+                ReturnValueA[1] = dataGridView1.CurrentRow.Cells[1].Value.ToString();   // nombre chofer
+                ReturnValueA[2] = dataGridView1.CurrentRow.Cells[2].Value.ToString();   // brevete ayudante
+                ReturnValueA[3] = dataGridView1.CurrentRow.Cells[3].Value.ToString();   // nombre ayudante
+                ReturnValueA[4] = dataGridView1.CurrentRow.Cells[4].Value.ToString();   // vacío
             }
             TransCarga.Program.retorna1 = cellva;
             tx_codigo.Focus();

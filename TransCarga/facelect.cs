@@ -1524,6 +1524,20 @@ namespace TransCarga
         {
             if (tx_serGR.Text.Trim() != "" && tx_numGR.Text.Trim() != "" && Tx_modo.Text == "NUEVO")
             {
+                // validamos que no se repita la GR
+                for (int i = 0; i < dataGridView1.Rows.Count; i++)
+                {
+                    if (dataGridView1.Rows[i].Cells[0].Value != null)
+                    {
+                        if (dataGridView1.Rows[i].Cells[0].Value.ToString().Trim() == (tx_serGR.Text.Trim() + "-" + tx_numGR.Text.Trim()))
+                        {
+                            MessageBox.Show("Esta repitiendo la Guía!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            tx_numGR.Text = "";
+                            tx_numGR.Focus();
+                            return;
+                        }
+                    }
+                }
                 // validamos que la GR: 1.exista, 2.No este facturada, 3.No este anulada
                 if (validGR(tx_serGR.Text, tx_numGR.Text) == false)
                 {

@@ -2746,14 +2746,14 @@ namespace TransCarga
                     cmb_docRem.Focus();
                     cmb_docRem.DroppedDown = true;
                 }
-                //
+                /*
                 if (lib.valientabla("cabguiai", "concat(sergui,numgui)", tx_serie.Text + tx_numero.Text) == "1")
                 {
                     MessageBox.Show("El número de Guía ya Existe!", " Atención ", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                     tx_numero.Text = "";
                     tx_numero.Focus();
                     return;
-                }
+                */
             }
             if (tx_dat_locdes.Text.Trim() != "")
             {

@@ -165,3 +165,7 @@ form repsventas, agregar campos totalizadores de la grilla, filas y valores ....
 form repsoper, agregar campos totalizadores de la grilla, filas y valores .......................... ok 26/02/2021
 form repadmcaja, agregar campos totalizadores de la grilla, filas y valores ........................ ok 26/02/2021
 form egresosdep, edicion de egresos, correccion .................................................... ok 26/02/2021
+form repadmcaja, agregar guia rem y contador filas al formato del cuadre de caja ................... ok 27/02/2021
+form facelect, evitar que se repita la GR al crear el doc.venta .................................... ok 27/02/2021 
+form planicarga, agregar F1 en brevete para jalar incluyendo nombre ................................ ok 27/02/2021
+form guiati, arreglo de aviso de "guía ya existe" en modo edicion/visualización .................... ok 03/03/2021

@@ -139,6 +139,34 @@ namespace TransCarga
                 }
                 return true;    // indicate that you handled this keystroke
             }
+            if (keyData == Keys.F1 && tx_pla_brevet.Focused == true)
+            {
+                para1 = "Brevete";
+                para2 = "";
+                para3 = "";
+                ayuda3 ayu3 = new ayuda3(para1, para2, para3);
+                var result = ayu3.ShowDialog();
+                if (result == DialogResult.Cancel)  // deberia ser OK, pero que chuuu
+                {
+                    tx_pla_brevet.Text = ayu3.ReturnValue1;
+                    tx_pla_nomcho.Text = ayu3.ReturnValueA[1];
+                }
+                return true;
+            }
+            if (keyData == Keys.F1 && tx_pla_ayud.Focused == true)
+            {
+                para1 = "Brevete";
+                para2 = "";
+                para3 = "";
+                ayuda3 ayu3 = new ayuda3(para1, para2, para3);
+                var result = ayu3.ShowDialog();
+                if (result == DialogResult.Cancel)  // deberia ser OK, pero que chuuu
+                {
+                    tx_pla_ayud.Text = ayu3.ReturnValue1;
+                    tx_pla_nomayu.Text = ayu3.ReturnValue2;
+                }
+                return true;
+            }
             // Call the base class
             return base.ProcessCmdKey(ref msg, keyData);
         }
