@@ -60,6 +60,7 @@ namespace TransCarga
         string v_clte_rem = "";         // variable para marcar si el remitente es cliente nuevo "N" o para actualizar sus datos "E"
         string v_clte_des = "";         // variable para marcar si el destinatario es cliente nuevo "N" o para actualizar sus datos "E"
         string v_igv = "";              // igv
+        string caractNo = "";           // caracter prohibido en campos texto, caracter delimitador para los TXT de fact. electronica
         //
         static libreria lib = new libreria();   // libreria de procedimientos
         publico lp = new publico();             // libreria de clases
@@ -246,11 +247,12 @@ namespace TransCarga
             {
                 MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
                 conn.Open();
-                string consulta = "select formulario,campo,param,valor from enlaces where formulario in (@nofo,@nfin,@nofa,@nofi)";
+                string consulta = "select formulario,campo,param,valor from enlaces where formulario in (@nofo,@nfin,@nofa,@nofi,@nofe)";
                 MySqlCommand micon = new MySqlCommand(consulta, conn);
                 micon.Parameters.AddWithValue("@nofo", "main");
                 micon.Parameters.AddWithValue("@nfin", "interno");
                 micon.Parameters.AddWithValue("@nofi", "clients");
+                micon.Parameters.AddWithValue("@nofe", "facelect");
                 micon.Parameters.AddWithValue("@nofa", nomform);
                 MySqlDataAdapter da = new MySqlDataAdapter(micon);
                 DataTable dt = new DataTable();
@@ -287,6 +289,13 @@ namespace TransCarga
                         if (row["param"].ToString() == "dni") vtc_dni = row["valor"].ToString().Trim();
                         if (row["param"].ToString() == "ruc") vtc_ruc = row["valor"].ToString().Trim();
                         if (row["param"].ToString() == "ext") vtc_ext = row["valor"].ToString().Trim();
+                    }
+                    if (row["formulario"].ToString() == "facelect")
+                    {
+                        if (row["campo"].ToString() == "factelect")
+                        {
+                            if (row["param"].ToString() == "caracterNo") caractNo = row["valor"].ToString().Trim();
+                        }
                     }
                     if (row["formulario"].ToString() == nomform)
                     {
@@ -2301,6 +2310,30 @@ namespace TransCarga
                 }
             }
         }
+        private void tx_docsOr_Leave(object sender, EventArgs e)
+        {
+            val_NoCaracteres(tx_docsOr);
+        }
+        private void tx_dirDrio_Leave(object sender, EventArgs e)
+        {
+            val_NoCaracteres(tx_dirDrio);
+        }
+        private void tx_dirRem_Leave(object sender, EventArgs e)
+        {
+            val_NoCaracteres(tx_dirRem);
+        }
+        private void val_NoCaracteres(TextBox textBox)
+        {
+            if (caractNo != "")
+            {
+                int index = textBox.Text.IndexOf(caractNo);
+                if (index > -1)
+                {
+                    char cno = caractNo.ToCharArray()[0];
+                    textBox.Text = textBox.Text.Replace(cno, ' ');
+                }
+            }
+        }
         #endregion
 
         #region botones_de_comando
@@ -2831,6 +2864,26 @@ namespace TransCarga
                 e.Handled = true;
             }
         }
+        private void dataGridView1_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
+        {
+            // NO HACE NADA
+        }
+        private void dataGridView1_CellEndEdit(object sender, DataGridViewCellEventArgs e)
+        {
+            if (caractNo != "")
+            {
+                if (e.ColumnIndex == 1 || e.ColumnIndex == 2)
+                {
+                    string tb = dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString();
+                    int index = tb.IndexOf(caractNo);
+                    if (index > -1)
+                    {
+                        char cno = caractNo.ToCharArray()[0];
+                        dataGridView1.CurrentCell.Value = tb.Replace(cno, ' ');    // no esta funcando
+                    }
+                }
+            }
+        }
         #endregion
 
         #region impresion
@@ -3022,5 +3075,6 @@ namespace TransCarga
             return guiaT;
         }
         #endregion
+
     }
 }

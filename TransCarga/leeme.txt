@@ -153,9 +153,9 @@ form users, arreglar:
 - asignacion de permisos ........................................................................... OK 08/02/2021
 DESCUENTO EN FACTURACION 
 - Se debe poder cambiar el importe de la factura (validar por usuario) SIEMPRE Y CUANDO LA
-  GUIA O GUIAS ESTEN COBRADAS AL 100% .............................................................. 
-- Se debe calcular el % de descuento y grabarse tanto el importe descontado como el % .............. 
-- Se debe mostrar el % de descuento en la pantalla ................................................. 
+  GUIA O GUIAS ESTEN COBRADAS AL 100% .............................................................. ok 05/03/2021
+- Se debe calcular el % de descuento y grabarse tanto el importe descontado como el % .............. ok 05/03/2021
+- Se debe mostrar el valor de descuento en la pantalla ............................................. ok 05/03/2021
 form guiati, agregar seleccion de placa cuando hay + de 1 planilla para el destino ................. ok 12/02/2021
 form vplancar, desarrollar el form que será llamado por guiati ..................................... ok 12/02/2021
 form vehiculos, agregar campo para asociar placa de carreta con trackto ............................ ok 16/02/2021
@@ -169,3 +169,7 @@ form repadmcaja, agregar guia rem y contador filas al formato del cuadre de caja
 form facelect, evitar que se repita la GR al crear el doc.venta .................................... ok 27/02/2021 
 form planicarga, agregar F1 en brevete para jalar incluyendo nombre ................................ ok 27/02/2021
 form guiati, arreglo de aviso de "guía ya existe" en modo edicion/visualización .................... ok 03/03/2021
+form facelect, agregar funcionalidad de descentuentos .............................................. ok 05/03/2021
+form facelect, agregar funcion de borrar caracteres no permitidos en campos texto .................. ok 06/03/2021   caso palote | en fact.electronica de horizont
+form guiati, agregar funcion de borrar caracteres no permitidos en campos texto de Fact.Elect ...... ok 06/03/2021 direcciones, guias cliente, detalle pasan a Fac.Elect.
+form facelect, modificar codigo de obtener serie, deje jalar de tabla series ....................... OK 06/03/2021

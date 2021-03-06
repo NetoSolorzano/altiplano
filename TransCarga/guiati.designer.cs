@@ -615,6 +615,7 @@
             this.tx_dirRem.Name = "tx_dirRem";
             this.tx_dirRem.Size = new System.Drawing.Size(398, 18);
             this.tx_dirRem.TabIndex = 8;
+            this.tx_dirRem.Leave += new System.EventHandler(this.tx_dirRem_Leave);
             // 
             // groupBox7
             // 
@@ -1171,6 +1172,7 @@
             this.tx_dirDrio.Name = "tx_dirDrio";
             this.tx_dirDrio.Size = new System.Drawing.Size(399, 18);
             this.tx_dirDrio.TabIndex = 16;
+            this.tx_dirDrio.Leave += new System.EventHandler(this.tx_dirDrio_Leave);
             // 
             // groupBox3
             // 
@@ -1278,6 +1280,7 @@
             this.tx_docsOr.Name = "tx_docsOr";
             this.tx_docsOr.Size = new System.Drawing.Size(323, 18);
             this.tx_docsOr.TabIndex = 20;
+            this.tx_docsOr.Leave += new System.EventHandler(this.tx_docsOr_Leave);
             // 
             // label9
             // 
@@ -1311,6 +1314,8 @@
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.Size = new System.Drawing.Size(593, 162);
             this.dataGridView1.TabIndex = 23;
+            this.dataGridView1.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellEndEdit);
+            this.dataGridView1.CellValidating += new System.Windows.Forms.DataGridViewCellValidatingEventHandler(this.dataGridView1_CellValidating);
             this.dataGridView1.EditingControlShowing += new System.Windows.Forms.DataGridViewEditingControlShowingEventHandler(this.dataGridView1_EditingControlShowing);
             this.dataGridView1.RowLeave += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_RowLeave);
             this.dataGridView1.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.dataGridView1_RowsAdded);
