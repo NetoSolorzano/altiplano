@@ -1020,9 +1020,18 @@ namespace TransCarga
                     if (bajaTXT(tipdo, _fecemi, _codbaj, _secuen, ruta + archi, ctab, serie, corre) == true) retorna = true;
                 }
             }
-            if (provee == "nolosoo")
+            if (provee == "secure")
             {
-
+                string ruta = rutatxt + "TXT/";
+                string archi = "";
+                if (accion == "alta")
+                {
+                    archi = rucclie + "-" + tipdo + "-" + serie + "-" + corre;
+                    if (crearTXT(tipdo, serie, corre, ruta + archi) == true)
+                    {
+                        retorna = true;
+                    }
+                }
             }
             return retorna;
         }
@@ -2514,19 +2523,26 @@ namespace TransCarga
             tx_dptoRtt.Text = "";
             tx_provRtt.Text = "";
             tx_distRtt.Text = "";
-            if (datcltsD[4].ToString().Trim() != "")
+            try
             {
-                DataRow[] row = dataUbig.Select("depart='" + datcltsD[4].Substring(0, 2) + "' and provin='00' and distri='00'");
-                tx_dptoRtt.Text = row[0].ItemArray[4].ToString();
-                row = dataUbig.Select("depart='" + datcltsD[4].Substring(0, 2) + "' and provin ='" + datcltsD[4].Substring(2, 2) + "' and distri='00'");
-                tx_provRtt.Text = row[0].ItemArray[4].ToString();
-                row = dataUbig.Select("depart='" + datcltsD[4].Substring(0, 2) + "' and provin ='" + datcltsD[4].Substring(2, 2) + "' and distri='" + datcltsD[4].Substring(4, 2) + "'");
-                tx_distRtt.Text = row[0].ItemArray[4].ToString();
-                //
-                tx_email.Text = datcltsD[5];
-                tx_telc1.Text = datcltsD[6];
-                tx_telc2.Text = datcltsD[7];
-                tx_ubigRtt.Text = datcltsD[4];
+                if (datcltsD[4].ToString().Trim() != "")
+                {
+                    DataRow[] row = dataUbig.Select("depart='" + datcltsD[4].Substring(0, 2) + "' and provin='00' and distri='00'");
+                    tx_dptoRtt.Text = row[0].ItemArray[4].ToString();
+                    row = dataUbig.Select("depart='" + datcltsD[4].Substring(0, 2) + "' and provin ='" + datcltsD[4].Substring(2, 2) + "' and distri='00'");
+                    tx_provRtt.Text = row[0].ItemArray[4].ToString();
+                    row = dataUbig.Select("depart='" + datcltsD[4].Substring(0, 2) + "' and provin ='" + datcltsD[4].Substring(2, 2) + "' and distri='" + datcltsD[4].Substring(4, 2) + "'");
+                    tx_distRtt.Text = row[0].ItemArray[4].ToString();
+                    //
+                    tx_email.Text = datcltsD[5];
+                    tx_telc1.Text = datcltsD[6];
+                    tx_telc2.Text = datcltsD[7];
+                    tx_ubigRtt.Text = datcltsD[4];
+                }
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show("Error en datos del Destinatario " + Environment.NewLine + ex.Message, "Error interno", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             //
             cmb_docRem.Enabled = false;

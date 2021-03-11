@@ -1517,6 +1517,7 @@ namespace TransCarga
                                 micon.Parameters.AddWithValue("@num", dgv_plan.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString());
                                 using (MySqlDataAdapter da = new MySqlDataAdapter(micon))
                                 {
+                                    dtplanCab.Clear();
                                     da.Fill(dtplanCab);
                                 }
                             }
@@ -1537,6 +1538,7 @@ namespace TransCarga
                                 micon.Parameters.AddWithValue("@num", dgv_plan.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString());
                                 using (MySqlDataAdapter da = new MySqlDataAdapter(micon))
                                 {
+                                    dtplanDet.Clear();
                                     da.Fill(dtplanDet);
                                 }
                             }

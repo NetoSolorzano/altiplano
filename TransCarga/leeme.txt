@@ -175,3 +175,9 @@ form guiati, agregar funcion de borrar caracteres no permitidos en campos texto 
 form facelect, modificar codigo de obtener serie, deje jalar de tabla series ....................... OK 06/03/2021
 formato CR guia transportista, adecuar al formato de Altiplano ..................................... ok 08/03/2021
 form guiati, validar que ubigeo este completo, remit y destinatario ................................ ok 09/03/2021
+mejoras, correciones y adecuaciones varias
+- form guiati, bultos quieren que se autocomplete .................................................. ok 10/03/2021
+- form guiati, campo docs origen, quieren que salga "GR-" por defecto .............................. ok 10/03/2021
+- libreria, character set UTF-8, la ñ no lo esta reconociendo ...................................... ok 10/03/2021
+- form planicarga, formato desde form no imprime ................................................... ok 11/03/2021
+- form repsoper, no esta limpiando el datatable porque repite la misma planilla de carga ........... ok 11/03/2021
