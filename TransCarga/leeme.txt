@@ -173,3 +173,5 @@ form facelect, agregar funcionalidad de descentuentos ..........................
 form facelect, agregar funcion de borrar caracteres no permitidos en campos texto .................. ok 06/03/2021   caso palote | en fact.electronica de horizont
 form guiati, agregar funcion de borrar caracteres no permitidos en campos texto de Fact.Elect ...... ok 06/03/2021 direcciones, guias cliente, detalle pasan a Fac.Elect.
 form facelect, modificar codigo de obtener serie, deje jalar de tabla series ....................... OK 06/03/2021
+formato CR guia transportista, adecuar al formato de Altiplano ..................................... ok 08/03/2021
+form guiati, validar que ubigeo este completo, remit y destinatario ................................ ok 09/03/2021

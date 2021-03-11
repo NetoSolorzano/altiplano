@@ -61,6 +61,7 @@ namespace TransCarga
         string v_clte_des = "";         // variable para marcar si el destinatario es cliente nuevo "N" o para actualizar sus datos "E"
         string v_igv = "";              // igv
         string caractNo = "";           // caracter prohibido en campos texto, caracter delimitador para los TXT de fact. electronica
+        string v_idoco = "";            // letras iniciales del campo docs.origen
         //
         static libreria lib = new libreria();   // libreria de procedimientos
         publico lp = new publico();             // libreria de clases
@@ -74,6 +75,7 @@ namespace TransCarga
         AutoCompleteStringCollection departamentos = new AutoCompleteStringCollection();// autocompletado departamentos
         AutoCompleteStringCollection provincias = new AutoCompleteStringCollection();   // autocompletado provincias
         AutoCompleteStringCollection distritos = new AutoCompleteStringCollection();    // autocompletado distritos
+        AutoCompleteStringCollection bultos = new AutoCompleteStringCollection();       // autompletatado bultos del detalle
         DataTable dataUbig = (DataTable)CacheManager.GetItem("ubigeos");
 
         // string de conexion
@@ -120,6 +122,7 @@ namespace TransCarga
             autodepa();                                     // autocompleta departamentos
             //autoprov();                                     // autocompleta provincias
             //autodist();                                     // autocompleta distritos
+            //autoBultos();
             if (valiVars() == false)
             {
                 Application.Exit();
@@ -240,6 +243,7 @@ namespace TransCarga
             tx_digit.Text = v_nbu;
             tx_dat_estad.Text = codGene;
             tx_estado.Text = lib.nomstat(tx_dat_estad.Text);
+            tx_docsOr.Text = v_idoco;
         }
         private void jalainfo()                 // obtiene datos de imagenes y variables
         {
@@ -306,6 +310,7 @@ namespace TransCarga
                             if (row["param"].ToString() == "frase1") v_fra1 = row["valor"].ToString().Trim();               // frase para documento anulado
                             if (row["param"].ToString() == "frase2") v_fra2 = row["valor"].ToString().Trim();               // frase de si va con clave la guia
                             if (row["param"].ToString() == "serieAnu") v_sanu = row["valor"].ToString().Trim();               // serie anulacion interna
+                            if (row["param"].ToString() == "inidocor") v_idoco = row["valor"].ToString().Trim();            // iniciales de documento origen
                         }
                         if (row["campo"].ToString() == "impresion")
                         {
@@ -649,6 +654,16 @@ namespace TransCarga
             cmb_mon.DataSource = dtm;
             cmb_mon.DisplayMember = "descrizionerid";
             cmb_mon.ValueMember = "idcodice";
+            //
+            MySqlCommand jala = new MySqlCommand("SELECT unimedpro FROM detguiai GROUP BY unimedpro", conn);
+            MySqlDataAdapter dajala = new MySqlDataAdapter(jala);
+            DataTable dtjala = new DataTable();
+            dajala.Fill(dtjala);
+            bultos.Clear();
+            foreach (DataRow row in dtjala.Rows)
+            {
+                bultos.Add(row["unimedpro"].ToString());
+            }
             //
             cmo.Dispose();
             ccl.Dispose();
@@ -1094,6 +1109,18 @@ namespace TransCarga
             {
                 MessageBox.Show("Complete la dirección, departamento, provincia y distrito", "Error en destinatario", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 tx_dirDrio.Focus();
+                return;
+            }
+            if (tx_ubigRtt.Text.Trim().Length != 6)
+            {
+                MessageBox.Show("Seleccione correctamente Departamento, Provincia y Distrito","Seleccione en orden",MessageBoxButtons.OK,MessageBoxIcon.Error);
+                tx_dptoRtt.Focus();
+                return;
+            }
+            if (tx_ubigDtt.Text.Trim().Length != 6)
+            {
+                MessageBox.Show("Seleccione correctamente Departamento, Provincia y Distrito", "Seleccione en orden", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                tx_dptoDrio.Focus();
                 return;
             }
             #endregion
@@ -2334,6 +2361,12 @@ namespace TransCarga
                 }
             }
         }
+        private void tx_docsOr_Enter(object sender, EventArgs e)
+        {
+            tx_docsOr.DeselectAll();
+            tx_docsOr.SelectionStart = tx_docsOr.Text.Length;
+            tx_docsOr.SelectionLength = 0;
+        }
         #endregion
 
         #region botones_de_comando
@@ -2803,6 +2836,7 @@ namespace TransCarga
             int totfil = 0;
             int totcant = 0;
             decimal totpes = 0;
+            
             for (int i = 0; i < dataGridView1.Rows.Count; i++)
             {
                 if (dataGridView1.Rows[i].Cells[0].Value != null)
@@ -2818,6 +2852,7 @@ namespace TransCarga
             tx_totcant.Text = totcant.ToString();
             tx_totpes.Text = totpes.ToString("0.00");
             tx_tfil.Text = totfil.ToString();
+            
             if (int.Parse(tx_tfil.Text) == int.Parse(v_mfildet))
             {
                 MessageBox.Show("Número máximo de filas de detalle", "El formato no permite mas", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -2839,7 +2874,24 @@ namespace TransCarga
                     tb.KeyPress += new KeyPressEventHandler(Column_KeyPress);
                 }
             }
-            if (dataGridView1.CurrentCell.ColumnIndex == 1 || dataGridView1.CurrentCell.ColumnIndex == 2)   // columnas en MAYUSCULAS
+            if (dataGridView1.CurrentCell.ColumnIndex == 1)   // columnas en MAYUSCULAS
+            {
+                if (e.Control is TextBox)
+                {
+                    ((TextBox)(e.Control)).CharacterCasing = CharacterCasing.Upper;
+                    ((TextBox)(e.Control)).AutoCompleteMode = AutoCompleteMode.Suggest;           // departamentos
+                    ((TextBox)(e.Control)).AutoCompleteSource = AutoCompleteSource.CustomSource;  // departamentos
+                    ((TextBox)(e.Control)).AutoCompleteCustomSource = bultos;
+                }
+            }
+            else
+            {
+                if (e.Control is TextBox)
+                {
+                    ((TextBox)(e.Control)).AutoCompleteMode = AutoCompleteMode.None;
+                }
+            }
+            if (dataGridView1.CurrentCell.ColumnIndex == 2)   // columnas en MAYUSCULAS
             {
                 if (e.Control is TextBox)
                 {
@@ -2883,6 +2935,29 @@ namespace TransCarga
                     }
                 }
             }
+
+            //dataGridView1.CurrentCell = dataGridView1.Rows[e.RowIndex-1].Cells[e.ColumnIndex + 1];
+        }
+        private void dataGridView1_CellLeave(object sender, DataGridViewCellEventArgs e)
+        {
+            if (true)
+            {
+                /*int iColumn = dataGridView1.CurrentCell.ColumnIndex;
+                int iRow = dataGridView1.CurrentCell.RowIndex;
+                if (iColumn == dataGridView1.Columns.Count - 1)
+                    dataGridView1.CurrentCell = dataGridView1[0, iRow + 1];
+                else
+                {
+                    //dataGridView1.CurrentCell = dataGridView1[iColumn + 1, iRow];
+                    dataGridView1.CurrentCell = dataGridView1.Rows[iRow].Cells[iColumn + 1];
+                }
+                //MessageBox.Show("fila: "+dataGridView1.CurrentCell.RowIndex.ToString(),"columna:"+dataGridView1.CurrentCell.ColumnIndex.ToString());
+                */
+            }
+        }
+        private void dataGridView1_KeyDown(object sender, KeyEventArgs e)
+        {
+            //if (e.KeyCode == Keys.Enter) SendKeys.Send("{TAB}");
         }
         #endregion
 

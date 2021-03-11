@@ -795,7 +795,7 @@ namespace TransCarga
         //
         private void pictureBox1_Click(object sender, EventArgs e)
         {
-            string url = urlemis;   // hacer la pagina de Transcarga con estilo manual
+            string url = urlemis;   // direccion web del cliente
             Process.Start(url);
         }
         #endregion

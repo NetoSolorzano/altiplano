@@ -1077,7 +1077,6 @@
             this.tx_ubigRtt.Name = "tx_ubigRtt";
             this.tx_ubigRtt.Size = new System.Drawing.Size(45, 18);
             this.tx_ubigRtt.TabIndex = 11;
-            this.tx_ubigRtt.Visible = false;
             this.tx_ubigRtt.Leave += new System.EventHandler(this.textBox13_Leave);
             // 
             // tx_ubigDtt
@@ -1089,7 +1088,6 @@
             this.tx_ubigDtt.Name = "tx_ubigDtt";
             this.tx_ubigDtt.Size = new System.Drawing.Size(45, 18);
             this.tx_ubigDtt.TabIndex = 308;
-            this.tx_ubigDtt.Visible = false;
             this.tx_ubigDtt.Leave += new System.EventHandler(this.tx_ubigDtt_Leave);
             // 
             // tx_mldD
@@ -1280,6 +1278,7 @@
             this.tx_docsOr.Name = "tx_docsOr";
             this.tx_docsOr.Size = new System.Drawing.Size(323, 18);
             this.tx_docsOr.TabIndex = 20;
+            this.tx_docsOr.Enter += new System.EventHandler(this.tx_docsOr_Enter);
             this.tx_docsOr.Leave += new System.EventHandler(this.tx_docsOr_Leave);
             // 
             // label9
@@ -1315,10 +1314,12 @@
             this.dataGridView1.Size = new System.Drawing.Size(593, 162);
             this.dataGridView1.TabIndex = 23;
             this.dataGridView1.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellEndEdit);
+            this.dataGridView1.CellLeave += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellLeave);
             this.dataGridView1.CellValidating += new System.Windows.Forms.DataGridViewCellValidatingEventHandler(this.dataGridView1_CellValidating);
             this.dataGridView1.EditingControlShowing += new System.Windows.Forms.DataGridViewEditingControlShowingEventHandler(this.dataGridView1_EditingControlShowing);
             this.dataGridView1.RowLeave += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_RowLeave);
             this.dataGridView1.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.dataGridView1_RowsAdded);
+            this.dataGridView1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dataGridView1_KeyDown);
             // 
             // Cant
             // 

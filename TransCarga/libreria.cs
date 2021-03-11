@@ -2976,7 +2976,7 @@ namespace TransCarga
                         string result = reader.ReadToEnd();
                         string[] datos = result.Split('|');
 
-                        retorna[0] = datos[1];       // textBox4.Text razon social
+                        retorna[0] = datos[1].Replace("?","Ñ");       // textBox4.Text razon social
                                            //tx_situa.Text = datos[2];
                                            //tx_domic.Text = datos[3];
                         retorna[1] = datos[4];    // textBox13.Text ubigeo
