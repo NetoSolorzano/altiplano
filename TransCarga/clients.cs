@@ -745,7 +745,7 @@ namespace TransCarga
         }
         private void textBox12_Leave(object sender, EventArgs e)        // correo electrónico
         {
-            if(textBox12.Text != "")
+            if(textBox12.Text.Trim() != "")
             {
                 if(lib.email_bien_escrito(textBox12.Text.Trim()) == false)
                 {

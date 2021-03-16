@@ -86,8 +86,11 @@ namespace TransCarga
         DataTable dttd0 = new DataTable();
         DataTable dttd1 = new DataTable();
         DataTable dtm = new DataTable();
-        string[] datosR = { "" };
-        string[] datosD = { "" };
+        string[] datosR = { "" };                   // datos del remitente si existe en la B.D.
+        string[] datosD = { "" };                   // datos del destinatario si existe en la B.D.
+        string[] rl = { "" };                       // datos del NUEVO remitente
+        string[] dl = { "" };                       // datos del NUEVO destinatario
+
         public guiati()
         {
             InitializeComponent();
@@ -220,6 +223,8 @@ namespace TransCarga
             limpia_chk();
             limpia_otros();
             limpia_combos();
+            Array.Clear(rl, 0, rl.Length);
+            Array.Clear(dl, 0, dl.Length);
             claveSeg = "";
             dataGridView1.Rows.Clear();
             if (Tx_modo.Text == "NUEVO") dataGridView1.ReadOnly = false;
@@ -1560,6 +1565,47 @@ namespace TransCarga
                         }
                     }
                 }
+                string actua = "update anagrafiche set Direcc1=@ndir,ubigeo=@ubig,Localidad=@dist,Provincia=@prov,depart=@depa," +
+                    "verApp=@verApp,userm=@asd,fechm=now(),diriplan4=@iplan,diripwan4=@ipwan,nbname=@nbnam " +
+                    "where IDCategoria='CLI' AND tipdoc=@tdc1 AND RUC=@ndc1 AND id> 0";
+                if (v_clte_rem == "P" && tx_dat_tdRem.Text == vtc_ruc && tx_numDocRem.Text.Substring(0,2) == "20")
+                {
+                    using (MySqlCommand micon = new MySqlCommand(actua, conn))
+                    {
+                        micon.Parameters.AddWithValue("@tdc1", tx_dat_tdRem.Text);
+                        micon.Parameters.AddWithValue("@ndc1", tx_numDocRem.Text);
+                        micon.Parameters.AddWithValue("@ndir", rl[2]);
+                        micon.Parameters.AddWithValue("@ubig", rl[1]);
+                        micon.Parameters.AddWithValue("@dist", rl[5]);
+                        micon.Parameters.AddWithValue("@prov", rl[4]);
+                        micon.Parameters.AddWithValue("@depa", rl[3]);
+                        micon.Parameters.AddWithValue("@verApp", verapp);
+                        micon.Parameters.AddWithValue("@asd", asd);
+                        micon.Parameters.AddWithValue("@iplan", lib.iplan());
+                        micon.Parameters.AddWithValue("@ipwan", TransCarga.Program.vg_ipwan);
+                        micon.Parameters.AddWithValue("@nbnam", Environment.MachineName);
+                        micon.ExecuteNonQuery();
+                    }
+                }
+                if (v_clte_des == "P" && tx_dat_tDdest.Text == vtc_ruc && tx_numDocDes.Text.Substring(0,2) == "20")
+                {
+                    using (MySqlCommand micon = new MySqlCommand(actua, conn))
+                    {
+                        micon.Parameters.AddWithValue("@tdc1", tx_dat_tDdest.Text);
+                        micon.Parameters.AddWithValue("@ndc1", tx_numDocDes.Text);
+                        micon.Parameters.AddWithValue("@ndir", dl[2]);
+                        micon.Parameters.AddWithValue("@ubig", dl[1]);
+                        micon.Parameters.AddWithValue("@dist", dl[5]);
+                        micon.Parameters.AddWithValue("@prov", dl[4]);
+                        micon.Parameters.AddWithValue("@depa", dl[3]);
+                        micon.Parameters.AddWithValue("@verApp", verapp);
+                        micon.Parameters.AddWithValue("@asd", asd);
+                        micon.Parameters.AddWithValue("@iplan", lib.iplan());
+                        micon.Parameters.AddWithValue("@ipwan", TransCarga.Program.vg_ipwan);
+                        micon.Parameters.AddWithValue("@nbnam", Environment.MachineName);
+                        micon.ExecuteNonQuery();
+                    }
+                }
             }
             else
             {
@@ -1947,7 +1993,8 @@ namespace TransCarga
                         {
                             if (TransCarga.Program.vg_conSol == true) // conector solorsoft para ruc
                             {
-                                string[] rl = lib.conectorSolorsoft("RUC", tx_numDocRem.Text);
+                                //string[] rl = lib.conectorSolorsoft("RUC", tx_numDocRem.Text);
+                                rl = lib.conectorSolorsoft("RUC", tx_numDocRem.Text);
                                 tx_nomRem.Text = rl[0];      // razon social
                                 if (rb_car_clte.Checked == true)
                                 {
@@ -1956,6 +2003,10 @@ namespace TransCarga
                                     tx_dptoRtt.Text = rl[3];      // departamento
                                     tx_provRtt.Text = rl[4];      // provincia
                                     tx_distRtt.Text = rl[5];      // distrito
+                                }
+                                else
+                                {
+                                    // debe grabar la direccion en la maestra de clientes rl[]
                                 }
                                 v_clte_rem = "N";             // marca de cliente nuevo  
                             }
@@ -1968,7 +2019,8 @@ namespace TransCarga
                             if (TransCarga.Program.vg_conSol == true) // conector solorsoft para dni
                             {
                                 // COMENTADO TEMPORALMENTE PARA CARRION, HASTA ARREGLAR EL ASUNTO DEL ... 09/12/2020, arreglado 10/12/2020
-                                string[] rl = lib.conectorSolorsoft("DNI", tx_numDocRem.Text);
+                                //string[] rl = lib.conectorSolorsoft("DNI", tx_numDocRem.Text);
+                                rl = lib.conectorSolorsoft("DNI", tx_numDocRem.Text);
                                 tx_nomRem.Text = rl[0];      // nombre
                                 //tx_numDocRem.Text = rl[1];     // num dni
                                 v_clte_rem = "N";             // marca de cliente nuevo  
@@ -2052,16 +2104,21 @@ namespace TransCarga
                         {
                             if (TransCarga.Program.vg_conSol == true) // conector solorsoft para ruc
                             {
-                                string[] rl = lib.conectorSolorsoft("RUC", tx_numDocDes.Text);
-                                tx_nomDrio.Text = rl[0];      // razon social
+                                //string[] rl = lib.conectorSolorsoft("RUC", tx_numDocDes.Text);
+                                dl = lib.conectorSolorsoft("RUC", tx_numDocDes.Text);
+                                tx_nomDrio.Text = dl[0];      // razon social
                                 if (rb_ent_clte.Checked == true)
                                 {
-                                    tx_ubigDtt.Text = rl[1];     // ubigeo
-                                    tx_dirDrio.Text = rl[2];      // direccion
-                                    tx_dptoDrio.Text = rl[3];      // departamento
-                                    tx_proDrio.Text = rl[4];      // provincia
-                                    tx_disDrio.Text = rl[5];      // distrito
+                                    tx_ubigDtt.Text = dl[1];     // ubigeo
+                                    tx_dirDrio.Text = dl[2];      // direccion
+                                    tx_dptoDrio.Text = dl[3];      // departamento
+                                    tx_proDrio.Text = dl[4];      // provincia
+                                    tx_disDrio.Text = dl[5];      // distrito
                                     v_clte_des = "N";
+                                }
+                                else
+                                {
+                                    // debe grabar la direccion en la maestra de clientes rl[]
                                 }
                             }
                         }
@@ -2073,8 +2130,9 @@ namespace TransCarga
                             if (TransCarga.Program.vg_conSol == true) // conector solorsoft para dni
                             {
                                 // COMENTADO TEMPORALMENTE PARA CARRION, HASTA ARREGLAR EL ASUNTO DEL ... 09/12/2020 ... 10/12/2020
-                                string[] rl = lib.conectorSolorsoft("DNI", tx_numDocDes.Text);
-                                tx_nomDrio.Text = rl[0];      // nombre
+                                //string[] rl = lib.conectorSolorsoft("DNI", tx_numDocDes.Text);
+                                dl = lib.conectorSolorsoft("DNI", tx_numDocDes.Text);
+                                tx_nomDrio.Text = dl[0];      // nombre
                                 //tx_numDocDes.Text = rl[1];     // num dni
                                 //tx_nomDrio.ReadOnly = false;
                                 v_clte_des = "N";
@@ -3124,8 +3182,11 @@ namespace TransCarga
             rowcabeza.placa = tx_pla_placa.Text;
             rowcabeza.camion = tx_pla_carret.Text;
             rowcabeza.confvehi = tx_pla_confv.Text;
-            rowcabeza.rucPropiet = tx_pla_ruc.Text;
-            rowcabeza.nomPropiet = tx_pla_propiet.Text;
+            if (tx_pla_ruc.Text.Trim() != Program.ruc)              // si no es ruc de la empresa es contratado o tercero
+            {                                                       // en el formulario si muestra, en la impresion NO
+                rowcabeza.rucPropiet = tx_pla_ruc.Text;
+                rowcabeza.nomPropiet = tx_pla_propiet.Text;
+            }
             rowcabeza.fechora_imp = DateTime.Now.ToString();
             rowcabeza.userc = tx_digit.Text.Trim();
             //
