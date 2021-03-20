@@ -1150,7 +1150,7 @@ namespace TransCarga
             }
             if (provee == "secure")
             {
-                string ruta = rutatxt + "TXT/";
+                string ruta = rutatxt;
                 string archi = "";
                 if (accion == "alta")
                 {
@@ -1165,6 +1165,15 @@ namespace TransCarga
                             }
                         }
                     }
+                }
+                if (accion == "baja")
+                {
+                    //string _fecemi = tx_fechope.Text.Substring(6, 4) + "-" + tx_fechope.Text.Substring(3, 2) + "-" + tx_fechope.Text.Substring(0, 2);   
+                    string _fecemi = tx_fechact.Text.Substring(6, 4) + "-" + tx_fechact.Text.Substring(3, 2) + "-" + tx_fechact.Text.Substring(0, 2);   // fecha de emision   yyyy-mm-dd
+                    string _secuen = lib.Right("00" + ctab.ToString(), 3);
+                    string _codbaj = "RA" + "-" + tx_fechact.Text.Substring(6, 4) + tx_fechact.Text.Substring(3, 2) + tx_fechact.Text.Substring(0, 2);  // codigo comunicacion de baja
+                    archi = rucclie + "-" + _codbaj + "-" + _secuen;
+                    if (baja2TXT(tipdo, _fecemi, _codbaj, _secuen, ruta + archi, ctab, serie, corre) == true) retorna = true;
                 }
             }
             return retorna;
@@ -2007,6 +2016,46 @@ namespace TransCarga
             writer.Flush();
             writer.Close();
             retorna = true;
+            return retorna;
+        }
+        private bool baja2TXT(string tipdo, string _fecemi, string _codbaj, string _secuen, string file_path, int cuenta, string serie, string corre)
+        {
+            bool retorna = false;
+
+            string Prazsoc = nomclie.Trim();                                            // razon social del emisor
+            string Prucpro = Program.ruc;                                               // Ruc del emisor
+            string Pcrupro = "6";                                                       // codigo Ruc emisor
+            string motivo = "ANULACION";
+            string fecdoc = tx_fechope.Text.Substring(6, 4) + "-" + tx_fechope.Text.Substring(3, 2) + "-" + tx_fechope.Text.Substring(0, 2);   // fecha de emision   yyyy-mm-dd
+            /* ********************************************** GENERAMOS EL TXT de baja   ************************************* */
+            //string sep = "|";
+            char sep = (char)31;
+            StreamWriter writer;
+            file_path = file_path + ".txt";
+            writer = new StreamWriter(file_path);
+            writer.WriteLine("CONTROL" + sep + "31001");
+            writer.WriteLine("ENCABEZADO" + sep +
+                "" + sep +                      // 2 Id del comprobante erp emisor
+                Pcrupro + sep +                 // 3 tipo de documento del emisor
+                Prucpro + sep +                 // 4 ruc emisor
+                Prazsoc + sep +                 // 5 razon social emisor
+                _codbaj + "-" + _secuen + sep +       // 6 codigo identificador de la baja, secuencial dentro de cada día
+                fecdoc + sep +                  // 7 fecha del documento dado de baja
+                _fecemi + sep +                 // 8 fecha de la baja
+                Program.mailclte +              // 9 correo del emisor
+                ""                              // 10 correo del receptor
+            );
+            writer.WriteLine("I" + sep +
+                "1" + sep +
+                tipdo + sep +
+                serie + sep +
+                corre + sep +
+                motivo + sep
+            );
+            writer.Flush();
+            writer.Close();
+            retorna = true;
+
             return retorna;
         }
         #endregion

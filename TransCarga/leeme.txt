@@ -181,7 +181,8 @@ mejoras, correciones y adecuaciones varias
 - libreria, character set UTF-8, la ñ no lo esta reconociendo ...................................... ok 10/03/2021
 - form planicarga, formato desde form no imprime ................................................... ok 11/03/2021
 - form repsoper, no esta limpiando el datatable porque repite la misma planilla de carga ........... ok 11/03/2021
-form facelect, adecuando txt securenet para Altiplano .............................................. ok 16/03/2021
+form facelect, adecuando txt securenet para Altiplano altas ........................................ ok 16/03/2021
 form clients,  campo correo elect ..... no deja pasar en blanco, arreglar .......................... ok 16/03/2021
 form guiati, cuando el camion es propio NO DEBE IMPRIMIR EN GUIA datos de propietario .............. ok 16/03/2021
 form guiati, cuando el cliente es nuevo, ruc 20, su direc. fiscal debe guardarse ................... ok 16/03/2021 5:10 pm.
+form facelect, adecuando txt securenet para Altiplano bajas de numeración (anulacion) .............. 
