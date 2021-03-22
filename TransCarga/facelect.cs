@@ -1645,7 +1645,7 @@ namespace TransCarga
             row["Pweb1"] = "";                                                          // página web del emisor
             row["Prucpro"] = Program.ruc;                                               // Ruc del emisor
             row["Pcrupro"] = "6";                                                       // codigo Ruc emisor
-            row["_tipdoc"] = int.Parse(tipdo).ToString();                               // Tipo de documento de venta - 1 car
+            row["_tipdoc"] = tipdo;                                                     // Tipo de documento de venta - 1 car
             row["_moneda"] = tipoMoneda;                                                // Moneda del doc. de venta - 3 car
             row["_sercor"] = serie + "-" + corre;                                       // Serie y correlat concatenado F001-00000001 - 13 car
             row["Cnumdoc"] = tx_numDocRem.Text;                                         // numero de doc. del cliente - 15 car
@@ -1658,9 +1658,9 @@ namespace TransCarga
             row["depaAdq"] = tx_dptoRtt.Text.Trim();                                    // departamento del adquiriente
             row["distAdq"] = tx_distRtt.Text.Trim();                                    // distrito del adquiriente
             row["paisAdq"] = "PE";  // y si es boliviano o veneco???                    // pais del adquiriente
-            //row["_totoin"] = "0.00";                                                       // total operaciones inafectas
-            //row["_totoex"] = "0.00";                                                       // total operaciones exoneradas
-            //row["_toisc"] = "0.00";                                                        // total impuesto selectivo consumo
+            row["_totoin"] = "0.00";                                                       // total operaciones inafectas
+            row["_totoex"] = "0.00";                                                       // total operaciones exoneradas
+            row["_toisc"] = "";                                                         // total impuesto selectivo consumo
             row["_totogr"] = tx_flete.Text;                                             // Total valor venta operaciones grabadas n(12,2)  15
             row["_totven"] = tx_subt.Text;                                              // Importe total de la venta n(12,2)             15
             row["tipOper"] = "0101";                                                    // tipo de operacion - 4 car
@@ -1679,6 +1679,7 @@ namespace TransCarga
             row["monLet"] = tx_fletLetras.Text.Trim();                                  // monto en letras
             row["_horemi"] = "";                                                        // hora de emision del doc.venta
             row["_fvcmto"] = "";                                                        // fecha de vencimiento del doc.venta
+            row["plaPago"] = "";                                                        // plazo de pago cuando es credito
             row["corclie"] = Program.mailclte;                                          // correo del emisor
             row["_morefD"] = "";                                                        // moneda de refencia para el tipo de cambio
             row["_monobj"] = "";                                                        // moneda objetivo del tipo de cambio
@@ -1710,19 +1711,25 @@ namespace TransCarga
                 {
                     if (true)  // forma de pago, campos para usarse a partir del 01/04/2021 según resolucion sunat
                     {   // Convert.ToDateTime(fshoy) >= Convert.ToDateTime("2021-04-01")
+                        row["conPago"] = "01";
                         row["_forpa"] = "Contado";
                         row["_valcr"] = "";
+                        row["_fechc"] = row["_fecemi"];
                     }
                 }
                 if (rb_no.Checked == true)
                 {
-                    if (true)  // forma de pago, campos para usarse a partir del 01/04/2021 según resolucion sunat
-                    {   // Convert.ToDateTime(fshoy) >= Convert.ToDateTime("2021-04-01")
-                        row["_forpa"] = "Credito";
-                        row["_valcr"] = tx_flete.Text;
-                    }
                     string fansi = tx_fechope.Text.Substring(6, 4) + "-" + tx_fechope.Text.Substring(3, 2) + "-" + tx_fechope.Text.Substring(0, 2);
                     row["_fechc"] = DateTime.Parse(fansi).AddDays(double.Parse(tx_dat_dpla.Text)).Date.ToString("yyyy-MM-dd");        // fecha de emision + dias plazo credito
+                    if (true)  // forma de pago, campos para usarse a partir del 01/04/2021 según resolucion sunat
+                    {   // Convert.ToDateTime(fshoy) >= Convert.ToDateTime("2021-04-01")
+                        row["conPago"] = "02";
+                        row["_forpa"] = "Credito";
+                        row["_valcr"] = tx_flete.Text;
+                        row["plaPago"] = int.Parse(tx_dat_dpla.Text).ToString();
+                        row["_fvcmto"] = row["_fechc"];
+                        row["fvencto"] = row["_fechc"];
+                    }
                 }
             }
             /* *********************   calculo y campos de detracciones   ****************************** */
@@ -1799,17 +1806,17 @@ namespace TransCarga
             {
                 DataRow row = tdfe.NewRow();
                 row["Idatper"] = "";                                                        // datos personalizados del item
-                row["_msigv"] = double.Parse(dataGridView1.Rows[s].Cells["valor"].Value.ToString()) / (1 + (double.Parse(v_igv) / 100));
-                row["Ipreuni"] = double.Parse(dataGridView1.Rows[s].Cells["valor"].Value.ToString()).ToString("#0.00");     // Precio de venta unitario CON IGV
+                row["_msigv"] = Math.Round(double.Parse(dataGridView1.Rows[s].Cells["valor"].Value.ToString()) / (1 + (double.Parse(v_igv) / 100)),2);
+                row["Ipreuni"] = double.Parse(dataGridView1.Rows[s].Cells["valor"].Value.ToString()).ToString("#0.0000000000");     // Precio de venta unitario CON IGV
                 if (tx_dat_mone.Text != MonDeft && dataGridView1.Rows[s].Cells["codmondoc"].Value.ToString() == MonDeft)   // 
                 {
                     row["_msigv"] = Math.Round(double.Parse(dataGridView1.Rows[s].Cells["valor"].Value.ToString()) / (1 + (double.Parse(v_igv) / 100)) / double.Parse(tx_tipcam.Text), 2);
-                    row["Ipreuni"] = Math.Round(double.Parse(dataGridView1.Rows[s].Cells["valor"].Value.ToString()) / double.Parse(tx_tipcam.Text), 2).ToString("#0.00");
+                    row["Ipreuni"] = Math.Round(double.Parse(dataGridView1.Rows[s].Cells["valor"].Value.ToString()) / double.Parse(tx_tipcam.Text), 2).ToString("#0.0000000000");
                 }
                 if (tx_dat_mone.Text == MonDeft && dataGridView1.Rows[s].Cells["codmondoc"].Value.ToString() != MonDeft)
                 {
                     row["_msigv"] = Math.Round((double)row["_msigv"] * double.Parse(tx_tipcam.Text), 2);
-                    row["Ipreuni"] = Math.Round(double.Parse(dataGridView1.Rows[s].Cells["valor"].Value.ToString()) * double.Parse(tx_tipcam.Text), 2).ToString("#0.00");
+                    row["Ipreuni"] = Math.Round(double.Parse(dataGridView1.Rows[s].Cells["valor"].Value.ToString()) * double.Parse(tx_tipcam.Text), 2).ToString("#0.0000000000");
                 }
                 row["Inumord"] = (s + 1).ToString();                                        // numero de orden del item             5
                 row["Iumeded"] = "ZZ";                                                      // Unidad de medida                     3
@@ -1821,15 +1828,15 @@ namespace TransCarga
                 row["Inplaca"] = "";                                                        // numero placa de vehiculo
                 row["Idescri"] = glosser + " " + dataGridView1.Rows[s].Cells["Descrip"].Value.ToString();   // Descripcion
                 row["Idesglo"] = "";                                                        // descricion de la glosa del item 
-                row["Ivaluni"] = row["_msigv"].ToString();                                  // Valor unitario del item SIN IMPUESTO 
+                row["Ivaluni"] = Math.Round(double.Parse(row["_msigv"].ToString()),10).ToString();     // Valor unitario del item SIN IMPUESTO 
                 row["Ivalref"] = "";                                                        // valor referencial del item cuando la venta es gratuita
                 row["Iigvite"] = Math.Round(double.Parse(row["Ipreuni"].ToString()) - double.Parse(row["Ivaluni"].ToString()), 2).ToString("#0.00");     // monto IGV del item
                 //row["Imonbas"] = row["Ivaluni"];                                            // monto base (valor sin igv * cantidad)
                 //row["Isumigv"] = row["Iigvite"];                                            // Sumatoria de igv
                 row["Itasigv"] = Math.Round(double.Parse(v_igv), 2).ToString("#0.00");      // tasa del igv
                 row["Icatigv"] = "10";                                                      // Codigo afectacion al igv                    2
-                row["Icodtri"] = "";
-                //row["Iindgra"] = "";                                                        // indicador de gratuito
+                row["Icodtri"] = "1000";                                                    // codigo del tributo del item => igv = 1000
+                //row["Iindgra"] = "";                                                      // indicador de gratuito
                 row["Iiscmba"] = "";                                                        // ISC monto base
                 row["Iiscmon"] = "";                                                        // ISC monto del tributo
                 row["Icbper1"] = "";
@@ -1839,15 +1846,15 @@ namespace TransCarga
                 row["Iisctip"] = "";                                                        // ISC tipo de sistema
                 row["Iotrtri"] = "";                                                        // otros tributos monto base
                 row["Iotrlin"] = "";                                                        // otros tributos monto unitario
-                row["Itdscto"] = "";
-                row["Iincard"] = "";
+                row["Itdscto"] = "0.00";                                                    // descuento por item
+                row["Iincard"] = "2";                                                       // indicador de cargo/descuento => 2=No aplica cargo/descuento
                 row["Icodcde"] = "";
                 row["Ifcades"] = "";
                 row["Imoncde"] = "";
                 row["Imobacd"] = "";
                 row["Iotrtas"] = "";                                                        // otros tributos tasa del tributo
                 //row["Iotrsis"] = "";                                                        // otros tributos tipo de sistema
-                row["Ivalvta"] = row["Ipreuni"];                                            // Valor de venta del ítem
+                row["Ivalvta"] = Math.Round(double.Parse(row["Ipreuni"].ToString()),10).ToString("#0.00");       // Valor de venta del ítem
                 retorna = true;
                 tdfe.Rows.Add(row);
             }
@@ -1862,7 +1869,7 @@ namespace TransCarga
             StreamWriter writer;
             file_path = file_path + ".txt";
             writer = new StreamWriter(file_path);
-            writer.WriteLine("CONTROL" + sep + "31007");
+            writer.WriteLine("CONTROL" + sep + "31007" + sep);
             writer.WriteLine("ENCABEZADO" + sep +
                 "" + sep +                                      // 2 id del erp emisor
                 row["_tipdoc"] + sep +                          // 3 Tipo de Comprobante Electrónico
@@ -1873,7 +1880,7 @@ namespace TransCarga
                 "" + sep + "" + sep + "" + sep +                // 8,9,10, tcambio, vendedor, unidad de negocio
                 row["tipOper"] + sep +                          // 11 Tipo de Operación
                 "" + sep + "" + sep + "" + sep +                // 12,13,14 monto anticipos, numero, ruc emisor,
-                "" + sep + "" + sep + "0.00" + sep +            // 15,16,17 total anticipos
+                "" + sep + "" + sep + "" + sep +                // 15,16,17 total anticipos
                 "" + sep + "" + sep + "" + sep + "" + sep +     // 18,19,20,21 Tipo de nota(Crédito/Débito),Tipo del documento afectado,Numeración de documento afectado,Motivo del documento afectado
                 row["conPago"] + sep +                          // 22 Condición de Pago
                 row["plaPago"] + sep +                          // 23 Plazo de Pago
@@ -1891,13 +1898,13 @@ namespace TransCarga
                 row["_totoex"] + sep +                          // 54 total operaciones exoneradas
                 "0.00" + sep +                                  // 55 Total operaciones exportacion
                 "0.00" + sep +                                  // 56 total operaciones gratuitas gratuitas
-                "" + sep +                                      // 57 monto impuestos operaciones gratuitas V.3006
+                "0.00" + sep +                                  // 57 monto impuestos operaciones gratuitas V.3006
                 "" + sep +                                      // 58 Monto Fondo Inclusión Social Energético FISE
                 row["totImp"] + sep +                           // 59 Total IGV
                 row["_toisc"] + sep +                           // 60 Total ISC
                 "" + sep + "" + sep + "" + sep + "" + sep + "" + sep +  // 61,62,63,64,65  indicador imp,cod.motivo,factor dscto,monto dscto,monto base
-                "0.00" + sep + "0.00" + sep + "" + sep +        // 66,67,68 Total otros tributos,Total otros cargos
-                "" + sep +                                      // 69 Descuento Global
+                "" + sep + "0.00" + sep + "0.00" + sep +        // 66,67,68 Total otros tributos,Total otros cargos
+                "0.00" + sep +                                  // 69 Descuento Global
                 "0.00" + sep +                                  // 70 Total descuento
                 row["_totven"] + sep +                          // 71 Importe total de la venta
                 "" + sep +                                      // 72 monto para redondeo del importe total V.3006
@@ -1906,18 +1913,18 @@ namespace TransCarga
                 "" + sep +                                      // 75 Leyenda: Bienes transferidos en la Amazonía
                 "" + sep +                                      // 76 Leyenda: Servicios prestados en la Amazonía
                 "" + sep +                                      // 77 Leyenda: Contratos de construcción ejecutados en la Amazonía
-                "" + sep + "" + sep + "");                      // 78,79,80 Leyenda: Exoneradas,Leyenda: Inafectas,Leyenda: Emisor itinerante
+                "" + sep + "" + sep + "" + sep);                // 78,79,80 Leyenda: Exoneradas,Leyenda: Inafectas,Leyenda: Emisor itinerante
             if (row["_forpa"].ToString() == "Credito")
             {
                 string fansi = tx_fechope.Text.Substring(6, 4) + "-" + tx_fechope.Text.Substring(3, 2) + "-" + tx_fechope.Text.Substring(0, 2);
                 string _fechc = DateTime.Parse(fansi).AddDays(double.Parse(tx_dat_dpla.Text)).Date.ToString("yyyy-MM-dd");        // fecha de emision + dias plazo credito
                 writer.WriteLine("ENCABEZADO-CREDITO" + sep +
-                    row["_totven"]                              // OJO, las ventas a credito, son totales, no tenemos pagos parciales facturados, factura = pago total
+                    row["_totven"] + sep                        // OJO, las ventas a credito, son totales, no tenemos pagos parciales facturados, factura = pago total
                     );
                 writer.WriteLine("DETALLE-CREDITO" + sep +
                     "Cuota001" + sep +                          // 2 numero de cuota
                     row["_totven"] + sep +                      // 3 monto de la cuota
-                    _fechc                                      // 4 fecha del pago
+                    _fechc + sep                                // 4 fecha del pago
                     );
             }
             //
@@ -1939,7 +1946,7 @@ namespace TransCarga
                 row["codLocE"] + sep +                          // 14 codigo local anexo sunat
                 row["Ptelef1"] + sep +                          // 15 Teléfono
                 "" + sep +                                      // 16 Fax
-                row["corclie"]);                                // 17 Correo-Emisor
+                row["corclie"] + sep);                          // 17 Correo-Emisor
             if (row["Ctipdoc"].ToString() == "0") row["Cnumdoc"] = "";
             writer.WriteLine("ENCABEZADO-RECEPTOR" + sep +
                 row["Ctipdoc"] + sep +                          // 2 Tipo de documento del cliente
@@ -1955,7 +1962,7 @@ namespace TransCarga
                 row["distAdq"] + sep +                          // 12 Distrito
                 "" + sep +                                      // 13 Urbanización   dir2Adq
                 row["dir1Adq"] + sep +                          // 14 Dirección
-                row["maiAdq"]);                                 // 15 Correo-Receptor
+                row["maiAdq"] + sep);                           // 15 Correo-Receptor
             //
             // datos de percepcion
             // datos de retencion
@@ -1969,7 +1976,7 @@ namespace TransCarga
                     row["d_codse"] + sep +                      // 4 codigo de servicio
                     row["d_ctade"] + sep +                      // 5 cuenta detraccion BN
                     row["d_medpa"] + sep +                      // 6 medio de pago
-                    row["glosdet"]);                            // 7 leyenda de la detración
+                    row["glosdet"] + sep);                      // 7 leyenda de la detración
             }
             // ***** DETALLE ***** //
             foreach (DataRow rdrow in tdfe.Rows)
@@ -1990,7 +1997,7 @@ namespace TransCarga
                     rdrow["Ivaluni"] + sep +                    // 13 Valor unitario del item SIN IMPUESTO 
                     rdrow["Ipreuni"] + sep +                    // 14 Precio de venta unitario CON IGV
                     rdrow["Ivalref"] + sep +                    // 15 valor referencial del item cuando la venta es gratuita
-                    rdrow["_msigv"] + sep +                     // 16 monto igv
+                    rdrow["Iigvite"] + sep +                     // 16 monto igv   .. ."_msigv"
                     rdrow["Icatigv"] + sep +                    // 17 tipo/codigo de afectacion igv
                     rdrow["Itasigv"] + sep +                    // 18 tasa del igv
                     rdrow["Iigvite"] + sep +                    // 19 monto IGV del item
@@ -2011,7 +2018,7 @@ namespace TransCarga
                     rdrow["Ifcades"] + sep +                    // 34 Factor de cargo/descuento
                     rdrow["Imoncde"] + sep +                    // 35 Monto de cargo/descuento
                     rdrow["Imobacd"] + sep +                    // 36 Monto base del cargo/descuento
-                    rdrow["Ivalvta"]);                          // 37 Valor de venta del ítem
+                    rdrow["Ivalvta"] + sep);                    // 37 Valor de venta del ítem
             }
             writer.Flush();
             writer.Close();
