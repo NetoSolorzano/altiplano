@@ -411,7 +411,6 @@ namespace TransCarga
                                 {
                                     MessageBox.Show(resulta, "Error en actualización de seguimiento", MessageBoxButtons.OK, MessageBoxIcon.Error);
                                 }
-                                this.Close();
                                 if (keta == "CERRAR")
                                 {
                                     var aaa = MessageBox.Show("Desea imprimir el cuadre de caja?", "Confirme", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
@@ -436,6 +435,7 @@ namespace TransCarga
                                         }
                                     }
                                 }
+                                this.Close();
                             }
                         }
                     }

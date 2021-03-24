@@ -1661,12 +1661,12 @@ namespace TransCarga
             row["_totoin"] = "0.00";                                                       // total operaciones inafectas
             row["_totoex"] = "0.00";                                                       // total operaciones exoneradas
             row["_toisc"] = "";                                                         // total impuesto selectivo consumo
-            row["_totogr"] = tx_flete.Text;                                             // Total valor venta operaciones grabadas n(12,2)  15
-            row["_totven"] = tx_subt.Text;                                              // Importe total de la venta n(12,2)             15
+            row["_totogr"] = tx_subt.Text;                                              // Total valor venta operaciones grabadas n(12,2)  15
+            row["_totven"] = tx_flete.Text;                                             // Importe total de la venta n(12,2)             15
             row["tipOper"] = "0101";                                                    // tipo de operacion - 4 car
             row["codLocE"] = Program.codlocsunat;                                       // codigo local emisor
             //row["conPago"] = "01";                                                      // condicion de pago
-            //row["_codgui"] = "31";                                                      // Código de la guia de remision TRANSPORTISTA
+            row["_codgui"] = "31";                                                      // Código de la guia de remision TRANSPORTISTA
             row["_scotro"] = dataGridView1.Rows[0].Cells[0].Value.ToString();           // serie y numero concatenado de la guia
             row["obser1"] = tx_obser1.Text.Trim();                                      // observacion del documento
             //row["obser2"] = "";                                                         // mas observaciones
@@ -1828,7 +1828,7 @@ namespace TransCarga
                 row["Inplaca"] = "";                                                        // numero placa de vehiculo
                 row["Idescri"] = glosser + " " + dataGridView1.Rows[s].Cells["Descrip"].Value.ToString();   // Descripcion
                 row["Idesglo"] = "";                                                        // descricion de la glosa del item 
-                row["Ivaluni"] = Math.Round(double.Parse(row["_msigv"].ToString()),10).ToString();     // Valor unitario del item SIN IMPUESTO 
+                row["Ivaluni"] = Math.Round((double.Parse(row["Ipreuni"].ToString()) - double.Parse(row["_msigv"].ToString())), 10).ToString();     // Valor unitario del item SIN IMPUESTO 
                 row["Ivalref"] = "";                                                        // valor referencial del item cuando la venta es gratuita
                 row["Iigvite"] = Math.Round(double.Parse(row["Ipreuni"].ToString()) - double.Parse(row["Ivaluni"].ToString()), 2).ToString("#0.00");     // monto IGV del item
                 //row["Imonbas"] = row["Ivaluni"];                                            // monto base (valor sin igv * cantidad)
