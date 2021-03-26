@@ -3062,12 +3062,28 @@ namespace TransCarga
             }
             return retorna;
         }
-        public bool valcaja(string codcaj)
+        public bool valcaja(string codcaj)              // pasa naaaa
         {
             bool retorna = false;
             // mejor no ... en cada form donde tenga que ver la caja debe jalarse la caja actual y su estado, todo esta
             // lógica debe hacerce en el jalainfo .... 03/12/2020
             return retorna;
+        }
+        public bool DirectoryVisible(string path)                           // valida existencia y acceso al directorio
+        {
+            try
+            {
+                Directory.GetAccessControl(path);
+                return true;
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 

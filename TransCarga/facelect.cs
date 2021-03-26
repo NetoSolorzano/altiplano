@@ -92,6 +92,8 @@ namespace TransCarga
         string otro = "";               // ruta y nombre del png código QR
         string caractNo = "";           // caracter prohibido en campos texto, caracter delimitador para los TXT
         string nipfe = "";              // nombre identificador del proveedor de fact electronica
+        string glosaAnul = "";          // texto motivo de baja/anulacion en los TXT para el pse/ose
+        string tipdocAnu = "";          // Tipos de documentos que se pueden dar de baja
         //
         static libreria lib = new libreria();   // libreria de procedimientos
         publico lp = new publico();             // libreria de clases
@@ -368,6 +370,8 @@ namespace TransCarga
                             if (row["param"].ToString() == "correo_c1") correo_gen = row["valor"].ToString().Trim();
                             if (row["param"].ToString() == "caracterNo") caractNo = row["valor"].ToString().Trim();
                             if (row["param"].ToString() == "ose-pse") nipfe = row["valor"].ToString().Trim();
+                            if (row["param"].ToString() == "motivoBaja") glosaAnul = row["valor"].ToString().Trim();
+                            if (row["param"].ToString() == "tipsDocbaja") tipdocAnu = row["valor"].ToString().Trim();
                         }
                     }
                     if (row["formulario"].ToString() == "ayccaja" && row["campo"].ToString() == "estado")
@@ -1168,12 +1172,14 @@ namespace TransCarga
                 }
                 if (accion == "baja")
                 {
-                    //string _fecemi = tx_fechope.Text.Substring(6, 4) + "-" + tx_fechope.Text.Substring(3, 2) + "-" + tx_fechope.Text.Substring(0, 2);   
-                    string _fecemi = tx_fechact.Text.Substring(6, 4) + "-" + tx_fechact.Text.Substring(3, 2) + "-" + tx_fechact.Text.Substring(0, 2);   // fecha de emision   yyyy-mm-dd
-                    string _secuen = lib.Right("00" + ctab.ToString(), 3);
-                    string _codbaj = "RA" + "-" + tx_fechact.Text.Substring(6, 4) + tx_fechact.Text.Substring(3, 2) + tx_fechact.Text.Substring(0, 2);  // codigo comunicacion de baja
-                    archi = rucclie + "-" + _codbaj + "-" + _secuen;
-                    if (baja2TXT(tipdo, _fecemi, _codbaj, _secuen, ruta + archi, ctab, serie, corre) == true) retorna = true;
+                    if (tipdocAnu.Contains(tipdo))  // este pse no permite hacer bajas de Boletas .... que monses !!
+                    {
+                        string _fecemi = tx_fechact.Text.Substring(6, 4) + "-" + tx_fechact.Text.Substring(3, 2) + "-" + tx_fechact.Text.Substring(0, 2);   // fecha de emision   yyyy-mm-dd
+                        string _secuen = lib.Right("00" + ctab.ToString(), 3);
+                        string _codbaj = "RA" + "-" + tx_fechact.Text.Substring(6, 4) + tx_fechact.Text.Substring(3, 2) + tx_fechact.Text.Substring(0, 2);  // codigo comunicacion de baja
+                        archi = rucclie + "-" + _codbaj + "-" + _secuen;
+                        if (baja2TXT(tipdo, _fecemi, _codbaj, _secuen, ruta + archi, ctab, serie, corre) == true) retorna = true;
+                    }
                 }
             }
             return retorna;
@@ -1267,15 +1273,27 @@ namespace TransCarga
                         _valcr = "";
                     }
                 }
-                if (rb_no.Checked == true)
+                else
                 {
-                    if (Convert.ToDateTime(fshoy) >= Convert.ToDateTime("2021-04-01"))  // forma de pago, campos para usarse a partir del 01/04/2021 según resolucion sunat
+                    if (rb_no.Checked == true)
                     {
-                        _forpa = "Credito";
-                        _valcr = tx_flete.Text;
+                        if (tx_dat_dpla.Text.Trim() == "") tx_dat_dpla.Text = "7";
+                        if (Convert.ToDateTime(fshoy) >= Convert.ToDateTime("2021-04-01"))  // forma de pago, campos para usarse a partir del 01/04/2021 según resolucion sunat
+                        {
+                            _forpa = "Credito";
+                            _valcr = tx_flete.Text;
+                        }
+                        string fansi = tx_fechope.Text.Substring(6, 4) + "-" + tx_fechope.Text.Substring(3, 2) + "-" + tx_fechope.Text.Substring(0, 2);
+                        _fechc = DateTime.Parse(fansi).AddDays(double.Parse(tx_dat_dpla.Text)).Date.ToString("yyyy-MM-dd");        // fecha de emision + dias plazo credito
                     }
-                    string fansi = tx_fechope.Text.Substring(6, 4) + "-" + tx_fechope.Text.Substring(3, 2) + "-" + tx_fechope.Text.Substring(0, 2);
-                    _fechc = DateTime.Parse(fansi).AddDays(double.Parse(tx_dat_dpla.Text)).Date.ToString("yyyy-MM-dd");        // fecha de emision + dias plazo credito
+                    else
+                    {
+                        if (Convert.ToDateTime(fshoy) >= Convert.ToDateTime("2021-04-01"))  // forma de pago, campos para usarse a partir del 01/04/2021 según resolucion sunat
+                        {
+                            _forpa = "Contado";
+                            _valcr = "";
+                        }
+                    }
                 }
             }
             /* *********************   calculo y campos de detracciones   ****************************** */
@@ -1598,7 +1616,7 @@ namespace TransCarga
             string Prazsoc = nomclie.Trim();                                            // razon social del emisor
             string Prucpro = Program.ruc;                                               // Ruc del emisor
             string Pcrupro = "6";                                                       // codigo Ruc emisor
-            string motivo = "ANULACION";
+            string motivo = glosaAnul;          // "ANULACION";
             string fecdoc = tx_fechope.Text.Substring(6, 4) + "-" + tx_fechope.Text.Substring(3, 2) + "-" + tx_fechope.Text.Substring(0, 2);   // fecha de emision   yyyy-mm-dd
             /* ********************************************** GENERAMOS EL TXT    ************************************* */
             string sep = "|";    // char sep = (char)31;
@@ -1717,18 +1735,29 @@ namespace TransCarga
                         row["_fechc"] = row["_fecemi"];
                     }
                 }
-                if (rb_no.Checked == true)
+                else
                 {
-                    string fansi = tx_fechope.Text.Substring(6, 4) + "-" + tx_fechope.Text.Substring(3, 2) + "-" + tx_fechope.Text.Substring(0, 2);
-                    row["_fechc"] = DateTime.Parse(fansi).AddDays(double.Parse(tx_dat_dpla.Text)).Date.ToString("yyyy-MM-dd");        // fecha de emision + dias plazo credito
-                    if (true)  // forma de pago, campos para usarse a partir del 01/04/2021 según resolucion sunat
-                    {   // Convert.ToDateTime(fshoy) >= Convert.ToDateTime("2021-04-01")
-                        row["conPago"] = "02";
-                        row["_forpa"] = "Credito";
-                        row["_valcr"] = tx_flete.Text;
-                        row["plaPago"] = int.Parse(tx_dat_dpla.Text).ToString();
-                        row["_fvcmto"] = row["_fechc"];
-                        row["fvencto"] = row["_fechc"];
+                    if (rb_no.Checked == true)
+                    {
+                        if (tx_dat_dpla.Text.Trim() == "") tx_dat_dpla.Text = "7";
+                        string fansi = tx_fechope.Text.Substring(6, 4) + "-" + tx_fechope.Text.Substring(3, 2) + "-" + tx_fechope.Text.Substring(0, 2);
+                        row["_fechc"] = DateTime.Parse(fansi).AddDays(double.Parse(tx_dat_dpla.Text)).Date.ToString("yyyy-MM-dd");        // fecha de emision + dias plazo credito
+                        if (true)  // forma de pago, campos para usarse a partir del 01/04/2021 según resolucion sunat
+                        {   // Convert.ToDateTime(fshoy) >= Convert.ToDateTime("2021-04-01")
+                            row["conPago"] = "02";
+                            row["_forpa"] = "Credito";
+                            row["_valcr"] = tx_flete.Text;
+                            row["plaPago"] = int.Parse(tx_dat_dpla.Text).ToString();
+                            row["_fvcmto"] = row["_fechc"];
+                            row["fvencto"] = row["_fechc"];
+                        }
+                    }
+                    else
+                    {   // SI NO ESTA CHECK EN SI TAMPOCO ESTA EN NO, ENTONCES SE ASUME SI, EFECTIVO
+                        row["conPago"] = "01";
+                        row["_forpa"] = "Contado";
+                        row["_valcr"] = "";
+                        row["_fechc"] = row["_fecemi"];
                     }
                 }
             }
@@ -1806,17 +1835,21 @@ namespace TransCarga
             {
                 DataRow row = tdfe.NewRow();
                 row["Idatper"] = "";                                                        // datos personalizados del item
-                row["_msigv"] = Math.Round(double.Parse(dataGridView1.Rows[s].Cells["valor"].Value.ToString()) / (1 + (double.Parse(v_igv) / 100)),2);
+                row["_msigv"] = Math.Round(double.Parse(dataGridView1.Rows[s].Cells["valor"].Value.ToString()) - (double.Parse(dataGridView1.Rows[s].Cells["valor"].Value.ToString()) / (1 + (double.Parse(v_igv) / 100))),2);
                 row["Ipreuni"] = double.Parse(dataGridView1.Rows[s].Cells["valor"].Value.ToString()).ToString("#0.0000000000");     // Precio de venta unitario CON IGV
+                row["Ivaluni"] = (double.Parse(dataGridView1.Rows[s].Cells["valor"].Value.ToString()) - (double)row["_msigv"]).ToString("#0.0000000000");
                 if (tx_dat_mone.Text != MonDeft && dataGridView1.Rows[s].Cells["codmondoc"].Value.ToString() == MonDeft)   // 
                 {
-                    row["_msigv"] = Math.Round(double.Parse(dataGridView1.Rows[s].Cells["valor"].Value.ToString()) / (1 + (double.Parse(v_igv) / 100)) / double.Parse(tx_tipcam.Text), 2);
+                    //row["_msigv"] = Math.Round(double.Parse(dataGridView1.Rows[s].Cells["valor"].Value.ToString()) / (1 + (double.Parse(v_igv) / 100)) / double.Parse(tx_tipcam.Text), 2);
+                    row["_msigv"] = Math.Round(((double)row["_msigv"] / double.Parse(tx_tipcam.Text)), 2);
                     row["Ipreuni"] = Math.Round(double.Parse(dataGridView1.Rows[s].Cells["valor"].Value.ToString()) / double.Parse(tx_tipcam.Text), 2).ToString("#0.0000000000");
+                    row["Ivaluni"] = ((double)row["Ivaluni"] / double.Parse(tx_tipcam.Text)).ToString("#0.0000000000");
                 }
                 if (tx_dat_mone.Text == MonDeft && dataGridView1.Rows[s].Cells["codmondoc"].Value.ToString() != MonDeft)
                 {
                     row["_msigv"] = Math.Round((double)row["_msigv"] * double.Parse(tx_tipcam.Text), 2);
                     row["Ipreuni"] = Math.Round(double.Parse(dataGridView1.Rows[s].Cells["valor"].Value.ToString()) * double.Parse(tx_tipcam.Text), 2).ToString("#0.0000000000");
+                    row["Ivaluni"] = ((double)row["Ivaluni"] * double.Parse(tx_tipcam.Text)).ToString("#0.0000000000");
                 }
                 row["Inumord"] = (s + 1).ToString();                                        // numero de orden del item             5
                 row["Iumeded"] = "ZZ";                                                      // Unidad de medida                     3
@@ -1828,9 +1861,10 @@ namespace TransCarga
                 row["Inplaca"] = "";                                                        // numero placa de vehiculo
                 row["Idescri"] = glosser + " " + dataGridView1.Rows[s].Cells["Descrip"].Value.ToString();   // Descripcion
                 row["Idesglo"] = "";                                                        // descricion de la glosa del item 
-                row["Ivaluni"] = Math.Round((double.Parse(row["Ipreuni"].ToString()) - double.Parse(row["_msigv"].ToString())), 10).ToString();     // Valor unitario del item SIN IMPUESTO 
+                //row["Ivaluni"] = Math.Round((double.Parse(row["Ipreuni"].ToString()) - double.Parse(row["_msigv"].ToString())), 10).ToString();     // Valor unitario del item SIN IMPUESTO 
                 row["Ivalref"] = "";                                                        // valor referencial del item cuando la venta es gratuita
-                row["Iigvite"] = Math.Round(double.Parse(row["Ipreuni"].ToString()) - double.Parse(row["Ivaluni"].ToString()), 2).ToString("#0.00");     // monto IGV del item
+                //row["Iigvite"] = Math.Round(double.Parse(row["Ipreuni"].ToString()) - double.Parse(row["Ivaluni"].ToString()), 2).ToString("#0.00");     // monto IGV del item
+                row["Iigvite"] = row["_msigv"];
                 //row["Imonbas"] = row["Ivaluni"];                                            // monto base (valor sin igv * cantidad)
                 //row["Isumigv"] = row["Iigvite"];                                            // Sumatoria de igv
                 row["Itasigv"] = Math.Round(double.Parse(v_igv), 2).ToString("#0.00");      // tasa del igv
@@ -1854,7 +1888,8 @@ namespace TransCarga
                 row["Imobacd"] = "";
                 row["Iotrtas"] = "";                                                        // otros tributos tasa del tributo
                 //row["Iotrsis"] = "";                                                        // otros tributos tipo de sistema
-                row["Ivalvta"] = Math.Round(double.Parse(row["Ipreuni"].ToString()),10).ToString("#0.00");       // Valor de venta del ítem
+                //row["Ivalvta"] = Math.Round(double.Parse(row["Ipreuni"].ToString()),10).ToString("#0.00");       // Valor de venta del ítem
+                row["Ivalvta"] = Math.Round(double.Parse(row["Ivaluni"].ToString()), 10).ToString("#0.00");       // Valor de venta del ítem
                 retorna = true;
                 tdfe.Rows.Add(row);
             }
@@ -2032,7 +2067,7 @@ namespace TransCarga
             string Prazsoc = nomclie.Trim();                                            // razon social del emisor
             string Prucpro = Program.ruc;                                               // Ruc del emisor
             string Pcrupro = "6";                                                       // codigo Ruc emisor
-            string motivo = "ANULACION";
+            string motivo = glosaAnul;      // "ANULACION";
             string fecdoc = tx_fechope.Text.Substring(6, 4) + "-" + tx_fechope.Text.Substring(3, 2) + "-" + tx_fechope.Text.Substring(0, 2);   // fecha de emision   yyyy-mm-dd
             /* ********************************************** GENERAMOS EL TXT de baja   ************************************* */
             //string sep = "|";
@@ -2043,16 +2078,16 @@ namespace TransCarga
             writer.WriteLine("CONTROL" + sep + "31001");
             writer.WriteLine("ENCABEZADO" + sep +
                 "" + sep +                      // 2 Id del comprobante erp emisor
-                Pcrupro + sep +                 // 3 tipo de documento del emisor
+                "RA" + sep +                    // 3 tipo de comprobante
                 Prucpro + sep +                 // 4 ruc emisor
                 Prazsoc + sep +                 // 5 razon social emisor
                 _codbaj + "-" + _secuen + sep +       // 6 codigo identificador de la baja, secuencial dentro de cada día
-                fecdoc + sep +                  // 7 fecha del documento dado de baja
-                _fecemi + sep +                 // 8 fecha de la baja
+                _fecemi + sep +                 // 7 fecha de la baja  
+                fecdoc + sep +                  // 8 fecha del documento dado de baja
                 Program.mailclte +              // 9 correo del emisor
-                ""                              // 10 correo del receptor
+                "" + sep                        // 10 correo del receptor
             );
-            writer.WriteLine("I" + sep +
+            writer.WriteLine("ITEM" + sep +
                 "1" + sep +
                 tipdo + sep +
                 serie + sep +
@@ -2349,36 +2384,45 @@ namespace TransCarga
                     var aa = MessageBox.Show("Confirma que desea crear el documento?", "Confirme por favor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                     if (aa == DialogResult.Yes)
                     {
-                        if (graba() == true)
+                        if (lib.DirectoryVisible(rutatxt) == true)
                         {
-                            if (factElec(nipfe, "txt", "alta", 0) == true)       // facturacion electrónica
+                            if (graba() == true)
                             {
-                                // actualizamos la tabla seguimiento de usuarios
-                                string resulta = lib.ult_mov(nomform, nomtab, asd);
-                                if (resulta != "OK")
+                                if (factElec(nipfe, "txt", "alta", 0) == true)       // facturacion electrónica
                                 {
-                                    MessageBox.Show(resulta, "Error en actualización de seguimiento", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    // actualizamos la tabla seguimiento de usuarios
+                                    string resulta = lib.ult_mov(nomform, nomtab, asd);
+                                    if (resulta != "OK")
+                                    {
+                                        MessageBox.Show(resulta, "Error en actualización de seguimiento", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    }
+                                    //  TODO DOC.VTA. SE ENVIA A LA ETIQUETERA DE FRENTE ... 28/10/2020
+                                    //  AL GRABAR SE ASUME IMPRESA 28/10/2020 ... ya no 13/12/2020
+                                    var bb = MessageBox.Show("Desea imprimir el documento?" + Environment.NewLine +
+                                        "El formato actual es " + vi_formato, "Confirme por favor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                                    if (bb == DialogResult.Yes)
+                                    {
+                                        Bt_print.PerformClick();
+                                    }
                                 }
-                                //  TODO DOC.VTA. SE ENVIA A LA ETIQUETERA DE FRENTE ... 28/10/2020
-                                //  AL GRABAR SE ASUME IMPRESA 28/10/2020 ... ya no 13/12/2020
-                                var bb = MessageBox.Show("Desea imprimir el documento?" + Environment.NewLine +
-                                    "El formato actual es " + vi_formato, "Confirme por favor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                                if (bb == DialogResult.Yes)
+                                else
                                 {
-                                    Bt_print.PerformClick();
+                                    MessageBox.Show("No se puede generar el documento de venta electrónico" + Environment.NewLine +
+                                        "Se generó una anulación interna para el presente documento", "Error en proveedor de Fact.Electrónica");
+                                    iserror = "si";
+                                    anula("INT");
                                 }
                             }
                             else
                             {
-                                MessageBox.Show("No se puede generar el documento de venta electrónico" + Environment.NewLine +
-                                    "Se generó una anulación interna para el presente documento", "Error en proveedor de Fact.Electrónica");
+                                MessageBox.Show("No se puede grabar el documento de venta electrónico", "Error en conexión");
                                 iserror = "si";
-                                anula("INT");
                             }
                         }
                         else
                         {
-                            MessageBox.Show("No se puede grabar el documento de venta electrónico","Error en conexión");
+                            MessageBox.Show("No existe ruta o no es valida para" + Environment.NewLine +
+                                        "generar la anulación electrónica", "Ruta para Fact.Electrónica", MessageBoxButtons.OK, MessageBoxIcon.Hand);
                             iserror = "si";
                         }
                     }
@@ -2474,15 +2518,23 @@ namespace TransCarga
                             var aa = MessageBox.Show("Confirma que desea ANULAR el documento?", "Confirme por favor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                             if (aa == DialogResult.Yes)
                             {
-                                int cta = anula("FIS");      // cantidad de doc.vtas anuladas en la fecha
-
-                                if (factElec("Horizont", "txt", "baja", cta) == true)
+                                if (lib.DirectoryVisible(rutatxt) == true)
                                 {
-                                    string resulta = lib.ult_mov(nomform, nomtab, asd);
-                                    if (resulta != "OK")
+                                    int cta = anula("FIS");      // cantidad de doc.vtas anuladas en la fecha
+                                    if (factElec(nipfe, "txt", "baja", cta) == true)
                                     {
-                                        MessageBox.Show(resulta, "Error en actualización de seguimiento", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                        string resulta = lib.ult_mov(nomform, nomtab, asd);
+                                        if (resulta != "OK")
+                                        {
+                                            MessageBox.Show(resulta, "Error en actualización de seguimiento", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                        }
                                     }
+                                }
+                                else
+                                {
+                                    MessageBox.Show("No existe ruta o no es valida para" + Environment.NewLine +
+                                        "generar la anulación electrónica","Ruta para Fact.Electrónica",MessageBoxButtons.OK,MessageBoxIcon.Hand);
+                                    iserror = "si";
                                 }
                             }
                             else
@@ -2509,15 +2561,23 @@ namespace TransCarga
                         var aa = MessageBox.Show("Confirma que desea ANULAR el documento?", "Confirme por favor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                         if (aa == DialogResult.Yes)
                         {
-                            int cta = anula("FIS");      // cantidad de doc.vtas anuladas en la fecha
-
-                            if (factElec("Horizont", "txt", "baja", cta) == true)
+                            if (lib.DirectoryVisible(rutatxt) == true)
                             {
-                                string resulta = lib.ult_mov(nomform, nomtab, asd);
-                                if (resulta != "OK")
+                                int cta = anula("FIS");      // cantidad de doc.vtas anuladas en la fecha
+                                if (factElec(nipfe, "txt", "baja", cta) == true)
                                 {
-                                    MessageBox.Show(resulta, "Error en actualización de seguimiento", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    string resulta = lib.ult_mov(nomform, nomtab, asd);
+                                    if (resulta != "OK")
+                                    {
+                                        MessageBox.Show(resulta, "Error en actualización de seguimiento", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    }
                                 }
+                            }
+                            else
+                            {
+                                MessageBox.Show("No existe ruta o no es valida para" + Environment.NewLine +
+                                        "generar la anulación electrónica", "Ruta para Fact.Electrónica", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+                                iserror = "si";
                             }
                         }
                         else
