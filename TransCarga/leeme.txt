@@ -188,3 +188,4 @@ form guiati, cuando el cliente es nuevo, ruc 20, su direc. fiscal debe guardarse
 form facelect, adecuando txt securenet para Altiplano bajas de numeración (anulacion) .............. ok 24/03/2021
 form ayccaja, se corrigio codigo para permitir imprimir cuadre al momento de cerrar ................ ok 23/03/2021
 form facelect, agregar validacion de ruta de fact. electronica ..................................... ok 26/03/2021
+form repsoper y dataset conClie, arreglos de peso en reportes, pase a int .......................... ok 27/03/2021

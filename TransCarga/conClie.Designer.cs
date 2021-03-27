@@ -3516,7 +3516,7 @@ namespace TransCarga {
                         string serguia, 
                         string numguia, 
                         short totcant, 
-                        double totpeso, 
+                        int totpeso, 
                         double totflete, 
                         double pagado, 
                         double salxcob, 
@@ -3608,7 +3608,7 @@ namespace TransCarga {
                 base.Columns.Add(this.columnnumguia);
                 this.columntotcant = new global::System.Data.DataColumn("totcant", typeof(short), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columntotcant);
-                this.columntotpeso = new global::System.Data.DataColumn("totpeso", typeof(double), null, global::System.Data.MappingType.Element);
+                this.columntotpeso = new global::System.Data.DataColumn("totpeso", typeof(int), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columntotpeso);
                 this.columntotflete = new global::System.Data.DataColumn("totflete", typeof(double), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columntotflete);
@@ -8730,10 +8730,10 @@ namespace TransCarga {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
-            public double totpeso {
+            public int totpeso {
                 get {
                     try {
-                        return ((double)(this[this.tableplacar_det.totpesoColumn]));
+                        return ((int)(this[this.tableplacar_det.totpesoColumn]));
                     }
                     catch (global::System.InvalidCastException e) {
                         throw new global::System.Data.StrongTypingException("El valor de la columna \'totpeso\' de la tabla \'placar_det\' es DBNull.", e);

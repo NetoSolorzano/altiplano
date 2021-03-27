@@ -1238,7 +1238,7 @@ namespace TransCarga
                     rowdetalle.serguia = row.ItemArray[5].ToString();
                     rowdetalle.totcant = Int16.Parse(row.ItemArray[7].ToString());
                     rowdetalle.totflete = Double.Parse(row.ItemArray[10].ToString());
-                    rowdetalle.totpeso = Double.Parse(row.ItemArray[8].ToString());
+                    rowdetalle.totpeso = int.Parse(row.ItemArray[8].ToString());
                     rowdetalle.nomdest = row.ItemArray[17].ToString();
                     rowdetalle.dirdest = row.ItemArray[18].ToString();
                     rowdetalle.teldest = row.ItemArray[19].ToString();
@@ -1522,7 +1522,7 @@ namespace TransCarga
                                 }
                             }
                             // detalle
-                            consulta = "select a.idc,a.serplacar,a.numplacar,a.fila,a.numpreg,a.serguia,a.numguia,a.totcant,a.totpeso,b.descrizionerid as MON,a.totflet," +
+                            consulta = "select a.idc,a.serplacar,a.numplacar,a.fila,a.numpreg,a.serguia,a.numguia,a.totcant,floor(a.totpeso) as totpeso,b.descrizionerid as MON,a.totflet," +
                                 "a.estadoser,a.codmone,'X' as marca,a.id,a.pagado,a.salxcob,g.nombdegri,g.diredegri,g.teledegri,a.nombult,u1.nombre AS distrit," +
                                 "u2.nombre as provin,concat(d.descrizionerid,'-',if(SUBSTRING(g.serdocvta,1,2)='00',SUBSTRING(g.serdocvta,3,2),g.serdocvta),'-',if(SUBSTRING(g.numdocvta,1,3)='000',SUBSTRING(g.numdocvta,4,5),g.numdocvta)) " +
                                 "from detplacar a " +
