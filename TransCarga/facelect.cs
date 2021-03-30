@@ -82,6 +82,7 @@ namespace TransCarga
         string tipoMoneda = "";         // CODIGO SUNAT tipo de moneda
         string glosdet = "";            // glosa para las operaciones con detraccion
         string glosser = "";            // glosa que va en el detalle del doc. de venta
+        string glosser2 = "";           // glosa 2 que va despues de la glosa principal
         string restexto = "xxx";        // texto resolucion sunat autorizando prov. fact electronica
         string autoriz_OSE_PSE = "yyy"; // numero resolucion sunat autorizando prov. fact electronica
         string despedida = "";          // texto para mensajes al cliente al final de la impresión del doc.vta. 
@@ -122,7 +123,7 @@ namespace TransCarga
         DataTable tdfe = new DataTable();       // facturacion electronica -detalle
         string[] datcltsR = { "", "", "", "", "", "", "", "", "" };
         string[] datcltsD = { "", "", "", "", "", "", "", "", "" };
-        string[] datguias = { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" };
+        string[] datguias = { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" };
 
         public facelect()
         {
@@ -786,6 +787,7 @@ namespace TransCarga
                 datguias[12] = "";
                 datguias[13] = "";
                 datguias[14] = "";
+                datguias[15] = "";  // local origen-destino
                 // validamos que la GR: 1.exista, 2.No este facturada, 3.No este anulada
                 // y devolvemos una fila con los datos del remitente y otra fila los datos del destinatario
                 string hay = "no";
@@ -826,12 +828,14 @@ namespace TransCarga
                             "ifnull(b1.numerotel2,'') as numtel2R,a.tidodegri,a.nudodegri,b2.razonsocial as nombdegri,b2.direcc1 as diredegri,b2.ubigeo as ubigdegri,ifnull(b2.email,'') as emailD," +
                             "ifnull(b2.numerotel1,'') as numtel1D,ifnull(b2.numerotel2,'') as numtel2D,a.tipmongri,a.totgri,a.salgri,SUM(d.cantprodi) AS bultos,date(a.fechopegr) as fechopegr,a.tipcamgri," +
                             "max(d.descprodi) AS descrip,ifnull(m.descrizionerid,'') as mon,a.totgrMN,a.codMN,c.fecdocvta,b1.tiposocio as tipsrem,b2.tiposocio as tipsdes,a.docsremit," +
-                            "a.plaplagri,a.carplagri,a.autplagri,a.confvegri " +
+                            "a.plaplagri,a.carplagri,a.autplagri,a.confvegri,concat(lo.descrizionerid,' - ',ld.descrizionerid) as orides " +
                             "from cabguiai a left join detguiai d on d.idc=a.id " +
                             "LEFT JOIN controlg c ON c.serguitra = a.sergui AND c.numguitra = a.numgui " +
                             "left join anag_cli b1 on b1.tipdoc=a.tidoregri and b1.ruc=a.nudoregri " +
                             "left join anag_cli b2 on b2.tipdoc=a.tidodegri and b2.ruc=a.nudodegri " +
                             "left join desc_mon m on m.idcodice=a.tipmongri " +
+                            "left join desc_loc lo on lo.idcodice=a.locorigen " +
+                            "left join desc_loc ld on ld.idcodice=a.locdestin " +
                             "WHERE a.sergui = @ser AND a.numgui = @num AND a.estadoser not IN(@est) AND c.fecdocvta IS NULL";
                         using (MySqlCommand micon = new MySqlCommand(consulta, conn))
                         {
@@ -880,6 +884,7 @@ namespace TransCarga
                                         datguias[12] = dr.GetString("carplagri");
                                         datguias[13] = dr.GetString("autplagri");
                                         datguias[14] = dr.GetString("confvegri");
+                                        datguias[15] = dr.GetString("orides");
                                         //
                                         tx_dat_saldoGR.Text = dr.GetString("salgri");
                                         retorna = true;
@@ -1833,6 +1838,7 @@ namespace TransCarga
             tdfe.Rows.Clear();
             for (int s = 0; s < dataGridView1.Rows.Count - 1; s++)
             {
+                glosser2 = dataGridView1.Rows[s].Cells["OriDest"].Value.ToString() + " - " + tx_totcant.Text.Trim() + " Bultos";
                 DataRow row = tdfe.NewRow();
                 row["Idatper"] = "";                                                        // datos personalizados del item
                 row["_msigv"] = Math.Round(double.Parse(dataGridView1.Rows[s].Cells["valor"].Value.ToString()) - (double.Parse(dataGridView1.Rows[s].Cells["valor"].Value.ToString()) / (1 + (double.Parse(v_igv) / 100))),2);
@@ -1859,7 +1865,7 @@ namespace TransCarga
                 row["Icodgs1"] = "";                                                        // codigo del producto GS1
                 row["Icogtin"] = "";                                                        // tipo de producto GTIN
                 row["Inplaca"] = "";                                                        // numero placa de vehiculo
-                row["Idescri"] = glosser + " " + dataGridView1.Rows[s].Cells["Descrip"].Value.ToString();   // Descripcion
+                row["Idescri"] = glosser + " " + dataGridView1.Rows[s].Cells["Descrip"].Value.ToString() + " " + glosser2;   // Descripcion
                 row["Idesglo"] = "";                                                        // descricion de la glosa del item 
                 //row["Ivaluni"] = Math.Round((double.Parse(row["Ipreuni"].ToString()) - double.Parse(row["_msigv"].ToString())), 10).ToString();     // Valor unitario del item SIN IMPUESTO 
                 row["Ivalref"] = "";                                                        // valor referencial del item cuando la venta es gratuita
@@ -2207,7 +2213,7 @@ namespace TransCarga
                     rb_desGR.PerformClick();
                 }
                 //dataGridView1.Rows.Clear(); nooooo, se puede hacer una fact de varias guias, n guias
-                dataGridView1.Rows.Add(datguias[0], datguias[1], datguias[2], datguias[3], datguias[4], datguias[5], datguias[6], datguias[9], datguias[10], datguias[7]);     // insertamos en la grilla los datos de la GR
+                dataGridView1.Rows.Add(datguias[0], datguias[1], datguias[2], datguias[3], datguias[4], datguias[5], datguias[6], datguias[9], datguias[10], datguias[7], datguias[15]);     // insertamos en la grilla los datos de la GR
                 int totfil = 0;
                 int totcant = 0;
                 decimal totflet = 0;    // acumulador en moneda de la GR
@@ -3946,6 +3952,9 @@ namespace TransCarga
                         {
                             puntoF = new PointF(coli, posi);
                             e.Graphics.DrawString(glosser, lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                            posi = posi + alfi;
+                            puntoF = new PointF(coli, posi);
+                            e.Graphics.DrawString(glosser2, lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                             posi = posi + alfi;
                             puntoF = new PointF(coli, posi);
                             //recto = new RectangleF(puntoF, siz);
