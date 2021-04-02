@@ -2956,18 +2956,18 @@ namespace TransCarga
         }
         public string[] conectorSolorsoft(string cual, string numDoc)
         {
-            string[] retorna = new string[6];
+            string[] retorna = new string[8];
             retorna[0]="";retorna[1] = ""; retorna[2] = ""; retorna[3] = "";
-            retorna[4] = ""; retorna[5] = "";
+            retorna[4] = ""; retorna[5] = ""; retorna[6] = ""; retorna[7] = "";
             string dirLoc = Directory.GetCurrentDirectory() + @"\conectores\";
             if (cual == "RUC")
             {
                 ProcessStartInfo start = new ProcessStartInfo();
-                //start.FileName = @"c:\users\neto\source\repos\ConectorSolorsoft\ConectorSolorsoft\bin\debug\ConectorSolorsoft.exe";
-                start.FileName = dirLoc + "ConectorSolorsoft.exe";
+                //start.FileName = dirLoc + "ConectorSolorsoft.exe";
+                start.FileName = dirLoc + "conectorJson.exe";
                 start.UseShellExecute = false;
                 start.RedirectStandardOutput = true;
-                start.Arguments = numDoc + " " + "0";  // 2 parametros, ruc a buscar, tipo de retorno (0=variable)
+                start.Arguments = numDoc + " " + "0";  // 2 parametros, numero a buscar, tipo de doc (0=ruc|1=dni)
                 using (Process proceso = Process.Start(start))
                 {
 
@@ -2976,19 +2976,20 @@ namespace TransCarga
                         string result = reader.ReadToEnd();
                         string[] datos = result.Split('|');
 
-                        retorna[0] = datos[1].Replace("?","Ñ");       // textBox4.Text razon social
-                                           //tx_situa.Text = datos[2];
-                                           //tx_domic.Text = datos[3];
-                        retorna[1] = datos[4];    // textBox13.Text ubigeo
-                        retorna[2] = datos[5] + " " + datos[6] + " " + datos[7];  // textBox6.Text direccion
-                        retorna[3] = datos[8];    // textBox7.Text departamento
-                        retorna[4] = datos[9];      // textBox8.Text provincia
-                        retorna[5] = datos[10];     // textBox9.Text distrito
+                        retorna[0] = datos[1].Replace("?","Ñ");         // razon social
+                        retorna[1] = datos[4];                          // ubigeo
+                        retorna[2] = datos[5];                          // direccion
+                        retorna[3] = datos[8];                          // departamento
+                        retorna[4] = datos[7];                          // provincia
+                        retorna[5] = datos[6];                          // distrito
+                        retorna[6] = datos[2];                          // estado del contrib.
+                        retorna[7] = datos[3];                          // condicion domicilio
                     }
                 }
             }
             if (cual == "DNI")
             {
+                /*
                 int limite = 30000;
                 ProcessStartInfo start = new ProcessStartInfo();
                 start.UseShellExecute = false;
@@ -3025,6 +3026,22 @@ namespace TransCarga
                     config.AppSettings.Settings["ramater"].Value = "";
                     config.Save();
                     p.Close();
+                }*/
+                ProcessStartInfo start = new ProcessStartInfo();
+                start.FileName = dirLoc + "conectorJson.exe";
+                start.UseShellExecute = false;
+                start.RedirectStandardOutput = true;
+                start.Arguments = numDoc + " " + "1";  // 2 parametros, numero a buscar, tipo de doc (0=ruc|1=dni)
+                using (Process proceso = Process.Start(start))
+                {
+                    using (StreamReader reader = proceso.StandardOutput)
+                    {
+                        string result = reader.ReadToEnd();
+                        string[] datos = result.Split('|');
+
+                        retorna[1] = datos[0];
+                        retorna[0] = datos[1].Replace("?", "Ñ");
+                    }
                 }
             }
             return retorna;

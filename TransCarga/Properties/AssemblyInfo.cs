@@ -6,9 +6,9 @@ using System.Runtime.InteropServices;
 // conjunto de atributos. Cambie estos valores de atributo para modificar la información
 // asociada con un ensamblado.
 [assembly: AssemblyTitle("TransCarga")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Solución para la gestión de empresas de carga")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("J&L Technology SAC")]
 [assembly: AssemblyProduct("TransCarga")]
 [assembly: AssemblyCopyright("Copyright ©  2020")]
 [assembly: AssemblyTrademark("")]
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 // Puede especificar todos los valores o usar los valores predeterminados de número de compilación y de revisión
 // utilizando el carácter "*", como se muestra a continuación:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("2021.03.29.1")]
-[assembly: AssemblyFileVersion("2021.03.29.1")]
+[assembly: AssemblyVersion("2021.04.02.1")]
+[assembly: AssemblyFileVersion("2021.04.02.1")]
