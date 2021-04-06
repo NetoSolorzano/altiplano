@@ -2989,58 +2989,86 @@ namespace TransCarga
             }
             if (cual == "DNI")
             {
-                /*
-                int limite = 30000;
-                ProcessStartInfo start = new ProcessStartInfo();
-                start.UseShellExecute = false;
-                start.RedirectStandardOutput = true;
-                start.FileName = dirLoc + "conectorc.exe";
-                start.Arguments = "D " + numDoc;  // 2 parametros, "D" y dni a buscar
-                Process p = Process.Start(start);
-                p.WaitForInputIdle();
-                p.WaitForExit(limite);
-                if (p.HasExited == false)
+                string nomCon = "";
+                using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
                 {
-                    if (p.Responding)
+                    conn.Open();
+                    string abre = "select valor from enlaces where formulario='main' and campo='conector'";
+                    using (MySqlCommand micon = new MySqlCommand(abre, conn))
                     {
-                        p.CloseMainWindow();
+                        using (MySqlDataReader dr = micon.ExecuteReader())
+                        {
+                            if (dr.Read())
+                            {
+                                nomCon = dr.GetString(0);
+                            }
+                        }
+                    }
+                }
+                if (nomCon == "conectorc.exe")
+                {
+                    int limite = 30000;
+                    ProcessStartInfo start = new ProcessStartInfo();
+                    start.UseShellExecute = false;
+                    start.RedirectStandardOutput = true;
+                    start.FileName = dirLoc + "conectorc.exe";
+                    start.Arguments = "D " + numDoc;  // 2 parametros, "D" y dni a buscar
+                    Process p = Process.Start(start);
+                    p.WaitForInputIdle();
+                    p.WaitForExit(limite);
+                    if (p.HasExited == false)
+                    {
+                        if (p.Responding)
+                        {
+                            p.CloseMainWindow();
+                        }
+                        else
+                        {
+                            p.Kill();
+                        }
                     }
                     else
                     {
-                        p.Kill();
+                        // leemos el .config del conectorc
+                        ExeConfigurationFileMap configMap = new ExeConfigurationFileMap();
+                        configMap.ExeConfigFilename = dirLoc + "conectorc.exe.config";
+                        Configuration config = ConfigurationManager.OpenMappedExeConfiguration(configMap, ConfigurationUserLevel.None);
+                        retorna[0] = config.AppSettings.Settings["rnombre"].Value + " " +
+                            config.AppSettings.Settings["rapater"].Value + " " +
+                            config.AppSettings.Settings["ramater"].Value;   // textBox9.Text NOMBRE
+                        retorna[1] = config.AppSettings.Settings["rnumero"].Value;  // textBox3.Text NUMERO DNI
+                        //
+                        config.AppSettings.Settings["rnombre"].Value = "";
+                        config.AppSettings.Settings["rapater"].Value = "";
+                        config.AppSettings.Settings["ramater"].Value = "";
+                        config.Save();
+                        p.Close();
                     }
                 }
-                else
+                if (nomCon == "conectorJson.exe")
                 {
-                    // leemos el .config del conectorc
-                    ExeConfigurationFileMap configMap = new ExeConfigurationFileMap();
-                    configMap.ExeConfigFilename = dirLoc + "conectorc.exe.config";
-                    Configuration config = ConfigurationManager.OpenMappedExeConfiguration(configMap, ConfigurationUserLevel.None);
-                    retorna[0] = config.AppSettings.Settings["rnombre"].Value + " " +
-                        config.AppSettings.Settings["rapater"].Value + " " +
-                        config.AppSettings.Settings["ramater"].Value;   // textBox9.Text NOMBRE
-                    retorna[1] = config.AppSettings.Settings["rnumero"].Value;  // textBox3.Text NUMERO DNI
-                    //
-                    config.AppSettings.Settings["rnombre"].Value = "";
-                    config.AppSettings.Settings["rapater"].Value = "";
-                    config.AppSettings.Settings["ramater"].Value = "";
-                    config.Save();
-                    p.Close();
-                }*/
-                ProcessStartInfo start = new ProcessStartInfo();
-                start.FileName = dirLoc + "conectorJson.exe";
-                start.UseShellExecute = false;
-                start.RedirectStandardOutput = true;
-                start.Arguments = numDoc + " " + "1";  // 2 parametros, numero a buscar, tipo de doc (0=ruc|1=dni)
-                using (Process proceso = Process.Start(start))
-                {
-                    using (StreamReader reader = proceso.StandardOutput)
+                    ProcessStartInfo start = new ProcessStartInfo();
+                    start.FileName = dirLoc + "conectorJson.exe";
+                    start.UseShellExecute = false;
+                    start.RedirectStandardOutput = true;
+                    start.Arguments = numDoc + " " + "1";  // 2 parametros, numero a buscar, tipo de doc (0=ruc|1=dni)
+                    using (Process proceso = Process.Start(start))
                     {
-                        string result = reader.ReadToEnd();
-                        string[] datos = result.Split('|');
-
-                        retorna[1] = datos[0];
-                        retorna[0] = datos[1].Replace("?", "Ñ");
+                        using (StreamReader reader = proceso.StandardOutput)
+                        {
+                            string result = reader.ReadToEnd();
+                            if (string.IsNullOrEmpty(result))
+                            {
+                                retorna[1] = "";
+                                retorna[0] = "";
+                            }
+                            else
+                            {
+                                string[] datos = result.Split('|');
+                                retorna[1] = datos[0];
+                                retorna[0] = datos[1].Replace("?", "Ñ");
+                            }
+                        }
                     }
                 }
             }

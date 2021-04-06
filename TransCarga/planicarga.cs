@@ -965,7 +965,7 @@ namespace TransCarga
         private void button1_Click(object sender, EventArgs e)
         {
             #region validaciones
-            if(tx_serie.Text.Trim() == "")
+            if (tx_serie.Text.Trim() == "")
             {
                 MessageBox.Show("Ingrese la serie de la planilla", "Complete la información", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 tx_serie.Focus();
@@ -1037,6 +1037,7 @@ namespace TransCarga
             // grabamos, actualizamos, etc
             string modo = Tx_modo.Text;
             string iserror = "no";
+            //MessageBox.Show(tx_pla_confv.Text + "-" + tx_carret_conf.Text);
             if (modo == "NUEVO")
             {
                 // valida que las filas de la grilla esten completas
@@ -1210,7 +1211,7 @@ namespace TransCarga
                     micon.Parameters.AddWithValue("@platr", tx_pla_placa.Text);
                     micon.Parameters.AddWithValue("@placa", tx_pla_carret.Text);
                     micon.Parameters.AddWithValue("@autor", tx_pla_autor.Text);
-                    micon.Parameters.AddWithValue("@confv", tx_pla_confv.Text);
+                    micon.Parameters.AddWithValue("@confv", tx_pla_confv.Text + "-" + tx_carret_conf.Text);
                     micon.Parameters.AddWithValue("@brevc", tx_pla_brevet.Text);
                     micon.Parameters.AddWithValue("@nocho", tx_pla_nomcho.Text);           // nombre del chofer
                     micon.Parameters.AddWithValue("@breva", tx_pla_ayud.Text);
@@ -1285,7 +1286,7 @@ namespace TransCarga
                                     micon.Parameters.AddWithValue("@platr", tx_pla_placa.Text);
                                     micon.Parameters.AddWithValue("@placa", tx_pla_carret.Text);
                                     micon.Parameters.AddWithValue("@autor", tx_pla_autor.Text);
-                                    micon.Parameters.AddWithValue("@confv", tx_pla_confv.Text);
+                                    micon.Parameters.AddWithValue("@confv", tx_pla_confv.Text  + "-" + tx_carret_conf.Text);
                                     micon.Parameters.AddWithValue("@brevc", tx_pla_brevet.Text);
                                     micon.Parameters.AddWithValue("", tx_pla_nomcho.Text);           // nombre del chofer
                                     micon.Parameters.AddWithValue("@breva", tx_pla_ayud.Text);
@@ -1355,7 +1356,7 @@ namespace TransCarga
                         micon.Parameters.AddWithValue("@platr", tx_pla_placa.Text);
                         micon.Parameters.AddWithValue("@placa", tx_pla_carret.Text);
                         micon.Parameters.AddWithValue("@autor", tx_pla_autor.Text);
-                        micon.Parameters.AddWithValue("@confv", tx_pla_confv.Text);
+                        micon.Parameters.AddWithValue("@confv", tx_pla_confv.Text + tx_carret_conf.Text);
                         micon.Parameters.AddWithValue("@brevc", tx_pla_brevet.Text);
                         micon.Parameters.AddWithValue("@nocho", tx_pla_nomcho.Text);           // nombre del chofer
                         micon.Parameters.AddWithValue("@breva", tx_pla_ayud.Text);
@@ -1453,7 +1454,7 @@ namespace TransCarga
                                 micon.Parameters.AddWithValue("@platr", tx_pla_placa.Text);
                                 micon.Parameters.AddWithValue("@placa", tx_pla_carret.Text);
                                 micon.Parameters.AddWithValue("@autor", tx_pla_autor.Text);
-                                micon.Parameters.AddWithValue("@confv", tx_pla_confv.Text);
+                                micon.Parameters.AddWithValue("@confv", tx_pla_confv.Text + "-" + tx_carret_conf.Text);
                                 micon.Parameters.AddWithValue("@brevc", tx_pla_brevet.Text);
                                 micon.Parameters.AddWithValue("", tx_pla_nomcho.Text);           // nombre del chofer
                                 micon.Parameters.AddWithValue("@breva", tx_pla_ayud.Text);
