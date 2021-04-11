@@ -167,6 +167,12 @@
     <Compile Include="frmvizoper.designer.cs">
       <DependentUpon>frmvizoper.cs</DependentUpon>
     </Compile>
+    <Compile Include="GrT_simple.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>GrT_simple.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="gr_ind_trans_2.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -212,6 +218,12 @@
     </Compile>
     <Compile Include="permisos.designer.cs">
       <DependentUpon>permisos.cs</DependentUpon>
+    </Compile>
+    <Compile Include="plancarga3.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>plancarga3.rpt</DependentUpon>
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="planicarga.cs">
       <SubType>Form</SubType>
@@ -348,6 +360,10 @@
     <EmbeddedResource Include="frmvizoper.resx">
       <DependentUpon>frmvizoper.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="GrT_simple.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>GrT_simple.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="gr_ind_trans_2.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>gr_ind_trans_2.cs</LastGenOutput>
@@ -370,6 +386,10 @@
     </EmbeddedResource>
     <EmbeddedResource Include="permisos.resx">
       <DependentUpon>permisos.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="plancarga3.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>plancarga3.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="planicarga.resx">
       <DependentUpon>planicarga.cs</DependentUpon>
@@ -468,6 +488,7 @@
     <None Include="bin\Debug\recursos\process24.png" />
     <None Include="bin\Debug\recursos\view24_ex.png" />
     <None Include="bin\Debug\recursos\reload30.jpg" />
+    <None Include="bin\Debug\recursos\permiso_16.png" />
     <Content Include="leeme.txt" />
     <Content Include="Properties\process32.png" />
     <None Include="Resources\logo_solorsoft.png" />

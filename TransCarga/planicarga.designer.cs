@@ -172,11 +172,16 @@
             this.groupBox7 = new System.Windows.Forms.GroupBox();
             this.chk_cierea = new System.Windows.Forms.CheckBox();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.label31 = new System.Windows.Forms.Label();
             this.rb_orden_dir = new System.Windows.Forms.RadioButton();
             this.rb_orden_gr = new System.Windows.Forms.RadioButton();
             this.tx_tfil = new TransCarga.NumericTextBox();
             this.tx_totpes = new TransCarga.NumericTextBox();
             this.tx_totcant = new TransCarga.NumericTextBox();
+            this.groupBox36 = new System.Windows.Forms.GroupBox();
+            this.groupBox37 = new System.Windows.Forms.GroupBox();
+            this.label29 = new System.Windows.Forms.Label();
+            this.cmb_forimp = new System.Windows.Forms.ComboBox();
             this.toolStrip1.SuspendLayout();
             this.pn_usloc.SuspendLayout();
             this.groupBox5.SuspendLayout();
@@ -204,6 +209,7 @@
             this.groupBox18.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.panel1.SuspendLayout();
+            this.groupBox36.SuspendLayout();
             this.SuspendLayout();
             // 
             // toolStrip1
@@ -480,7 +486,7 @@
             // button1
             // 
             this.button1.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.button1.Location = new System.Drawing.Point(659, 443);
+            this.button1.Location = new System.Drawing.Point(655, 361);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(62, 56);
             this.button1.TabIndex = 24;
@@ -802,7 +808,7 @@
             // 
             this.label18.AutoSize = true;
             this.label18.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label18.Location = new System.Drawing.Point(675, 531);
+            this.label18.Location = new System.Drawing.Point(512, 529);
             this.label18.Name = "label18";
             this.label18.Size = new System.Drawing.Size(50, 13);
             this.label18.TabIndex = 353;
@@ -814,7 +820,7 @@
             // 
             this.tx_impreso.BackColor = System.Drawing.SystemColors.Window;
             this.tx_impreso.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_impreso.Location = new System.Drawing.Point(727, 527);
+            this.tx_impreso.Location = new System.Drawing.Point(564, 525);
             this.tx_impreso.Name = "tx_impreso";
             this.tx_impreso.ReadOnly = true;
             this.tx_impreso.Size = new System.Drawing.Size(26, 18);
@@ -1471,7 +1477,7 @@
             this.gbox_flete.Controls.Add(this.tx_flete);
             this.gbox_flete.Controls.Add(this.label15);
             this.gbox_flete.Controls.Add(this.groupBox16);
-            this.gbox_flete.Location = new System.Drawing.Point(601, 238);
+            this.gbox_flete.Location = new System.Drawing.Point(601, 205);
             this.gbox_flete.Name = "gbox_flete";
             this.gbox_flete.Size = new System.Drawing.Size(152, 119);
             this.gbox_flete.TabIndex = 395;
@@ -1670,7 +1676,7 @@
             this.chk_cierea.AutoSize = true;
             this.chk_cierea.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.chk_cierea.ForeColor = System.Drawing.Color.Black;
-            this.chk_cierea.Location = new System.Drawing.Point(630, 414);
+            this.chk_cierea.Location = new System.Drawing.Point(624, 338);
             this.chk_cierea.Name = "chk_cierea";
             this.chk_cierea.Size = new System.Drawing.Size(15, 14);
             this.chk_cierea.TabIndex = 398;
@@ -1678,17 +1684,29 @@
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.label31);
             this.panel1.Controls.Add(this.rb_orden_dir);
             this.panel1.Controls.Add(this.rb_orden_gr);
-            this.panel1.Location = new System.Drawing.Point(512, 527);
+            this.panel1.Location = new System.Drawing.Point(603, 499);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(159, 23);
+            this.panel1.Size = new System.Drawing.Size(159, 42);
             this.panel1.TabIndex = 399;
+            // 
+            // label31
+            // 
+            this.label31.AutoSize = true;
+            this.label31.ForeColor = System.Drawing.Color.Black;
+            this.label31.Location = new System.Drawing.Point(3, 15);
+            this.label31.Name = "label31";
+            this.label31.Size = new System.Drawing.Size(73, 13);
+            this.label31.TabIndex = 402;
+            this.label31.Text = "Ordenamiento";
             // 
             // rb_orden_dir
             // 
             this.rb_orden_dir.AutoSize = true;
-            this.rb_orden_dir.Location = new System.Drawing.Point(80, 3);
+            this.rb_orden_dir.ForeColor = System.Drawing.Color.Black;
+            this.rb_orden_dir.Location = new System.Drawing.Point(85, 22);
             this.rb_orden_dir.Name = "rb_orden_dir";
             this.rb_orden_dir.Size = new System.Drawing.Size(70, 17);
             this.rb_orden_dir.TabIndex = 1;
@@ -1699,7 +1717,8 @@
             // rb_orden_gr
             // 
             this.rb_orden_gr.AutoSize = true;
-            this.rb_orden_gr.Location = new System.Drawing.Point(7, 3);
+            this.rb_orden_gr.ForeColor = System.Drawing.Color.Black;
+            this.rb_orden_gr.Location = new System.Drawing.Point(85, 2);
             this.rb_orden_gr.Name = "rb_orden_gr";
             this.rb_orden_gr.Size = new System.Drawing.Size(54, 17);
             this.rb_orden_gr.TabIndex = 0;
@@ -1740,12 +1759,53 @@
             this.tx_totcant.TabIndex = 348;
             this.tx_totcant.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
+            // groupBox36
+            // 
+            this.groupBox36.BackColor = System.Drawing.Color.White;
+            this.groupBox36.Controls.Add(this.groupBox37);
+            this.groupBox36.Location = new System.Drawing.Point(592, 481);
+            this.groupBox36.Name = "groupBox36";
+            this.groupBox36.Size = new System.Drawing.Size(172, 1);
+            this.groupBox36.TabIndex = 402;
+            this.groupBox36.TabStop = false;
+            // 
+            // groupBox37
+            // 
+            this.groupBox37.Location = new System.Drawing.Point(0, -26);
+            this.groupBox37.Name = "groupBox37";
+            this.groupBox37.Size = new System.Drawing.Size(164, 1);
+            this.groupBox37.TabIndex = 113;
+            this.groupBox37.TabStop = false;
+            // 
+            // label29
+            // 
+            this.label29.AutoSize = true;
+            this.label29.ForeColor = System.Drawing.Color.Black;
+            this.label29.Location = new System.Drawing.Point(589, 466);
+            this.label29.Name = "label29";
+            this.label29.Size = new System.Drawing.Size(68, 13);
+            this.label29.TabIndex = 401;
+            this.label29.Text = "Formato Imp.";
+            // 
+            // cmb_forimp
+            // 
+            this.cmb_forimp.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmb_forimp.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cmb_forimp.FormattingEnabled = true;
+            this.cmb_forimp.Location = new System.Drawing.Point(659, 462);
+            this.cmb_forimp.Name = "cmb_forimp";
+            this.cmb_forimp.Size = new System.Drawing.Size(105, 20);
+            this.cmb_forimp.TabIndex = 400;
+            // 
             // planicarga
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.LightSteelBlue;
             this.ClientSize = new System.Drawing.Size(770, 646);
+            this.Controls.Add(this.groupBox36);
+            this.Controls.Add(this.label29);
+            this.Controls.Add(this.cmb_forimp);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.chk_cierea);
             this.Controls.Add(this.groupBox4);
@@ -1832,6 +1892,7 @@
             this.groupBox4.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
+            this.groupBox36.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1986,5 +2047,10 @@
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.TextBox tx_pla_modelo;
         private System.Windows.Forms.TextBox tx_pla_marca;
+        private System.Windows.Forms.Label label31;
+        private System.Windows.Forms.GroupBox groupBox36;
+        private System.Windows.Forms.GroupBox groupBox37;
+        private System.Windows.Forms.Label label29;
+        private System.Windows.Forms.ComboBox cmb_forimp;
     }
 }

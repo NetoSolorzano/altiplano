@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using MySql.Data.MySqlClient;
 using ClosedXML.Excel;
+using CrystalDecisions.CrystalReports.Engine;
 
 namespace TransCarga
 {
@@ -46,6 +47,9 @@ namespace TransCarga
         string rpt_placarga = "";       // ruta y nombre del formato RPT planillas carga
         string v_tipdocR = "";          // tipo de documento ruc
         string rpt_grt = "";            // ruta y nombre del formato RPT guias remit
+        string v_CR_gr_simple = "";     // ruta y nombre formato TK guia simple
+        string vi_copias = "1";         // cantidad de copias impresion
+        string v_impTK = "";            // nombre de la impresora de TK para guias
         //int pageCount = 1, cuenta = 0;
         #endregion
 
@@ -168,6 +172,9 @@ namespace TransCarga
                     if (row["formulario"].ToString() == "guiati")
                     {
                         if (row["campo"].ToString() == "impresion" && row["param"].ToString() == "nomGRir_cr") rpt_grt = row["valor"].ToString().Trim();         // ruta y nombre formato rpt
+                        if (row["campo"].ToString() == "impresion" && row["param"].ToString() == "GrT_simple_cr") v_CR_gr_simple = row["valor"].ToString().Trim();
+                        if (row["campo"].ToString() == "impresion" && row["param"].ToString() == "copias") vi_copias = row["valor"].ToString().Trim();
+                        if (row["campo"].ToString() == "impresion" && row["param"].ToString() == "impTK") v_impTK = row["valor"].ToString().Trim();
                     }
                     if (row["formulario"].ToString() == "clients")
                     {
@@ -851,6 +858,17 @@ namespace TransCarga
                 setParaCrystal("GRT");
             }
         }
+        private void bt_dale_Click(object sender, EventArgs e)          // impresion GRUPAL de guias
+        {
+            if (rb_imSimp.Checked == false && rb_imComp.Checked == false)
+            {
+                MessageBox.Show("Seleccione formato","Atención",MessageBoxButtons.OK,MessageBoxIcon.Information);
+                rb_imSimp.Focus();
+                return;
+            }
+            setParaCrystal("GrGrupal");
+            chk_impGrp.Checked = false;
+        }
 
         #region combos
         private void cmb_estad_ing_SelectionChangeCommitted(object sender, EventArgs e)
@@ -1051,6 +1069,10 @@ namespace TransCarga
             //
             cmb_sede_guias.SelectedIndex = -1;
             cmb_estad_guias.SelectedIndex = -1;
+            //
+            rb_imComp.Visible = false;
+            rb_imSimp.Visible = false;
+            bt_dale.Visible = false;
         }
         private void Bt_anul_Click(object sender, EventArgs e)
         {
@@ -1166,11 +1188,36 @@ namespace TransCarga
         }
         private void setParaCrystal(string repo)                    // genera el set para el reporte de crystal
         {
-            if (repo== "x")
+            if (repo== "GrGrupal")
             {
-                //conClie datos = generareporte();                        // conClie = dataset de impresion de contrato   
-                //frmvizcont visualizador = new frmvizcont(datos);        // POR ESO SE CREO ESTE FORM frmvizcont PARA MOSTRAR AHI. ES MEJOR ASI.  
-                //visualizador.Show();
+                if (rb_imSimp.Checked == true)      // formato simple de la GR (TK)
+                {
+                    foreach (DataGridViewRow row in dgv_guias.Rows)
+                    {
+                        if (row.Cells[0].EditedFormattedValue.ToString() == "True")
+                        {
+                            conClie data = generareporte(row.Index);
+                            ReportDocument fimp = new ReportDocument();
+                            fimp.Load(v_CR_gr_simple);
+                            fimp.SetDataSource(data);
+                            try
+                            {
+                                fimp.PrintOptions.PrinterName = v_impTK;
+                                fimp.PrintToPrinter(int.Parse(vi_copias), false, 1, 1);
+                            }
+                            catch (Exception ex)
+                            {
+                                MessageBox.Show("No se encuentra la impresora de las guías simples" + Environment.NewLine +
+                                    ex.Message, "Error en configuración", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
+                        }
+                    }
+                }
+                if (rb_imComp.Checked == true)      // formato completo de la GR (2 x A4)
+                {
+
+
+                }
             }
             if (repo == "GRT")
             {
@@ -1337,55 +1384,95 @@ namespace TransCarga
             //
             return guiaT;
         }
-        private conClie generareporte()
+        private conClie generareporte(int rowi)
         {
-            conClie rescont = new conClie();                                    // dataset
             /*
-            conClie.rescont_cabRow rowcabeza = rescont.rescont_cab.Newrescont_cabRow();
-            
-            rowcabeza.id = "0";
-            rowcabeza.contrato = tx_codped.Text;
-            rowcabeza.doccli = tx_docu.Text;
-            rowcabeza.nomcli = tx_cliente.Text.Trim();
-            rowcabeza.estado = tx_estad.Text;
-            rowcabeza.fecha = tx_fecha.Text;
-            rowcabeza.tienda = tx_tiend.Text;
-            rowcabeza.valor = tx_valor.Text;
-            rowcabeza.fent = tx_fent.Text;
-            rescont.rescont_cab.Addrescont_cabRow(rowcabeza);
-            // detalle
-            foreach(DataGridViewRow row in dgv_resumen.Rows)
+                SER,NUMERO,FECHA,PREGUIA,DOC,DESTINAT,NOMBRE,DOC,REMITENTE,NOMBRE2,ORIGEN,DESTINO,MON,FLETE_GR,FLETE_MN,ESTADO,IMPRESO,
+	            TDV,SERVTA,NUMVTA,PAGADO,SALDO,SER_PLA,NUM_PLA,CHOFER,PLACA,CANTIDAD,PESO,U_MEDID
+            */
+            conClie guiaT = new conClie();
+            conClie.gr_ind_cabRow rowcabeza = guiaT.gr_ind_cab.Newgr_ind_cabRow();
+            // CABECERA
+            DataGridViewRow row = dgv_guias.Rows[rowi];
+            rowcabeza.formatoRPT = v_CR_gr_simple;
+            rowcabeza.id = "0"; // tx_idr.Text;
+            rowcabeza.estadoser = row.Cells["ESTADO"].Value.ToString(); // tx_estado.Text;
+            rowcabeza.sergui = row.Cells["SER"].Value.ToString(); // tx_serie.Text;
+            rowcabeza.numgui = row.Cells["NUMERO"].Value.ToString(); // tx_numero.Text;
+            rowcabeza.numpregui = row.Cells["PREGUIA"].Value.ToString(); // tx_pregr_num.Text;
+            rowcabeza.fechope = row.Cells["FECHA"].Value.ToString().Substring(0, 10); // tx_fechope.Text;
+            rowcabeza.fechTraslado = "";
+            rowcabeza.frase1 = "";
+            rowcabeza.frase2 = "";
+            // origen - destino
+            rowcabeza.nomDestino = row.Cells["DESTINO"].Value.ToString(); // cmb_destino.Text;
+            rowcabeza.direDestino = "";
+            rowcabeza.dptoDestino = ""; // 
+            rowcabeza.provDestino = "";
+            rowcabeza.distDestino = ""; // 
+            rowcabeza.nomOrigen = row.Cells["ORIGEN"].Value.ToString(); // cmb_origen.Text;
+            rowcabeza.direOrigen = "";
+            rowcabeza.dptoOrigen = "";  // no hay campo
+            rowcabeza.provOrigen = "";
+            rowcabeza.distOrigen = "";  // no hay campo
+            // remitente
+            rowcabeza.docRemit = "";    // cmb_docRem.Text;
+            rowcabeza.numRemit = row.Cells["REMITENTE"].Value.ToString();    // tx_numDocRem.Text;
+            rowcabeza.nomRemit = row.Cells["NOMBRE2"].Value.ToString();    // tx_nomRem.Text;
+            rowcabeza.direRemit = "";
+            rowcabeza.dptoRemit = "";
+            rowcabeza.provRemit = "";
+            rowcabeza.distRemit = "";
+            rowcabeza.telremit = "";
+            // destinatario  
+            rowcabeza.docDestinat = ""; // cmb_docDes.Text;
+            rowcabeza.numDestinat = row.Cells["DESTINAT"].Value.ToString(); // tx_numDocDes.Text;
+            rowcabeza.nomDestinat = row.Cells["NOMBRE"].Value.ToString(); // tx_nomDrio.Text;
+            rowcabeza.direDestinat = "";
+            rowcabeza.distDestinat = "";
+            rowcabeza.provDestinat = "";
+            rowcabeza.dptoDestinat = "";
+            rowcabeza.teldesti = "";
+            // importes 
+            rowcabeza.nomMoneda = row.Cells["MON"].Value.ToString(); // cmb_mon.Text;
+            rowcabeza.igv = "";
+            rowcabeza.subtotal = "";
+            rowcabeza.total = row.Cells["FLETE_GR"].Value.ToString(); // (chk_flete.Checked == true) ? tx_flete.Text : "";
+            rowcabeza.docscarga = "";   // docs del remitente
+            rowcabeza.consignat = "";   // 
+            // pie
+            rowcabeza.marcamodelo = "";
+            rowcabeza.autoriz = "";
+            rowcabeza.brevAyuda = "";   // falta este campo
+            rowcabeza.brevChofer = "";
+            rowcabeza.nomChofer = "";
+            rowcabeza.placa = row.Cells["PLACA"].Value.ToString(); // tx_pla_placa.Text;
+            rowcabeza.camion = "";      // placa carreta
+            rowcabeza.confvehi = "";
+            rowcabeza.rucPropiet = "";
+            rowcabeza.nomPropiet = "";
+            rowcabeza.fechora_imp = "";
+            rowcabeza.userc = "";
+            //
+            guiaT.gr_ind_cab.Addgr_ind_cabRow(rowcabeza);
+            //
+            // DETALLE  
+            /*
+            for (int i = 0; i < dtgrtdet.Rows.Count; i++)
             {
-                if (row.Cells["codigo"].Value != null && row.Cells["codigo"].Value.ToString().Trim() != "")
-                {
-                    conClie.rescont_detRow rowdetalle = rescont.rescont_det.Newrescont_detRow();
-                    rowdetalle.id = row.Cells["id"].Value.ToString();
-                    rowdetalle.codigo = row.Cells["codigo"].Value.ToString();
-                    rowdetalle.nombre = row.Cells["nombre"].Value.ToString();
-                    rowdetalle.madera = row.Cells["madera"].Value.ToString();
-                    rowdetalle.cantC = row.Cells["CanC"].Value.ToString();
-                    rowdetalle.sep_id = row.Cells["sep_id"].Value.ToString();
-                    rowdetalle.sep_fecha = row.Cells["sep_fecha"].Value.ToString().PadRight(10).Substring(0,10);
-                    rowdetalle.sep_almac = row.Cells["sep_almac"].Value.ToString();
-                    rowdetalle.sep_cant = row.Cells["canS"].Value.ToString();
-                    rowdetalle.ent_id = row.Cells["ent_id"].Value.ToString();
-                    rowdetalle.ent_fecha = row.Cells["ent_fecha"].Value.ToString().PadRight(10).Substring(0,10);
-                    rowdetalle.ent_cant = row.Cells["canE"].Value.ToString();
-                    rowdetalle.tallerped = row.Cells["tallerped"].Value.ToString();
-                    rowdetalle.ped_pedido = row.Cells["codped"].Value.ToString();
-                    rowdetalle.ped_fecha = row.Cells["ped_fecha"].Value.ToString().PadRight(10).Substring(0,10);
-                    rowdetalle.ped_cant = row.Cells["canP"].Value.ToString();
-                    rowdetalle.ing_id = row.Cells["ing_id"].Value.ToString();
-                    rowdetalle.ing_fecha = row.Cells["ing_fecha"].Value.ToString().PadRight(10).Substring(0,10);
-                    rowdetalle.ing_cant = row.Cells["canI"].Value.ToString();
-                    rowdetalle.sal_id = row.Cells["sal_id"].Value.ToString();
-                    rowdetalle.sal_fecha = row.Cells["sal_fecha"].Value.ToString().PadRight(10).Substring(0,10);
-                    rowdetalle.sal_cant = row.Cells["canA"].Value.ToString();
-                    rescont.rescont_det.Addrescont_detRow(rowdetalle);
-                }
+                conClie.gr_ind_detRow rowdetalle = guiaT.gr_ind_det.Newgr_ind_detRow();
+                rowdetalle.fila = "";       // no estamos usando
+                rowdetalle.cant = dtgrtdet.Rows[0].ItemArray[3].ToString(); // dataGridView1.Rows[i].Cells[0].Value.ToString();
+                rowdetalle.codigo = "";     // no estamos usando
+                rowdetalle.umed = dtgrtdet.Rows[0].ItemArray[4].ToString(); // dataGridView1.Rows[i].Cells[1].Value.ToString();
+                rowdetalle.descrip = dtgrtdet.Rows[0].ItemArray[6].ToString(); // dataGridView1.Rows[i].Cells[2].Value.ToString();
+                rowdetalle.precio = "";     // no estamos usando
+                rowdetalle.total = "";      // no estamos usando
+                rowdetalle.peso = string.Format("{0:#0.0}", dtgrtdet.Rows[0].ItemArray[7].ToString());  // dataGridView1.Rows[i].Cells[3].Value.ToString() + "Kg."
+                guiaT.gr_ind_det.Addgr_ind_detRow(rowdetalle);
             }
             */
-            return rescont;
+            return guiaT;
         }
         #endregion
 
@@ -1406,6 +1493,38 @@ namespace TransCarga
         {
             tx_num.Text = lib.Right("0000000" + tx_num.Text, 8);
         }
+        private void chk_impGrp_CheckStateChanged(object sender, EventArgs e)
+        {
+            if (chk_impGrp.CheckState == CheckState.Checked)
+            {
+                DataGridViewCheckBoxColumn chkc = new DataGridViewCheckBoxColumn();
+                chkc.Name = "chkc";
+                chkc.HeaderText = " ";
+                chkc.Width = 30;
+                chkc.ReadOnly = false;
+                chkc.FillWeight = 10;
+                dgv_guias.Columns.Insert(0, chkc);
+                dgv_guias.Enabled = true;
+                dgv_guias.ReadOnly = false;
+                dgv_guias.Columns[0].ReadOnly = false;
+                for (int i=1;i<dgv_guias.Columns.Count;i++)     // NO SALE EL CHECK, NO SE VE
+                {
+                    dgv_guias.Columns[i].ReadOnly = true;
+                }
+                rb_imComp.Visible = true;
+                rb_imSimp.Visible = true;
+                bt_dale.Visible = true;
+            }
+            else
+            {
+                dgv_guias.Columns.Remove("chkc");
+                rb_imComp.Visible = false;
+                rb_imSimp.Visible = false;
+                bt_dale.Visible = false;
+                dgv_guias.ReadOnly = true;
+            }
+        }
+
         #endregion
 
         #region advancedatagridview
@@ -1489,9 +1608,19 @@ namespace TransCarga
             }
             if (tabControl1.SelectedTab.Name == "tabgrti")
             {
-                if (e.ColumnIndex == 1)
+                if (dgv_guias.Columns[0].Name.ToString() == "chkc")
                 {
-                    muestra_gr(dgv_guias.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Value.ToString(), dgv_guias.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString());
+                    if (e.ColumnIndex == 2)
+                    {
+                        muestra_gr(dgv_guias.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Value.ToString(), dgv_guias.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString());
+                    }
+                }
+                else
+                {
+                    if (e.ColumnIndex == 1)
+                    {
+                        muestra_gr(dgv_guias.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Value.ToString(), dgv_guias.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString());
+                    }
                 }
             }
             if (tabControl1.SelectedTab.Name == "tabplacar")

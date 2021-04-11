@@ -71,6 +71,7 @@ namespace TransCarga
         DataTable dtu = new DataTable();
         DataTable dtd = new DataTable();
         DataTable dtm = new DataTable();
+        DataTable dtf = new DataTable();    // formatos de impresion CR
         public planicarga()
         {
             InitializeComponent();
@@ -238,7 +239,7 @@ namespace TransCarga
         {
             dataGridView1.Rows.Clear();
             dataGridView1.Columns.Clear();
-            dataGridView1.ColumnCount = 18;
+            dataGridView1.ColumnCount = 19;
             dataGridView1.Columns[0].Name = "fila";
             dataGridView1.Columns[0].HeaderText = "Fila";
             dataGridView1.Columns[0].ReadOnly = true;
@@ -295,6 +296,7 @@ namespace TransCarga
             dataGridView1.Columns[17].Name = "docvta";
             dataGridView1.Columns[17].HeaderText = "Docvta";
             dataGridView1.Columns[17].Visible = false;
+            dataGridView1.Columns[18].Visible = false;
             if (Tx_modo.Text == "EDITAR")
             {
                 DataGridViewCheckBoxColumn marca = new DataGridViewCheckBoxColumn();
@@ -317,6 +319,8 @@ namespace TransCarga
             tx_digit.Text = v_nbu;
             tx_dat_estad.Text = codGene;
             tx_estado.Text = lib.nomstat(tx_dat_estad.Text);
+            rb_orden_gr.Checked = true;
+            cmb_forimp.Enabled = true;
         }
         private void jalainfo()                 // obtiene datos de imagenes y variables
         {
@@ -505,6 +509,7 @@ namespace TransCarga
                         if (tx_dat_estad.Text != codGene)
                         {
                             sololee();
+                            cmb_forimp.Enabled = true;
                             dataGridView1.ReadOnly = true;
                             MessageBox.Show("Este documento no puede ser editado/anulado", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         }
@@ -538,6 +543,7 @@ namespace TransCarga
                                 MessageBox.Show("La planilla no puede Editada o Anulada" + Environment.NewLine +
                                     "revise el estado del documento y/o el local", "No puede continuar", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                                 sololee();
+                                cmb_forimp.Enabled = true;
                                 button1.Enabled = false;
                                 dataGridView1.ReadOnly = true;
                             }
@@ -557,9 +563,10 @@ namespace TransCarga
         }
         private void jaladet(string idr)         // jala el detalle
         {
-            string jalad = "select a.idc,a.serplacar,a.numplacar,a.fila,a.numpreg,a.serguia,a.numguia,a.totcant,a.totpeso,b.descrizionerid as MON,a.totflet," +
-                "a.estadoser,a.codmone,'X' as marca,a.id,a.pagado,a.salxcob,g.nombdegri,g.diredegri,g.teledegri,a.nombult,u1.nombre AS distrit," +
-                "u2.nombre as provin,concat(d.descrizionerid,'-',if(SUBSTRING(g.serdocvta,1,2)='00',SUBSTRING(g.serdocvta,3,2),g.serdocvta),'-',if(SUBSTRING(g.numdocvta,1,3)='000',SUBSTRING(g.numdocvta,4,5),g.numdocvta)) " +
+            string jalad = "select a.idc,a.serplacar,a.numplacar,a.fila,a.numpreg,a.serguia,a.numguia,a.totcant,floor(a.totpeso) as totpeso,b.descrizionerid as MON,a.totflet," +
+                "a.estadoser,a.codmone,'X' as marca,a.id,a.pagado,a.salxcob,g.nombdegri,g.diredegri,g.teledegri,a.nombult,u1.nombre AS distrit,u2.nombre as provin," +
+                "concat(d.descrizionerid,'-',if(SUBSTRING(g.serdocvta,1,2)='00',SUBSTRING(g.serdocvta,3,2),g.serdocvta),'-',if(SUBSTRING(g.numdocvta,1,3)='000',SUBSTRING(g.numdocvta,4,5),g.numdocvta))," +
+                "g.nombregri " +
                 "from detplacar a " +
                 "left join desc_mon b on b.idcodice = a.codmone " +
                 "left join cabguiai g on g.sergui = a.serguia and g.numgui = a.numguia " +
@@ -600,7 +607,8 @@ namespace TransCarga
                                     row[18].ToString() + " - " + row[21].ToString() + " - " + row[22].ToString(),
                                     row[19].ToString(),
                                     row[20].ToString(),
-                                    row[23].ToString()
+                                    row[23].ToString(),
+                                    row[24].ToString()
                                     );
                             }
                             else
@@ -624,6 +632,7 @@ namespace TransCarga
                                     row[19].ToString(),
                                     row[20].ToString(),
                                     row[23].ToString(),
+                                    row[24].ToString(),
                                     false
                                     );
                             }
@@ -671,6 +680,15 @@ namespace TransCarga
             cmb_mon.DataSource = dtm;
             cmb_mon.DisplayMember = "descrizionerid";
             cmb_mon.ValueMember = "idcodice";
+            // datos de formatos de impresion
+            cmb_forimp.Items.Clear();
+            MySqlCommand cmf = new MySqlCommand("select valor from enlaces where formulario='planicarga' and campo='impresion' and param like '%_cr%'", conn);
+            dacu = new MySqlDataAdapter(cmf);
+            dtf.Clear();
+            dacu.Fill(dtf);
+            cmb_forimp.DataSource = dtf;
+            cmb_forimp.DisplayMember = "valor";
+            cmb_forimp.ValueMember = "valor";
             conn.Close();
         }
         private bool valiGri()                  // valida filas completas en la grilla - 8 columnas
@@ -817,11 +835,12 @@ namespace TransCarga
                     parte1 = "tipo = @tipo";    // variable codigo carreta
                 }
 
-                string consulta = "select confve,autor1,placAsoc from vehiculos where " + parte0 + " and " + parte1;
+                string consulta = "select confve,autor1,placAsoc from vehiculos where status<>@estdes and placa=@codigo"; // and " + parte0 + " and " + parte1;
                 using (MySqlCommand micon = new MySqlCommand(consulta,conn))
                 {
+                    micon.Parameters.AddWithValue("@estdes", codAnul);
                     micon.Parameters.AddWithValue("@codigo", codigo);
-                    micon.Parameters.AddWithValue("@tipo", (pc == "P")? v_trompa : v_carret);
+                    //micon.Parameters.AddWithValue("@tipo", (pc == "P")? v_trompa : v_carret);
                     MySqlDataReader dr = micon.ExecuteReader();
                     while (dr.Read())
                     {
@@ -1831,6 +1850,7 @@ namespace TransCarga
                     MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (aa == DialogResult.Yes)
                 {
+                    v_CR_gr_ind = cmb_forimp.Text;
                     if (vi_formato == "A4")            // Seleccion de formato ... A4
                     {
                         if (imprimeA4() == true) updateprint("S");
@@ -2076,6 +2096,12 @@ namespace TransCarga
         {
             try
             {
+                if (v_CR_gr_ind.Trim() == "")
+                {
+                    MessageBox.Show("Seleccione formato de impresión", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    cmb_forimp.Focus();
+                    return;
+                }
                 conClie data = generaReporte();
                 ReportDocument repo = new ReportDocument();
                 repo.Load(v_CR_gr_ind);
@@ -2143,13 +2169,14 @@ namespace TransCarga
                     rowdetalle.serguia = row.Cells["serguia"].Value.ToString();
                     rowdetalle.totcant = Int16.Parse(row.Cells["totcant"].Value.ToString());
                     rowdetalle.totflete = Double.Parse(row.Cells["totflet"].Value.ToString());
-                    rowdetalle.totpeso = Int16.Parse(row.Cells["totpeso"].Value.ToString());
+                    rowdetalle.totpeso = int.Parse(row.Cells["totpeso"].Value.ToString());
                     rowdetalle.nomdest = row.Cells[13].Value.ToString();
                     rowdetalle.dirdest = row.Cells[14].Value.ToString();
                     rowdetalle.teldest = row.Cells[15].Value.ToString();
                     rowdetalle.nombulto = row.Cells[16].Value.ToString();
                     rowdetalle.nomremi = "";    // row.Cells[].Value.ToString();
                     rowdetalle.docvta = row.Cells[17].Value.ToString();
+                    rowdetalle.nomremi = row.Cells[18].Value.ToString();
                     PlaniC.placar_det.Addplacar_detRow(rowdetalle);
                 }
             }

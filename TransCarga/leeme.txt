@@ -199,3 +199,7 @@ form planicarga, validar que la conf vehicular sea completa camion mas carreta .
 form libreria, agregar codigo para determinar que conector se usa para dni ......................... ok 05/04/2021
 form guiati, permitir cedulas como remitente o destinatario ........................................ ok 06/04/2021 se creo tipo doc CEDULA
 form planicarga, arreglar conf.veh. en edicion de planilla de carga ................................ ok 06/04/2021
+form planicarga, arreglar autor.circulación en leave de la placa, jala de placa no habilitada ...... ok 09/04/2021 funcion valplacarr()
+form plancarga3.rpt de crystal, formato de manifiesto con nombres de remit, destinat y direc ....... ok 10/04/2021
+form planicarga, agregar selección de formatos de impresión ........................................ ok 11/04/2021
+form repsoper, agregar funcion de impresion grupal de guias ........................................ 
