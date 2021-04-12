@@ -203,5 +203,6 @@ form planicarga, arreglar autor.circulación en leave de la placa, jala de placa
 form plancarga3.rpt de crystal, formato de manifiesto con nombres de remit, destinat y direc ....... ok 10/04/2021
 form planicarga, agregar selección de formatos de impresión ........................................ ok 11/04/2021
 form repsoper, agregar funcion de impresion grupal de guias ........................................ ok 12/04/2021
-form repsoper, adecuar funcionalidad pestaña "servicio por cliente" orgen/destino/con sin saldo .... 
-form ctacteclte1.rpt de crystal, formato de cuentas corrientes clientes ............................ 
+form repsoper, adecuar funcionalidad pestaña "servicio por cliente" orgen/destino/con sin saldo .... ok 12/04/2021
+form ctacteclte1.rpt de crystal, formato de cuentas corrientes clientes ............................ ok 12/04/2021
+form repsoper, agregar columna saldo al SEGUIMIENTO DE GR, modif. PA ............................... ok 12/04/2021
