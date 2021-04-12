@@ -137,6 +137,12 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>conClie.xsd</DependentUpon>
     </Compile>
+    <Compile Include="ctacteclte1.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ctacteclte1.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="defs.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -344,6 +350,10 @@
     </EmbeddedResource>
     <EmbeddedResource Include="cobranzas.resx">
       <DependentUpon>cobranzas.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ctacteclte1.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>ctacteclte1.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="defs.resx">
       <DependentUpon>defs.cs</DependentUpon>

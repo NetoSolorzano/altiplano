@@ -50,6 +50,7 @@ namespace TransCarga
         string v_CR_gr_simple = "";     // ruta y nombre formato TK guia simple
         string vi_copias = "1";         // cantidad de copias impresion
         string v_impTK = "";            // nombre de la impresora de TK para guias
+        string v_CR_ctacte = "";        // ruta y nombre del formato CR para el reporte cta cte clientes
         //int pageCount = 1, cuenta = 0;
         #endregion
 
@@ -179,6 +180,7 @@ namespace TransCarga
                     if (row["formulario"].ToString() == "clients")
                     {
                         if (row["campo"].ToString() == "documento" && row["param"].ToString() == "ruc") v_tipdocR = row["valor"].ToString().Trim();         // tipo documento RUC
+                        if (row["campo"].ToString() == "impresion" && row["param"].ToString() == "ctacte_cr") v_CR_ctacte = row["valor"].ToString().Trim(); // 
                     }
                 }
                 da.Dispose();
@@ -636,6 +638,7 @@ namespace TransCarga
                         micon.Parameters.AddWithValue("@nudo", tx_codped.Text.Trim());
                         micon.Parameters.AddWithValue("@fecini", dtp_ser_fini.Value.ToString("yyyy-MM-dd"));
                         micon.Parameters.AddWithValue("@fecfin", dtp_ser_fina.Value.ToString("yyyy-MM-dd"));
+                        micon.Parameters.AddWithValue("@tope", (rb_total.Checked == true)? "T" : "P");      // T=todos || P=pendientes de cob
                         MySqlDataAdapter da = new MySqlDataAdapter(micon);
                         da.Fill(dt);
                         dgv_resumen.DataSource = dt;
@@ -1073,6 +1076,9 @@ namespace TransCarga
             rb_imComp.Visible = false;
             rb_imSimp.Visible = false;
             bt_dale.Visible = false;
+            //
+            checkBox1.Checked = true;
+            rb_total.Checked = true;
         }
         private void Bt_anul_Click(object sender, EventArgs e)
         {
@@ -1188,7 +1194,7 @@ namespace TransCarga
         }
         private void setParaCrystal(string repo)                    // genera el set para el reporte de crystal
         {
-            if (repo== "GrGrupal")
+            if (repo == "GrGrupal")
             {
                 if (rb_imSimp.Checked == true)      // formato simple de la GR (TK)
                 {
@@ -1228,6 +1234,12 @@ namespace TransCarga
             if (repo == "planC")
             {
                 conClie datos = generarepplanC();
+                frmvizoper visualizador = new frmvizoper(datos);
+                visualizador.Show();
+            }
+            if (repo == "resumen")
+            {
+                conClie datos = generarepctacte();
                 frmvizoper visualizador = new frmvizoper(datos);
                 visualizador.Show();
             }
@@ -1387,8 +1399,8 @@ namespace TransCarga
         private conClie generareporte(int rowi)
         {
             /*
-                SER,NUMERO,FECHA,PREGUIA,DOC,DESTINAT,NOMBRE,DOC,REMITENTE,NOMBRE2,ORIGEN,DESTINO,MON,FLETE_GR,FLETE_MN,ESTADO,IMPRESO,
-	            TDV,SERVTA,NUMVTA,PAGADO,SALDO,SER_PLA,NUM_PLA,CHOFER,PLACA,CANTIDAD,PESO,U_MEDID
+                SER,NUMERO,FECHA,PREGUIA,DOC,DESTINAT,NOMBRE,DIRDEST,DOC,REMITENTE,NOMBRE2,ORIGEN,DESTINO,MON,FLETE_GR,FLETE_MN,ESTADO,IMPRESO,
+	            TDV,SERVTA,NUMVTA,PAGADO,SALDO,SER_PLA,NUM_PLA,CHOFER,PLACA,CANTIDAD,PESO,U_MEDID,DETALLE
             */
             conClie guiaT = new conClie();
             conClie.gr_ind_cabRow rowcabeza = guiaT.gr_ind_cab.Newgr_ind_cabRow();
@@ -1406,7 +1418,7 @@ namespace TransCarga
             rowcabeza.frase2 = "";
             // origen - destino
             rowcabeza.nomDestino = row.Cells["DESTINO"].Value.ToString(); // cmb_destino.Text;
-            rowcabeza.direDestino = "";
+            rowcabeza.direDestino = row.Cells["DIRDEST"].Value.ToString();
             rowcabeza.dptoDestino = ""; // 
             rowcabeza.provDestino = "";
             rowcabeza.distDestino = ""; // 
@@ -1438,7 +1450,7 @@ namespace TransCarga
             rowcabeza.igv = "";
             rowcabeza.subtotal = "";
             rowcabeza.total = row.Cells["FLETE_GR"].Value.ToString(); // (chk_flete.Checked == true) ? tx_flete.Text : "";
-            rowcabeza.docscarga = "";   // docs del remitente
+            rowcabeza.docscarga = row.Cells["DOCSREMIT"].Value.ToString(); ;   // docs del remitente 
             rowcabeza.consignat = "";   // 
             // pie
             rowcabeza.marcamodelo = "";
@@ -1457,22 +1469,72 @@ namespace TransCarga
             guiaT.gr_ind_cab.Addgr_ind_cabRow(rowcabeza);
             //
             // DETALLE  
-            /*
-            for (int i = 0; i < dtgrtdet.Rows.Count; i++)
+            //for (int i = 0; i < dtgrtdet.Rows.Count; i++)
             {
                 conClie.gr_ind_detRow rowdetalle = guiaT.gr_ind_det.Newgr_ind_detRow();
                 rowdetalle.fila = "";       // no estamos usando
-                rowdetalle.cant = dtgrtdet.Rows[0].ItemArray[3].ToString(); // dataGridView1.Rows[i].Cells[0].Value.ToString();
+                rowdetalle.cant = row.Cells["CANTIDAD"].Value.ToString(); // dtgrtdet.Rows[0].ItemArray[3].ToString();
                 rowdetalle.codigo = "";     // no estamos usando
-                rowdetalle.umed = dtgrtdet.Rows[0].ItemArray[4].ToString(); // dataGridView1.Rows[i].Cells[1].Value.ToString();
-                rowdetalle.descrip = dtgrtdet.Rows[0].ItemArray[6].ToString(); // dataGridView1.Rows[i].Cells[2].Value.ToString();
+                rowdetalle.umed = row.Cells["U_MEDID"].Value.ToString(); // dtgrtdet.Rows[0].ItemArray[4].ToString();
+                rowdetalle.descrip = row.Cells["DETALLE"].Value.ToString(); // dtgrtdet.Rows[0].ItemArray[6].ToString();
                 rowdetalle.precio = "";     // no estamos usando
                 rowdetalle.total = "";      // no estamos usando
-                rowdetalle.peso = string.Format("{0:#0.0}", dtgrtdet.Rows[0].ItemArray[7].ToString());  // dataGridView1.Rows[i].Cells[3].Value.ToString() + "Kg."
+                rowdetalle.peso = string.Format("{0:#0}", row.Cells["PESO"].Value.ToString());  // dtgrtdet.Rows[0].ItemArray[7].ToString()
                 guiaT.gr_ind_det.Addgr_ind_detRow(rowdetalle);
             }
-            */
             return guiaT;
+        }
+        private conClie generarepctacte()
+        {
+            conClie ctacte = new conClie();
+
+            conClie.ctacteclteRow rowcab = ctacte.ctacteclte.NewctacteclteRow();
+            DataGridViewRow row = dgv_resumen.Rows[0];
+            rowcab.formatoRPT = v_CR_ctacte;
+            rowcab.rucEmisor = Program.ruc;
+            rowcab.nomEmisor = Program.cliente;
+            rowcab.dirEmisor = Program.dirfisc;
+            rowcab.fecfin = dtp_ser_fini.Value.Date.ToString();
+            rowcab.fecini = dtp_ser_fina.Value.Date.ToString();
+            rowcab.id = "0";
+            rowcab.nomcliente = tx_cliente.Text;
+            rowcab.numdoc = tx_docu.Text;
+            rowcab.tipdoc = cmb_tidoc.Text;
+            rowcab.tot_pend = (rb_pend.Checked == true) ? "P" : "T";
+            ctacte.ctacteclte.AddctacteclteRow(rowcab);
+            //
+            foreach (DataGridViewRow rowd in dgv_resumen.Rows)
+            {
+                conClie.detctacteRow rowdet = ctacte.detctacte.NewdetctacteRow();
+                rowdet.id = "0";
+                rowdet.estado = rowd.Cells["ESTADO"].Value.ToString();
+                rowdet.fechgr = rowd.Cells["F_GUIA"].Value.ToString();
+                rowdet.guia = rowd.Cells["GUIA"].Value.ToString();
+                rowdet.mongr = rowd.Cells["MON"].Value.ToString();  // moneda GR
+                rowdet.flete = double.Parse(rowd.Cells["TOT_GUIA"].Value.ToString());
+                rowdet.origen = rowd.Cells["ORIGEN"].Value.ToString();
+                rowdet.destino = rowd.Cells["DESTINO"].Value.ToString();
+                rowdet.tdrem = rowd.Cells["TD_REM"].Value.ToString();  // tipo doc remiten
+                rowdet.ndrem = rowd.Cells["ND_REM"].Value.ToString();
+                rowdet.nomrem = rowd.Cells["REMITENTE"].Value.ToString();
+                rowdet.tddes = rowd.Cells["TD_DES"].Value.ToString();  // tipo doc destinat
+                rowdet.nddes = rowd.Cells["ND_DES"].Value.ToString();
+                rowdet.nomdes = rowd.Cells["DESTINAT"].Value.ToString();
+                rowdet.fecdv = rowd.Cells["F_VTA"].Value.ToString();
+                rowdet.docvta = rowd.Cells["DOC_VTA"].Value.ToString();
+                rowdet.monvta = rowd.Cells["MON_VTA"].Value.ToString();
+                rowdet.totvta = double.Parse(rowd.Cells["TOT_VTA"].Value.ToString());
+                rowdet.fecpag = rowd.Cells["F_PAGO"].Value.ToString();
+                rowdet.nompag = rowd.Cells["MON_PAG"].Value.ToString(); // moneda pago
+                rowdet.totpag = double.Parse(rowd.Cells["PAGADO"].Value.ToString());  // total pagos
+                rowdet.saldo = double.Parse(rowd.Cells["SALDO"].Value.ToString());
+                rowdet.fecpla = rowd.Cells["F_PAGO"].Value.ToString();
+                rowdet.planilla = rowd.Cells["PLANILLA"].Value.ToString();
+                rowdet.placa = rowd.Cells["PLACA"].Value.ToString();
+                ctacte.detctacte.AdddetctacteRow(rowdet);
+            }
+            //
+            return ctacte;
         }
         #endregion
 
