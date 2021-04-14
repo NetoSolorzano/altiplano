@@ -49,6 +49,7 @@ namespace TransCarga
         string v_estcaj = "";           // estado de la caja
         string v_idcaj = "";            // id de la caja
         string codAbie = "";            // codigo estado de caja abierta
+        Int16 v_nvam = 0;               // variable para # vales automatico=1 o manual=0 
         //
         static libreria lib = new libreria();   // libreria de procedimientos
         publico lp = new publico();             // libreria de clases
@@ -160,7 +161,8 @@ namespace TransCarga
             tx_noco.ReadOnly = true;
             tx_numero.Text = "";
             tx_serie.Text = v_slu;
-            tx_numero.ReadOnly = (Tx_modo.Text == "NUEVO")? false : true;
+            if (v_nvam == 0) tx_numero.ReadOnly = (Tx_modo.Text == "NUEVO") ? false : true;   // configuracion manual de numero de vale
+            else tx_numero.ReadOnly = true;     // configuracion automática numero de vale
             tx_fechope.Text = DateTime.Today.ToString("dd/MM/yyyy");
             tx_digit.Text = v_nbu;
             tx_dat_estad.Text = codGene;
@@ -236,6 +238,19 @@ namespace TransCarga
                 v_clu = TransCarga.Program.vg_luse;                // codigo local usuario
                 v_slu = lib.serlocs(v_clu);                        // serie local usuario
                 v_nbu = TransCarga.Program.vg_nuse;                // nombre del usuario
+                //
+                consulta = "select marca3 from desc_loc where idcodice=@clu";
+                using (MySqlCommand mic = new MySqlCommand(consulta, conn))
+                {
+                    mic.Parameters.AddWithValue("@clu", v_clu);
+                    using (MySqlDataReader dr = mic.ExecuteReader())
+                    {
+                        if (dr.Read())
+                        {
+                            v_nvam = dr.GetInt16(0);
+                        }
+                    }
+                }
                 conn.Close();
             }
             catch (MySqlException ex)
@@ -552,7 +567,7 @@ namespace TransCarga
                 tx_serie.Focus();
                 return;
             }
-            if (tx_numero.Text.Trim() == "")
+            if (tx_numero.Text.Trim() == "" && v_nvam == 0)
             {
                 MessageBox.Show("Ingrese el número del recibo", " Atención ", MessageBoxButtons.OK,MessageBoxIcon.Information);
                 tx_numero.Focus();
@@ -602,24 +617,27 @@ namespace TransCarga
                         cmb_grupo.Focus();
                         return;
                     }
-                    // valimos que el vale/recibo no este repitiendo
-                    using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
+                    if (v_nvam == 0)    // configuracion de vale manual
                     {
-                        if (lib.procConn(conn) == true)
+                        // valimos que el vale/recibo no este repitiendo
+                        using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
                         {
-                            string consulta = "select count(id) from cabegresos where concat(serdoco,numdoco)=@doco";
-                            using (MySqlCommand micon = new MySqlCommand(consulta, conn))
+                            if (lib.procConn(conn) == true)
                             {
-                                micon.Parameters.AddWithValue("@doco", tx_serie.Text + tx_numero.Text);
-                                using (MySqlDataReader dr = micon.ExecuteReader())
+                                string consulta = "select count(id) from cabegresos where concat(serdoco,numdoco)=@doco";
+                                using (MySqlCommand micon = new MySqlCommand(consulta, conn))
                                 {
-                                    if (dr.Read())
+                                    micon.Parameters.AddWithValue("@doco", tx_serie.Text + tx_numero.Text);
+                                    using (MySqlDataReader dr = micon.ExecuteReader())
                                     {
-                                        if (dr.GetInt32(0) > 0)
+                                        if (dr.Read())
                                         {
-                                            MessageBox.Show("El vale/recibo esta repetido!","Atención",MessageBoxButtons.OK,MessageBoxIcon.Warning);
-                                            tx_numero.Focus();
-                                            return;
+                                            if (dr.GetInt32(0) > 0)
+                                            {
+                                                MessageBox.Show("El vale/recibo esta repetido!", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                                tx_numero.Focus();
+                                                return;
+                                            }
                                         }
                                     }
                                 }
@@ -688,6 +706,31 @@ namespace TransCarga
                     MessageBox.Show("El documento esta ANULADO", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                     tx_numero.Focus();
                     return;
+                }
+                // validaciones para depositos
+                if (rb_depo.Checked == true)
+                {
+                    if (tx_dat_cta.Text.Trim() == "")
+                    {
+                        MessageBox.Show("Seleccione la cuenta destino", "Atención, seleccione", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                        cmb_ctaprop.Focus();
+                        return;
+                    }
+                    if (tx_fecdep.Text == "  /  /")
+                    {
+                        MessageBox.Show("Ingrese la fecha del depósito", "Atención, ingrese", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                        tx_fecdep.Focus();
+                        return;
+                    }
+                }
+                else // validaciones de pagos efectuados
+                {
+                    if (tx_dat_grupo.Text == "")
+                    {
+                        MessageBox.Show("Seleccione el grupo de egreso", "Atención, seleccione", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                        cmb_grupo.Focus();
+                        return;
+                    }
                 }
                 if (true)
                 {
@@ -1021,6 +1064,13 @@ namespace TransCarga
                 }
             }
         }
+        private void rb_pago_Validating(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (Tx_modo.Text != "NUEVO")
+            {   
+                e.Cancel = true;    // no funca
+            }
+        }
         private void tx_fb_Validating(object sender, System.ComponentModel.CancelEventArgs e)
         {
             if (tx_fb.Text != "B" && tx_fb.Text != "F")
@@ -1036,8 +1086,8 @@ namespace TransCarga
         }
         private void rb_pago_Enter(object sender, EventArgs e)          // tipo de egreso - pago efectuado
         {
-            tx_noco.Text = v_noco;
-            if (("NUEVO,EDITAR").Contains(Tx_modo.Text))
+            /*tx_noco.Text = v_noco;
+            if (("NUEVO,EDITAR").Contains(Tx_modo.Text))   //     13/04/2021
             {
                 cmb_ctaprop.Enabled = false;
                 tx_glosa.Enabled = false;
@@ -1050,12 +1100,12 @@ namespace TransCarga
                 cmb_grupo.Enabled = true;
                 tx_dat_tdv.Text = v_codc;
                 tx_numero.Focus();
-            }
+            }*/
         }
         private void rb_depo_Enter(object sender, EventArgs e)
         {
-            tx_noco.Text = v_nodd;
-            if (("NUEVO,EDITAR").Contains(Tx_modo.Text))
+            /*tx_noco.Text = v_nodd;
+            if (("NUEVO,EDITAR").Contains(Tx_modo.Text))   //    13/04/2021
             {
                 cmb_ctaprop.Enabled = true;
                 tx_glosa.Enabled = true;
@@ -1068,6 +1118,13 @@ namespace TransCarga
                 cmb_grupo.Enabled = false;
                 tx_dat_tdv.Text = v_codd;
                 tx_numero.Focus();
+            }*/
+        }
+        private void rb_depo_Validating(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (Tx_modo.Text != "NUEVO")
+            {
+                e.Cancel = true;    // no funca
             }
         }
         private void cmb_mon_Enter(object sender, EventArgs e)
@@ -1090,6 +1147,43 @@ namespace TransCarga
         {
             if (Tx_modo.Text == "NUEVO") cmb_ctaprop.DroppedDown = true;
         }
+        private void rb_depo_Click(object sender, EventArgs e)
+        {
+            tx_noco.Text = v_nodd;
+            if (("NUEVO,EDITAR").Contains(Tx_modo.Text))   //    13/04/2021
+            {
+                cmb_ctaprop.Enabled = true;
+                tx_glosa.Enabled = true;
+                tx_fecdep.Enabled = true;
+                if (Tx_modo.Text == "NUEVO") tx_fecdep.Text = "";
+                //
+                cmb_comp.Enabled = false;
+                tx_serGR.Enabled = false;
+                tx_numGR.Enabled = false;
+                cmb_grupo.Enabled = false;
+                tx_dat_tdv.Text = v_codd;
+                tx_numero.Focus();
+            }
+        }
+        private void rb_pago_Click(object sender, EventArgs e)
+        {
+            tx_noco.Text = v_noco;
+            if (("NUEVO,EDITAR").Contains(Tx_modo.Text))   //     13/04/2021
+            {
+                cmb_ctaprop.Enabled = false;
+                tx_glosa.Enabled = false;
+                tx_fecdep.Enabled = false;
+                tx_fecdep.Text = "";
+                //
+                cmb_comp.Enabled = true;
+                tx_serGR.Enabled = true;
+                tx_numGR.Enabled = true;
+                cmb_grupo.Enabled = true;
+                tx_dat_tdv.Text = v_codc;
+                tx_numero.Focus();
+            }
+        }
+
         #endregion
 
         #region botones_de_comando
@@ -1390,15 +1484,34 @@ namespace TransCarga
                     tx_dat_estad.Text = codGene;
                     if (dataGridView1.Rows[e.RowIndex].Cells["tipegre"].Value.ToString() == "1")
                     {
-                        rb_pago.Focus();
-                        rb_pago.PerformClick();
+                        rb_pago.Checked = true;
+                        //rb_pago.PerformClick();
+                        cmb_ctaprop.Enabled = false;
+                        tx_glosa.Enabled = false;
+                        tx_fecdep.Enabled = false;
+                        tx_fecdep.Text = "";
+                        //
+                        cmb_comp.Enabled = true;
+                        tx_serGR.Enabled = true;
+                        tx_numGR.Enabled = true;
+                        cmb_grupo.Enabled = true;
+                        tx_dat_tdv.Text = v_codc;
                     }
                     if (dataGridView1.Rows[e.RowIndex].Cells["tipegre"].Value.ToString() == "2")
                     {
-                        rb_depo.Focus();
-                        rb_depo.PerformClick();
+                        rb_depo.Checked = true;
+                        //rb_depo.PerformClick();
+                        cmb_ctaprop.Enabled = true;
+                        tx_glosa.Enabled = true;
+                        tx_fecdep.Enabled = true;
+                        if (Tx_modo.Text == "NUEVO") tx_fecdep.Text = "";
+                        //
+                        cmb_comp.Enabled = false;
+                        tx_serGR.Enabled = false;
+                        tx_numGR.Enabled = false;
+                        cmb_grupo.Enabled = false;
+                        tx_dat_tdv.Text = v_codd;
                     }
-
                     tx_dat_tdv.Text = dataGridView1.Rows[e.RowIndex].Cells["comprob"].Value.ToString();
                     tx_dat_comp.Text = "";
                     tx_serGR.Text = dataGridView1.Rows[e.RowIndex].Cells["sercomp"].Value.ToString();
@@ -1439,5 +1552,24 @@ namespace TransCarga
             }
         }
         #endregion
+
+        private void rb_pago_MouseClick(object sender, MouseEventArgs e)
+        {
+            tx_noco.Text = v_noco;
+            if (("NUEVO,EDITAR").Contains(Tx_modo.Text))   //     13/04/2021
+            {
+                cmb_ctaprop.Enabled = false;
+                tx_glosa.Enabled = false;
+                tx_fecdep.Enabled = false;
+                tx_fecdep.Text = "";
+                //
+                cmb_comp.Enabled = true;
+                tx_serGR.Enabled = true;
+                tx_numGR.Enabled = true;
+                cmb_grupo.Enabled = true;
+                tx_dat_tdv.Text = v_codc;
+                tx_numero.Focus();
+            }
+        }
     }
 }

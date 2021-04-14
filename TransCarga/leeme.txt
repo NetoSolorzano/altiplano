@@ -206,3 +206,6 @@ form repsoper, agregar funcion de impresion grupal de guias ....................
 form repsoper, adecuar funcionalidad pestaña "servicio por cliente" orgen/destino/con sin saldo .... ok 12/04/2021
 form ctacteclte1.rpt de crystal, formato de cuentas corrientes clientes ............................ ok 12/04/2021
 form repsoper, agregar columna saldo al SEGUIMIENTO DE GR, modif. PA ............................... ok 12/04/2021
+form egresosdep, adecuacion de altiplano, numero de vale automático ................................ ok 13/04/2021
+form ingresosv, adecuacion de altiplano, numero de vale automático ................................. no, se queda asi, se hace recibo de ingreso
+form defs, agregar opción de seleccionar num vales automatico o manual - LOCALES ................... ok 13/04/2021

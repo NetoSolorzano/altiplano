@@ -51,8 +51,8 @@
             this.Bt_sig = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator10 = new System.Windows.Forms.ToolStripSeparator();
             this.Bt_ret = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
             this.Bt_fin = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripSeparator11 = new System.Windows.Forms.ToolStripSeparator();
             this.tx_idr = new System.Windows.Forms.TextBox();
             this.button1 = new System.Windows.Forms.Button();
@@ -381,14 +381,6 @@
             this.Bt_ret.Visible = false;
             this.Bt_ret.Click += new System.EventHandler(this.Bt_back_Click);
             // 
-            // toolStripSeparator9
-            // 
-            this.toolStripSeparator9.AutoSize = false;
-            this.toolStripSeparator9.ForeColor = System.Drawing.Color.Black;
-            this.toolStripSeparator9.Name = "toolStripSeparator9";
-            this.toolStripSeparator9.Size = new System.Drawing.Size(3, 45);
-            this.toolStripSeparator9.Visible = false;
-            // 
             // Bt_fin
             // 
             this.Bt_fin.AutoSize = false;
@@ -401,6 +393,14 @@
             this.Bt_fin.ToolTipText = "Ir al final";
             this.Bt_fin.Visible = false;
             this.Bt_fin.Click += new System.EventHandler(this.Bt_last_Click);
+            // 
+            // toolStripSeparator9
+            // 
+            this.toolStripSeparator9.AutoSize = false;
+            this.toolStripSeparator9.ForeColor = System.Drawing.Color.Black;
+            this.toolStripSeparator9.Name = "toolStripSeparator9";
+            this.toolStripSeparator9.Size = new System.Drawing.Size(3, 45);
+            this.toolStripSeparator9.Visible = false;
             // 
             // toolStripSeparator11
             // 
@@ -1085,7 +1085,9 @@
             this.rb_depo.TabStop = true;
             this.rb_depo.Text = "Depósito";
             this.rb_depo.UseVisualStyleBackColor = true;
+            this.rb_depo.Click += new System.EventHandler(this.rb_depo_Click);
             this.rb_depo.Enter += new System.EventHandler(this.rb_depo_Enter);
+            this.rb_depo.Validating += new System.ComponentModel.CancelEventHandler(this.rb_depo_Validating);
             // 
             // rb_pago
             // 
@@ -1098,7 +1100,10 @@
             this.rb_pago.TabStop = true;
             this.rb_pago.Text = "Pago efectuado";
             this.rb_pago.UseVisualStyleBackColor = true;
+            this.rb_pago.Click += new System.EventHandler(this.rb_pago_Click);
             this.rb_pago.Enter += new System.EventHandler(this.rb_pago_Enter);
+            this.rb_pago.MouseClick += new System.Windows.Forms.MouseEventHandler(this.rb_pago_MouseClick);
+            this.rb_pago.Validating += new System.ComponentModel.CancelEventHandler(this.rb_pago_Validating);
             // 
             // groupBox2
             // 

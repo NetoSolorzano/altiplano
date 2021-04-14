@@ -337,13 +337,14 @@ namespace TransCarga
                     lb_ubigeo.Text = "Ubigeo";
                     chk_marc1.Text = "Usa Pre Guías";
                     chk_marc2.Text = "Usa Num.GR Automat.";
-                    chk_marc3.Text = "Marca3";
+                    chk_marc3.Text = "Usa Num.VALES Automat.";
                     lb_enla1.Text = "Zona destino";
                     break;
                 case "xxx":
                     break;
             }
         }
+
         #region limpiadores_modos
         public void sololee(Form lfrm)
         {
