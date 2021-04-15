@@ -26,9 +26,9 @@ namespace TransCarga
         }
         private void login_Load(object sender, EventArgs e)
         {
-            lb_version.Text = "Versión " + System.Diagnostics.FileVersionInfo.GetVersionInfo(Application.ExecutablePath).FileVersion;
-            lb_titulo.Text = "Solución para empresas de Transporte de Carga" + Program.tituloF;
-            lb_titulo.BackColor = System.Drawing.Color.White;
+            //lb_version.Text = "Versión " + System.Diagnostics.FileVersionInfo.GetVersionInfo(Application.ExecutablePath).FileVersion;
+            //lb_titulo.Text = "Solución para empresas de Transporte de Carga" + Program.tituloF;
+            //lb_titulo.BackColor = System.Drawing.Color.White;
             //lb_titulo.Parent = pictureBox1;
             //Image logo = Image.FromFile("recursos/logo_solorsoft_2p.png");
             Image salir = Image.FromFile("recursos/Close_32.png");

@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // La información general de un ensamblado se controla mediante el siguiente 
 // conjunto de atributos. Cambie estos valores de atributo para modificar la información
 // asociada con un ensamblado.
-[assembly: AssemblyTitle("TransCarga")]
-[assembly: AssemblyDescription("Solución para la gestión de empresas de carga")]
+[assembly: AssemblyTitle("Altiplano")]
+[assembly: AssemblyDescription("Solución para la gestión de carga")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("J&L Technology SAC")]
-[assembly: AssemblyProduct("TransCarga")]
-[assembly: AssemblyCopyright("Copyright ©  2020")]
+[assembly: AssemblyCompany("Expreso El Altiplano")]
+[assembly: AssemblyProduct("Altiplano")]
+[assembly: AssemblyCopyright("Copyright ©  2021")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 // Puede especificar todos los valores o usar los valores predeterminados de número de compilación y de revisión
 // utilizando el carácter "*", como se muestra a continuación:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("2021.04.12.1")]
-[assembly: AssemblyFileVersion("2021.04.12.1")]
+[assembly: AssemblyVersion("2021.04.14.1")]
+[assembly: AssemblyFileVersion("2021.04.14.1")]

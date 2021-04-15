@@ -2264,7 +2264,18 @@ namespace TransCarga
                     dataGridView1.AllowUserToAddRows = true;
                 }
                 rb_no.Enabled = true;
-                if (decimal.Parse(tx_dat_saldoGR.Text) <= 0)
+                // comprobación de filas de guias, pagos y saldos, si hay + de 1 fila y alguna esta pagada => no se permite cobrar automatico
+                if (dataGridView1.Rows.Count >= 3 && decimal.Parse(tx_dat_saldoGR.Text) <= 0)
+                {
+                    MessageBox.Show("El presente comprobante no se " + Environment.NewLine +
+                         "puede cobrar en automático", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    rb_si.Checked = false;
+                    rb_si.Enabled = false;
+                    rb_no.Checked = true;
+                    tx_salxcob.Text = tx_flete.Text;
+                    tx_pagado.Text = "0";
+                }
+                if (dataGridView1.Rows.Count <= 2 && decimal.Parse(tx_dat_saldoGR.Text) <= 0)
                 {
                     MessageBox.Show("La GR esta cancelada, el documento de venta"+ Environment.NewLine +
                          "se creará con el estado cancelado","Atención verifique",MessageBoxButtons.OK,MessageBoxIcon.Information);
@@ -2277,7 +2288,9 @@ namespace TransCarga
                 }
                 else
                 {
-                    tx_flete.ReadOnly = true;
+                    //tx_flete.ReadOnly = true;
+                    if (cusdscto.Contains(asd)) tx_flete.ReadOnly = false;
+                    else tx_flete.ReadOnly = true;
                 }
                 tx_flete_Leave(null, null);
             }
@@ -2720,7 +2733,7 @@ namespace TransCarga
                     micon.Parameters.AddWithValue("@igvpgr", tx_igv.Text);                      // igv
                     micon.Parameters.AddWithValue("@porcigv", v_igv);                           // porcentaje en numeros de IGV
                     micon.Parameters.AddWithValue("@totpgr", tx_flete.Text);                    // total inc. igv
-                    micon.Parameters.AddWithValue("@pagpgr", (tx_pagado.Text == "") ? "0" : tx_pagado.Text);
+                    micon.Parameters.AddWithValue("@pagpgr", (rb_si.Checked == true) ? tx_fletMN.Text : "0");  // (tx_pagado.Text == "") ? "0" : tx_pagado.Text);
                     micon.Parameters.AddWithValue("@salxpa", (tx_salxcob.Text == "") ? "0" : tx_salxcob.Text);
                     micon.Parameters.AddWithValue("@estpgr", (tx_pagado.Text == "" || tx_pagado.Text == "0.00") ? tx_dat_estad.Text : codCanc); // estado
                     micon.Parameters.AddWithValue("@frase1", "");                   // no hay nada que poner 19/11/2020
@@ -3314,17 +3327,26 @@ namespace TransCarga
                 {
                     if (tx_dat_saldoGR.Text.Trim() != "")
                     {
-                        if (decimal.Parse(tx_dat_saldoGR.Text) > 0)
+                        if (tx_dat_mone.Text == MonDeft)
                         {
-                            tx_pagado.Text = tx_flete.Text;
-                            tx_salxcob.Text = "0.00";
-                            tx_salxcob.BackColor = Color.Green;
+                            if (decimal.Parse(tx_dat_saldoGR.Text) > 0)
+                            {
+                                tx_pagado.Text = tx_fletMN.Text;     // tx_flete.Text;
+                                tx_salxcob.Text = "0.00";
+                                tx_salxcob.BackColor = Color.Green;
+                            }
+                            else
+                            {
+                                tx_salxcob.Text = "0.00";
+                                tx_dat_plazo.Text = "";
+                                cmb_plazoc.SelectedIndex = -1;
+                            }
                         }
                         else
                         {
-                            tx_salxcob.Text = "0.00";
-                            tx_dat_plazo.Text = "";
-                            cmb_plazoc.SelectedIndex = -1;
+                            MessageBox.Show("Solo puede cancelar en moneda local","Atención",MessageBoxButtons.OK,MessageBoxIcon.Warning);
+                            rb_no.PerformClick();
+                            return;
                         }
                     }
                 }

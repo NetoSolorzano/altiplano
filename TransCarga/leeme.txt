@@ -209,3 +209,6 @@ form repsoper, agregar columna saldo al SEGUIMIENTO DE GR, modif. PA ...........
 form egresosdep, adecuacion de altiplano, numero de vale automático ................................ ok 13/04/2021
 form ingresosv, adecuacion de altiplano, numero de vale automático ................................. no, se queda asi, se hace recibo de ingreso
 form defs, agregar opción de seleccionar num vales automatico o manual - LOCALES ................... ok 13/04/2021
+============================================= ALTIPLANO ============================================ ok 14/04/2021
+form facelect, quitar el codigo que impide modif el monto al usuario autorizado .................... ok 14/04/2021
+form repadmcaja, pestaña cajas, formato CR debe jalar lo cobrado, no el total de doc.cobrado ....... 
