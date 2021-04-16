@@ -123,7 +123,7 @@ namespace TransCarga
         DataTable tdfe = new DataTable();       // facturacion electronica -detalle
         string[] datcltsR = { "", "", "", "", "", "", "", "", "" };
         string[] datcltsD = { "", "", "", "", "", "", "", "", "" };
-        string[] datguias = { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" };
+        string[] datguias = { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }; // 17
 
         public facelect()
         {
@@ -788,6 +788,7 @@ namespace TransCarga
                 datguias[13] = "";
                 datguias[14] = "";
                 datguias[15] = "";  // local origen-destino
+                datguias[16] = "";  // saldo de la GR
                 // validamos que la GR: 1.exista, 2.No este facturada, 3.No este anulada
                 // y devolvemos una fila con los datos del remitente y otra fila los datos del destinatario
                 string hay = "no";
@@ -828,7 +829,7 @@ namespace TransCarga
                             "ifnull(b1.numerotel2,'') as numtel2R,a.tidodegri,a.nudodegri,b2.razonsocial as nombdegri,b2.direcc1 as diredegri,b2.ubigeo as ubigdegri,ifnull(b2.email,'') as emailD," +
                             "ifnull(b2.numerotel1,'') as numtel1D,ifnull(b2.numerotel2,'') as numtel2D,a.tipmongri,a.totgri,a.salgri,SUM(d.cantprodi) AS bultos,date(a.fechopegr) as fechopegr,a.tipcamgri," +
                             "max(d.descprodi) AS descrip,ifnull(m.descrizionerid,'') as mon,a.totgrMN,a.codMN,c.fecdocvta,b1.tiposocio as tipsrem,b2.tiposocio as tipsdes,a.docsremit," +
-                            "a.plaplagri,a.carplagri,a.autplagri,a.confvegri,concat(lo.descrizionerid,' - ',ld.descrizionerid) as orides " +
+                            "a.plaplagri,a.carplagri,a.autplagri,a.confvegri,concat(lo.descrizionerid,' - ',ld.descrizionerid) as orides,c.saldofina " +
                             "from cabguiai a left join detguiai d on d.idc=a.id " +
                             "LEFT JOIN controlg c ON c.serguitra = a.sergui AND c.numguitra = a.numgui " +
                             "left join anag_cli b1 on b1.tipdoc=a.tidoregri and b1.ruc=a.nudoregri " +
@@ -885,6 +886,7 @@ namespace TransCarga
                                         datguias[13] = dr.GetString("autplagri");
                                         datguias[14] = dr.GetString("confvegri");
                                         datguias[15] = dr.GetString("orides");
+                                        datguias[16] = dr.GetString("salgri");
                                         //
                                         tx_dat_saldoGR.Text = dr.GetString("salgri");
                                         retorna = true;
@@ -2213,7 +2215,7 @@ namespace TransCarga
                     rb_desGR.PerformClick();
                 }
                 //dataGridView1.Rows.Clear(); nooooo, se puede hacer una fact de varias guias, n guias
-                dataGridView1.Rows.Add(datguias[0], datguias[1], datguias[2], datguias[3], datguias[4], datguias[5], datguias[6], datguias[9], datguias[10], datguias[7], datguias[15]);     // insertamos en la grilla los datos de la GR
+                dataGridView1.Rows.Add(datguias[0], datguias[1], datguias[2], datguias[3], datguias[4], datguias[5], datguias[6], datguias[9], datguias[10], datguias[7], datguias[15],datguias[16]);     // insertamos en la grilla los datos de la GR
                 int totfil = 0;
                 int totcant = 0;
                 decimal totflet = 0;    // acumulador en moneda de la GR
@@ -2271,7 +2273,6 @@ namespace TransCarga
                          "puede cobrar en automático", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     rb_si.Checked = false;
                     rb_si.Enabled = false;
-                    rb_no.Checked = true;
                     tx_salxcob.Text = tx_flete.Text;
                     tx_pagado.Text = "0";
                 }
@@ -2280,7 +2281,6 @@ namespace TransCarga
                     MessageBox.Show("La GR esta cancelada, el documento de venta"+ Environment.NewLine +
                          "se creará con el estado cancelado","Atención verifique",MessageBoxButtons.OK,MessageBoxIcon.Information);
                     //rb_si.PerformClick();
-                    rb_si.Checked = false;
                     rb_no.Enabled = false;
                     rb_si.Enabled = false;
                     tx_salxcob.Text = "0";
@@ -2293,6 +2293,8 @@ namespace TransCarga
                     else tx_flete.ReadOnly = true;
                 }
                 tx_flete_Leave(null, null);
+                rb_si.Checked = false;
+                rb_no.Checked = false;   // true
             }
         }
         private void button1_Click(object sender, EventArgs e)
@@ -2371,7 +2373,7 @@ namespace TransCarga
             if (modo == "NUEVO")
             {
                 // valida pago y calcula
-                if (rb_si.Checked == false && rb_no.Checked == false && rb_si.Enabled == true)
+                if (rb_si.Checked == false && rb_no.Checked == false && rb_no.Enabled == true)
                 {
                     MessageBox.Show("Seleccione si se cancela la factura o no","Atención - Confirme",MessageBoxButtons.OK,MessageBoxIcon.Warning);
                     rb_si.Focus();
@@ -3356,15 +3358,19 @@ namespace TransCarga
                 MessageBox.Show("No existe caja abierta!" + Environment.NewLine +
                     "No puede cobrar hasta aperturar caja", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Hand);
                 rb_si.Checked = false;
-                //rb_no_Click(null, null);
-                //rb_no.Checked = true;
                 rb_no.PerformClick();
             }
         }
         private void rb_no_Click(object sender, EventArgs e)
         {
+            double once = 0;
+            for (int i = 0; i<dataGridView1.Rows.Count - 1; i++)
+            {
+                if (string.IsNullOrEmpty(dataGridView1.Rows[i].Cells[11].Value.ToString())) dataGridView1.Rows[i].Cells[11].Value = "0";
+                once = once + double.Parse(dataGridView1.Rows[i].Cells[11].Value.ToString());
+            }
             tx_pagado.Text = "0.00";
-            tx_salxcob.Text = tx_flete.Text;
+            tx_salxcob.Text = once.ToString("#0.00"); // tx_flete.Text;
             tx_salxcob.BackColor = Color.Red;
             cmb_plazoc.Enabled = true;
             cmb_plazoc.SelectedValue = codppc;

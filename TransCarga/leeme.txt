@@ -211,4 +211,5 @@ form ingresosv, adecuacion de altiplano, numero de vale automático ............
 form defs, agregar opción de seleccionar num vales automatico o manual - LOCALES ................... ok 13/04/2021
 ============================================= ALTIPLANO ============================================ ok 14/04/2021
 form facelect, quitar el codigo que impide modif el monto al usuario autorizado .................... ok 14/04/2021
-form repadmcaja, pestaña cajas, formato CR debe jalar lo cobrado, no el total de doc.cobrado ....... 
+form repadmcaja, 
+form facelect, 
