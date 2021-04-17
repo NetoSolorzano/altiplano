@@ -213,3 +213,4 @@ form defs, agregar opción de seleccionar num vales automatico o manual - LOCALE
 form facelect, quitar el codigo que impide modif el monto al usuario autorizado .................... ok 14/04/2021
 form repadmcaja, 
 form facelect, 
+form cobranzas, no debe permitir cobrar F/B si tiene varias guias, algunas pagadas y otras no ...... 

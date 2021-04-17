@@ -667,14 +667,14 @@ namespace TransCarga
                                         }
                                         else
                                         {
-                                            if (dr.GetString("tipdocvta").Trim() != "")
-                                            {
-                                                MessageBox.Show("La Guía tiene documento de venta" + Environment.NewLine +
-                                                    "Debe cobrar desde " + dr.GetString("tipdocvta") + dr.GetString("serdocvta") + "-" + dr.GetString("numdocvta"), "Atención", 
-                                                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                                                hay = "nohay";
-                                            }
-                                            else
+                                            //if (dr.GetString("tipdocvta").Trim() != "")    // YA NO 16/04/2021 .. SI SE COBRA DESDE GR DEBE RESTARSE SALDO DE LA FT
+                                            //{
+                                                // MessageBox.Show("La Guía tiene documento de venta" + Environment.NewLine +
+                                                //    "Debe cobrar desde " + dr.GetString("tipdocvta") + dr.GetString("serdocvta") + "-" + dr.GetString("numdocvta"), "Atención", 
+                                                //    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                                // hay = "nohay";
+                                            //}
+                                            //else
                                             {
                                                 if (dr.GetString("estadoser") == codAnul || dr.GetDouble("saldofina") <= 0)
                                                 {
@@ -833,8 +833,10 @@ namespace TransCarga
                 lib.procConn(conn);
                 if (tipo == "guia")
                 {
-                    string consdet = "SELECT fila,sergui,numgui,cantprodi,unimedpro,codiprodi,descprodi,pesoprodi,precprodi,totaprodi " +
-                        "FROM detguiai WHERE sergui = @ser AND numgui = @num";
+                    string consdet = "SELECT a.fila,a.sergui,a.numgui,a.cantprodi,a.unimedpro,a.codiprodi,a.descprodi,a.pesoprodi,a.precprodi,a.totaprodi," +
+                        "b.saldofina,c.descrizionerid as mon,b.totguitra " +
+                        "FROM detguiai a left join controlg b on b.serguitra=a.sergui and b.numguitra=a.numgui left join desc_mon c on c.idcodice=b.codmongui " +
+                        "WHERE a.sergui = @ser AND a.numgui = @num";
                     using (MySqlCommand midet = new MySqlCommand(consdet, conn))
                     {
                         midet.Parameters.AddWithValue("@ser", ser);
@@ -847,17 +849,22 @@ namespace TransCarga
                                     ser + "-" + cor,
                                     drD.GetString("descprodi"),
                                     drD.GetString("cantprodi"),
-                                    drD.GetString("pesoprodi"),
-                                    drD.GetString("totaprodi")
+                                    drD.GetString("mon"),
+                                    drD.GetString("totguitra"),
+                                    "",
+                                    "",
+                                    drD.GetString("saldofina")
                                     );
+                                //                                     drD.GetString("pesoprodi"),
                             }
                         }
                     }
                 }
                 if (tipo == "docvta")
                 {
-                    string consdet = "SELECT codgror,cantbul,unimedp,descpro,pesogro,codmogr,totalgr " +
-                                    "FROM detfactu WHERE martdve = @tip and serdvta = @ser and numdvta = @num";
+                    string consdet = "SELECT a.codgror,a.cantbul,a.unimedp,a.descpro,a.pesogro,a.codmogr,a.totalgr,b.saldofina " +
+                                    "FROM detfactu a left join controlg b on concat(b.serguitra,'-',b.numguitra)=a.codgror " +
+                                    "WHERE a.martdve = @tip and a.serdvta = @ser and a.numdvta = @num";
                     using (MySqlCommand midet = new MySqlCommand(consdet, conn))
                     {
                         midet.Parameters.AddWithValue("@tip", tx_fb.Text);
@@ -872,7 +879,10 @@ namespace TransCarga
                                     drD.GetString("descpro"),
                                     drD.GetString("cantbul"),
                                     drD.GetString("pesogro"),
-                                    drD.GetString("totalgr")
+                                    drD.GetString("totalgr"),
+                                    "",
+                                    "",
+                                    drD.GetString("saldofina")
                                     );
                             }
                         }
@@ -934,6 +944,7 @@ namespace TransCarga
                     if (rb_GR.Checked == true) MessageBox.Show("La GR no existe, esta anulada o ya esta pagada", "Error en Guía", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     if (rb_DV.Checked == true) MessageBox.Show("El documento de venta, no existe" + Environment.NewLine +
                         "esta anulada o esta cancelada", "Error en Documento", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    //
                     tx_numGR.Text = "";
                     initIngreso();
                     tx_dat_tidoor.Text = v_tip2;
@@ -945,8 +956,30 @@ namespace TransCarga
                 }
                 else
                 {
-                    cmb_mpago.Focus();
-                    cmb_mpago.DroppedDown = true;
+                    double tg = 0, ts = 0;
+                    for (int i = 0; i < dataGridView1.Rows.Count - 1; i++)
+                    {
+                        tg = tg + double.Parse(dataGridView1.Rows[i].Cells["valor"].Value.ToString());
+                        ts = ts + double.Parse(dataGridView1.Rows[i].Cells["saldo"].Value.ToString());
+                    }
+                    if (ts != tg && rb_DV.Checked == true)
+                    {
+                        MessageBox.Show("El documento de venta, debe cobrarse" + Environment.NewLine +
+                        "desde sus guías individualmente", "Error en saldo del Documento", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        tx_numGR.Text = "";
+                        initIngreso();
+                        tx_dat_tidoor.Text = v_tip2;
+                        if (rb_GR.Checked == true) rb_GR.PerformClick();
+                        if (rb_PG.Checked == true) rb_PG.PerformClick();
+                        if (rb_DV.Checked == true) rb_DV.PerformClick();
+                        tx_numGR.Focus();
+                        return;
+                    }
+                    else
+                    {
+                        cmb_mpago.Focus();
+                        cmb_mpago.DroppedDown = true;
+                    }
                 }
             }
         }
