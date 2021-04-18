@@ -503,7 +503,8 @@ namespace TransCarga
         }       
         private void vpc_registro_Click(object sender, EventArgs e)         // Guías Remisión Transportista
         {
-            guiati fpc = new guiati();
+            //guiati fpc = new guiati();
+            guiati_a fpc = new guiati_a();
             fpc.TopLevel = false;
             fpc.Parent = this;
             pn_centro.Controls.Add(fpc);

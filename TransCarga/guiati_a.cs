@@ -8,9 +8,9 @@ using MySql.Data.MySqlClient;
 
 namespace TransCarga
 {
-    public partial class guiati : Form
+    public partial class guiati_a : Form
     {
-        static string nomform = "guiati";             // nombre del formulario
+        static string nomform = "guiati_a";             // nombre del formulario
         string colback = TransCarga.Program.colbac;   // color de fondo
         string colpage = TransCarga.Program.colpag;   // color de los pageframes
         string colgrid = TransCarga.Program.colgri;   // color de las grillas
@@ -91,11 +91,11 @@ namespace TransCarga
         string[] rl = { "" };                       // datos del NUEVO remitente
         string[] dl = { "" };                       // datos del NUEVO destinatario
 
-        public guiati()
+        public guiati_a()
         {
             InitializeComponent();
         }
-        private void guiati_KeyDown(object sender, KeyEventArgs e)
+        private void guiati_a_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter) SendKeys.Send("{TAB}");
             if (Control.ModifierKeys == Keys.Control && e.KeyCode == Keys.N) Bt_add.PerformClick();
@@ -105,7 +105,7 @@ namespace TransCarga
             if (Control.ModifierKeys == Keys.Control && e.KeyCode == Keys.P) Bt_print.PerformClick();
             if (Control.ModifierKeys == Keys.Control && e.KeyCode == Keys.S) Bt_close.PerformClick();
         }
-        private void guiati_Load(object sender, EventArgs e)
+        private void guiati_a_Load(object sender, EventArgs e)
         {
             /*
             ToolTip toolTipNombre = new ToolTip();           // Create the ToolTip and associate with the Form container.
@@ -136,7 +136,7 @@ namespace TransCarga
         {
             this.BackColor = Color.FromName(colback);
             toolStrip1.BackColor = Color.FromName(colstrp);
-            dataGridView1.DefaultCellStyle.BackColor = Color.FromName(colgrid);
+            //dataGridView1.DefaultCellStyle.BackColor = Color.FromName(colgrid);
             //dataGridView1.DefaultCellStyle.ForeColor = Color.FromName(colfogr);
             //dataGridView1.DefaultCellStyle.SelectionBackColor = Color.FromName(colsfon);
             //dataGridView1.DefaultCellStyle.SelectionForeColor = Color.FromName(colsfgr);
@@ -177,6 +177,9 @@ namespace TransCarga
             tx_disDrio.AutoCompleteMode = AutoCompleteMode.Suggest;             // distritos
             tx_disDrio.AutoCompleteSource = AutoCompleteSource.CustomSource;    // distritos
             tx_disDrio.AutoCompleteCustomSource = distritos;                    // distritos
+            tx_det_umed.AutoCompleteMode = AutoCompleteMode.Suggest;
+            tx_det_umed.AutoCompleteSource = AutoCompleteSource.CustomSource;
+            tx_det_umed.AutoCompleteCustomSource = bultos;
             // longitudes maximas de campos
             tx_pregr_num.MaxLength = 8;
             tx_serie.MaxLength = 4;         // serie pre guia
@@ -209,9 +212,8 @@ namespace TransCarga
             tx_disDrio.CharacterCasing = CharacterCasing.Upper;
             tx_docsOr.CharacterCasing = CharacterCasing.Upper;
             tx_consig.CharacterCasing = CharacterCasing.Upper;
-            // grilla
-            dataGridView1.Columns[0].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dataGridView1.Columns[3].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            tx_det_desc.CharacterCasing = CharacterCasing.Upper;
+            tx_det_desc.CharacterCasing = CharacterCasing.Upper;
             // todo desabilidado
             rb_ent_clte.Checked = true;
             rb_car_ofi.Checked = true;
@@ -226,9 +228,10 @@ namespace TransCarga
             Array.Clear(rl, 0, rl.Length);
             Array.Clear(dl, 0, dl.Length);
             claveSeg = "";
-            dataGridView1.Rows.Clear();
-            if (Tx_modo.Text == "NUEVO") dataGridView1.ReadOnly = false;
-            else dataGridView1.ReadOnly = true;
+            //dataGridView1.Rows.Clear();
+            //if (Tx_modo.Text == "NUEVO") dataGridView1.ReadOnly = false;
+            //else dataGridView1.ReadOnly = true;
+            lb_glodeta.Text = gloDeta;
             tx_flete.Text = "";
             tx_pagado.Text = "";
             tx_salxcob.Text = "";
@@ -552,12 +555,17 @@ namespace TransCarga
                     MySqlDataReader dr = micon.ExecuteReader();
                     while (dr.Read())
                     {
-                        dataGridView1.Rows.Add(
+                        /*dataGridView1.Rows.Add(
                             dr.GetString(0),
                             dr.GetString(1),
                             dr.GetString(3),
                             dr.GetString(4)
                             );
+                        */
+                        tx_det_cant.Text = dr.GetString(0);
+                        tx_det_umed.Text = dr.GetString(1);
+                        tx_det_desc.Text = dr.GetString(3);
+                        tx_det_peso.Text = dr.GetString(4);
                     }
                     dr.Dispose();
                 }
@@ -594,11 +602,16 @@ namespace TransCarga
                         da.Fill(dt);
                         foreach (DataRow row in dt.Rows)
                         {
-                            dataGridView1.Rows.Add(
+                            /*dataGridView1.Rows.Add(
                                 row[3].ToString(),
                                 row[4].ToString(),
                                 row[6].ToString(),
                                 row[7].ToString());
+                            */
+                            tx_det_cant.Text = row[3].ToString();
+                            tx_det_umed.Text = row[4].ToString();
+                            tx_det_desc.Text = row[6].ToString();
+                            tx_det_peso.Text = row[7].ToString();
                         }
                         dt.Dispose();
                     }
@@ -678,9 +691,10 @@ namespace TransCarga
         }
         private bool valiGri()                  // valida filas completas en la grilla
         {
-            bool retorna = false;
-            for (int i = 0; i < dataGridView1.Rows.Count; i++)
-            {
+            bool retorna = true;
+            /*
+                for (int i = 0; i < dataGridView1.Rows.Count; i++)
+                {
                 if (dataGridView1.Rows[i].Cells[0].Value == null &&
                     dataGridView1.Rows[i].Cells[1].Value == null &&
                     dataGridView1.Rows[i].Cells[2].Value == null &&
@@ -704,6 +718,7 @@ namespace TransCarga
                     }
                 }
             }
+            */
             return retorna;
         }
         private bool valiVars()                 // valida existencia de datos en variables del form
@@ -926,6 +941,10 @@ namespace TransCarga
                 }
             }
         }
+        private void autobult(string umedi)
+        {
+
+        }
         #endregion autocompletados
 
         #region limpiadores_modos
@@ -973,6 +992,11 @@ namespace TransCarga
             tx_pla_nomcho.Text = "";
             tx_pla_ruc.Text = "";
             tx_pla_propiet.Text = "";
+            //
+            tx_det_cant.Text = "";
+            tx_det_umed.Text = "";
+            tx_det_desc.Text = "";
+            tx_det_peso.Text = "";
         }
         private void limpia_chk()    
         {
@@ -991,7 +1015,7 @@ namespace TransCarga
         #region boton_form GRABA EDITA ANULA
         private void button1_Click(object sender, EventArgs e)
         {
-            dataGridView1_RowLeave(null, null);
+            //dataGridView1_RowLeave(null, null);
             #region validaciones
             if (tx_serie.Text.Trim() == "")
             {
@@ -1041,14 +1065,27 @@ namespace TransCarga
             if (tx_totcant.Text.Trim() == "")
             {
                 MessageBox.Show("Ingrese el detalle del envío", " Falta cantidad ");
-                dataGridView1.Focus();
+                tx_det_cant.Focus();
                 return;
             }
             if (tx_totpes.Text.Trim() == "")
             {
                 MessageBox.Show("Ingrese el detalle del envío", " Falta peso ");
-                dataGridView1.Focus();
+                tx_det_peso.Focus();
                 return;
+            }
+            if (tx_det_umed.Text.Trim() == "")
+            {
+                MessageBox.Show("Ingrese el detalle del envío", " Falta unidad medida ");
+                tx_det_umed.Focus();
+                return;
+            }
+            if (tx_det_desc.Text.Trim() == "")
+            {
+                MessageBox.Show("Ingrese el detalle del envío", " Falta detalle");
+                tx_det_desc.Focus();
+                return;
+
             }
             if (tx_dat_tdRem.Text.Trim() == "")
             {
@@ -1134,13 +1171,6 @@ namespace TransCarga
             string iserror = "no";
             if (modo == "NUEVO")
             {
-                // valida que las filas de la grilla esten completas
-                if (valiGri() != true)
-                {
-                    MessageBox.Show("Complete las filas del detalle", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    dataGridView1.Focus();
-                    return;
-                }
                 if (tx_idr.Text.Trim() == "")
                 {
                     var aa = MessageBox.Show("Confirma que desea crear la guía?", "Confirme por favor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
@@ -1158,13 +1188,6 @@ namespace TransCarga
                                 "El formato actual es " + vi_formato, "Confirme por favor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                             if (bb == DialogResult.Yes)
                             {
-                                for(int i = 0; i<dataGridView1.Rows.Count -1; i++)    // foreach (DataGridViewRow row in dataGridView1.Rows)
-                                {
-                                    if (dataGridView1.Rows[i].Cells[2].FormattedValue.ToString().Trim() != "")   // dataGridView1.Rows[0].Cells[2].Value.ToString() != ""
-                                    {
-                                        dataGridView1.Rows[i].Cells[2].Value = gloDeta + " " + dataGridView1.Rows[i].Cells[2].FormattedValue.ToString();
-                                    }
-                                }
                                 try
                                 {
                                     using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
@@ -1521,50 +1544,26 @@ namespace TransCarga
                     }
                 }
                 // detalle
-                if (dataGridView1.Rows.Count > 0)
-                {
-                    int fila = 1;
-                    for (int i = 0; i < dataGridView1.Rows.Count - 1; i++)
-                    {
-                        if (dataGridView1.Rows[i].Cells[0].Value.ToString().Trim() != "")
-                        {
-
-                            /*string inserd2 = "insert into detguiai (idc,sergui,numgui," +
-                                "cantprodi,unimedpro,codiprodi,descprodi,pesoprodi,precprodi,totaprodi," +
-                                "estadoser,verApp,userc,fechc,diriplan4,diripwan4,netbname " +
-                                ") values (@idr,@serpgr,@corpgr," +
-                                "@can,@uni,@cod,@des,@pes,@preu,@pret," +
-                                "@estpgr,@verApp,@asd,now(),@iplan,@ipwan,@nbnam)";*/
-                            string inserd2 = "update detguiai set " +
+                int fila = 1;
+                string inserd2 = "update detguiai set " +
                                 "cantprodi=@can,unimedpro=@uni,codiprodi=@cod,descprodi=@des,pesoprodi=@pes,precprodi=@preu,totaprodi=@pret " +
                                 "where idc=@idr and fila=@fila";
-                            using (MySqlCommand micon = new MySqlCommand(inserd2, conn))
-                            {
-                                micon.Parameters.AddWithValue("@idr", tx_idr.Text);
-                                micon.Parameters.AddWithValue("@fila", fila);
-                                //micon.Parameters.AddWithValue("@serpgr", tx_serie.Text);
-                                //micon.Parameters.AddWithValue("@corpgr", tx_numero.Text);
-                                micon.Parameters.AddWithValue("@can", dataGridView1.Rows[i].Cells[0].Value.ToString());
-                                micon.Parameters.AddWithValue("@uni", dataGridView1.Rows[i].Cells[1].Value.ToString());
-                                micon.Parameters.AddWithValue("@cod", "");
-                                micon.Parameters.AddWithValue("@des", gloDeta + " " + dataGridView1.Rows[i].Cells[2].Value.ToString().Trim());
-                                micon.Parameters.AddWithValue("@pes", dataGridView1.Rows[i].Cells[3].Value.ToString());
-                                micon.Parameters.AddWithValue("@preu", "0");
-                                micon.Parameters.AddWithValue("@pret", "0");
-                                //micon.Parameters.AddWithValue("@estpgr", tx_dat_estad.Text);
-                                //micon.Parameters.AddWithValue("@verApp", verapp);
-                                //micon.Parameters.AddWithValue("@asd", asd);
-                                //micon.Parameters.AddWithValue("@iplan", lib.iplan());
-                                //micon.Parameters.AddWithValue("@ipwan", lib.ipwan());
-                                //micon.Parameters.AddWithValue("@nbnam", Environment.MachineName);
-                                micon.ExecuteNonQuery();
-                                fila += 1;
-                                //
-                                retorna = true;         // no hubo errores!
-                            }
-                        }
-                    }
+                using (MySqlCommand micon = new MySqlCommand(inserd2, conn))
+                {
+                    micon.Parameters.AddWithValue("@idr", tx_idr.Text);
+                    micon.Parameters.AddWithValue("@fila", fila);
+                    micon.Parameters.AddWithValue("@can", tx_det_cant.Text); // dataGridView1.Rows[i].Cells[0].Value.ToString());
+                    micon.Parameters.AddWithValue("@uni", tx_det_umed.Text); // dataGridView1.Rows[i].Cells[1].Value.ToString());
+                    micon.Parameters.AddWithValue("@cod", "");
+                    micon.Parameters.AddWithValue("@des", gloDeta + " " + tx_det_desc.Text);    // dataGridView1.Rows[i].Cells[2].Value.ToString().Trim());
+                    micon.Parameters.AddWithValue("@pes", tx_det_peso.Text);    // dataGridView1.Rows[i].Cells[3].Value.ToString());
+                    micon.Parameters.AddWithValue("@preu", "0");
+                    micon.Parameters.AddWithValue("@pret", "0");
+                    micon.ExecuteNonQuery();
+                    //
+                    retorna = true;         // no hubo errores!
                 }
+                //
                 string actua = "update anagrafiche set Direcc1=@ndir,ubigeo=@ubig,Localidad=@dist,Provincia=@prov,depart=@depa," +
                     "verApp=@verApp,userm=@asd,fechm=now(),diriplan4=@iplan,diripwan4=@ipwan,nbname=@nbnam " +
                     "where IDCategoria='CLI' AND tipdoc=@tdc1 AND RUC=@ndc1 AND id> 0";
@@ -1697,9 +1696,9 @@ namespace TransCarga
                         micon.Parameters.AddWithValue("@vidr", "0");
                         micon.Parameters.AddWithValue("@vidc", tx_idr.Text);
                         micon.ExecuteNonQuery();
-                        for (int i = 0; i < dataGridView1.Rows.Count - 1; i++)
+                        //for (int i = 0; i < dataGridView1.Rows.Count - 1; i++)
                         {
-                            if (dataGridView1.Rows[i].Cells[0].Value.ToString().Trim() != "")
+                            //if (dataGridView1.Rows[i].Cells[0].Value.ToString().Trim() != "")
                             {
                                 string inserd2 = "insert into detguiai (idc,fila,sergui,numgui," +
                                     "cantprodi,unimedpro,codiprodi,descprodi,pesoprodi,precprodi,totaprodi," +
@@ -1709,14 +1708,14 @@ namespace TransCarga
                                     "@estpgr,@verApp,@asd,now(),@iplan,@ipwan,@nbnam)";
                                 micon = new MySqlCommand(inserd2, conn);
                                 micon.Parameters.AddWithValue("@idr", tx_idr.Text);
-                                micon.Parameters.AddWithValue("@fila", i+1);
+                                micon.Parameters.AddWithValue("@fila", 1);
                                 micon.Parameters.AddWithValue("@serpgr", tx_serie.Text);
                                 micon.Parameters.AddWithValue("@corpgr", tx_numero.Text);
-                                micon.Parameters.AddWithValue("@can", dataGridView1.Rows[i].Cells[0].Value.ToString());
-                                micon.Parameters.AddWithValue("@uni", dataGridView1.Rows[i].Cells[1].Value.ToString());
+                                micon.Parameters.AddWithValue("@can", tx_det_cant.Text);    // dataGridView1.Rows[i].Cells[0].Value.ToString());
+                                micon.Parameters.AddWithValue("@uni", tx_det_umed.Text);    // dataGridView1.Rows[i].Cells[1].Value.ToString());
                                 micon.Parameters.AddWithValue("@cod", "");
-                                micon.Parameters.AddWithValue("@des", dataGridView1.Rows[i].Cells[2].Value.ToString());
-                                micon.Parameters.AddWithValue("@pes", dataGridView1.Rows[i].Cells[3].Value.ToString());
+                                micon.Parameters.AddWithValue("@des", tx_det_desc.Text);    // dataGridView1.Rows[i].Cells[2].Value.ToString());
+                                micon.Parameters.AddWithValue("@pes", tx_det_peso.Text);    // dataGridView1.Rows[i].Cells[3].Value.ToString());
                                 micon.Parameters.AddWithValue("@preu", "0");
                                 micon.Parameters.AddWithValue("@pret", "0");
                                 micon.Parameters.AddWithValue("@estpgr", tx_dat_estad.Text); // estado de la pre guía
@@ -1809,38 +1808,9 @@ namespace TransCarga
         {
             if (Tx_modo.Text != "NUEVO" && tx_idr.Text != "")
             {
-                dataGridView1.Rows.Clear();
                 jalaoc("tx_idr");
                 jaladet(tx_idr.Text);
                 tx_numero_Leave(null,null);
-                /*
-                chk_seguridad_CheckStateChanged(null,null);
-                if ((tx_pregr_num.Text.Trim() == "") && tx_impreso.Text == "N")
-                {
-                    // no tiene guía y no esta impreso => se puede modificar todo y SI anular
-                }
-                if ((tx_pregr_num.Text.Trim() == "") && tx_impreso.Text == "S")
-                {
-                    // no tiene pre guía y SI esta impreso => NO se puede modificar y SI anular
-                    sololee();
-                    tx_obser1.Enabled = true;
-                    tx_consig.Enabled = true;
-                }
-                if ((tx_pregr_num.Text.Trim() != "") && tx_impreso.Text == "N")
-                {
-                    // si tiene pre guía y no esta impreso => NO se puede modificar NO anular
-                    sololee();
-                    tx_obser1.Enabled = true;
-                    tx_consig.Enabled = true;
-                }
-                if ((tx_pregr_num.Text.Trim() != "") && tx_impreso.Text == "S")
-                {
-                    // si tiene pre guía y si esta impreso => NO se puede modificar NO anular
-                    sololee();
-                    tx_obser1.Enabled = true;
-                    tx_consig.Enabled = true;
-                }
-                */
             }
         }
         private void textBox7_Leave(object sender, EventArgs e)         // departamento del remitente, jala provincia
@@ -2181,7 +2151,7 @@ namespace TransCarga
                 tx_numero.Text = lib.Right("00000000" + tx_numero.Text, 8);
                 //tx_idr.Text = tx_numero.Text;
                 jalaoc("sernum");
-                dataGridView1.Rows.Clear();
+                //dataGridView1.Rows.Clear();
                 jaladet(tx_idr.Text);
                 chk_seguridad_CheckStateChanged(null, null);
                 sololee();
@@ -2258,8 +2228,8 @@ namespace TransCarga
                     tx_docsOr.Enabled = true;
                     tx_consig.Enabled = true;
                     tx_obser1.Enabled = true;
-                    dataGridView1_RowLeave(null, null);
-                    dataGridView1.ReadOnly = true;
+                    //dataGridView1_RowLeave(null, null);
+                    //dataGridView1.ReadOnly = true;
                 }
             }
         }
@@ -2424,6 +2394,27 @@ namespace TransCarga
             tx_docsOr.DeselectAll();
             tx_docsOr.SelectionStart = tx_docsOr.Text.Length;
             tx_docsOr.SelectionLength = 0;
+        }
+        private void tx_det_cant_Leave(object sender, EventArgs e)
+        {
+            if ((Tx_modo.Text == "NUEVO" || Tx_modo.Text == "EDITAR") && tx_det_cant.Text.Trim() != "")
+            {
+                tx_totcant.Text = tx_det_cant.Text;
+            }
+        }
+        private void tx_det_peso_Leave(object sender, EventArgs e)
+        {
+            if ((Tx_modo.Text == "NUEVO" || Tx_modo.Text == "EDITAR") && tx_det_peso.Text.Trim() != "")
+            {
+                tx_totpes.Text = tx_det_peso.Text;
+            }
+        }
+        private void tx_det_desc_Leave(object sender, EventArgs e)
+        {
+            if ((Tx_modo.Text == "NUEVO" || Tx_modo.Text == "EDITAR") && tx_det_desc.Text.Trim() != "")
+            {
+                tx_tfil.Text = "1";
+            }
         }
         #endregion
 
@@ -2889,97 +2880,7 @@ namespace TransCarga
         #endregion comboboxes
 
         #region datagridview
-        private void dataGridView1_RowLeave(object sender, DataGridViewCellEventArgs e)
-        {
-            int totfil = 0;
-            int totcant = 0;
-            decimal totpes = 0;
-            
-            for (int i = 0; i < dataGridView1.Rows.Count; i++)
-            {
-                if (dataGridView1.Rows[i].Cells[0].Value != null)
-                {
-                    totcant = totcant + int.Parse(dataGridView1.Rows[i].Cells[0].Value.ToString());
-                    totfil += 1;
-                }
-                if (dataGridView1.Rows[i].Cells[3].Value != null)
-                {
-                    totpes = totpes + decimal.Parse(dataGridView1.Rows[i].Cells[3].Value.ToString());
-                }
-            }
-            tx_totcant.Text = totcant.ToString();
-            tx_totpes.Text = totpes.ToString("0.00");
-            tx_tfil.Text = totfil.ToString();
-            
-            if (int.Parse(tx_tfil.Text) == int.Parse(v_mfildet))
-            {
-                MessageBox.Show("Número máximo de filas de detalle", "El formato no permite mas", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                dataGridView1.AllowUserToAddRows = false;
-            }
-            else
-            {
-                dataGridView1.AllowUserToAddRows = true;
-            }
-        }
-        private void dataGridView1_EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
-        {
-            e.Control.KeyPress -= new KeyPressEventHandler(Column_KeyPress);
-            if (dataGridView1.CurrentCell.ColumnIndex == 0 || dataGridView1.CurrentCell.ColumnIndex == 3)   // columnas de solo números
-            {
-                TextBox tb = e.Control as TextBox;
-                if (tb != null)
-                {
-                    tb.KeyPress += new KeyPressEventHandler(Column_KeyPress);
-                }
-            }
-            if (dataGridView1.CurrentCell.ColumnIndex == 1)   // columnas en MAYUSCULAS
-            {
-                if (e.Control is TextBox)
-                {
-                    ((TextBox)(e.Control)).CharacterCasing = CharacterCasing.Upper;
-                    ((TextBox)(e.Control)).AutoCompleteMode = AutoCompleteMode.Suggest;           // departamentos
-                    ((TextBox)(e.Control)).AutoCompleteSource = AutoCompleteSource.CustomSource;  // departamentos
-                    ((TextBox)(e.Control)).AutoCompleteCustomSource = bultos;
-                }
-            }
-            else
-            {
-                if (e.Control is TextBox)
-                {
-                    ((TextBox)(e.Control)).AutoCompleteMode = AutoCompleteMode.None;
-                }
-            }
-            if (dataGridView1.CurrentCell.ColumnIndex == 2)   // columnas en MAYUSCULAS
-            {
-                if (e.Control is TextBox)
-                {
-                    ((TextBox)(e.Control)).CharacterCasing = CharacterCasing.Upper;
-                }
-            }
-        }
-        private void Column_KeyPress(object sender, KeyPressEventArgs e)
-        {
-         /*   if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
-            {
-                e.Handled = true;
-            }*/
-        }
-        private void dataGridView1_CellEndEdit(object sender, DataGridViewCellEventArgs e)
-        {
-            if (caractNo != "")
-            {
-                if (e.ColumnIndex == 1 || e.ColumnIndex == 2)
-                {
-                    string tb = dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString();
-                    int index = tb.IndexOf(caractNo);
-                    if (index > -1)
-                    {
-                        char cno = caractNo.ToCharArray()[0];
-                        dataGridView1.CurrentCell.Value = tb.Replace(cno, ' ');    // no esta funcando
-                    }
-                }
-            }
-        }
+        // se fue! no hay
         #endregion
 
         #region impresion
@@ -3156,18 +3057,18 @@ namespace TransCarga
             guiaT.gr_ind_cab.Addgr_ind_cabRow(rowcabeza);
             //
             // DETALLE  
-            for (int i=0; i<dataGridView1.Rows.Count -1; i++)   // foreach (DataGridViewRow row in dataGridView1.Rows)
+            //for (int i=0; i<dataGridView1.Rows.Count -1; i++)   // foreach (DataGridViewRow row in dataGridView1.Rows)
             {   
                 conClie.gr_ind_detRow rowdetalle = guiaT.gr_ind_det.Newgr_ind_detRow();
 
                 rowdetalle.fila = "";       // no estamos usando
-                rowdetalle.cant = dataGridView1.Rows[i].Cells[0].Value.ToString();
+                rowdetalle.cant = tx_det_cant.Text; // dataGridView1.Rows[i].Cells[0].Value.ToString();
                 rowdetalle.codigo = "";     // no estamos usando
-                rowdetalle.umed = dataGridView1.Rows[i].Cells[1].Value.ToString();
-                rowdetalle.descrip = dataGridView1.Rows[i].Cells[2].Value.ToString();
+                rowdetalle.umed = tx_det_umed.Text; // dataGridView1.Rows[i].Cells[1].Value.ToString();
+                rowdetalle.descrip = lb_glodeta.Text + " " + tx_det_desc.Text;  // dataGridView1.Rows[i].Cells[2].Value.ToString();
                 rowdetalle.precio = "";     // no estamos usando
                 rowdetalle.total = "";      // no estamos usando
-                rowdetalle.peso = string.Format("{0:#0.0}", dataGridView1.Rows[i].Cells[3].Value.ToString());  // dataGridView1.Rows[i].Cells[3].Value.ToString() + "Kg."
+                rowdetalle.peso = string.Format("{0:#0.0}", tx_det_peso.Text);  // dataGridView1.Rows[i].Cells[3].Value.ToString() + "Kg."
                 guiaT.gr_ind_det.Addgr_ind_detRow(rowdetalle);
             }
             //
