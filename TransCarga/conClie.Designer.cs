@@ -1343,6 +1343,14 @@ namespace TransCarga {
             
             private global::System.Data.DataColumn columnmarcamodelo;
             
+            private global::System.Data.DataColumn columnmodelCarret;
+            
+            private global::System.Data.DataColumn columnautorCarret;
+            
+            private global::System.Data.DataColumn columnconfvCarret;
+            
+            private global::System.Data.DataColumn columnmarcaCarret;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public gr_ind_cabDataTable() {
@@ -1810,6 +1818,38 @@ namespace TransCarga {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn modelCarretColumn {
+                get {
+                    return this.columnmodelCarret;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn autorCarretColumn {
+                get {
+                    return this.columnautorCarret;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn confvCarretColumn {
+                get {
+                    return this.columnconfvCarret;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn marcaCarretColumn {
+                get {
+                    return this.columnmarcaCarret;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -1899,7 +1939,11 @@ namespace TransCarga {
                         string teldesti, 
                         string fechora_imp, 
                         string userc, 
-                        string marcamodelo) {
+                        string marcamodelo, 
+                        string modelCarret, 
+                        string autorCarret, 
+                        string confvCarret, 
+                        string marcaCarret) {
                 gr_ind_cabRow rowgr_ind_cabRow = ((gr_ind_cabRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         formatoRPT,
@@ -1955,7 +1999,11 @@ namespace TransCarga {
                         teldesti,
                         fechora_imp,
                         userc,
-                        marcamodelo};
+                        marcamodelo,
+                        modelCarret,
+                        autorCarret,
+                        confvCarret,
+                        marcaCarret};
                 rowgr_ind_cabRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowgr_ind_cabRow);
                 return rowgr_ind_cabRow;
@@ -2032,6 +2080,10 @@ namespace TransCarga {
                 this.columnfechora_imp = base.Columns["fechora_imp"];
                 this.columnuserc = base.Columns["userc"];
                 this.columnmarcamodelo = base.Columns["marcamodelo"];
+                this.columnmodelCarret = base.Columns["modelCarret"];
+                this.columnautorCarret = base.Columns["autorCarret"];
+                this.columnconfvCarret = base.Columns["confvCarret"];
+                this.columnmarcaCarret = base.Columns["marcaCarret"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -2145,6 +2197,14 @@ namespace TransCarga {
                 base.Columns.Add(this.columnuserc);
                 this.columnmarcamodelo = new global::System.Data.DataColumn("marcamodelo", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnmarcamodelo);
+                this.columnmodelCarret = new global::System.Data.DataColumn("modelCarret", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnmodelCarret);
+                this.columnautorCarret = new global::System.Data.DataColumn("autorCarret", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnautorCarret);
+                this.columnconfvCarret = new global::System.Data.DataColumn("confvCarret", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnconfvCarret);
+                this.columnmarcaCarret = new global::System.Data.DataColumn("marcaCarret", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnmarcaCarret);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -7914,6 +7974,70 @@ namespace TransCarga {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string modelCarret {
+                get {
+                    try {
+                        return ((string)(this[this.tablegr_ind_cab.modelCarretColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("El valor de la columna \'modelCarret\' de la tabla \'gr_ind_cab\' es DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tablegr_ind_cab.modelCarretColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string autorCarret {
+                get {
+                    try {
+                        return ((string)(this[this.tablegr_ind_cab.autorCarretColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("El valor de la columna \'autorCarret\' de la tabla \'gr_ind_cab\' es DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tablegr_ind_cab.autorCarretColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string confvCarret {
+                get {
+                    try {
+                        return ((string)(this[this.tablegr_ind_cab.confvCarretColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("El valor de la columna \'confvCarret\' de la tabla \'gr_ind_cab\' es DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tablegr_ind_cab.confvCarretColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string marcaCarret {
+                get {
+                    try {
+                        return ((string)(this[this.tablegr_ind_cab.marcaCarretColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("El valor de la columna \'marcaCarret\' de la tabla \'gr_ind_cab\' es DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tablegr_ind_cab.marcaCarretColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public bool IsformatoRPTNull() {
                 return this.IsNull(this.tablegr_ind_cab.formatoRPTColumn);
             }
@@ -8558,6 +8682,54 @@ namespace TransCarga {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public void SetmarcamodeloNull() {
                 this[this.tablegr_ind_cab.marcamodeloColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsmodelCarretNull() {
+                return this.IsNull(this.tablegr_ind_cab.modelCarretColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetmodelCarretNull() {
+                this[this.tablegr_ind_cab.modelCarretColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsautorCarretNull() {
+                return this.IsNull(this.tablegr_ind_cab.autorCarretColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetautorCarretNull() {
+                this[this.tablegr_ind_cab.autorCarretColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsconfvCarretNull() {
+                return this.IsNull(this.tablegr_ind_cab.confvCarretColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetconfvCarretNull() {
+                this[this.tablegr_ind_cab.confvCarretColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsmarcaCarretNull() {
+                return this.IsNull(this.tablegr_ind_cab.marcaCarretColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetmarcaCarretNull() {
+                this[this.tablegr_ind_cab.marcaCarretColumn] = global::System.Convert.DBNull;
             }
         }
         

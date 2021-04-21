@@ -214,3 +214,6 @@ form facelect, quitar el codigo que impide modif el monto al usuario autorizado 
 form facelect, adecuaciones para cobranzas desde GR con descuentos o no ............................ ok 16/04/2021
 form cobranzas, no debe permitir cobrar F/B si tiene varias guias, algunas pagadas y otras no ...... ok 16/04/2021
 form guiati_a, nuevo form para cambio en detalle, ahora solo una fila de detalle ................... ok 18/04/2021
+form guiati_a, agregar autocompletar en descripción del detalle .................................... ok 20/04/2021
+form guiati_a, agregar al formato de impresion:
+	marca carreta, placa de la carreta, certif. inscrip carreta .................................... 

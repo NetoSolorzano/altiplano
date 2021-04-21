@@ -91,6 +91,10 @@
               <xs:element name="fechora_imp" msprop:Generator_ColumnVarNameInTable="columnfechora_imp" msprop:Generator_ColumnPropNameInRow="fechora_imp" msprop:Generator_ColumnPropNameInTable="fechora_impColumn" msprop:Generator_UserColumnName="fechora_imp" type="xs:string" minOccurs="0" />
               <xs:element name="userc" msprop:Generator_ColumnVarNameInTable="columnuserc" msprop:Generator_ColumnPropNameInRow="userc" msprop:Generator_ColumnPropNameInTable="usercColumn" msprop:Generator_UserColumnName="userc" type="xs:string" minOccurs="0" />
               <xs:element name="marcamodelo" msprop:Generator_ColumnVarNameInTable="columnmarcamodelo" msprop:Generator_ColumnPropNameInRow="marcamodelo" msprop:Generator_ColumnPropNameInTable="marcamodeloColumn" msprop:Generator_UserColumnName="marcamodelo" type="xs:string" minOccurs="0" />
+              <xs:element name="modelCarret" msprop:Generator_ColumnVarNameInTable="columnmodelCarret" msprop:Generator_ColumnPropNameInRow="modelCarret" msprop:Generator_ColumnPropNameInTable="modelCarretColumn" msprop:Generator_UserColumnName="modelCarret" type="xs:string" minOccurs="0" />
+              <xs:element name="autorCarret" msprop:Generator_ColumnVarNameInTable="columnautorCarret" msprop:Generator_ColumnPropNameInRow="autorCarret" msprop:Generator_ColumnPropNameInTable="autorCarretColumn" msprop:Generator_UserColumnName="autorCarret" type="xs:string" minOccurs="0" />
+              <xs:element name="confvCarret" msprop:Generator_ColumnVarNameInTable="columnconfvCarret" msprop:Generator_ColumnPropNameInRow="confvCarret" msprop:Generator_ColumnPropNameInTable="confvCarretColumn" msprop:Generator_UserColumnName="confvCarret" type="xs:string" minOccurs="0" />
+              <xs:element name="marcaCarret" msprop:Generator_ColumnVarNameInTable="columnmarcaCarret" msprop:Generator_ColumnPropNameInRow="marcaCarret" msprop:Generator_ColumnPropNameInTable="marcaCarretColumn" msprop:Generator_UserColumnName="marcaCarret" type="xs:string" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>

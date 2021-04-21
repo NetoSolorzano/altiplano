@@ -75,6 +75,7 @@ namespace TransCarga
         AutoCompleteStringCollection departamentos = new AutoCompleteStringCollection();// autocompletado departamentos
         AutoCompleteStringCollection provincias = new AutoCompleteStringCollection();   // autocompletado provincias
         AutoCompleteStringCollection distritos = new AutoCompleteStringCollection();    // autocompletado distritos
+        AutoCompleteStringCollection desdet = new AutoCompleteStringCollection();       // autompletatado descripcion detalle
         AutoCompleteStringCollection bultos = new AutoCompleteStringCollection();       // autompletatado bultos del detalle
         DataTable dataUbig = (DataTable)CacheManager.GetItem("ubigeos");
 
@@ -90,7 +91,7 @@ namespace TransCarga
         string[] datosD = { "" };                   // datos del destinatario si existe en la B.D.
         string[] rl = { "" };                       // datos del NUEVO remitente
         string[] dl = { "" };                       // datos del NUEVO destinatario
-
+        
         public guiati_a()
         {
             InitializeComponent();
@@ -123,9 +124,6 @@ namespace TransCarga
             toolboton();
             this.KeyPreview = true;
             autodepa();                                     // autocompleta departamentos
-            //autoprov();                                     // autocompleta provincias
-            //autodist();                                     // autocompleta distritos
-            //autoBultos();
             if (valiVars() == false)
             {
                 Application.Exit();
@@ -179,7 +177,10 @@ namespace TransCarga
             tx_disDrio.AutoCompleteCustomSource = distritos;                    // distritos
             tx_det_umed.AutoCompleteMode = AutoCompleteMode.Suggest;
             tx_det_umed.AutoCompleteSource = AutoCompleteSource.CustomSource;
-            tx_det_umed.AutoCompleteCustomSource = bultos;
+            tx_det_umed.AutoCompleteCustomSource = bultos; //;
+            tx_det_desc.AutoCompleteMode = AutoCompleteMode.Suggest;
+            tx_det_desc.AutoCompleteSource = AutoCompleteSource.CustomSource;
+            tx_det_desc.AutoCompleteCustomSource = desdet; //;
             // longitudes maximas de campos
             tx_pregr_num.MaxLength = 8;
             tx_serie.MaxLength = 4;         // serie pre guia
@@ -212,7 +213,7 @@ namespace TransCarga
             tx_disDrio.CharacterCasing = CharacterCasing.Upper;
             tx_docsOr.CharacterCasing = CharacterCasing.Upper;
             tx_consig.CharacterCasing = CharacterCasing.Upper;
-            tx_det_desc.CharacterCasing = CharacterCasing.Upper;
+            tx_det_umed.CharacterCasing = CharacterCasing.Upper;
             tx_det_desc.CharacterCasing = CharacterCasing.Upper;
             // todo desabilidado
             rb_ent_clte.Checked = true;
@@ -380,13 +381,15 @@ namespace TransCarga
                         "ifnull(b.serdocvta,'') as serdocvta,ifnull(b.numdocvta,'') as numdocvta,ifnull(b.codmonvta,'') as codmonvta," +
                         "ifnull(b.totdocvta,0) as totdocvta,ifnull(b.codmonpag,'') as codmonpag,ifnull(b.totpagado,0) as totpagado,ifnull(b.saldofina,0) as saldofina," +
                         "ifnull(b.feculpago,'') as feculpago,ifnull(b.estadoser,'') as estadoser,ifnull(c.razonsocial,'') as razonsocial,a.grinumaut," +
-                        "ifnull(d.marca,'') as marca,ifnull(d.modelo,'') as modelo,ifnull(er.numerotel1,'') as telrem,ifnull(ed.numerotel1,'') as teldes,ifnull(t.nombclt,'') as clifact " +
+                        "ifnull(d.marca,'') as marca,ifnull(d.modelo,'') as modelo,ifnull(r.marca,'') as marCarret,ifnull(r.confve,'') as confvCarret,ifnull(r.autor1,'') as autCarret," +
+                        "ifnull(er.numerotel1,'') as telrem,ifnull(ed.numerotel1,'') as teldes,ifnull(t.nombclt,'') as clifact " +
                         "from cabguiai a " +
                         "left join controlg b on b.serguitra=a.sergui and b.numguitra=a.numgui " +
                         "left join desc_tdv f on f.idcodice=b.tipdocvta " +
                         "left join cabfactu t on t.tipdvta=a.tipdocvta and t.serdvta=a.serdocvta and t.numdvta=a.numdocvta " +
                         "left join anag_for c on c.ruc=a.proplagri and c.tipdoc=@tdep " +
                         "left join vehiculos d on d.placa=a.plaplagri " +
+                        "left join vehiculos r on r.placa=a.carplagri " +
                         "left join anag_cli er on er.ruc=a.nudoregri and er.tipdoc=a.tidoregri " +
                         "left join anag_cli ed on ed.ruc=a.nudodegri and ed.tipdoc=a.tidodegri " + parte;
                     MySqlCommand micon = new MySqlCommand(consulta, conn);
@@ -445,6 +448,8 @@ namespace TransCarga
                             tx_pla_placa.Text = dr.GetString("plaplagri");
                             tx_pla_carret.Text = dr.GetString("carplagri");
                             tx_pla_autor.Text = dr.GetString("autplagri");
+                            tx_aut_carret.Text = dr.GetString("autCarret");
+                            tx_marCarret.Text = dr.GetString("marCarret");
                             tx_pla_confv.Text = dr.GetString("confvegri");
                             tx_pla_brevet.Text = dr.GetString("breplagri");
                             tx_pla_nomcho.Text = dr.GetString("chocamcar");
@@ -683,6 +688,17 @@ namespace TransCarga
                 bultos.Add(row["unimedpro"].ToString());
             }
             //
+            MySqlCommand jalad = new MySqlCommand("SELECT SUBSTRING_INDEX(REPLACE(descprodi,'SIN VERIFICAR CONTENIDO ',''),' ',1) as descprodi FROM detguiai GROUP BY REPLACE(descprodi,'SIN VERIFICAR CONTENIDO ','')", conn);
+            MySqlDataAdapter djalad = new MySqlDataAdapter(jalad);
+            //djalad.SelectCommand.Parameters.AddWithValue("@vglos", gloDeta);
+            DataTable dtjalad = new DataTable();
+            djalad.Fill(dtjalad);
+            desdet.Clear();
+            foreach (DataRow row in dtjalad.Rows)
+            {
+                desdet.Add(row["descprodi"].ToString());
+            }
+            //
             cmo.Dispose();
             ccl.Dispose();
             cdu.Dispose();
@@ -833,7 +849,7 @@ namespace TransCarga
         }
 
         #region autocompletados
-        private void autodepa()                 // 
+        private void autodepa()                             // departamentos
         {
             if (dataUbig == null)
             {
@@ -987,6 +1003,8 @@ namespace TransCarga
             tx_pla_carret.Text = "";
             tx_marcamion.Text = "";
             tx_pla_autor.Text = "";
+            tx_aut_carret.Text = "";
+            tx_marCarret.Text = "";
             tx_pla_confv.Text = "";
             tx_pla_brevet.Text = "";
             tx_pla_nomcho.Text = "";
@@ -2792,10 +2810,10 @@ namespace TransCarga
                         }
                         // validamos que exista planilla abierta hacia el mismo destino
                         consul = "SELECT a.id,a.fechope,a.serplacar,a.numplacar,a.platracto,a.placarret,a.autorizac,a.confvehic,a.brevchofe,a.nomchofe,a.brevayuda," +
-                            "a.nomayuda,a.rucpropie,b.razonsocial,c.marca,c.modelo " +
+                            "a.nomayuda,a.rucpropie,b.razonsocial,a.marcaTrac as marca,a.modeloTrac as modelo,a.marcaCarret,a.modelCarret,a.autorCarret,a.confvCarret " +
                             "from cabplacar a left join anag_for b on b.ruc=a.rucpropie and b.tipdoc=@tdruc " +
-                            "left join vehiculos c on c.placa=a.platracto " +
                             "WHERE a.estadoser = @estab AND a.locorigen = @locor AND a.locdestin = @locde";
+                        //                             "left join vehiculos c on c.placa=a.platracto " +
                         using (MySqlCommand micon = new MySqlCommand(consul, conn))
                         {
                             micon.Parameters.AddWithValue("@tdruc", vtc_ruc);
@@ -2837,6 +2855,8 @@ namespace TransCarga
                                     tx_pla_ruc.Text = row["rucpropie"].ToString();
                                     tx_pla_propiet.Text = row["razonsocial"].ToString();
                                     tx_marcamion.Text = row["marca"].ToString();
+                                    tx_aut_carret.Text = row["autorCarret"].ToString();
+                                    tx_marCarret.Text = row["marcaCarret"].ToString();
                                 }
                                 else
                                 {
@@ -2848,6 +2868,8 @@ namespace TransCarga
                                     tx_pla_placa.Text = "";
                                     tx_pla_carret.Text = "";
                                     tx_marcamion.Text = "";
+                                    tx_aut_carret.Text = "";
+                                    tx_marCarret.Text = "";
                                     tx_pla_autor.Text = "";
                                     tx_pla_confv.Text = "";
                                     tx_pla_brevet.Text = "";
@@ -3039,7 +3061,10 @@ namespace TransCarga
             rowcabeza.consignat = tx_consig.Text;
             // pie
             rowcabeza.marcamodelo = tx_marcamion.Text;
+            rowcabeza.marcaCarret = tx_marCarret.Text;
+            rowcabeza.modelCarret = "";
             rowcabeza.autoriz = tx_pla_autor.Text;
+            rowcabeza.autorCarret = tx_aut_carret.Text;
             rowcabeza.brevAyuda = "";   // falta este campo
             rowcabeza.brevChofer = tx_pla_brevet.Text;
             rowcabeza.nomChofer = tx_pla_nomcho.Text;
