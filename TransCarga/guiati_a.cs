@@ -593,7 +593,7 @@ namespace TransCarga
         }
         private void jaladet(string idr)         // jala el detalle
         {
-            string jalad = "select id,sergui,numgui,cantprodi,unimedpro,codiprodi,descprodi,round(pesoprodi,1),precprodi,totaprodi " +
+            string jalad = "select id,sergui,numgui,cantprodi,unimedpro,codiprodi,REPLACE(descprodi,@glodet,'') AS descprodi,round(pesoprodi,1),precprodi,totaprodi " +
                 "from detguiai where idc=@idr";
             using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
             {
@@ -601,6 +601,7 @@ namespace TransCarga
                 using (MySqlCommand micon = new MySqlCommand(jalad, conn))
                 {
                     micon.Parameters.AddWithValue("@idr", idr);
+                    micon.Parameters.AddWithValue("@glodet", gloDeta);
                     using (MySqlDataAdapter da = new MySqlDataAdapter(micon))
                     {
                         DataTable dt = new DataTable();
@@ -688,9 +689,11 @@ namespace TransCarga
                 bultos.Add(row["unimedpro"].ToString());
             }
             //
-            MySqlCommand jalad = new MySqlCommand("SELECT SUBSTRING_INDEX(REPLACE(descprodi,'SIN VERIFICAR CONTENIDO ',''),' ',1) as descprodi FROM detguiai GROUP BY REPLACE(descprodi,'SIN VERIFICAR CONTENIDO ','')", conn);
+            string carajo = "SELECT SUBSTRING_INDEX(REPLACE(descprodi,'" + gloDeta + " ',''),' ',1) as descprodi FROM detguiai GROUP BY REPLACE(descprodi,'" + gloDeta + " ','')";
+            // "SELECT SUBSTRING_INDEX(REPLACE(descprodi,@vglos,''),' ',1) as descprodi FROM detguiai GROUP BY REPLACE(descprodi,@vglos,'')"
+            MySqlCommand jalad = new MySqlCommand(carajo, conn);
+            //jalad.Parameters.AddWithValue("@vglos", gloDeta);
             MySqlDataAdapter djalad = new MySqlDataAdapter(jalad);
-            //djalad.SelectCommand.Parameters.AddWithValue("@vglos", gloDeta);
             DataTable dtjalad = new DataTable();
             djalad.Fill(dtjalad);
             desdet.Clear();

@@ -812,7 +812,8 @@ namespace TransCarga
                         "ifnull(b.serdocvta,'') as serdocvta,ifnull(b.numdocvta,'') as numdocvta,ifnull(b.codmonvta,'') as codmonvta," +
                         "ifnull(b.totdocvta,0) as totdocvta,ifnull(b.codmonpag,'') as codmonpag,ifnull(b.totpagado,0) as totpagado,ifnull(b.saldofina,0) as saldofina," +
                         "ifnull(b.feculpago,'') as feculpago,ifnull(b.estadoser,'') as estadoser,ifnull(c.razonsocial,'') as razonsocial,a.grinumaut," +
-                        "ifnull(d.marca,'') as marca,ifnull(d.modelo,'') as modelo,a.teleregri as telrem,a.teledegri as teldes,ifnull(t.nombclt,'') as clifact," +
+                        "ifnull(d.marca,'') as marca,ifnull(d.modelo,'') as modelo,ifnull(r.marca,'') as marCarret,ifnull(r.autor1,'') as autCarret," +
+                        "a.teleregri as telrem,a.teledegri as teldes,ifnull(t.nombclt,'') as clifact," +
                         "u1.nombre AS distrem,u2.nombre as provrem,u3.nombre as deptrem,v1.nombre as distdes,v2.nombre as provdes,v3.nombre as deptdes,mo.descrizionerid as MON " +
                         "from cabguiai a " +
                         "left join controlg b on b.serguitra=a.sergui and b.numguitra=a.numgui " +
@@ -820,6 +821,7 @@ namespace TransCarga
                         "left join cabfactu t on t.tipdvta=a.tipdocvta and t.serdvta=a.serdocvta and t.numdvta=a.numdocvta " +
                         "left join anag_for c on c.ruc=a.proplagri and c.tipdoc=@tdep " +
                         "left join vehiculos d on d.placa=a.plaplagri " +
+                        "left join vehiculos r on r.placa=a.carplagri " +
                         "left join anag_cli er on er.ruc=a.nudoregri and er.tipdoc=a.tidoregri " +
                         "left join anag_cli ed on ed.ruc=a.nudodegri and ed.tipdoc=a.tidodegri " +
                         "left join desc_est s on s.idcodice=a.estadoser " +
@@ -1364,7 +1366,7 @@ namespace TransCarga
             rowcabeza.docscarga = row["docsremit"].ToString(); // tx_docsOr.Text;
             rowcabeza.consignat = row["clifingri"].ToString(); // tx_consig.Text;
             // pie
-            rowcabeza.marcamodelo = row["marca"].ToString() + " / " + row["modelo"].ToString(); // tx_marcamion.Text;
+            rowcabeza.marcamodelo = row["marca"].ToString();    // + " / " + row["modelo"].ToString(); // tx_marcamion.Text;
             rowcabeza.autoriz = row["autplagri"].ToString(); // tx_pla_autor.Text;
             rowcabeza.brevAyuda = "";   // falta este campo
             rowcabeza.brevChofer = row["breplagri"].ToString(); // tx_pla_brevet.Text;
@@ -1372,6 +1374,8 @@ namespace TransCarga
             rowcabeza.placa = row["plaplagri"].ToString(); // tx_pla_placa.Text;
             rowcabeza.camion = row["carplagri"].ToString(); // tx_pla_carret.Text;
             rowcabeza.confvehi = row["confvegri"].ToString(); // tx_pla_confv.Text;
+            rowcabeza.marcaCarret = row["marCarret"].ToString(); // 
+            rowcabeza.autorCarret = row["autCarret"].ToString();
             rowcabeza.rucPropiet = row["proplagri"].ToString(); // tx_pla_ruc.Text;
             rowcabeza.nomPropiet = row["razonsocial"].ToString(); // tx_pla_propiet.Text;
             rowcabeza.fechora_imp = DateTime.Now.ToString();    // fecha de la "reimpresion" en el preview, No de la impresion en papel .. ojo

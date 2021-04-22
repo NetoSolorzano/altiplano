@@ -431,7 +431,7 @@ namespace TransCarga
                     string consulta = "select a.id,a.fechope,a.serplacar,a.numplacar,a.locorigen,a.locdestin,a.obsplacar,a.cantfilas,a.cantotpla,a.pestotpla,a.tipmonpla," +
                         "a.tipcampla,a.subtotpla,a.igvplacar,a.totplacar,a.totpagado,a.salxpagar,a.estadoser,a.impreso,a.fleteimp,a.platracto,a.placarret,a.autorizac," +
                         "a.confvehic,a.brevchofe,a.nomchofe,a.brevayuda,a.nomayuda,a.rucpropie,a.tipoplani,a.userc,a.userm,a.usera,ifnull(b.razonsocial,'') as razonsocial," +
-                        "a.marcaTrac,a.modeloTrac " +
+                        "a.marcaTrac,a.modeloTrac,a.marcaCarret,a.modelCarret,a.autorCarret,a.confvCarret " +
                         "FROM cabplacar a left join anag_for b on a.rucpropie=b.ruc and b.estado=0 " + parte;
                     MySqlCommand micon = new MySqlCommand(consulta, conn);
                     if (campo == "tx_idr") micon.Parameters.AddWithValue("@ida", tx_idr.Text);
@@ -497,6 +497,10 @@ namespace TransCarga
                             if (tx_pla_ruc.Text == rucclie) tx_pla_propiet.Text = nomclie;
                             tx_pla_marca.Text = dr.GetString("marcaTrac");
                             tx_pla_modelo.Text = dr.GetString("modeloTrac");
+                            tx_carret_marca.Text = dr.GetString("marcaCarret");
+                            tx_carret_modelo.Text = dr.GetString("modelCarret");
+                            tx_carret_conf.Text = dr.GetString("confvCarret");
+                            tx_carret_autoriz.Text = dr.GetString("autorCarret");
                             //
                             tx_car3ro_ruc.Text = dr.GetString("rucpropie");
                             tx_car_3ro_nombre.Text = dr.GetString("razonsocial");  // falta en consulta
@@ -835,7 +839,7 @@ namespace TransCarga
                     parte1 = "tipo = @tipo";    // variable codigo carreta
                 }
 
-                string consulta = "select confve,autor1,placAsoc from vehiculos where status<>@estdes and placa=@codigo"; // and " + parte0 + " and " + parte1;
+                string consulta = "select confve,autor1,placAsoc,marca,modelo from vehiculos where status<>@estdes and placa=@codigo"; // and " + parte0 + " and " + parte1;
                 using (MySqlCommand micon = new MySqlCommand(consulta,conn))
                 {
                     micon.Parameters.AddWithValue("@estdes", codAnul);
@@ -846,7 +850,7 @@ namespace TransCarga
                     {
                         retorna[0] = dr.GetString(0);
                         retorna[1] = dr.GetString(1);
-                        retorna[2] = dr.GetString(2);
+                        retorna[2] = (pc == "P") ? dr.GetString(2) : dr.GetString(3);   // carreta retorna marca, placa retorna placa asoc
                     }
                     dr.Dispose();
                 }
@@ -1202,12 +1206,12 @@ namespace TransCarga
                 string inserta = "insert into cabplacar (" +
                     "fechope,serplacar,locorigen,locdestin,obsplacar,cantfilas,cantotpla,pestotpla,tipmonpla,tipcampla,subtotpla," +
                     "igvplacar,totplacar,totpagado,salxpagar,estadoser,fleteimp,platracto,placarret,autorizac,confvehic,brevchofe," +
-                    "brevayuda,rucpropie,tipoplani,nomchofe,nomayuda,marcaTrac,modeloTrac," +
+                    "brevayuda,rucpropie,tipoplani,nomchofe,nomayuda,marcaTrac,modeloTrac,marcaCarret,modelCarret,autorCarret,confvCarret," +
                     "verApp,userc,fechc,diriplan4,diripwan4,netbname) " +
                     "values (@fecho,@serpl,@locor,@locde,@obspl,@cantf,@canto,@pesto,@tipmo,@tipca,@subto," +
                     "@igvpl,@totpl,@totpa,@salxp,@estad,@fleim,@platr,@placa,@autor,@confv,@brevc," +
-                    "@breva,@rucpr,@tipop,@nocho,@noayu,@marca,@model," +
-                    "@verApp,@asd,now(),@iplan,@ipwan,@nbnam)";
+                    "@breva,@rucpr,@tipop,@nocho,@noayu,@marca,@model,@marCarr,@modCarr,@autCarr,@conCarr," +
+                    "@verApp,@asd,now(),@iplan,@ipwan,@nbnam)"; // 
                 using (MySqlCommand micon = new MySqlCommand(inserta, conn))
                 {
                     micon.Parameters.AddWithValue("@fecho", tx_fechope.Text.Substring(6, 4) + "-" + tx_fechope.Text.Substring(3, 2) + "-" + tx_fechope.Text.Substring(0, 2));
@@ -1231,6 +1235,10 @@ namespace TransCarga
                     micon.Parameters.AddWithValue("@placa", tx_pla_carret.Text);
                     micon.Parameters.AddWithValue("@autor", tx_pla_autor.Text);
                     micon.Parameters.AddWithValue("@confv", tx_pla_confv.Text + "-" + tx_carret_conf.Text);
+                    micon.Parameters.AddWithValue("@marCarr", tx_carret_marca.Text);
+                    micon.Parameters.AddWithValue("@modCarr", tx_carret_modelo.Text);
+                    micon.Parameters.AddWithValue("@autCarr", tx_carret_autoriz.Text);
+                    micon.Parameters.AddWithValue("@conCarr", tx_carret_conf.Text);
                     micon.Parameters.AddWithValue("@brevc", tx_pla_brevet.Text);
                     micon.Parameters.AddWithValue("@nocho", tx_pla_nomcho.Text);           // nombre del chofer
                     micon.Parameters.AddWithValue("@breva", tx_pla_ayud.Text);
@@ -1352,6 +1360,7 @@ namespace TransCarga
                             "tipcampla=@tipca,subtotpla=@subto,igvplacar=@igvpl,totplacar=@totpl,totpagado=@totpa,salxpagar=@salxp,fleteimp=@fleim," +
                             "platracto=@platr,placarret=@placa,autorizac=@autor,confvehic=@confv,brevchofe=@brevc,brevayuda=@breva,rucpropie=@rucpr,tipoplani=@tipop," +
                             "verApp=@verApp,userm=@asd,fechm=now(),diriplan4=@iplan,diripwan4=@ipwan,netbname=@nbnam,nomchofe=@nocho,nomayuda=@noayu,estadoser=@estad," +
+                            "marcaCarret=@marCarr,modelCarret=@modCarr,autorCarret=@autCarr,confvCarret=@conCarr," +
                             "marcaTrac=@marca,modeloTrac=@model " +
                             "where serplacar=@serpl and numplacar=@numpl";
                         MySqlCommand micon = new MySqlCommand(actua, conn);
@@ -1376,6 +1385,10 @@ namespace TransCarga
                         micon.Parameters.AddWithValue("@placa", tx_pla_carret.Text);
                         micon.Parameters.AddWithValue("@autor", tx_pla_autor.Text);
                         micon.Parameters.AddWithValue("@confv", tx_pla_confv.Text + tx_carret_conf.Text);
+                        micon.Parameters.AddWithValue("@marCarr", tx_carret_marca.Text);
+                        micon.Parameters.AddWithValue("@modCarr", tx_carret_modelo.Text);
+                        micon.Parameters.AddWithValue("@autCarr", tx_carret_autoriz.Text);
+                        micon.Parameters.AddWithValue("@conCarr", tx_carret_conf.Text);
                         micon.Parameters.AddWithValue("@brevc", tx_pla_brevet.Text);
                         micon.Parameters.AddWithValue("@nocho", tx_pla_nomcho.Text);           // nombre del chofer
                         micon.Parameters.AddWithValue("@breva", tx_pla_ayud.Text);
@@ -1708,7 +1721,8 @@ namespace TransCarga
                 {
                     //tx_pla_confv.Text = tx_pla_confv.Text.Trim()  + " " + datos[0].Trim();
                     tx_carret_conf.Text = datos[0].Trim();
-                    //tx_pla_autor.Text = datos[1];
+                    tx_carret_marca.Text = datos[2].Trim();
+                    tx_carret_autoriz.Text = datos[1].Trim();
                 }
             }
         }
