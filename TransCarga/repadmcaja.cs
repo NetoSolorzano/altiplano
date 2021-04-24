@@ -19,6 +19,7 @@ namespace TransCarga
         string colsfgr = TransCarga.Program.colsfc;   // color seleccion grilla
         string colstrp = TransCarga.Program.colstr;   // color del strip
         static string nomtab = "cabcobran";            // 
+
         #region variables
         string asd = TransCarga.Program.vg_user;      // usuario conectado al sistema
         public int totfilgrid, cta;             // variables para impresion
@@ -43,8 +44,10 @@ namespace TransCarga
         string codAnul = "";            // codigo de documento anulado
         string nomAnul = "";            // texto nombre del estado anulado
         string codGene = "";            // codigo documento nuevo generado
+        string v_nccCR = "";            // nombre del formato CR del cuadre de caja
         //int pageCount = 1, cuenta = 0;
         #endregion
+
         libreria lib = new libreria();
         DataTable dtcuad = new DataTable();
         DataTable dt = new DataTable();
@@ -113,10 +116,11 @@ namespace TransCarga
             {
                 MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
                 conn.Open();
-                string consulta = "select formulario,campo,param,valor from enlaces where formulario in(@nofo,@ped)";
+                string consulta = "select formulario,campo,param,valor from enlaces where formulario in(@nofo,@ped,@caj)";
                 MySqlCommand micon = new MySqlCommand(consulta, conn);
                 micon.Parameters.AddWithValue("@nofo", "main");
                 micon.Parameters.AddWithValue("@ped", nomform);
+                micon.Parameters.AddWithValue("@caj", "ayccaja");
                 MySqlDataAdapter da = new MySqlDataAdapter(micon);
                 DataTable dt = new DataTable();
                 da.Fill(dt);
@@ -147,6 +151,10 @@ namespace TransCarga
                     if (row["formulario"].ToString() == nomform)
                     {
                         if (row["campo"].ToString() == "exporta" && row["param"].ToString() == "ruta") v_ruta = row["valor"].ToString().Trim();
+                    }
+                    if (row["formulario"].ToString() == "ayccaja" && row["campo"].ToString() == "impresion" && row["param"].ToString() == "nomfor_cr")
+                    {
+                        v_nccCR = row["valor"].ToString().Trim();
                     }
                 }
                 da.Dispose();
@@ -1060,6 +1068,7 @@ namespace TransCarga
             rowcabeza.rucEmisor = Program.ruc;
             rowcabeza.nomEmisor = Program.cliente;
             rowcabeza.dirEmisor = Program.dirfisc;
+            rowcabeza.formatoRPT = v_nccCR;
             rowcabeza.id = dtcuad.Rows[0].ItemArray[3].ToString();
             rowcabeza.serie = dtcuad.Rows[0].ItemArray[8].ToString();
             rowcabeza.corre = dtcuad.Rows[0].ItemArray[9].ToString();

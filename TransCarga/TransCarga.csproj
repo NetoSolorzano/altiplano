@@ -144,6 +144,18 @@
       <DependentUpon>ctacteclte1.rpt</DependentUpon>
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="cuadreCaja2.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>cuadreCaja2.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="cuadreCaja3.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>cuadreCaja3.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="defs.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -366,6 +378,14 @@
     <EmbeddedResource Include="ctacteclte1.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>ctacteclte1.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="cuadreCaja2.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>cuadreCaja2.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="cuadreCaja3.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>cuadreCaja3.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="defs.resx">
       <DependentUpon>defs.cs</DependentUpon>

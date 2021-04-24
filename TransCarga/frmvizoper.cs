@@ -22,15 +22,17 @@ namespace TransCarga
         {
             if (_datosReporte.cuadreCaja_cab.Rows.Count > 0)
             {
+                string nf = _datosReporte.cuadreCaja_cab.Rows[0].ItemArray[27].ToString();
                 ReportDocument rpt = new ReportDocument();
-                rpt.Load("formatos/cuadreCaja1.rpt");
+                rpt.Load(nf);   // rpt.Load("formatos/cuadreCaja1.rpt");
                 rpt.SetDataSource(_datosReporte);
                 crystalReportViewer1.ReportSource = rpt;
             }
             if (_datosReporte.pendCob.Rows.Count > 0)
             {
+                string nf = _datosReporte.pendCob.Rows[0].ItemArray[28].ToString();
                 ReportDocument rpt = new ReportDocument();
-                rpt.Load("formatos/pendCob1.rpt");
+                rpt.Load(nf);  // rpt.Load("formatos/pendCob1.rpt");
                 rpt.SetDataSource(_datosReporte);
                 crystalReportViewer1.ReportSource = rpt;
             }

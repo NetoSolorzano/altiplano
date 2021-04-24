@@ -204,6 +204,7 @@
               <xs:element name="nomEmisor" msprop:Generator_ColumnVarNameInTable="columnnomEmisor" msprop:Generator_ColumnPropNameInRow="nomEmisor" msprop:Generator_ColumnPropNameInTable="nomEmisorColumn" msprop:Generator_UserColumnName="nomEmisor" type="xs:string" minOccurs="0" />
               <xs:element name="dirEmisor" msprop:Generator_ColumnVarNameInTable="columndirEmisor" msprop:Generator_ColumnPropNameInRow="dirEmisor" msprop:Generator_ColumnPropNameInTable="dirEmisorColumn" msprop:Generator_UserColumnName="dirEmisor" type="xs:string" minOccurs="0" />
               <xs:element name="tituloF" msprop:Generator_ColumnVarNameInTable="columntituloF" msprop:Generator_ColumnPropNameInRow="tituloF" msprop:Generator_ColumnPropNameInTable="tituloFColumn" msprop:Generator_UserColumnName="tituloF" type="xs:string" minOccurs="0" />
+              <xs:element name="formatoRPT" msprop:Generator_ColumnVarNameInTable="columnformatoRPT" msprop:Generator_ColumnPropNameInRow="formatoRPT" msprop:Generator_ColumnPropNameInTable="formatoRPTColumn" msprop:Generator_UserColumnName="formatoRPT" type="xs:string" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>
@@ -269,6 +270,7 @@
               <xs:element name="fecfin" msprop:Generator_ColumnVarNameInTable="columnfecfin" msprop:Generator_ColumnPropNameInRow="fecfin" msprop:Generator_ColumnPropNameInTable="fecfinColumn" msprop:Generator_UserColumnName="fecfin" type="xs:string" minOccurs="0" />
               <xs:element name="cta" msprop:Generator_ColumnVarNameInTable="columncta" msprop:Generator_ColumnPropNameInRow="cta" msprop:Generator_ColumnPropNameInTable="ctaColumn" msprop:Generator_UserColumnName="cta" type="xs:string" minOccurs="0" />
               <xs:element name="tituloF" msprop:Generator_ColumnVarNameInTable="columntituloF" msprop:Generator_ColumnPropNameInRow="tituloF" msprop:Generator_ColumnPropNameInTable="tituloFColumn" msprop:Generator_UserColumnName="tituloF" type="xs:string" minOccurs="0" />
+              <xs:element name="formatoRPT" msprop:Generator_ColumnVarNameInTable="columnformatoRPT" msprop:Generator_ColumnPropNameInRow="formatoRPT" msprop:Generator_ColumnPropNameInTable="formatoRPTColumn" msprop:Generator_UserColumnName="formatoRPT" type="xs:string" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>

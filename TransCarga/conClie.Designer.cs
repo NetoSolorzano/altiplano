@@ -3951,6 +3951,8 @@ namespace TransCarga {
             
             private global::System.Data.DataColumn columntituloF;
             
+            private global::System.Data.DataColumn columnformatoRPT;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public cuadreCaja_cabDataTable() {
@@ -4202,6 +4204,14 @@ namespace TransCarga {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn formatoRPTColumn {
+                get {
+                    return this.columnformatoRPT;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -4264,7 +4274,8 @@ namespace TransCarga {
                         string rucEmisor, 
                         string nomEmisor, 
                         string dirEmisor, 
-                        string tituloF) {
+                        string tituloF, 
+                        string formatoRPT) {
                 cuadreCaja_cabRow rowcuadreCaja_cabRow = ((cuadreCaja_cabRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         id,
@@ -4293,7 +4304,8 @@ namespace TransCarga {
                         rucEmisor,
                         nomEmisor,
                         dirEmisor,
-                        tituloF};
+                        tituloF,
+                        formatoRPT};
                 rowcuadreCaja_cabRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowcuadreCaja_cabRow);
                 return rowcuadreCaja_cabRow;
@@ -4343,6 +4355,7 @@ namespace TransCarga {
                 this.columnnomEmisor = base.Columns["nomEmisor"];
                 this.columndirEmisor = base.Columns["dirEmisor"];
                 this.columntituloF = base.Columns["tituloF"];
+                this.columnformatoRPT = base.Columns["formatoRPT"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -4402,6 +4415,8 @@ namespace TransCarga {
                 base.Columns.Add(this.columndirEmisor);
                 this.columntituloF = new global::System.Data.DataColumn("tituloF", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columntituloF);
+                this.columnformatoRPT = new global::System.Data.DataColumn("formatoRPT", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnformatoRPT);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -5199,6 +5214,8 @@ namespace TransCarga {
             
             private global::System.Data.DataColumn columntituloF;
             
+            private global::System.Data.DataColumn columnformatoRPT;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public pendCobDataTable() {
@@ -5458,6 +5475,14 @@ namespace TransCarga {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn formatoRPTColumn {
+                get {
+                    return this.columnformatoRPT;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -5521,7 +5546,8 @@ namespace TransCarga {
                         string fecini, 
                         string fecfin, 
                         string cta, 
-                        string tituloF) {
+                        string tituloF, 
+                        string formatoRPT) {
                 pendCobRow rowpendCobRow = ((pendCobRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         rucEmisor,
@@ -5551,7 +5577,8 @@ namespace TransCarga {
                         fecini,
                         fecfin,
                         cta,
-                        tituloF};
+                        tituloF,
+                        formatoRPT};
                 rowpendCobRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowpendCobRow);
                 return rowpendCobRow;
@@ -5602,6 +5629,7 @@ namespace TransCarga {
                 this.columnfecfin = base.Columns["fecfin"];
                 this.columncta = base.Columns["cta"];
                 this.columntituloF = base.Columns["tituloF"];
+                this.columnformatoRPT = base.Columns["formatoRPT"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -5663,6 +5691,8 @@ namespace TransCarga {
                 base.Columns.Add(this.columncta);
                 this.columntituloF = new global::System.Data.DataColumn("tituloF", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columntituloF);
+                this.columnformatoRPT = new global::System.Data.DataColumn("formatoRPT", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnformatoRPT);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -10850,6 +10880,22 @@ namespace TransCarga {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string formatoRPT {
+                get {
+                    try {
+                        return ((string)(this[this.tablecuadreCaja_cab.formatoRPTColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("El valor de la columna \'formatoRPT\' de la tabla \'cuadreCaja_cab\' es DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tablecuadreCaja_cab.formatoRPTColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public bool IsidNull() {
                 return this.IsNull(this.tablecuadreCaja_cab.idColumn);
             }
@@ -11170,6 +11216,18 @@ namespace TransCarga {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public void SettituloFNull() {
                 this[this.tablecuadreCaja_cab.tituloFColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsformatoRPTNull() {
+                return this.IsNull(this.tablecuadreCaja_cab.formatoRPTColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetformatoRPTNull() {
+                this[this.tablecuadreCaja_cab.formatoRPTColumn] = global::System.Convert.DBNull;
             }
         }
         
@@ -12352,6 +12410,22 @@ namespace TransCarga {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string formatoRPT {
+                get {
+                    try {
+                        return ((string)(this[this.tablependCob.formatoRPTColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("El valor de la columna \'formatoRPT\' de la tabla \'pendCob\' es DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tablependCob.formatoRPTColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public bool IsrucEmisorNull() {
                 return this.IsNull(this.tablependCob.rucEmisorColumn);
             }
@@ -12684,6 +12758,18 @@ namespace TransCarga {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public void SettituloFNull() {
                 this[this.tablependCob.tituloFColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsformatoRPTNull() {
+                return this.IsNull(this.tablependCob.formatoRPTColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetformatoRPTNull() {
+                this[this.tablependCob.formatoRPTColumn] = global::System.Convert.DBNull;
             }
         }
         
