@@ -2019,6 +2019,13 @@ namespace TransCarga
                             }
                         }
                     }
+                    if (tx_dat_tdRem.Text != vtc_ruc && tx_dat_tdRem.Text != vtc_dni)
+                    {
+                        if (encuentra == "no")
+                        {
+                            v_clte_rem = "N";
+                        }
+                    }
                     if (tx_nomRem.Text.Trim() == "")
                     {
                         tx_nomRem.ReadOnly = false;
@@ -2128,6 +2135,13 @@ namespace TransCarga
                                 //tx_nomDrio.ReadOnly = false;
                                 v_clte_des = "N";
                             }
+                        }
+                    }
+                    if (tx_dat_tDdest.Text != vtc_ruc && tx_dat_tDdest.Text != vtc_dni)
+                    {
+                        if (encuentra == "no")
+                        {
+                            v_clte_des = "N";
                         }
                     }
                     if (tx_nomDrio.Text.Trim() == "")
