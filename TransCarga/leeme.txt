@@ -217,4 +217,5 @@ form guiati_a, nuevo form para cambio en detalle, ahora solo una fila de detalle
 form guiati_a, agregar autocompletar en descripción del detalle .................................... ok 20/04/2021
 form guiati_a, agregar al formato de impresion:
 	marca carreta, placa de la carreta, certif. inscrip carreta .................................... ok 21/04/2021
-form guiati_a, clientes extranjeros NO esta grabando en la maestra ................................. 
+form guiati_a, clientes extranjeros NO esta grabando en la maestra ................................. ok 29/04/2021
+form facelect, codigo para aceptar boletas y facturas por tipo de doc del cliente .................. OK 17/05/2021
