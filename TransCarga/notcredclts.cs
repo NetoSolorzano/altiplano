@@ -70,7 +70,8 @@ namespace TransCarga
         //string fshoy = "";              // fecha hoy del servidor en formato ansi
         //string codppc = "";             // codigo del plazo de pago por defecto para fact a crédito
         string v_codnot = "";           // codigo tipo de documento nota de credito
-        //
+                                        //
+        string nipfe = "";              // nombre identificador del proveedor de fact electronica
         string rutatxt = "";            // ruta de los txt para la fact. electronica
         string tipdo = "";              // CODIGO SUNAT tipo de documento de venta
         string tipoDocEmi = "";         // CODIGO SUNAT tipo de documento RUC/DNI
@@ -726,6 +727,19 @@ namespace TransCarga
                     }
                 }
             }
+            if (provee == "secure")
+            {
+                string ruta = rutatxt + "TXT/";
+                string archi;
+                if (accion == "alta")
+                {
+                    archi = rucclie + "-" + tipdo + "-" + serie + "-" + corre;
+                    if (crearTXT_PSN(tipdo, serie, corre, ruta + archi, tipdv, serdv, numdv, ctnota, ntnota, fedoco) == true)
+                    {
+                        retorna = true;
+                    }
+                }
+            }
             return retorna;
         }
         private bool crearTXT(string tipdo, string serie, string corre, string file_path, string tipdv, string serdv, string numdv, string ctnota, string ntnota, string fedoco)
@@ -1057,6 +1071,320 @@ namespace TransCarga
             retorna = true;
             return retorna;
         }
+        private bool crearTXT_PSN(string tipdo, string serie, string corre, string file_path, string tipdv, string serdv, string numdv, string ctnota, string ntnota, string fedoco)
+        {
+            bool retorna;
+            retorna = false;
+
+            string _fecemi = tx_fechope.Text.Substring(6, 4) + "-" + tx_fechope.Text.Substring(3, 2) + "-" + tx_fechope.Text.Substring(0, 2);   // fecha de emision   yyyy-mm-dd
+            string Prazsoc = nomclie.Trim();                                            // razon social del emisor
+            string Pnomcom = "";                                                        // nombre comercial del emisor
+            string ubigEmi = ubiclie;                                                   // UBIGEO DOMICILIO FISCAL
+            string Pdf_dir = Program.dirfisc.Trim();                                    // DOMICILIO FISCAL - direccion
+            string Pdf_urb = "-";                                                       // DOMICILIO FISCAL - Urbanizacion
+            string Pdf_pro = Program.provfis.Trim();                                    // DOMICILIO FISCAL - provincia
+            string Pdf_dep = Program.depfisc.Trim();                                    // DOMICILIO FISCAL - departamento
+            string Pdf_dis = Program.distfis.Trim();                                    // DOMICILIO FISCAL - distrito
+            string paisEmi = "PE";                                                      // DOMICILIO FISCAL - código de país
+            string Ptelef1 = Program.telclte1.Trim();                                   // teléfono del emisor
+            string Pweb1 = "";                                                          // página web del emisor
+            string Prucpro = Program.ruc;                                               // Ruc del emisor
+            string Pcrupro = "6";                                                       // codigo Ruc emisor
+            string _tipdoc = int.Parse(tipdo).ToString();                               // Tipo de documento de venta - 1 car
+            string _moneda = tipoMoneda;                                                // Moneda del doc. de venta - 3 car
+            string _sercor = cmb_tdv.Text.Substring(0, 1) + "C" + "-" + corre;          // Serie y correlat de la nota
+            string _nudoaf = cmb_tdv.Text.Substring(0, 1) + lib.Right(tx_serGR.Text.Trim(), 3) + "-" + tx_numGR.Text;   // numero del doc afectado
+            string Cnumdoc = tx_numDocRem.Text;                                         // numero de doc. del cliente - 15 car
+            string Ctipdoc = tipoDocEmi;                                                // tipo de doc. del cliente - 1 car
+            string Cnomcli = tx_nomRem.Text.Trim();                                     // nombre del cliente - 100 car
+            string dir1Adq = tx_dirRem.Text.Trim();                                     // direccion del adquiriente 1
+            //string dir2Adq = "";                                                        // direccion del adquiriente 2
+            string provAdq = tx_provRtt.Text.Trim();                                    // provincia del adquiriente
+            string depaAdq = tx_dptoRtt.Text.Trim();                                    // departamento del adquiriente
+            string distAdq = tx_distRtt.Text.Trim();                                    // distrito del adquiriente
+            string paisAdq = "PE";                                                      // pais del adquiriente
+            //string _totoin = "0.00";                                                       // total operaciones inafectas
+            //string _totoex = "0.00";                                                       // total operaciones exoneradas
+            //string _toisc = "0.00";                                                        // total impuesto selectivo consumo
+            string _totogr = tx_flete.Text;                                             // Total valor venta operaciones grabadas n(12,2)  15
+            string _totven = tx_subt.Text;                                              // Importe total de la venta n(12,2)             15
+            string tipOper = "0101";                                                    // tipo de operacion - 4 car
+            string codLocE = Program.codlocsunat;                                       // codigo local emisor
+            //string conPago = "01";                                                      // condicion de pago
+            //string _codgui = "31";                                                      // Código de la guia de remision TRANSPORTISTA
+            string _scotro = dataGridView1.Rows[0].Cells[0].Value.ToString();           // serie y numero concatenado de la guia
+            string obser1 = tx_obser1.Text.Trim();                                      // observacion del documento
+            //string obser2 = "";                                                         // mas observaciones
+            string maiAdq = tx_email.Text.Trim();                                       // correo del adquiriente
+            string totImp = tx_igv.Text;                                                // total impuestos del documento
+            string codImp = "1000";                                                     // codigo impuesto
+            //string nomImp = "IGV";                                                      // nombre del tipo de impuesto
+            //string tipTri = "VAT";                                                      // tipo de tributo
+            string monLet = tx_fletLetras.Text.Trim();                                  // monto en letras
+            string _horemi = "";                                                        // hora de emision del doc.venta
+            string _fvcmto = "";                                                        // fecha de vencimiento del doc.venta
+            string corclie = Program.mailclte;                                          // correo del emisor
+            string _morefD = "";                                                        // moneda de refencia para el tipo de cambio
+            string _monobj = "";                                                        // moneda objetivo del tipo de cambio
+            string _tipcam = "";                                                        // tipo de cambio con 3 decimales
+            string _fechca = "";                                                        // fecha del tipo de cambio
+
+            string d_medpa = "";                                                        // medio de pago de la detraccion (001 = deposito en cuenta)
+            string d_monde = "";                                                        // moneda de la detraccion
+            string d_conpa = "";                                                        // condicion de pago
+            double totdet = 0;
+            string d_porde = "";                                                        // porcentaje de detraccion
+            string d_valde = "";                                                        // valor de la detraccion
+            string d_codse = "";                                                        // codigo de servicio
+            string d_ctade = "";                                                        // cuenta detraccion BN
+            //string d_valre = "";                                                        // valor referencial
+            //string d_numre = "";                                                        // numero registro mtc del camion
+            //string d_confv = "";                                                        // config. vehicular del camion
+            //string d_ptori = "";                                                        // Pto de origen
+            //string d_ptode = "";                                                        // Pto de destino
+            //string d_vrepr = "";                                                        // valor referencial preliminar
+            string codleyt = "1000";                                                    // codigoLeyenda 1 - valor en letras
+            string codleyd = "";                                                        // codigo leyenda detraccion
+            //string codobs = "107";                                                      // codigo del ose para las observaciones, caso carrion documentos origen del remitente
+            string _forpa = "";                                                         // glosa de forma de pago SUNAT
+            string _valcr = "";                                                         // valor credito
+            string _fechc = "";                                                         // fecha programada del pago credito
+            /* *********************   calculo y campos de detracciones   ****************************** */
+            if (double.Parse(tx_flete.Text) > double.Parse(Program.valdetra) && tx_dat_tdv.Text == codfact && tx_dat_mone.Text == MonDeft)    // soles
+            {
+
+                // Están sujetos a las detracciones los servicios de transporte de bienes por vía terrestre gravado con el IGV, 
+                // siempre que el importe de la operación o el valor referencial, según corresponda, sea mayor a 
+                // S/ 400.00 o su equivalente en dólares ........ DICE SUNAT
+                // ctadetra;                                                            // numeroCtaBancoNacion
+                // valdetra;                                                            // monto a partir del cual tiene detraccion la operacion
+                // coddetra;                                                            // codigoDetraccion
+                // pordetra;                                                            // porcentajeDetraccion
+                d_medpa = "001";                                    // medio de pago de la detraccion (001 = deposito en cuenta)
+                d_monde = "PEN"; // MonDeft;                                  // moneda de la detraccion
+                d_conpa = "CONTADO";                                // condicion de pago
+                d_porde = Program.pordetra;                         // porcentaje de detraccion
+                d_valde = Program.valdetra;                         // valor de la detraccion
+                d_codse = Program.coddetra;                         // codigo de servicio
+                d_ctade = Program.ctadetra;                         // cuenta detraccion BN
+                //d_valre = "0";                                      // valor referencial
+                //d_numre = "";                // numero registro mtc del camion
+                //d_confv = "";                // config. vehicular del camion
+                //d_ptori = "";                // Pto de origen
+                //d_ptode = "";                // Pto de destino
+                //d_vrepr = "0";               // valor referencial preliminar
+                codleyt = "1000";            // codigoLeyenda 1 - valor en letras
+                totdet = Math.Round(double.Parse(tx_flete.Text) * double.Parse(Program.pordetra) / 100, 2);    // totalDetraccion
+                codleyd = "2006";
+                tipOper = "1001";
+                glosdet = glosdet + " " + d_ctade;                // leyenda de la detración
+            }
+            if (tx_dat_mone.Text != MonDeft)
+            {
+                _morefD = tx_dat_monsunat.Text;                                      // moneda de refencia para el tipo de cambio
+                _monobj = "PEN";        //tipoMoneda;                                // moneda objetivo del tipo de cambio
+                _tipcam = tx_tipcam.Text;                                            // tipo de cambio con 3 decimales
+                //_fechca = string.Format("{0:yyyy-MM-dd}", tx_fechope.Text);          // fecha del tipo de cambio
+                _fechca = tx_fechope.Text.Substring(6, 4) + "-" + tx_fechope.Text.Substring(3, 2) + "-" + tx_fechope.Text.Substring(0, 2);
+                if (double.Parse(tx_flete.Text) > (double.Parse(Program.valdetra) / double.Parse(tx_tipcam.Text)) && tx_dat_tdv.Text == codfact)
+                {
+                    d_medpa = "001";                                    // medio de pago de la detraccion (001 = deposito en cuenta)
+                    d_monde = "PEN";                                    // moneda de la detraccion SIEMPRE ES PEN moneda nacional
+                    d_conpa = "CONTADO";                                // condicion de pago
+                    d_porde = Program.pordetra;                         // porcentaje de detraccion
+                    d_valde = Program.valdetra;                         // valor de la detraccion
+                    d_codse = Program.coddetra;                         // codigo de servicio
+                    d_ctade = Program.ctadetra;                         // cuenta detraccion BN
+                    //d_valre = "0";                                      // valor referencial
+                    //d_numre = "";                // numero registro mtc del camion
+                    //d_confv = "";                // config. vehicular del camion
+                    //d_ptori = "";                // Pto de origen
+                    //d_ptode = "";                // Pto de destino
+                    //d_vrepr = "0";               // valor referencial preliminar
+                    codleyt = "1000";            // codigoLeyenda 1 - valor en letras
+                    codleyd = "2006";
+                    tipOper = "1001";
+                    totdet = Math.Round(double.Parse(tx_fletMN.Text) * double.Parse(Program.pordetra) / 100, 2);    // totalDetraccion
+                }
+            }
+            /* ********************************************** GENERAMOS EL TXT    ************************************* */
+            char sep = (char)31;
+            StreamWriter writer;
+            file_path = file_path + ".txt";
+            writer = new StreamWriter(file_path);
+            writer.WriteLine("CONTROL" + sep + "31007" + sep);
+            writer.WriteLine("ENCABEZADO" + sep +
+                tipdo + sep +                   // Tipo de Comprobante Electrónico
+                _sercor + sep +                 // Numeración de Comprobante Electrónico
+                _fecemi + sep +                 // Fecha de emisión
+                _horemi + sep +                 // hora de emisión
+                _moneda + sep +                 // Tipo de moneda
+                "" + sep + "" + sep + "" + sep + // campos 8 9 y 10 del diccionario notas de credito
+                "" + sep + "" + sep + "" + sep + // campos 11 12 y 13 del diccionario notas de credito
+                "" + sep + "" + sep +           // campos 14  y 15 del diccionario notas de credito
+                "" + sep + "" + sep +           // campos 16 y 17 del diccionario notas de credito
+                ctnota + sep +                  // tipo de nota de credito
+                tipdv + sep +                   // tipo de documento que modifica
+                _nudoaf + sep +                 // Numeración de documento afectado
+                ntnota + sep +                  // motivo del doc afectado, motivo de la nota
+                "" + sep + "" + sep +           // Condición de Pago y plazo de pago
+                "" + sep +                      // fecha vencimiento del comprobante afectado
+                "" + sep + "" + sep +           // forma de pago 1 al 3
+                "" + sep + "" + sep +           // forma de pago 4 al 6
+                "" + sep +                      // numero de pedido
+                "" + sep + "" + sep + "" + sep + // campos 32,33 y 34 del diccionario notas de credito
+                "" + sep + "" + sep +           // campos 35 y 36 del diccionario notas de credito
+                "" + sep + "" + sep +           // tipo guia de remision y numero de GR
+                "" + sep + "" + sep +           // campos 39 y 40 del diccionario notas de credito
+                "" + sep + "" + sep + "" + sep + "" + sep + "" + sep + "" + sep + "" + sep +    // campos del 41 al 47
+                "" + sep +                      // País del uso, explotación o aprovechamiento
+                "" + sep + "" + sep + "" + sep + // observaciones del 1 al 3
+                _totven + sep +                 // Total operaciones gravadas
+                "0" + sep +                     // Total operaciones inafectas
+                "0" + sep +                      // Total operaciones exoneradas
+                "0" + sep +                      // Total operaciones exportaciones
+                "0" + sep +                      // Total operaciones gratuitas
+                "0" + sep +                      // Monto impuestos operaciones gratuitas
+                "" + sep +                      // Monto Fondo Inclusión Social Energético
+                totImp + sep +                  // Total IGV / IVAP
+                "" + sep +                     // Total ISC
+                "" + sep +                      // Total ICBPER
+                "" + sep +                      // Indicador de Cargo/Descuento
+                "" + sep +                      // Código del motivo del cargo/descuento
+                "" + sep +                      // Factor de cargo/descuento
+                "" + sep +                      // Monto del cargo/descuento
+                "" + sep +                      // Monto base del cargo/descuento
+                "" + sep +                      // Total otros tributos
+                "" + sep +                      // Total otros cargos
+                "" + sep +                      // Descuento Global
+                "" + sep +                      // Total descuento
+                _totogr + sep +                 // Importe total de la venta
+                "" + sep +                      // Monto para Redondeo del importe Total
+                monLet + sep +                  // Leyenda: Monto expresado en Letras
+                "" + sep +                      // Leyenda: Transferencia gratuita 
+                "" + sep +                      // Leyenda: Bienes transferidos en la Amazonía
+                "" + sep +                      // Leyenda: Servicios prestados en la Amazonía
+                "" + sep +                      // Leyenda: Contratos de construcción ejecutados en la Amazonía
+                "" + sep + "" + sep + "" + sep  // leyendas otros 
+            );
+            writer.WriteLine("ENCABEZADO-EMISOR" + sep +
+                Prucpro + sep +                 // Número RUC del emisor
+                Prazsoc + sep +                 // Razón social del emisor
+                Pnomcom + sep +                 // Nombre comercial del emisor
+                paisEmi + sep +                 // Código país
+                ubigEmi + sep +                 // Ubigeo
+                Pdf_dep + sep +                 // Departamento
+                Pdf_pro + sep +                 // Provincia
+                Pdf_dis + sep +                 // Distrito
+                Pdf_urb + sep +                 // Urbanización
+                Pdf_dir + sep +                 // Dirección detallada
+                "" + sep +                      // Punto de emisión
+                "" + sep +                      // Dirección de emisión
+                codLocE + sep +                 // Código del establecimiento Anexo
+                Ptelef1 + sep +                 // telefono 
+                "" + sep +                      // fax del emisor
+                corclie + sep                   // Correo-Emisor
+            );
+            writer.WriteLine("ENCABEZADO-RECEPTOR" + sep +
+                Ctipdoc + sep +                 // Tipo de documento del cliente
+                Cnumdoc + sep +                 // Nro. Documento del cliente
+                Cnomcli + sep +                 // Razón social del cliente
+                "" + sep +                      // Identificador del cliente
+                "" + sep +                      // Tipo de documento del Comprador
+                "" + sep +                      // Número documento del Comprador
+                "" + sep +                      // Código país
+                "" + sep +                      // Ubigeo
+                depaAdq + sep +                 // Departamento
+                provAdq + sep +                 // Provincia
+                distAdq + sep +                 // Distrito
+                "" + sep +                      // Urbanización
+                dir1Adq + sep +                 // Dirección
+                maiAdq + sep                    // Correo-Receptor
+            );
+            for (int s = 0; s < dataGridView1.Rows.Count - 1; s++)  // DETALLE
+            {
+                double _msigv = double.Parse(dataGridView1.Rows[s].Cells["valor"].Value.ToString()) / (1 + (double.Parse(v_igv) / 100));
+                string Ipreuni = double.Parse(dataGridView1.Rows[s].Cells["valor"].Value.ToString()).ToString("#0.00");     // Precio de venta unitario CON IGV
+                if (tx_dat_mone.Text != MonDeft && dataGridView1.Rows[s].Cells["codmondoc"].Value.ToString() == MonDeft)   // 
+                {
+                    _msigv = Math.Round(_msigv / double.Parse(tx_tipcam.Text), 2);
+                    Ipreuni = Math.Round(double.Parse(dataGridView1.Rows[s].Cells["valor"].Value.ToString()) / double.Parse(tx_tipcam.Text), 2).ToString("#0.00");
+                }
+                if (tx_dat_mone.Text == MonDeft && dataGridView1.Rows[s].Cells["codmondoc"].Value.ToString() != MonDeft)
+                {
+                    _msigv = Math.Round(_msigv * double.Parse(tx_tipcam.Text), 2);
+                    Ipreuni = Math.Round(double.Parse(dataGridView1.Rows[s].Cells["valor"].Value.ToString()) * double.Parse(tx_tipcam.Text), 2).ToString("#0.00");
+                }
+                string Inumord = (s + 1).ToString();                                        // numero de orden del item             5
+                string Iumeded = "ZZ";                                                      // Unidad de medida                     3
+                string Icantid = "1.00";                                                    // Cantidad de items   n(12,3)         16
+                string Icodprd = "-";                                                       // codigo del producto del cliente
+                string Icodpro = "";                                                        // codigo del producto SUNAT                          30
+                string Icodgs1 = "";                                                        // codigo del producto GS1
+                string Icogtin = "";                                                        // tipo de producto GTIN
+                string Inplaca = "";                                                        // numero placa de vehiculo
+                string Idescri = glosser + " " + dataGridView1.Rows[s].Cells["Descrip"].Value.ToString();   // Descripcion
+                string Ivaluni = _msigv.ToString("#0.00");                                  // Valor unitario del item SIN IMPUESTO 
+                string Ivalref = "";                                                        // valor referencial del item cuando la venta es gratuita
+                string Iigvite = Math.Round(double.Parse(Ipreuni) - double.Parse(Ivaluni), 2).ToString("#0.00");     // monto IGV del item
+                string Imonbas = Ivaluni;                                                   // monto base (valor sin igv * cantidad)
+                string Isumigv = Iigvite;                                                   // Sumatoria de igv
+                string Itasigv = Math.Round(double.Parse(v_igv), 2).ToString("#0.00");      // tasa del igv
+                string Icatigv = "10";                                                      // Codigo afectacion al igv                    2
+                string Iindgra = "";                                                        // indicador de gratuito
+                string Iiscmba = "";                                                        // ISC monto base
+                string Iiscmon = "";                                                        // ISC monto del tributo
+                string Iisctas = "";                                                        // ISC tasa del tributo
+                string Iisctip = "";                                                        // ISC tipo de sistema
+                string Iotrtri = "";                                                        // otros tributos monto base
+                string Iotrlin = "";                                                        // otros tributos monto unitario
+                string Iotrtas = "";                                                        // otros tributos tasa del tributo
+                string Iotrsis = "";                                                        // otros tributos tipo de sistema
+                string Ivalvta = Ivaluni;                                                   // Valor de venta del ítem
+                //
+                writer.WriteLine("ITEM" + sep +
+                    Inumord + sep +     // orden
+                    "" + sep +          // datos personalizados
+                    Iumeded + sep +     // unidad de medida ...... servicio ZZ
+                    Icantid + sep +     // cantidad 1 servicio de transporte
+                    Idescri + sep +     // descripcion del servicio
+                    "" + sep +          // glosa del item
+                    Icodprd + sep +     // codigo del producto o servicio
+                    Icodpro + sep +     // codigo del producto sunat
+                    Icodgs1 + sep +     // codigo de producto GS1
+                    Icogtin + sep +     // tipo de producto GTIN
+                    Inplaca + sep +     // numero placa de vehiculo
+                    Ivaluni + sep +     // Valor unitario por ítem - SIN IGV
+                    Ipreuni + sep +     // Precio de venta unitario por ítem - CON IGV
+                    Ivalref + sep +     // valor referencial del item cuando la venta es gratuita
+                    Iigvite + sep +     // Monto IGV
+                    Icatigv + sep +     // Codigo afectacion al igv
+                    Itasigv + sep +     // tasa del igv
+                    Isumigv + sep +     // monto igv (valor igv * cantidad)
+                    codImp + sep +      // Código de tributo por línea IGV
+                    Iiscmba + sep +     // ISC monto base
+                    Iisctas + sep +     // ISC tasa del tributo
+                    Iisctip + sep +     // ISC tipo de sistema
+                    Iiscmon + sep +     // ISC monto del tributo
+                    "N" + sep +         // Indicador de Afecto al ICBPER
+                    "" + sep + "" + sep + // campo 26 y 27 del diccionario notas de credito
+                    Iotrtri + sep +     // otros tributos monto base
+                    Iotrtas + sep +     // otros tributos tasa del tributo
+                    Iotrlin + sep +     // otros tributos monto unitario
+                    "0" + sep +         // Descuentos por ítem
+                    "2" + sep +         // Indicador de cargo/descuento
+                    "" + sep +          // Código de cargo/descuento
+                    "" + sep +          // Factor de cargo/descuento
+                    "" + sep +          // Monto de cargo/descuento
+                    "" + sep +          // Monto base del cargo/descuento
+                    Ivalvta + sep       // Valor de venta del ítem
+                );
+            }
+            writer.Flush();
+            writer.Close();
+            retorna = true;
+            return retorna;
+        }
         #endregion
 
         #region autocompletados
@@ -1223,27 +1551,34 @@ namespace TransCarga
                     {
                         if (graba() == true)
                         {
-                            if (factElec("Horizont", "txt", "alta", 0) == true)       // facturacion electrónica
+                            if (lib.DirectoryVisible(rutatxt) == true)
                             {
-                                // actualizamos la tabla seguimiento de usuarios
-                                string resulta = lib.ult_mov(nomform, nomtab, asd);
-                                if (resulta != "OK")
+                                if (factElec(nipfe, "txt", "baja", 0) == true)       // factElec("Horizont", "txt", "alta", 0) == true
                                 {
-                                    MessageBox.Show(resulta, "Error en actualización de seguimiento", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    // actualizamos la tabla seguimiento de usuarios
+                                    string resulta = lib.ult_mov(nomform, nomtab, asd);
+                                    if (resulta != "OK")
+                                    {
+                                        MessageBox.Show(resulta, "Error en actualización de seguimiento", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    }
+                                    /*
+                                    var bb = MessageBox.Show("Desea imprimir el documento?" + Environment.NewLine +
+                                        "El formato actual es " + vi_formato, "Confirme por favor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                                    if (bb == DialogResult.Yes)
+                                    {
+                                        Bt_print.PerformClick();
+                                    }
+                                    */
                                 }
-                                /*
-                                var bb = MessageBox.Show("Desea imprimir el documento?" + Environment.NewLine +
-                                    "El formato actual es " + vi_formato, "Confirme por favor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                                if (bb == DialogResult.Yes)
+                                else
                                 {
-                                    Bt_print.PerformClick();
+                                    MessageBox.Show("No se puede generar la Nota de crédito", "Error en proveedor de Fact.Electrónica");
+                                    iserror = "si";
                                 }
-                                */
                             }
                             else
                             {
-                                MessageBox.Show("No se puede generar la Nota de crédito", "Error en proveedor de Fact.Electrónica");
-                                iserror = "si";
+
                             }
                         }
                         else
