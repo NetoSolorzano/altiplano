@@ -332,9 +332,13 @@ namespace TransCarga
                 MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
                 conn.Open();
                 if (conn.State == ConnectionState.Open)
-                {
-                    string consulta = "select a.id,a.fechope,a.martdve,a.tipdvta,a.serdvta,a.numdvta,b.descrizionerid as nomest " +
-                        "from cabdebcred a left join desc_est b on b.idcodice=a.estdvta " +
+                {   //      a.martdve,
+                    string consulta = "select a.id,a.fechope,a.tipdvta,a.serdvta,a.numdvta,b.descrizionerid as nomest,a.martnot,a.numnota," +
+                        "a.tipnota,a.sernota,a.tidoclt,a.nudoclt,a.nombclt,a.direclt,a.dptoclt,a.provclt,a.distclt,a.ubigclt,a.corrclt,a.teleclt," +
+                        "a.locorig,a.dirorig,a.ubiorig,a.obsdvta,a.mondvta,a.tcadvta,a.subtota,a.igvtota,a.porcigv,a.totnota,a.totdvta,a.saldvta," +
+                        "a.subtMN,a.igvtMN,a.totdvMN,a.codMN,a.estnota,a.frase01,a.impreso,a.tipncred,a.canfidt," +
+                        "a.verApp,a.userc,a.fechc,a.userm,a.fechm,a.usera,a.fecha " +
+                        "from cabdebcred a left join desc_est b on b.idcodice=a.estnota " +
                         parte;
                     MySqlCommand micon = new MySqlCommand(consulta, conn);
                     if (campo == "tx_idr")
@@ -354,10 +358,10 @@ namespace TransCarga
                         {
                             tx_idr.Text = dr.GetString("id");
                             tx_fechope.Text = dr.GetString("fechope").Substring(0, 10);
-                            /*
-                            tx_dat_tdv.Text = dr.GetString("tipdvta");
-                            tx_serie.Text = dr.GetString("serdvta");
-                            tx_numero.Text = dr.GetString("numdvta");
+                            
+                            tx_dat_tnota.Text = dr.GetString("tipnota");
+                            tx_serie.Text = dr.GetString("sernota");
+                            tx_numero.Text = dr.GetString("numnota");
                             tx_dat_tdRem.Text = dr.GetString("tidoclt");
                             tx_numDocRem.Text = dr.GetString("nudoclt");
                             tx_nomRem.Text = dr.GetString("nombclt");
@@ -366,31 +370,31 @@ namespace TransCarga
                             tx_provRtt.Text = dr.GetString("provclt");
                             tx_distRtt.Text = dr.GetString("distclt");
                             tx_email.Text = dr.GetString("corrclt");
-                            tx_telc1.Text = dr.GetString("teleclt");
+                            //tx_telc1.Text = dr.GetString("teleclt");
                             //locorig,dirorig,ubiorig
                             tx_obser1.Text = dr.GetString("obsdvta");
                             tx_tfil.Text = dr.GetString("canfidt");
-                            tx_totcant.Text = dr.GetString("canbudt");  // total bultos
+                            //tx_totcant.Text = dr.GetString("canbudt");  // total bultos
                             tx_dat_mone.Text = dr.GetString("mondvta");
                             tx_tipcam.Text = dr.GetString("tcadvta");
                             tx_subt.Text = Math.Round(dr.GetDecimal("subtota"),2).ToString();
                             tx_igv.Text = Math.Round(dr.GetDecimal("igvtota"), 2).ToString();
                             //,,,porcigv
                             tx_flete.Text = Math.Round(dr.GetDecimal("totdvta"),2).ToString();           // total inc. igv
-                            tx_pagado.Text = dr.GetString("totpags");
-                            tx_salxcob.Text = dr.GetString("saldvta");
-                            tx_dat_estad.Text = dr.GetString("estdvta");        // estado
+                            //tx_pagado.Text = dr.GetString("totpags");
+                            //tx_salxcob.Text = dr.GetString("saldvta");
+                            tx_dat_estad.Text = dr.GetString("estnota");        // estado
                             tx_impreso.Text = dr.GetString("impreso");
-                            tx_idcob.Text = dr.GetString("cobra");              // id de cobranza
-                            //
+                            //tx_idcob.Text = dr.GetString("cobra");              // id de cobranza
+                            tx_dat_tdv.Text = dr.GetString("tipdvta");
                             cmb_tdv.SelectedValue = tx_dat_tdv.Text;
                             cmb_tdv_SelectedIndexChanged(null, null);
-                            tx_numero.Text = dr.GetString("numdvta");       // al cambiar el indice en el combox se borra numero, por eso lo volvemos a jalar
+                            tx_numGR.Text = dr.GetString("numdvta");       // al cambiar el indice en el combox se borra numero, por eso lo volvemos a jalar
                             cmb_mon.SelectedValue = tx_dat_mone.Text;
                             tx_estado.Text = dr.GetString("nomest");   // lib.nomstat(tx_dat_estad.Text);
                             if (dr.GetString("userm") == "") tx_digit.Text = lib.nomuser(dr.GetString("userc"));
                             else tx_digit.Text = lib.nomuser(dr.GetString("userm"));
-                            */
+                            
                         }
                         else
                         {
@@ -782,7 +786,7 @@ namespace TransCarga
             string codLocE = Program.codlocsunat;                                       // codigo local emisor
             //string conPago = "01";                                                      // condicion de pago
             //string _codgui = "31";                                                      // Código de la guia de remision TRANSPORTISTA
-            string _scotro = dataGridView1.Rows[0].Cells[0].Value.ToString();           // serie y numero concatenado de la guia
+            //string _scotro = dataGridView1.Rows[0].Cells[0].Value.ToString();           // serie y numero concatenado de la guia
             string obser1 = tx_obser1.Text.Trim();                                      // observacion del documento
             //string obser2 = "";                                                         // mas observaciones
             string maiAdq = tx_email.Text.Trim();                                       // correo del adquiriente
@@ -1087,10 +1091,8 @@ namespace TransCarga
             string Pdf_dis = Program.distfis.Trim();                                    // DOMICILIO FISCAL - distrito
             string paisEmi = "PE";                                                      // DOMICILIO FISCAL - código de país
             string Ptelef1 = Program.telclte1.Trim();                                   // teléfono del emisor
-            string Pweb1 = "";                                                          // página web del emisor
             string Prucpro = Program.ruc;                                               // Ruc del emisor
-            string Pcrupro = "6";                                                       // codigo Ruc emisor
-            string _tipdoc = int.Parse(tipdo).ToString();                               // Tipo de documento de venta - 1 car
+            //string _tipdoc = int.Parse(tipdo).ToString();                               // Tipo de documento de venta - 1 car
             string _moneda = tipoMoneda;                                                // Moneda del doc. de venta - 3 car
             string _sercor = cmb_tdv.Text.Substring(0, 1) + "C" + "-" + corre;          // Serie y correlat de la nota
             string _nudoaf = cmb_tdv.Text.Substring(0, 1) + lib.Right(tx_serGR.Text.Trim(), 3) + "-" + tx_numGR.Text;   // numero del doc afectado
@@ -1102,7 +1104,7 @@ namespace TransCarga
             string provAdq = tx_provRtt.Text.Trim();                                    // provincia del adquiriente
             string depaAdq = tx_dptoRtt.Text.Trim();                                    // departamento del adquiriente
             string distAdq = tx_distRtt.Text.Trim();                                    // distrito del adquiriente
-            string paisAdq = "PE";                                                      // pais del adquiriente
+            //string paisAdq = "PE";                                                      // pais del adquiriente
             //string _totoin = "0.00";                                                       // total operaciones inafectas
             //string _totoex = "0.00";                                                       // total operaciones exoneradas
             //string _toisc = "0.00";                                                        // total impuesto selectivo consumo
@@ -1122,13 +1124,12 @@ namespace TransCarga
             //string tipTri = "VAT";                                                      // tipo de tributo
             string monLet = tx_fletLetras.Text.Trim();                                  // monto en letras
             string _horemi = "";                                                        // hora de emision del doc.venta
-            string _fvcmto = "";                                                        // fecha de vencimiento del doc.venta
+            //string _fvcmto = "";                                                        // fecha de vencimiento del doc.venta
             string corclie = Program.mailclte;                                          // correo del emisor
             string _morefD = "";                                                        // moneda de refencia para el tipo de cambio
             string _monobj = "";                                                        // moneda objetivo del tipo de cambio
             string _tipcam = "";                                                        // tipo de cambio con 3 decimales
             string _fechca = "";                                                        // fecha del tipo de cambio
-
             string d_medpa = "";                                                        // medio de pago de la detraccion (001 = deposito en cuenta)
             string d_monde = "";                                                        // moneda de la detraccion
             string d_conpa = "";                                                        // condicion de pago
@@ -1145,7 +1146,7 @@ namespace TransCarga
             //string d_vrepr = "";                                                        // valor referencial preliminar
             string codleyt = "1000";                                                    // codigoLeyenda 1 - valor en letras
             string codleyd = "";                                                        // codigo leyenda detraccion
-            //string codobs = "107";                                                      // codigo del ose para las observaciones, caso carrion documentos origen del remitente
+            string codobs = "107";                                                      // codigo del ose para las observaciones, caso carrion documentos origen del remitente
             string _forpa = "";                                                         // glosa de forma de pago SUNAT
             string _valcr = "";                                                         // valor credito
             string _fechc = "";                                                         // fecha programada del pago credito
