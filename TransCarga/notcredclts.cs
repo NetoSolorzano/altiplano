@@ -234,12 +234,12 @@ namespace TransCarga
             {
                 MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
                 conn.Open();
-                string consulta = "select formulario,campo,param,valor from enlaces where formulario in (@nofo,@nfin,@nofi,@nofa)";
+                string consulta = "select formulario,campo,param,valor from enlaces where formulario in (@nofo,@nfin,@nofi,@nofa,@noco)";
                 MySqlCommand micon = new MySqlCommand(consulta, conn);
                 micon.Parameters.AddWithValue("@nofo", "main");
                 micon.Parameters.AddWithValue("@nfin", "interno");
                 micon.Parameters.AddWithValue("@nofi", "clients");
-                //micon.Parameters.AddWithValue("@noco", "cobranzas");
+                micon.Parameters.AddWithValue("@noco", "facelect");
                 micon.Parameters.AddWithValue("@nofa", nomform);
                 MySqlDataAdapter da = new MySqlDataAdapter(micon);
                 DataTable dt = new DataTable();
@@ -300,6 +300,10 @@ namespace TransCarga
                         if (row["campo"].ToString() == "codinDV" && row["param"].ToString() == "DV") v_codidv = row["valor"].ToString().Trim();           // codigo de dov.vta en tabla TDV
                         if (row["campo"].ToString() == "igv" && row["param"].ToString() == "%") v_igv = row["valor"].ToString().Trim();
                     }
+                    if (row["formulario"].ToString() == "facelect")
+                    {
+                        if (row["param"].ToString() == "ose-pse") nipfe = row["valor"].ToString().Trim();
+                    }
                 }
                 da.Dispose();
                 dt.Dispose();
@@ -333,12 +337,15 @@ namespace TransCarga
                 conn.Open();
                 if (conn.State == ConnectionState.Open)
                 {   //      a.martdve,
-                    string consulta = "select a.id,a.fechope,a.tipdvta,a.serdvta,a.numdvta,b.descrizionerid as nomest,a.martnot,a.numnota," +
+                    string consulta = "select a.id,a.fechope,a.tipdvta,a.serdvta,a.numdvta,b.descrizionerid as nomest,a.martnot,a.numnota,a.tipncred," +
                         "a.tipnota,a.sernota,a.tidoclt,a.nudoclt,a.nombclt,a.direclt,a.dptoclt,a.provclt,a.distclt,a.ubigclt,a.corrclt,a.teleclt," +
                         "a.locorig,a.dirorig,a.ubiorig,a.obsdvta,a.mondvta,a.tcadvta,a.subtota,a.igvtota,a.porcigv,a.totnota,a.totdvta,a.saldvta," +
-                        "a.subtMN,a.igvtMN,a.totdvMN,a.codMN,a.estnota,a.frase01,a.impreso,a.tipncred,a.canfidt," +
+                        "a.subtMN,a.igvtMN,a.totdvMN,a.codMN,a.estnota,a.frase01,a.impreso,a.tipncred,a.canfidt,c.descrizionerid as docC,f.fechope as femiFT," +
                         "a.verApp,a.userc,a.fechc,a.userm,a.fechm,a.usera,a.fecha " +
-                        "from cabdebcred a left join desc_est b on b.idcodice=a.estnota " +
+                        "from cabdebcred a " +
+                        "left join cabfactu f on f.tipdvta=a.tipdvta and f.serdvta=a.serdvta and f.numdvta=a.numdvta " +
+                        "left join desc_est b on b.idcodice=a.estnota " +
+                        "left join desc_doc c on c.idcodice=a.tidoclt " +
                         parte;
                     MySqlCommand micon = new MySqlCommand(consulta, conn);
                     if (campo == "tx_idr")
@@ -358,11 +365,13 @@ namespace TransCarga
                         {
                             tx_idr.Text = dr.GetString("id");
                             tx_fechope.Text = dr.GetString("fechope").Substring(0, 10);
-                            
+                            if (dr.GetString("tipncred") == "ANU") rb_anula.Checked = true;
+                            else rb_anula.Checked = false;
                             tx_dat_tnota.Text = dr.GetString("tipnota");
                             tx_serie.Text = dr.GetString("sernota");
                             tx_numero.Text = dr.GetString("numnota");
                             tx_dat_tdRem.Text = dr.GetString("tidoclt");
+                            tx_nomtdc.Text = dr.GetString("docC");
                             tx_numDocRem.Text = dr.GetString("nudoclt");
                             tx_nomRem.Text = dr.GetString("nombclt");
                             tx_dirRem.Text = dr.GetString("direclt");
@@ -389,12 +398,14 @@ namespace TransCarga
                             tx_dat_tdv.Text = dr.GetString("tipdvta");
                             cmb_tdv.SelectedValue = tx_dat_tdv.Text;
                             cmb_tdv_SelectedIndexChanged(null, null);
+                            tx_serGR.Text = dr.GetString("serdvta");
                             tx_numGR.Text = dr.GetString("numdvta");       // al cambiar el indice en el combox se borra numero, por eso lo volvemos a jalar
                             cmb_mon.SelectedValue = tx_dat_mone.Text;
                             tx_estado.Text = dr.GetString("nomest");   // lib.nomstat(tx_dat_estad.Text);
                             if (dr.GetString("userm") == "") tx_digit.Text = lib.nomuser(dr.GetString("userc"));
                             else tx_digit.Text = lib.nomuser(dr.GetString("userm"));
-                            
+                            tx_fecemi.Text = dr.GetString("femiFT").Substring(0, 10);
+                            tx_fletLetras.Text = numLetra.Convertir(tx_flete.Text, true) + " " + tx_dat_nomon.Text;
                         }
                         else
                         {
@@ -1094,7 +1105,7 @@ namespace TransCarga
             string Prucpro = Program.ruc;                                               // Ruc del emisor
             //string _tipdoc = int.Parse(tipdo).ToString();                               // Tipo de documento de venta - 1 car
             string _moneda = tipoMoneda;                                                // Moneda del doc. de venta - 3 car
-            string _sercor = cmb_tdv.Text.Substring(0, 1) + "C" + "-" + corre;          // Serie y correlat de la nota
+            string _sercor = cmb_tdv.Text.Substring(0, 1) + "C" + lib.Right(tx_serGR.Text.Trim(), 2) + "-" + corre;          // Serie y correlat de la nota
             string _nudoaf = cmb_tdv.Text.Substring(0, 1) + lib.Right(tx_serGR.Text.Trim(), 3) + "-" + tx_numGR.Text;   // numero del doc afectado
             string Cnumdoc = tx_numDocRem.Text;                                         // numero de doc. del cliente - 15 car
             string Ctipdoc = tipoDocEmi;                                                // tipo de doc. del cliente - 1 car
@@ -1215,6 +1226,7 @@ namespace TransCarga
             writer = new StreamWriter(file_path);
             writer.WriteLine("CONTROL" + sep + "31007" + sep);
             writer.WriteLine("ENCABEZADO" + sep +
+                "" + sep +                      // id interno 
                 tipdo + sep +                   // Tipo de Comprobante Electrónico
                 _sercor + sep +                 // Numeración de Comprobante Electrónico
                 _fecemi + sep +                 // Fecha de emisión
@@ -1324,7 +1336,7 @@ namespace TransCarga
                 string Icodgs1 = "";                                                        // codigo del producto GS1
                 string Icogtin = "";                                                        // tipo de producto GTIN
                 string Inplaca = "";                                                        // numero placa de vehiculo
-                string Idescri = glosser + " " + dataGridView1.Rows[s].Cells["Descrip"].Value.ToString();   // Descripcion
+                string Idescri = dataGridView1.Rows[s].Cells["Descrip"].Value.ToString().Trim();   // Descripcion
                 string Ivaluni = _msigv.ToString("#0.00");                                  // Valor unitario del item SIN IMPUESTO 
                 string Ivalref = "";                                                        // valor referencial del item cuando la venta es gratuita
                 string Iigvite = Math.Round(double.Parse(Ipreuni) - double.Parse(Ivaluni), 2).ToString("#0.00");     // monto IGV del item
@@ -1554,13 +1566,16 @@ namespace TransCarga
                         {
                             if (lib.DirectoryVisible(rutatxt) == true)
                             {
-                                if (factElec(nipfe, "txt", "baja", 0) == true)       // factElec("Horizont", "txt", "alta", 0) == true
+                                if (factElec(nipfe, "txt", "alta", 0) == true)       // factElec("Horizont", "txt", "alta", 0) == true
                                 {
-                                    // actualizamos la tabla seguimiento de usuarios
-                                    string resulta = lib.ult_mov(nomform, nomtab, asd);
-                                    if (resulta != "OK")
+                                    if (true)
                                     {
-                                        MessageBox.Show(resulta, "Error en actualización de seguimiento", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                        // actualizamos la tabla seguimiento de usuarios
+                                        string resulta = lib.ult_mov(nomform, nomtab, asd);
+                                        if (resulta != "OK")
+                                        {
+                                            MessageBox.Show(resulta, "Error en actualización de seguimiento", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                        }
                                     }
                                     /*
                                     var bb = MessageBox.Show("Desea imprimir el documento?" + Environment.NewLine +
@@ -1573,8 +1588,12 @@ namespace TransCarga
                                 }
                                 else
                                 {
-                                    MessageBox.Show("No se puede generar la Nota de crédito", "Error en proveedor de Fact.Electrónica");
+                                    MessageBox.Show("No se puede generar la Nota de crédito" + Environment.NewLine + 
+                                        "Se revierte la operación", "Error en proveedor de Fact.Electrónica");
                                     iserror = "si";
+                                    // aca debemos llamar a una funcion que revierta la operacion de la creacion de la nota de credito
+                                    // se debe borrar la cabecera y el detalle y por triggers debe desamarrar todo
+                                    // ... 
                                 }
                             }
                             else
