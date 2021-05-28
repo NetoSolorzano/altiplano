@@ -218,7 +218,7 @@ namespace TransCarga
             tx_estado.Text = lib.nomstat(tx_dat_estad.Text);
             tx_fletLetras.ReadOnly = true;
             //
-            if (Tx_modo.Text == "NUEVO")
+            if (Tx_modo.Text == "NUEVO" || Tx_modo.Text == "EDITAR")
             {
                 gbox_serie.Enabled = true;
                 tx_dat_tnota.Text = v_codnot;
@@ -354,7 +354,7 @@ namespace TransCarga
                     }
                     if (campo == "sernum")
                     {
-                        micon.Parameters.AddWithValue("@tnot", tx_dat_tdv.Text);
+                        micon.Parameters.AddWithValue("@tnot", tx_dat_tnota.Text);
                         micon.Parameters.AddWithValue("@snot", tx_serie.Text);
                         micon.Parameters.AddWithValue("@nnot", tx_numero.Text);
                     }
@@ -1222,181 +1222,188 @@ namespace TransCarga
             /* ********************************************** GENERAMOS EL TXT    ************************************* */
             char sep = (char)31;
             StreamWriter writer;
-            file_path = file_path + ".txt";
-            writer = new StreamWriter(file_path);
-            writer.WriteLine("CONTROL" + sep + "31007" + sep);
-            writer.WriteLine("ENCABEZADO" + sep +
-                "" + sep +                      // id interno 
-                tipdo + sep +                   // Tipo de Comprobante Electrónico
-                _sercor + sep +                 // Numeración de Comprobante Electrónico
-                _fecemi + sep +                 // Fecha de emisión
-                _horemi + sep +                 // hora de emisión
-                _moneda + sep +                 // Tipo de moneda
-                "" + sep + "" + sep + "" + sep + // campos 8 9 y 10 del diccionario notas de credito
-                "" + sep + "" + sep + "" + sep + // campos 11 12 y 13 del diccionario notas de credito
-                "" + sep + "" + sep +           // campos 14  y 15 del diccionario notas de credito
-                "" + sep + "" + sep +           // campos 16 y 17 del diccionario notas de credito
-                ctnota + sep +                  // tipo de nota de credito
-                tipdv + sep +                   // tipo de documento que modifica
-                _nudoaf + sep +                 // Numeración de documento afectado
-                ntnota + sep +                  // motivo del doc afectado, motivo de la nota
-                "" + sep + "" + sep +           // Condición de Pago y plazo de pago
-                "" + sep +                      // fecha vencimiento del comprobante afectado
-                "" + sep + "" + sep +           // forma de pago 1 al 3
-                "" + sep + "" + sep +           // forma de pago 4 al 6
-                "" + sep +                      // numero de pedido
-                "" + sep + "" + sep + "" + sep + // campos 32,33 y 34 del diccionario notas de credito
-                "" + sep + "" + sep +           // campos 35 y 36 del diccionario notas de credito
-                "" + sep + "" + sep +           // tipo guia de remision y numero de GR
-                "" + sep + "" + sep +           // campos 39 y 40 del diccionario notas de credito
-                "" + sep + "" + sep + "" + sep + "" + sep + "" + sep + "" + sep + "" + sep +    // campos del 41 al 47
-                "" + sep +                      // País del uso, explotación o aprovechamiento
-                "" + sep + "" + sep + "" + sep + // observaciones del 1 al 3
-                _totven + sep +                 // Total operaciones gravadas
-                "0" + sep +                     // Total operaciones inafectas
-                "0" + sep +                      // Total operaciones exoneradas
-                "0" + sep +                      // Total operaciones exportaciones
-                "0" + sep +                      // Total operaciones gratuitas
-                "0" + sep +                      // Monto impuestos operaciones gratuitas
-                "" + sep +                      // Monto Fondo Inclusión Social Energético
-                totImp + sep +                  // Total IGV / IVAP
-                "" + sep +                     // Total ISC
-                "" + sep +                      // Total ICBPER
-                "" + sep +                      // Indicador de Cargo/Descuento
-                "" + sep +                      // Código del motivo del cargo/descuento
-                "" + sep +                      // Factor de cargo/descuento
-                "" + sep +                      // Monto del cargo/descuento
-                "" + sep +                      // Monto base del cargo/descuento
-                "" + sep +                      // Total otros tributos
-                "" + sep +                      // Total otros cargos
-                "" + sep +                      // Descuento Global
-                "" + sep +                      // Total descuento
-                _totogr + sep +                 // Importe total de la venta
-                "" + sep +                      // Monto para Redondeo del importe Total
-                monLet + sep +                  // Leyenda: Monto expresado en Letras
-                "" + sep +                      // Leyenda: Transferencia gratuita 
-                "" + sep +                      // Leyenda: Bienes transferidos en la Amazonía
-                "" + sep +                      // Leyenda: Servicios prestados en la Amazonía
-                "" + sep +                      // Leyenda: Contratos de construcción ejecutados en la Amazonía
-                "" + sep + "" + sep + "" + sep  // leyendas otros 
-            );
-            writer.WriteLine("ENCABEZADO-EMISOR" + sep +
-                Prucpro + sep +                 // Número RUC del emisor
-                Prazsoc + sep +                 // Razón social del emisor
-                Pnomcom + sep +                 // Nombre comercial del emisor
-                paisEmi + sep +                 // Código país
-                ubigEmi + sep +                 // Ubigeo
-                Pdf_dep + sep +                 // Departamento
-                Pdf_pro + sep +                 // Provincia
-                Pdf_dis + sep +                 // Distrito
-                Pdf_urb + sep +                 // Urbanización
-                Pdf_dir + sep +                 // Dirección detallada
-                "" + sep +                      // Punto de emisión
-                "" + sep +                      // Dirección de emisión
-                codLocE + sep +                 // Código del establecimiento Anexo
-                Ptelef1 + sep +                 // telefono 
-                "" + sep +                      // fax del emisor
-                corclie + sep                   // Correo-Emisor
-            );
-            writer.WriteLine("ENCABEZADO-RECEPTOR" + sep +
-                Ctipdoc + sep +                 // Tipo de documento del cliente
-                Cnumdoc + sep +                 // Nro. Documento del cliente
-                Cnomcli + sep +                 // Razón social del cliente
-                "" + sep +                      // Identificador del cliente
-                "" + sep +                      // Tipo de documento del Comprador
-                "" + sep +                      // Número documento del Comprador
-                "" + sep +                      // Código país
-                "" + sep +                      // Ubigeo
-                depaAdq + sep +                 // Departamento
-                provAdq + sep +                 // Provincia
-                distAdq + sep +                 // Distrito
-                "" + sep +                      // Urbanización
-                dir1Adq + sep +                 // Dirección
-                maiAdq + sep                    // Correo-Receptor
-            );
-            for (int s = 0; s < dataGridView1.Rows.Count - 1; s++)  // DETALLE
+            try
             {
-                double _msigv = double.Parse(dataGridView1.Rows[s].Cells["valor"].Value.ToString()) / (1 + (double.Parse(v_igv) / 100));
-                string Ipreuni = double.Parse(dataGridView1.Rows[s].Cells["valor"].Value.ToString()).ToString("#0.00");     // Precio de venta unitario CON IGV
-                if (tx_dat_mone.Text != MonDeft && dataGridView1.Rows[s].Cells["codmondoc"].Value.ToString() == MonDeft)   // 
-                {
-                    _msigv = Math.Round(_msigv / double.Parse(tx_tipcam.Text), 2);
-                    Ipreuni = Math.Round(double.Parse(dataGridView1.Rows[s].Cells["valor"].Value.ToString()) / double.Parse(tx_tipcam.Text), 2).ToString("#0.00");
-                }
-                if (tx_dat_mone.Text == MonDeft && dataGridView1.Rows[s].Cells["codmondoc"].Value.ToString() != MonDeft)
-                {
-                    _msigv = Math.Round(_msigv * double.Parse(tx_tipcam.Text), 2);
-                    Ipreuni = Math.Round(double.Parse(dataGridView1.Rows[s].Cells["valor"].Value.ToString()) * double.Parse(tx_tipcam.Text), 2).ToString("#0.00");
-                }
-                string Inumord = (s + 1).ToString();                                        // numero de orden del item             5
-                string Iumeded = "ZZ";                                                      // Unidad de medida                     3
-                string Icantid = "1.00";                                                    // Cantidad de items   n(12,3)         16
-                string Icodprd = "-";                                                       // codigo del producto del cliente
-                string Icodpro = "";                                                        // codigo del producto SUNAT                          30
-                string Icodgs1 = "";                                                        // codigo del producto GS1
-                string Icogtin = "";                                                        // tipo de producto GTIN
-                string Inplaca = "";                                                        // numero placa de vehiculo
-                string Idescri = dataGridView1.Rows[s].Cells["Descrip"].Value.ToString().Trim();   // Descripcion
-                string Ivaluni = _msigv.ToString("#0.00");                                  // Valor unitario del item SIN IMPUESTO 
-                string Ivalref = "";                                                        // valor referencial del item cuando la venta es gratuita
-                string Iigvite = Math.Round(double.Parse(Ipreuni) - double.Parse(Ivaluni), 2).ToString("#0.00");     // monto IGV del item
-                string Imonbas = Ivaluni;                                                   // monto base (valor sin igv * cantidad)
-                string Isumigv = Iigvite;                                                   // Sumatoria de igv
-                string Itasigv = Math.Round(double.Parse(v_igv), 2).ToString("#0.00");      // tasa del igv
-                string Icatigv = "10";                                                      // Codigo afectacion al igv                    2
-                string Iindgra = "";                                                        // indicador de gratuito
-                string Iiscmba = "";                                                        // ISC monto base
-                string Iiscmon = "";                                                        // ISC monto del tributo
-                string Iisctas = "";                                                        // ISC tasa del tributo
-                string Iisctip = "";                                                        // ISC tipo de sistema
-                string Iotrtri = "";                                                        // otros tributos monto base
-                string Iotrlin = "";                                                        // otros tributos monto unitario
-                string Iotrtas = "";                                                        // otros tributos tasa del tributo
-                string Iotrsis = "";                                                        // otros tributos tipo de sistema
-                string Ivalvta = Ivaluni;                                                   // Valor de venta del ítem
-                //
-                writer.WriteLine("ITEM" + sep +
-                    Inumord + sep +     // orden
-                    "" + sep +          // datos personalizados
-                    Iumeded + sep +     // unidad de medida ...... servicio ZZ
-                    Icantid + sep +     // cantidad 1 servicio de transporte
-                    Idescri + sep +     // descripcion del servicio
-                    "" + sep +          // glosa del item
-                    Icodprd + sep +     // codigo del producto o servicio
-                    Icodpro + sep +     // codigo del producto sunat
-                    Icodgs1 + sep +     // codigo de producto GS1
-                    Icogtin + sep +     // tipo de producto GTIN
-                    Inplaca + sep +     // numero placa de vehiculo
-                    Ivaluni + sep +     // Valor unitario por ítem - SIN IGV
-                    Ipreuni + sep +     // Precio de venta unitario por ítem - CON IGV
-                    Ivalref + sep +     // valor referencial del item cuando la venta es gratuita
-                    Iigvite + sep +     // Monto IGV
-                    Icatigv + sep +     // Codigo afectacion al igv
-                    Itasigv + sep +     // tasa del igv
-                    Isumigv + sep +     // monto igv (valor igv * cantidad)
-                    codImp + sep +      // Código de tributo por línea IGV
-                    Iiscmba + sep +     // ISC monto base
-                    Iisctas + sep +     // ISC tasa del tributo
-                    Iisctip + sep +     // ISC tipo de sistema
-                    Iiscmon + sep +     // ISC monto del tributo
-                    "N" + sep +         // Indicador de Afecto al ICBPER
-                    "" + sep + "" + sep + // campo 26 y 27 del diccionario notas de credito
-                    Iotrtri + sep +     // otros tributos monto base
-                    Iotrtas + sep +     // otros tributos tasa del tributo
-                    Iotrlin + sep +     // otros tributos monto unitario
-                    "0" + sep +         // Descuentos por ítem
-                    "2" + sep +         // Indicador de cargo/descuento
-                    "" + sep +          // Código de cargo/descuento
-                    "" + sep +          // Factor de cargo/descuento
-                    "" + sep +          // Monto de cargo/descuento
-                    "" + sep +          // Monto base del cargo/descuento
-                    Ivalvta + sep       // Valor de venta del ítem
+                file_path = file_path + ".txt";
+                writer = new StreamWriter(file_path);
+                writer.WriteLine("CONTROL" + sep + "31007" + sep);
+                writer.WriteLine("ENCABEZADO" + sep +
+                    "" + sep +                      // id interno 
+                    tipdo + sep +                   // Tipo de Comprobante Electrónico
+                    _sercor + sep +                 // Numeración de Comprobante Electrónico
+                    _fecemi + sep +                 // Fecha de emisión
+                    _horemi + sep +                 // hora de emisión
+                    _moneda + sep +                 // Tipo de moneda
+                    "" + sep + "" + sep + "" + sep + // campos 8 9 y 10 del diccionario notas de credito
+                    "" + sep + "" + sep + "" + sep + // campos 11 12 y 13 del diccionario notas de credito
+                    "" + sep + "" + sep +           // campos 14  y 15 del diccionario notas de credito
+                    "" + sep + "" + sep +           // campos 16 y 17 del diccionario notas de credito
+                    ctnota + sep +                  // tipo de nota de credito
+                    tipdv + sep +                   // tipo de documento que modifica
+                    _nudoaf + sep +                 // Numeración de documento afectado
+                    ntnota + sep +                  // motivo del doc afectado, motivo de la nota
+                    "" + sep + "" + sep +           // Condición de Pago y plazo de pago
+                    "" + sep +                      // fecha vencimiento del comprobante afectado
+                    "" + sep + "" + sep +           // forma de pago 1 al 3
+                    "" + sep + "" + sep +           // forma de pago 4 al 6
+                    "" + sep +                      // numero de pedido
+                    "" + sep + "" + sep + "" + sep + // campos 32,33 y 34 del diccionario notas de credito
+                    "" + sep + "" + sep +           // campos 35 y 36 del diccionario notas de credito
+                    "" + sep + "" + sep +           // tipo guia de remision y numero de GR
+                    "" + sep + "" + sep +           // campos 39 y 40 del diccionario notas de credito
+                    "" + sep + "" + sep + "" + sep + "" + sep + "" + sep + "" + sep + "" + sep +    // campos del 41 al 47
+                    "" + sep +                      // País del uso, explotación o aprovechamiento
+                    "" + sep + "" + sep + "" + sep + // observaciones del 1 al 3
+                    _totven + sep +                 // Total operaciones gravadas
+                    "0" + sep +                     // Total operaciones inafectas
+                    "0" + sep +                      // Total operaciones exoneradas
+                    "0" + sep +                      // Total operaciones exportaciones
+                    "0" + sep +                      // Total operaciones gratuitas
+                    "0" + sep +                      // Monto impuestos operaciones gratuitas
+                    "" + sep +                      // Monto Fondo Inclusión Social Energético
+                    totImp + sep +                  // Total IGV / IVAP
+                    "" + sep +                     // Total ISC
+                    "" + sep +                      // Total ICBPER
+                    "" + sep +                      // Indicador de Cargo/Descuento
+                    "" + sep +                      // Código del motivo del cargo/descuento
+                    "" + sep +                      // Factor de cargo/descuento
+                    "" + sep +                      // Monto del cargo/descuento
+                    "" + sep +                      // Monto base del cargo/descuento
+                    "" + sep +                      // Total otros tributos
+                    "" + sep +                      // Total otros cargos
+                    "" + sep +                      // Descuento Global
+                    "" + sep +                      // Total descuento
+                    _totogr + sep +                 // Importe total de la venta
+                    "" + sep +                      // Monto para Redondeo del importe Total
+                    monLet + sep +                  // Leyenda: Monto expresado en Letras
+                    "" + sep +                      // Leyenda: Transferencia gratuita 
+                    "" + sep +                      // Leyenda: Bienes transferidos en la Amazonía
+                    "" + sep +                      // Leyenda: Servicios prestados en la Amazonía
+                    "" + sep +                      // Leyenda: Contratos de construcción ejecutados en la Amazonía
+                    "" + sep + "" + sep + "" + sep  // leyendas otros 
                 );
+                writer.WriteLine("ENCABEZADO-EMISOR" + sep +
+                    Prucpro + sep +                 // Número RUC del emisor
+                    Prazsoc + sep +                 // Razón social del emisor
+                    Pnomcom + sep +                 // Nombre comercial del emisor
+                    paisEmi + sep +                 // Código país
+                    ubigEmi + sep +                 // Ubigeo
+                    Pdf_dep + sep +                 // Departamento
+                    Pdf_pro + sep +                 // Provincia
+                    Pdf_dis + sep +                 // Distrito
+                    Pdf_urb + sep +                 // Urbanización
+                    Pdf_dir + sep +                 // Dirección detallada
+                    "" + sep +                      // Punto de emisión
+                    "" + sep +                      // Dirección de emisión
+                    codLocE + sep +                 // Código del establecimiento Anexo
+                    Ptelef1 + sep +                 // telefono 
+                    "" + sep +                      // fax del emisor
+                    corclie + sep                   // Correo-Emisor
+                );
+                writer.WriteLine("ENCABEZADO-RECEPTOR" + sep +
+                    Ctipdoc + sep +                 // Tipo de documento del cliente
+                    Cnumdoc + sep +                 // Nro. Documento del cliente
+                    Cnomcli + sep +                 // Razón social del cliente
+                    "" + sep +                      // Identificador del cliente
+                    "" + sep +                      // Tipo de documento del Comprador
+                    "" + sep +                      // Número documento del Comprador
+                    "" + sep +                      // Código país
+                    "" + sep +                      // Ubigeo
+                    depaAdq + sep +                 // Departamento
+                    provAdq + sep +                 // Provincia
+                    distAdq + sep +                 // Distrito
+                    "" + sep +                      // Urbanización
+                    dir1Adq + sep +                 // Dirección
+                    maiAdq + sep                    // Correo-Receptor
+                );
+                for (int s = 0; s < dataGridView1.Rows.Count - 1; s++)  // DETALLE
+                {
+                    double _msigv = double.Parse(dataGridView1.Rows[s].Cells["valor"].Value.ToString()) / (1 + (double.Parse(v_igv) / 100));
+                    string Ipreuni = double.Parse(dataGridView1.Rows[s].Cells["valor"].Value.ToString()).ToString("#0.00");     // Precio de venta unitario CON IGV
+                    if (tx_dat_mone.Text != MonDeft && dataGridView1.Rows[s].Cells["codmondoc"].Value.ToString() == MonDeft)   // 
+                    {
+                        _msigv = Math.Round(_msigv / double.Parse(tx_tipcam.Text), 2);
+                        Ipreuni = Math.Round(double.Parse(dataGridView1.Rows[s].Cells["valor"].Value.ToString()) / double.Parse(tx_tipcam.Text), 2).ToString("#0.00");
+                    }
+                    if (tx_dat_mone.Text == MonDeft && dataGridView1.Rows[s].Cells["codmondoc"].Value.ToString() != MonDeft)
+                    {
+                        _msigv = Math.Round(_msigv * double.Parse(tx_tipcam.Text), 2);
+                        Ipreuni = Math.Round(double.Parse(dataGridView1.Rows[s].Cells["valor"].Value.ToString()) * double.Parse(tx_tipcam.Text), 2).ToString("#0.00");
+                    }
+                    string Inumord = (s + 1).ToString();                                        // numero de orden del item             5
+                    string Iumeded = "ZZ";                                                      // Unidad de medida                     3
+                    string Icantid = "1.00";                                                    // Cantidad de items   n(12,3)         16
+                    string Icodprd = "-";                                                       // codigo del producto del cliente
+                    string Icodpro = "";                                                        // codigo del producto SUNAT                          30
+                    string Icodgs1 = "";                                                        // codigo del producto GS1
+                    string Icogtin = "";                                                        // tipo de producto GTIN
+                    string Inplaca = "";                                                        // numero placa de vehiculo
+                    string Idescri = dataGridView1.Rows[s].Cells["Descrip"].Value.ToString().Trim();   // Descripcion
+                    string Ivaluni = _msigv.ToString("#0.00");                                  // Valor unitario del item SIN IMPUESTO 
+                    string Ivalref = "";                                                        // valor referencial del item cuando la venta es gratuita
+                    string Iigvite = Math.Round(double.Parse(Ipreuni) - double.Parse(Ivaluni), 2).ToString("#0.00");     // monto IGV del item
+                    string Imonbas = Ivaluni;                                                   // monto base (valor sin igv * cantidad)
+                    string Isumigv = Iigvite;                                                   // Sumatoria de igv
+                    string Itasigv = Math.Round(double.Parse(v_igv), 2).ToString("#0.00");      // tasa del igv
+                    string Icatigv = "10";                                                      // Codigo afectacion al igv                    2
+                    string Iindgra = "";                                                        // indicador de gratuito
+                    string Iiscmba = "";                                                        // ISC monto base
+                    string Iiscmon = "";                                                        // ISC monto del tributo
+                    string Iisctas = "";                                                        // ISC tasa del tributo
+                    string Iisctip = "";                                                        // ISC tipo de sistema
+                    string Iotrtri = "";                                                        // otros tributos monto base
+                    string Iotrlin = "";                                                        // otros tributos monto unitario
+                    string Iotrtas = "";                                                        // otros tributos tasa del tributo
+                    string Iotrsis = "";                                                        // otros tributos tipo de sistema
+                    string Ivalvta = Ivaluni;                                                   // Valor de venta del ítem
+                                                                                                //
+                    writer.WriteLine("ITEM" + sep +
+                        Inumord + sep +     // orden
+                        "" + sep +          // datos personalizados
+                        Iumeded + sep +     // unidad de medida ...... servicio ZZ
+                        Icantid + sep +     // cantidad 1 servicio de transporte
+                        Idescri + sep +     // descripcion del servicio
+                        "" + sep +          // glosa del item
+                        Icodprd + sep +     // codigo del producto o servicio
+                        Icodpro + sep +     // codigo del producto sunat
+                        Icodgs1 + sep +     // codigo de producto GS1
+                        Icogtin + sep +     // tipo de producto GTIN
+                        Inplaca + sep +     // numero placa de vehiculo
+                        Ivaluni + sep +     // Valor unitario por ítem - SIN IGV
+                        Ipreuni + sep +     // Precio de venta unitario por ítem - CON IGV
+                        Ivalref + sep +     // valor referencial del item cuando la venta es gratuita
+                        Iigvite + sep +     // Monto IGV
+                        Icatigv + sep +     // Codigo afectacion al igv
+                        Itasigv + sep +     // tasa del igv
+                        Isumigv + sep +     // monto igv (valor igv * cantidad)
+                        codImp + sep +      // Código de tributo por línea IGV
+                        Iiscmba + sep +     // ISC monto base
+                        Iisctas + sep +     // ISC tasa del tributo
+                        Iisctip + sep +     // ISC tipo de sistema
+                        Iiscmon + sep +     // ISC monto del tributo
+                        "N" + sep +         // Indicador de Afecto al ICBPER
+                        "" + sep + "" + sep + // campo 26 y 27 del diccionario notas de credito
+                        Iotrtri + sep +     // otros tributos monto base
+                        Iotrtas + sep +     // otros tributos tasa del tributo
+                        Iotrlin + sep +     // otros tributos monto unitario
+                        "0" + sep +         // Descuentos por ítem
+                        "2" + sep +         // Indicador de cargo/descuento
+                        "" + sep +          // Código de cargo/descuento
+                        "" + sep +          // Factor de cargo/descuento
+                        "" + sep +          // Monto de cargo/descuento
+                        "" + sep +          // Monto base del cargo/descuento
+                        Ivalvta + sep       // Valor de venta del ítem
+                    );
+                }
+                writer.Flush();
+                writer.Close();
+                retorna = true;
+                return retorna;
             }
-            writer.Flush();
-            writer.Close();
-            retorna = true;
-            return retorna;
+            catch (Exception ex)
+            {
+                return retorna;
+            }
         }
         #endregion
 
@@ -1490,12 +1497,6 @@ namespace TransCarga
                 cmb_mon.Focus();
                 return;
             }
-            if (tx_pagado.Text.Trim() == "" || tx_pagado.Text.Trim() == "0")
-            {
-                MessageBox.Show("No existe valor del documento", " Atención ");
-                tx_pagado.Focus();
-                return;
-            }
             if (tx_tfil.Text.Trim() == "")
             {
                 MessageBox.Show("Ingrese el detalle del documento de venta", "Faltan ingresar guías");
@@ -1545,6 +1546,12 @@ namespace TransCarga
             if (modo == "NUEVO")
             {
                 // valida y calcula
+                if (tx_pagado.Text.Trim() == "" || tx_pagado.Text.Trim() == "0")
+                {
+                    MessageBox.Show("No existe valor del documento", " Atención ");
+                    tx_pagado.Focus();
+                    return;
+                }
                 if (rb_anula.Checked == false && rb_dscto.Checked == false)
                 {
                     MessageBox.Show("Seleccione el tipo de nota","Atención - seleccione",MessageBoxButtons.OK,MessageBoxIcon.Warning);
@@ -1588,17 +1595,50 @@ namespace TransCarga
                                 }
                                 else
                                 {
-                                    MessageBox.Show("No se puede generar la Nota de crédito" + Environment.NewLine + 
-                                        "Se revierte la operación", "Error en proveedor de Fact.Electrónica");
+                                    MessageBox.Show("No se puede generar la Nota de crédito electrónica" + Environment.NewLine + 
+                                        "Se revierte la operación", "Error INTERNO de Fact.Electrónica");
                                     iserror = "si";
                                     // aca debemos llamar a una funcion que revierta la operacion de la creacion de la nota de credito
-                                    // se debe borrar la cabecera y el detalle y por triggers debe desamarrar todo
-                                    // ... 
+                                    // se debe borrar la cabecera y por trigger before_delete debe desamarrar todo
+                                    using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
+                                    {
+                                        if (lib.procConn(conn) == true)
+                                        {
+                                            using (MySqlCommand micon = new MySqlCommand("borraseguro", conn))
+                                            {
+                                                micon.CommandType = CommandType.StoredProcedure;
+                                                micon.Parameters.AddWithValue("@tabla", "cabdebcred");
+                                                micon.Parameters.AddWithValue("@vidr", tx_idr.Text);
+                                                micon.Parameters.AddWithValue("@vidc", 0);
+                                                micon.ExecuteNonQuery();
+                                            }
+                                        }
+                                    }
+                                    initIngreso();          // limpiamos todo para volver a empesar
                                 }
                             }
                             else
                             {
-
+                                MessageBox.Show("No se puede generar la Nota de crédito electrónica" + Environment.NewLine +
+                                        "Se revierte la operación", "Error de RUTA en Fact.Electrónica");
+                                iserror = "si";
+                                // aca debemos llamar a una funcion que revierta la operacion de la creacion de la nota de credito
+                                // se debe borrar la cabecera y por trigger before_delete debe desamarrar todo
+                                using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
+                                {
+                                    if (lib.procConn(conn) == true)
+                                    {
+                                        using (MySqlCommand micon = new MySqlCommand("borraseguro", conn))
+                                        {
+                                            micon.CommandType = CommandType.StoredProcedure;
+                                            micon.Parameters.AddWithValue("@tabla", "cabdebcred");
+                                            micon.Parameters.AddWithValue("@vidr", tx_idr.Text);
+                                            micon.Parameters.AddWithValue("@vidc", 0);
+                                            micon.ExecuteNonQuery();
+                                        }
+                                    }
+                                }
+                                initIngreso();          // limpiamos todo para volver a empesar
                             }
                         }
                         else
@@ -1853,9 +1893,7 @@ namespace TransCarga
         {
             if (Tx_modo.Text != "NUEVO" && tx_numero.Text.Trim() != "")
             {
-                // en el caso de las pre guias el numero es el mismo que el ID del registro
                 tx_numero.Text = lib.Right("00000000" + tx_numero.Text, 8);
-                //tx_idr.Text = tx_numero.Text;
                 jalaoc("sernum");
                 dataGridView1.Rows.Clear();
                 jaladet(tx_idr.Text);
@@ -2089,6 +2127,9 @@ namespace TransCarga
             Tx_modo.Text = "EDITAR";                    // solo puede editarse la observacion 13/01/2021
             button1.Image = Image.FromFile(img_grab);
             initIngreso();
+            gbox_serie.Enabled = true;
+            tx_serie.Enabled = true;
+            tx_numero.Enabled = true;
             tx_obser1.Enabled = true;
             tx_obser1.ReadOnly = false;
             tx_numero.Text = "";
@@ -2149,20 +2190,8 @@ namespace TransCarga
         private void Bt_anul_Click(object sender, EventArgs e)
         {
             sololee();
-            Tx_modo.Text = "ANULAR";
-            button1.Image = Image.FromFile(img_anul);
             initIngreso();
-            gbox_serie.Enabled = true;
-            tx_serie.ReadOnly = false;
-            tx_numero.ReadOnly = false;
-            tx_obser1.Enabled = true;
-            tx_obser1.ReadOnly = false;
-            tx_serie.Focus();
-            //
-            Bt_ini.Enabled = true;
-            Bt_sig.Enabled = true;
-            Bt_ret.Enabled = true;
-            Bt_fin.Enabled = true;
+            MessageBox.Show("Las notas de crédito, no se anulan","Error",MessageBoxButtons.OK,MessageBoxIcon.Error);
         }
         private void Bt_ver_Click(object sender, EventArgs e)
         {
