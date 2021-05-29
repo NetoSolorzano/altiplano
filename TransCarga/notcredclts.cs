@@ -1242,11 +1242,11 @@ namespace TransCarga
                     tipdv + sep +                   // tipo de documento que modifica
                     _nudoaf + sep +                 // Numeración de documento afectado
                     ntnota + sep +                  // motivo del doc afectado, motivo de la nota
-                    "" + sep + "" + sep +           // Condición de Pago y plazo de pago
-                    "" + sep +                      // fecha vencimiento del comprobante afectado
-                    "" + sep + "" + sep +           // forma de pago 1 al 3
-                    "" + sep + "" + sep +           // forma de pago 4 al 6
-                    "" + sep +                      // numero de pedido
+                    "" + sep + "" + sep +           // campos 22 y 23 Condición de Pago y plazo de pago
+                    "" + sep +                      // campo 24 fecha vencimiento del comprobante afectado
+                    "" + sep + "" + sep + "" + sep + // forma de pago 1 al 3
+                    "" + sep + "" + sep + "" + sep + // forma de pago 4 al 6
+                    "" + sep +                      // campo 31 numero de pedido
                     "" + sep + "" + sep + "" + sep + // campos 32,33 y 34 del diccionario notas de credito
                     "" + sep + "" + sep +           // campos 35 y 36 del diccionario notas de credito
                     "" + sep + "" + sep +           // tipo guia de remision y numero de GR
