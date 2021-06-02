@@ -220,3 +220,8 @@ form guiati_a, agregar al formato de impresion:
 form guiati_a, clientes extranjeros NO esta grabando en la maestra ................................. ok 29/04/2021
 form facelect, codigo para aceptar boletas y facturas por tipo de doc del cliente .................. OK 17/05/2021
 form notcredclts, adecuaciones para proveedor Secure Net y triggers en B.D. ........................ ok 29/05/2021
+form guiati, cuando se graba e imprime la GR, no esta pintando la marca de tracto y carreta ........ eso es porque el manifiesto no esta grabando los datos 
+form planicarga, edicion, no borra fila marcada .................................................... ok 01/06/2021
+form guiati, anulacion, los -- del doc venta no esta reconociendo los espacios ..................... ok 01/06/2021
+form planicarga, cuando graba no esta poniendo datos de marcas y modelos ........................... si lo pone en mi pc !!
+

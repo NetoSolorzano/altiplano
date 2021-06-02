@@ -165,6 +165,8 @@
             this.chk_flete = new System.Windows.Forms.CheckBox();
             this.label28 = new System.Windows.Forms.Label();
             this.gbox_planilla = new System.Windows.Forms.GroupBox();
+            this.tx_marCarret = new System.Windows.Forms.TextBox();
+            this.tx_aut_carret = new System.Windows.Forms.TextBox();
             this.tx_marcamion = new System.Windows.Forms.TextBox();
             this.tx_idplan = new System.Windows.Forms.TextBox();
             this.groupBox33 = new System.Windows.Forms.GroupBox();
@@ -242,8 +244,6 @@
             this.tx_tfil = new TransCarga.NumericTextBox();
             this.tx_totpes = new TransCarga.NumericTextBox();
             this.tx_totcant = new TransCarga.NumericTextBox();
-            this.tx_aut_carret = new System.Windows.Forms.TextBox();
-            this.tx_marCarret = new System.Windows.Forms.TextBox();
             this.toolStrip1.SuspendLayout();
             this.groupBox11.SuspendLayout();
             this.groupBox7.SuspendLayout();
@@ -1692,11 +1692,31 @@
             this.gbox_planilla.TabIndex = 345;
             this.gbox_planilla.TabStop = false;
             // 
+            // tx_marCarret
+            // 
+            this.tx_marCarret.BackColor = System.Drawing.SystemColors.Window;
+            this.tx_marCarret.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_marCarret.Location = new System.Drawing.Point(434, 31);
+            this.tx_marCarret.Name = "tx_marCarret";
+            this.tx_marCarret.Size = new System.Drawing.Size(60, 18);
+            this.tx_marCarret.TabIndex = 366;
+            this.tx_marCarret.Visible = false;
+            // 
+            // tx_aut_carret
+            // 
+            this.tx_aut_carret.BackColor = System.Drawing.SystemColors.Window;
+            this.tx_aut_carret.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_aut_carret.Location = new System.Drawing.Point(567, 8);
+            this.tx_aut_carret.Name = "tx_aut_carret";
+            this.tx_aut_carret.Size = new System.Drawing.Size(60, 18);
+            this.tx_aut_carret.TabIndex = 365;
+            this.tx_aut_carret.Visible = false;
+            // 
             // tx_marcamion
             // 
             this.tx_marcamion.BackColor = System.Drawing.SystemColors.Window;
             this.tx_marcamion.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_marcamion.Location = new System.Drawing.Point(434, 4);
+            this.tx_marcamion.Location = new System.Drawing.Point(434, 8);
             this.tx_marcamion.Name = "tx_marcamion";
             this.tx_marcamion.Size = new System.Drawing.Size(60, 18);
             this.tx_marcamion.TabIndex = 364;
@@ -2477,26 +2497,6 @@
             this.tx_totcant.Size = new System.Drawing.Size(41, 20);
             this.tx_totcant.TabIndex = 329;
             this.tx_totcant.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // tx_aut_carret
-            // 
-            this.tx_aut_carret.BackColor = System.Drawing.SystemColors.Window;
-            this.tx_aut_carret.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_aut_carret.Location = new System.Drawing.Point(567, 8);
-            this.tx_aut_carret.Name = "tx_aut_carret";
-            this.tx_aut_carret.Size = new System.Drawing.Size(60, 18);
-            this.tx_aut_carret.TabIndex = 365;
-            this.tx_aut_carret.Visible = false;
-            // 
-            // tx_marCarret
-            // 
-            this.tx_marCarret.BackColor = System.Drawing.SystemColors.Window;
-            this.tx_marCarret.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_marCarret.Location = new System.Drawing.Point(434, 31);
-            this.tx_marCarret.Name = "tx_marCarret";
-            this.tx_marCarret.Size = new System.Drawing.Size(60, 18);
-            this.tx_marCarret.TabIndex = 366;
-            this.tx_marCarret.Visible = false;
             // 
             // guiati_a
             // 

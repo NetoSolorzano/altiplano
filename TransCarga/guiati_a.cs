@@ -1330,7 +1330,7 @@ namespace TransCarga
                     MessageBox.Show("Ingrese el número de la guía", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                     return;
                 }
-                if (tx_pla_plani.Text.Trim() == "" && tx_DV.Text.Trim() == "- -")   // tx_impreso.Text == "N"
+                if (tx_pla_plani.Text.Trim() == "" && tx_DV.Text.Trim().Length < 6)   // tx_impreso.Text == "N"
                 {
                     // no tiene planilla y no esta impreso => se puede modificar todo y SI anular
                     if (tx_idr.Text.Trim() != "")
