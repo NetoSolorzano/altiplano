@@ -182,6 +182,7 @@
             this.groupBox37 = new System.Windows.Forms.GroupBox();
             this.label29 = new System.Windows.Forms.Label();
             this.cmb_forimp = new System.Windows.Forms.ComboBox();
+            this.rb_orden_des = new System.Windows.Forms.RadioButton();
             this.toolStrip1.SuspendLayout();
             this.pn_usloc.SuspendLayout();
             this.groupBox5.SuspendLayout();
@@ -1684,19 +1685,20 @@
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.rb_orden_des);
             this.panel1.Controls.Add(this.label31);
             this.panel1.Controls.Add(this.rb_orden_dir);
             this.panel1.Controls.Add(this.rb_orden_gr);
-            this.panel1.Location = new System.Drawing.Point(603, 499);
+            this.panel1.Location = new System.Drawing.Point(603, 488);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(159, 42);
+            this.panel1.Size = new System.Drawing.Size(159, 61);
             this.panel1.TabIndex = 399;
             // 
             // label31
             // 
             this.label31.AutoSize = true;
             this.label31.ForeColor = System.Drawing.Color.Black;
-            this.label31.Location = new System.Drawing.Point(3, 15);
+            this.label31.Location = new System.Drawing.Point(3, 24);
             this.label31.Name = "label31";
             this.label31.Size = new System.Drawing.Size(73, 13);
             this.label31.TabIndex = 402;
@@ -1706,7 +1708,7 @@
             // 
             this.rb_orden_dir.AutoSize = true;
             this.rb_orden_dir.ForeColor = System.Drawing.Color.Black;
-            this.rb_orden_dir.Location = new System.Drawing.Point(85, 22);
+            this.rb_orden_dir.Location = new System.Drawing.Point(85, 21);
             this.rb_orden_dir.Name = "rb_orden_dir";
             this.rb_orden_dir.Size = new System.Drawing.Size(70, 17);
             this.rb_orden_dir.TabIndex = 1;
@@ -1796,6 +1798,18 @@
             this.cmb_forimp.Name = "cmb_forimp";
             this.cmb_forimp.Size = new System.Drawing.Size(105, 20);
             this.cmb_forimp.TabIndex = 400;
+            // 
+            // rb_orden_des
+            // 
+            this.rb_orden_des.AutoSize = true;
+            this.rb_orden_des.ForeColor = System.Drawing.Color.Black;
+            this.rb_orden_des.Location = new System.Drawing.Point(85, 40);
+            this.rb_orden_des.Name = "rb_orden_des";
+            this.rb_orden_des.Size = new System.Drawing.Size(67, 17);
+            this.rb_orden_des.TabIndex = 403;
+            this.rb_orden_des.TabStop = true;
+            this.rb_orden_des.Text = "Destinat.";
+            this.rb_orden_des.UseVisualStyleBackColor = true;
             // 
             // planicarga
             // 
@@ -2052,5 +2066,6 @@
         private System.Windows.Forms.GroupBox groupBox37;
         private System.Windows.Forms.Label label29;
         private System.Windows.Forms.ComboBox cmb_forimp;
+        private System.Windows.Forms.RadioButton rb_orden_des;
     }
 }

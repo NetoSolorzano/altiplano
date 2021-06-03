@@ -1577,12 +1577,20 @@ namespace TransCarga
                 {
                     dgv_guias.Columns[i].ReadOnly = true;
                 }
+                for (int i=0;i<dgv_guias.Rows.Count;i++)
+                {
+                    dgv_guias.Rows[i].Cells[0].Value = true;
+                }
                 rb_imComp.Visible = true;
                 rb_imSimp.Visible = true;
                 bt_dale.Visible = true;
             }
             else
             {
+                for (int i = 0; i < dgv_guias.Rows.Count; i++)
+                {
+                    dgv_guias.Rows[i].Cells[0].Value = false;
+                }
                 dgv_guias.Columns.Remove("chkc");
                 rb_imComp.Visible = false;
                 rb_imSimp.Visible = false;

@@ -223,5 +223,6 @@ form notcredclts, adecuaciones para proveedor Secure Net y triggers en B.D. ....
 form guiati, cuando se graba e imprime la GR, no esta pintando la marca de tracto y carreta ........ eso es porque el manifiesto no esta grabando los datos 
 form planicarga, edicion, no borra fila marcada .................................................... ok 01/06/2021
 form guiati, anulacion, los -- del doc venta no esta reconociendo los espacios ..................... ok 01/06/2021
-form planicarga, cuando graba no esta poniendo datos de marcas y modelos ........................... si lo pone en mi pc !!
-
+form planicarga, cuando graba no esta poniendo datos de marcas y modelos ........................... si lo pone en mi pc la hacerlo con F1
+form planicarga, agregar opcion de ordenar por nombre de destinatario .............................. ok 02/06/2021
+form repsoper, agregar check automatico a impresion grupal de guias (notitas) ...................... ok 02/06/2021 ordenar o filtrar no se puede.

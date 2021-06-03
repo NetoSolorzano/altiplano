@@ -2166,6 +2166,7 @@ namespace TransCarga
             // DETALLE  
             if (rb_orden_gr.Checked == true) dataGridView1.Sort(dataGridView1.Columns["numguia"], System.ComponentModel.ListSortDirection.Ascending);
             if (rb_orden_dir.Checked == true) dataGridView1.Sort(dataGridView1.Columns[14], System.ComponentModel.ListSortDirection.Ascending);
+            if (rb_orden_des.Checked == true) dataGridView1.Sort(dataGridView1.Columns[13], System.ComponentModel.ListSortDirection.Ascending);
             int i = 0;
             foreach (DataGridViewRow row in dataGridView1.Rows)
             {
