@@ -1083,11 +1083,16 @@ namespace TransCarga
             rowcabeza.nomCajA = dtcuad.Rows[0].ItemArray[29].ToString();
             rowcabeza.nomCajC = dtcuad.Rows[0].ItemArray[31].ToString();
             rowcabeza.nomloc = dtcuad.Rows[0].ItemArray[2].ToString();
-            rowcabeza.cobranzas = double.Parse(dtcuad.Rows[0].ItemArray[21].ToString());
-            rowcabeza.ingvarios = double.Parse(dtcuad.Rows[0].ItemArray[22].ToString());
-            rowcabeza.egresos = double.Parse(dtcuad.Rows[0].ItemArray[23].ToString());
-            rowcabeza.saldoAnt = double.Parse(dtcuad.Rows[0].ItemArray[26].ToString());
-            rowcabeza.saldofinal = double.Parse(dtcuad.Rows[0].ItemArray[27].ToString());
+            rowcabeza.cobranzas = Double.Parse(dtcuad.Rows[0].ItemArray[21].ToString());
+            rowcabeza.ingvarios = Double.Parse(dtcuad.Rows[0].ItemArray[22].ToString());
+            rowcabeza.egresos = Double.Parse(dtcuad.Rows[0].ItemArray[23].ToString());
+
+            //MessageBox.Show(Double.Parse(dtcuad.Rows[0].ItemArray[26].ToString()).ToString());
+            
+            rowcabeza.saldoAnt = Double.Parse(dtcuad.Rows[0].ItemArray[26].ToString());
+            //MessageBox.Show(rowcabeza.saldoAnt.ToString());
+
+            rowcabeza.saldofinal = Double.Parse(dtcuad.Rows[0].ItemArray[27].ToString());
             rowcabeza.serie = dtcuad.Rows[0].ItemArray[8].ToString();
             rowcabeza.tituloF = Program.tituloF;
             cuadre.cuadreCaja_cab.AddcuadreCaja_cabRow(rowcabeza);    //rescont.rescont_cab.Addrescont_cabRow(rowcabeza);
@@ -1117,11 +1122,11 @@ namespace TransCarga
                     rowdetalle.refpago = row.ItemArray[20].ToString();       // referencia de pago/deposito/ingreso
                     rowdetalle.totdoco = double.Parse(row.ItemArray[21].ToString());       // total del documento
                     rowdetalle.totpags = double.Parse(row.ItemArray[22].ToString());       // total pagado
-                    rowdetalle.saldvta = double.Parse(row.ItemArray[23].ToString());       // saldo del doc
+                    rowdetalle.saldvta = Double.Parse(row.ItemArray[23].ToString());       // saldo del doc
                     rowdetalle.codmopa = row.ItemArray[24].ToString();       // codigo moneda de pago
                     rowdetalle.nomMonp = row.ItemArray[25].ToString();       // nombre de la moneda de pago
-                    rowdetalle.totpago = double.Parse(row.ItemArray[26].ToString());       // total pagado/cobrado
-                    rowdetalle.totpaMN = double.Parse(row.ItemArray[27].ToString());       // total pagado/cobrado en MN
+                    rowdetalle.totpago = Double.Parse(row.ItemArray[26].ToString());       // total pagado/cobrado
+                    rowdetalle.totpaMN = Double.Parse(row.ItemArray[27].ToString());       // total pagado/cobrado en MN
                     cuadre.cuadreCaja_det.AddcuadreCaja_detRow(rowdetalle);
                 }
             }

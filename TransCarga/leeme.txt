@@ -226,3 +226,6 @@ form guiati, anulacion, los -- del doc venta no esta reconociendo los espacios .
 form planicarga, cuando graba no esta poniendo datos de marcas y modelos ........................... si lo pone en mi pc la hacerlo con F1
 form planicarga, agregar opcion de ordenar por nombre de destinatario .............................. ok 02/06/2021
 form repsoper, agregar check automatico a impresion grupal de guias (notitas) ...................... ok 02/06/2021 ordenar o filtrar no se puede.
+form planicarga, en edicion, si la planilla tiene guias ya no puede ser cambiada placa, carreta .... 
+formato CR cuadre caja, arreglo aproximacion campo numerico a centenas para los decimanles ......... ok 03/06/2021
+form repsoper, check impresion grupal de guias (notitas) que funcione con filtros .................. 

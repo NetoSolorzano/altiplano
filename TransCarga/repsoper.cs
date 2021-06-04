@@ -303,10 +303,11 @@ namespace TransCarga
                     dgv_guias.RowTemplate.Height = 15;
                     dgv_guias.AllowUserToAddRows = false;
                     dgv_guias.Width = Parent.Width - 50; // 1015;
+                    dgv_guias.AutoGenerateColumns = false;                              // aca
                     if (dgv_guias.DataSource == null) dgv_guias.ColumnCount = 11;
                     if (dgv_guias.Rows.Count > 0)
                     {
-                        for (int i = 0; i < dgv_guias.Columns.Count; i++)
+                        for (int i = 1; i < dgv_guias.Columns.Count; i++)
                         {
                             dgv_guias.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
                             _ = decimal.TryParse(dgv_guias.Rows[0].Cells[i].Value.ToString(), out decimal vd);

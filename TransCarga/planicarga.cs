@@ -823,7 +823,7 @@ namespace TransCarga
         }
         private string[] ValPlaCarr(string pc,string codigo)    // pc=P ó C, codigo=placa de trompa o carreta
         {
-            string[] retorna = { "", "", "" };      // cofig.vehicular, autorizacion
+            string[] retorna = { "", "", "", "", "" };      // cofig.vehicular, autorizacion, placa asociada, marca, modelo
             using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
             {
                 conn.Open();
@@ -850,7 +850,9 @@ namespace TransCarga
                     {
                         retorna[0] = dr.GetString(0);
                         retorna[1] = dr.GetString(1);
-                        retorna[2] = (pc == "P") ? dr.GetString(2) : dr.GetString(3);   // carreta retorna marca, placa retorna placa asoc
+                        retorna[2] = dr.GetString(2);   // (pc == "P") ? dr.GetString(2) : dr.GetString(3);   // carreta retorna marca, placa retorna placa asoc
+                        retorna[3] = dr.GetString(3);
+                        retorna[4] = dr.GetString(4);
                     }
                     dr.Dispose();
                 }
@@ -1384,7 +1386,7 @@ namespace TransCarga
                         micon.Parameters.AddWithValue("@platr", tx_pla_placa.Text);
                         micon.Parameters.AddWithValue("@placa", tx_pla_carret.Text);
                         micon.Parameters.AddWithValue("@autor", tx_pla_autor.Text);
-                        micon.Parameters.AddWithValue("@confv", tx_pla_confv.Text + tx_carret_conf.Text);
+                        micon.Parameters.AddWithValue("@confv", (tx_pla_confv.Text.Trim().Length > 3) ? tx_pla_confv.Text : tx_pla_confv.Text + tx_carret_conf.Text);
                         micon.Parameters.AddWithValue("@marCarr", tx_carret_marca.Text);
                         micon.Parameters.AddWithValue("@modCarr", tx_carret_modelo.Text);
                         micon.Parameters.AddWithValue("@autCarr", tx_carret_autoriz.Text);
@@ -1582,6 +1584,12 @@ namespace TransCarga
                 tx_numero.Text = lib.Right("0000000" + tx_numero.Text.Trim(), 8);
                 jalaoc("sernum");
                 jaladet(tx_idr.Text);
+                int tfil = 0;
+                int.TryParse(tx_tfil.Text, out tfil);
+                if(int.Parse(tx_tfil.Text) > 0 && Tx_modo.Text == "EDITAR")
+                {
+                    splitContainer1.Panel1.Enabled = false;
+                }
             }
         }
         private void rb_propio_Click(object sender, EventArgs e)
@@ -1696,6 +1704,8 @@ namespace TransCarga
                     tx_pla_confv.Text = datos[0];
                     tx_pla_autor.Text = datos[1];
                     tx_pla_carret.Text = datos[2];
+                    tx_pla_marca.Text = datos[3]; // ayu3.ReturnValueA[1];
+                    tx_pla_modelo.Text = datos[4]; //ayu3.ReturnValueA[2];
                     if (tx_pla_carret.Text.Trim() != "")
                     {
                         carreta_Leave(null,null);
@@ -1721,8 +1731,9 @@ namespace TransCarga
                 {
                     //tx_pla_confv.Text = tx_pla_confv.Text.Trim()  + " " + datos[0].Trim();
                     tx_carret_conf.Text = datos[0].Trim();
-                    tx_carret_marca.Text = datos[2].Trim();
                     tx_carret_autoriz.Text = datos[1].Trim();
+                    tx_carret_marca.Text = datos[3].Trim();
+                    tx_carret_modelo.Text = datos[4].Trim();
                 }
             }
         }
