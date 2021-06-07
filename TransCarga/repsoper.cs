@@ -307,6 +307,7 @@ namespace TransCarga
                     if (dgv_guias.DataSource == null) dgv_guias.ColumnCount = 11;
                     if (dgv_guias.Rows.Count > 0)
                     {
+                        dgv_guias.Columns[0].Width = 30;
                         for (int i = 1; i < dgv_guias.Columns.Count; i++)
                         {
                             dgv_guias.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;

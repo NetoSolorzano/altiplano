@@ -396,7 +396,7 @@ namespace TransCarga
             double tvv = 0, tva = 0, tvb = 0;
             switch (dgv)
             {
-                case "dgv_pend":
+                case "dgv_pend":            // grilla pendientes de cobranza
                     for (int i = 0; i < dgv_pend.Rows.Count; i++)
                     {
                         tvv = tvv + Convert.ToDouble(dgv_pend.Rows[i].Cells["SALDO"].Value);
@@ -405,25 +405,39 @@ namespace TransCarga
                     tx_tfi_p.Text = cr.ToString();
                     tx_totpend.Text = tvv.ToString("#0.00");
                     break;
-                case "dgv_plan":
+                case "dgv_plan":            // grilla ingresos varios
                     for (int i = 0; i < dgv_plan.Rows.Count; i++)
                     {
-                        tvv = tvv + Convert.ToDouble(dgv_plan.Rows[i].Cells["PAGADO"].Value);
-                        cr = cr + 1;
+                        if (dgv_plan.Rows[i].Cells["ESTADO"].Value.ToString() != etiq_anulado)
+                        {
+                            tvv = tvv + Convert.ToDouble(dgv_plan.Rows[i].Cells["PAGADO"].Value);
+                            cr = cr + 1;
+                        }
+                        else
+                        {
+                            dgv_plan.Rows[i].DefaultCellStyle.BackColor = Color.Red;
+                        }
                     }
                     tx_tf_iv.Text = cr.ToString();
                     tx_ingv.Text = tvv.ToString("#0.00");
                     break;
-                case "dgv_guias":
+                case "dgv_guias":           // grilla egresos
                     for (int i = 0; i < dgv_guias.Rows.Count; i++)
                     {
-                        tvv = tvv + Convert.ToDouble(dgv_guias.Rows[i].Cells["PAGADO"].Value);
-                        cr = cr + 1;
+                        if (dgv_guias.Rows[i].Cells["ESTADO"].Value.ToString() != etiq_anulado)
+                        {
+                            tvv = tvv + Convert.ToDouble(dgv_guias.Rows[i].Cells["PAGADO"].Value);
+                            cr = cr + 1;
+                        }
+                        else
+                        {
+                            dgv_guias.Rows[i].DefaultCellStyle.BackColor = Color.Red;
+                        }
                     }
                     tx_tf_e.Text = cr.ToString();
                     tx_tegre.Text = tvv.ToString("#0.00");
                     break;
-                case "dgv_vtas":
+                case "dgv_vtas":            // grilla cobranzas
                     for (int i = 0; i < dgv_vtas.Rows.Count; i++)
                     {
                         if (dgv_vtas.Rows[i].Cells["ESTADO"].Value.ToString() != etiq_anulado)
@@ -439,13 +453,20 @@ namespace TransCarga
                     tx_tf_c.Text = cr.ToString();
                     tx_tcob.Text = tvv.ToString("#0.00");
                     break;
-                case "dgv_ccaja":
+                case "dgv_ccaja":           // grilla cuadre caja
                     for (int i = 0; i < dgv_ccaja.Rows.Count; i++)
                     {
-                        tvv = tvv + Convert.ToDouble(dgv_ccaja.Rows[i].Cells["T_COB"].Value);       // Cobranzas
-                        tva = tva + Convert.ToDouble(dgv_ccaja.Rows[i].Cells["T_EGRESOS"].Value);    // Egresos
-                        tvb = tvb + Convert.ToDouble(dgv_ccaja.Rows[i].Cells["T_ING_VAR"].Value);    // Ing. varios
-                        cr = cr + 1;
+                        if (dgv_ccaja.Rows[i].Cells["ESTADO"].Value.ToString() != etiq_anulado)
+                        {
+                            tvv = tvv + Convert.ToDouble(dgv_ccaja.Rows[i].Cells["T_COB"].Value);       // Cobranzas
+                            tva = tva + Convert.ToDouble(dgv_ccaja.Rows[i].Cells["T_EGRESOS"].Value);    // Egresos
+                            tvb = tvb + Convert.ToDouble(dgv_ccaja.Rows[i].Cells["T_ING_VAR"].Value);    // Ing. varios
+                            cr = cr + 1;
+                        }
+                        else
+                        {
+                            dgv_ccaja.Rows[i].DefaultCellStyle.BackColor = Color.Red;
+                        }
                     }
                     tx_tfc.Text = cr.ToString();
                     tx_tcob_c.Text = tvv.ToString("#0.00");

@@ -585,11 +585,21 @@ namespace TransCarga
                 cmb_mpago.Focus();
                 return;
             }
-            if (tx_dat_mone.Text != MonDeft && tx_tipcam.Text.Trim() == "")
+            if (tx_dat_mone.Text != MonDeft)
             {
-                MessageBox.Show("Seleccione la moneda de pago y tipo de cambio", " Atención ", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                cmb_mon.Focus();
-                return;
+                int tc = 0, vc = 0; 
+                int.TryParse(tx_tipcam.Text, out tc);
+                int.TryParse(tx_pagoMN.Text, out vc);
+                if (tc <= 0 && vc <= 0)
+                {
+                    MessageBox.Show("Seleccione la moneda de pago y tipo de cambio", " Atención ", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    cmb_mon.Focus();
+                    return;
+                }
+                else
+                {
+                    tx_pagoMN.Text = (decimal.Parse(tx_tipcam.Text) * decimal.Parse(tx_PAGO.Text)).ToString("#0.00");
+                }
             }
             if (tx_PAGO.Text.Trim() == "")
             {

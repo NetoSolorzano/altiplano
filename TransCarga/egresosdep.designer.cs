@@ -755,11 +755,10 @@
             // 
             this.tx_dat_mone.BackColor = System.Drawing.SystemColors.Window;
             this.tx_dat_mone.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_dat_mone.Location = new System.Drawing.Point(537, 24);
+            this.tx_dat_mone.Location = new System.Drawing.Point(499, 24);
             this.tx_dat_mone.Name = "tx_dat_mone";
-            this.tx_dat_mone.Size = new System.Drawing.Size(32, 18);
+            this.tx_dat_mone.Size = new System.Drawing.Size(51, 18);
             this.tx_dat_mone.TabIndex = 319;
-            this.tx_dat_mone.Visible = false;
             // 
             // cmb_mon
             // 
@@ -828,21 +827,19 @@
             // 
             this.tx_tipcam.BackColor = System.Drawing.SystemColors.Window;
             this.tx_tipcam.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_tipcam.Location = new System.Drawing.Point(571, 24);
+            this.tx_tipcam.Location = new System.Drawing.Point(554, 24);
             this.tx_tipcam.Name = "tx_tipcam";
-            this.tx_tipcam.Size = new System.Drawing.Size(32, 18);
+            this.tx_tipcam.Size = new System.Drawing.Size(50, 18);
             this.tx_tipcam.TabIndex = 364;
-            this.tx_tipcam.Visible = false;
             // 
             // tx_pagoMN
             // 
             this.tx_pagoMN.BackColor = System.Drawing.SystemColors.Window;
             this.tx_pagoMN.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_pagoMN.Location = new System.Drawing.Point(606, 24);
+            this.tx_pagoMN.Location = new System.Drawing.Point(611, 24);
             this.tx_pagoMN.Name = "tx_pagoMN";
-            this.tx_pagoMN.Size = new System.Drawing.Size(53, 18);
+            this.tx_pagoMN.Size = new System.Drawing.Size(62, 18);
             this.tx_pagoMN.TabIndex = 365;
-            this.tx_pagoMN.Visible = false;
             // 
             // cmb_mpago
             // 
@@ -871,9 +868,8 @@
             this.tx_dat_mp.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tx_dat_mp.Location = new System.Drawing.Point(716, 24);
             this.tx_dat_mp.Name = "tx_dat_mp";
-            this.tx_dat_mp.Size = new System.Drawing.Size(32, 18);
+            this.tx_dat_mp.Size = new System.Drawing.Size(38, 18);
             this.tx_dat_mp.TabIndex = 373;
-            this.tx_dat_mp.Visible = false;
             // 
             // groupBox17
             // 
