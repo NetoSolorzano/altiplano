@@ -47,12 +47,12 @@
             this.Tx_modo = new System.Windows.Forms.ToolStripTextBox();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.Bt_ini = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator12 = new System.Windows.Forms.ToolStripSeparator();
             this.Bt_sig = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator10 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripSeparator12 = new System.Windows.Forms.ToolStripSeparator();
             this.Bt_ret = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripSeparator10 = new System.Windows.Forms.ToolStripSeparator();
             this.Bt_fin = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripSeparator11 = new System.Windows.Forms.ToolStripSeparator();
             this.tx_idr = new System.Windows.Forms.TextBox();
             this.button1 = new System.Windows.Forms.Button();
@@ -323,14 +323,6 @@
             this.Bt_ini.Visible = false;
             this.Bt_ini.Click += new System.EventHandler(this.Bt_first_Click);
             // 
-            // toolStripSeparator12
-            // 
-            this.toolStripSeparator12.AutoSize = false;
-            this.toolStripSeparator12.ForeColor = System.Drawing.Color.Black;
-            this.toolStripSeparator12.Name = "toolStripSeparator12";
-            this.toolStripSeparator12.Size = new System.Drawing.Size(3, 45);
-            this.toolStripSeparator12.Visible = false;
-            // 
             // Bt_sig
             // 
             this.Bt_sig.AutoSize = false;
@@ -344,13 +336,13 @@
             this.Bt_sig.Visible = false;
             this.Bt_sig.Click += new System.EventHandler(this.Bt_next_Click);
             // 
-            // toolStripSeparator10
+            // toolStripSeparator12
             // 
-            this.toolStripSeparator10.AutoSize = false;
-            this.toolStripSeparator10.ForeColor = System.Drawing.Color.Black;
-            this.toolStripSeparator10.Name = "toolStripSeparator10";
-            this.toolStripSeparator10.Size = new System.Drawing.Size(3, 45);
-            this.toolStripSeparator10.Visible = false;
+            this.toolStripSeparator12.AutoSize = false;
+            this.toolStripSeparator12.ForeColor = System.Drawing.Color.Black;
+            this.toolStripSeparator12.Name = "toolStripSeparator12";
+            this.toolStripSeparator12.Size = new System.Drawing.Size(3, 45);
+            this.toolStripSeparator12.Visible = false;
             // 
             // Bt_ret
             // 
@@ -365,13 +357,13 @@
             this.Bt_ret.Visible = false;
             this.Bt_ret.Click += new System.EventHandler(this.Bt_back_Click);
             // 
-            // toolStripSeparator9
+            // toolStripSeparator10
             // 
-            this.toolStripSeparator9.AutoSize = false;
-            this.toolStripSeparator9.ForeColor = System.Drawing.Color.Black;
-            this.toolStripSeparator9.Name = "toolStripSeparator9";
-            this.toolStripSeparator9.Size = new System.Drawing.Size(3, 45);
-            this.toolStripSeparator9.Visible = false;
+            this.toolStripSeparator10.AutoSize = false;
+            this.toolStripSeparator10.ForeColor = System.Drawing.Color.Black;
+            this.toolStripSeparator10.Name = "toolStripSeparator10";
+            this.toolStripSeparator10.Size = new System.Drawing.Size(3, 45);
+            this.toolStripSeparator10.Visible = false;
             // 
             // Bt_fin
             // 
@@ -385,6 +377,14 @@
             this.Bt_fin.ToolTipText = "Ir al final";
             this.Bt_fin.Visible = false;
             this.Bt_fin.Click += new System.EventHandler(this.Bt_last_Click);
+            // 
+            // toolStripSeparator9
+            // 
+            this.toolStripSeparator9.AutoSize = false;
+            this.toolStripSeparator9.ForeColor = System.Drawing.Color.Black;
+            this.toolStripSeparator9.Name = "toolStripSeparator9";
+            this.toolStripSeparator9.Size = new System.Drawing.Size(3, 45);
+            this.toolStripSeparator9.Visible = false;
             // 
             // toolStripSeparator11
             // 
@@ -773,7 +773,7 @@
             // 
             this.tx_pagoMN.BackColor = System.Drawing.SystemColors.Window;
             this.tx_pagoMN.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_pagoMN.Location = new System.Drawing.Point(512, 24);
+            this.tx_pagoMN.Location = new System.Drawing.Point(562, 24);
             this.tx_pagoMN.Name = "tx_pagoMN";
             this.tx_pagoMN.Size = new System.Drawing.Size(53, 18);
             this.tx_pagoMN.TabIndex = 365;

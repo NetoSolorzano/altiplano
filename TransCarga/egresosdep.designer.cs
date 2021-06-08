@@ -759,6 +759,7 @@
             this.tx_dat_mone.Name = "tx_dat_mone";
             this.tx_dat_mone.Size = new System.Drawing.Size(51, 18);
             this.tx_dat_mone.TabIndex = 319;
+            this.tx_dat_mone.Visible = false;
             // 
             // cmb_mon
             // 
@@ -831,6 +832,7 @@
             this.tx_tipcam.Name = "tx_tipcam";
             this.tx_tipcam.Size = new System.Drawing.Size(50, 18);
             this.tx_tipcam.TabIndex = 364;
+            this.tx_tipcam.Visible = false;
             // 
             // tx_pagoMN
             // 
@@ -840,6 +842,7 @@
             this.tx_pagoMN.Name = "tx_pagoMN";
             this.tx_pagoMN.Size = new System.Drawing.Size(62, 18);
             this.tx_pagoMN.TabIndex = 365;
+            this.tx_pagoMN.Visible = false;
             // 
             // cmb_mpago
             // 
@@ -870,6 +873,7 @@
             this.tx_dat_mp.Name = "tx_dat_mp";
             this.tx_dat_mp.Size = new System.Drawing.Size(38, 18);
             this.tx_dat_mp.TabIndex = 373;
+            this.tx_dat_mp.Visible = false;
             // 
             // groupBox17
             // 

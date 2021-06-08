@@ -230,4 +230,5 @@ form planicarga, en edicion, si la planilla tiene guias ya no puede ser cambiada
 formato CR cuadre caja, arreglo aproximacion campo numerico a centenas para los decimanles ......... ok 03/06/2021
 form repsoper, check impresion grupal de guias (notitas) que funcione con filtros .................. 
 form repadmcaja, poner en rojo anulados y no sumarlos en grillas ................................... ok 07/06/2021
-form egresosdep, registros en dolares salen con 0 en total soles ................................... 
+form egresosdep, registros en dolares salen con 0 en total soles ................................... ok 07/06/2021 - 17:34
+form ingresosv, registros en dolares salen con 0 en total soles .................................... ok 07/06/2021 - 22:22
