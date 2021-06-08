@@ -513,6 +513,7 @@ namespace TransCarga
                         if (tx_dat_estad.Text != codGene)
                         {
                             sololee();
+                            splitContainer1.Panel1.Enabled = false;
                             cmb_forimp.Enabled = true;
                             dataGridView1.ReadOnly = true;
                             MessageBox.Show("Este documento no puede ser editado/anulado", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -522,34 +523,26 @@ namespace TransCarga
                             tx_serie.ReadOnly = true;   // despues de una jalada exitosa
                             tx_numero.ReadOnly = true;  // estos numeros no deben modificarse
                             if (tx_dat_estad.Text == codGene) chk_cierea.Text = "CIERRA PLANILLA";          // SOLAMENTE se cierran o re-abren
-                            else
+                                                                                                            //
+                            button1.Enabled = true;
+                            // validamos usuario y local para modos EDICION y ANULACION
+                            if (("EDITAR,ANULAR").Contains(Tx_modo.Text))
                             {
-                                if (tx_dat_estad.Text == codCier) chk_cierea.Text = "REABRE PLANILLA";      // las planillas abiertas o cerradas
+                                if (tx_dat_locori.Text == v_clu)
+                                {
+                                    escribe();
+                                    dataGridView1.ReadOnly = false;
+                                    button1.Enabled = true;
+                                }
                                 else
                                 {
-                                    chk_cierea.Text = "";
-                                    chk_cierea.Visible = false;
+                                    MessageBox.Show("La planilla no puede Editada o Anulada" + Environment.NewLine +
+                                        "revise el estado del documento y/o el local", "No puede continuar", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                    sololee();
+                                    cmb_forimp.Enabled = true;
+                                    button1.Enabled = false;
+                                    dataGridView1.ReadOnly = true;
                                 }
-                            }
-                        }
-                        button1.Enabled = true;
-                        // validamos usuario y local para modos EDICION y ANULACION
-                        if (("EDITAR,ANULAR").Contains(Tx_modo.Text))
-                        {
-                            if (tx_dat_locori.Text == v_clu)
-                            {
-                                escribe();
-                                dataGridView1.ReadOnly = false;
-                                button1.Enabled = true;
-                            }
-                            else
-                            {
-                                MessageBox.Show("La planilla no puede Editada o Anulada" + Environment.NewLine +
-                                    "revise el estado del documento y/o el local", "No puede continuar", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                                sololee();
-                                cmb_forimp.Enabled = true;
-                                button1.Enabled = false;
-                                dataGridView1.ReadOnly = true;
                             }
                         }
                     }
@@ -868,9 +861,9 @@ namespace TransCarga
             //a.fila,a.numpreg,a.serguia,a.numguia,a.totcant,a.totpeso,b.descrizionerid as MON,a.totflet,a.totpag,a.salgri
             for (int i = 0; i < dataGridView1.Rows.Count; i++)
             {
-                if (Tx_modo.Text == "EDITAR")
+                if (Tx_modo.Text == "EDITAR" && tx_dat_estad.Text == codGene)
                 {
-                    if (dataGridView1.Rows.Count == 13 && dataGridView1.Rows[i].Cells[13].Value != null)
+                    if (dataGridView1.Rows.Count > 0 && dataGridView1.Rows[i].Cells[13].Value != null)
                     {
                         if (dataGridView1.Rows[i].Cells[19].Value.ToString() == "False")
                         {
@@ -1118,8 +1111,8 @@ namespace TransCarga
                 }
                 if (tx_dat_estad.Text != codGene)
                 {
-                    MessageBox.Show("La planilla tiene estado que impide su edición", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    return;
+                    //MessageBox.Show("La planilla tiene estado que impide su edición", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    //return;
                 }
                 if (true)   // de momento no validamos mas
                 {
@@ -1128,13 +1121,42 @@ namespace TransCarga
                         var aa = MessageBox.Show("Confirma que desea modificar la planilla?", "Confirme por favor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                         if (aa == DialogResult.Yes)
                         {
-                            if (edita() == true)
+                            if (tx_dat_estad.Text == codCier && chk_cierea.Checked == true) // reabre planilla
                             {
-                                // 
+                                MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
+                                conn.Open();
+                                if (conn.State == ConnectionState.Open)
+                                {
+                                    string actua = "update cabplacar set estadoser=@estad,verApp=@verApp,userm=@asd,fechm=now(),diriplan4=@iplan,diripwan4=@ipwan,netbname=@nbnam " +
+                                        "where serplacar=@serpl and numplacar=@numpl";
+                                    using (MySqlCommand micon = new MySqlCommand(actua, conn))
+                                    {
+                                        micon.Parameters.AddWithValue("@serpl", tx_serie.Text);
+                                        micon.Parameters.AddWithValue("@numpl", tx_numero.Text);
+                                        micon.Parameters.AddWithValue("@estad", codGene);
+                                        micon.Parameters.AddWithValue("@verApp", verapp);
+                                        micon.Parameters.AddWithValue("@asd", asd);
+                                        micon.Parameters.AddWithValue("@iplan", lib.iplan());
+                                        micon.Parameters.AddWithValue("@ipwan", TransCarga.Program.vg_ipwan);
+                                        micon.Parameters.AddWithValue("@nbnam", Environment.MachineName);
+                                        micon.ExecuteNonQuery();
+                                    }
+                                }
+                                conn.Close();
                             }
                             else
                             {
-                                iserror = "si";
+                                if (tx_dat_estad.Text == codGene)
+                                {
+                                    if (edita() == true)
+                                    {
+                                        iserror = "no";
+                                    }
+                                    else
+                                    {
+                                        iserror = "si";
+                                    }
+                                }
                             }
                         }
                         else
@@ -1351,7 +1373,7 @@ namespace TransCarga
             {
                 //try
                 {
-                    if (tx_dat_estad.Text == codGene)               // solo edita estado GENERADO, otro estado no se edita
+                    if (tx_dat_estad.Text == codGene || tx_dat_estad.Text == codCier)   // solo edita estado GENERADO/CERRADO, otro estado no se edita
                     {                                               // El estado cambia solo cuando: SE CIERRA MANUALMENTE ó CUANDO SE RECEPCIONA LA PLANILLA
                         int vtip = 0;                               // los datos que NO SE EDITAN son: serie,numero,origen y destino
                         if (rb_propio.Checked == true) vtip = 1;    // los totales filas ,peso y bultos si cambian con la edicion
@@ -1564,10 +1586,12 @@ namespace TransCarga
         #region leaves y checks
         private void tx_idr_Leave(object sender, EventArgs e)
         {
-            if (Tx_modo.Text != "NUEVO" && tx_idr.Text != "")
+            if (Tx_modo.Text != "NUEVO" && tx_idr.Text != "" && tx_numero.Text.Trim() == "")
             {
                 jalaoc("tx_idr");
                 jaladet(tx_idr.Text);
+                if (Tx_modo.Text == "EDITAR" && tx_dat_estad.Text == codGene) dataGridView1.ReadOnly = false;
+                else dataGridView1.ReadOnly = true;
             }
         }
         private void tx_serie_Leave(object sender, EventArgs e)
@@ -1577,18 +1601,34 @@ namespace TransCarga
                 tx_serie.Text = lib.Right("000" + tx_serie.Text.Trim(), 4);
             }
         }
-        private void tx_numero_Leave(object sender, EventArgs e)
+        private void tx_numero_KeyPress(object sender, KeyPressEventArgs e)
         {
-            if (tx_numero.Text.Trim() != "" && Tx_modo.Text != "NUEVO")
+            if (Tx_modo.Text != "NUEVO" && tx_numero.Text.Trim() != "")
             {
-                tx_numero.Text = lib.Right("0000000" + tx_numero.Text.Trim(), 8);
-                jalaoc("sernum");
-                jaladet(tx_idr.Text);
-                int tfil = 0;
-                int.TryParse(tx_tfil.Text, out tfil);
-                if(int.Parse(tx_tfil.Text) > 0 && Tx_modo.Text == "EDITAR")
+                if (e.KeyChar == (char)Keys.Enter || e.KeyChar == (char)Keys.Tab)
                 {
-                    splitContainer1.Panel1.Enabled = false;
+                    tx_numero.Text = lib.Right("0000000" + tx_numero.Text.Trim(), 8);
+                    jalaoc("sernum");
+                    jaladet(tx_idr.Text);
+                    dataGridView1.ReadOnly = true;
+                    int tfil = 0;
+                    int.TryParse(tx_tfil.Text, out tfil);
+                    if (int.Parse(tx_tfil.Text) > 0 && Tx_modo.Text == "EDITAR")
+                    {
+                        splitContainer1.Panel1.Enabled = false;
+                    }
+                    if (Tx_modo.Text == "EDITAR" && tx_dat_estad.Text == codCier)        // si es del local del usuario y de la fecha actual, permite re-abrir la planilla 08/06/2021
+                    {
+                        if (tx_fechope.Text == tx_fechact.Text.Substring(0, 10) && tx_dat_locori.Text == v_clu)
+                        {
+                            chk_cierea.Text = "RE ABRE LA PLANILLA";
+                            chk_cierea.Enabled = true;
+                        }
+                    }
+                    if (Tx_modo.Text == "EDITAR" && tx_dat_estad.Text == codGene)
+                    {
+                        dataGridView1.ReadOnly = false;
+                    }
                 }
             }
         }

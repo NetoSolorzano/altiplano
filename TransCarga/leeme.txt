@@ -232,3 +232,4 @@ form repsoper, check impresion grupal de guias (notitas) que funcione con filtro
 form repadmcaja, poner en rojo anulados y no sumarlos en grillas ................................... ok 07/06/2021
 form egresosdep, registros en dolares salen con 0 en total soles ................................... ok 07/06/2021 - 17:34
 form ingresosv, registros en dolares salen con 0 en total soles .................................... ok 07/06/2021 - 22:22
+form planicarga, permitir re-abrir un manifiesto si es del local y es de la fecha .................. ok 08/06/2021
