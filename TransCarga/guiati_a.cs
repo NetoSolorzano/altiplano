@@ -253,6 +253,8 @@ namespace TransCarga
             tx_dat_estad.Text = codGene;
             tx_estado.Text = lib.nomstat(tx_dat_estad.Text);
             tx_docsOr.Text = v_idoco;
+            chk_man.Checked = false;        // checked=false ==> si se manifiesta, checked=true NO se manifiesta
+            chk_man.Enabled = false;        // solo se habilita en modo NUEVO y cuando el destino de la GR tiene manifiesto
         }
         private void jalainfo()                 // obtiene datos de imagenes y variables
         {
@@ -2451,6 +2453,30 @@ namespace TransCarga
                 tx_tfil.Text = "1";
             }
         }
+        private void chk_man_CheckedChanged(object sender, EventArgs e)
+        {
+            if (chk_man.Checked == true && Tx_modo.Text == "NUEVO" && tx_pla_plani.Text.Trim() != "")
+            {
+                //
+                tx_pla_fech.Text = "";
+                tx_pla_plani.Text = "";
+                tx_pla_placa.Text = "";
+                tx_pla_carret.Text = "";
+                tx_marcamion.Text = "";
+                tx_pla_autor.Text = "";
+                tx_aut_carret.Text = "";
+                tx_marCarret.Text = "";
+                tx_pla_confv.Text = "";
+                tx_pla_brevet.Text = "";
+                tx_pla_nomcho.Text = "";
+                tx_pla_ruc.Text = "";
+                tx_pla_propiet.Text = "";
+                tx_idplan.Text = "";
+                tx_aut_carret.Text = "";
+                // OJO, para volver a manifestar, solo se debe volver a seleccionar el local de destino
+                chk_man.Checked = false;
+            }
+        }
         #endregion
 
         #region botones_de_comando
@@ -2874,6 +2900,9 @@ namespace TransCarga
                                     tx_marcamion.Text = row["marca"].ToString();
                                     tx_aut_carret.Text = row["autorCarret"].ToString();
                                     tx_marCarret.Text = row["marcaCarret"].ToString();
+                                    //
+                                    chk_man.Checked = false;
+                                    chk_man.Enabled = true;
                                 }
                                 else
                                 {
@@ -2893,6 +2922,9 @@ namespace TransCarga
                                     tx_pla_nomcho.Text = "";
                                     tx_pla_ruc.Text = "";
                                     tx_pla_propiet.Text = "";
+                                    //
+                                    chk_man.Checked = false;
+                                    chk_man.Enabled = false;
                                 }
                             }
                         }

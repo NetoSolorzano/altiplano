@@ -244,6 +244,7 @@
             this.tx_tfil = new TransCarga.NumericTextBox();
             this.tx_totpes = new TransCarga.NumericTextBox();
             this.tx_totcant = new TransCarga.NumericTextBox();
+            this.chk_man = new System.Windows.Forms.CheckBox();
             this.toolStrip1.SuspendLayout();
             this.groupBox11.SuspendLayout();
             this.groupBox7.SuspendLayout();
@@ -1686,9 +1687,9 @@
             this.gbox_planilla.Controls.Add(this.label25);
             this.gbox_planilla.Controls.Add(this.label27);
             this.gbox_planilla.Controls.Add(this.label26);
-            this.gbox_planilla.Location = new System.Drawing.Point(12, 456);
+            this.gbox_planilla.Location = new System.Drawing.Point(21, 456);
             this.gbox_planilla.Name = "gbox_planilla";
-            this.gbox_planilla.Size = new System.Drawing.Size(746, 55);
+            this.gbox_planilla.Size = new System.Drawing.Size(737, 55);
             this.gbox_planilla.TabIndex = 345;
             this.gbox_planilla.TabStop = false;
             // 
@@ -1696,7 +1697,7 @@
             // 
             this.tx_marCarret.BackColor = System.Drawing.SystemColors.Window;
             this.tx_marCarret.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_marCarret.Location = new System.Drawing.Point(434, 31);
+            this.tx_marCarret.Location = new System.Drawing.Point(428, 31);
             this.tx_marCarret.Name = "tx_marCarret";
             this.tx_marCarret.Size = new System.Drawing.Size(60, 18);
             this.tx_marCarret.TabIndex = 366;
@@ -1706,7 +1707,7 @@
             // 
             this.tx_aut_carret.BackColor = System.Drawing.SystemColors.Window;
             this.tx_aut_carret.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_aut_carret.Location = new System.Drawing.Point(567, 8);
+            this.tx_aut_carret.Location = new System.Drawing.Point(554, 8);
             this.tx_aut_carret.Name = "tx_aut_carret";
             this.tx_aut_carret.Size = new System.Drawing.Size(60, 18);
             this.tx_aut_carret.TabIndex = 365;
@@ -1716,7 +1717,7 @@
             // 
             this.tx_marcamion.BackColor = System.Drawing.SystemColors.Window;
             this.tx_marcamion.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_marcamion.Location = new System.Drawing.Point(434, 8);
+            this.tx_marcamion.Location = new System.Drawing.Point(428, 8);
             this.tx_marcamion.Name = "tx_marcamion";
             this.tx_marcamion.Size = new System.Drawing.Size(60, 18);
             this.tx_marcamion.TabIndex = 364;
@@ -1726,7 +1727,7 @@
             // 
             this.tx_idplan.BackColor = System.Drawing.SystemColors.Window;
             this.tx_idplan.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_idplan.Location = new System.Drawing.Point(287, 9);
+            this.tx_idplan.Location = new System.Drawing.Point(281, 9);
             this.tx_idplan.Name = "tx_idplan";
             this.tx_idplan.Size = new System.Drawing.Size(24, 18);
             this.tx_idplan.TabIndex = 363;
@@ -1739,7 +1740,7 @@
             this.groupBox33.Controls.Add(this.groupBox36);
             this.groupBox33.Location = new System.Drawing.Point(7, 50);
             this.groupBox33.Name = "groupBox33";
-            this.groupBox33.Size = new System.Drawing.Size(731, 1);
+            this.groupBox33.Size = new System.Drawing.Size(725, 1);
             this.groupBox33.TabIndex = 362;
             this.groupBox33.TabStop = false;
             // 
@@ -1776,7 +1777,7 @@
             this.groupBox29.Controls.Add(this.groupBox30);
             this.groupBox29.Location = new System.Drawing.Point(7, 28);
             this.groupBox29.Name = "groupBox29";
-            this.groupBox29.Size = new System.Drawing.Size(731, 1);
+            this.groupBox29.Size = new System.Drawing.Size(726, 1);
             this.groupBox29.TabIndex = 361;
             this.groupBox29.TabStop = false;
             // 
@@ -1808,7 +1809,7 @@
             // 
             // tx_pla_propiet
             // 
-            this.tx_pla_propiet.Location = new System.Drawing.Point(596, 31);
+            this.tx_pla_propiet.Location = new System.Drawing.Point(590, 31);
             this.tx_pla_propiet.Name = "tx_pla_propiet";
             this.tx_pla_propiet.ReadOnly = true;
             this.tx_pla_propiet.Size = new System.Drawing.Size(142, 20);
@@ -1817,7 +1818,7 @@
             // 
             // tx_pla_ruc
             // 
-            this.tx_pla_ruc.Location = new System.Drawing.Point(509, 31);
+            this.tx_pla_ruc.Location = new System.Drawing.Point(503, 31);
             this.tx_pla_ruc.Name = "tx_pla_ruc";
             this.tx_pla_ruc.ReadOnly = true;
             this.tx_pla_ruc.Size = new System.Drawing.Size(87, 20);
@@ -1826,7 +1827,7 @@
             // 
             // tx_pla_nomcho
             // 
-            this.tx_pla_nomcho.Location = new System.Drawing.Point(284, 31);
+            this.tx_pla_nomcho.Location = new System.Drawing.Point(278, 31);
             this.tx_pla_nomcho.Name = "tx_pla_nomcho";
             this.tx_pla_nomcho.ReadOnly = true;
             this.tx_pla_nomcho.Size = new System.Drawing.Size(144, 20);
@@ -1835,7 +1836,7 @@
             // 
             // tx_pla_brevet
             // 
-            this.tx_pla_brevet.Location = new System.Drawing.Point(191, 31);
+            this.tx_pla_brevet.Location = new System.Drawing.Point(185, 31);
             this.tx_pla_brevet.Name = "tx_pla_brevet";
             this.tx_pla_brevet.ReadOnly = true;
             this.tx_pla_brevet.Size = new System.Drawing.Size(93, 20);
@@ -1844,7 +1845,7 @@
             // 
             // tx_pla_plani
             // 
-            this.tx_pla_plani.Location = new System.Drawing.Point(48, 31);
+            this.tx_pla_plani.Location = new System.Drawing.Point(49, 31);
             this.tx_pla_plani.Name = "tx_pla_plani";
             this.tx_pla_plani.ReadOnly = true;
             this.tx_pla_plani.Size = new System.Drawing.Size(79, 20);
@@ -1853,7 +1854,7 @@
             // 
             // tx_pla_fech
             // 
-            this.tx_pla_fech.Location = new System.Drawing.Point(48, 9);
+            this.tx_pla_fech.Location = new System.Drawing.Point(49, 9);
             this.tx_pla_fech.Name = "tx_pla_fech";
             this.tx_pla_fech.ReadOnly = true;
             this.tx_pla_fech.Size = new System.Drawing.Size(79, 20);
@@ -1862,7 +1863,7 @@
             // 
             // tx_pla_confv
             // 
-            this.tx_pla_confv.Location = new System.Drawing.Point(692, 9);
+            this.tx_pla_confv.Location = new System.Drawing.Point(686, 9);
             this.tx_pla_confv.Name = "tx_pla_confv";
             this.tx_pla_confv.ReadOnly = true;
             this.tx_pla_confv.Size = new System.Drawing.Size(46, 20);
@@ -1871,7 +1872,7 @@
             // 
             // tx_pla_autor
             // 
-            this.tx_pla_autor.Location = new System.Drawing.Point(521, 9);
+            this.tx_pla_autor.Location = new System.Drawing.Point(515, 9);
             this.tx_pla_autor.Name = "tx_pla_autor";
             this.tx_pla_autor.ReadOnly = true;
             this.tx_pla_autor.Size = new System.Drawing.Size(69, 20);
@@ -1880,7 +1881,7 @@
             // 
             // tx_pla_carret
             // 
-            this.tx_pla_carret.Location = new System.Drawing.Point(359, 9);
+            this.tx_pla_carret.Location = new System.Drawing.Point(353, 9);
             this.tx_pla_carret.Name = "tx_pla_carret";
             this.tx_pla_carret.ReadOnly = true;
             this.tx_pla_carret.Size = new System.Drawing.Size(69, 20);
@@ -1889,7 +1890,7 @@
             // 
             // tx_pla_placa
             // 
-            this.tx_pla_placa.Location = new System.Drawing.Point(215, 9);
+            this.tx_pla_placa.Location = new System.Drawing.Point(209, 9);
             this.tx_pla_placa.Name = "tx_pla_placa";
             this.tx_pla_placa.ReadOnly = true;
             this.tx_pla_placa.Size = new System.Drawing.Size(69, 20);
@@ -1900,7 +1901,7 @@
             // 
             this.label30.AutoSize = true;
             this.label30.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label30.Location = new System.Drawing.Point(7, 13);
+            this.label30.Location = new System.Drawing.Point(8, 13);
             this.label30.Name = "label30";
             this.label30.Size = new System.Drawing.Size(37, 13);
             this.label30.TabIndex = 360;
@@ -1911,7 +1912,7 @@
             // 
             this.label22.AutoSize = true;
             this.label22.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label22.Location = new System.Drawing.Point(6, 35);
+            this.label22.Location = new System.Drawing.Point(7, 35);
             this.label22.Name = "label22";
             this.label22.Size = new System.Drawing.Size(40, 13);
             this.label22.TabIndex = 359;
@@ -1922,7 +1923,7 @@
             // 
             this.label20.AutoSize = true;
             this.label20.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label20.Location = new System.Drawing.Point(142, 13);
+            this.label20.Location = new System.Drawing.Point(136, 13);
             this.label20.Name = "label20";
             this.label20.Size = new System.Drawing.Size(71, 13);
             this.label20.TabIndex = 358;
@@ -1933,7 +1934,7 @@
             // 
             this.label23.AutoSize = true;
             this.label23.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label23.Location = new System.Drawing.Point(143, 35);
+            this.label23.Location = new System.Drawing.Point(137, 35);
             this.label23.Name = "label23";
             this.label23.Size = new System.Drawing.Size(38, 13);
             this.label23.TabIndex = 357;
@@ -1944,7 +1945,7 @@
             // 
             this.label21.AutoSize = true;
             this.label21.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label21.Location = new System.Drawing.Point(316, 13);
+            this.label21.Location = new System.Drawing.Point(310, 13);
             this.label21.Name = "label21";
             this.label21.Size = new System.Drawing.Size(41, 13);
             this.label21.TabIndex = 356;
@@ -1955,7 +1956,7 @@
             // 
             this.label25.AutoSize = true;
             this.label25.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label25.Location = new System.Drawing.Point(450, 13);
+            this.label25.Location = new System.Drawing.Point(444, 13);
             this.label25.Name = "label25";
             this.label25.Size = new System.Drawing.Size(64, 13);
             this.label25.TabIndex = 355;
@@ -1966,7 +1967,7 @@
             // 
             this.label27.AutoSize = true;
             this.label27.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label27.Location = new System.Drawing.Point(618, 13);
+            this.label27.Location = new System.Drawing.Point(612, 13);
             this.label27.Name = "label27";
             this.label27.Size = new System.Drawing.Size(73, 13);
             this.label27.TabIndex = 353;
@@ -1977,7 +1978,7 @@
             // 
             this.label26.AutoSize = true;
             this.label26.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label26.Location = new System.Drawing.Point(450, 35);
+            this.label26.Location = new System.Drawing.Point(444, 35);
             this.label26.Name = "label26";
             this.label26.Size = new System.Drawing.Size(57, 13);
             this.label26.TabIndex = 352;
@@ -2498,6 +2499,17 @@
             this.tx_totcant.TabIndex = 329;
             this.tx_totcant.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
+            // chk_man
+            // 
+            this.chk_man.AutoSize = true;
+            this.chk_man.ForeColor = System.Drawing.Color.Black;
+            this.chk_man.Location = new System.Drawing.Point(5, 480);
+            this.chk_man.Name = "chk_man";
+            this.chk_man.Size = new System.Drawing.Size(15, 14);
+            this.chk_man.TabIndex = 364;
+            this.chk_man.UseVisualStyleBackColor = true;
+            this.chk_man.CheckedChanged += new System.EventHandler(this.chk_man_CheckedChanged);
+            // 
             // guiati_a
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -2505,6 +2517,7 @@
             this.AutoSize = true;
             this.BackColor = System.Drawing.Color.LightSteelBlue;
             this.ClientSize = new System.Drawing.Size(766, 614);
+            this.Controls.Add(this.chk_man);
             this.Controls.Add(this.gb_detalle);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.tx_telD);
@@ -2865,5 +2878,6 @@
         private System.Windows.Forms.Label lb_glodeta;
         private System.Windows.Forms.TextBox tx_aut_carret;
         private System.Windows.Forms.TextBox tx_marCarret;
+        private System.Windows.Forms.CheckBox chk_man;
     }
 }

@@ -258,8 +258,17 @@ namespace TransCarga
                 cmb_tidoc.DataSource = dttd;
                 cmb_tidoc.DisplayMember = "descrizionerid";
                 cmb_tidoc.ValueMember = "idcodice";
-                //
                 datad.Dispose();
+                // **************** seleccion de placa 
+                string conplac = "select placa from vehiculos order by placa asc";
+                cmd = new MySqlCommand(conplac, conn);
+                MySqlDataAdapter datpla = new MySqlDataAdapter(cmd);
+                DataTable dtpla = new DataTable();
+                datpla.Fill(dtpla);
+                cmb_placa.DataSource = dtpla;
+                cmb_placa.DisplayMember = "placa";
+                cmb_placa.ValueMember = "placa";
+                datpla.Dispose();
             }
             conn.Close();
         }
@@ -303,7 +312,7 @@ namespace TransCarga
                     dgv_guias.RowTemplate.Height = 15;
                     dgv_guias.AllowUserToAddRows = false;
                     dgv_guias.Width = Parent.Width - 50; // 1015;
-                    dgv_guias.AutoGenerateColumns = false;                              // aca
+                    //dgv_guias.AutoGenerateColumns = false;                              // aca
                     if (dgv_guias.DataSource == null) dgv_guias.ColumnCount = 11;
                     if (dgv_guias.Rows.Count > 0)
                     {
@@ -691,6 +700,8 @@ namespace TransCarga
                     micon.Parameters.AddWithValue("@esta", (tx_estad_guias.Text != "") ? tx_estad_guias.Text : "");
                     micon.Parameters.AddWithValue("@excl", (chk_excl_guias.Checked == true) ? "1" : "0");
                     micon.Parameters.AddWithValue("@orides", (rb_GR_origen.Checked == true) ? "O" : "D");   // local -> O=origen || D=destino
+                    micon.Parameters.AddWithValue("@placa", cmb_placa.Text.Trim());
+                    micon.Parameters.AddWithValue("@orden", (rb_remGR.Checked == true) ? "R" : (rb_desGR.Checked == true)? "D" : "G");
                     using (MySqlDataAdapter da = new MySqlDataAdapter(micon))
                     {
                         dgv_guias.DataSource = null;
@@ -965,7 +976,17 @@ namespace TransCarga
                 tx_estad_guias.Text = "";
             }
         }
-
+        private void cmb_placa_SelectionChangeCommitted(object sender, EventArgs e)
+        {
+            // tranquiiilo ... 
+        }
+        private void cmb_placa_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Delete)
+            {
+                cmb_placa.SelectedIndex = -1;
+            }
+        }
         #endregion
 
         #region botones de comando
@@ -1076,6 +1097,7 @@ namespace TransCarga
             //
             cmb_sede_guias.SelectedIndex = -1;
             cmb_estad_guias.SelectedIndex = -1;
+            cmb_placa.SelectedIndex = -1;
             //
             rb_imComp.Visible = false;
             rb_imSimp.Visible = false;
