@@ -704,7 +704,10 @@ namespace TransCarga
                     micon.Parameters.AddWithValue("@orden", (rb_remGR.Checked == true) ? "R" : (rb_desGR.Checked == true)? "D" : "G");
                     using (MySqlDataAdapter da = new MySqlDataAdapter(micon))
                     {
+                        //dgv_guias.Columns.Remove("chkc");
                         dgv_guias.DataSource = null;
+                        dgv_guias.Rows.Clear();
+                        dgv_guias.Columns.Clear();
                         DataTable dt = new DataTable();
                         da.Fill(dt);
                         dgv_guias.DataSource = dt;

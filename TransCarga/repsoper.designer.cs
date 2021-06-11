@@ -117,6 +117,14 @@
             this.label24 = new System.Windows.Forms.Label();
             this.label25 = new System.Windows.Forms.Label();
             this.tabgrti = new System.Windows.Forms.TabPage();
+            this.panel6 = new System.Windows.Forms.Panel();
+            this.label35 = new System.Windows.Forms.Label();
+            this.rb_desGR = new System.Windows.Forms.RadioButton();
+            this.rb_remGR = new System.Windows.Forms.RadioButton();
+            this.groupBox47 = new System.Windows.Forms.GroupBox();
+            this.groupBox48 = new System.Windows.Forms.GroupBox();
+            this.label34 = new System.Windows.Forms.Label();
+            this.cmb_placa = new System.Windows.Forms.ComboBox();
             this.panel4 = new System.Windows.Forms.Panel();
             this.bt_dale = new System.Windows.Forms.Button();
             this.rb_imComp = new System.Windows.Forms.RadioButton();
@@ -221,14 +229,7 @@
             this.tx_num = new System.Windows.Forms.TextBox();
             this.button6 = new System.Windows.Forms.Button();
             this.bt_hisGR = new System.Windows.Forms.Button();
-            this.groupBox47 = new System.Windows.Forms.GroupBox();
-            this.groupBox48 = new System.Windows.Forms.GroupBox();
-            this.label34 = new System.Windows.Forms.Label();
-            this.cmb_placa = new System.Windows.Forms.ComboBox();
-            this.panel6 = new System.Windows.Forms.Panel();
-            this.rb_desGR = new System.Windows.Forms.RadioButton();
-            this.rb_remGR = new System.Windows.Forms.RadioButton();
-            this.label35 = new System.Windows.Forms.Label();
+            this.printDocument1 = new System.Drawing.Printing.PrintDocument();
             this.toolStrip1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabres.SuspendLayout();
@@ -244,6 +245,8 @@
             this.groupBox17.SuspendLayout();
             this.panel1.SuspendLayout();
             this.tabgrti.SuspendLayout();
+            this.panel6.SuspendLayout();
+            this.groupBox47.SuspendLayout();
             this.panel4.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -267,8 +270,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.dgv_reval)).BeginInit();
             this.tabgrhist.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgv_histGR)).BeginInit();
-            this.groupBox47.SuspendLayout();
-            this.panel6.SuspendLayout();
             this.SuspendLayout();
             // 
             // toolStrip1
@@ -1258,6 +1259,91 @@
             this.tabgrti.TabIndex = 7;
             this.tabgrti.Text = "Guías Transp. ";
             this.tabgrti.UseVisualStyleBackColor = true;
+            // 
+            // panel6
+            // 
+            this.panel6.BackColor = System.Drawing.Color.AliceBlue;
+            this.panel6.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel6.Controls.Add(this.label35);
+            this.panel6.Controls.Add(this.rb_desGR);
+            this.panel6.Controls.Add(this.rb_remGR);
+            this.panel6.Location = new System.Drawing.Point(466, 25);
+            this.panel6.Name = "panel6";
+            this.panel6.Size = new System.Drawing.Size(216, 25);
+            this.panel6.TabIndex = 422;
+            // 
+            // label35
+            // 
+            this.label35.AutoSize = true;
+            this.label35.Location = new System.Drawing.Point(3, 5);
+            this.label35.Name = "label35";
+            this.label35.Size = new System.Drawing.Size(46, 13);
+            this.label35.TabIndex = 360;
+            this.label35.Text = "ORDEN";
+            // 
+            // rb_desGR
+            // 
+            this.rb_desGR.AutoSize = true;
+            this.rb_desGR.Location = new System.Drawing.Point(133, 3);
+            this.rb_desGR.Name = "rb_desGR";
+            this.rb_desGR.Size = new System.Drawing.Size(81, 17);
+            this.rb_desGR.TabIndex = 359;
+            this.rb_desGR.TabStop = true;
+            this.rb_desGR.Text = "Destinatario";
+            this.rb_desGR.UseVisualStyleBackColor = true;
+            // 
+            // rb_remGR
+            // 
+            this.rb_remGR.AutoSize = true;
+            this.rb_remGR.Location = new System.Drawing.Point(57, 3);
+            this.rb_remGR.Name = "rb_remGR";
+            this.rb_remGR.Size = new System.Drawing.Size(73, 17);
+            this.rb_remGR.TabIndex = 358;
+            this.rb_remGR.TabStop = true;
+            this.rb_remGR.Text = "Remitente";
+            this.rb_remGR.UseVisualStyleBackColor = true;
+            // 
+            // groupBox47
+            // 
+            this.groupBox47.BackColor = System.Drawing.Color.DimGray;
+            this.groupBox47.Controls.Add(this.groupBox48);
+            this.groupBox47.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.groupBox47.Location = new System.Drawing.Point(487, 23);
+            this.groupBox47.Name = "groupBox47";
+            this.groupBox47.Size = new System.Drawing.Size(137, 1);
+            this.groupBox47.TabIndex = 421;
+            this.groupBox47.TabStop = false;
+            // 
+            // groupBox48
+            // 
+            this.groupBox48.Location = new System.Drawing.Point(0, -26);
+            this.groupBox48.Name = "groupBox48";
+            this.groupBox48.Size = new System.Drawing.Size(164, 1);
+            this.groupBox48.TabIndex = 113;
+            this.groupBox48.TabStop = false;
+            // 
+            // label34
+            // 
+            this.label34.AutoSize = true;
+            this.label34.Location = new System.Drawing.Point(489, 8);
+            this.label34.Name = "label34";
+            this.label34.Size = new System.Drawing.Size(34, 13);
+            this.label34.TabIndex = 420;
+            this.label34.Text = "Placa";
+            // 
+            // cmb_placa
+            // 
+            this.cmb_placa.BackColor = System.Drawing.SystemColors.ScrollBar;
+            this.cmb_placa.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmb_placa.DropDownWidth = 100;
+            this.cmb_placa.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.cmb_placa.FormattingEnabled = true;
+            this.cmb_placa.Location = new System.Drawing.Point(557, 3);
+            this.cmb_placa.Name = "cmb_placa";
+            this.cmb_placa.Size = new System.Drawing.Size(85, 21);
+            this.cmb_placa.TabIndex = 419;
+            this.cmb_placa.SelectionChangeCommitted += new System.EventHandler(this.cmb_placa_SelectionChangeCommitted);
+            this.cmb_placa.KeyDown += new System.Windows.Forms.KeyEventHandler(this.cmb_placa_KeyDown);
             // 
             // panel4
             // 
@@ -2401,91 +2487,6 @@
             this.bt_hisGR.UseVisualStyleBackColor = true;
             this.bt_hisGR.Click += new System.EventHandler(this.bt_hisGR_Click);
             // 
-            // groupBox47
-            // 
-            this.groupBox47.BackColor = System.Drawing.Color.DimGray;
-            this.groupBox47.Controls.Add(this.groupBox48);
-            this.groupBox47.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.groupBox47.Location = new System.Drawing.Point(487, 23);
-            this.groupBox47.Name = "groupBox47";
-            this.groupBox47.Size = new System.Drawing.Size(137, 1);
-            this.groupBox47.TabIndex = 421;
-            this.groupBox47.TabStop = false;
-            // 
-            // groupBox48
-            // 
-            this.groupBox48.Location = new System.Drawing.Point(0, -26);
-            this.groupBox48.Name = "groupBox48";
-            this.groupBox48.Size = new System.Drawing.Size(164, 1);
-            this.groupBox48.TabIndex = 113;
-            this.groupBox48.TabStop = false;
-            // 
-            // label34
-            // 
-            this.label34.AutoSize = true;
-            this.label34.Location = new System.Drawing.Point(489, 8);
-            this.label34.Name = "label34";
-            this.label34.Size = new System.Drawing.Size(34, 13);
-            this.label34.TabIndex = 420;
-            this.label34.Text = "Placa";
-            // 
-            // cmb_placa
-            // 
-            this.cmb_placa.BackColor = System.Drawing.SystemColors.ScrollBar;
-            this.cmb_placa.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmb_placa.DropDownWidth = 100;
-            this.cmb_placa.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.cmb_placa.FormattingEnabled = true;
-            this.cmb_placa.Location = new System.Drawing.Point(557, 3);
-            this.cmb_placa.Name = "cmb_placa";
-            this.cmb_placa.Size = new System.Drawing.Size(85, 21);
-            this.cmb_placa.TabIndex = 419;
-            this.cmb_placa.SelectionChangeCommitted += new System.EventHandler(this.cmb_placa_SelectionChangeCommitted);
-            this.cmb_placa.KeyDown += new System.Windows.Forms.KeyEventHandler(this.cmb_placa_KeyDown);
-            // 
-            // panel6
-            // 
-            this.panel6.BackColor = System.Drawing.Color.AliceBlue;
-            this.panel6.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel6.Controls.Add(this.label35);
-            this.panel6.Controls.Add(this.rb_desGR);
-            this.panel6.Controls.Add(this.rb_remGR);
-            this.panel6.Location = new System.Drawing.Point(466, 25);
-            this.panel6.Name = "panel6";
-            this.panel6.Size = new System.Drawing.Size(216, 25);
-            this.panel6.TabIndex = 422;
-            // 
-            // rb_desGR
-            // 
-            this.rb_desGR.AutoSize = true;
-            this.rb_desGR.Location = new System.Drawing.Point(133, 3);
-            this.rb_desGR.Name = "rb_desGR";
-            this.rb_desGR.Size = new System.Drawing.Size(81, 17);
-            this.rb_desGR.TabIndex = 359;
-            this.rb_desGR.TabStop = true;
-            this.rb_desGR.Text = "Destinatario";
-            this.rb_desGR.UseVisualStyleBackColor = true;
-            // 
-            // rb_remGR
-            // 
-            this.rb_remGR.AutoSize = true;
-            this.rb_remGR.Location = new System.Drawing.Point(57, 3);
-            this.rb_remGR.Name = "rb_remGR";
-            this.rb_remGR.Size = new System.Drawing.Size(73, 17);
-            this.rb_remGR.TabIndex = 358;
-            this.rb_remGR.TabStop = true;
-            this.rb_remGR.Text = "Remitente";
-            this.rb_remGR.UseVisualStyleBackColor = true;
-            // 
-            // label35
-            // 
-            this.label35.AutoSize = true;
-            this.label35.Location = new System.Drawing.Point(3, 5);
-            this.label35.Name = "label35";
-            this.label35.Size = new System.Drawing.Size(46, 13);
-            this.label35.TabIndex = 360;
-            this.label35.Text = "ORDEN";
-            // 
             // repsoper
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -2520,6 +2521,9 @@
             this.panel1.PerformLayout();
             this.tabgrti.ResumeLayout(false);
             this.tabgrti.PerformLayout();
+            this.panel6.ResumeLayout(false);
+            this.panel6.PerformLayout();
+            this.groupBox47.ResumeLayout(false);
             this.panel4.ResumeLayout(false);
             this.panel4.PerformLayout();
             this.groupBox2.ResumeLayout(false);
@@ -2549,9 +2553,6 @@
             this.tabgrhist.ResumeLayout(false);
             this.tabgrhist.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgv_histGR)).EndInit();
-            this.groupBox47.ResumeLayout(false);
-            this.panel6.ResumeLayout(false);
-            this.panel6.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -2759,5 +2760,6 @@
         private System.Windows.Forms.GroupBox groupBox48;
         private System.Windows.Forms.Label label34;
         private System.Windows.Forms.ComboBox cmb_placa;
+        private System.Drawing.Printing.PrintDocument printDocument1;
     }
 }

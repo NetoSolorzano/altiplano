@@ -339,8 +339,8 @@ namespace TransCarga
                     }
                 }
                 // datos para el combo de medio de pago
-                cmb_mpago.Items.Clear();
-                using (MySqlCommand cmo = new MySqlCommand("select idcodice,descrizionerid from desc_mpa where numero=@bloq", conn))
+                cmb_mpago.Items.Clear();                    // OJO, solo se admiten medio de pago EFECTIVO
+                using (MySqlCommand cmo = new MySqlCommand("select idcodice,descrizionerid from desc_mpa where numero=@bloq and cnt=0", conn))  // efectivo
                 {
                     cmo.Parameters.AddWithValue("@bloq", 1);
                     using (MySqlDataAdapter dacu = new MySqlDataAdapter(cmo))

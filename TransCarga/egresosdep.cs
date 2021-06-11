@@ -377,8 +377,8 @@ namespace TransCarga
                     }
                 }
                 // datos para el combo de medio de pago
-                cmb_mpago.Items.Clear();
-                using (MySqlCommand cmo = new MySqlCommand("select idcodice,descrizionerid from desc_mpa where numero=@bloq", conn))
+                cmb_mpago.Items.Clear();                // OJO, el cuadre de caja es efectivo, los egresos/depositos son en efectivo
+                using (MySqlCommand cmo = new MySqlCommand("select idcodice,descrizionerid from desc_mpa where numero=@bloq and cnt=0", conn))  // primer registro efectivo
                 {
                     cmo.Parameters.AddWithValue("@bloq", 1);
                     using (MySqlDataAdapter dacu = new MySqlDataAdapter(cmo))
@@ -610,6 +610,18 @@ namespace TransCarga
             if (tx_idcaja.Text == "")
             {
                 MessageBox.Show("No existe caja!", " Atención ", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            if (tx_dat_tdv.Text.Trim() == "")
+            {
+                MessageBox.Show("Seleccione el tipo de Egreso/Deposito"," Atención ", MessageBoxButtons.OK,MessageBoxIcon.Warning);
+                rb_pago.Focus();
+                return;
+            }
+            if (tx_dat_tdv.Text.Trim() != "" && tx_dat_comp.Text.Trim() == "")
+            {
+                MessageBox.Show("Seleccione el tipo de comprobante", " Atención ", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                cmb_comp.Focus();
                 return;
             }
             #endregion

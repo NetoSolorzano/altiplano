@@ -1332,7 +1332,7 @@ namespace TransCarga
                     MessageBox.Show("Ingrese el número de la guía", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                     return;
                 }
-                if (tx_pla_plani.Text.Trim() == "" && tx_DV.Text.Trim().Length < 6)   // tx_impreso.Text == "N"
+                if (tx_DV.Text.Trim().Length < 6)   // tx_impreso.Text == "N"    tx_pla_plani.Text.Trim() == "" && 
                 {
                     // no tiene planilla y no esta impreso => se puede modificar todo y SI anular
                     if (tx_idr.Text.Trim() != "")
@@ -1394,7 +1394,7 @@ namespace TransCarga
                 {
                     sololee();
                     MessageBox.Show("No se puede Anular" + Environment.NewLine +
-                        "Tiene planilla de carga y/o Doc.Venta","Atención|" + tx_DV.Text.Trim()+"|", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+                        "Tiene Doc.Venta","Atención " + tx_DV.Text.Trim()+"|", MessageBoxButtons.OK, MessageBoxIcon.Hand);
                     tx_dat_tdRem.Focus();
                     return;
                 }
@@ -1805,7 +1805,8 @@ namespace TransCarga
                 conn.Open();
                 if (conn.State == ConnectionState.Open)
                 {
-                    string canul = "update cabguiai set estadoser=@estser,usera=@asd,fecha=now()," +
+                    string canul = "update cabguiai set estadoser=@estser,usera=@asd,fecha=now(),idplani=0,fechplani=NULL," +
+                        "serplagri='',numplagri='',plaplagri='',carplagri='',autplagri='',confvegri='',breplagri='',proplagri=''," +
                         "verApp=@veap,diriplan4=@dil4,diripwan4=@diw4,netbname=@nbnp,estintreg=@eiar" + parte +
                         "where id=@idr";
                     using (MySqlCommand micon = new MySqlCommand(canul, conn))

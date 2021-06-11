@@ -235,3 +235,7 @@ form ingresosv, registros en dolares salen con 0 en total soles ................
 form planicarga, permitir re-abrir un manifiesto si es del local y es de la fecha .................. ok 08/06/2021
 form guiati_a, agregar check para retirar datos de manifiesto a una guía nueva ..................... ok 09/06/2021
 Trigger update cabguiai, al anular GR debe "desmanifestar" automaticamente si planlla esta abierta . ok 09/06/2021
+form egresosdep, validar que se graben los campos codtegr y tipdoco ................................ ok 10/06/2021
+form guiati_a, arreglar anulacion de guias, que se borre automaticamente de la planilla............. ok 10/06/2021
+form egresosdep, no se debe permitir medios de pago distintos a efectivo ........................... ok 11/06/2021    El cuadre de caja es EFECTIVO
+form ingresosv, no se debe permitir medios de pago distintos a efectivo ............................ ok 11/06/2021	  El cuadre de caja es EFECTIVO
