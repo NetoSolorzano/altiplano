@@ -48,7 +48,7 @@ namespace TransCarga
         string v_tipdocR = "";          // tipo de documento ruc
         string rpt_grt = "";            // ruta y nombre del formato RPT guias remit
         string v_CR_gr_simple = "";     // ruta y nombre formato TK guia simple
-        string vi_copias = "1";         // cantidad de copias impresion
+        int vi_copias = 1;               // cantidad de copias impresion
         string v_impTK = "";            // nombre de la impresora de TK para guias
         string v_CR_ctacte = "";        // ruta y nombre del formato CR para el reporte cta cte clientes
         //int pageCount = 1, cuenta = 0;
@@ -63,7 +63,7 @@ namespace TransCarga
         DataTable dtplanDet = new DataTable();      // planilla de carga - detalle
         DataTable dtgrtcab = new DataTable();       // guia rem transpor - cabecera
         DataTable dtgrtdet = new DataTable();       // guia rem transpor - detalle
-
+        string[] filaimp = {"","","","","","","","","","","","" };
         // string de conexion
         string DB_CONN_STR = "server=" + login.serv + ";uid=" + login.usua + ";pwd=" + login.cont + ";database=" + login.data + ";";
 
@@ -174,7 +174,7 @@ namespace TransCarga
                     {
                         if (row["campo"].ToString() == "impresion" && row["param"].ToString() == "nomGRir_cr") rpt_grt = row["valor"].ToString().Trim();         // ruta y nombre formato rpt
                         if (row["campo"].ToString() == "impresion" && row["param"].ToString() == "GrT_simple_cr") v_CR_gr_simple = row["valor"].ToString().Trim();
-                        if (row["campo"].ToString() == "impresion" && row["param"].ToString() == "copias") vi_copias = row["valor"].ToString().Trim();
+                        if (row["campo"].ToString() == "impresion" && row["param"].ToString() == "copias") vi_copias = int.Parse(row["valor"].ToString());
                         if (row["campo"].ToString() == "impresion" && row["param"].ToString() == "impTK") v_impTK = row["valor"].ToString().Trim();
                     }
                     if (row["formulario"].ToString() == "clients")
@@ -887,7 +887,37 @@ namespace TransCarga
                 rb_imSimp.Focus();
                 return;
             }
-            setParaCrystal("GrGrupal");
+            //setParaCrystal("GrGrupal");
+            if (rb_imSimp.Checked == true)      // formato simple de la GR (TK)
+            {
+                foreach (DataGridViewRow row in dgv_guias.Rows)
+                {
+                    if (row.Cells[0].EditedFormattedValue.ToString() == "True")
+                    {
+                        filaimp[0] = row.Cells["SER"].Value.ToString();    // serie
+                        filaimp[1] = row.Cells["NUMERO"].Value.ToString();    // correl
+                        filaimp[2] = row.Cells["FECHA"].Value.ToString().Substring(0,10);    // fecha
+                        filaimp[3] = row.Cells["NOMBRE"].Value.ToString();    // cliente destin
+                        filaimp[4] = row.Cells["DIRDEST"].Value.ToString();    // direccion
+                        filaimp[5] = row.Cells["DESTINAT"].Value.ToString();    // dni - ruc
+                        filaimp[6] = row.Cells["ORIGEN"].Value.ToString() + " - " + row.Cells["DESTINO"].Value.ToString();    // ruta (origen - destino)
+                        filaimp[7] = row.Cells["PLACA"].Value.ToString();    // placa
+                        filaimp[8] = row.Cells["CANTIDAD"].Value.ToString() + " " + row.Cells["U_MEDID"].Value.ToString() + " " + row.Cells["PESO"].Value.ToString();    // detalle fila 1 - cant bulto peso
+                        filaimp[9] = row.Cells["DETALLE"].Value.ToString();    // detalle fila 2 - detalle
+                        filaimp[10] = row.Cells["DOCSREMIT"].Value.ToString();   // detalle fila 3
+                        filaimp[11] = row.Cells["FLETE_MN"].Value.ToString();   // flete soles
+                        for (int i = 1; i <= vi_copias; i++)
+                        {
+                            printDocument1.Print();
+                        }
+                    }
+                }
+            }
+            if (rb_imComp.Checked == true)      // formato completo de la GR (2 x A4)
+            {
+
+
+            }
             chk_impGrp.Checked = false;
         }
 
@@ -1238,7 +1268,7 @@ namespace TransCarga
                             try
                             {
                                 fimp.PrintOptions.PrinterName = v_impTK;
-                                fimp.PrintToPrinter(int.Parse(vi_copias), false, 1, 1);
+                                fimp.PrintToPrinter(vi_copias, false, 1, 1);
                             }
                             catch (Exception ex)
                             {
@@ -1824,5 +1854,111 @@ namespace TransCarga
         }
         #endregion
 
+        private void printDocument1_PrintPage(object sender, System.Drawing.Printing.PrintPageEventArgs e)
+        {
+            // TIPOS DE LETRA PARA EL DOCUMENTO FORMATO TICKET
+            Font lt_gra = new Font("Arial", 13);                // grande
+            Font lt_tit = new Font("Lucida Console", 10);       // mediano
+            Font lt_med = new Font("Arial", 9);                // normal textos
+            Font lt_peq = new Font("Arial", 8);                 // pequeño
+            //
+            float anchTik = 7.8F;                               // ancho del TK en centimetros
+            int coli = 5;                                      // columna inicial
+            int colm = 80;
+            float posi = 20;                                    // posicion x,y inicial
+            int alfi = 15;                                      // alto de cada fila
+            float ancho = 360.0F;                                // ancho de la impresion
+            {
+                //lt = (ancho - e.Graphics.MeasureString(rasclie, lt_gra).Width) / 2;
+                PointF puntoF = new PointF(coli, posi);
+                e.Graphics.DrawString("CONTROL", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                puntoF = new PointF(colm, posi);
+                e.Graphics.DrawString(":", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                puntoF = new PointF(colm + 10, posi);
+                e.Graphics.DrawString(filaimp[0] + "-" + filaimp[1], lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                posi = posi + alfi;
+                posi = posi + alfi;
+                puntoF = new PointF(coli, posi);
+                e.Graphics.DrawString("FECHA", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                puntoF = new PointF(colm, posi);
+                e.Graphics.DrawString(":", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                puntoF = new PointF(colm + 10, posi);
+                e.Graphics.DrawString(filaimp[2], lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                posi = posi + alfi;
+                puntoF = new PointF(coli, posi);
+                e.Graphics.DrawString("CLIENTE", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                puntoF = new PointF(colm, posi);
+                e.Graphics.DrawString(":", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                puntoF = new PointF(colm + 10, posi);
+                e.Graphics.DrawString(filaimp[3], lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                posi = posi + alfi;
+                puntoF = new PointF(coli, posi);
+                e.Graphics.DrawString("DIRECC", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                puntoF = new PointF(colm, posi);
+                e.Graphics.DrawString(":", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                puntoF = new PointF(colm + 10, posi);
+                SizeF cuad = new SizeF(CentimeterToPixel(anchTik) - (coli + 70), alfi * 2);
+                RectangleF recdom = new RectangleF(puntoF, cuad);
+                e.Graphics.DrawString(filaimp[4], lt_med, Brushes.Black, recdom, StringFormat.GenericTypographic);
+                posi = posi + alfi + alfi;
+                puntoF = new PointF(coli, posi);
+                e.Graphics.DrawString("DNI/RUC", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                puntoF = new PointF(colm, posi);
+                e.Graphics.DrawString(":", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                puntoF = new PointF(colm + 10, posi);
+                e.Graphics.DrawString(filaimp[5], lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                posi = posi + alfi;
+                puntoF = new PointF(coli, posi);
+                e.Graphics.DrawString("RUTA", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                puntoF = new PointF(colm, posi);
+                e.Graphics.DrawString(":", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                puntoF = new PointF(colm + 10, posi);
+                e.Graphics.DrawString(filaimp[6], lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                posi = posi + alfi;
+                puntoF = new PointF(coli, posi);
+                e.Graphics.DrawString("PLACA", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                puntoF = new PointF(colm, posi);
+                e.Graphics.DrawString(":", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                puntoF = new PointF(colm + 10, posi);
+                e.Graphics.DrawString(filaimp[7], lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                posi = posi + alfi;
+                posi = posi + alfi;
+                puntoF = new PointF(coli, posi);
+                e.Graphics.DrawString(filaimp[8], lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                posi = posi + alfi;
+                puntoF = new PointF(coli, posi);
+                e.Graphics.DrawString(filaimp[9], lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                posi = posi + alfi;
+                puntoF = new PointF(coli, posi);
+                e.Graphics.DrawString(filaimp[10], lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                posi = posi + alfi;
+                posi = posi + alfi;
+                posi = posi + alfi;
+                puntoF = new PointF(coli, posi);
+                e.Graphics.DrawString("TOTAL", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                puntoF = new PointF(colm, posi);
+                e.Graphics.DrawString(":", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                puntoF = new PointF(colm + 10, posi);
+                e.Graphics.DrawString(filaimp[11], lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                posi = posi + alfi * 4;
+                puntoF = new PointF(coli + 20, posi);
+                e.Graphics.DrawString("---------------------------------", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                posi = posi + alfi;
+                puntoF = new PointF(coli + 20, posi);
+                e.Graphics.DrawString("   RECIBI CONFORME", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                posi = posi + alfi * 2;
+                puntoF = new PointF(coli, posi);
+                e.Graphics.DrawString(".", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+            }
+        }
+        int CentimeterToPixel(double Centimeter)
+        {
+            double pixel = -1;
+            using (Graphics g = this.CreateGraphics())
+            {
+                pixel = Centimeter * g.DpiY / 2.54d;
+            }
+            return (int)pixel;
+        }
     }
 }
