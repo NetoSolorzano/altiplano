@@ -902,12 +902,14 @@ namespace TransCarga
                         filaimp[5] = row.Cells["DESTINAT"].Value.ToString();    // dni - ruc
                         filaimp[6] = row.Cells["ORIGEN"].Value.ToString() + " - " + row.Cells["DESTINO"].Value.ToString();    // ruta (origen - destino)
                         filaimp[7] = row.Cells["PLACA"].Value.ToString();    // placa
-                        filaimp[8] = row.Cells["CANTIDAD"].Value.ToString() + " " + row.Cells["U_MEDID"].Value.ToString() + " " + row.Cells["PESO"].Value.ToString();    // detalle fila 1 - cant bulto peso
+                        filaimp[8] = row.Cells["CANTIDAD"].Value.ToString() + "  " + row.Cells["U_MEDID"].Value.ToString() + "  " + row.Cells["PESO"].Value.ToString() + " Kgs.";    // detalle fila 1 - cant bulto peso
                         filaimp[9] = row.Cells["DETALLE"].Value.ToString();    // detalle fila 2 - detalle
                         filaimp[10] = row.Cells["DOCSREMIT"].Value.ToString();   // detalle fila 3
-                        filaimp[11] = row.Cells["FLETE_MN"].Value.ToString();   // flete soles
+                        filaimp[11] = "Según doc. cliente" + " " + row.Cells["FLETE_MN"].Value.ToString();   // flete soles
                         for (int i = 1; i <= vi_copias; i++)
                         {
+                            printDocument1.PrinterSettings.PrinterName = v_impTK;
+                            printDocument1.PrinterSettings.Copies = 2;
                             printDocument1.Print();
                         }
                     }
@@ -1866,12 +1868,12 @@ namespace TransCarga
             int coli = 5;                                      // columna inicial
             int colm = 80;
             float posi = 20;                                    // posicion x,y inicial
-            int alfi = 15;                                      // alto de cada fila
+            int alfi = 20;                                      // alto de cada fila
             float ancho = 360.0F;                                // ancho de la impresion
             {
                 //lt = (ancho - e.Graphics.MeasureString(rasclie, lt_gra).Width) / 2;
                 PointF puntoF = new PointF(coli, posi);
-                e.Graphics.DrawString("CONTROL", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                e.Graphics.DrawString("CONTROL", lt_gra, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                 puntoF = new PointF(colm, posi);
                 e.Graphics.DrawString(":", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                 puntoF = new PointF(colm + 10, posi);
@@ -1940,11 +1942,11 @@ namespace TransCarga
                 e.Graphics.DrawString(":", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                 puntoF = new PointF(colm + 10, posi);
                 e.Graphics.DrawString(filaimp[11], lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
-                posi = posi + alfi * 4;
-                puntoF = new PointF(coli + 20, posi);
+                posi = posi + alfi * 9;
+                puntoF = new PointF(coli + 40, posi);
                 e.Graphics.DrawString("---------------------------------", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                 posi = posi + alfi;
-                puntoF = new PointF(coli + 20, posi);
+                puntoF = new PointF(coli + 40, posi);
                 e.Graphics.DrawString("   RECIBI CONFORME", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                 posi = posi + alfi * 2;
                 puntoF = new PointF(coli, posi);

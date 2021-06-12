@@ -239,3 +239,6 @@ form egresosdep, validar que se graben los campos codtegr y tipdoco ............
 form guiati_a, arreglar anulacion de guias, que se borre automaticamente de la planilla............. ok 10/06/2021
 form egresosdep, no se debe permitir medios de pago distintos a efectivo ........................... ok 11/06/2021    El cuadre de caja es EFECTIVO
 form ingresosv, no se debe permitir medios de pago distintos a efectivo ............................ ok 11/06/2021	  El cuadre de caja es EFECTIVO
+form guiati_a, cambio de formato metodo de impresion, no crystal, si impresion directa ............. ok 11/06/2021
+form repsoper, cambio a impresion directa de "notitas" ............................................. ok 12/06/2021
+form guiati_a, arreglar a selecion de impresora segun enlace ....................................... ok 12/06/2021
