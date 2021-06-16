@@ -904,8 +904,8 @@ namespace TransCarga
                         filaimp[7] = row.Cells["PLACA"].Value.ToString();    // placa
                         filaimp[8] = row.Cells["CANTIDAD"].Value.ToString() + "  " + row.Cells["U_MEDID"].Value.ToString() + "  " + row.Cells["PESO"].Value.ToString() + " Kgs.";    // detalle fila 1 - cant bulto peso
                         filaimp[9] = row.Cells["DETALLE"].Value.ToString();    // detalle fila 2 - detalle
-                        filaimp[10] = row.Cells["DOCSREMIT"].Value.ToString();   // detalle fila 3
-                        filaimp[11] = "Según doc. cliente" + " " + row.Cells["FLETE_MN"].Value.ToString();   // flete soles
+                        filaimp[10] = "Según doc. cliente" + " " + row.Cells["DOCSREMIT"].Value.ToString();   // detalle fila 3
+                        filaimp[11] = "S/ " + row.Cells["FLETE_MN"].Value.ToString();   // flete soles
                         for (int i = 1; i <= vi_copias; i++)
                         {
                             printDocument1.PrinterSettings.PrinterName = v_impTK;

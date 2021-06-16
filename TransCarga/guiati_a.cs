@@ -3081,7 +3081,7 @@ namespace TransCarga
                     e.Graphics.DrawString(tx_det_cant.Text, lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
                     ptoimp = new PointF(colm + 300.0F, posi);
                     e.Graphics.DrawString(tx_det_peso.Text, lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
-                    ptoimp = new PointF(colm + 350.0F, posi);
+                    ptoimp = new PointF(colm + 370.0F, posi);
                     e.Graphics.DrawString(tx_det_umed.Text, lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
                     posi = posi + alfi;             // avance de fila
                 // guias del cliente
@@ -3112,7 +3112,7 @@ namespace TransCarga
                 e.Graphics.DrawString(tx_marcamion.Text + " / " + tx_marCarret.Text, lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
                 if (tx_pla_ruc.Text.Trim() != Program.ruc)              // si no es ruc de la empresa es contratado o tercero
                 {                                                       // en el formulario si muestra, en la impresion NO
-                    ptoimp = new PointF(coli + avance + 50.0F, posi);   // 
+                    ptoimp = new PointF(coli + avance + 140.0F, posi);   // 
                     e.Graphics.DrawString(tx_pla_propiet.Text, lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
                 }
                 posi = posi + alfi;
@@ -3127,7 +3127,7 @@ namespace TransCarga
                 posi = posi + alfi;
                 ptoimp = new PointF(coli + avance, posi);
                 e.Graphics.DrawString(tx_aut_carret.Text, lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
-                ptoimp = new PointF(colm + avance, posi);
+                ptoimp = new PointF(colm + 30.0F, posi);
                 if (tx_pla_ruc.Text.Trim() != Program.ruc)
                 {
                     e.Graphics.DrawString(tx_pla_ruc.Text, lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
