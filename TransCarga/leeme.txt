@@ -243,3 +243,6 @@ form guiati_a, cambio de formato metodo de impresion, no crystal, si impresion d
 form repsoper, cambio a impresion directa de "notitas" ............................................. ok 12/06/2021
 form guiati_a, arreglar a selecion de impresora segun enlace ....................................... ok 12/06/2021
 form repsoper, correccion en impresion de notitas .................................................. ok 14/06/2021
+form guiati_a, corregir codigo cuando cliente es nuevo ............................................. ok 16/06/2021 
+form guiati_a, validar en modo NUEVO el numero de guía (corrección en libreria) .................... ok 16/06/2021
+form repsoper, agregar impresion completa y simple en seguimiento de guias ......................... ok 16/06/2021

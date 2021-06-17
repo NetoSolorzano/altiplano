@@ -1628,6 +1628,25 @@ namespace TransCarga
                         micon.ExecuteNonQuery();
                     }
                 }
+                if (v_clte_des == "N" && rb_ent_clte.Checked == false && tx_dat_tDdest.Text == vtc_ruc && tx_numDocDes.Text.Substring(0, 2) == "20")
+                {
+                    using (MySqlCommand micon = new MySqlCommand(actua, conn))
+                    {
+                        micon.Parameters.AddWithValue("@tdc1", tx_dat_tDdest.Text);
+                        micon.Parameters.AddWithValue("@ndc1", tx_numDocDes.Text);
+                        micon.Parameters.AddWithValue("@ndir", dl[2]);
+                        micon.Parameters.AddWithValue("@ubig", dl[1]);
+                        micon.Parameters.AddWithValue("@dist", dl[5]);
+                        micon.Parameters.AddWithValue("@prov", dl[4]);
+                        micon.Parameters.AddWithValue("@depa", dl[3]);
+                        micon.Parameters.AddWithValue("@verApp", verapp);
+                        micon.Parameters.AddWithValue("@asd", asd);
+                        micon.Parameters.AddWithValue("@iplan", lib.iplan());
+                        micon.Parameters.AddWithValue("@ipwan", TransCarga.Program.vg_ipwan);
+                        micon.Parameters.AddWithValue("@nbnam", Environment.MachineName);
+                        micon.ExecuteNonQuery();
+                    }
+                }
             }
             else
             {
@@ -2119,7 +2138,12 @@ namespace TransCarga
                                 }
                                 else
                                 {
-                                    // debe grabar la direccion en la maestra de clientes rl[]
+                                    if (dl[0] != "")
+                                    {
+                                        v_clte_des = "N";
+                                        // Se va a grabar la direccion de la guia
+                                        // luego de insertar el registro se debe actualizar la tabla de clientes con los datos de la direccion fiscal
+                                    }
                                 }
                             }
                         }

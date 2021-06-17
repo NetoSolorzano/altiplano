@@ -1935,9 +1935,10 @@ namespace TransCarga
             conl.Open();
             if (conl.State == ConnectionState.Open)
             {
-                string consulta = "select count(*) from " + tabla + " where " + campo + " = @dat";
+                //string consulta = "select count(*) from " + tabla + " where " + campo + " = @dat";
+                string consulta = "select count(*) from " + tabla + " where " + campo + " = '" + dato + "'";
                 MySqlCommand micon = new MySqlCommand(consulta, conl);
-                micon.Parameters.AddWithValue("@dat", dato);
+                //micon.Parameters.AddWithValue("@dat", dato);
                 try
                 {
                     MySqlDataReader dr = micon.ExecuteReader();
