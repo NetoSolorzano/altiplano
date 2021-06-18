@@ -71,9 +71,32 @@ namespace TransCarga
         {
             InitializeComponent();
         }
-        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)    // F1
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData) 
         {
-            // en este form no usamos
+            string para1 = "";
+            string para2 = "";
+            string para3 = "";
+            if (keyData == Keys.Enter && tx_cliente.Focused == true && tx_cliente.Text.Trim() != "")
+            {
+                para1 = "Clientes";
+                para2 = tx_cliente.Text.Trim();
+                para3 = "";
+                ayuda3 ayu3 = new ayuda3(para1, para2, para3);
+                var result = ayu3.ShowDialog();
+                if (result == DialogResult.Cancel)
+                {
+                    tx_dat_tido.Text = ayu3.ReturnValueA[3];       // codigo tipo doc
+                    tx_docu.Text = ayu3.ReturnValueA[3];       // codigo tipo doc
+                    cmb_tidoc.Enabled = true;
+                    cmb_tidoc.SelectedValue = ayu3.ReturnValue0;
+                    tx_codped.Text = ayu3.ReturnValue1;         // nume doc
+                    tx_cliente.Text = ayu3.ReturnValue2;       // nombre cliente
+                    //
+                    dtp_ser_fini.Focus();
+                }
+                return true;    // indicate that you handled this keystroke
+            }
+            // 
             return base.ProcessCmdKey(ref msg, keyData);
         }
         private void repsoper_KeyDown(object sender, KeyEventArgs e)
@@ -1189,6 +1212,8 @@ namespace TransCarga
             //
             checkBox1.Checked = true;
             rb_total.Checked = true;
+            //
+            rb_busDoc.Checked = true;
         }
         private void Bt_anul_Click(object sender, EventArgs e)
         {
@@ -1690,7 +1715,37 @@ namespace TransCarga
                 dgv_guias.ReadOnly = true;
             }
         }
+        private void rb_busDoc_CheckedChanged(object sender, EventArgs e)
+        {
+            if (rb_busDoc.Checked == true)
+            {
+                tx_cliente.Text = "";
+                tx_cliente.ReadOnly = true;
 
+                cmb_tidoc.Enabled = true;
+                tx_codped.ReadOnly = false;
+            }
+        }
+        private void rb_busNom_CheckedChanged(object sender, EventArgs e)
+        {
+            if (rb_busNom.Checked == true)
+            {
+                cmb_tidoc.SelectedIndex = -1;
+                cmb_tidoc.Enabled = false;
+                tx_dat_tido.Text = "";
+                tx_codped.ReadOnly = true;
+                tx_codped.Text = "";
+
+                tx_cliente.ReadOnly = false;
+            }
+        }
+        private void tx_cliente_Validating(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (tx_cliente.Text.Trim() != "")
+            {
+                // nada
+            }
+        }
         #endregion
 
         #region advancedatagridview
@@ -1986,7 +2041,6 @@ namespace TransCarga
                 e.Graphics.DrawString(".", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
             }
         }
-
         int CentimeterToPixel(double Centimeter)
         {
             double pixel = -1;

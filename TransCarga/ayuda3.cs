@@ -112,6 +112,22 @@ namespace TransCarga
                     ReturnValueA = new string[5] { "", "", "", "", "" };
                 }
             }
+            if (para1 == "Clientes")
+            {
+                consulta = "SELECT b.descrizionerid as DOCUMENTO,a.ruc AS NUMERO,a.razonsocial AS NOMBRE,a.direcc1 AS DIRECCION,a.depart AS REGION,a.tipdoc " +
+                    "FROM anag_cli a left join desc_doc b on b.idcodice=a.tipdoc " +
+                    "WHERE a.razonsocial LIKE '%" + para2 + "%'";
+                using (MySqlCommand micon = new MySqlCommand(consulta, conn))
+                {
+                    using (MySqlDataAdapter da = new MySqlDataAdapter(micon))
+                    {
+                        da.Fill(dtDatos);
+                        dataGridView1.DataSource = dtDatos;
+                        dataGridView1.ReadOnly = true;
+                    }
+                    ReturnValueA = new string[5] { "", "", "", "", "" };
+                }
+            }
             // formateo de la grilla
             //dataGridView1.Font = tiplg;
             //dataGridView1.DefaultCellStyle.Font = tiplg;
@@ -186,6 +202,19 @@ namespace TransCarga
                 ReturnValueA[2] = dataGridView1.CurrentRow.Cells[2].Value.ToString();   // brevete ayudante
                 ReturnValueA[3] = dataGridView1.CurrentRow.Cells[3].Value.ToString();   // nombre ayudante
                 ReturnValueA[4] = dataGridView1.CurrentRow.Cells[4].Value.ToString();   // vacío
+            }
+            if (para1 == "Clientes")
+            {
+                tx_id.Text = dataGridView1.CurrentRow.Cells[0].Value.ToString();
+                cellva = dataGridView1.CurrentRow.Cells[1].Value.ToString();
+                tx_nombre.Text = dataGridView1.CurrentRow.Cells[2].Value.ToString();
+                tx_codigo.Text = cellva;
+                //
+                ReturnValueA[0] = dataGridView1.CurrentRow.Cells[0].Value.ToString();   // tipo doc
+                ReturnValueA[1] = dataGridView1.CurrentRow.Cells[1].Value.ToString();   // num doc
+                ReturnValueA[2] = dataGridView1.CurrentRow.Cells[2].Value.ToString();   // nombre
+                ReturnValueA[3] = dataGridView1.CurrentRow.Cells[5].Value.ToString();   // codigo tip doc
+                ReturnValueA[4] = "";
             }
             TransCarga.Program.retorna1 = cellva;
             tx_codigo.Focus();
