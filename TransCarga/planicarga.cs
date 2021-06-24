@@ -1467,15 +1467,41 @@ namespace TransCarga
                                         try
                                         {
                                             comed.ExecuteNonQuery();
-                                            // trigger borra los campos en cabguiai
-                                            // trigger borra los campos en controlg
+                                            // trigger borra los campos en cabguiai  ... el triger esta comentado no se porque 23/06/2021
+                                            // trigger borra los campos en controlg  ... el triger esta comentado no se porque 23/06/2021
                                         }
                                         catch (MySqlException ex)
                                         {
                                             MessageBox.Show("Ocurrió un error en el proceso de borrar la guía de la planilla" + Environment.NewLine +
-                                                "y / o en la actualización posterior en Guías y Control " + Environment.NewLine +
+                                                "la GR aun esta en la planilla! " + Environment.NewLine +
                                                 ex.Message, "Alerta proceso no concluido!");
                                         }
+                                    }
+                                    //
+                                    try
+                                    {
+                                        string actor1 = "UPDATE cabguiai SET serplagri='',numplagri='',plaplagri='',carplagri='',autplagri='',confvegri='',breplagri='',proplagri='',idplani=0,fechplani=null " +
+                                            "WHERE sergui=@OLDS AND numgui=@OLDN";
+                                        string actor2 = "UPDATE controlg SET fecplacar=null,serplacar='',numplacar='',placamcar='',chocamcar='' " +
+                                            "WHERE serguitra=@OLDS AND numguitra=@OLDN";
+                                        using (MySqlCommand comm = new MySqlCommand(actor1, conn))
+                                        {
+                                            comm.Parameters.AddWithValue("@OLDS", dataGridView1.Rows[i].Cells[2].Value.ToString());
+                                            comm.Parameters.AddWithValue("@OLDN", dataGridView1.Rows[i].Cells[3].Value.ToString());
+                                            comm.ExecuteNonQuery();
+                                        }
+                                        using (MySqlCommand comm = new MySqlCommand(actor2, conn))
+                                        {
+                                            comm.Parameters.AddWithValue("@OLDS", dataGridView1.Rows[i].Cells[2].Value.ToString());
+                                            comm.Parameters.AddWithValue("@OLDN", dataGridView1.Rows[i].Cells[3].Value.ToString());
+                                            comm.ExecuteNonQuery();
+                                        }
+                                    }
+                                    catch (MySqlException ex)
+                                    {
+                                        MessageBox.Show("Ocurrió un error en el proceso de actualizar la guía" + Environment.NewLine +
+                                                "no se borraron los datos de la planilla " + Environment.NewLine +
+                                                ex.Message, "Alerta proceso no concluido!");
                                     }
                                 }
                             }

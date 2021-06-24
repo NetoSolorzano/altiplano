@@ -838,7 +838,7 @@
             // 
             this.tx_pagoMN.BackColor = System.Drawing.SystemColors.Window;
             this.tx_pagoMN.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_pagoMN.Location = new System.Drawing.Point(611, 24);
+            this.tx_pagoMN.Location = new System.Drawing.Point(646, 24);
             this.tx_pagoMN.Name = "tx_pagoMN";
             this.tx_pagoMN.Size = new System.Drawing.Size(62, 18);
             this.tx_pagoMN.TabIndex = 365;

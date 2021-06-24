@@ -247,3 +247,5 @@ form guiati_a, corregir codigo cuando cliente es nuevo .........................
 form guiati_a, validar en modo NUEVO el numero de guía (corrección en libreria) .................... ok 16/06/2021
 form repsoper, agregar impresion completa y simple en seguimiento de guias ......................... ok 16/06/2021
 form repsoper, pestaña "servicio por cliente" agregar busqueda por nombre .......................... ok 17/06/2021
+form egresosdep, no deja grabar operaciones en dolares ............................................. ok 23/06/2021
+form planicarga, retira una guia de manifiesto, pero no ingresa manualmente en otra ................ ok 23/06/2021 - se agrego codigo para borrar campos en cabguiai y controlg

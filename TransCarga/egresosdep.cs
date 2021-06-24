@@ -587,9 +587,9 @@ namespace TransCarga
             }
             if (tx_dat_mone.Text != MonDeft)
             {
-                int tc = 0, vc = 0; 
-                int.TryParse(tx_tipcam.Text, out tc);
-                int.TryParse(tx_pagoMN.Text, out vc);
+                decimal tc = 0, vc = 0; 
+                decimal.TryParse(tx_tipcam.Text, out tc);
+                decimal.TryParse(tx_pagoMN.Text, out vc);
                 if (tc <= 0 && vc <= 0)
                 {
                     MessageBox.Show("Seleccione la moneda de pago y tipo de cambio", " Atención ", MessageBoxButtons.OK, MessageBoxIcon.Warning);
