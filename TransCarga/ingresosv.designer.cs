@@ -799,7 +799,7 @@
             this.tx_glosa.MaxLength = 0;
             this.tx_glosa.Name = "tx_glosa";
             this.tx_glosa.Size = new System.Drawing.Size(276, 18);
-            this.tx_glosa.TabIndex = 9;
+            this.tx_glosa.TabIndex = 396;
             // 
             // tx_dat_mp
             // 
@@ -885,9 +885,9 @@
             // 
             this.tx_dat_comp.BackColor = System.Drawing.SystemColors.Window;
             this.tx_dat_comp.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_dat_comp.Location = new System.Drawing.Point(165, 31);
+            this.tx_dat_comp.Location = new System.Drawing.Point(151, 31);
             this.tx_dat_comp.Name = "tx_dat_comp";
-            this.tx_dat_comp.Size = new System.Drawing.Size(27, 18);
+            this.tx_dat_comp.Size = new System.Drawing.Size(49, 18);
             this.tx_dat_comp.TabIndex = 386;
             this.tx_dat_comp.Visible = false;
             // 
@@ -908,7 +908,7 @@
             this.cmb_ctaprop.Location = new System.Drawing.Point(94, 73);
             this.cmb_ctaprop.Name = "cmb_ctaprop";
             this.cmb_ctaprop.Size = new System.Drawing.Size(163, 21);
-            this.cmb_ctaprop.TabIndex = 8;
+            this.cmb_ctaprop.TabIndex = 395;
             this.cmb_ctaprop.SelectedIndexChanged += new System.EventHandler(this.cmb_ctaprop_SelectedIndexChanged);
             this.cmb_ctaprop.Enter += new System.EventHandler(this.cmb_ctapro_Enter);
             // 
@@ -938,7 +938,7 @@
             this.tx_fecdep.Mask = "00/00/0000";
             this.tx_fecdep.Name = "tx_fecdep";
             this.tx_fecdep.Size = new System.Drawing.Size(65, 20);
-            this.tx_fecdep.TabIndex = 10;
+            this.tx_fecdep.TabIndex = 397;
             // 
             // label2
             // 

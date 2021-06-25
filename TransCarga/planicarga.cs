@@ -57,6 +57,7 @@ namespace TransCarga
         string v_camion = "";           // código interno placa de camion
         string v_mondef = "";           // moneda por defecto del form
         string vint_A0 = "";            // variable INTERNA para amarrar el codigo anulacion cliente con A0
+        int v_cdrp = 0;                 // cantidad de días para reabrir una planilla de carga
         //
         static libreria lib = new libreria();   // libreria de procedimientos
         publico lp = new publico();             // libreria de clases
@@ -373,7 +374,8 @@ namespace TransCarga
                             if (row["param"].ToString() == "c_int") v_cid = row["valor"].ToString().Trim();               // codigo interno pre guias
                             if (row["param"].ToString() == "frase1") v_fra1 = row["valor"].ToString().Trim();               // frase de si va con clave la guia
                             if (row["param"].ToString() == "frase2") v_fra2 = row["valor"].ToString().Trim();               // frase otro dato
-                            if (row["param"].ToString() == "serieAnu") v_sanu = row["valor"].ToString().Trim();               // serie anulacion interna
+                            if (row["param"].ToString() == "serieAnu") v_sanu = row["valor"].ToString().Trim();             // serie anulacion interna
+                            if (row["param"].ToString() == "reabre") v_cdrp = int.Parse(row["valor"].ToString());           // cantidad de días para re-abrir un manifiesto
                         }
                         if (row["campo"].ToString() == "impresion")
                         {
@@ -1645,7 +1647,8 @@ namespace TransCarga
                     }
                     if (Tx_modo.Text == "EDITAR" && tx_dat_estad.Text == codCier)        // si es del local del usuario y de la fecha actual, permite re-abrir la planilla 08/06/2021
                     {
-                        if (tx_fechope.Text == tx_fechact.Text.Substring(0, 10) && tx_dat_locori.Text == v_clu)
+                        // tx_fechope.Text == tx_fechact.Text.Substring(0, 10) && tx_dat_locori.Text == v_clu
+                        if ((DateTime.Parse(tx_fechact.Text) - DateTime.Parse(tx_fechope.Text)).Days <= v_cdrp && tx_dat_locori.Text == v_clu)
                         {
                             chk_cierea.Text = "RE ABRE LA PLANILLA";
                             chk_cierea.Enabled = true;

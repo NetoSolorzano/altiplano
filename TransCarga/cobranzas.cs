@@ -187,6 +187,8 @@ namespace TransCarga
             {
                 tx_cajero.Text = tx_nomuser.Text;
                 tx_idcaja.Text = v_idcaj;
+                tx_dat_mp.Text = dtmpa.Rows[0].ItemArray[0].ToString();
+                cmb_mpago.SelectedIndex = 0;    // primer registro del medio de pago
             }
         }
         private void jalainfo()                 // obtiene datos de imagenes y variables

@@ -250,6 +250,12 @@
       <DependentUpon>plancarga3.rpt</DependentUpon>
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="plancarga4.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>plancarga4.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="planicarga.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -435,6 +441,10 @@
     <EmbeddedResource Include="plancarga3.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>plancarga3.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="plancarga4.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>plancarga4.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="planicarga.resx">
       <DependentUpon>planicarga.cs</DependentUpon>

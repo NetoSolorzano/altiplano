@@ -275,7 +275,7 @@ namespace TransCarga
                 {
                     string consulta = "SELECT a.id,ifnull(f.descrizionerid,'') as tipeg,a.seregre,a.numegre,d.descrizionerid as mon,a.totpago,a.totpaMN,ifnull(u.descrizionerid,'') as tdv," +
                         "a.serdoco,a.numdoco,ifnull(e.descrizionerid,'') as teg,ifnull(c.descrizionerid,'') as cta,a.refctap,ifnull(a.fechdep,'') as fechdep,a.obscobc," +
-                        "a.fechope,a.timegre,a.codmopa,a.codgrpe,a.ctaprop,a.estdegr,a.userc,b.nom_user,a.tipegre " +
+                        "a.fechope,a.timegre,a.codmopa,a.codgrpe,a.ctaprop,a.estdegr,a.userc,b.nom_user,a.tipegre,a.tipdoco " +
                         "FROM cabegresos a " +
                         "LEFT JOIN desc_mon d ON d.idcodice = a.codmopa " +
                         "left join desc_tdv u on u.idcodice = a.tipdoco " +
@@ -316,7 +316,8 @@ namespace TransCarga
                                     dr.GetString("userc"),
                                     dr.GetString("nom_user"),
                                     dr.GetString("codgrpe"),
-                                    dr.GetString("tipegre")
+                                    dr.GetString("tipegre"),
+                                    dr.GetString("tipdoco")
                                     );
                         }
                         /*else
@@ -1518,6 +1519,7 @@ namespace TransCarga
                         tx_numGR.Enabled = true;
                         cmb_grupo.Enabled = true;
                         tx_dat_tdv.Text = v_codc;
+                        tx_dat_comp.Text = dataGridView1.Rows[e.RowIndex].Cells["tipdoco"].Value.ToString();
                     }
                     if (dataGridView1.Rows[e.RowIndex].Cells["tipegre"].Value.ToString() == "2")
                     {

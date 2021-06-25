@@ -151,7 +151,13 @@ namespace TransCarga
             dataGridView1.Rows.Clear();
             dataGridView1.ReadOnly = true;
             tx_idcaja.ReadOnly = true;
-            tx_serGR.Text = (Tx_modo.Text == "NUEVO") ? v_slu : "";
+            if (Tx_modo.Text == "NUEVO")
+            {
+                tx_serGR.Text = v_slu;
+                cmb_comp.SelectedIndex = 0;
+                tx_dat_mp.Text = dtmpa.Rows[0].ItemArray[0].ToString();
+                cmb_mpago.SelectedIndex = 0;    // primer registro predeterminado
+            }
             tx_fechope.Text = DateTime.Today.ToString("dd/MM/yyyy");
             tx_digit.Text = v_nbu;
             tx_dat_estad.Text = codGene;
