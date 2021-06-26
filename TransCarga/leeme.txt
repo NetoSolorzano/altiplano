@@ -254,6 +254,7 @@ formato CR planilla de carga 4, remit, destin, flete y saldo ...................
 form cobranzas, autoseleccionar medio pago efectivo en modo NUEVO .................................. ok 25/06/2021
 form ingresosv, autoseleccionar el tipo RECIBO ..................................................... ok 25/06/2021
 form ingresosv, autoseleccionar medio pago efectivo en modo NUEVO .................................. ok 25/06/2021
-form egresosdep, cuando se edita o anula no esta jalando el tipo de comprobante .................... 
+form egresosdep, cuando se edita o anula no esta jalando el tipo de comprobante .................... ok 25/06/2021
 from repsventas, P.A. agregar columnas de pago y saldo al reporte facturacion ...................... ok 25/06/2021
 formato CR cuadre de caja, agregar saldo final por formula si la caja no esta cerrada .............. ok 25/06/2021
+form repadmcaja, agregar codigo para ruta y nombre de CR para pendientes de cobranza ............... ok 25/06/2021

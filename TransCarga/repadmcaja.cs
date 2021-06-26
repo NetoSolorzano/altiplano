@@ -45,6 +45,7 @@ namespace TransCarga
         string nomAnul = "";            // texto nombre del estado anulado
         string codGene = "";            // codigo documento nuevo generado
         string v_nccCR = "";            // nombre del formato CR del cuadre de caja
+        string v_npcCR = "";            // nombre del formato CR pendientes de cobranza
         //int pageCount = 1, cuenta = 0;
         #endregion
 
@@ -151,6 +152,7 @@ namespace TransCarga
                     if (row["formulario"].ToString() == nomform)
                     {
                         if (row["campo"].ToString() == "exporta" && row["param"].ToString() == "ruta") v_ruta = row["valor"].ToString().Trim();
+                        if (row["campo"].ToString() == "documento" && row["param"].ToString() == "pendcob") v_npcCR = row["valor"].ToString().Trim();
                     }
                     if (row["formulario"].ToString() == "ayccaja" && row["campo"].ToString() == "impresion" && row["param"].ToString() == "nomfor_cr")
                     {
@@ -1077,6 +1079,7 @@ namespace TransCarga
                 pendrow.saldo = double.Parse(row.Cells["SALDO"].Value.ToString());
                 pendrow.atraso = int.Parse(row.Cells["ATRASO"].Value.ToString());
                 pendrow.tituloF = Program.tituloF;
+                pendrow.formatoRPT = v_npcCR;
                 repPend.pendCob.AddpendCobRow(pendrow);
             }
             return repPend;

@@ -1504,6 +1504,7 @@ namespace TransCarga
                     tx_noco.Text = dataGridView1.Rows[e.RowIndex].Cells["noeg"].Value.ToString();
                     tx_serie.Text = dataGridView1.Rows[e.RowIndex].Cells["serie"].Value.ToString();
                     tx_numero.Text = dataGridView1.Rows[e.RowIndex].Cells["numero"].Value.ToString();
+                    tx_dat_comp.Text = "";
                     tx_dat_estad.Text = codGene;
                     if (dataGridView1.Rows[e.RowIndex].Cells["tipegre"].Value.ToString() == "1")
                     {
@@ -1520,6 +1521,7 @@ namespace TransCarga
                         cmb_grupo.Enabled = true;
                         tx_dat_tdv.Text = v_codc;
                         tx_dat_comp.Text = dataGridView1.Rows[e.RowIndex].Cells["tipdoco"].Value.ToString();
+                        cmb_comp.SelectedValue = tx_dat_comp.Text;
                     }
                     if (dataGridView1.Rows[e.RowIndex].Cells["tipegre"].Value.ToString() == "2")
                     {
@@ -1537,7 +1539,6 @@ namespace TransCarga
                         tx_dat_tdv.Text = v_codd;
                     }
                     tx_dat_tdv.Text = dataGridView1.Rows[e.RowIndex].Cells["comprob"].Value.ToString();
-                    tx_dat_comp.Text = "";
                     tx_serGR.Text = dataGridView1.Rows[e.RowIndex].Cells["sercomp"].Value.ToString();
                     tx_numGR.Text = dataGridView1.Rows[e.RowIndex].Cells["numcomp"].Value.ToString();
                     tx_dat_grupo.Text = dataGridView1.Rows[e.RowIndex].Cells["codgrpe"].Value.ToString(); 
