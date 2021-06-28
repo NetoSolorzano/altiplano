@@ -511,6 +511,14 @@ namespace TransCarga
                             tx_pendien.Text = sumsaldos.ToString();
                             //tx_nser.Text = dt.Rows.Count.ToString();
                             tx_nser.Text = dt.Select("ESTADO <> '" + nomAnul + "'").Length.ToString();
+                            //
+                            for (int i = 0; i < dgv_resumen.Rows.Count; i++)
+                            {
+                                if (dgv_resumen.Rows[i].Cells["ESTADO"].Value.ToString() == etiq_anulado)
+                                {
+                                    dgv_resumen.Rows[i].DefaultCellStyle.BackColor = Color.Red;
+                                }
+                            }
                         }
                         break;
                     case "dgv_guias":
@@ -700,7 +708,10 @@ namespace TransCarga
             {
                 tx_codped.Focus();
             }
-            sumaGrilla("grillares");
+            if (dgv_resumen.Rows.Count > 0)
+            {
+                sumaGrilla("grillares");
+            }
         }
         private void bt_guias_Click(object sender, EventArgs e)         // genera reporte guias
         {
@@ -899,7 +910,7 @@ namespace TransCarga
                     }
                 }
                 // llenamos el set
-                if (tabControl1.SelectedTab.Name == "tabgrti")
+                if (("tabgrti,tabres").Contains(tabControl1.SelectedTab.Name))
                 {
                     setParaCrystal("GRT");
                 }

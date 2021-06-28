@@ -1519,7 +1519,7 @@ namespace TransCarga
                         tx_serGR.Enabled = true;
                         tx_numGR.Enabled = true;
                         cmb_grupo.Enabled = true;
-                        tx_dat_tdv.Text = v_codc;
+                        tx_dat_tdv.Text = v_codc; 
                         tx_dat_comp.Text = dataGridView1.Rows[e.RowIndex].Cells["tipdoco"].Value.ToString();
                         cmb_comp.SelectedValue = tx_dat_comp.Text;
                     }
@@ -1538,7 +1538,7 @@ namespace TransCarga
                         cmb_grupo.Enabled = false;
                         tx_dat_tdv.Text = v_codd;
                     }
-                    tx_dat_tdv.Text = dataGridView1.Rows[e.RowIndex].Cells["comprob"].Value.ToString();
+                    //tx_dat_tdv.Text = dataGridView1.Rows[e.RowIndex].Cells["comprob"].Value.ToString();
                     tx_serGR.Text = dataGridView1.Rows[e.RowIndex].Cells["sercomp"].Value.ToString();
                     tx_numGR.Text = dataGridView1.Rows[e.RowIndex].Cells["numcomp"].Value.ToString();
                     tx_dat_grupo.Text = dataGridView1.Rows[e.RowIndex].Cells["codgrpe"].Value.ToString(); 

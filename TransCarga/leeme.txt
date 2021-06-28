@@ -258,3 +258,7 @@ form egresosdep, cuando se edita o anula no esta jalando el tipo de comprobante 
 from repsventas, P.A. agregar columnas de pago y saldo al reporte facturacion ...................... ok 25/06/2021
 formato CR cuadre de caja, agregar saldo final por formula si la caja no esta cerrada .............. ok 25/06/2021
 form repadmcaja, agregar codigo para ruta y nombre de CR para pendientes de cobranza ............... ok 25/06/2021
+form egresosdep, en modo edicion debe grabar codigo de tipo de egreso, no el texto ................. ok 28/06/2021
+form repsoper, pestaña servicio por cliente -> Vista previa de GR, color rojo anulados ............. ok 28/06/2021
+formato CR cuentas corrientes clientes, tachado a las filas anuladas ............................... ok 28/06/2021
+form facelect, facuracion en dolares de soya ....................................................... 
