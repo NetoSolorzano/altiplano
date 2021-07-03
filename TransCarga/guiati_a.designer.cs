@@ -1438,9 +1438,9 @@
             // 
             this.tx_dat_mone.BackColor = System.Drawing.SystemColors.Window;
             this.tx_dat_mone.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_dat_mone.Location = new System.Drawing.Point(50, 26);
+            this.tx_dat_mone.Location = new System.Drawing.Point(50, 18);
             this.tx_dat_mone.Name = "tx_dat_mone";
-            this.tx_dat_mone.Size = new System.Drawing.Size(32, 18);
+            this.tx_dat_mone.Size = new System.Drawing.Size(50, 18);
             this.tx_dat_mone.TabIndex = 319;
             this.tx_dat_mone.Visible = false;
             // 

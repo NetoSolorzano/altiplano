@@ -1073,12 +1073,6 @@ namespace TransCarga
                 tx_ubigD.Focus();
                 return;
             }
-            if (tx_dat_mone.Text.Trim() == "")
-            {
-                MessageBox.Show("Seleccione el tipo de moneda", " Atención ");
-                cmb_mon.Focus();
-                return;
-            }
             if (tx_flete.Text.Trim() == "" || tx_flete.Text.Trim() == "0")
             {
                 MessageBox.Show("Ingrese el valor del flete", " Atención ");
@@ -1187,6 +1181,23 @@ namespace TransCarga
                 MessageBox.Show("Seleccione correctamente Departamento, Provincia y Distrito", "Seleccione en orden", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 tx_dptoDrio.Focus();
                 return;
+            }
+            if (tx_dat_mone.Text.Trim() == "")
+            {
+                MessageBox.Show("Seleccione el tipo de moneda", " Atención ");
+                cmb_mon.Focus();
+                return;
+            }
+            else
+            {
+                if (tx_dat_mone.Text.Trim() != MonDeft)
+                {
+                    tx_fletMN.Text = (decimal.Parse(tx_flete.Text) * decimal.Parse(tx_tipcam.Text)).ToString("#0.00");
+                }
+                else
+                {
+                    tx_fletMN.Text = tx_flete.Text;
+                }
             }
             #endregion
             // grabamos, actualizamos, etc
@@ -2793,7 +2804,7 @@ namespace TransCarga
         }
         private void cmb_mon_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (Tx_modo.Text.Trim().Contains("NUEVO,EDITAR"))   // ("NUEVO,EDITAR").Contains(Tx_modo.Text.Trim())
+            if (Tx_modo.Text == "NUEVO")   // ("NUEVO,EDITAR").Contains(Tx_modo.Text.Trim())
             {
                 if (cmb_mon.SelectedIndex > -1)
                 {

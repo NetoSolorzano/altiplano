@@ -97,6 +97,8 @@ namespace TransCarga
         string tipdocAnu = "";          // Tipos de documentos que se pueden dar de baja
         string tdocsBol = "";           // tipos de documentos de clientes que permiten boletas
         string tdocsFac = "";           // tipos de documentos de clientes que permiten facturas
+        string texmotran = "";          // texto modalidad de transporte
+        string codtxmotran = "";        // codigo motivo de traslado de bienes
         //
         static libreria lib = new libreria();   // libreria de procedimientos
         publico lp = new publico();             // libreria de clases
@@ -126,7 +128,7 @@ namespace TransCarga
         string[] datcltsR = { "", "", "", "", "", "", "", "", "" };
         string[] datcltsD = { "", "", "", "", "", "", "", "", "" };
         string[] datguias = { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }; // 17
-
+        string[] datcargu = { "", "", "", "", "", "", "", "", "", "", "", "", "", "" };    // 14
         public facelect()
         {
             InitializeComponent();
@@ -203,6 +205,24 @@ namespace TransCarga
             tx_distRtt.AutoCompleteMode = AutoCompleteMode.Suggest;           // distritos
             tx_distRtt.AutoCompleteSource = AutoCompleteSource.CustomSource;  // distritos
             tx_distRtt.AutoCompleteCustomSource = distritos;                  // distritos
+            tx_dp_dep.AutoCompleteMode = AutoCompleteMode.Suggest;            // punto de partida - cargas unicas
+            tx_dp_dep.AutoCompleteSource = AutoCompleteSource.CustomSource;
+            tx_dp_dep.AutoCompleteCustomSource = departamentos;
+            tx_dp_pro.AutoCompleteMode = AutoCompleteMode.Suggest;
+            tx_dp_pro.AutoCompleteSource = AutoCompleteSource.CustomSource;
+            tx_dp_pro.AutoCompleteCustomSource = provincias;
+            tx_dp_dis.AutoCompleteMode = AutoCompleteMode.Suggest;
+            tx_dp_dis.AutoCompleteSource = AutoCompleteSource.CustomSource;
+            tx_dp_dis.AutoCompleteCustomSource = distritos;
+            tx_dd_dep.AutoCompleteMode = AutoCompleteMode.Suggest;          // punto llegada - cargas unicas
+            tx_dd_dep.AutoCompleteSource = AutoCompleteSource.CustomSource;
+            tx_dd_dep.AutoCompleteCustomSource = departamentos;
+            tx_dd_pro.AutoCompleteMode = AutoCompleteMode.Suggest;
+            tx_dd_pro.AutoCompleteSource = AutoCompleteSource.CustomSource;
+            tx_dd_pro.AutoCompleteCustomSource = provincias;
+            tx_dd_dis.AutoCompleteMode = AutoCompleteMode.Suggest;
+            tx_dd_dis.AutoCompleteSource = AutoCompleteSource.CustomSource;
+            tx_dd_dis.AutoCompleteCustomSource = distritos;
             // longitudes maximas de campos
             tx_serie.MaxLength = 4;         // serie doc vta
             tx_numero.MaxLength = 8;        // numero doc vta
@@ -377,6 +397,8 @@ namespace TransCarga
                             if (row["param"].ToString() == "ose-pse") nipfe = row["valor"].ToString().Trim();
                             if (row["param"].ToString() == "motivoBaja") glosaAnul = row["valor"].ToString().Trim();
                             if (row["param"].ToString() == "tipsDocbaja") tipdocAnu = row["valor"].ToString().Trim();
+                            if (row["param"].ToString() == "modTran") texmotran = row["valor"].ToString().Trim();
+                            if (row["param"].ToString() == "codmotTran") codtxmotran = row["valor"].ToString().Trim();
                         }
                     }
                     if (row["formulario"].ToString() == "ayccaja" && row["campo"].ToString() == "estado")
@@ -787,12 +809,24 @@ namespace TransCarga
                 datguias[8] = "";   // tipo de cambio
                 datguias[9] = "";   // fecha de la GR
                 datguias[10] = "";  // guia del cliente, sustento del cliente
-                datguias[11] = "";
-                datguias[12] = "";
-                datguias[13] = "";
-                datguias[14] = "";
+                datguias[11] = "";   // placa
+                datguias[12] = "";   // carreta
+                datguias[13] = "";   // autoriz circulacion
+                datguias[14] = "";   // conf. vehicular
                 datguias[15] = "";  // local origen-destino
                 datguias[16] = "";  // saldo de la GR
+                //
+                datcargu[0] = "";   // direc. partida
+                datcargu[1] = "";   // depart. pto. partida
+                datcargu[2] = "";   // provin. pto. partida
+                datcargu[3] = "";   // distri. pto. partida
+                datcargu[4] = "";   // ubigeo punto partida
+                datcargu[5] = "";   // direc. llegada
+                datcargu[6] = "";   // depart. pto. llegada
+                datcargu[7] = "";   // provin. pto. llegada
+                datcargu[8] = "";   // distri. pto. llegada
+                datcargu[9] = "";   // ubigeo punto llegada
+
                 // validamos que la GR: 1.exista, 2.No este facturada, 3.No este anulada
                 // y devolvemos una fila con los datos del remitente y otra fila los datos del destinatario
                 string hay = "no";
@@ -833,7 +867,8 @@ namespace TransCarga
                             "ifnull(b1.numerotel2,'') as numtel2R,a.tidodegri,a.nudodegri,b2.razonsocial as nombdegri,b2.direcc1 as diredegri,b2.ubigeo as ubigdegri,ifnull(b2.email,'') as emailD," +
                             "ifnull(b2.numerotel1,'') as numtel1D,ifnull(b2.numerotel2,'') as numtel2D,a.tipmongri,a.totgri,a.salgri,SUM(d.cantprodi) AS bultos,date(a.fechopegr) as fechopegr,a.tipcamgri," +
                             "max(d.descprodi) AS descrip,ifnull(m.descrizionerid,'') as mon,a.totgrMN,a.codMN,c.fecdocvta,b1.tiposocio as tipsrem,b2.tiposocio as tipsdes,a.docsremit," +
-                            "a.plaplagri,a.carplagri,a.autplagri,a.confvegri,concat(lo.descrizionerid,' - ',ld.descrizionerid) as orides,c.saldofina " +
+                            "a.plaplagri,a.carplagri,a.autplagri,a.confvegri,concat(lo.descrizionerid,' - ',ld.descrizionerid) as orides,c.saldofina," +
+                            "a.direregri as dirpartida,a.ubigregri as ubigpartida,a.diredegri as dirllegada,a.ubigdegri as ubigllegada " +
                             "from cabguiai a left join detguiai d on d.idc=a.id " +
                             "LEFT JOIN controlg c ON c.serguitra = a.sergui AND c.numguitra = a.numgui " +
                             "left join anag_cli b1 on b1.tipdoc=a.tidoregri and b1.ruc=a.nudoregri " +
@@ -891,6 +926,19 @@ namespace TransCarga
                                         datguias[14] = dr.GetString("confvegri");
                                         datguias[15] = dr.GetString("orides");
                                         datguias[16] = dr.GetString("salgri");
+                                        //
+                                        datcargu[0] = dr.GetString("dirpartida");
+                                        datcargu[4] = dr.GetString("ubigpartida");   // ubigeo punto partida
+                                        string[] aa = lib.retDPDubigeo(datcargu[4]);
+                                        datcargu[1] = aa[0];   // depart. pto. partida
+                                        datcargu[2] = aa[1];   // provin. pto. partida
+                                        datcargu[3] = aa[2];   // distri. pto. partida
+                                        datcargu[5] = dr.GetString("dirllegada");   // direc. llegada
+                                        datcargu[9] = dr.GetString("ubigllegada");   // ubigeo punto llegada
+                                        aa = lib.retDPDubigeo(datcargu[9]);
+                                        datcargu[6] = aa[0];   // depart. pto. llegada
+                                        datcargu[7] = aa[1];   // provin. pto. llegada
+                                        datcargu[8] = aa[2];   // distri. pto. llegada
                                         //
                                         tx_dat_saldoGR.Text = dr.GetString("salgri");
                                         retorna = true;
@@ -964,7 +1012,6 @@ namespace TransCarga
                     tx_dat_dpd.Enabled = true;
                     if (dataGridView1.Rows[0].Cells[0].Value != null)
                     {
-                        //MessageBox.Show("hay guia");
                         tx_pla_placa.Text = datguias[11].ToString();
                         tx_pla_confv.Text = datguias[14].ToString();
                         tx_pla_autor.Text = datguias[13].ToString();
@@ -973,10 +1020,16 @@ namespace TransCarga
                         tx_valref1.Text = "";
                         tx_valref2.Text = "";
                         tx_valref3.Text = "";
-                        tx_dat_dpo.Text = datcltsR[3].ToString();
-                        tx_dat_dpd.Text = datcltsD[3].ToString();
-                        tx_dat_upo.Text = datcltsR[4].ToString();
-                        tx_dat_upd.Text = datcltsD[4].ToString();
+                        tx_dat_dpo.Text = datcargu[0].ToString();       // datcltsR[3].ToString();
+                        tx_dp_dep.Text = datcargu[1].ToString();
+                        tx_dp_pro.Text = datcargu[2].ToString();
+                        tx_dp_dis.Text = datcargu[3].ToString();
+                        tx_dat_upo.Text = datcargu[4].ToString();     // datcltsR[4].ToString();
+                        tx_dat_dpd.Text = datcargu[5].ToString();       // datcltsD[3].ToString();
+                        tx_dd_dep.Text = datcargu[6].ToString();
+                        tx_dd_pro.Text = datcargu[7].ToString();
+                        tx_dd_dis.Text = datcargu[8].ToString();
+                        tx_dat_upd.Text = datcargu[9].ToString();     // datcltsD[4].ToString();
                     }
                 }
                 else
@@ -994,8 +1047,14 @@ namespace TransCarga
                     tx_valref2.Text = "";
                     tx_valref3.Text = "";
                     tx_dat_dpo.Text = "";
-                    tx_dat_dpd.Text = "";
+                    tx_dp_dep.Text = "";
+                    tx_dp_pro.Text = "";
+                    tx_dp_dis.Text = "";
                     tx_dat_upo.Text = "";
+                    tx_dat_dpd.Text = "";
+                    tx_dd_dep.Text = "";
+                    tx_dd_pro.Text = "";
+                    tx_dd_dis.Text = "";
                     tx_dat_upd.Text = "";
                 }
             }
@@ -1080,6 +1139,36 @@ namespace TransCarga
             tcfe.Columns.Add("totdet", typeof(double));     // total detraccion
             tcfe.Columns.Add("codleyd");                    // codigo leyenda detraccion
             tcfe.Columns.Add("d_monde");                    // moneda de la detraccion
+            // carga unica - traslado de bienes
+            // 02   codigo pais de origen ... osea PE
+            tcfe.Columns.Add("cu_ubipp");                   // 03    Ubigeo del punto de partida 
+            tcfe.Columns.Add("cu_deppp");                   // 04    Departamento del punto de partida
+            tcfe.Columns.Add("cu_propp");                   // 05    Provincia del punto de partida
+            tcfe.Columns.Add("cu_dispp");                   // 06    Distrito del punto de partida
+            tcfe.Columns.Add("cu_urbpp");                   // 07    Urbanización del punto de partida
+            tcfe.Columns.Add("cu_dirpp");                   // 08    Dirección detallada del punto de partida
+            tcfe.Columns.Add("cu_cppll");                   // 09    Código país del punto de llegada
+            tcfe.Columns.Add("cu_ubpll");                   // 10    Ubigeo del punto de llegada
+            tcfe.Columns.Add("cu_depll");                   // 11    Departamento del punto de llegada
+            tcfe.Columns.Add("cu_prpll");                   // 12    Provincia del punto de llegada
+            tcfe.Columns.Add("cu_dipll");                   // 13    Distrito del punto de llegada
+            tcfe.Columns.Add("cu_urpll");                   // 14    Urbanización del punto de llegada
+            tcfe.Columns.Add("cu_ddpll");                   // 15    Dirección detallada del punto de llegada
+            tcfe.Columns.Add("cu_placa");                   // 16    Placa del Vehículo
+            tcfe.Columns.Add("cu_coins");                   // 17    Constancia de inscripción del vehículo o certificado de habilitación vehicular
+            tcfe.Columns.Add("cu_marca");                   // 18    Marca del Vehículo
+            tcfe.Columns.Add("cu_breve");                   // 19    Nro.de licencia de conducir
+            tcfe.Columns.Add("cu_ructr");                   // 20    RUC del transportista
+            tcfe.Columns.Add("cu_nomtr");                   // 21    Razón social del Transportista
+            tcfe.Columns.Add("cu_modtr");                   // 22    Modalidad de Transporte
+            tcfe.Columns.Add("cu_pesbr");                   // 23    Total Peso Bruto
+            tcfe.Columns.Add("cu_motra");                   // 24    Código de Motivo de Traslado
+            tcfe.Columns.Add("cu_fechi");                   // 25    Fecha de Inicio de Traslado
+            tcfe.Columns.Add("cu_remtc");                   // 26    Registro MTC
+            tcfe.Columns.Add("cu_nudch");                   // 27    Nro.Documento del conductor
+            tcfe.Columns.Add("cu_tidch");                   // 28    Tipo de Documento del conductor
+            tcfe.Columns.Add("cu_plac2");                   // 29    Placa del Vehículo secundario
+            tcfe.Columns.Add("cu_insub");                   // 30   Indicador de subcontratación
         }
         private void armadfe()                  // arma detalle de fact elect.
         {
@@ -1772,6 +1861,38 @@ namespace TransCarga
                     }
                 }
             }
+            if (chk_cunica.Checked == true && tx_dat_tdv.Text == codfact)     // factura de cargas unicas ... 
+            {
+                row["cu_cpapp"] = "PE";
+                row["cu_ubipp"] = tx_dat_upo.Text;                   // 03    Ubigeo del punto de partida 
+                row["cu_deppp"] = tx_dp_dep.Text;                   // 04    Departamento del punto de partida
+                row["cu_propp"] = tx_dp_pro.Text;                   // 05    Provincia del punto de partida
+                row["cu_dispp"] = tx_dp_dis.Text;                   // 06    Distrito del punto de partida
+                row["cu_urbpp"] = "-";                              // 07    Urbanización del punto de partida
+                row["cu_dirpp"] = tx_dat_dpo.Text;                   // 08    Dirección detallada del punto de partida
+                row["cu_cppll"] = "PE";                              // 09    Código país del punto de llegada
+                row["cu_ubpll"] = tx_dat_upd.Text;                   // 10    Ubigeo del punto de llegada
+                row["cu_depll"] = tx_dd_dep.Text;                   // 11    Departamento del punto de llegada
+                row["cu_prpll"] = tx_dd_pro.Text;                   // 12    Provincia del punto de llegada
+                row["cu_dipll"] = tx_dd_dis.Text;                   // 13    Distrito del punto de llegada
+                row["cu_ubpll"] = "-";                              // 14    Urbanización del punto de llegada
+                row["cu_ddpll"] = tx_dat_dpd.Text;                   // 15    Dirección detallada del punto de llegada
+                row["cu_placa"] = tx_pla_placa.Text;                   // 16    Placa del Vehículo
+                row["cu_coins"] = tx_pla_autor.Text;                   // 17    Constancia de inscripción del vehículo o certificado de habilitación vehicular
+                row["cu_marca"] = "";                   // 18    Marca del Vehículo
+                row["cu_breve"] = "";                   // 19    Nro.de licencia de conducir
+                row["cu_ructr"] = tx_rucT.Text;                   // 20    RUC del transportista
+                row["cu_nomtr"] = tx_razonS.Text;                   // 21    Razón social del Transportista
+                row["cu_modtr"] = texmotran;                   // 22    Modalidad de Transporte
+                row["cu_pesbr"] = tx_cetm.Text;                   // 23    Total Peso Bruto
+                row["cu_motra"] = codtxmotran;                   // 24    Código de Motivo de Traslado
+                row["cu_fechi"] = tx_fecini.Text;                   // 25    Fecha de Inicio de Traslado
+                row["cu_remtc"] = "";                   // 26    Registro MTC
+                row["cu_nudch"] = "";                   // 27    Nro.Documento del conductor
+                row["cu_tidch"] = "";                   // 28    Tipo de Documento del conductor
+                row["cu_plac2"] = "";                   // 29    Placa del Vehículo secundario
+                row["cu_insub"] = "";                   // 30   Indicador de subcontratación
+            }
             /* *********************   calculo y campos de detracciones   ****************************** */
             if (double.Parse(tx_flete.Text) > double.Parse(Program.valdetra) && tx_dat_tdv.Text == codfact && tx_dat_mone.Text == MonDeft)    // soles
             {
@@ -1974,9 +2095,42 @@ namespace TransCarga
                     _fechc + sep                                // 4 fecha del pago
                     );
             }
-            //
             // datos del traslados de bienes
-            // 
+            if (chk_cunica.Checked == true && tx_dat_tdv.Text == codfact)     // factura de cargas unicas ... 
+            {
+                writer.WriteLine("ENCABEZADO-TRASLADOBIENES" + sep +
+                    row["cu_cpapp"] + sep +                   // 02    Código país del punto de origen
+                    row["cu_ubipp"] + sep +                   // 03    Ubigeo del punto de partida 
+                    row["cu_deppp"] + sep +                   // 04    Departamento del punto de partida
+                    row["cu_propp"] + sep +                   // 05    Provincia del punto de partida
+                    row["cu_dispp"] + sep +                   // 06    Distrito del punto de partida
+                    row["cu_urbpp"] + sep +                   // 07    Urbanización del punto de partida
+                    row["cu_dirpp"] + sep +                   // 08    Dirección detallada del punto de partida
+                    row["cu_cppll"] + sep +                   // 09    Código país del punto de llegada
+                    row["cu_ubpll"] + sep +                   // 10    Ubigeo del punto de llegada
+                    row["cu_depll"] + sep +                   // 11    Departamento del punto de llegada
+                    row["cu_prpll"] + sep +                   // 12    Provincia del punto de llegada
+                    row["cu_dipll"] + sep +                   // 13    Distrito del punto de llegada
+                    row["cu_ubpll"] + sep +                   // 14    Urbanización del punto de llegada
+                    row["cu_ddpll"] + sep +                   // 15    Dirección detallada del punto de llegada
+                    row["cu_placa"] + sep +                   // 16    Placa del Vehículo
+                    row["cu_coins"] + sep +                   // 17    Constancia de inscripción del vehículo o certificado de habilitación vehicular
+                    row["cu_marca"] + sep +                   // 18    Marca del Vehículo
+                    row["cu_breve"] + sep +                   // 19    Nro.de licencia de conducir
+                    row["cu_ructr"] + sep +                   // 20    RUC del transportista
+                    row["cu_nomtr"] + sep +                   // 21    Razón social del Transportista
+                    row["cu_modtr"] + sep +                   // 22    Modalidad de Transporte
+                    row["cu_pesbr"] + sep +                   // 23    Total Peso Bruto
+                    row["cu_motra"] + sep +                   // 24    Código de Motivo de Traslado
+                    row["cu_fechi"] + sep +                   // 25    Fecha de Inicio de Traslado
+                    row["cu_remtc"] + sep +                   // 26    Registro MTC
+                    row["cu_nudch"] + sep +                   // 27    Nro.Documento del conductor
+                    row["cu_tidch"] + sep +                   // 28    Tipo de Documento del conductor
+                    row["cu_plac2"] + sep +                   // 29    Placa del Vehículo secundario
+                    row["cu_insub"]                           // 30   Indicador de subcontratación
+                );
+            }
+            //
             writer.WriteLine("ENCABEZADO-EMISOR" + sep +
                 row["Prucpro"] + sep +                          // 2 ruc emisor
                 row["Prazsoc"] + sep +                          // 3 razon social emisor
@@ -2026,46 +2180,91 @@ namespace TransCarga
                     row["glosdet"] + sep);                      // 7 leyenda de la detración
             }
             // ***** DETALLE ***** //
-            foreach (DataRow rdrow in tdfe.Rows)
+            if (chk_cunica.Checked == true && tx_dat_tdv.Text == codfact)
             {
+                DataRow rdrow = tdfe.Rows[0];
                 writer.WriteLine(
-                    "ITEM" + sep +
-                    rdrow["Inumord"] + sep +                    // 2 orden
-                    rdrow["Idatper"] + sep +                    // 3 Datos personilazados del item      
-                    rdrow["Iumeded"] + sep +                    // 4 Unidad de medida                    3
-                    rdrow["Icantid"] + sep +                    // 5 Cantidad de items             n(12,2)
-                    rdrow["Idescri"] + sep +                    // 6 Descripcion                       500
-                    rdrow["Idesglo"] + sep +                    // 7 descricion de la glosa del item   250
-                    rdrow["Icodprd"] + sep +                    // 8 codigo del producto del cliente    30
-                    rdrow["Icodpro"] + sep +                    // 9 codigo del producto SUNAT           8
-                    rdrow["Icodgs1"] + sep +                    // 10 codigo del producto GS1           14
-                    rdrow["Icogtin"] + sep +                    // 11 tipo de producto GTIN             14
-                    rdrow["Inplaca"] + sep +                    // 12 numero placa de vehiculo
-                    rdrow["Ivaluni"] + sep +                    // 13 Valor unitario del item SIN IMPUESTO 
-                    rdrow["Ipreuni"] + sep +                    // 14 Precio de venta unitario CON IGV
-                    rdrow["Ivalref"] + sep +                    // 15 valor referencial del item cuando la venta es gratuita
-                    rdrow["Iigvite"] + sep +                     // 16 monto igv   .. ."_msigv"
-                    rdrow["Icatigv"] + sep +                    // 17 tipo/codigo de afectacion igv
-                    rdrow["Itasigv"] + sep +                    // 18 tasa del igv
-                    rdrow["Iigvite"] + sep +                    // 19 monto IGV del item
-                    rdrow["Icodtri"] + sep +                    // 20 codigo del tributo por item
-                    rdrow["Iiscmba"] + sep +                    // 21 ISC monto base
-                    rdrow["Iisctas"] + sep +                    // 22 ISC tasa del tributo
-                    rdrow["Iisctip"] + sep +                    // 23 ISC tipo de afectacion
-                    rdrow["Iiscmon"] + sep +                    // 24 ISC monto del tributo
-                    rdrow["Icbper1"] + sep +                    // 25 indicador de afecto a ICBPER
-                    rdrow["Icbper2"] + sep +                    // 26 monto unitario de ICBPER
-                    rdrow["Icbper3"] + sep +                    // 27 monto total ICBPER del item
-                    rdrow["Iotrtri"] + sep +                    // 28 otros tributos monto base
-                    rdrow["Iotrtas"] + sep +                    // 29 otros tributos tasa del tributo
-                    rdrow["Iotrlin"] + sep +                    // 30 otros tributos monto unitario
-                    rdrow["Itdscto"] + sep +                    // 31 Descuentos por ítem
-                    rdrow["Iincard"] + sep +                    // 32 indicador de cargo/descuento
-                    rdrow["Icodcde"] + sep +                    // 33 codigo de cargo/descuento
-                    rdrow["Ifcades"] + sep +                    // 34 Factor de cargo/descuento
-                    rdrow["Imoncde"] + sep +                    // 35 Monto de cargo/descuento
-                    rdrow["Imobacd"] + sep +                    // 36 Monto base del cargo/descuento
-                    rdrow["Ivalvta"] + sep);                    // 37 Valor de venta del ítem
+                        "ITEM" + sep +
+                        "1" + sep +                             // 2 orden
+                        rdrow["Idatper"] + sep +                    // 3 Datos personilazados del item      
+                        "TONELADA" + sep +                      // 4 Unidad de medida                    3
+                        tx_cetm.Text.Trim() + sep +             // 5 Cantidad de items             n(12,2)
+                        glosser + " " + tdfe.Rows[0].ItemArray[4].ToString() + sep +                    // 6 Descripcion                       500
+                        tx_totcant.Text + " " + tdfe.Rows[0].ItemArray[8].ToString() + sep +                    // 7 descricion de la glosa del item   250
+                        rdrow["Icodprd"] + sep +                    // 8 codigo del producto del cliente    30
+                        rdrow["Icodpro"] + sep +                    // 9 codigo del producto SUNAT           8
+                        rdrow["Icodgs1"] + sep +                    // 10 codigo del producto GS1           14
+                        rdrow["Icogtin"] + sep +                    // 11 tipo de producto GTIN             14
+                        rdrow["Inplaca"] + sep +                    // 12 numero placa de vehiculo
+                        rdrow["Ivaluni"] + sep +                    // 13 Valor unitario del item SIN IMPUESTO 
+                        rdrow["Ipreuni"] + sep +                    // 14 Precio de venta unitario CON IGV
+                        rdrow["Ivalref"] + sep +                    // 15 valor referencial del item cuando la venta es gratuita
+                        rdrow["Iigvite"] + sep +                     // 16 monto igv   .. ."_msigv"
+                        rdrow["Icatigv"] + sep +                    // 17 tipo/codigo de afectacion igv
+                        rdrow["Itasigv"] + sep +                    // 18 tasa del igv
+                        rdrow["Iigvite"] + sep +                    // 19 monto IGV del item
+                        rdrow["Icodtri"] + sep +                    // 20 codigo del tributo por item
+                        rdrow["Iiscmba"] + sep +                    // 21 ISC monto base
+                        rdrow["Iisctas"] + sep +                    // 22 ISC tasa del tributo
+                        rdrow["Iisctip"] + sep +                    // 23 ISC tipo de afectacion
+                        rdrow["Iiscmon"] + sep +                    // 24 ISC monto del tributo
+                        rdrow["Icbper1"] + sep +                    // 25 indicador de afecto a ICBPER
+                        rdrow["Icbper2"] + sep +                    // 26 monto unitario de ICBPER
+                        rdrow["Icbper3"] + sep +                    // 27 monto total ICBPER del item
+                        rdrow["Iotrtri"] + sep +                    // 28 otros tributos monto base
+                        rdrow["Iotrtas"] + sep +                    // 29 otros tributos tasa del tributo
+                        rdrow["Iotrlin"] + sep +                    // 30 otros tributos monto unitario
+                        rdrow["Itdscto"] + sep +                    // 31 Descuentos por ítem
+                        rdrow["Iincard"] + sep +                    // 32 indicador de cargo/descuento
+                        rdrow["Icodcde"] + sep +                    // 33 codigo de cargo/descuento
+                        rdrow["Ifcades"] + sep +                    // 34 Factor de cargo/descuento
+                        rdrow["Imoncde"] + sep +                    // 35 Monto de cargo/descuento
+                        rdrow["Imobacd"] + sep +                    // 36 Monto base del cargo/descuento
+                        rdrow["Ivalvta"] + sep);                    // 37 Valor de venta del ítem
+            }
+            else
+            {
+                foreach (DataRow rdrow in tdfe.Rows)
+                {
+                    writer.WriteLine(
+                        "ITEM" + sep +
+                        rdrow["Inumord"] + sep +                    // 2 orden
+                        rdrow["Idatper"] + sep +                    // 3 Datos personilazados del item      
+                        rdrow["Iumeded"] + sep +                    // 4 Unidad de medida                    3
+                        rdrow["Icantid"] + sep +                    // 5 Cantidad de items             n(12,2)
+                        rdrow["Idescri"] + sep +                    // 6 Descripcion                       500
+                        rdrow["Idesglo"] + sep +                    // 7 descricion de la glosa del item   250
+                        rdrow["Icodprd"] + sep +                    // 8 codigo del producto del cliente    30
+                        rdrow["Icodpro"] + sep +                    // 9 codigo del producto SUNAT           8
+                        rdrow["Icodgs1"] + sep +                    // 10 codigo del producto GS1           14
+                        rdrow["Icogtin"] + sep +                    // 11 tipo de producto GTIN             14
+                        rdrow["Inplaca"] + sep +                    // 12 numero placa de vehiculo
+                        rdrow["Ivaluni"] + sep +                    // 13 Valor unitario del item SIN IMPUESTO 
+                        rdrow["Ipreuni"] + sep +                    // 14 Precio de venta unitario CON IGV
+                        rdrow["Ivalref"] + sep +                    // 15 valor referencial del item cuando la venta es gratuita
+                        rdrow["Iigvite"] + sep +                     // 16 monto igv   .. ."_msigv"
+                        rdrow["Icatigv"] + sep +                    // 17 tipo/codigo de afectacion igv
+                        rdrow["Itasigv"] + sep +                    // 18 tasa del igv
+                        rdrow["Iigvite"] + sep +                    // 19 monto IGV del item
+                        rdrow["Icodtri"] + sep +                    // 20 codigo del tributo por item
+                        rdrow["Iiscmba"] + sep +                    // 21 ISC monto base
+                        rdrow["Iisctas"] + sep +                    // 22 ISC tasa del tributo
+                        rdrow["Iisctip"] + sep +                    // 23 ISC tipo de afectacion
+                        rdrow["Iiscmon"] + sep +                    // 24 ISC monto del tributo
+                        rdrow["Icbper1"] + sep +                    // 25 indicador de afecto a ICBPER
+                        rdrow["Icbper2"] + sep +                    // 26 monto unitario de ICBPER
+                        rdrow["Icbper3"] + sep +                    // 27 monto total ICBPER del item
+                        rdrow["Iotrtri"] + sep +                    // 28 otros tributos monto base
+                        rdrow["Iotrtas"] + sep +                    // 29 otros tributos tasa del tributo
+                        rdrow["Iotrlin"] + sep +                    // 30 otros tributos monto unitario
+                        rdrow["Itdscto"] + sep +                    // 31 Descuentos por ítem
+                        rdrow["Iincard"] + sep +                    // 32 indicador de cargo/descuento
+                        rdrow["Icodcde"] + sep +                    // 33 codigo de cargo/descuento
+                        rdrow["Ifcades"] + sep +                    // 34 Factor de cargo/descuento
+                        rdrow["Imoncde"] + sep +                    // 35 Monto de cargo/descuento
+                        rdrow["Imobacd"] + sep +                    // 36 Monto base del cargo/descuento
+                        rdrow["Ivalvta"] + sep);                    // 37 Valor de venta del ítem
+                }
             }
             writer.Flush();
             writer.Close();
@@ -2128,28 +2327,82 @@ namespace TransCarga
                 departamentos.Add(row["nombre"].ToString());
             }
         }
-        private void autoprov()                 // se jala despues de ingresado el departamento
+        private void autoprov(string donde)                 // se jala despues de ingresado el departamento
         {
-            if (tx_dptoRtt.Text.Trim() != "")
+            switch(donde)
             {
-                DataRow[] provi = dataUbig.Select("depart='" + tx_ubigRtt.Text.Substring(0, 2) + "' and provin<>'00' and distri='00'");
-                provincias.Clear();
-                foreach (DataRow row in provi)
-                {
-                    provincias.Add(row["nombre"].ToString());
-                }
-            }
+                case "cliente":
+                    if (tx_dptoRtt.Text.Trim() != "")
+                    {
+                        DataRow[] provi = dataUbig.Select("depart='" + tx_ubigRtt.Text.Substring(0, 2) + "' and provin<>'00' and distri='00'");
+                        provincias.Clear();
+                        foreach (DataRow row in provi)
+                        {
+                            provincias.Add(row["nombre"].ToString());
+                        }
+                    }
+                    break;
+                case "partida":
+                    if (tx_dp_dep.Text.Trim() != "")
+                    {
+                        DataRow[] provi = dataUbig.Select("depart='" + tx_dat_upo.Text.Substring(0, 2) + "' and provin<>'00' and distri='00'");
+                        provincias.Clear();
+                        foreach (DataRow row in provi)
+                        {
+                            provincias.Add(row["nombre"].ToString());
+                        }
+                    }
+                    break;
+                case "llegada":
+                    if (tx_dd_dep.Text.Trim() != "")
+                    {
+                        DataRow[] provi = dataUbig.Select("depart='" + tx_dat_upd.Text.Substring(0, 2) + "' and provin<>'00' and distri='00'");
+                        provincias.Clear();
+                        foreach (DataRow row in provi)
+                        {
+                            provincias.Add(row["nombre"].ToString());
+                        }
+                    }
+                    break;
+            } 
         }
-        private void autodist()                 // se jala despues de ingresado la provincia
+        private void autodist(string donde)                 // se jala despues de ingresado la provincia
         {
-            if (tx_ubigRtt.Text.Trim() != "" && tx_provRtt.Text.Trim() != "")
+            switch (donde)
             {
-                DataRow[] distr = dataUbig.Select("depart='" + tx_ubigRtt.Text.Substring(0, 2) + "' and provin='" + tx_ubigRtt.Text.Substring(2, 2) + "' and distri<>'00'");
-                distritos.Clear();
-                foreach (DataRow row in distr)
-                {
-                    distritos.Add(row["nombre"].ToString());
-                }
+                case "cliente":
+                    if (tx_ubigRtt.Text.Trim() != "" && tx_provRtt.Text.Trim() != "")
+                    {
+                        DataRow[] distr = dataUbig.Select("depart='" + tx_ubigRtt.Text.Substring(0, 2) + "' and provin='" + tx_ubigRtt.Text.Substring(2, 2) + "' and distri<>'00'");
+                        distritos.Clear();
+                        foreach (DataRow row in distr)
+                        {
+                            distritos.Add(row["nombre"].ToString());
+                        }
+                    }
+                    break;
+                case "partida":
+                    if (tx_dat_upo.Text.Trim() != "" && tx_dp_pro.Text.Trim() != "")
+                    {
+                        DataRow[] distr = dataUbig.Select("depart='" + tx_dat_upo.Text.Substring(0, 2) + "' and provin='" + tx_dat_upo.Text.Substring(2, 2) + "' and distri<>'00'");
+                        distritos.Clear();
+                        foreach (DataRow row in distr)
+                        {
+                            distritos.Add(row["nombre"].ToString());
+                        }
+                    }
+                    break;
+                case "llegada":
+                    if (tx_dat_upd.Text.Trim() != "" && tx_dd_pro.Text.Trim() != "")
+                    {
+                        DataRow[] distr = dataUbig.Select("depart='" + tx_dat_upd.Text.Substring(0, 2) + "' and provin='" + tx_dat_upd.Text.Substring(2, 2) + "' and distri<>'00'");
+                        distritos.Clear();
+                        foreach (DataRow row in distr)
+                        {
+                            distritos.Add(row["nombre"].ToString());
+                        }
+                    }
+                    break;
             }
         }
         #endregion autocompletados
@@ -2222,7 +2475,7 @@ namespace TransCarga
                 dataGridView1.Rows.Add(datguias[0], datguias[1], datguias[2], datguias[3], datguias[4], datguias[5], datguias[6], datguias[9], datguias[10], datguias[7], datguias[15],datguias[16]);     // insertamos en la grilla los datos de la GR
                 int totfil = 0;
                 int totcant = 0;
-                decimal totflet = 0;    // acumulador en moneda de la GR
+                decimal totflet = 0;    // acumulador en moneda de la GR 
                 tx_dat_mone.Text = datguias[7].ToString();
                 cmb_mon.SelectedValue = datguias[7].ToString();
                 for (int i = 0; i < dataGridView1.Rows.Count; i++)
@@ -3010,7 +3263,7 @@ namespace TransCarga
                 if (row.Length > 0)
                 {
                     tx_ubigRtt.Text = row[0].ItemArray[1].ToString(); // lib.retCodubigeo(tx_dptoRtt.Text.Trim(),"","");
-                    autoprov();
+                    autoprov("cliente");
                 }
                 else tx_dptoRtt.Text = "";
             }
@@ -3023,7 +3276,7 @@ namespace TransCarga
                 if (row.Length > 0)
                 {
                     tx_ubigRtt.Text = tx_ubigRtt.Text.Trim().Substring(0, 2) + row[0].ItemArray[2].ToString();
-                    autodist();
+                    autodist("cliente");
                 }
                 else tx_provRtt.Text = "";
             }
@@ -3048,6 +3301,82 @@ namespace TransCarga
                 tx_dptoRtt.Text = du_remit[0];
                 tx_provRtt.Text = du_remit[1];
                 tx_distRtt.Text = du_remit[2];
+            }
+        }
+        private void tx_dp_dep_Leave(object sender, EventArgs e)        // departamento del punto de partida
+        {
+            if (tx_dp_dep.Text.Trim() != "")
+            {
+                DataRow[] row = dataUbig.Select("nombre='" + tx_dp_dep.Text.Trim() + "' and provin='00' and distri='00'");
+                if (row.Length > 0)
+                {
+                    tx_dat_upo.Text = row[0].ItemArray[1].ToString();
+                    autoprov("partida");
+                }
+                else tx_dp_dep.Text = "";
+            }
+        }
+        private void tx_dp_pro_Leave(object sender, EventArgs e)        // provincia del punto de partida
+        {
+            if (tx_dp_pro.Text.Trim() != "")
+            {
+                DataRow[] row = dataUbig.Select("depart='" + tx_dat_upo.Text.Substring(0, 2) + "' and nombre='" + tx_dp_pro.Text.Trim() + "' and provin<>'00' and distri='00'");
+                if (row.Length > 0)
+                {
+                    tx_dat_upo.Text = tx_dat_upo.Text.Trim().Substring(0, 2) + row[0].ItemArray[2].ToString();
+                    autodist("partida");
+                }
+                else tx_dp_pro.Text = "";
+            }
+        }
+        private void tx_dp_dis_Leave(object sender, EventArgs e)        // distrito del punto de partida
+        {
+            if (tx_dp_dis.Text.Trim() != "" && tx_dp_pro.Text.Trim() != "" && tx_dp_dep.Text.Trim() != "")
+            {
+                DataRow[] row = dataUbig.Select("depart='" + tx_dat_upo.Text.Substring(0, 2) + "' and provin='" + tx_dat_upo.Text.Substring(2, 2) + "' and nombre='" + tx_dp_dis.Text.Trim() + "'");
+                if (row.Length > 0)
+                {
+                    tx_dat_upo.Text = tx_dat_upo.Text.Trim().Substring(0, 4) + row[0].ItemArray[3].ToString();
+                }
+                else tx_dp_dis.Text = "";
+            }
+        }
+        private void tx_dd_dep_Leave(object sender, EventArgs e)        // departamento del punto de llegada
+        {
+            if (tx_dd_dep.Text.Trim() != "")
+            {
+                DataRow[] row = dataUbig.Select("nombre='" + tx_dd_dep.Text.Trim() + "' and provin='00' and distri='00'");
+                if (row.Length > 0)
+                {
+                    tx_dat_upd.Text = row[0].ItemArray[1].ToString();
+                    autoprov("llegada");
+                }
+                else tx_dd_dep.Text = "";
+            }
+        }
+        private void tx_dd_pro_Leave(object sender, EventArgs e)        // provincia del punto de llegada
+        {
+            if (tx_dd_pro.Text.Trim() != "")
+            {
+                DataRow[] row = dataUbig.Select("depart='" + tx_dat_upd.Text.Substring(0, 2) + "' and nombre='" + tx_dd_pro.Text.Trim() + "' and provin<>'00' and distri='00'");
+                if (row.Length > 0)
+                {
+                    tx_dat_upd.Text = tx_dat_upd.Text.Trim().Substring(0, 2) + row[0].ItemArray[2].ToString();
+                    autodist("llegada");
+                }
+                else tx_dd_pro.Text = "";
+            }
+        }
+        private void tx_dd_dis_Leave(object sender, EventArgs e)        // distrito del punto de llegada
+        {
+            if (tx_dd_dis.Text.Trim() != "" && tx_dd_pro.Text.Trim() != "" && tx_dd_dep.Text.Trim() != "")
+            {
+                DataRow[] row = dataUbig.Select("depart='" + tx_dat_upd.Text.Substring(0, 2) + "' and provin='" + tx_dat_upd.Text.Substring(2, 2) + "' and nombre='" + tx_dd_dis.Text.Trim() + "'");
+                if (row.Length > 0)
+                {
+                    tx_dat_upd.Text = tx_dat_upd.Text.Trim().Substring(0, 4) + row[0].ItemArray[3].ToString();
+                }
+                else tx_dd_dis.Text = "";
             }
         }
         private void textBox3_Leave(object sender, EventArgs e)         // número de documento remitente
