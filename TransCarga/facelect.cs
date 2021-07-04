@@ -826,6 +826,9 @@ namespace TransCarga
                 datcargu[7] = "";   // provin. pto. llegada
                 datcargu[8] = "";   // distri. pto. llegada
                 datcargu[9] = "";   // ubigeo punto llegada
+                datcargu[10] = "";  // ruc del camion
+                datcargu[11] = "";  // razon social del ruc
+                datcargu[12] = "";  // fecha inicio del traslado
 
                 // validamos que la GR: 1.exista, 2.No este facturada, 3.No este anulada
                 // y devolvemos una fila con los datos del remitente y otra fila los datos del destinatario
@@ -868,9 +871,10 @@ namespace TransCarga
                             "ifnull(b2.numerotel1,'') as numtel1D,ifnull(b2.numerotel2,'') as numtel2D,a.tipmongri,a.totgri,a.salgri,SUM(d.cantprodi) AS bultos,date(a.fechopegr) as fechopegr,a.tipcamgri," +
                             "max(d.descprodi) AS descrip,ifnull(m.descrizionerid,'') as mon,a.totgrMN,a.codMN,c.fecdocvta,b1.tiposocio as tipsrem,b2.tiposocio as tipsdes,a.docsremit," +
                             "a.plaplagri,a.carplagri,a.autplagri,a.confvegri,concat(lo.descrizionerid,' - ',ld.descrizionerid) as orides,c.saldofina," +
-                            "a.direregri as dirpartida,a.ubigregri as ubigpartida,a.diredegri as dirllegada,a.ubigdegri as ubigllegada " +
+                            "a.direregri as dirpartida,a.ubigregri as ubigpartida,a.diredegri as dirllegada,a.ubigdegri as ubigllegada,a.fechplani,a.proplagri,p.RazonSocial " +
                             "from cabguiai a left join detguiai d on d.idc=a.id " +
                             "LEFT JOIN controlg c ON c.serguitra = a.sergui AND c.numguitra = a.numgui " +
+                            "left join anag_for p on p.ruc=a.proplagri " +
                             "left join anag_cli b1 on b1.tipdoc=a.tidoregri and b1.ruc=a.nudoregri " +
                             "left join anag_cli b2 on b2.tipdoc=a.tidodegri and b2.ruc=a.nudodegri " +
                             "left join desc_mon m on m.idcodice=a.tipmongri " +
@@ -939,6 +943,9 @@ namespace TransCarga
                                         datcargu[6] = aa[0];   // depart. pto. llegada
                                         datcargu[7] = aa[1];   // provin. pto. llegada
                                         datcargu[8] = aa[2];   // distri. pto. llegada
+                                        datcargu[10] = dr.GetString("proplagri");  // ruc del camion
+                                        datcargu[11] = dr.GetString("RazonSocial");  // razon social del ruc
+                                        datcargu[12] = dr.GetString("fechplani");    // fecha inicio traslado
                                         //
                                         tx_dat_saldoGR.Text = dr.GetString("salgri");
                                         retorna = true;
@@ -1015,6 +1022,9 @@ namespace TransCarga
                         tx_pla_placa.Text = datguias[11].ToString();
                         tx_pla_confv.Text = datguias[14].ToString();
                         tx_pla_autor.Text = datguias[13].ToString();
+                        tx_rucT.Text = datcargu[10].ToString();
+                        tx_razonS.Text = datcargu[11].ToString();
+                        tx_fecini.Text = datcargu[12].ToString().Substring(0, 10);
                         tx_cetm.Text = "";
                         tx_cutm.Text = "";
                         tx_valref1.Text = "";
@@ -1041,6 +1051,9 @@ namespace TransCarga
                     tx_pla_placa.Text = "";
                     tx_pla_confv.Text = "";
                     tx_pla_autor.Text = "";
+                    tx_rucT.Text = "";
+                    tx_razonS.Text = "";
+                    tx_fecini.Text = "";
                     tx_cetm.Text = "";
                     tx_cutm.Text = "";
                     tx_valref1.Text = "";
@@ -1140,7 +1153,7 @@ namespace TransCarga
             tcfe.Columns.Add("codleyd");                    // codigo leyenda detraccion
             tcfe.Columns.Add("d_monde");                    // moneda de la detraccion
             // carga unica - traslado de bienes
-            // 02   codigo pais de origen ... osea PE
+            tcfe.Columns.Add("cu_cpapp");                   // 02    codigo pais de origen ... osea PE
             tcfe.Columns.Add("cu_ubipp");                   // 03    Ubigeo del punto de partida 
             tcfe.Columns.Add("cu_deppp");                   // 04    Departamento del punto de partida
             tcfe.Columns.Add("cu_propp");                   // 05    Provincia del punto de partida
@@ -2506,7 +2519,7 @@ namespace TransCarga
                     var result = vtipcam.ShowDialog();
                     //tx_flete.Text = vtipcam.ReturnValue1;
                     //tx_fletMN.Text = vtipcam.ReturnValue2;
-                    tx_tipcam.Text = vtipcam.ReturnValue3;
+                    tx_tipcam.Text = (vtipcam.ReturnValue3 == null)? "0" : vtipcam.ReturnValue3;
                     tx_fletMN.Text = Math.Round(decimal.Parse(tx_flete.Text) * decimal.Parse(tx_tipcam.Text), 2).ToString();
                 }
                 else
