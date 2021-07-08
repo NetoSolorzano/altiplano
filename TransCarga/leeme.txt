@@ -261,4 +261,6 @@ form repadmcaja, agregar codigo para ruta y nombre de CR para pendientes de cobr
 form egresosdep, en modo edicion debe grabar codigo de tipo de egreso, no el texto ................. ok 28/06/2021
 form repsoper, pestaña servicio por cliente -> Vista previa de GR, color rojo anulados ............. ok 28/06/2021
 formato CR cuentas corrientes clientes, tachado a las filas anuladas ............................... ok 28/06/2021
-form facelect, facuracion en dolares de soya ....................................................... 
+form facelect, facuracion en dolares de soya ....................................................... OK 04/07/2021
+P.A. rep_cuadre_sede y formato CR, agregar columna nombre cliente a cobranzas (guido) .............. ok 08/07/2021
+form repadmcaja, agregar nombre de cliente en formato cuadre de caja (guido) ....................... ok 08/07/2021

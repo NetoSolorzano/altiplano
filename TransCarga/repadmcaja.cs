@@ -1151,6 +1151,7 @@ namespace TransCarga
                     rowdetalle.nomMonp = row.ItemArray[25].ToString();       // nombre de la moneda de pago
                     rowdetalle.totpago = Double.Parse(row.ItemArray[26].ToString());       // total pagado/cobrado
                     rowdetalle.totpaMN = Double.Parse(row.ItemArray[27].ToString());       // total pagado/cobrado en MN
+                    rowdetalle.nomclie = row.ItemArray[29].ToString();       // nombre del cliente en cobranzas 
                     cuadre.cuadreCaja_det.AddcuadreCaja_detRow(rowdetalle);
                 }
             }
