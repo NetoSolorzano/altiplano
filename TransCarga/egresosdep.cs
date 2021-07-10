@@ -586,22 +586,6 @@ namespace TransCarga
                 cmb_mpago.Focus();
                 return;
             }
-            if (tx_dat_mone.Text != MonDeft)
-            {
-                decimal tc = 0, vc = 0; 
-                decimal.TryParse(tx_tipcam.Text, out tc);
-                decimal.TryParse(tx_pagoMN.Text, out vc);
-                if (tc <= 0 && vc <= 0)
-                {
-                    MessageBox.Show("Seleccione la moneda de pago y tipo de cambio", " Atención ", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    cmb_mon.Focus();
-                    return;
-                }
-                else
-                {
-                    tx_pagoMN.Text = (decimal.Parse(tx_tipcam.Text) * decimal.Parse(tx_PAGO.Text)).ToString("#0.00");
-                }
-            }
             if (tx_PAGO.Text.Trim() == "")
             {
                 MessageBox.Show("Ingrese el monto del pago", " Atención ", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -624,6 +608,41 @@ namespace TransCarga
                 MessageBox.Show("Seleccione el tipo de comprobante", " Atención ", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 cmb_comp.Focus();
                 return;
+            }
+            if (Tx_modo.Text == "NUEVO" || Tx_modo.Text == "EDITAR")
+            {
+                if (tx_dat_mone.Text != MonDeft)
+                {
+                    decimal tc = 0, vc = 0;
+                    decimal.TryParse(tx_tipcam.Text, out tc);
+                    decimal.TryParse(tx_pagoMN.Text, out vc);
+                    if (tc <= 0 && vc <= 0)
+                    {
+                        MessageBox.Show("Seleccione la moneda de pago y tipo de cambio", " Atención ", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        cmb_mon.Focus();
+                        return;
+                    }
+                    else
+                    {
+                        tx_pagoMN.Text = (vc * tc).ToString("#0.00");
+                    }
+                }
+                if (tx_dat_mone.Text != MonDeft)
+                {
+                    if (tx_pagoMN.Text.Trim() == "" || tx_tipcam.Text.Trim() == "")
+                    {
+                        MessageBox.Show("Tipo de cambio o importe en moneda local faltante!", "Problemas con tipo de cambio", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        cmb_mon.Focus();
+                        return;
+                    }
+                    if (decimal.Parse(tx_tipcam.Text) == 0) // decimal.Parse(tx_pagoMN.Text) <= 0 || 
+                    {
+                        MessageBox.Show("Seleccione importe cambiado y/o tipo de cambio", "Error en tipo de cambio", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        cmb_mon.Focus();
+                        return;
+                    }
+                    tx_pagoMN.Text = Math.Round(decimal.Parse(tx_tipcam.Text) * decimal.Parse(tx_PAGO.Text), 2).ToString();
+                }
             }
             #endregion
             // grabamos, actualizamos, etc
@@ -1433,7 +1452,7 @@ namespace TransCarga
         }
         private void cmb_mon_SelectionChangeCommitted(object sender, EventArgs e)
         {
-            if (Tx_modo.Text == "NUEVO")
+            if (Tx_modo.Text == "NUEVO" || Tx_modo.Text == "EDITAR")
             {
                 if (cmb_mon.SelectedIndex > -1)
                 {

@@ -75,6 +75,7 @@ namespace TransCarga
         string codppc = "";             // codigo del plazo de pago por defecto para fact a crédito
         string codsuser_cu = "";        // usuarios autorizados a crear Ft de cargas unicas
         int v_cdpa = 0;                 // cantidad de días despues de emitida la fact. en que un usuario normal puede anular
+        string vint_gg = "";            // glosa del detalle inicial de la guía "sin verificar contenido"
         //
         string rutatxt = "";            // ruta de los txt para la fact. electronica
         string tipdo = "";              // CODIGO SUNAT tipo de documento de venta
@@ -298,6 +299,8 @@ namespace TransCarga
                 if (cusdscto.Contains(asd)) tx_flete.ReadOnly = false;
                 else tx_flete.ReadOnly = true;
             }
+            tx_dat_nombd.Text = "Bultos";
+            tx_dat_nombd.ReadOnly = true;
             cargaunica();
         }
         private void jalainfo()                 // obtiene datos de imagenes y variables
@@ -306,13 +309,14 @@ namespace TransCarga
             {
                 MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
                 conn.Open();
-                string consulta = "select formulario,campo,param,valor from enlaces where formulario in (@nofo,@nfin,@nofa,@nofi,@noca,@noco)";
+                string consulta = "select formulario,campo,param,valor from enlaces where formulario in (@nofo,@nfin,@nofa,@nofi,@noca,@noco,@nocg)";
                 MySqlCommand micon = new MySqlCommand(consulta, conn);
                 micon.Parameters.AddWithValue("@nofo", "main");
                 micon.Parameters.AddWithValue("@nfin", "interno");
                 micon.Parameters.AddWithValue("@nofi", "clients");
                 micon.Parameters.AddWithValue("@noco", "cobranzas");
                 micon.Parameters.AddWithValue("@noca", "ayccaja");
+                micon.Parameters.AddWithValue("@nocg", "guiati_a");
                 micon.Parameters.AddWithValue("@nofa", nomform);
                 MySqlDataAdapter da = new MySqlDataAdapter(micon);
                 DataTable dt = new DataTable();
@@ -412,6 +416,10 @@ namespace TransCarga
                         if (row["campo"].ToString() == "codinDV" && row["param"].ToString() == "DV") v_codidv = row["valor"].ToString().Trim();           // codigo de dov.vta en tabla TDV
                         if (row["campo"].ToString() == "igv" && row["param"].ToString() == "%") v_igv = row["valor"].ToString().Trim();
                     }
+                    if (row["formulario"].ToString() == "guiati_a")
+                    {
+                        if (row["campo"].ToString() == "detalle" && row["param"].ToString() == "glosa") vint_gg = row["valor"].ToString().Trim();
+                    } 
                 }
                 da.Dispose();
                 dt.Dispose();
@@ -1041,6 +1049,7 @@ namespace TransCarga
                         tx_dd_dis.Text = datcargu[8].ToString();
                         tx_dat_upd.Text = datcargu[9].ToString();     // datcltsD[4].ToString();
                     }
+                    tx_dat_nombd.ReadOnly = false;
                 }
                 else
                 {
@@ -1069,6 +1078,8 @@ namespace TransCarga
                     tx_dd_pro.Text = "";
                     tx_dd_dis.Text = "";
                     tx_dat_upd.Text = "";
+                    tx_dat_nombd.Text = "Bultos";
+                    tx_dat_nombd.ReadOnly = true;
                 }
             }
         }
@@ -1978,7 +1989,7 @@ namespace TransCarga
             tdfe.Rows.Clear();
             for (int s = 0; s < dataGridView1.Rows.Count - 1; s++)
             {
-                glosser2 = dataGridView1.Rows[s].Cells["OriDest"].Value.ToString() + " - " + tx_totcant.Text.Trim() + " Bultos";
+                glosser2 = dataGridView1.Rows[s].Cells["OriDest"].Value.ToString() + " - " + tx_totcant.Text.Trim() + tx_dat_nombd.Text; // " Bultos"; 
                 DataRow row = tdfe.NewRow();
                 row["Idatper"] = "";                                                        // datos personalizados del item
                 row["_msigv"] = Math.Round(double.Parse(dataGridView1.Rows[s].Cells["valor"].Value.ToString()) - (double.Parse(dataGridView1.Rows[s].Cells["valor"].Value.ToString()) / (1 + (double.Parse(v_igv) / 100))),2);
@@ -2202,7 +2213,7 @@ namespace TransCarga
                         rdrow["Idatper"] + sep +                    // 3 Datos personilazados del item      
                         "TONELADA" + sep +                      // 4 Unidad de medida                    3
                         tx_cetm.Text.Trim() + sep +             // 5 Cantidad de items             n(12,2)
-                        glosser + " " + tdfe.Rows[0].ItemArray[4].ToString() + sep +                    // 6 Descripcion                       500
+                        tdfe.Rows[0].ItemArray[4].ToString().Replace(vint_gg," ") + sep +                    // 6 Descripcion                       500
                         tx_totcant.Text + " " + tdfe.Rows[0].ItemArray[8].ToString() + sep +                    // 7 descricion de la glosa del item   250
                         rdrow["Icodprd"] + sep +                    // 8 codigo del producto del cliente    30
                         rdrow["Icodpro"] + sep +                    // 9 codigo del producto SUNAT           8
@@ -2489,6 +2500,7 @@ namespace TransCarga
                 int totfil = 0;
                 int totcant = 0;
                 decimal totflet = 0;    // acumulador en moneda de la GR 
+                decimal totflMN = 0;
                 tx_dat_mone.Text = datguias[7].ToString();
                 cmb_mon.SelectedValue = datguias[7].ToString();
                 for (int i = 0; i < dataGridView1.Rows.Count; i++)
@@ -2499,19 +2511,21 @@ namespace TransCarga
                         totfil += 1;
                         if (tx_dat_mone.Text != MonDeft)
                         {
-                            totflet = totflet + decimal.Parse(dataGridView1.Rows[i].Cells[5].Value.ToString()); // VALOR DE LA GR EN MONEDA LOCAL
+                            totflet = totflet + decimal.Parse(dataGridView1.Rows[i].Cells[4].Value.ToString()); // VALOR de la GR
+                            totflMN = totflMN + decimal.Parse(dataGridView1.Rows[i].Cells[5].Value.ToString()); // VALOR DE LA GR EN MONEDA LOCAL
                         }
                         else
                         {
                             totflet = totflet + decimal.Parse(dataGridView1.Rows[i].Cells[4].Value.ToString()); // VALOR DE LA GR EN SU MONEDA
+                            totflMN = totflMN + decimal.Parse(dataGridView1.Rows[i].Cells[5].Value.ToString()); // VALOR DE LA GR EN MONEDA LOCAL
                         }
                     }
                 }
-                tx_tfmn.Text = totflet.ToString("#0.00");
+                tx_tfmn.Text = totflMN.ToString("#0.00");
                 tx_totcant.Text = totcant.ToString();
                 tx_tfil.Text = totfil.ToString();
                 tx_flete.Text = totflet.ToString("#0.00");
-                tx_fletMN.Text = totflet.ToString("#0.00"); // Math.Round(decimal.Parse(tx_flete.Text) * decimal.Parse(tx_tipcam.Text), 2).ToString();
+                tx_fletMN.Text = totflMN.ToString("#0.00"); // Math.Round(decimal.Parse(tx_flete.Text) * decimal.Parse(tx_tipcam.Text), 2).ToString();
                 if (tx_dat_mone.Text != MonDeft && datguias[9].ToString().Substring(0,10) != tx_fechope.Text)
                 {
                     // llamanos a tipo de cambio
@@ -4022,7 +4036,7 @@ namespace TransCarga
         }
         private void cmb_mon_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (Tx_modo.Text == "NUEVO" && tx_totcant.Text != "")    //  || Tx_modo.Text == "EDITAR"
+            /*if (Tx_modo.Text == "NUEVO" && tx_totcant.Text != "")    //  || Tx_modo.Text == "EDITAR"
             {   // lo de totcant es para accionar solo cuando el detalle de la GR se haya cargado
                 if (cmb_mon.SelectedIndex > -1)
                 {
@@ -4051,7 +4065,7 @@ namespace TransCarga
                         }
                     }
                 }
-            }
+            } */
         }
         private void cmb_tdv_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -4068,22 +4082,38 @@ namespace TransCarga
                 }
             }
         }
-        private void cmb_plazoc_SelectionChangeCommitted(object sender, EventArgs e)
+        private void cmb_mon_SelectionChangeCommitted(object sender, EventArgs e)
         {
-            /*if (cmb_plazoc.SelectedIndex > -1)
-            {
-                tx_dat_plazo.Text = cmb_plazoc.SelectedValue.ToString();
-                DataRow[] dias = dtp.Select("idcodice='" + tx_dat_plazo.Text + "'");
-                foreach (DataRow row in dias)
+            if (Tx_modo.Text == "NUEVO" && tx_totcant.Text != "")    //  || Tx_modo.Text == "EDITAR"
+            {   // lo de totcant es para accionar solo cuando el detalle de la GR se haya cargado
+                if (cmb_mon.SelectedValue.ToString() != tx_dat_mone.Text) // cmb_mon.SelectedIndex > -1
                 {
-                    tx_dat_dpla.Text = row[3].ToString();
+                    tx_dat_mone.Text = cmb_mon.SelectedValue.ToString();
+                    DataRow[] row = dtm.Select("idcodice='" + tx_dat_mone.Text + "'");
+                    tx_dat_monsunat.Text = row[0][2].ToString();
+                    tipcambio(tx_dat_mone.Text);
+                    if (tx_flete.Text != "" && tx_flete.Text != "0.00") calculos(decimal.Parse(tx_flete.Text));
+                    if (rb_no.Checked == true) rb_no_Click(null, null);
+                    if (rb_si.Checked == true) rb_si_Click(null, null);
+                    if (tx_dat_mone.Text != MonDeft)
+                    {
+                        tx_flete.ReadOnly = false;
+                        tx_flete.Focus();
+                    }
+                    else
+                    {
+                        if (decimal.Parse(tx_dat_saldoGR.Text) <= 0)
+                        {
+                            if (cusdscto.Contains(asd)) tx_flete.ReadOnly = false;
+                            else tx_flete.ReadOnly = true;
+                        }
+                        else
+                        {
+                            tx_flete.ReadOnly = true;
+                        }
+                    }
                 }
             }
-            else
-            {
-                tx_dat_plazo.Text = "";
-                tx_dat_dpla.Text = "";
-            }*/
         }
         private void cmb_plazoc_SelectedIndexChanged(object sender, EventArgs e)
         {
