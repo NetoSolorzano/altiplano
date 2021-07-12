@@ -879,7 +879,7 @@ namespace TransCarga
                             "ifnull(b2.numerotel1,'') as numtel1D,ifnull(b2.numerotel2,'') as numtel2D,a.tipmongri,a.totgri,a.salgri,SUM(d.cantprodi) AS bultos,date(a.fechopegr) as fechopegr,a.tipcamgri," +
                             "max(d.descprodi) AS descrip,ifnull(m.descrizionerid,'') as mon,a.totgrMN,a.codMN,c.fecdocvta,b1.tiposocio as tipsrem,b2.tiposocio as tipsdes,a.docsremit," +
                             "a.plaplagri,a.carplagri,a.autplagri,a.confvegri,concat(lo.descrizionerid,' - ',ld.descrizionerid) as orides,c.saldofina," +
-                            "a.direregri as dirpartida,a.ubigregri as ubigpartida,a.diredegri as dirllegada,a.ubigdegri as ubigllegada,a.fechplani,a.proplagri,p.RazonSocial " +
+                            "a.direregri as dirpartida,a.ubigregri as ubigpartida,a.diredegri as dirllegada,a.ubigdegri as ubigllegada,ifnull(a.fechplani,'') as fechplani,a.proplagri,ifnull(p.RazonSocial,'') as RazonSocial " +
                             "from cabguiai a left join detguiai d on d.idc=a.id " +
                             "LEFT JOIN controlg c ON c.serguitra = a.sergui AND c.numguitra = a.numgui " +
                             "left join anag_for p on p.ruc=a.proplagri " +
@@ -1032,7 +1032,7 @@ namespace TransCarga
                         tx_pla_autor.Text = datguias[13].ToString();
                         tx_rucT.Text = datcargu[10].ToString();
                         tx_razonS.Text = datcargu[11].ToString();
-                        tx_fecini.Text = datcargu[12].ToString().Substring(0, 10);
+                        tx_fecini.Text = (datcargu[12].ToString().Length < 10) ? "" : datcargu[12].ToString().Substring(0, 10);
                         tx_cetm.Text = "";
                         tx_cutm.Text = "";
                         tx_valref1.Text = "";

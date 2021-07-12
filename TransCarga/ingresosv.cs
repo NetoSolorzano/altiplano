@@ -543,22 +543,6 @@ namespace TransCarga
                 cmb_mpago.Focus();
                 return;
             }
-            if (tx_dat_mone.Text != MonDeft)    //  && tx_tipcam.Text.Trim() == ""
-            {
-                decimal tc = 0, vc = 0;
-                decimal.TryParse(tx_tipcam.Text, out tc);
-                decimal.TryParse(tx_pagoMN.Text, out vc);
-                if (tc <= 0 || vc <= 0)
-                {
-                    MessageBox.Show("Seleccione la moneda y tipo de cambio", " Atención ", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    cmb_mon.Focus();
-                    return;
-                }
-                else
-                {
-                    tx_pagoMN.Text = (decimal.Parse(tx_tipcam.Text) * decimal.Parse(tx_PAGO.Text)).ToString("#0.00");
-                }
-            }
             if (tx_PAGO.Text.Trim() == "")
             {
                 MessageBox.Show("Registre el monto del ingreso", " Atención ", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -578,6 +562,25 @@ namespace TransCarga
             {
                 MessageBox.Show("No existe caja!", " Atención ", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
+            }
+            if (Tx_modo.Text == "NUEVO" || Tx_modo.Text == "EDITAR")
+            {
+                if (tx_dat_mone.Text != MonDeft)    //  && tx_tipcam.Text.Trim() == ""
+                {
+                    decimal tc = 0, vc = 0;
+                    decimal.TryParse(tx_tipcam.Text, out tc);
+                    decimal.TryParse(tx_pagoMN.Text, out vc);
+                    if (tc <= 0 || vc <= 0)
+                    {
+                        MessageBox.Show("Seleccione la moneda y tipo de cambio", " Atención ", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        cmb_mon.Focus();
+                        return;
+                    }
+                    else
+                    {
+                        tx_pagoMN.Text = (decimal.Parse(tx_tipcam.Text) * decimal.Parse(tx_PAGO.Text)).ToString("#0.00");
+                    }
+                }
             }
             #endregion
             // grabamos, actualizamos, etc
