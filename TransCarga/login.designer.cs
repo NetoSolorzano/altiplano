@@ -159,10 +159,11 @@
             // 
             // pictureBox1
             // 
-            this.pictureBox1.Image = global::TransCarga.Properties.Resources.Logo_circulo;
-            this.pictureBox1.Location = new System.Drawing.Point(33, 45);
+            this.pictureBox1.Image = global::TransCarga.Properties.Resources.logo_solorsoft;
+            this.pictureBox1.Location = new System.Drawing.Point(4, 97);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(223, 227);
+            this.pictureBox1.Size = new System.Drawing.Size(279, 110);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox1.TabIndex = 0;
             this.pictureBox1.TabStop = false;
             // 

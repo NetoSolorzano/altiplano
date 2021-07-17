@@ -3033,11 +3033,20 @@ namespace TransCarga
         }
         private void printDoc_PrintPage(object sender, System.Drawing.Printing.PrintPageEventArgs e)
         {
-            if (vi_formato == "A4")
+            if (vi_formato == "A4")         // san jose del sur
             {
-                imprime_A4(sender, e);
+                //imprime_A4(sender, e);
+                float pix = 120.0F;     // punto inicial X
+                float piy = 30.0F;      // punto inicial Y
+                float alfi = 30.0F;     // alto de cada fila
+                float alin = 135.0F;    // alto inicial
+                float coli = 90.0F;     // columna mas a la izquierda
+                float alde = 320.0F;    // alto inicial del detalle
+                float alpi = 480.0F;    // alto inicial del pie
+                e.PageSettings.Landscape = false;
+                imprime_A4(pix, piy, " ", coli, alin, pix, alfi, alde, alpi, e);
             }
-            if (vi_formato == "A5")
+            if (vi_formato == "A5")         // altiplano
             {
                 //imprime_A5(sender, e);
                 float pix = 120.0F;  // punto inicial X
@@ -3055,9 +3064,117 @@ namespace TransCarga
                 imprime_TK(sender, e);
             }
         }
-        private void imprime_A4(object sender, System.Drawing.Printing.PrintPageEventArgs e)
+        private void imprime_A4(float pix, float piy, string cliente, float coli, float alin, float posi, float alfi, float deta, float pie, System.Drawing.Printing.PrintPageEventArgs e)
         {
-
+            float colm = coli + 240.0F;                                 // columna media
+            float cold = coli + 530.0F;                                 // columna derecha
+            // cuerpo de la impresión
+            {
+                PointF puntoF = new PointF(cold, 50.0F);                         // serie y correlativo
+                Font lt_anu = new Font("Lucida Console", 14);
+                if (tx_dat_estad.Text == codAnul)
+                {
+                    e.Graphics.DrawString(v_fra1, lt_anu, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                }
+                puntoF = new PointF(cold, alin);                         // serie y correlativo
+                string numguia = "";
+                numguia = tx_serie.Text + "-" + tx_numero.Text;
+                Font lt_tit = new Font("Lucida Console", 10);
+                e.Graphics.DrawString(numguia, lt_tit, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                posi = posi + alfi - 5.0F;
+                PointF ptoimp = new PointF(coli + 60.0F, posi);                     // fecha de emision
+                e.Graphics.DrawString(tx_fechope.Text, lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
+                ptoimp = new PointF(coli + 100.0F, posi);                            // fecha del traslado
+                e.Graphics.DrawString(tx_pla_fech.Text, lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
+                posi = posi + alfi;
+                ptoimp = new PointF(coli + 90.0F, posi);                               // direccion partida
+                e.Graphics.DrawString(tx_dirRem.Text.Trim().PadRight(40).Substring(0, 40), lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
+                ptoimp = new PointF(colm + 200, posi);
+                e.Graphics.DrawString(tx_dirDrio.Text.Trim().PadRight(45).Substring(0, 45), lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
+                posi = posi + alfi;
+                ptoimp = new PointF(coli + 90.0F, posi);
+                e.Graphics.DrawString(tx_distRtt.Text.Trim() + " - " + tx_provRtt.Text.Trim() + " - " + tx_dptoRtt.Text.Trim(),
+                    lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
+                ptoimp = new PointF(colm + 200, posi);                      // direccion llegada - distrito
+                e.Graphics.DrawString(tx_disDrio.Text.Trim() + " - " + tx_proDrio.Text.Trim() + " - " + tx_dptoDrio.Text.Trim(),
+                    lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
+                posi = posi + alfi * 2;
+                ptoimp = new PointF(coli + 90.0F, posi);                                // remitente
+                e.Graphics.DrawString(tx_nomRem.Text.Trim(), lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
+                ptoimp = new PointF(colm + 200, posi);
+                e.Graphics.DrawString(tx_nomDrio.Text.Trim(), lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
+                posi = posi + alfi;
+                ptoimp = new PointF(coli + 30.0F, posi);                       // destinatario
+                e.Graphics.DrawString(tx_numDocRem.Text, lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
+                ptoimp = new PointF(colm + 200, posi);
+                e.Graphics.DrawString(tx_numDocDes.Text, lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
+                // detalle de la guía
+                posi = deta;
+                ptoimp = new PointF(coli, posi);
+                e.Graphics.DrawString(lb_glodeta.Text.Trim() + " " + tx_det_desc.Text.Trim(), lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
+                ptoimp = new PointF(colm + 240.0F, posi);
+                e.Graphics.DrawString(tx_det_cant.Text, lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
+                ptoimp = new PointF(colm + 300.0F, posi);
+                e.Graphics.DrawString(tx_det_peso.Text, lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
+                ptoimp = new PointF(colm + 370.0F, posi);
+                e.Graphics.DrawString(tx_det_umed.Text, lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
+                posi = posi + alfi;             // avance de fila
+                // guias del cliente
+                posi = posi + alfi;
+                ptoimp = new PointF(coli + 50.0F, posi);
+                e.Graphics.DrawString("Según: ", lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
+                if (chk_seguridad.Checked == true)
+                {
+                    ptoimp = new PointF(colm + 30.0F, posi);
+                    e.Graphics.DrawString(v_fra2, lt_anu, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
+                }
+                posi = posi + alfi;
+                ptoimp = new PointF(coli + 50.0F, posi);
+                e.Graphics.DrawString(tx_docsOr.Text, lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
+                // imprime el flete
+                if (chk_flete.Checked == true)
+                {
+                    posi = posi + alfi;
+                    ptoimp = new PointF(cold + 10.0F, posi);
+                    e.Graphics.DrawString("FLETE S/. " + tx_flete.Text, lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
+                }
+                // datos de la placa
+                posi = pie;
+                alfi = 20;
+                lt_tit = new Font("Arial", 10);     // Lucida Console
+                float avance = 80.0F;
+                ptoimp = new PointF(coli + avance, posi);
+                e.Graphics.DrawString(tx_marcamion.Text + " / " + tx_marCarret.Text, lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
+                posi = posi + alfi;
+                ptoimp = new PointF(coli + avance, posi);
+                e.Graphics.DrawString(tx_pla_placa.Text + " / " + tx_pla_carret.Text, lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
+                posi = posi + alfi;
+                ptoimp = new PointF(coli + avance, posi);
+                e.Graphics.DrawString(tx_pla_confv.Text, lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
+                if (tx_pla_ruc.Text.Trim() != Program.ruc)              // si no es ruc de la empresa es contratado o tercero
+                {                                                       // en el formulario si muestra, en la impresion NO
+                    ptoimp = new PointF(coli + avance + 140.0F, posi);   // 
+                    e.Graphics.DrawString(tx_pla_propiet.Text, lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
+                }
+                posi = posi + alfi;
+                ptoimp = new PointF(coli + avance, posi);
+                e.Graphics.DrawString(tx_pla_autor.Text, lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
+                posi = posi + alfi;
+                ptoimp = new PointF(coli + avance, posi);
+                e.Graphics.DrawString(tx_aut_carret.Text, lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
+                ptoimp = new PointF(colm + 30.0F, posi);
+                if (tx_pla_ruc.Text.Trim() != Program.ruc)
+                {
+                    e.Graphics.DrawString(tx_pla_ruc.Text, lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
+                }
+                posi = posi + alfi;
+                ptoimp = new PointF(coli + avance, posi);
+                e.Graphics.DrawString(tx_pla_brevet.Text, lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
+                //
+                posi = posi + alfi + 10.0F;
+                ptoimp = new PointF(colm, posi);
+                e.Graphics.DrawString(DateTime.Now.ToString() + "  " + tx_digit.Text.Trim(), lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
+            }
         }
         private void imprime_TK(object sender, System.Drawing.Printing.PrintPageEventArgs e)
         {

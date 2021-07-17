@@ -540,6 +540,7 @@
     <None Include="bin\Debug\recursos\reload30.jpg" />
     <None Include="bin\Debug\recursos\permiso_16.png" />
     <None Include="bin\Debug\recursos\Logo_circulo.png" />
+    <None Include="bin\Debug\recursos\logo_solorsoft_2p.png" />
     <Content Include="leeme.txt" />
     <Content Include="Properties\process32.png" />
     <None Include="Resources\logo_solorsoft.png" />
