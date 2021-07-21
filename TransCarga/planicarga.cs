@@ -774,11 +774,6 @@ namespace TransCarga
                 lib.messagebox("Nombre de impresora matricial");
                 retorna = false;
             }
-            if (v_impTK == "")           // nombre de la ticketera
-            {
-                lib.messagebox("Nombre de impresora de Tickets");
-                retorna = false;
-            }
             if (vtc_flete == "")         // el detalle va con flete impreso ?? SI || NO
             {
                 lib.messagebox("GR interna imprime valor del flete");
