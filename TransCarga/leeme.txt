@@ -267,7 +267,8 @@ form repadmcaja, agregar nombre de cliente en formato cuadre de caja (guido) ...
 form egresosdep, no debe permitir grabar moneda dolares sin tipo de cambio ......................... ok 09/07/2021
 form ingresosv, no permite anular operacion en dolares ............................................. ok 11/07/2021
 form facelect, correccion en facturacion a guias sin planilla de carga ............................. ok 12/07/2021
+form guiati,  edicion/visualizacion no jala nombre de chofer ....................................... ok 25/07/2021 - se agrego indice en cabguia.idplani
 ******************************************* SAN JOSE DEL SUR *************************************** 
-form login, cambio de logotipo a Solorsoft .........................................................
-form guiati_a, nuevo codigo formato impresion A4 para san jose .....................................
+form login, cambio de logotipo a Solorsoft ......................................................... ok 25/07/2021
+form guiati_a, nuevo codigo formato impresion A4 para san jose ..................................... ok 21/07/2021 
 form planicarga, se quito validacion de nombre de impresora de tickets ............................. ok 17/07/2021 - no es necesario aca en planillas de carga

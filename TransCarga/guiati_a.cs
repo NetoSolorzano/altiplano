@@ -379,7 +379,7 @@ namespace TransCarga
                         "a.tipmongri,a.tipcamgri,a.subtotgri,a.igvgri,a.totgri,a.totpag,a.salgri,a.estadoser,a.impreso," +
                         "a.frase1,a.frase2,a.fleteimp,a.tipintrem,a.tipintdes,a.tippagpre,a.seguroE,a.userc,a.userm,a.usera," +
                         "a.serplagri,a.numplagri,a.plaplagri,a.carplagri,a.autplagri,a.confvegri,a.breplagri,a.proplagri," +
-                        "ifnull(b.chocamcar,'') as chocamcar,ifnull(b.fecplacar,'') as fecplacar,ifnull(b.fecdocvta,'') as fecdocvta,ifnull(f.descrizionerid,'') as tipdocvta," +
+                        "ifnull(p.nomchofe,'') as chocamcar,ifnull(b.fecplacar,'') as fecplacar,ifnull(b.fecdocvta,'') as fecdocvta,ifnull(f.descrizionerid,'') as tipdocvta," +
                         "ifnull(b.serdocvta,'') as serdocvta,ifnull(b.numdocvta,'') as numdocvta,ifnull(b.codmonvta,'') as codmonvta," +
                         "ifnull(b.totdocvta,0) as totdocvta,ifnull(b.codmonpag,'') as codmonpag,ifnull(b.totpagado,0) as totpagado,ifnull(b.saldofina,0) as saldofina," +
                         "ifnull(b.feculpago,'') as feculpago,ifnull(b.estadoser,'') as estadoser,ifnull(c.razonsocial,'') as razonsocial,a.grinumaut," +
@@ -392,6 +392,7 @@ namespace TransCarga
                         "left join anag_for c on c.ruc=a.proplagri and c.tipdoc=@tdep " +
                         "left join vehiculos d on d.placa=a.plaplagri " +
                         "left join vehiculos r on r.placa=a.carplagri " +
+                        "left join cabplacar p on p.id=a.idplani " +
                         "left join anag_cli er on er.ruc=a.nudoregri and er.tipdoc=a.tidoregri " +
                         "left join anag_cli ed on ed.ruc=a.nudodegri and ed.tipdoc=a.tidodegri " + parte;
                     MySqlCommand micon = new MySqlCommand(consulta, conn);
@@ -3050,10 +3051,10 @@ namespace TransCarga
                 float pix = 140.0F;     // punto inicial X
                 float piy = 30.0F;      // punto inicial Y
                 float alfi = 25.0F;     // alto de cada fila
-                float alin = 150.0F;    // alto inicial
+                float alin = 160.0F;    // alto inicial
                 float coli = 60.0F;     // columna mas a la izquierda
-                float alde = 390.0F;    // alto inicial del detalle
-                float alpi = 700.0F;    // alto inicial del pie
+                float alde = 400.0F;    // alto inicial del detalle
+                float alpi = 705.0F;    // alto inicial del pie
                 e.PageSettings.Landscape = false;
                 imprime_A4(pix, piy, " ", coli, alin, pix, alfi, alde, alpi, e);
             }
@@ -3093,7 +3094,7 @@ namespace TransCarga
                 Font lt_tit = new Font("Lucida Console", 10);
                 Font lt_peq = new Font("Lucida Console", 9);
                 e.Graphics.DrawString(numguia, lt_tit, Brushes.Black, puntoF, StringFormat.GenericTypographic);
-                posi = posi + alfi + 15.0F;
+                posi = posi + alfi + 20.0F;
                 PointF ptoimp = new PointF(coli + 60.0F, posi);                     // fecha de emision
                 e.Graphics.DrawString(tx_fechope.Text, lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
                 ptoimp = new PointF(colm + 60.0F, posi);                            // fecha del traslado
@@ -3101,39 +3102,39 @@ namespace TransCarga
                 posi = posi + alfi * 2;
                 ptoimp = new PointF(coli, posi);                               // direccion partida
                 e.Graphics.DrawString(tx_dirRem.Text.Trim().PadRight(40).Substring(0, 40), lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
-                ptoimp = new PointF(colm + 130, posi);
+                ptoimp = new PointF(colm + 140, posi);
                 e.Graphics.DrawString(tx_dirDrio.Text.Trim().PadRight(45).Substring(0, 45), lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
-                posi = posi + alfi;
+                posi = posi + alfi - 5.0F;
                 ptoimp = new PointF(coli, posi);
                 e.Graphics.DrawString(tx_distRtt.Text.Trim() + " - " + tx_provRtt.Text.Trim() + " - " + tx_dptoRtt.Text.Trim(),
                     lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
-                ptoimp = new PointF(colm + 130, posi);                      // direccion llegada - distrito
+                ptoimp = new PointF(colm + 140, posi);                      // direccion llegada - distrito
                 e.Graphics.DrawString(tx_disDrio.Text.Trim() + " - " + tx_proDrio.Text.Trim() + " - " + tx_dptoDrio.Text.Trim(),
                     lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
-                posi = posi + alfi + alfi;
+                posi = posi + alfi + alfi + 10.0F;
                 ptoimp = new PointF(coli, posi);                                // remitente
                 e.Graphics.DrawString(tx_nomRem.Text.Trim().PadRight(44).Substring(0, 44), lt_peq, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
-                ptoimp = new PointF(colm + 130, posi);
+                ptoimp = new PointF(colm + 140, posi);
                 e.Graphics.DrawString(tx_nomDrio.Text.Trim().PadRight(44).Substring(0, 44), lt_peq, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
-                posi = posi + alfi;
-                ptoimp = new PointF(coli + 30.0F, posi);                       // destinatario
+                posi = posi + alfi - 5.0F;
+                ptoimp = new PointF(coli + 40.0F, posi);                       // destinatario
                 e.Graphics.DrawString(tx_numDocRem.Text, lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
                 ptoimp = new PointF(colm + 180, posi);
                 e.Graphics.DrawString(tx_numDocDes.Text, lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
                 // detalle de la guía
                 posi = deta;
-                ptoimp = new PointF(coli + 50.0F, posi);
+                ptoimp = new PointF(coli + 60.0F, posi);
                 e.Graphics.DrawString(lb_glodeta.Text.Trim() + " " + tx_det_desc.Text.Trim(), lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
-                ptoimp = new PointF(colm + 270.0F, posi);
+                ptoimp = new PointF(colm + 240.0F, posi);
                 e.Graphics.DrawString(tx_det_cant.Text, lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
-                ptoimp = new PointF(colm + 320.0F, posi);
+                ptoimp = new PointF(colm + 300.0F, posi);
                 e.Graphics.DrawString(tx_det_peso.Text, lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
-                ptoimp = new PointF(colm + 400.0F, posi);
+                ptoimp = new PointF(colm + 350.0F, posi);
                 e.Graphics.DrawString(tx_det_umed.Text, lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
                 posi = posi + alfi;             // avance de fila
                 // guias del cliente
                 posi = posi + alfi;
-                ptoimp = new PointF(coli + 50.0F, posi);
+                ptoimp = new PointF(coli + 60.0F, posi);
                 e.Graphics.DrawString("Según: ", lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
                 if (chk_seguridad.Checked == true)
                 {
@@ -3141,13 +3142,13 @@ namespace TransCarga
                     e.Graphics.DrawString(v_fra2, lt_anu, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
                 }
                 posi = posi + alfi;
-                ptoimp = new PointF(coli + 50.0F, posi);
+                ptoimp = new PointF(coli + 60.0F, posi);
                 e.Graphics.DrawString(tx_docsOr.Text, lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
                 // imprime el flete
                 if (chk_flete.Checked == true)
                 {
                     posi = posi + alfi;
-                    ptoimp = new PointF(cold + 30.0F, posi);
+                    ptoimp = new PointF(cold + 50.0F, posi);
                     e.Graphics.DrawString("FLETE S/. " + tx_flete.Text, lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
                 }
                 // datos de la placa
@@ -3155,13 +3156,13 @@ namespace TransCarga
                 alfi = 15;
                 lt_tit = new Font("Arial", 9);     // Lucida Console
                 float avance = 85.0F;
-                ptoimp = new PointF(coli + avance, posi);
+                ptoimp = new PointF(coli + 95.0F, posi);
                 e.Graphics.DrawString(tx_marcamion.Text + " / " + tx_marCarret.Text, lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
                 posi = posi + alfi;
                 ptoimp = new PointF(coli + avance, posi);
                 e.Graphics.DrawString(tx_pla_placa.Text + " / " + tx_pla_carret.Text, lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
                 posi = posi + alfi;
-                ptoimp = new PointF(coli + avance + 30.0F, posi);
+                ptoimp = new PointF(coli + avance + 40.0F, posi);
                 e.Graphics.DrawString(tx_pla_confv.Text, lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
                 if (tx_pla_ruc.Text.Trim() != Program.ruc)              // si no es ruc de la empresa es contratado o tercero
                 {                                                       // en el formulario si muestra, en la impresion NO
@@ -3169,11 +3170,11 @@ namespace TransCarga
                     e.Graphics.DrawString(tx_pla_propiet.Text, lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
                 }
                 posi = posi + alfi;
-                ptoimp = new PointF(coli + avance + 50.0F, posi);
+                ptoimp = new PointF(coli + avance + 70.0F, posi);
                 e.Graphics.DrawString(tx_pla_autor.Text, lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
                 posi = posi + alfi;
                 ptoimp = new PointF(coli + avance, posi);
-                e.Graphics.DrawString(tx_aut_carret.Text, lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
+                //e.Graphics.DrawString(tx_aut_carret.Text, lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
                 ptoimp = new PointF(colm + 30.0F, posi);
                 if (tx_pla_ruc.Text.Trim() != Program.ruc)
                 {
