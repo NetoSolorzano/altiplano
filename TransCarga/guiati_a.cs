@@ -3151,6 +3151,12 @@ namespace TransCarga
                     ptoimp = new PointF(cold + 50.0F, posi);
                     e.Graphics.DrawString("FLETE S/. " + tx_flete.Text, lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
                 }
+                if (tx_consig.Text.Trim() != "")
+                {
+                    posi = posi + alfi;
+                    ptoimp = new PointF(coli + 50.0F, posi);
+                    e.Graphics.DrawString("CONSIGNATARIO: " + tx_consig.Text, lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
+                }
                 // datos de la placa
                 posi = pie;
                 alfi = 15;
@@ -3174,7 +3180,7 @@ namespace TransCarga
                 e.Graphics.DrawString(tx_pla_autor.Text, lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
                 posi = posi + alfi;
                 ptoimp = new PointF(coli + avance, posi);
-                //e.Graphics.DrawString(tx_aut_carret.Text, lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
+                e.Graphics.DrawString(tx_pla_nomcho.Text.PadRight(40).Substring(0,40), lt_peq, Brushes.Black, ptoimp, StringFormat.GenericTypographic);// e.Graphics.DrawString(tx_aut_carret.Text, lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
                 ptoimp = new PointF(colm + 30.0F, posi);
                 if (tx_pla_ruc.Text.Trim() != Program.ruc)
                 {
