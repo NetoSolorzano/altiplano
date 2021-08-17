@@ -51,6 +51,8 @@ namespace TransCarga
         int vi_copias = 1;               // cantidad de copias impresion
         string v_impTK = "";            // nombre de la impresora de TK para guias
         string v_CR_ctacte = "";        // ruta y nombre del formato CR para el reporte cta cte clientes
+        string ruta_logo = "";          // ruta y nombre del logo
+        string impriLogi = "";          // Imprime logo o no en el formato guia simple - notita
         //int pageCount = 1, cuenta = 0;
         #endregion
 
@@ -154,12 +156,13 @@ namespace TransCarga
             {
                 MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
                 conn.Open();
-                string consulta = "select formulario,campo,param,valor from enlaces where formulario in(@nofo,@pla,@clie,@grt)";
+                string consulta = "select formulario,campo,param,valor from enlaces where formulario in(@nofo,@pla,@clie,@grt,@nofi)";
                 MySqlCommand micon = new MySqlCommand(consulta, conn);
                 micon.Parameters.AddWithValue("@nofo", "main");
                 micon.Parameters.AddWithValue("@pla", "planicarga");
                 micon.Parameters.AddWithValue("@clie", "clients");
                 micon.Parameters.AddWithValue("@grt", "guiati");
+                micon.Parameters.AddWithValue("@nofi", nomform);
                 MySqlDataAdapter da = new MySqlDataAdapter(micon);
                 DataTable dt = new DataTable();
                 da.Fill(dt);
@@ -179,7 +182,8 @@ namespace TransCarga
                             if (row["param"].ToString() == "img_gra") img_grab = row["valor"].ToString().Trim();         // imagen del boton grabar nuevo
                             if (row["param"].ToString() == "img_anu") img_anul = row["valor"].ToString().Trim();         // imagen del boton grabar anular
                             if (row["param"].ToString() == "img_imprime") img_imprime = row["valor"].ToString().Trim();  // imagen del boton IMPRIMIR REPORTE
-                            if (row["param"].ToString() == "img_pre") img_preview = row["valor"].ToString().Trim();  // imagen del boton VISTA PRELIMINAR
+                            if (row["param"].ToString() == "img_pre") img_preview = row["valor"].ToString().Trim();     // imagen del boton VISTA PRELIMINAR
+                            if (row["param"].ToString() == "logoPrin") ruta_logo = row["valor"].ToString().Trim();      // logo de la empresa a imprimir
                         }
                         if (row["campo"].ToString() == "estado")
                         {
@@ -204,6 +208,13 @@ namespace TransCarga
                     {
                         if (row["campo"].ToString() == "documento" && row["param"].ToString() == "ruc") v_tipdocR = row["valor"].ToString().Trim();         // tipo documento RUC
                         if (row["campo"].ToString() == "impresion" && row["param"].ToString() == "ctacte_cr") v_CR_ctacte = row["valor"].ToString().Trim(); // 
+                    }
+                    if (row["formulario"].ToString() == nomform)
+                    {
+                        if (row["campo"].ToString() == "impLogo")
+                        {
+                            if (row["param"].ToString() == "grSimple") impriLogi = row["valor"].ToString().Trim();         // SI= imprime logo | NO=no imprime logo
+                        }
                     }
                 }
                 da.Dispose();
@@ -1971,11 +1982,20 @@ namespace TransCarga
             float ancho = 360.0F;                                // ancho de la impresion
             {
                 //lt = (ancho - e.Graphics.MeasureString(rasclie, lt_gra).Width) / 2;
-                PointF puntoF = new PointF(coli, posi);
+                PointF puntoF = new PointF();
+                if (impriLogi == "SI")   // va con logo o no?
+                {
+                    puntoF = new PointF(coli, posi);
+                    System.Drawing.Image img = System.Drawing.Image.FromFile(ruta_logo);
+                    //Point loc = new Point(100, 100);
+                    e.Graphics.DrawImage(img, puntoF);
+                    posi = posi + alfi * 5;
+                }
+                puntoF = new PointF(coli, posi);
                 e.Graphics.DrawString("CONTROL", lt_gra, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                 puntoF = new PointF(colm, posi);
                 e.Graphics.DrawString(":", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
-                puntoF = new PointF(colm + 10, posi);
+                puntoF = new PointF(colm + 30, posi + 5.0F);
                 e.Graphics.DrawString(filaimp[0] + "-" + filaimp[1], lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                 posi = posi + alfi;
                 posi = posi + alfi;

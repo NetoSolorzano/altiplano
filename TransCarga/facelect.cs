@@ -61,11 +61,12 @@ namespace TransCarga
         string v_sanu = "";             // serie anulacion interna ANU
         string v_mpag = "";             // medio de pago automatico x defecto para las cobranzas
         string v_codcob = "";           // codigo del documento cobranza
-        string v_CR_gr_ind = "";        // nombre del formato FT/BV en CR
+        string v_CR_gr_ind = "";        // nombre del formato FT/BV/NV en CR
         string v_mfildet = "";          // maximo numero de filas en el detalle, coord. con el formato
         string vint_A0 = "";            // variable codigo anulacion interna por BD
         string v_codidv = "";           // variable codifo interno de documento de venta en vista TDV
         string codfact = "";            // idcodice de factura
+        string codBole = "";            // id codice de Boleta de venta
         string v_igv = "";              // valor igv %
         string v_estcaj = "";           // estado de la caja
         string v_idcaj = "";            // id de la caja actual
@@ -76,6 +77,7 @@ namespace TransCarga
         string codsuser_cu = "";        // usuarios autorizados a crear Ft de cargas unicas
         int v_cdpa = 0;                 // cantidad de días despues de emitida la fact. en que un usuario normal puede anular
         string vint_gg = "";            // glosa del detalle inicial de la guía "sin verificar contenido"
+        string v_habpago = "";          // se habilitan pagos en el formulario o no, default NO
         //
         string rutatxt = "";            // ruta de los txt para la fact. electronica
         string tipdo = "";              // CODIGO SUNAT tipo de documento de venta
@@ -292,8 +294,17 @@ namespace TransCarga
             }
             if (Tx_modo.Text == "NUEVO")
             {
-                rb_si.Enabled = true;
-                rb_no.Enabled = true;
+                if (v_habpago == "SI")
+                {
+                    rb_si.Enabled = true;
+                    rb_no.Enabled = true;
+                }
+                else
+                {
+                    rb_si.Enabled = false;
+                    rb_no.Checked = true;
+                    rb_no.Enabled = true;
+                }
                 if (codsuser_cu.Contains(asd)) chk_cunica.Enabled = true;
                 else chk_cunica.Enabled = false;
                 if (cusdscto.Contains(asd)) tx_flete.ReadOnly = false;
@@ -372,6 +383,7 @@ namespace TransCarga
                             if (row["param"].ToString() == "serieAnu") v_sanu = row["valor"].ToString().Trim();               // serie anulacion interna
                             if (row["param"].ToString() == "mpagdef") v_mpag = row["valor"].ToString().Trim();               // medio de pago x defecto para cobranzas
                             if (row["param"].ToString() == "factura") codfact = row["valor"].ToString().Trim();               // codigo doc.venta factura
+                            if (row["param"].ToString() == "boleta") codBole = row["valor"].ToString().Trim();               // codigo doc.venta BOLETA
                             if (row["param"].ToString() == "plazocred") codppc = row["valor"].ToString().Trim();               // codigo plazo de pago x defecto para fact. a CREDITO
                             if (row["param"].ToString() == "usercar_unic") codsuser_cu = row["valor"].ToString().Trim();       // usuarios autorizados a crear Ft de cargas unicas
                             if (row["param"].ToString() == "diasanul") v_cdpa = int.Parse(row["valor"].ToString());            // cant dias en que usuario normal puede anular 
@@ -379,6 +391,7 @@ namespace TransCarga
                             if (row["param"].ToString() == "userdscto") cusdscto = row["valor"].ToString();                 // usuarios que pueden hacer descuentos
                             if (row["param"].ToString() == "cltesBol") tdocsBol = row["valor"].ToString();                  // tipos de documento de clientes para boletas
                             if (row["param"].ToString() == "cltesFac") tdocsFac = row["valor"].ToString();
+                            if (row["param"].ToString() == "pagaSN") v_habpago = row["valor"].ToString();                  // permite cancelar en el form, SI o NO
                         }
                         if (row["campo"].ToString() == "impresion")
                         {
@@ -2651,7 +2664,7 @@ namespace TransCarga
                 cmb_docRem.Focus();
                 return;
             }*/
-            if (tx_dat_tdec.Text != tx_dat_tdRem.Text)
+            if (tx_dat_tdec.Text.Trim() != "" && (tx_dat_tdec.Text != tx_dat_tdRem.Text))   // las notas de venta NO deben tener codigo doc cliente asociado 15/08/2021
             {
                 // aca validamos que el tipo de doc de venta se corresponda con el documento del cliente
                 if (tx_dat_tdv.Text != codfact)
@@ -2714,7 +2727,7 @@ namespace TransCarga
                     var aa = MessageBox.Show("Confirma que desea crear el documento?", "Confirme por favor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                     if (aa == DialogResult.Yes)
                     {
-                        if (lib.DirectoryVisible(rutatxt) == true)
+                        if (lib.DirectoryVisible(rutatxt) == true)      // OJO, crear ruta aunque sea para las notas de venta sin fact. electronica 15/08/2021
                         {
                             if (graba() == true)
                             {
@@ -4317,8 +4330,9 @@ namespace TransCarga
                     string corre = tx_numero.Text;                                // numero del documento electrónico
                     //string nota = tipdo + "-" + serie + "-" + corre;
                     string titdoc = "";
-                    if (tx_dat_tdv.Text != codfact) titdoc = "Boleta de Venta Electrónica";
+                    if (tx_dat_tdv.Text == codBole) titdoc = "Boleta de Venta Electrónica";
                     if (tx_dat_tdv.Text == codfact) titdoc = "Factura Electrónica";
+                    if (tx_dat_tdv.Text != codBole && tx_dat_tdv.Text != codfact) titdoc = "NOTA DE VENTA";
                     posi = posi + alfi + 8;
                     lt = (CentimeterToPixel(anchTik) - e.Graphics.MeasureString(titdoc, lt_gra).Width) / 2;
                     puntoF = new PointF(lt, posi);
@@ -4490,8 +4504,9 @@ namespace TransCarga
                     posi = posi + alfi;
                     puntoF = new PointF(coli, posi);
                     string previo = "";
-                    if (tx_dat_tdv.Text != codfact) previo = "boleta de venta electrónica";
+                    if (tx_dat_tdv.Text == codBole) previo = "boleta de venta electrónica";
                     if (tx_dat_tdv.Text == codfact) previo = "factura electrónica";
+                    if (tx_dat_tdv.Text != codBole && tx_dat_tdv.Text != codfact) previo = "nota de venta";
                     lt = (CentimeterToPixel(anchTik) - e.Graphics.MeasureString(previo, lt_med).Width) / 2;
                     puntoF = new PointF(lt, posi);
                     e.Graphics.DrawString(previo, lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
