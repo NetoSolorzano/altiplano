@@ -1836,13 +1836,14 @@ namespace TransCarga
                 conn.Open();
                 if (conn.State == ConnectionState.Open)
                 {
-                    string canul = "update cabguiai set estadoser=@estser,usera=@asd,fecha=now(),idplani=0,fechplani=NULL," +
+                    string canul = "update cabguiai set obspregri=@obsr1,estadoser=@estser,usera=@asd,fecha=now(),idplani=0,fechplani=NULL," +
                         "serplagri='',numplagri='',plaplagri='',carplagri='',autplagri='',confvegri='',breplagri='',proplagri=''," +
                         "verApp=@veap,diriplan4=@dil4,diripwan4=@diw4,netbname=@nbnp,estintreg=@eiar" + parte +
                         "where id=@idr";
                     using (MySqlCommand micon = new MySqlCommand(canul, conn))
                     {
                         micon.Parameters.AddWithValue("@idr", tx_idr.Text);
+                        micon.Parameters.AddWithValue("@obsr1", tx_obser1.Text);
                         micon.Parameters.AddWithValue("@estser", codAnul);
                         micon.Parameters.AddWithValue("@asd", asd);
                         micon.Parameters.AddWithValue("@dil4", lib.iplan());
@@ -1866,6 +1867,7 @@ namespace TransCarga
                 jalaoc("tx_idr");
                 jaladet(tx_idr.Text);
                 tx_numero_Leave(null,null);
+                tx_obser1.Enabled = true;
             }
         }
         private void textBox7_Leave(object sender, EventArgs e)         // departamento del remitente, jala provincia
@@ -2254,6 +2256,7 @@ namespace TransCarga
                         tx_consig.Enabled = true;
                     }
                 }
+                if (Tx_modo.Text == "ANULAR") tx_obser1.Enabled = true;
             }
         }
         private void tx_serie_Leave(object sender, EventArgs e)
@@ -2704,6 +2707,7 @@ namespace TransCarga
             Tx_modo.Text = "ANULAR";
             button1.Image = Image.FromFile(img_anul);
             initIngreso();
+            tx_obser1.Enabled = true;
             gbox_serie.Enabled = true;
             tx_serie.ReadOnly = false;
             tx_numero.ReadOnly = false;

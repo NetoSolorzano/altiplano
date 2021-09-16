@@ -274,3 +274,8 @@ form guiati_a, nuevo codigo formato impresion A4 para san jose .................
 form planicarga, se quito validacion de nombre de impresora de tickets ............................. ok 17/07/2021 - no es necesario aca en planillas de carga
 form facelect, se agrega tipo de documento Nota de Venta - NV y desabilita FT y BV ................. ok 15/08/2021 - San Jose no tiene fact. electrónica integrada 15/08/2021
 form repsoper, se agrega codigo para la impresion de guia simple y adecua formato CR ............... ok 17/08/2021
+form repsoper, se agrega nombre del remitente a la impresion de guia simple y adecua formato CR .... ok 24/08/2021
+****************************************** altiplano
+form facelect, agregar en la impresion el pago efectivo o credito .................................. ok 10/09/2021
+form facelect, edicion regenerar txt y arreglo de calculo detalle con descuento .................... ok 14/09/2021
+form guiaii_a, permitir comentarios al anular guia ................................................. ok 15/09/2021

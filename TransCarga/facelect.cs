@@ -74,6 +74,7 @@ namespace TransCarga
         string logoclt = "";            // ruta y nombre archivo logo
         string fshoy = "";              // fecha hoy del servidor en formato ansi
         string codppc = "";             // codigo del plazo de pago por defecto para fact a crédito
+        string codcont = "";            // codigo plazo contraentrega o efectivo no credito
         string codsuser_cu = "";        // usuarios autorizados a crear Ft de cargas unicas
         int v_cdpa = 0;                 // cantidad de días despues de emitida la fact. en que un usuario normal puede anular
         string vint_gg = "";            // glosa del detalle inicial de la guía "sin verificar contenido"
@@ -385,6 +386,7 @@ namespace TransCarga
                             if (row["param"].ToString() == "factura") codfact = row["valor"].ToString().Trim();               // codigo doc.venta factura
                             if (row["param"].ToString() == "boleta") codBole = row["valor"].ToString().Trim();               // codigo doc.venta BOLETA
                             if (row["param"].ToString() == "plazocred") codppc = row["valor"].ToString().Trim();               // codigo plazo de pago x defecto para fact. a CREDITO
+                            if (row["param"].ToString() == "plzoCont") codcont = row["valor"].ToString().Trim();               // codigo de plazo contado o efectivo o contraentrega
                             if (row["param"].ToString() == "usercar_unic") codsuser_cu = row["valor"].ToString().Trim();       // usuarios autorizados a crear Ft de cargas unicas
                             if (row["param"].ToString() == "diasanul") v_cdpa = int.Parse(row["valor"].ToString());            // cant dias en que usuario normal puede anular 
                             if (row["param"].ToString() == "useranul") codusanu = row["valor"].ToString();                      // usuarios autorizados a anular fuera de plazo 
@@ -468,7 +470,7 @@ namespace TransCarga
                 {
                     string consulta = "select a.id,a.fechope,a.martdve,a.tipdvta,a.serdvta,a.numdvta,a.ticltgr,a.tidoclt,a.nudoclt,a.nombclt,a.direclt,a.dptoclt,a.provclt,a.distclt,a.ubigclt,a.corrclt,a.teleclt," +
                         "a.locorig,a.dirorig,a.ubiorig,a.obsdvta,a.canfidt,a.canbudt,a.mondvta,a.tcadvta,a.subtota,a.igvtota,a.porcigv,a.totdvta,a.totpags,a.saldvta,a.estdvta,a.frase01,a.impreso," +
-                        "a.tipoclt,a.m1clien,a.tippago,a.ferecep,a.userc,a.fechc,a.userm,a.fechm,b.descrizionerid as nomest,ifnull(c.id,'') as cobra,a.idcaja," +
+                        "a.tipoclt,a.m1clien,a.tippago,a.ferecep,a.userc,a.fechc,a.userm,a.fechm,b.descrizionerid as nomest,ifnull(c.id,'') as cobra,a.idcaja,a.plazocred," +
                         "a.cargaunica,a.placa,a.confveh,a.autoriz,a.detPeso,a.detputil,a.detMon1,a.detMon2,a.detMon3,a.dirporig,a.ubiporig,a.dirpdest,a.ubipdest,a.porcendscto,a.valordscto " +
                         "from cabfactu a left join desc_est b on b.idcodice=a.estdvta " +
                         "left join cabcobran c on c.tipdoco=a.tipdvta and c.serdoco=a.serdvta and c.numdoco=a.numdvta and c.estdcob<>@coda "
@@ -555,6 +557,7 @@ namespace TransCarga
                             if (dr.GetInt16("cargaunica") == 1) chk_cunica.Checked = true;
                             tx_valdscto.Text = dr.GetString("valordscto");
                             tx_dat_porcDscto.Text = dr.GetString("porcendscto");
+                            tx_dat_plazo.Text = dr.GetString("plazocred");
                         }
                         else
                         {
@@ -585,14 +588,29 @@ namespace TransCarga
                         lb_dscto.Visible = false;
                         tx_valdscto.Visible = false;
                     }
+                    //
+                    DataRow[] row = dtm.Select("idcodice='" + tx_dat_mone.Text + "'");
+                    NumLetra nel = new NumLetra();
+                    tx_fletLetras.Text = nel.Convertir(tx_flete.Text, true) + row[0][3].ToString().Trim();
+                    //
+                    if (tx_dat_plazo.Text.Trim() != "" && tx_dat_plazo.Text != codcont)    // osea que no seas contado -> osea es credito 
+                    {
+                        cmb_plazoc.SelectedValue = tx_dat_plazo.Text;
+                    }
                 }
                 conn.Close();
             }
         }
         private void jaladet(string idr)         // jala el detalle
         {
-            string jalad = "select filadet,codgror,cantbul,unimedp,descpro,pesogro,codmogr,totalgr " +
-                "from detfactu where idc=@idr";
+            string jalad = "select a.filadet,a.codgror,a.cantbul,a.unimedp,a.descpro,a.pesogro,a.codmogr,a.totalgr," +
+                "g.totgrMN,g.codMN,g.fechopegr,g.docsremit,g.tipmongri,concat(lo.descrizionerid,' - ',ld.descrizionerid) as orides," +
+                "b.porcendscto,b.valordscto " +
+                "from detfactu a left join cabguiai g on concat(g.sergui,'-',g.numgui)=a.codgror " +
+                "left join desc_loc lo on lo.idcodice=g.locorigen " +
+                "left join desc_loc ld on ld.idcodice=g.locdestin " +
+                "left join cabfactu b on b.id=a.idc " +
+                "where a.idc=@idr";
             using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
             {
                 conn.Open();
@@ -605,17 +623,28 @@ namespace TransCarga
                         da.Fill(dt);
                         foreach (DataRow row in dt.Rows)
                         {
+                            var a = row[10].ToString().Substring(0, 10);
+                            string valorel = "";
+                            if (row[14].ToString().Trim() != "")
+                            {
+                                decimal vdf = Math.Truncate((decimal.Parse(row[7].ToString()) * decimal.Parse(row[14].ToString())) / 100);
+                                //dataGridView1.Rows[i].Cells[12].Value = (decimal.Parse(dataGridView1.Rows[i].Cells[4].Value.ToString()) - vdf).ToString("#0.00");
+                                valorel = vdf.ToString("#0.00");
+                            }
                             dataGridView1.Rows.Add(
-                                row[1].ToString(),
-                                row[4].ToString(),
-                                row[2].ToString(),
-                                row[6].ToString(),
-                                row[7].ToString(),
-                                "",
-                                "",
-                                "",
-                                "",
-                                "");
+                                row[1].ToString(),      // guias
+                                row[4].ToString(),      // descrip
+                                row[2].ToString(),      // Cant (cant bultos)
+                                row[6].ToString(),      // moneda (nombre)
+                                row[7].ToString(),      // valor 
+                                row[8].ToString(),     // valorMN
+                                row[9].ToString(),     // codmonloc
+                                a.Substring(6, 4) + "-" + a.Substring(3, 2) + "-" + a.Substring(0, 2),     // fechaGR
+                                row[11].ToString(),     // guiasclte
+                                row[12].ToString(),     // codmondoc
+                                row[13].ToString(),     // OriDest
+                                "",                     // saldo
+                                valorel);               // valorel
                         }
                         dt.Dispose();
                     }
@@ -2005,21 +2034,43 @@ namespace TransCarga
                 glosser2 = dataGridView1.Rows[s].Cells["OriDest"].Value.ToString() + " - " + tx_totcant.Text.Trim() + tx_dat_nombd.Text; // " Bultos"; 
                 DataRow row = tdfe.NewRow();
                 row["Idatper"] = "";                                                        // datos personalizados del item
-                row["_msigv"] = Math.Round(double.Parse(dataGridView1.Rows[s].Cells["valor"].Value.ToString()) - (double.Parse(dataGridView1.Rows[s].Cells["valor"].Value.ToString()) / (1 + (double.Parse(v_igv) / 100))),2);
-                row["Ipreuni"] = double.Parse(dataGridView1.Rows[s].Cells["valor"].Value.ToString()).ToString("#0.0000000000");     // Precio de venta unitario CON IGV
-                row["Ivaluni"] = (double.Parse(dataGridView1.Rows[s].Cells["valor"].Value.ToString()) - (double)row["_msigv"]).ToString("#0.0000000000");
-                if (tx_dat_mone.Text != MonDeft && dataGridView1.Rows[s].Cells["codmondoc"].Value.ToString() == MonDeft)   // 
+                if (dataGridView1.Rows[s].Cells["valorel"].Value.ToString().Trim() == "")
                 {
-                    //row["_msigv"] = Math.Round(double.Parse(dataGridView1.Rows[s].Cells["valor"].Value.ToString()) / (1 + (double.Parse(v_igv) / 100)) / double.Parse(tx_tipcam.Text), 2);
-                    row["_msigv"] = Math.Round(((double)row["_msigv"] / double.Parse(tx_tipcam.Text)), 2);
-                    row["Ipreuni"] = Math.Round(double.Parse(dataGridView1.Rows[s].Cells["valor"].Value.ToString()) / double.Parse(tx_tipcam.Text), 2).ToString("#0.0000000000");
-                    row["Ivaluni"] = ((double)row["Ivaluni"] / double.Parse(tx_tipcam.Text)).ToString("#0.0000000000");
+                    row["_msigv"] = Math.Round(double.Parse(dataGridView1.Rows[s].Cells["valor"].Value.ToString()) - (double.Parse(dataGridView1.Rows[s].Cells["valor"].Value.ToString()) / (1 + (double.Parse(v_igv) / 100))), 2);
+                    row["Ipreuni"] = double.Parse(dataGridView1.Rows[s].Cells["valor"].Value.ToString()).ToString("#0.0000000000");     // Precio de venta unitario CON IGV
+                    row["Ivaluni"] = (double.Parse(dataGridView1.Rows[s].Cells["valor"].Value.ToString()) - (double)row["_msigv"]).ToString("#0.0000000000");
+                    if (tx_dat_mone.Text != MonDeft && dataGridView1.Rows[s].Cells["codmondoc"].Value.ToString() == MonDeft)   // 
+                    {
+                        //row["_msigv"] = Math.Round(double.Parse(dataGridView1.Rows[s].Cells["valor"].Value.ToString()) / (1 + (double.Parse(v_igv) / 100)) / double.Parse(tx_tipcam.Text), 2);
+                        row["_msigv"] = Math.Round(((double)row["_msigv"] / double.Parse(tx_tipcam.Text)), 2);
+                        row["Ipreuni"] = Math.Round(double.Parse(dataGridView1.Rows[s].Cells["valor"].Value.ToString()) / double.Parse(tx_tipcam.Text), 2).ToString("#0.0000000000");
+                        row["Ivaluni"] = ((double)row["Ivaluni"] / double.Parse(tx_tipcam.Text)).ToString("#0.0000000000");
+                    }
+                    if (tx_dat_mone.Text == MonDeft && dataGridView1.Rows[s].Cells["codmondoc"].Value.ToString() != MonDeft)
+                    {
+                        row["_msigv"] = Math.Round((double)row["_msigv"] * double.Parse(tx_tipcam.Text), 2);
+                        row["Ipreuni"] = Math.Round(double.Parse(dataGridView1.Rows[s].Cells["valor"].Value.ToString()) * double.Parse(tx_tipcam.Text), 2).ToString("#0.0000000000");
+                        row["Ivaluni"] = ((double)row["Ivaluni"] * double.Parse(tx_tipcam.Text)).ToString("#0.0000000000");
+                    }
                 }
-                if (tx_dat_mone.Text == MonDeft && dataGridView1.Rows[s].Cells["codmondoc"].Value.ToString() != MonDeft)
-                {
-                    row["_msigv"] = Math.Round((double)row["_msigv"] * double.Parse(tx_tipcam.Text), 2);
-                    row["Ipreuni"] = Math.Round(double.Parse(dataGridView1.Rows[s].Cells["valor"].Value.ToString()) * double.Parse(tx_tipcam.Text), 2).ToString("#0.0000000000");
-                    row["Ivaluni"] = ((double)row["Ivaluni"] * double.Parse(tx_tipcam.Text)).ToString("#0.0000000000");
+                else
+                {       // tiene descuento la fila, aplica valorel
+                    row["_msigv"] = Math.Round(double.Parse(dataGridView1.Rows[s].Cells["valorel"].Value.ToString()) - (double.Parse(dataGridView1.Rows[s].Cells["valorel"].Value.ToString()) / (1 + (double.Parse(v_igv) / 100))), 2);
+                    row["Ipreuni"] = double.Parse(dataGridView1.Rows[s].Cells["valorel"].Value.ToString()).ToString("#0.0000000000");     // Precio de venta unitario CON IGV
+                    row["Ivaluni"] = (double.Parse(dataGridView1.Rows[s].Cells["valorel"].Value.ToString()) - (double)row["_msigv"]).ToString("#0.0000000000");
+                    if (tx_dat_mone.Text != MonDeft && dataGridView1.Rows[s].Cells["codmondoc"].Value.ToString() == MonDeft)   // 
+                    {
+                        //row["_msigv"] = Math.Round(double.Parse(dataGridView1.Rows[s].Cells["valor"].Value.ToString()) / (1 + (double.Parse(v_igv) / 100)) / double.Parse(tx_tipcam.Text), 2);
+                        row["_msigv"] = Math.Round(((double)row["_msigv"] / double.Parse(tx_tipcam.Text)), 2);
+                        row["Ipreuni"] = Math.Round(double.Parse(dataGridView1.Rows[s].Cells["valorel"].Value.ToString()) / double.Parse(tx_tipcam.Text), 2).ToString("#0.0000000000");
+                        row["Ivaluni"] = ((double)row["Ivaluni"] / double.Parse(tx_tipcam.Text)).ToString("#0.0000000000");
+                    }
+                    if (tx_dat_mone.Text == MonDeft && dataGridView1.Rows[s].Cells["codmondoc"].Value.ToString() != MonDeft)
+                    {
+                        row["_msigv"] = Math.Round((double)row["_msigv"] * double.Parse(tx_tipcam.Text), 2);
+                        row["Ipreuni"] = Math.Round(double.Parse(dataGridView1.Rows[s].Cells["valorel"].Value.ToString()) * double.Parse(tx_tipcam.Text), 2).ToString("#0.0000000000");
+                        row["Ivaluni"] = ((double)row["Ivaluni"] * double.Parse(tx_tipcam.Text)).ToString("#0.0000000000");
+                    }
                 }
                 row["Inumord"] = (s + 1).ToString();                                        // numero de orden del item             5
                 row["Iumeded"] = "ZZ";                                                      // Unidad de medida                     3
@@ -2809,6 +2860,24 @@ namespace TransCarga
                             {
                                 MessageBox.Show(resulta, "Error en actualización de seguimiento", MessageBoxButtons.OK, MessageBoxIcon.Error);
                             }
+                            if (Program.vg_tius == "TPU001" && Program.vg_nius == "NIV000")   // solo todo poderoso puede regenerar txt
+                            {
+                                var zz = MessageBox.Show("Desea regenerar el TXT?","Confirme por favor",MessageBoxButtons.YesNo,MessageBoxIcon.Question);
+                                if (zz == DialogResult.Yes)
+                                {
+                                    if (factElec(nipfe, "txt", "alta", 0) == true)       // facturacion electrónica
+                                    {
+
+                                    }
+                                    else
+                                    {
+                                        MessageBox.Show("No se puede generar el documento de venta electrónico" + Environment.NewLine +
+                                            "Se generó una anulación interna para el presente documento", "Error en proveedor de Fact.Electrónica");
+                                        iserror = "si";
+                                        anula("INT");
+                                    }
+                                }
+                            }
                         }
                         else
                         {
@@ -3555,6 +3624,15 @@ namespace TransCarga
                         // calculos
                         tx_valdscto.Text = (Math.Round(decimal.Parse(tx_tfmn.Text), 1) - Math.Round(decimal.Parse(tx_flete.Text), 1)).ToString("#0.0");
                         tx_dat_porcDscto.Text = ((Math.Round(decimal.Parse(tx_flete.Text), 1) * 100) / Math.Round(decimal.Parse(tx_tfmn.Text), 1)).ToString("#0.00");
+                        // calcula detalle
+                        int filas = dataGridView1.Rows.Count - 1;
+                        // vdf = decimal.Parse(tx_valdscto.Text) / (decimal)filas;
+                        for (int i=0; i<dataGridView1.Rows.Count - 1; i++)
+                        {
+                            decimal vdf = Math.Round((decimal.Parse(dataGridView1.Rows[i].Cells[4].Value.ToString()) * decimal.Parse(tx_dat_porcDscto.Text))/100,2);
+                            //dataGridView1.Rows[i].Cells[12].Value = (decimal.Parse(dataGridView1.Rows[i].Cells[4].Value.ToString()) - vdf).ToString("#0.00");
+                            dataGridView1.Rows[i].Cells[12].Value = vdf.ToString("#0.00");
+                        }
                     }
                     else
                     {
@@ -3898,17 +3976,19 @@ namespace TransCarga
             button1.Image = Image.FromFile(img_grab);
             tx_flete.ReadOnly = true;
             initIngreso();
+            gbox_serie.Enabled = true;
             tx_obser1.Enabled = true;
             tx_obser1.ReadOnly = false;
+            tx_serie.ReadOnly = false;
             tx_numero.Text = "";
             tx_numero.ReadOnly = false;
-            tx_serie.Focus();
             //
             Bt_ini.Enabled = true;
             Bt_sig.Enabled = true;
             Bt_ret.Enabled = true;
             Bt_fin.Enabled = true;
             tx_salxcob.BackColor = Color.White;
+            cmb_tdv.Focus();
         }
         private void Bt_close_Click(object sender, EventArgs e)
         {
@@ -4488,13 +4568,32 @@ namespace TransCarga
                     e.Graphics.DrawString(monlet, lt_peq, Brushes.Black, recto, StringFormat.GenericTypographic);
                     if (monlet.Length <= 30) posi = posi + alfi;
                     else posi = posi + alfi + alfi;
-                    if (double.Parse(tx_flete.Text) > double.Parse(Program.valdetra))                // leyenda de detracción
+                    if (tx_dat_tdv.Text == codfact)
                     {
-                        siz = new SizeF(CentimeterToPixel(anchTik), 15 * 3);
+                        // forma de pago
+                        posi = posi + (alfi / 1.5F);
+                        string ahiva = "";
+                        if (rb_si.Checked == true)
+                        {
+                            ahiva = "PAGO AL CONTADO " + tx_flete.Text;
+                        }
+                        else
+                        {
+                            string _fechc = DateTime.Parse(tx_fechope.Text).AddDays(double.Parse(tx_dat_dpla.Text)).Date.ToString("dd-MM-yyyy");    // "yyyy-MM-dd"
+                            ahiva = "- AL CREDITO -" + " 1 CUOTA - VCMTO: " + _fechc;
+                        }
                         puntoF = new PointF(coli, posi);
-                        recto = new RectangleF(puntoF, siz);
-                        e.Graphics.DrawString(glosdet.Trim() + " " + Program.ctadetra.Trim(), lt_peq, Brushes.Black, recto, StringFormat.GenericTypographic);
-                        posi = posi + alfi * 3;
+                        e.Graphics.DrawString(ahiva, lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                        posi = posi + alfi * 1.5F;
+                        // leyenda de detracción
+                        if (double.Parse(tx_flete.Text) > double.Parse(Program.valdetra))
+                        {
+                            siz = new SizeF(CentimeterToPixel(anchTik), 15 * 3);
+                            puntoF = new PointF(coli, posi);
+                            recto = new RectangleF(puntoF, siz);
+                            e.Graphics.DrawString(glosdet.Trim() + " " + Program.ctadetra.Trim(), lt_peq, Brushes.Black, recto, StringFormat.GenericTypographic);
+                            posi = posi + alfi * 3;
+                        }
                     }
                     puntoF = new PointF(coli, posi);
                     string repre = "Representación impresa de la";

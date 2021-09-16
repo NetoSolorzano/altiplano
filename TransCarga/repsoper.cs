@@ -65,7 +65,7 @@ namespace TransCarga
         DataTable dtplanDet = new DataTable();      // planilla de carga - detalle
         DataTable dtgrtcab = new DataTable();       // guia rem transpor - cabecera
         DataTable dtgrtdet = new DataTable();       // guia rem transpor - detalle
-        string[] filaimp = {"","","","","","","","","","","","" };
+        string[] filaimp = {"","","","","","","","","","","","","" };
         // string de conexion
         string DB_CONN_STR = "server=" + login.serv + ";uid=" + login.usua + ";pwd=" + login.cont + ";database=" + login.data + ";";
 
@@ -964,6 +964,7 @@ namespace TransCarga
                         filaimp[9] = row.Cells["DETALLE"].Value.ToString();    // detalle fila 2 - detalle
                         filaimp[10] = "Según doc. cliente" + " " + row.Cells["DOCSREMIT"].Value.ToString();   // detalle fila 3
                         filaimp[11] = "S/ " + row.Cells["FLETE_MN"].Value.ToString();   // flete soles
+                        filaimp[12] = row.Cells["NOMBRE2"].Value.ToString();           // nombre del remitente
                         for (int i = 1; i <= vi_copias; i++)
                         {
                             printDocument1.PrinterSettings.PrinterName = v_impTK;
@@ -2042,6 +2043,14 @@ namespace TransCarga
                 e.Graphics.DrawString(":", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                 puntoF = new PointF(colm + 10, posi);
                 e.Graphics.DrawString(filaimp[7], lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                posi = posi + alfi;
+                posi = posi + alfi;
+                puntoF = new PointF(coli, posi);
+                e.Graphics.DrawString("REMITENTE", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                puntoF = new PointF(colm, posi);
+                e.Graphics.DrawString(":", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                puntoF = new PointF(colm + 10, posi);
+                e.Graphics.DrawString(filaimp[12], lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                 posi = posi + alfi;
                 posi = posi + alfi;
                 puntoF = new PointF(coli, posi);
