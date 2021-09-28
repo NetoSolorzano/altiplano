@@ -111,6 +111,7 @@
             this.tx_dat_vtasloc = new System.Windows.Forms.TextBox();
             this.cmb_vtasloc = new System.Windows.Forms.ComboBox();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.chk_semana = new System.Windows.Forms.CheckBox();
             this.rb_listado = new System.Windows.Forms.RadioButton();
             this.rb_resumen = new System.Windows.Forms.RadioButton();
             this.button4 = new System.Windows.Forms.Button();
@@ -982,7 +983,7 @@
             // chk_excluye
             // 
             this.chk_excluye.AutoSize = true;
-            this.chk_excluye.Location = new System.Drawing.Point(312, 29);
+            this.chk_excluye.Location = new System.Drawing.Point(370, 29);
             this.chk_excluye.Name = "chk_excluye";
             this.chk_excluye.Size = new System.Drawing.Size(63, 17);
             this.chk_excluye.TabIndex = 372;
@@ -994,7 +995,7 @@
             this.groupBox19.BackColor = System.Drawing.Color.DimGray;
             this.groupBox19.Controls.Add(this.groupBox20);
             this.groupBox19.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.groupBox19.Location = new System.Drawing.Point(134, 46);
+            this.groupBox19.Location = new System.Drawing.Point(192, 46);
             this.groupBox19.Name = "groupBox19";
             this.groupBox19.Size = new System.Drawing.Size(171, 1);
             this.groupBox19.TabIndex = 363;
@@ -1010,7 +1011,7 @@
             // 
             // tx_dat_estad
             // 
-            this.tx_dat_estad.Location = new System.Drawing.Point(114, 28);
+            this.tx_dat_estad.Location = new System.Drawing.Point(172, 28);
             this.tx_dat_estad.Name = "tx_dat_estad";
             this.tx_dat_estad.Size = new System.Drawing.Size(17, 20);
             this.tx_dat_estad.TabIndex = 371;
@@ -1023,7 +1024,7 @@
             this.cmb_estad.DropDownWidth = 100;
             this.cmb_estad.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.cmb_estad.FormattingEnabled = true;
-            this.cmb_estad.Location = new System.Drawing.Point(221, 26);
+            this.cmb_estad.Location = new System.Drawing.Point(279, 26);
             this.cmb_estad.Name = "cmb_estad";
             this.cmb_estad.Size = new System.Drawing.Size(85, 21);
             this.cmb_estad.TabIndex = 370;
@@ -1087,7 +1088,7 @@
             // label27
             // 
             this.label27.AutoSize = true;
-            this.label27.Location = new System.Drawing.Point(136, 31);
+            this.label27.Location = new System.Drawing.Point(194, 31);
             this.label27.Name = "label27";
             this.label27.Size = new System.Drawing.Size(79, 13);
             this.label27.TabIndex = 362;
@@ -1098,7 +1099,7 @@
             this.groupBox17.BackColor = System.Drawing.Color.DimGray;
             this.groupBox17.Controls.Add(this.groupBox18);
             this.groupBox17.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.groupBox17.Location = new System.Drawing.Point(134, 24);
+            this.groupBox17.Location = new System.Drawing.Point(192, 24);
             this.groupBox17.Name = "groupBox17";
             this.groupBox17.Size = new System.Drawing.Size(137, 1);
             this.groupBox17.TabIndex = 361;
@@ -1115,7 +1116,7 @@
             // label26
             // 
             this.label26.AutoSize = true;
-            this.label26.Location = new System.Drawing.Point(136, 9);
+            this.label26.Location = new System.Drawing.Point(194, 9);
             this.label26.Name = "label26";
             this.label26.Size = new System.Drawing.Size(61, 13);
             this.label26.TabIndex = 359;
@@ -1123,7 +1124,7 @@
             // 
             // tx_dat_vtasloc
             // 
-            this.tx_dat_vtasloc.Location = new System.Drawing.Point(114, 4);
+            this.tx_dat_vtasloc.Location = new System.Drawing.Point(172, 4);
             this.tx_dat_vtasloc.Name = "tx_dat_vtasloc";
             this.tx_dat_vtasloc.Size = new System.Drawing.Size(20, 20);
             this.tx_dat_vtasloc.TabIndex = 360;
@@ -1136,7 +1137,7 @@
             this.cmb_vtasloc.DropDownWidth = 100;
             this.cmb_vtasloc.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.cmb_vtasloc.FormattingEnabled = true;
-            this.cmb_vtasloc.Location = new System.Drawing.Point(204, 4);
+            this.cmb_vtasloc.Location = new System.Drawing.Point(262, 4);
             this.cmb_vtasloc.Name = "cmb_vtasloc";
             this.cmb_vtasloc.Size = new System.Drawing.Size(85, 21);
             this.cmb_vtasloc.TabIndex = 358;
@@ -1145,13 +1146,23 @@
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.chk_semana);
             this.panel1.Controls.Add(this.rb_listado);
             this.panel1.Controls.Add(this.rb_resumen);
             this.panel1.Location = new System.Drawing.Point(3, 2);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(92, 45);
+            this.panel1.Size = new System.Drawing.Size(163, 45);
             this.panel1.TabIndex = 357;
-            this.panel1.Visible = false;
+            // 
+            // chk_semana
+            // 
+            this.chk_semana.AutoSize = true;
+            this.chk_semana.Location = new System.Drawing.Point(92, 6);
+            this.chk_semana.Name = "chk_semana";
+            this.chk_semana.Size = new System.Drawing.Size(67, 17);
+            this.chk_semana.TabIndex = 373;
+            this.chk_semana.Text = "Semanal";
+            this.chk_semana.UseVisualStyleBackColor = true;
             // 
             // rb_listado
             // 
@@ -1163,11 +1174,11 @@
             this.rb_listado.TabStop = true;
             this.rb_listado.Text = "Listado";
             this.rb_listado.UseVisualStyleBackColor = true;
+            this.rb_listado.CheckedChanged += new System.EventHandler(this.rb_listado_CheckedChanged);
             // 
             // rb_resumen
             // 
             this.rb_resumen.AutoSize = true;
-            this.rb_resumen.Enabled = false;
             this.rb_resumen.Location = new System.Drawing.Point(3, 4);
             this.rb_resumen.Name = "rb_resumen";
             this.rb_resumen.Size = new System.Drawing.Size(72, 17);
@@ -1175,6 +1186,7 @@
             this.rb_resumen.TabStop = true;
             this.rb_resumen.Text = "Resumido";
             this.rb_resumen.UseVisualStyleBackColor = true;
+            this.rb_resumen.CheckedChanged += new System.EventHandler(this.rb_resumen_CheckedChanged);
             // 
             // button4
             // 
@@ -2368,5 +2380,6 @@
         private System.Windows.Forms.GroupBox groupBox48;
         private NumericTextBox tx_tfc;
         private System.Windows.Forms.Label label29;
+        private System.Windows.Forms.CheckBox chk_semana;
     }
 }

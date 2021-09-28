@@ -625,7 +625,7 @@ namespace TransCarga
                         {
                             var a = row[10].ToString().Substring(0, 10);
                             string valorel = "";
-                            if (row[14].ToString().Trim() != "")
+                            if (row[14].ToString().Trim() != "" && row[14].ToString().Trim().Substring(0,4) != "0.00")
                             {
                                 decimal vdf = Math.Truncate((decimal.Parse(row[7].ToString()) * decimal.Parse(row[14].ToString())) / 100);
                                 //dataGridView1.Rows[i].Cells[12].Value = (decimal.Parse(dataGridView1.Rows[i].Cells[4].Value.ToString()) - vdf).ToString("#0.00");
@@ -2031,10 +2031,10 @@ namespace TransCarga
             tdfe.Rows.Clear();
             for (int s = 0; s < dataGridView1.Rows.Count - 1; s++)
             {
-                glosser2 = dataGridView1.Rows[s].Cells["OriDest"].Value.ToString() + " - " + tx_totcant.Text.Trim() + tx_dat_nombd.Text; // " Bultos"; 
+                glosser2 = dataGridView1.Rows[s].Cells["OriDest"].Value.ToString() + " - " + tx_totcant.Text.Trim() + " " + tx_dat_nombd.Text; // " Bultos"; 
                 DataRow row = tdfe.NewRow();
                 row["Idatper"] = "";                                                        // datos personalizados del item
-                if (dataGridView1.Rows[s].Cells["valorel"].Value.ToString().Trim() == "")
+                if (dataGridView1.Rows[s].Cells["valorel"].Value == null || dataGridView1.Rows[s].Cells["valorel"].Value.ToString().Trim() == "0.00")
                 {
                     row["_msigv"] = Math.Round(double.Parse(dataGridView1.Rows[s].Cells["valor"].Value.ToString()) - (double.Parse(dataGridView1.Rows[s].Cells["valor"].Value.ToString()) / (1 + (double.Parse(v_igv) / 100))), 2);
                     row["Ipreuni"] = double.Parse(dataGridView1.Rows[s].Cells["valor"].Value.ToString()).ToString("#0.0000000000");     // Precio de venta unitario CON IGV
@@ -2648,8 +2648,9 @@ namespace TransCarga
         private void button1_Click(object sender, EventArgs e)
         {
             #region validaciones
-            if (tx_serie.Text.Trim() == "")
+            if (tx_serie.Text.Trim() == "" || tx_serie.Text.Trim() == "0000")
             {
+                MessageBox.Show("Seleccione la serie", " Atención ");
                 tx_serie.Focus();
                 return;
             }
@@ -2738,6 +2739,11 @@ namespace TransCarga
                         return;
                     }
                 }
+            }
+            if (tx_dat_tdv.Text.Trim() == "")
+            {
+                cmb_tdv.Focus();
+                return;
             }
             #endregion
             // grabamos, actualizamos, etc

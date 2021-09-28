@@ -299,7 +299,8 @@ namespace TransCarga
                             dgv_vtas.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
                             dgv_vtas.Columns[i].Width = a;
                         }
-                        if (b < dgv_vtas.Width) dgv_vtas.Width = b - 20;
+                        //if (b < dgv_vtas.Width) dgv_vtas.Width = b - 20;
+                        dgv_vtas.Width = b + 50;
                         dgv_vtas.ReadOnly = true;
                     }
                     suma_grilla("dgv_vtas");
@@ -440,16 +441,27 @@ namespace TransCarga
                     tx_tegre.Text = tvv.ToString("#0.00");
                     break;
                 case "dgv_vtas":            // grilla cobranzas
-                    for (int i = 0; i < dgv_vtas.Rows.Count; i++)
+                    if (rb_resumen.Checked == true && chk_semana.Checked == true)
                     {
-                        if (dgv_vtas.Rows[i].Cells["ESTADO"].Value.ToString() != etiq_anulado)
+                        for (int i = 0; i < dgv_vtas.Rows.Count; i++)
                         {
-                            tvv = tvv + Convert.ToDouble(dgv_vtas.Rows[i].Cells["PAGADO"].Value);
+                            tvv = tvv + Convert.ToDouble(dgv_vtas.Rows[i].Cells["TOT_SEM"].Value);
                             cr = cr + 1;
                         }
-                        else
+                    }
+                    else
+                    {
+                        for (int i = 0; i < dgv_vtas.Rows.Count; i++)
                         {
-                            dgv_vtas.Rows[i].DefaultCellStyle.BackColor = Color.Red;
+                            if (dgv_vtas.Rows[i].Cells["ESTADO"].Value.ToString() != etiq_anulado)
+                            {
+                                tvv = tvv + Convert.ToDouble(dgv_vtas.Rows[i].Cells["PAGADO"].Value);
+                                cr = cr + 1;
+                            }
+                            else
+                            {
+                                dgv_vtas.Rows[i].DefaultCellStyle.BackColor = Color.Red;
+                            }
                         }
                     }
                     tx_tf_c.Text = cr.ToString();
@@ -539,27 +551,59 @@ namespace TransCarga
             using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
             {
                 conn.Open();
-                string consulta = "rep_adm_cob1";
-                using (MySqlCommand micon = new MySqlCommand(consulta, conn))
+                if (rb_listado.Checked == true)
                 {
-                    micon.CommandType = CommandType.StoredProcedure;
-                    micon.Parameters.AddWithValue("@loca", (tx_dat_vtasloc.Text != "") ? tx_dat_vtasloc.Text : "");
-                    micon.Parameters.AddWithValue("@fecini", dtp_vtasfini.Value.ToString("yyyy-MM-dd"));
-                    micon.Parameters.AddWithValue("@fecfin", dtp_vtasfina.Value.ToString("yyyy-MM-dd"));
-                    micon.Parameters.AddWithValue("@esta", (tx_dat_estad.Text != "") ? tx_dat_estad.Text : "");
-                    micon.Parameters.AddWithValue("@excl", (chk_excluye.Checked == true) ? "1" : "0");
-                    using (MySqlDataAdapter da = new MySqlDataAdapter(micon))
+                    string consulta = "rep_adm_cob1";
+                    using (MySqlCommand micon = new MySqlCommand(consulta, conn))
                     {
-                        dgv_vtas.DataSource = null;
-                        DataTable dt = new DataTable();
-                        da.Fill(dt);
-                        dgv_vtas.DataSource = dt;
-                        grilla("dgv_vtas");
+                        micon.CommandType = CommandType.StoredProcedure;
+                        micon.Parameters.AddWithValue("@loca", (tx_dat_vtasloc.Text != "") ? tx_dat_vtasloc.Text : "");
+                        micon.Parameters.AddWithValue("@fecini", dtp_vtasfini.Value.ToString("yyyy-MM-dd"));
+                        micon.Parameters.AddWithValue("@fecfin", dtp_vtasfina.Value.ToString("yyyy-MM-dd"));
+                        micon.Parameters.AddWithValue("@esta", (tx_dat_estad.Text != "") ? tx_dat_estad.Text : "");
+                        micon.Parameters.AddWithValue("@excl", (chk_excluye.Checked == true) ? "1" : "0");
+                        using (MySqlDataAdapter da = new MySqlDataAdapter(micon))
+                        {
+                            dgv_vtas.DataSource = null;
+                            DataTable dt = new DataTable();
+                            da.Fill(dt);
+                            dgv_vtas.DataSource = dt;
+                            grilla("dgv_vtas");
+                        }
+                        string resulta = lib.ult_mov(nomform, nomtab, asd);
+                        if (resulta != "OK")                                        // actualizamos la tabla usuarios
+                        {
+                            MessageBox.Show(resulta, "Error en actualización de tabla usuarios", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
                     }
-                    string resulta = lib.ult_mov(nomform, nomtab, asd);
-                    if (resulta != "OK")                                        // actualizamos la tabla usuarios
+                }
+                if (rb_resumen.Checked == true && chk_semana.Checked == false)
+                {
+                    // me quede aca
+                    // luego faltaran los formatos de impresion
+
+                }
+                if (rb_resumen.Checked == true && chk_semana.Checked == true)
+                {
+                    string consulta = "res_sem_cob";
+                    using (MySqlCommand micon = new MySqlCommand(consulta, conn))
                     {
-                        MessageBox.Show(resulta, "Error en actualización de tabla usuarios", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        micon.CommandType = CommandType.StoredProcedure;
+                        micon.Parameters.AddWithValue("@feini", dtp_vtasfini.Value.ToString("yyyy-MM-dd"));
+                        micon.Parameters.AddWithValue("@fefin", dtp_vtasfina.Value.ToString("yyyy-MM-dd"));
+                        using (MySqlDataAdapter da = new MySqlDataAdapter(micon))
+                        {
+                            dgv_vtas.DataSource = null;
+                            DataTable dt = new DataTable();
+                            da.Fill(dt);
+                            dgv_vtas.DataSource = dt;
+                            grilla("dgv_vtas");
+                        }
+                        string resulta = lib.ult_mov(nomform, nomtab, asd);
+                        if (resulta != "OK")                                        // actualizamos la tabla usuarios
+                        {
+                            MessageBox.Show(resulta, "Error en actualización de tabla usuarios", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
                     }
                 }
             }
@@ -1176,6 +1220,50 @@ namespace TransCarga
         {
             cmb_sede_plan.Focus();
         }
+        private void rb_listado_CheckedChanged(object sender, EventArgs e)
+        {
+            if (rb_listado.Checked == true)
+            {
+                chk_semana.Checked = false;
+                chk_semana.Enabled = false;
+                cmb_vtasloc.SelectedIndex = -1;
+                cmb_vtasloc.Enabled = true;
+                cmb_estad.SelectedIndex = -1;
+                cmb_estad.Enabled = true;
+            }
+            else
+            {
+                chk_semana.Checked = false;
+                chk_semana.Enabled = true;
+                //rb_listado.Enabled = false;
+                cmb_vtasloc.SelectedIndex = -1;
+                cmb_vtasloc.Enabled = false;
+                cmb_estad.SelectedIndex = -1;
+                cmb_estad.Enabled = false;
+            }
+        }
+        private void rb_resumen_CheckedChanged(object sender, EventArgs e)
+        {
+            if (rb_resumen.Checked == true)
+            {
+                chk_semana.Checked = false;
+                chk_semana.Enabled = true;
+                cmb_vtasloc.SelectedIndex = -1;
+                cmb_vtasloc.Enabled = false;
+                cmb_estad.SelectedIndex = -1;
+                cmb_estad.Enabled = false;
+            }
+            else
+            {
+                chk_semana.Checked = false;
+                chk_semana.Enabled = false;
+                //rb_listado.Enabled = true;
+                cmb_vtasloc.SelectedIndex = -1;
+                cmb_vtasloc.Enabled = true;
+                cmb_estad.SelectedIndex = -1;
+                cmb_estad.Enabled = true;
+            }
+        }
         #endregion
 
         #region advancedatagridview
@@ -1282,7 +1370,6 @@ namespace TransCarga
                 }
             }*/
         }
-        
         #endregion
     }
 }
