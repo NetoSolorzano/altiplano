@@ -579,9 +579,29 @@ namespace TransCarga
                 }
                 if (rb_resumen.Checked == true && chk_semana.Checked == false)
                 {
-                    // me quede aca
-                    // luego faltaran los formatos de impresion
-
+                    string consulta = "rep_adm_cob1";
+                    using (MySqlCommand micon = new MySqlCommand(consulta, conn))
+                    {
+                        micon.CommandType = CommandType.StoredProcedure;
+                        micon.Parameters.AddWithValue("@loca", "resume");
+                        micon.Parameters.AddWithValue("@fecini", dtp_vtasfini.Value.ToString("yyyy-MM-dd"));
+                        micon.Parameters.AddWithValue("@fecfin", dtp_vtasfina.Value.ToString("yyyy-MM-dd"));
+                        micon.Parameters.AddWithValue("@esta", "");
+                        micon.Parameters.AddWithValue("@excl", "0");
+                        using (MySqlDataAdapter da = new MySqlDataAdapter(micon))
+                        {
+                            dgv_vtas.DataSource = null;
+                            DataTable dt = new DataTable();
+                            da.Fill(dt);
+                            dgv_vtas.DataSource = dt;
+                            grilla("dgv_vtas");
+                        }
+                        string resulta = lib.ult_mov(nomform, nomtab, asd);
+                        if (resulta != "OK")                                        // actualizamos la tabla usuarios
+                        {
+                            MessageBox.Show(resulta, "Error en actualización de tabla usuarios", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                    }
                 }
                 if (rb_resumen.Checked == true && chk_semana.Checked == true)
                 {
@@ -931,6 +951,7 @@ namespace TransCarga
             cmb_estad.SelectedIndex = -1;
             cmb_vtasloc.SelectedIndex = -1;
             chk_excluye.Checked = false;
+            rb_listado.Checked = true;
             // egresos
             cmb_sede_guias.SelectedIndex = -1;
             cmb_estad_guias.SelectedIndex = -1;
