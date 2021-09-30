@@ -313,7 +313,36 @@ namespace TransCarga
             }
             tx_dat_nombd.Text = "Bultos";
             tx_dat_nombd.ReadOnly = true;
-            cargaunica();
+            //cargaunica();
+            {
+                panel2.Enabled = false;
+                tx_dat_dpo.Enabled = false;
+                tx_dat_dpd.Enabled = false;
+                //
+                tx_pla_placa.Text = "";
+                tx_pla_confv.Text = "";
+                tx_pla_autor.Text = "";
+                tx_rucT.Text = "";
+                tx_razonS.Text = "";
+                tx_fecini.Text = "";
+                tx_cetm.Text = "";
+                tx_cutm.Text = "";
+                tx_valref1.Text = "";
+                tx_valref2.Text = "";
+                tx_valref3.Text = "";
+                tx_dat_dpo.Text = "";
+                tx_dp_dep.Text = "";
+                tx_dp_pro.Text = "";
+                tx_dp_dis.Text = "";
+                tx_dat_upo.Text = "";
+                tx_dat_dpd.Text = "";
+                tx_dd_dep.Text = "";
+                tx_dd_pro.Text = "";
+                tx_dd_dis.Text = "";
+                tx_dat_upd.Text = "";
+                tx_dat_nombd.Text = "Bultos";
+                tx_dat_nombd.ReadOnly = true;
+            }
         }
         private void jalainfo()                 // obtiene datos de imagenes y variables
         {
@@ -604,10 +633,11 @@ namespace TransCarga
         }
         private void jaladet(string idr)         // jala el detalle
         {
-            string jalad = "select a.filadet,a.codgror,a.cantbul,a.unimedp,a.descpro,a.pesogro,a.codmogr,a.totalgr," +
+            string jalad = "select a.filadet,a.codgror,a.cantbul,d.unimedpro,a.descpro,a.pesogro,a.codmogr,a.totalgr," +
                 "g.totgrMN,g.codMN,g.fechopegr,g.docsremit,g.tipmongri,concat(lo.descrizionerid,' - ',ld.descrizionerid) as orides," +
                 "b.porcendscto,b.valordscto " +
                 "from detfactu a left join cabguiai g on concat(g.sergui,'-',g.numgui)=a.codgror " +
+                "left join detguiai d on d.idc=g.id " +
                 "left join desc_loc lo on lo.idcodice=g.locorigen " +
                 "left join desc_loc ld on ld.idcodice=g.locdestin " +
                 "left join cabfactu b on b.id=a.idc " +
@@ -646,9 +676,11 @@ namespace TransCarga
                                 row[13].ToString(),     // OriDest
                                 "",                     // saldo
                                 valorel);               // valorel
+                            tx_dat_nombd.Text = row[3].ToString();
                         }
                         dt.Dispose();
                     }
+                    glosser2 = dataGridView1.Rows[0].Cells["OriDest"].Value.ToString() + " - " + tx_totcant.Text.Trim() + " " + tx_dat_nombd.Text;
                 }
             }
         }
@@ -1061,69 +1093,36 @@ namespace TransCarga
         }
         private void cargaunica()               // campos de carga unica
         {
-            if (Tx_modo.Text == "NUEVO")
+            if (chk_cunica.Checked == true)  // Tx_modo.Text == "NUEVO" && 
             {
-                if (chk_cunica.Checked == true) // .CheckState.ToString() == "True"
+                panel2.Enabled = true;
+                tx_dat_dpo.Enabled = true;
+                tx_dat_dpd.Enabled = true;
+                if (dataGridView1.Rows[0].Cells[0].Value != null)
                 {
-                    panel2.Enabled = true;
-                    tx_dat_dpo.Enabled = true;
-                    tx_dat_dpd.Enabled = true;
-                    if (dataGridView1.Rows[0].Cells[0].Value != null)
-                    {
-                        tx_pla_placa.Text = datguias[11].ToString();
-                        tx_pla_confv.Text = datguias[14].ToString();
-                        tx_pla_autor.Text = datguias[13].ToString();
-                        tx_rucT.Text = datcargu[10].ToString();
-                        tx_razonS.Text = datcargu[11].ToString();
-                        tx_fecini.Text = (datcargu[12].ToString().Length < 10) ? "" : datcargu[12].ToString().Substring(0, 10);
-                        tx_cetm.Text = "";
-                        tx_cutm.Text = "";
-                        tx_valref1.Text = "";
-                        tx_valref2.Text = "";
-                        tx_valref3.Text = "";
-                        tx_dat_dpo.Text = datcargu[0].ToString();       // datcltsR[3].ToString();
-                        tx_dp_dep.Text = datcargu[1].ToString();
-                        tx_dp_pro.Text = datcargu[2].ToString();
-                        tx_dp_dis.Text = datcargu[3].ToString();
-                        tx_dat_upo.Text = datcargu[4].ToString();     // datcltsR[4].ToString();
-                        tx_dat_dpd.Text = datcargu[5].ToString();       // datcltsD[3].ToString();
-                        tx_dd_dep.Text = datcargu[6].ToString();
-                        tx_dd_pro.Text = datcargu[7].ToString();
-                        tx_dd_dis.Text = datcargu[8].ToString();
-                        tx_dat_upd.Text = datcargu[9].ToString();     // datcltsD[4].ToString();
-                    }
-                    tx_dat_nombd.ReadOnly = false;
-                }
-                else
-                {
-                    panel2.Enabled = false;
-                    tx_dat_dpo.Enabled = false;
-                    tx_dat_dpd.Enabled = false;
-                    //
-                    tx_pla_placa.Text = "";
-                    tx_pla_confv.Text = "";
-                    tx_pla_autor.Text = "";
-                    tx_rucT.Text = "";
-                    tx_razonS.Text = "";
-                    tx_fecini.Text = "";
+                    tx_pla_placa.Text = datguias[11].ToString();
+                    tx_pla_confv.Text = datguias[14].ToString();
+                    tx_pla_autor.Text = datguias[13].ToString();
+                    tx_rucT.Text = datcargu[10].ToString();
+                    tx_razonS.Text = datcargu[11].ToString();
+                    tx_fecini.Text = (datcargu[12].ToString().Length < 10) ? "" : datcargu[12].ToString().Substring(0, 10);
                     tx_cetm.Text = "";
                     tx_cutm.Text = "";
                     tx_valref1.Text = "";
                     tx_valref2.Text = "";
                     tx_valref3.Text = "";
-                    tx_dat_dpo.Text = "";
-                    tx_dp_dep.Text = "";
-                    tx_dp_pro.Text = "";
-                    tx_dp_dis.Text = "";
-                    tx_dat_upo.Text = "";
-                    tx_dat_dpd.Text = "";
-                    tx_dd_dep.Text = "";
-                    tx_dd_pro.Text = "";
-                    tx_dd_dis.Text = "";
-                    tx_dat_upd.Text = "";
-                    tx_dat_nombd.Text = "Bultos";
-                    tx_dat_nombd.ReadOnly = true;
+                    tx_dat_dpo.Text = datcargu[0].ToString();       // datcltsR[3].ToString();
+                    tx_dp_dep.Text = datcargu[1].ToString();
+                    tx_dp_pro.Text = datcargu[2].ToString();
+                    tx_dp_dis.Text = datcargu[3].ToString();
+                    tx_dat_upo.Text = datcargu[4].ToString();     // datcltsR[4].ToString();
+                    tx_dat_dpd.Text = datcargu[5].ToString();       // datcltsD[3].ToString();
+                    tx_dd_dep.Text = datcargu[6].ToString();
+                    tx_dd_pro.Text = datcargu[7].ToString();
+                    tx_dd_dis.Text = datcargu[8].ToString();
+                    tx_dat_upd.Text = datcargu[9].ToString();     // datcltsD[4].ToString();
                 }
+                tx_dat_nombd.ReadOnly = false;
             }
         }
         private void armacfe()                  // arma cabecera de fact elect.
@@ -3189,7 +3188,7 @@ namespace TransCarga
                     micon.Parameters.AddWithValue("@pagaut", (rb_si.Checked == true)? "S" : "N");
                     micon.Parameters.AddWithValue("@tipdco", (rb_si.Checked == true)? v_codcob : "");
                     micon.Parameters.AddWithValue("@idcaj", (rb_si.Checked == true)? tx_idcaja.Text : "0");
-                    micon.Parameters.AddWithValue("@plazc", (rb_no.Checked == true)? codppc : "");
+                    micon.Parameters.AddWithValue("@plazc", (rb_no.Checked == true)? tx_dat_dpla.Text : "");  // (rb_no.Checked == true)? codppc : "");
                     micon.Parameters.AddWithValue("@pordesc", (tx_dat_porcDscto.Text.Trim() == "") ? "0" : tx_dat_porcDscto.Text);
                     micon.Parameters.AddWithValue("@valdesc", (tx_valdscto.Text.Trim() == "") ? "0" : tx_valdscto.Text);
                     micon.Parameters.AddWithValue("@caruni", (chk_cunica.Checked == true)? 1 : 0);
@@ -4540,15 +4539,20 @@ namespace TransCarga
                             e.Graphics.DrawString(glosser2, lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                             posi = posi + alfi;
                             puntoF = new PointF(coli, posi);
-                            //recto = new RectangleF(puntoF, siz);
-                            e.Graphics.DrawString(dataGridView1.Rows[l].Cells[0].Value.ToString() + " " + dataGridView1.Rows[l].Cells[1].Value.ToString(), lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                            string qqq = dataGridView1.Rows[l].Cells[0].Value.ToString() + " " + dataGridView1.Rows[l].Cells[1].Value.ToString();
+                            if (qqq.Length > 40) siz = new SizeF(CentimeterToPixel(anchTik), 30);
+                            else siz = new SizeF(CentimeterToPixel(anchTik), 15);
+                            recto = new RectangleF(puntoF, siz);
+                            e.Graphics.DrawString(qqq, lt_peq, Brushes.Black, recto, StringFormat.GenericTypographic);
                             posi = posi + alfi;
+                            if (qqq.Length > 40) posi = posi + alfi;
                             puntoF = new PointF(coli, posi);
                             e.Graphics.DrawString("Según doc.cliente: " + dataGridView1.Rows[l].Cells[8].Value.ToString(), lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                             posi = posi + alfi;
                         }
                     }
                     // pie del documento ;
+                    siz = new SizeF(70, 15);
                     if (tx_dat_tdv.Text != codfact)
                     {
                         //SizeF siz = new SizeF(70, 15);
