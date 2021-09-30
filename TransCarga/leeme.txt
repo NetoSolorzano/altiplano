@@ -279,7 +279,8 @@ form repsoper, se agrega nombre del remitente a la impresion de guia simple y ad
 form facelect, agregar en la impresion el pago efectivo o credito .................................. ok 10/09/2021
 form facelect, edicion regenerar txt y arreglo de calculo detalle con descuento .................... ok 14/09/2021
 form guiaii_a, permitir comentarios al anular guia ................................................. ok 15/09/2021
-form facelect, correccion en regeneraciones de txt ................................................. ok 
+form facelect, correccion en regeneraciones de txt ................................................. ok 21/09/2021
 form repadmcaja, cobranzas, agregar resumen por sede y por semana .................................. ok 28/09/2021
 P.A. desarrollo res_sem_cob, reporte cobranzas semanales ........................................... ok 28/09/2021
-formato CR para el reporte cobranzas semanales .....................................................  
+formato CR para el reporte cobranzas semanales ..................................................... 
+form facelect, facuracion en dolares de soya ....................................................... 
