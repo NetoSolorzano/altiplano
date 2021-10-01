@@ -1163,6 +1163,7 @@
             this.chk_semana.TabIndex = 373;
             this.chk_semana.Text = "Semanal";
             this.chk_semana.UseVisualStyleBackColor = true;
+            this.chk_semana.CheckedChanged += new System.EventHandler(this.chk_semana_CheckedChanged);
             // 
             // rb_listado
             // 
@@ -1192,6 +1193,7 @@
             // 
             this.button4.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.button4.Enabled = false;
+            this.button4.Image = global::TransCarga.Properties.Resources.view24_ex;
             this.button4.Location = new System.Drawing.Point(714, 6);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(50, 41);

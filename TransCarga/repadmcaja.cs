@@ -1055,8 +1055,13 @@ namespace TransCarga
         #endregion
 
         #region crystal
-        private void button4_Click(object sender, EventArgs e)      // reporte de ventas
+        private void button4_Click(object sender, EventArgs e)      // reporte de cobranzas
         {
+            // ME QUEDE ACA
+            if (rb_resumen.Checked == true && chk_semana.Checked == true)
+            {
+                setParaCrystal("rescobsem");
+            }
             //if (rb_listado.Checked == true) setParaCrystal("vtasxclte");
             //else setParaCrystal("ventas");
         }
@@ -1074,17 +1079,17 @@ namespace TransCarga
                 frmvizoper visualizador = new frmvizoper(datos);
                 visualizador.Show();
             }
-            if (repo == "vtasxclte")
+            if (repo == "rescobsem")
             {
-                conClie datos = generarepvtasxclte();
+                conClie datos = generarepcobsem();
                 frmvizoper visualizador = new frmvizoper(datos);
                 visualizador.Show();
             }
         }
-        private conClie generarepvtasxclte()                        // libre .. esta solo como modelo
+        private conClie generarepcobsem()                           // resumen de cobranzas semanales
         {
-            conClie repvtas = new conClie();                        // xsd
-            conClie.repvtas_cabRow cabrow = repvtas.repvtas_cab.Newrepvtas_cabRow();
+            conClie rrepcobs = new conClie();                        // xsd
+            conClie.repvtas_cabRow cabrow = rrepcobs.repvtas_cab.Newrepvtas_cabRow();
             cabrow.id = "0";
             cabrow.fecini = dtp_vtasfini.Value.ToString("dd/MM/yyyy");
             cabrow.fecfin = dtp_vtasfina.Value.ToString("dd/MM/yyyy");
@@ -1251,6 +1256,7 @@ namespace TransCarga
                 cmb_vtasloc.Enabled = true;
                 cmb_estad.SelectedIndex = -1;
                 cmb_estad.Enabled = true;
+                button4.Enabled = false;
             }
             else
             {
@@ -1273,6 +1279,7 @@ namespace TransCarga
                 cmb_vtasloc.Enabled = false;
                 cmb_estad.SelectedIndex = -1;
                 cmb_estad.Enabled = false;
+                button4.Enabled = false;
             }
             else
             {
@@ -1284,6 +1291,11 @@ namespace TransCarga
                 cmb_estad.SelectedIndex = -1;
                 cmb_estad.Enabled = true;
             }
+        }
+        private void chk_semana_CheckedChanged(object sender, EventArgs e)
+        {
+            if (chk_semana.Checked == true && rb_resumen.Checked == true) button4.Enabled = true;
+            else button4.Enabled = false;
         }
         #endregion
 
