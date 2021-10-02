@@ -36,6 +36,10 @@ namespace TransCarga
                 rpt.SetDataSource(_datosReporte);
                 crystalReportViewer1.ReportSource = rpt;
             }
+            if (_datosReporte.repCobsem.Rows.Count > 0)
+            {
+                // me quede aca
+            }
             if (_datosReporte.placar_cab.Rows.Count > 0)
             {
                 string nf = _datosReporte.placar_cab.Rows[0].ItemArray[0].ToString();

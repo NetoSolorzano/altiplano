@@ -1057,13 +1057,10 @@ namespace TransCarga
         #region crystal
         private void button4_Click(object sender, EventArgs e)      // reporte de cobranzas
         {
-            // ME QUEDE ACA
             if (rb_resumen.Checked == true && chk_semana.Checked == true)
             {
                 setParaCrystal("rescobsem");
             }
-            //if (rb_listado.Checked == true) setParaCrystal("vtasxclte");
-            //else setParaCrystal("ventas");
         }
         private void setParaCrystal(string repo)                    // genera el set para el reporte de crystal
         {
@@ -1089,29 +1086,20 @@ namespace TransCarga
         private conClie generarepcobsem()                           // resumen de cobranzas semanales
         {
             conClie rrepcobs = new conClie();                        // xsd
-            conClie.repvtas_cabRow cabrow = rrepcobs.repvtas_cab.Newrepvtas_cabRow();
-            cabrow.id = "0";
-            cabrow.fecini = dtp_vtasfini.Value.ToString("dd/MM/yyyy");
-            cabrow.fecfin = dtp_vtasfina.Value.ToString("dd/MM/yyyy");
-            if (rb_listado.Checked == true) cabrow.modo = "listado";
-            //if (rb_resumen.Checked == true) cabrow.modo = "resumen";
-            repvtas.repvtas_cab.Addrepvtas_cabRow(cabrow);
-            // detalle
+            conClie.repCobsemRow cabrow = rrepcobs.repCobsem.NewrepCobsemRow();
             foreach (DataGridViewRow row in dgv_vtas.Rows)
             {
-                if (rb_listado.Checked == true) 
+                if (row.Cells["semana"].Value != null && row.Cells["semana"].Value.ToString().Trim() != "")
                 {
-                    if (row.Cells["item"].Value != null && row.Cells["item"].Value.ToString().Trim() != "")
-                    {
-                        conClie.repvtas_detRow detrow = repvtas.repvtas_det.Newrepvtas_detRow();
-                        detrow.id = "0";
-                        detrow.tienda = row.Cells["tienda"].Value.ToString();
-                        detrow.fecha = row.Cells["fecha"].Value.ToString().Substring(0,2) + "/" + row.Cells["fecha"].Value.ToString().Substring(3, 2) + "/" + row.Cells["fecha"].Value.ToString().Substring(6, 4); 
-                        repvtas.repvtas_det.Addrepvtas_detRow(detrow);
-                    }
+                    cabrow.fecini = dtp_vtasfini.Value.ToString("dd/MM/yyyy");
+                    cabrow.fecfin = dtp_vtasfina.Value.ToString("dd/MM/yyyy");
+                    cabrow.sede1 = decimal.Parse(row.Cells[1].Value.ToString());
+                    cabrow.sede2 = decimal.Parse(row.Cells[2].Value.ToString());
+                    cabrow.sede3 = decimal.Parse(row.Cells[3].Value.ToString());
+                    rrepcobs.repCobsem.AddrepCobsemRow(cabrow);
                 }
             }
-            return repvtas;
+            return rrepcobs;
         }
         private conClie generareppend()                             // genera el set para los pendientes de cobranza
         {
