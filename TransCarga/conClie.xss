@@ -17,7 +17,7 @@
     <Shape ID="DesignTable:pendCob" ZOrder="4" X="1120" Y="117" Height="619" Width="150" AdapterExpanded="true" DataTableExpanded="true" OldAdapterHeight="0" OldDataTableHeight="0" SplitterPosition="615" />
     <Shape ID="DesignTable:ctacteclte" ZOrder="3" X="458" Y="740" Height="238" Width="150" AdapterExpanded="true" DataTableExpanded="true" OldAdapterHeight="0" OldDataTableHeight="0" SplitterPosition="234" />
     <Shape ID="DesignTable:detctacte" ZOrder="2" X="617" Y="545" Height="562" Width="150" AdapterExpanded="true" DataTableExpanded="true" OldAdapterHeight="0" OldDataTableHeight="0" SplitterPosition="558" />
-    <Shape ID="DesignTable:repCobsem" ZOrder="1" X="883" Y="804" Height="219" Width="150" AdapterExpanded="true" DataTableExpanded="true" OldAdapterHeight="0" OldDataTableHeight="0" SplitterPosition="215" />
+    <Shape ID="DesignTable:repCobsem" ZOrder="1" X="958" Y="651" Height="257" Width="150" AdapterExpanded="true" DataTableExpanded="true" OldAdapterHeight="0" OldDataTableHeight="0" SplitterPosition="253" />
   </Shapes>
   <Connectors />
 </DiagramLayout>

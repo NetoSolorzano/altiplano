@@ -6891,6 +6891,20 @@ namespace TransCarga {
             
             private global::System.Data.DataColumn columntotalSem;
             
+            private global::System.Data.DataColumn columnformatoRPT;
+            
+            private global::System.Data.DataColumn columnnumsem;
+            
+            private global::System.Data.DataColumn columnnomsed1;
+            
+            private global::System.Data.DataColumn columnnomsed2;
+            
+            private global::System.Data.DataColumn columnnomsed3;
+            
+            private global::System.Data.DataColumn columnnomsed4;
+            
+            private global::System.Data.DataColumn columnnomsed5;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public repCobsemDataTable() {
@@ -7006,6 +7020,62 @@ namespace TransCarga {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn formatoRPTColumn {
+                get {
+                    return this.columnformatoRPT;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn numsemColumn {
+                get {
+                    return this.columnnumsem;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn nomsed1Column {
+                get {
+                    return this.columnnomsed1;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn nomsed2Column {
+                get {
+                    return this.columnnomsed2;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn nomsed3Column {
+                get {
+                    return this.columnnomsed3;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn nomsed4Column {
+                get {
+                    return this.columnnomsed4;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn nomsed5Column {
+                get {
+                    return this.columnnomsed5;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -7041,7 +7111,24 @@ namespace TransCarga {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
-            public repCobsemRow AddrepCobsemRow(string fecini, string fecfin, string semana, string nomSemana, decimal sede1, decimal sede2, decimal sede3, decimal sede4, decimal sede5, decimal totalSem) {
+            public repCobsemRow AddrepCobsemRow(
+                        string fecini, 
+                        string fecfin, 
+                        string semana, 
+                        string nomSemana, 
+                        decimal sede1, 
+                        decimal sede2, 
+                        decimal sede3, 
+                        decimal sede4, 
+                        decimal sede5, 
+                        decimal totalSem, 
+                        string formatoRPT, 
+                        string numsem, 
+                        string nomsed1, 
+                        string nomsed2, 
+                        string nomsed3, 
+                        string nomsed4, 
+                        string nomsed5) {
                 repCobsemRow rowrepCobsemRow = ((repCobsemRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         fecini,
@@ -7053,7 +7140,14 @@ namespace TransCarga {
                         sede3,
                         sede4,
                         sede5,
-                        totalSem};
+                        totalSem,
+                        formatoRPT,
+                        numsem,
+                        nomsed1,
+                        nomsed2,
+                        nomsed3,
+                        nomsed4,
+                        nomsed5};
                 rowrepCobsemRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowrepCobsemRow);
                 return rowrepCobsemRow;
@@ -7086,6 +7180,13 @@ namespace TransCarga {
                 this.columnsede4 = base.Columns["sede4"];
                 this.columnsede5 = base.Columns["sede5"];
                 this.columntotalSem = base.Columns["totalSem"];
+                this.columnformatoRPT = base.Columns["formatoRPT"];
+                this.columnnumsem = base.Columns["numsem"];
+                this.columnnomsed1 = base.Columns["nomsed1"];
+                this.columnnomsed2 = base.Columns["nomsed2"];
+                this.columnnomsed3 = base.Columns["nomsed3"];
+                this.columnnomsed4 = base.Columns["nomsed4"];
+                this.columnnomsed5 = base.Columns["nomsed5"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -7111,6 +7212,20 @@ namespace TransCarga {
                 base.Columns.Add(this.columnsede5);
                 this.columntotalSem = new global::System.Data.DataColumn("totalSem", typeof(decimal), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columntotalSem);
+                this.columnformatoRPT = new global::System.Data.DataColumn("formatoRPT", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnformatoRPT);
+                this.columnnumsem = new global::System.Data.DataColumn("numsem", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnnumsem);
+                this.columnnomsed1 = new global::System.Data.DataColumn("nomsed1", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnnomsed1);
+                this.columnnomsed2 = new global::System.Data.DataColumn("nomsed2", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnnomsed2);
+                this.columnnomsed3 = new global::System.Data.DataColumn("nomsed3", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnnomsed3);
+                this.columnnomsed4 = new global::System.Data.DataColumn("nomsed4", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnnomsed4);
+                this.columnnomsed5 = new global::System.Data.DataColumn("nomsed5", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnnomsed5);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -14438,6 +14553,118 @@ namespace TransCarga {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string formatoRPT {
+                get {
+                    try {
+                        return ((string)(this[this.tablerepCobsem.formatoRPTColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("El valor de la columna \'formatoRPT\' de la tabla \'repCobsem\' es DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tablerepCobsem.formatoRPTColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string numsem {
+                get {
+                    try {
+                        return ((string)(this[this.tablerepCobsem.numsemColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("El valor de la columna \'numsem\' de la tabla \'repCobsem\' es DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tablerepCobsem.numsemColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string nomsed1 {
+                get {
+                    try {
+                        return ((string)(this[this.tablerepCobsem.nomsed1Column]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("El valor de la columna \'nomsed1\' de la tabla \'repCobsem\' es DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tablerepCobsem.nomsed1Column] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string nomsed2 {
+                get {
+                    try {
+                        return ((string)(this[this.tablerepCobsem.nomsed2Column]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("El valor de la columna \'nomsed2\' de la tabla \'repCobsem\' es DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tablerepCobsem.nomsed2Column] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string nomsed3 {
+                get {
+                    try {
+                        return ((string)(this[this.tablerepCobsem.nomsed3Column]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("El valor de la columna \'nomsed3\' de la tabla \'repCobsem\' es DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tablerepCobsem.nomsed3Column] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string nomsed4 {
+                get {
+                    try {
+                        return ((string)(this[this.tablerepCobsem.nomsed4Column]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("El valor de la columna \'nomsed4\' de la tabla \'repCobsem\' es DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tablerepCobsem.nomsed4Column] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string nomsed5 {
+                get {
+                    try {
+                        return ((string)(this[this.tablerepCobsem.nomsed5Column]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("El valor de la columna \'nomsed5\' de la tabla \'repCobsem\' es DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tablerepCobsem.nomsed5Column] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public bool IsfeciniNull() {
                 return this.IsNull(this.tablerepCobsem.feciniColumn);
             }
@@ -14554,6 +14781,90 @@ namespace TransCarga {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public void SettotalSemNull() {
                 this[this.tablerepCobsem.totalSemColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsformatoRPTNull() {
+                return this.IsNull(this.tablerepCobsem.formatoRPTColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetformatoRPTNull() {
+                this[this.tablerepCobsem.formatoRPTColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsnumsemNull() {
+                return this.IsNull(this.tablerepCobsem.numsemColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetnumsemNull() {
+                this[this.tablerepCobsem.numsemColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool Isnomsed1Null() {
+                return this.IsNull(this.tablerepCobsem.nomsed1Column);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void Setnomsed1Null() {
+                this[this.tablerepCobsem.nomsed1Column] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool Isnomsed2Null() {
+                return this.IsNull(this.tablerepCobsem.nomsed2Column);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void Setnomsed2Null() {
+                this[this.tablerepCobsem.nomsed2Column] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool Isnomsed3Null() {
+                return this.IsNull(this.tablerepCobsem.nomsed3Column);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void Setnomsed3Null() {
+                this[this.tablerepCobsem.nomsed3Column] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool Isnomsed4Null() {
+                return this.IsNull(this.tablerepCobsem.nomsed4Column);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void Setnomsed4Null() {
+                this[this.tablerepCobsem.nomsed4Column] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool Isnomsed5Null() {
+                return this.IsNull(this.tablerepCobsem.nomsed5Column);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void Setnomsed5Null() {
+                this[this.tablerepCobsem.nomsed5Column] = global::System.Convert.DBNull;
             }
         }
         

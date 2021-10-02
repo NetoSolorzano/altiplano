@@ -38,7 +38,11 @@ namespace TransCarga
             }
             if (_datosReporte.repCobsem.Rows.Count > 0)
             {
-                // me quede aca
+                string nf = _datosReporte.repCobsem.Rows[0].ItemArray[10].ToString();
+                ReportDocument rpt = new ReportDocument();
+                rpt.Load(nf);
+                rpt.SetDataSource(_datosReporte);
+                crystalReportViewer1.ReportSource = rpt;
             }
             if (_datosReporte.placar_cab.Rows.Count > 0)
             {

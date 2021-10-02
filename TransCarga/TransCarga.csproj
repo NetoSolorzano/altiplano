@@ -288,6 +288,12 @@
     <Compile Include="repadmcaja.designer.cs">
       <DependentUpon>repadmcaja.cs</DependentUpon>
     </Compile>
+    <Compile Include="repCobSem.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>repCobSem.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="repsoper.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -462,6 +468,10 @@
     </EmbeddedResource>
     <EmbeddedResource Include="repadmcaja.resx">
       <DependentUpon>repadmcaja.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="repCobSem.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>repCobSem.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="repsoper.resx">
       <DependentUpon>repsoper.cs</DependentUpon>

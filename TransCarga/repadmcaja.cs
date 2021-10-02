@@ -46,6 +46,7 @@ namespace TransCarga
         string codGene = "";            // codigo documento nuevo generado
         string v_nccCR = "";            // nombre del formato CR del cuadre de caja
         string v_npcCR = "";            // nombre del formato CR pendientes de cobranza
+        string v_rcsCR = "";            // nombre del formato CR reporte cobranzas semanales
         //int pageCount = 1, cuenta = 0;
         #endregion
 
@@ -153,6 +154,7 @@ namespace TransCarga
                     {
                         if (row["campo"].ToString() == "exporta" && row["param"].ToString() == "ruta") v_ruta = row["valor"].ToString().Trim();
                         if (row["campo"].ToString() == "documento" && row["param"].ToString() == "pendcob") v_npcCR = row["valor"].ToString().Trim();
+                        if (row["campo"].ToString() == "repCobSem" && row["param"].ToString() == "nomfor_cr") v_rcsCR = row["valor"].ToString().Trim();
                     }
                     if (row["formulario"].ToString() == "ayccaja" && row["campo"].ToString() == "impresion" && row["param"].ToString() == "nomfor_cr")
                     {
@@ -1086,16 +1088,24 @@ namespace TransCarga
         private conClie generarepcobsem()                           // resumen de cobranzas semanales
         {
             conClie rrepcobs = new conClie();                        // xsd
-            conClie.repCobsemRow cabrow = rrepcobs.repCobsem.NewrepCobsemRow();
-            foreach (DataGridViewRow row in dgv_vtas.Rows)
+            for(int i=0; i<dgv_vtas.Rows.Count-1; i++)
             {
+                conClie.repCobsemRow cabrow = rrepcobs.repCobsem.NewrepCobsemRow();
+                DataGridViewRow row = dgv_vtas.Rows[i];
                 if (row.Cells["semana"].Value != null && row.Cells["semana"].Value.ToString().Trim() != "")
                 {
                     cabrow.fecini = dtp_vtasfini.Value.ToString("dd/MM/yyyy");
                     cabrow.fecfin = dtp_vtasfina.Value.ToString("dd/MM/yyyy");
+                    cabrow.nomSemana = row.Cells[0].Value.ToString();
                     cabrow.sede1 = decimal.Parse(row.Cells[1].Value.ToString());
                     cabrow.sede2 = decimal.Parse(row.Cells[2].Value.ToString());
                     cabrow.sede3 = decimal.Parse(row.Cells[3].Value.ToString());
+                    cabrow.totalSem = decimal.Parse(row.Cells[4].Value.ToString());
+                    cabrow.formatoRPT = v_rcsCR;
+                    cabrow.numsem = i.ToString();
+                    cabrow.nomsed1 = row.Cells[1].OwningColumn.Name;
+                    cabrow.nomsed2 = row.Cells[2].OwningColumn.Name;
+                    cabrow.nomsed3 = row.Cells[3].OwningColumn.Name;
                     rrepcobs.repCobsem.AddrepCobsemRow(cabrow);
                 }
             }
