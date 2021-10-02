@@ -6905,6 +6905,14 @@ namespace TransCarga {
             
             private global::System.Data.DataColumn columnnomsed5;
             
+            private global::System.Data.DataColumn columnrucEmisor;
+            
+            private global::System.Data.DataColumn columnnomEmisor;
+            
+            private global::System.Data.DataColumn columnfechRep;
+            
+            private global::System.Data.DataColumn columndirEmisor;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public repCobsemDataTable() {
@@ -7076,6 +7084,38 @@ namespace TransCarga {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn rucEmisorColumn {
+                get {
+                    return this.columnrucEmisor;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn nomEmisorColumn {
+                get {
+                    return this.columnnomEmisor;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn fechRepColumn {
+                get {
+                    return this.columnfechRep;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn dirEmisorColumn {
+                get {
+                    return this.columndirEmisor;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -7128,7 +7168,11 @@ namespace TransCarga {
                         string nomsed2, 
                         string nomsed3, 
                         string nomsed4, 
-                        string nomsed5) {
+                        string nomsed5, 
+                        string rucEmisor, 
+                        string nomEmisor, 
+                        System.DateTime fechRep, 
+                        string dirEmisor) {
                 repCobsemRow rowrepCobsemRow = ((repCobsemRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         fecini,
@@ -7147,7 +7191,11 @@ namespace TransCarga {
                         nomsed2,
                         nomsed3,
                         nomsed4,
-                        nomsed5};
+                        nomsed5,
+                        rucEmisor,
+                        nomEmisor,
+                        fechRep,
+                        dirEmisor};
                 rowrepCobsemRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowrepCobsemRow);
                 return rowrepCobsemRow;
@@ -7187,6 +7235,10 @@ namespace TransCarga {
                 this.columnnomsed3 = base.Columns["nomsed3"];
                 this.columnnomsed4 = base.Columns["nomsed4"];
                 this.columnnomsed5 = base.Columns["nomsed5"];
+                this.columnrucEmisor = base.Columns["rucEmisor"];
+                this.columnnomEmisor = base.Columns["nomEmisor"];
+                this.columnfechRep = base.Columns["fechRep"];
+                this.columndirEmisor = base.Columns["dirEmisor"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -7226,6 +7278,14 @@ namespace TransCarga {
                 base.Columns.Add(this.columnnomsed4);
                 this.columnnomsed5 = new global::System.Data.DataColumn("nomsed5", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnnomsed5);
+                this.columnrucEmisor = new global::System.Data.DataColumn("rucEmisor", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnrucEmisor);
+                this.columnnomEmisor = new global::System.Data.DataColumn("nomEmisor", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnnomEmisor);
+                this.columnfechRep = new global::System.Data.DataColumn("fechRep", typeof(global::System.DateTime), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnfechRep);
+                this.columndirEmisor = new global::System.Data.DataColumn("dirEmisor", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columndirEmisor);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -14665,6 +14725,70 @@ namespace TransCarga {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string rucEmisor {
+                get {
+                    try {
+                        return ((string)(this[this.tablerepCobsem.rucEmisorColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("El valor de la columna \'rucEmisor\' de la tabla \'repCobsem\' es DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tablerepCobsem.rucEmisorColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string nomEmisor {
+                get {
+                    try {
+                        return ((string)(this[this.tablerepCobsem.nomEmisorColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("El valor de la columna \'nomEmisor\' de la tabla \'repCobsem\' es DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tablerepCobsem.nomEmisorColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public System.DateTime fechRep {
+                get {
+                    try {
+                        return ((global::System.DateTime)(this[this.tablerepCobsem.fechRepColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("El valor de la columna \'fechRep\' de la tabla \'repCobsem\' es DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tablerepCobsem.fechRepColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string dirEmisor {
+                get {
+                    try {
+                        return ((string)(this[this.tablerepCobsem.dirEmisorColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("El valor de la columna \'dirEmisor\' de la tabla \'repCobsem\' es DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tablerepCobsem.dirEmisorColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public bool IsfeciniNull() {
                 return this.IsNull(this.tablerepCobsem.feciniColumn);
             }
@@ -14865,6 +14989,54 @@ namespace TransCarga {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public void Setnomsed5Null() {
                 this[this.tablerepCobsem.nomsed5Column] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsrucEmisorNull() {
+                return this.IsNull(this.tablerepCobsem.rucEmisorColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetrucEmisorNull() {
+                this[this.tablerepCobsem.rucEmisorColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsnomEmisorNull() {
+                return this.IsNull(this.tablerepCobsem.nomEmisorColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetnomEmisorNull() {
+                this[this.tablerepCobsem.nomEmisorColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsfechRepNull() {
+                return this.IsNull(this.tablerepCobsem.fechRepColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetfechRepNull() {
+                this[this.tablerepCobsem.fechRepColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsdirEmisorNull() {
+                return this.IsNull(this.tablerepCobsem.dirEmisorColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetdirEmisorNull() {
+                this[this.tablerepCobsem.dirEmisorColumn] = global::System.Convert.DBNull;
             }
         }
         

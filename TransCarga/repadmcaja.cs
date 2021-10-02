@@ -1094,6 +1094,10 @@ namespace TransCarga
                 DataGridViewRow row = dgv_vtas.Rows[i];
                 if (row.Cells["semana"].Value != null && row.Cells["semana"].Value.ToString().Trim() != "")
                 {
+                    cabrow.rucEmisor = Program.ruc;
+                    cabrow.nomEmisor = Program.cliente;
+                    cabrow.dirEmisor = Program.dirfisc;
+                    cabrow.fechRep = DateTime.Now;
                     cabrow.fecini = dtp_vtasfini.Value.ToString("dd/MM/yyyy");
                     cabrow.fecfin = dtp_vtasfina.Value.ToString("dd/MM/yyyy");
                     cabrow.nomSemana = row.Cells[0].Value.ToString();

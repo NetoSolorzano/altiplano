@@ -282,6 +282,6 @@ form guiaii_a, permitir comentarios al anular guia .............................
 form facelect, correccion en regeneraciones de txt ................................................. ok 21/09/2021
 form repadmcaja, cobranzas, agregar resumen por sede y por semana .................................. ok 28/09/2021
 P.A. desarrollo res_sem_cob, reporte cobranzas semanales ........................................... ok 28/09/2021
-formato CR para el reporte cobranzas semanales ..................................................... me quede en frmvizoper
+formato CR para el reporte cobranzas semanales ..................................................... ok 02/10/2021
 form facelect, facuracion en dolares de soya ....................................................... ok 30/09/2021
 form facelect, adecuacion de nueva tabla adifact para datos de cargas unicas ....................... ok 01/10/2021
