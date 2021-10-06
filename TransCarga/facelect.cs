@@ -2840,6 +2840,15 @@ namespace TransCarga
                         tx_cetm.Focus();
                         return;
                     }
+                    else
+                    {
+                        if (double.Parse(tx_cetm.Text) > 99)
+                        {
+                            MessageBox.Show("El peso excede la capacidad", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            tx_cetm.Focus();
+                            return;
+                        }
+                    }
                     if (tx_dniChof.Text.Trim() == "")
                     {
                         MessageBox.Show("Ingrese DNI del Chofer", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -2893,6 +2902,12 @@ namespace TransCarga
                     {
                         MessageBox.Show("Ingrese la dirección de llegada", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         tx_dat_dpd.Focus();
+                        return;
+                    }
+                    if (dataGridView1.Rows[0].Cells[1].Value.ToString().Trim().Length > 149)
+                    {
+                        MessageBox.Show("Longitud de la descripción del detalle es muy larga","Atención",MessageBoxButtons.OK,MessageBoxIcon.Error);
+                        dataGridView1.Focus();
                         return;
                     }
                 }
@@ -3332,6 +3347,7 @@ namespace TransCarga
                             }
                         }
                     }
+                    retorna = true;         // no hubo errores!
                 }
                 // adicionales a la factura
                 if (chk_cunica.Checked == true)
