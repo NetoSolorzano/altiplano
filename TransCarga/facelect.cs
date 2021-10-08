@@ -2192,14 +2192,17 @@ namespace TransCarga
             {
                 string fansi = tx_fechope.Text.Substring(6, 4) + "-" + tx_fechope.Text.Substring(3, 2) + "-" + tx_fechope.Text.Substring(0, 2);
                 string _fechc = DateTime.Parse(fansi).AddDays(double.Parse(tx_dat_dpla.Text)).Date.ToString("yyyy-MM-dd");        // fecha de emision + dias plazo credito
+                string vneto = Math.Round(double.Parse(row["_totven"].ToString()) - double.Parse(row["totdet"].ToString()),2).ToString("#0.00"); // 
                 writer.WriteLine("ENCABEZADO-CREDITO" + sep +
-                    row["_totven"] + sep                        // OJO, las ventas a credito, son totales, no tenemos pagos parciales facturados, factura = pago total
+                    vneto + sep                        // OJO, las ventas a credito, son totales, no tenemos pagos parciales facturados, factura = pago total
                     );
+                //  row["_totven"] + sep
                 writer.WriteLine("DETALLE-CREDITO" + sep +
                     "Cuota001" + sep +                          // 2 numero de cuota
-                    row["_totven"] + sep +                      // 3 monto de la cuota
+                    vneto + sep +                               // 3 monto de la cuota, OJO, monto NETO pendiente, osea precio de venta - detracciones, retenciones, pagos anticipados, etc
                     _fechc + sep                                // 4 fecha del pago
                     );
+                // row["_totven"] + sep +
             }
             // datos del traslados de bienes
             if (chk_cunica.Checked == true && tx_dat_tdv.Text == codfact)     // factura de cargas unicas ... 
