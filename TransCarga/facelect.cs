@@ -471,7 +471,7 @@ namespace TransCarga
                         "a.locorig,a.dirorig,a.ubiorig,a.obsdvta,a.canfidt,a.canbudt,a.mondvta,a.tcadvta,a.subtota,a.igvtota,a.porcigv,a.totdvta,a.totpags,a.saldvta,a.estdvta,a.frase01,a.impreso," +
                         "a.tipoclt,a.m1clien,a.tippago,a.ferecep,a.userc,a.fechc,a.userm,a.fechm,b.descrizionerid as nomest,ifnull(c.id,'') as cobra,a.idcaja,a.plazocred,a.totdvMN," +
                         "a.cargaunica,a.porcendscto,a.valordscto," +
-                        "ad.placa,ad.confv,ad.autoriz,ad.cargaEf,ad.cargaUt,ad.rucTrans,ad.nomTrans,ad.fecIniTras,ad.dirPartida,ad.ubiPartida,ad.dirDestin,ad.ubiDestin,ad.dniChof,ad.brevete,ad.valRefViaje,ad.valRefVehic,ad.valRefTon " +
+                        "ad.placa,ad.confv,ad.autoriz,ad.cargaEf,ad.cargaUt,ad.rucTrans,ad.nomTrans,date_format(ad.fecIniTras,'%Y-%m-%d') as fecIniTras,ad.dirPartida,ad.ubiPartida,ad.dirDestin,ad.ubiDestin,ad.dniChof,ad.brevete,ad.valRefViaje,ad.valRefVehic,ad.valRefTon " +
                         "from cabfactu a " +
                         "left join adifactu ad on ad.idc=a.id and ad.tipoAd=1 " +
                         "left join desc_est b on b.idcodice=a.estdvta " +
@@ -2028,14 +2028,28 @@ namespace TransCarga
                 DataRow row = tdfe.NewRow();
                 row["Idatper"] = "";                                                        // datos personalizados del item
                 row["Idescri"] = glosser + " " + dataGridView1.Rows[s].Cells["Descrip"].Value.ToString() + " " + glosser2;   // Descripcion
+                row["Icantid"] = "1.00";                                                    // Cantidad de items   n(12,3)         16
                 if (chk_cunica.Checked == true && tx_dat_tdv.Text == codfact)               // datos para el pdf si es carga unica
                 {
                     char saltoL = (char)8;  //   //(char)30;
                     char saltoL5 = (char)5;
-                    row["Idatper"] = dataGridView1.Rows[s].Cells["Descrip"].Value.ToString() + saltoL + saltoL5 +
-                        tx_totcant.Text + " " + tx_dat_nombd.Text + saltoL + saltoL5 +
-                        "GUIA REMITENTE " + dataGridView1.Rows[s].Cells["guiasclte"].Value.ToString();
-                    row["Idescri"] = glosser;
+                    if (dataGridView1.Rows.Count > 2)
+                    {
+                        row["Idatper"] = dataGridView1.Rows[s].Cells["Descrip"].Value.ToString() + saltoL + saltoL5 +
+                            dataGridView1.Rows[s].Cells["Cant"].Value.ToString() + " " + tx_dat_nombd.Text + saltoL + saltoL5 +
+                            "GUIA TRANSPORTISTA " + dataGridView1.Rows[s].Cells["guias"].Value.ToString() + saltoL + saltoL5 +
+                            "GUIA REMITENTE " + dataGridView1.Rows[s].Cells["guiasclte"].Value.ToString();  // tx_totcant.Text
+                        row["Idescri"] = glosser;
+                        row["Icantid"] = Math.Round((double.Parse(dataGridView1.Rows[s].Cells["Cant"].Value.ToString()) * double.Parse(tx_cetm.Text)) / double.Parse(tx_totcant.Text), 2);
+                    }
+                    else
+                    {
+                        row["Idatper"] = dataGridView1.Rows[s].Cells["Descrip"].Value.ToString() + saltoL + saltoL5 +
+                            dataGridView1.Rows[s].Cells["Cant"].Value.ToString() + " " + tx_dat_nombd.Text + saltoL + saltoL5 +
+                            "GUIA REMITENTE " + dataGridView1.Rows[s].Cells["guiasclte"].Value.ToString();  // tx_totcant.Text
+                        row["Idescri"] = glosser;
+                        row["Icantid"] = Math.Round((double.Parse(dataGridView1.Rows[s].Cells["Cant"].Value.ToString()) * double.Parse(tx_cetm.Text)) / double.Parse(tx_totcant.Text), 2);
+                    }
                 }
                 if (dataGridView1.Rows[s].Cells["valorel"].Value == null || dataGridView1.Rows[s].Cells["valorel"].Value.ToString().Trim() == "0.00" || dataGridView1.Rows[s].Cells["valorel"].Value.ToString().Trim() == "")
                 {
@@ -2043,8 +2057,10 @@ namespace TransCarga
 
                     if (chk_cunica.Checked == true && tx_dat_tdv.Text == codfact)
                     {
-                        row["Ivaluni"] = ((double.Parse(dataGridView1.Rows[s].Cells["valor"].Value.ToString()) - (double)row["_msigv"]) / double.Parse(tx_cetm.Text)).ToString("#0.0000000000");
-                        row["Ipreuni"] = ((double.Parse(dataGridView1.Rows[s].Cells["valor"].Value.ToString()) - (double)row["_msigv"]) / double.Parse(tx_cetm.Text) * (1 + (double.Parse(v_igv) / 100))).ToString("#0.0000000000");    // * (1 + (double.Parse(v_igv) / 100)).ToString("#0.0000000000");
+                        row["Ipreuni"] = (double.Parse(dataGridView1.Rows[s].Cells["valor"].Value.ToString()) / double.Parse(row["Icantid"].ToString())).ToString("#0.0000000000");    // * (1 + (double.Parse(v_igv) / 100)).ToString("#0.0000000000");
+                        row["Ivaluni"] = (double.Parse(row["Ipreuni"].ToString()) / (1 + (double.Parse(v_igv) / 100))).ToString("#0.0000000000");
+                        //row["Ivaluni"] = ((double.Parse(dataGridView1.Rows[s].Cells["valor"].Value.ToString()) - (double)row["_msigv"]) / double.Parse(tx_cetm.Text)).ToString("#0.0000000000");
+                        //row["Ipreuni"] = ((double.Parse(dataGridView1.Rows[s].Cells["valor"].Value.ToString()) - (double)row["_msigv"]) / double.Parse(tx_cetm.Text) * (1 + (double.Parse(v_igv) / 100))).ToString("#0.0000000000");    // * (1 + (double.Parse(v_igv) / 100)).ToString("#0.0000000000");
                     }
                     else
                     {
@@ -2086,7 +2102,6 @@ namespace TransCarga
                 }
                 row["Inumord"] = (s + 1).ToString();                                        // numero de orden del item             5
                 row["Iumeded"] = "ZZ";                                                      // Unidad de medida                     3
-                row["Icantid"] = "1.00";                                                    // Cantidad de items   n(12,3)         16
                 row["Icodprd"] = " - ";                                                     // codigo del producto del cliente
                 row["Icodpro"] = "";                                                        // codigo del producto SUNAT                          30
                 row["Icodgs1"] = "";                                                        // codigo del producto GS1
@@ -2291,15 +2306,17 @@ namespace TransCarga
             // ***** DETALLE ***** //
             if (chk_cunica.Checked == true && tx_dat_tdv.Text == codfact)
             {
-                DataRow rdrow = tdfe.Rows[0];
+                //DataRow rdrow = tdfe.Rows[0];
                 // tdfe.Rows[0].ItemArray[4].ToString().Replace(vint_gg," ") + sep +                    // 6 Descripcion 
                 // tx_totcant.Text + " " + tdfe.Rows[0].ItemArray[8].ToString() + sep +        // 7 descricion de la glosa del item   250
-                writer.WriteLine(
+                foreach (DataRow rdrow in tdfe.Rows)
+                {
+                    writer.WriteLine(
                         "ITEM" + sep +
-                        "1" + sep +                             // 2 orden
+                        rdrow["Inumord"] + sep +        // "1"      // 2 orden
                         rdrow["Idatper"] + sep +                    // 3 Datos personilazados del item       
-                        "TNE" + sep +                           // 4 Unidad de medida                    3
-                        tx_cetm.Text.Trim() + sep +             // 5 Cantidad de items             n(12,2)
+                        "TNE" + sep +                               // 4 Unidad de medida                    3
+                        rdrow["Icantid"] + sep +    // tx_cetm.Text.Trim()             // 5 Cantidad de items             n(12,2)
                         rdrow["Idescri"] + sep +                    // 6 Descripcion                       500
                         "" + sep +                                  // 7 descricion de la glosa del item   250
                         rdrow["Icodprd"] + sep +                    // 8 codigo del producto del cliente    30
@@ -2332,6 +2349,7 @@ namespace TransCarga
                         rdrow["Imoncde"] + sep +                    // 35 Monto de cargo/descuento
                         rdrow["Imobacd"] + sep +                    // 36 Monto base del cargo/descuento
                         rdrow["Ivalvta"] + sep);                    // 37 Valor de venta del ítem
+                }
             }
             else
             {

@@ -287,3 +287,4 @@ form facelect, facuracion en dolares de soya ...................................
 form facelect, adecuacion de nueva tabla adifact para datos de cargas unicas ....................... ok 01/10/2021
 form facelect, VALIDACIONES en peso y descripcion de detalle en cargas unicas ...................... ok 05/10/2021
 form facelect, fact credito, monto cuota debe ser monto neto ....................................... ok 08/10/2021 - monto neto = precio venta - detraccion, retencion, etc
+form facelect, adecuaciones REgeneracion TXT en modo edicion EN CARGAS UNICAS ...................... ok 13/10/2021
