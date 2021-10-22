@@ -2059,6 +2059,32 @@ namespace TransCarga
             {
                 tx_dat_locori.Text = cmb_origen.SelectedValue.ToString();
                 //tx_dirOrigen.Text = lib.dirloca(lib.codloc(asd));
+                //tx_serie.Text = v_slu;
+                if (Tx_modo.Text == "NUEVO" && tx_dat_locdes.Text.Trim() != "")
+                {
+                    string consul = "SELECT tipdoc,serie,actual,final,format,glosaser,dir_pe,ubigeo," +
+                        "imp_ini,imp_fec,imp_det,imp_dtr,imp_pie " +
+                        "FROM series WHERE STATUS<> @ean and " +
+                        "tipdoc = @td AND sede = @ori AND zona = (SELECT zona FROM desc_loc WHERE idcodice = @des)";
+                    using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
+                    {
+                        conn.Open();
+                        using (MySqlCommand micon = new MySqlCommand(consul, conn))
+                        {
+                            micon.Parameters.AddWithValue("@ean", codAnul);
+                            micon.Parameters.AddWithValue("@td", v_cid);
+                            micon.Parameters.AddWithValue("@ori", tx_dat_locori.Text);
+                            micon.Parameters.AddWithValue("@des", tx_dat_locdes.Text);
+                            using (MySqlDataReader dr = micon.ExecuteReader())
+                            {
+                                if (dr.Read())
+                                {
+                                    tx_serie.Text = dr.GetString(1);
+                                }
+                            }
+                        }
+                    }
+                }
             }
             if (tx_dat_locori.Text.Trim() != "")
             {

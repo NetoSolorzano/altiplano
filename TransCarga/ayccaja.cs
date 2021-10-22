@@ -511,14 +511,14 @@ namespace TransCarga
                 }
                 if (accion == "CERRAR")
                 {
-                    string actua = "update cabccaja set usercie=@asd,fechcie=DATE(NOW()),obscobc=@obs,statusc=@newst,saldofi=@salf," +
+                    string actua = "update cabccaja set usercie=@asd,fechcie=DATE(NOW()),obscobc=@obs,statusc=@newst,saldofi=saldoan+cobranz+ingvari-egresos," +
                         "verApp=@verApp,userm=@asd,fechm=now(),diriplan4=@iplan,diripwan4=@ipwan,netbname=@nbnam " +
-                        "where id=@idr";
+                        "where id=@idr";    // @salf
                     using (MySqlCommand micon = new MySqlCommand(actua, conn))
                     {
                         micon.Parameters.AddWithValue("@idr", tx_idr.Text);
                         micon.Parameters.AddWithValue("@newst", codCier);
-                        micon.Parameters.AddWithValue("@salf", vsalf);
+                        //micon.Parameters.AddWithValue("@salf", vsalf);
                         micon.Parameters.AddWithValue("@obs", "");
                         micon.Parameters.AddWithValue("@asd", asd);
                         micon.Parameters.AddWithValue("@verApp", verapp);

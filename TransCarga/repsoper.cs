@@ -1652,7 +1652,7 @@ namespace TransCarga
                 conClie.detctacteRow rowdet = ctacte.detctacte.NewdetctacteRow();
                 rowdet.id = "0";
                 rowdet.estado = rowd.Cells["ESTADO"].Value.ToString();
-                rowdet.fechgr = rowd.Cells["F_GUIA"].Value.ToString();
+                rowdet.fechgr = rowd.Cells["F_GUIA"].Value.ToString().Substring(0,10);
                 rowdet.guia = rowd.Cells["GUIA"].Value.ToString();
                 rowdet.mongr = rowd.Cells["MON"].Value.ToString();  // moneda GR
                 rowdet.flete = double.Parse(rowd.Cells["TOT_GUIA"].Value.ToString());
@@ -1675,6 +1675,7 @@ namespace TransCarga
                 rowdet.fecpla = rowd.Cells["F_PAGO"].Value.ToString();
                 rowdet.planilla = rowd.Cells["PLANILLA"].Value.ToString();
                 rowdet.placa = rowd.Cells["PLACA"].Value.ToString();
+                rowdet.docsclte = rowd.Cells["DOCSCLTE"].Value.ToString();
                 ctacte.detctacte.AdddetctacteRow(rowdet);
             }
             //

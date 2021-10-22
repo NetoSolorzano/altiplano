@@ -288,3 +288,11 @@ form facelect, adecuacion de nueva tabla adifact para datos de cargas unicas ...
 form facelect, VALIDACIONES en peso y descripcion de detalle en cargas unicas ...................... ok 05/10/2021
 form facelect, fact credito, monto cuota debe ser monto neto ....................................... ok 08/10/2021 - monto neto = precio venta - detraccion, retencion, etc
 form facelect, adecuaciones REgeneracion TXT en modo edicion EN CARGAS UNICAS ...................... ok 13/10/2021
+form ayccaja, arreglo de calculo de saldo final al cerrar la caja .................................. ok 22/10/2021
+form ingresosv, arreglo en edicion de dolares, se agrego tipo de cambio al jalaoc() ................ ok 22/10/2021
+form login, upercase al codigo de usuario .......................................................... ok 22/10/2021
+dataset conclie, agregar campo guias del cliente al reporte ctas ctes clientes ..................... ok 22/10/2021 - docsclte
+form repsoper, agregar guias del cliente a reportes ctas ctes clientes ............................. ok 22/10/2021
+P.A. res_serv_clte, agregar guias del cliente a reportes ctas ctes clientes ........................ ok 22/10/2021
+formato CR, ctas ctes clientes, agregar campo guias del cliente .................................... ok 22/10/2021
+form planicarga, adecuacion de seleccion de destino para evitar errores ............................ ok 22/10/2021

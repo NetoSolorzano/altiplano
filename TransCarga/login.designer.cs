@@ -84,6 +84,7 @@
             // 
             // Tx_user
             // 
+            this.Tx_user.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
             this.Tx_user.ForeColor = System.Drawing.SystemColors.WindowFrame;
             this.Tx_user.Location = new System.Drawing.Point(66, 17);
             this.Tx_user.Name = "Tx_user";

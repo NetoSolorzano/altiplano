@@ -292,8 +292,9 @@ namespace TransCarga
                                     dr.GetString("userc"),
                                     dr.GetString("nom_user"),
                                     dr.GetString("numingv"),
-                                    dr.GetString("tipdoco")
-                                    );
+                                    dr.GetString("tipdoco"),
+                                    dr.GetString("tcadvta")
+                                    ); ;
                         }
                     }
                     else
@@ -791,7 +792,7 @@ namespace TransCarga
             {
                 try
                 {
-                    if (true)     // donde validas que la caja este abierta ?????
+                    if (true)
                     {
                         string actua = "update cabingresosv a set " +
                             "a.idcaja=@idcaja,a.fechope=@fechop,a.seringv=@servin,a.locingv=@ldcpgr,a.estingv=@estado,a.codting=@tip,a.tipdoco=@tipdoc,a.serdoco=@serdoc," +
@@ -1299,6 +1300,7 @@ namespace TransCarga
                     cmb_mon.SelectedValue = tx_dat_mone.Text;
                     cmb_mpago.SelectedValue = tx_dat_mp.Text;
                     cmb_ctaprop.SelectedValue = tx_dat_cta.Text;
+                    tx_tipcam.Text = dataGridView1.Rows[e.RowIndex].Cells["tipcam"].Value.ToString();
                     //
                     if (Tx_modo.Text == "EDITAR")
                     {

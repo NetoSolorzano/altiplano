@@ -6313,6 +6313,8 @@ namespace TransCarga {
             
             private global::System.Data.DataColumn columnfecpla;
             
+            private global::System.Data.DataColumn columndocsclte;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public detctacteDataTable() {
@@ -6548,6 +6550,14 @@ namespace TransCarga {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn docsclteColumn {
+                get {
+                    return this.columndocsclte;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -6608,7 +6618,8 @@ namespace TransCarga {
                         string estado, 
                         string planilla, 
                         string placa, 
-                        string fecpla) {
+                        string fecpla, 
+                        string docsclte) {
                 detctacteRow rowdetctacteRow = ((detctacteRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         id,
@@ -6635,7 +6646,8 @@ namespace TransCarga {
                         estado,
                         planilla,
                         placa,
-                        fecpla};
+                        fecpla,
+                        docsclte};
                 rowdetctacteRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowdetctacteRow);
                 return rowdetctacteRow;
@@ -6683,6 +6695,7 @@ namespace TransCarga {
                 this.columnplanilla = base.Columns["planilla"];
                 this.columnplaca = base.Columns["placa"];
                 this.columnfecpla = base.Columns["fecpla"];
+                this.columndocsclte = base.Columns["docsclte"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -6738,6 +6751,8 @@ namespace TransCarga {
                 base.Columns.Add(this.columnplaca);
                 this.columnfecpla = new global::System.Data.DataColumn("fecpla", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnfecpla);
+                this.columndocsclte = new global::System.Data.DataColumn("docsclte", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columndocsclte);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -14138,6 +14153,22 @@ namespace TransCarga {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string docsclte {
+                get {
+                    try {
+                        return ((string)(this[this.tabledetctacte.docsclteColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("El valor de la columna \'docsclte\' de la tabla \'detctacte\' es DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tabledetctacte.docsclteColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public bool IsidNull() {
                 return this.IsNull(this.tabledetctacte.idColumn);
             }
@@ -14434,6 +14465,18 @@ namespace TransCarga {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public void SetfecplaNull() {
                 this[this.tabledetctacte.fecplaColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsdocsclteNull() {
+                return this.IsNull(this.tabledetctacte.docsclteColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetdocsclteNull() {
+                this[this.tabledetctacte.docsclteColumn] = global::System.Convert.DBNull;
             }
         }
         

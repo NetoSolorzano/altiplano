@@ -68,26 +68,6 @@
             this.label13 = new System.Windows.Forms.Label();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.id = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.noing = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.serie = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.numero = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.moneda = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.monto = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.valorMN = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.cuenta = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.glosa = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.fechdep = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.observaciones = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.fechope = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.mpago = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.codmopa = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.ctaprop = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.status = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.userc = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.nom_user = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.numingv = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.tipdoco = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tx_dat_mone = new System.Windows.Forms.TextBox();
             this.cmb_mon = new System.Windows.Forms.ComboBox();
             this.tx_estado = new System.Windows.Forms.TextBox();
@@ -125,6 +105,27 @@
             this.tx_totcant = new TransCarga.NumericTextBox();
             this.tx_PAGO = new TransCarga.NumericTextBox();
             this.tx_numGR = new TransCarga.NumericTextBox();
+            this.id = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.noing = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.serie = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.numero = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.moneda = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.monto = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.valorMN = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cuenta = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.glosa = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.fechdep = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.observaciones = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.fechope = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.mpago = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.codmopa = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ctaprop = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.status = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.userc = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.nom_user = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.numingv = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.tipdoco = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.tipcam = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.toolStrip1.SuspendLayout();
             this.pn_usloc.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
@@ -548,7 +549,8 @@
             this.userc,
             this.nom_user,
             this.numingv,
-            this.tipdoco});
+            this.tipdoco,
+            this.tipcam});
             this.dataGridView1.Location = new System.Drawing.Point(6, 140);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.Size = new System.Drawing.Size(745, 183);
@@ -557,144 +559,14 @@
             this.dataGridView1.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.dataGridView1_RowsAdded);
             this.dataGridView1.RowsRemoved += new System.Windows.Forms.DataGridViewRowsRemovedEventHandler(this.dataGridView1_RowsRemoved);
             // 
-            // id
-            // 
-            this.id.FillWeight = 40F;
-            this.id.HeaderText = "ID";
-            this.id.Name = "id";
-            this.id.ReadOnly = true;
-            this.id.Width = 40;
-            // 
-            // noing
-            // 
-            this.noing.FillWeight = 40F;
-            this.noing.HeaderText = "TDOC";
-            this.noing.Name = "noing";
-            this.noing.Width = 40;
-            // 
-            // serie
-            // 
-            this.serie.FillWeight = 40F;
-            this.serie.HeaderText = "SERIE";
-            this.serie.Name = "serie";
-            this.serie.Width = 40;
-            // 
-            // numero
-            // 
-            this.numero.FillWeight = 60F;
-            this.numero.HeaderText = "NUMERO";
-            this.numero.Name = "numero";
-            this.numero.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.numero.Width = 60;
-            // 
-            // moneda
-            // 
-            this.moneda.FillWeight = 40F;
-            this.moneda.HeaderText = "MON";
-            this.moneda.Name = "moneda";
-            this.moneda.Width = 40;
-            // 
-            // monto
-            // 
-            this.monto.FillWeight = 80F;
-            this.monto.HeaderText = "MONTO";
-            this.monto.Name = "monto";
-            this.monto.Width = 80;
-            // 
-            // valorMN
-            // 
-            this.valorMN.HeaderText = "VALMN";
-            this.valorMN.Name = "valorMN";
-            // 
-            // cuenta
-            // 
-            this.cuenta.HeaderText = "CUENTA";
-            this.cuenta.Name = "cuenta";
-            this.cuenta.ReadOnly = true;
-            // 
-            // glosa
-            // 
-            this.glosa.HeaderText = "GLOSA";
-            this.glosa.Name = "glosa";
-            this.glosa.ReadOnly = true;
-            // 
-            // fechdep
-            // 
-            this.fechdep.FillWeight = 60F;
-            this.fechdep.HeaderText = "F_DEP";
-            this.fechdep.Name = "fechdep";
-            this.fechdep.ReadOnly = true;
-            this.fechdep.Width = 60;
-            // 
-            // observaciones
-            // 
-            this.observaciones.HeaderText = "OBSERVACIONES";
-            this.observaciones.Name = "observaciones";
-            this.observaciones.ReadOnly = true;
-            // 
-            // fechope
-            // 
-            this.fechope.HeaderText = "fechope";
-            this.fechope.Name = "fechope";
-            this.fechope.ReadOnly = true;
-            this.fechope.Visible = false;
-            // 
-            // mpago
-            // 
-            this.mpago.HeaderText = "mpago";
-            this.mpago.Name = "mpago";
-            this.mpago.Visible = false;
-            // 
-            // codmopa
-            // 
-            this.codmopa.HeaderText = "codmopa";
-            this.codmopa.Name = "codmopa";
-            this.codmopa.Visible = false;
-            // 
-            // ctaprop
-            // 
-            this.ctaprop.HeaderText = "ctaprop";
-            this.ctaprop.Name = "ctaprop";
-            this.ctaprop.Visible = false;
-            // 
-            // status
-            // 
-            this.status.HeaderText = "ESTADO";
-            this.status.Name = "status";
-            // 
-            // userc
-            // 
-            this.userc.HeaderText = "userc";
-            this.userc.Name = "userc";
-            this.userc.Visible = false;
-            // 
-            // nom_user
-            // 
-            this.nom_user.HeaderText = "nom_user";
-            this.nom_user.Name = "nom_user";
-            this.nom_user.Visible = false;
-            // 
-            // numingv
-            // 
-            this.numingv.HeaderText = "numingv";
-            this.numingv.Name = "numingv";
-            this.numingv.Visible = false;
-            // 
-            // tipdoco
-            // 
-            this.tipdoco.HeaderText = "tipdoco";
-            this.tipdoco.Name = "tipdoco";
-            this.tipdoco.Visible = false;
-            // 
             // tx_dat_mone
             // 
             this.tx_dat_mone.BackColor = System.Drawing.SystemColors.Window;
             this.tx_dat_mone.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_dat_mone.Location = new System.Drawing.Point(443, 24);
+            this.tx_dat_mone.Location = new System.Drawing.Point(391, 24);
             this.tx_dat_mone.Name = "tx_dat_mone";
-            this.tx_dat_mone.Size = new System.Drawing.Size(32, 18);
+            this.tx_dat_mone.Size = new System.Drawing.Size(56, 18);
             this.tx_dat_mone.TabIndex = 319;
-            this.tx_dat_mone.Visible = false;
             // 
             // cmb_mon
             // 
@@ -763,21 +635,19 @@
             // 
             this.tx_tipcam.BackColor = System.Drawing.SystemColors.Window;
             this.tx_tipcam.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_tipcam.Location = new System.Drawing.Point(477, 24);
+            this.tx_tipcam.Location = new System.Drawing.Point(477, 59);
             this.tx_tipcam.Name = "tx_tipcam";
-            this.tx_tipcam.Size = new System.Drawing.Size(32, 18);
+            this.tx_tipcam.Size = new System.Drawing.Size(51, 18);
             this.tx_tipcam.TabIndex = 364;
-            this.tx_tipcam.Visible = false;
             // 
             // tx_pagoMN
             // 
             this.tx_pagoMN.BackColor = System.Drawing.SystemColors.Window;
             this.tx_pagoMN.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_pagoMN.Location = new System.Drawing.Point(562, 24);
+            this.tx_pagoMN.Location = new System.Drawing.Point(548, 22);
             this.tx_pagoMN.Name = "tx_pagoMN";
             this.tx_pagoMN.Size = new System.Drawing.Size(53, 18);
             this.tx_pagoMN.TabIndex = 365;
-            this.tx_pagoMN.Visible = false;
             // 
             // cmb_mpago
             // 
@@ -1066,6 +936,141 @@
             this.tx_numGR.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.tx_numGR.Leave += new System.EventHandler(this.tx_numGR_Leave);
             // 
+            // id
+            // 
+            this.id.FillWeight = 40F;
+            this.id.HeaderText = "ID";
+            this.id.Name = "id";
+            this.id.ReadOnly = true;
+            this.id.Width = 40;
+            // 
+            // noing
+            // 
+            this.noing.FillWeight = 40F;
+            this.noing.HeaderText = "TDOC";
+            this.noing.Name = "noing";
+            this.noing.Width = 40;
+            // 
+            // serie
+            // 
+            this.serie.FillWeight = 40F;
+            this.serie.HeaderText = "SERIE";
+            this.serie.Name = "serie";
+            this.serie.Width = 40;
+            // 
+            // numero
+            // 
+            this.numero.FillWeight = 60F;
+            this.numero.HeaderText = "NUMERO";
+            this.numero.Name = "numero";
+            this.numero.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.numero.Width = 60;
+            // 
+            // moneda
+            // 
+            this.moneda.FillWeight = 40F;
+            this.moneda.HeaderText = "MON";
+            this.moneda.Name = "moneda";
+            this.moneda.Width = 40;
+            // 
+            // monto
+            // 
+            this.monto.FillWeight = 80F;
+            this.monto.HeaderText = "MONTO";
+            this.monto.Name = "monto";
+            this.monto.Width = 80;
+            // 
+            // valorMN
+            // 
+            this.valorMN.HeaderText = "VALMN";
+            this.valorMN.Name = "valorMN";
+            // 
+            // cuenta
+            // 
+            this.cuenta.HeaderText = "CUENTA";
+            this.cuenta.Name = "cuenta";
+            this.cuenta.ReadOnly = true;
+            // 
+            // glosa
+            // 
+            this.glosa.HeaderText = "GLOSA";
+            this.glosa.Name = "glosa";
+            this.glosa.ReadOnly = true;
+            // 
+            // fechdep
+            // 
+            this.fechdep.FillWeight = 60F;
+            this.fechdep.HeaderText = "F_DEP";
+            this.fechdep.Name = "fechdep";
+            this.fechdep.ReadOnly = true;
+            this.fechdep.Width = 60;
+            // 
+            // observaciones
+            // 
+            this.observaciones.HeaderText = "OBSERVACIONES";
+            this.observaciones.Name = "observaciones";
+            this.observaciones.ReadOnly = true;
+            // 
+            // fechope
+            // 
+            this.fechope.HeaderText = "fechope";
+            this.fechope.Name = "fechope";
+            this.fechope.ReadOnly = true;
+            this.fechope.Visible = false;
+            // 
+            // mpago
+            // 
+            this.mpago.HeaderText = "mpago";
+            this.mpago.Name = "mpago";
+            this.mpago.Visible = false;
+            // 
+            // codmopa
+            // 
+            this.codmopa.HeaderText = "codmopa";
+            this.codmopa.Name = "codmopa";
+            this.codmopa.Visible = false;
+            // 
+            // ctaprop
+            // 
+            this.ctaprop.HeaderText = "ctaprop";
+            this.ctaprop.Name = "ctaprop";
+            this.ctaprop.Visible = false;
+            // 
+            // status
+            // 
+            this.status.HeaderText = "ESTADO";
+            this.status.Name = "status";
+            // 
+            // userc
+            // 
+            this.userc.HeaderText = "userc";
+            this.userc.Name = "userc";
+            this.userc.Visible = false;
+            // 
+            // nom_user
+            // 
+            this.nom_user.HeaderText = "nom_user";
+            this.nom_user.Name = "nom_user";
+            this.nom_user.Visible = false;
+            // 
+            // numingv
+            // 
+            this.numingv.HeaderText = "numingv";
+            this.numingv.Name = "numingv";
+            this.numingv.Visible = false;
+            // 
+            // tipdoco
+            // 
+            this.tipdoco.HeaderText = "tipdoco";
+            this.tipdoco.Name = "tipdoco";
+            this.tipdoco.Visible = false;
+            // 
+            // tipcam
+            // 
+            this.tipcam.HeaderText = "tipcam";
+            this.tipcam.Name = "tipcam";
+            this.tipcam.Visible = false;
+            // 
             // ingresosv
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1239,5 +1244,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn nom_user;
         private System.Windows.Forms.DataGridViewTextBoxColumn numingv;
         private System.Windows.Forms.DataGridViewTextBoxColumn tipdoco;
+        private System.Windows.Forms.DataGridViewTextBoxColumn tipcam;
     }
 }
