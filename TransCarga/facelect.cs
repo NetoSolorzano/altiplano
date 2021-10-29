@@ -313,6 +313,7 @@ namespace TransCarga
             }
             tx_dat_nombd.Text = "Bultos";
             tx_dat_nombd.ReadOnly = true;
+            glosdet = "";
         }
         private void jalainfo()                 // obtiene datos de imagenes y variables
         {

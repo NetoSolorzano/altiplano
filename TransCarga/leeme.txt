@@ -296,3 +296,4 @@ form repsoper, agregar guias del cliente a reportes ctas ctes clientes .........
 P.A. res_serv_clte, agregar guias del cliente a reportes ctas ctes clientes ........................ ok 22/10/2021
 formato CR, ctas ctes clientes, agregar campo guias del cliente .................................... ok 22/10/2021
 form planicarga, adecuacion de seleccion de destino para evitar errores ............................ ok 22/10/2021
+form facelect, arreglo de inicializacion de variable glosdet = "" .................................. ok 27/10/2021 - no se estaba inicializando y por ese se acumulaba y excedia limite de caracteres
