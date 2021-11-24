@@ -582,6 +582,10 @@ namespace TransCarga
                         tx_pagoMN.Text = (decimal.Parse(tx_tipcam.Text) * decimal.Parse(tx_PAGO.Text)).ToString("#0.00");
                     }
                 }
+                else
+                {
+                    tx_pagoMN.Text = tx_PAGO.Text;
+                }
             }
             #endregion
             // grabamos, actualizamos, etc
@@ -1162,13 +1166,9 @@ namespace TransCarga
         #endregion botones_de_comando  ;
 
         #region comboboxes
-        private void cmb_mon_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            // lo moví a change commitment
-        }
         private void cmb_mon_SelectionChangeCommitted(object sender, EventArgs e)
         {
-            if (Tx_modo.Text == "NUEVO")
+            if (Tx_modo.Text == "NUEVO" || Tx_modo.Text == "EDITAR")
             {
                 if (cmb_mon.SelectedIndex > -1)
                 {

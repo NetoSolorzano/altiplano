@@ -103,6 +103,7 @@ namespace TransCarga
         string tdocsFac = "";           // tipos de documentos de clientes que permiten facturas
         string texmotran = "";          // texto modalidad de transporte
         string codtxmotran = "";        // codigo motivo de traslado de bienes
+        int ccf_pdf = 0;                // cantidad de caracteres por fila limite para detalle de cargas unicas
         //
         static libreria lib = new libreria();   // libreria de procedimientos
         publico lp = new publico();             // libreria de clases
@@ -418,6 +419,7 @@ namespace TransCarga
                             if (row["param"].ToString() == "tipsDocbaja") tipdocAnu = row["valor"].ToString().Trim();
                             if (row["param"].ToString() == "modTran") texmotran = row["valor"].ToString().Trim();
                             if (row["param"].ToString() == "codmotTran") codtxmotran = row["valor"].ToString().Trim();
+                            if (row["param"].ToString() == "cantcarl") ccf_pdf = int.Parse(row["valor"].ToString());
                         }
                     }
                     if (row["formulario"].ToString() == "ayccaja" && row["campo"].ToString() == "estado")
@@ -2034,20 +2036,45 @@ namespace TransCarga
                 {
                     char saltoL = (char)8;  //   //(char)30;
                     char saltoL5 = (char)5;
+                    int ld = 0;
                     if (dataGridView1.Rows.Count > 2)
                     {
-                        row["Idatper"] = dataGridView1.Rows[s].Cells["Descrip"].Value.ToString() + saltoL + saltoL5 +
-                            dataGridView1.Rows[s].Cells["Cant"].Value.ToString() + " " + tx_dat_nombd.Text + saltoL + saltoL5 +
-                            "GUIA TRANSPORTISTA " + dataGridView1.Rows[s].Cells["guias"].Value.ToString() + saltoL + saltoL5 +
-                            "GUIA REMITENTE " + dataGridView1.Rows[s].Cells["guiasclte"].Value.ToString();  // tx_totcant.Text
+                        ld = dataGridView1.Rows[s].Cells["Descrip"].Value.ToString().Length;
+                        if (ld > ccf_pdf)
+                        {
+                            row["Idatper"] = dataGridView1.Rows[s].Cells["Descrip"].Value.ToString().Substring(0,ccf_pdf) + saltoL + saltoL5 +
+                                dataGridView1.Rows[s].Cells["Descrip"].Value.ToString().Substring(ccf_pdf,ld-ccf_pdf) + saltoL + saltoL5 +
+                                dataGridView1.Rows[s].Cells["Cant"].Value.ToString() + " " + tx_dat_nombd.Text + saltoL + saltoL5 +
+                                "GUIA TRANSPORTISTA " + dataGridView1.Rows[s].Cells["guias"].Value.ToString() + saltoL + saltoL5 +
+                                "GUIA REMITENTE " + dataGridView1.Rows[s].Cells["guiasclte"].Value.ToString();  // tx_totcant.Text
+                        }
+                        else
+                        {
+                            row["Idatper"] = dataGridView1.Rows[s].Cells["Descrip"].Value.ToString() + saltoL + saltoL5 +
+                                dataGridView1.Rows[s].Cells["Cant"].Value.ToString() + " " + tx_dat_nombd.Text + saltoL + saltoL5 +
+                                "GUIA TRANSPORTISTA " + dataGridView1.Rows[s].Cells["guias"].Value.ToString() + saltoL + saltoL5 +
+                                "GUIA REMITENTE " + dataGridView1.Rows[s].Cells["guiasclte"].Value.ToString();  // tx_totcant.Text
+                        }
                         row["Idescri"] = glosser;
                         row["Icantid"] = Math.Round((double.Parse(dataGridView1.Rows[s].Cells["Cant"].Value.ToString()) * double.Parse(tx_cetm.Text)) / double.Parse(tx_totcant.Text), 2);
                     }
                     else
                     {
-                        row["Idatper"] = dataGridView1.Rows[s].Cells["Descrip"].Value.ToString() + saltoL + saltoL5 +
-                            dataGridView1.Rows[s].Cells["Cant"].Value.ToString() + " " + tx_dat_nombd.Text + saltoL + saltoL5 +
-                            "GUIA REMITENTE " + dataGridView1.Rows[s].Cells["guiasclte"].Value.ToString();  // tx_totcant.Text
+                        ld = dataGridView1.Rows[s].Cells["Descrip"].Value.ToString().Length;
+                        if (ld > ccf_pdf)
+                        {
+                            row["Idatper"] = dataGridView1.Rows[s].Cells["Descrip"].Value.ToString().Substring(0, ccf_pdf) + saltoL + saltoL5 +
+                                dataGridView1.Rows[s].Cells["Descrip"].Value.ToString().Substring(ccf_pdf, ld-ccf_pdf) + saltoL + saltoL5 +
+                                dataGridView1.Rows[s].Cells["Cant"].Value.ToString() + " " + tx_dat_nombd.Text + saltoL + saltoL5 +
+                                "GUIA TRANSPORTISTA " + dataGridView1.Rows[s].Cells["guias"].Value.ToString() + saltoL + saltoL5 +
+                                "GUIA REMITENTE " + dataGridView1.Rows[s].Cells["guiasclte"].Value.ToString();  // tx_totcant.Text
+                        }
+                        else
+                        {
+                            row["Idatper"] = dataGridView1.Rows[s].Cells["Descrip"].Value.ToString() + saltoL + saltoL5 +
+                                dataGridView1.Rows[s].Cells["Cant"].Value.ToString() + " " + tx_dat_nombd.Text + saltoL + saltoL5 +
+                                "GUIA REMITENTE " + dataGridView1.Rows[s].Cells["guiasclte"].Value.ToString();  // tx_totcant.Text
+                        }
                         row["Idescri"] = glosser;
                         row["Icantid"] = Math.Round((double.Parse(dataGridView1.Rows[s].Cells["Cant"].Value.ToString()) * double.Parse(tx_cetm.Text)) / double.Parse(tx_totcant.Text), 2);
                     }
@@ -3527,6 +3554,7 @@ namespace TransCarga
                             micon.Parameters.AddWithValue("@eiar", (vint_A0 == codAnul) ? "A0" : "");  // codigo anulacion interna en DB A0
                             micon.ExecuteNonQuery();
                         }
+                        /*  05/11/2021
                         string updser = "update series set actual=actual-1 where tipdoc=@tipd AND serie=@serd";
                         using (MySqlCommand micon = new MySqlCommand(updser, conn))
                         {
@@ -3534,6 +3562,7 @@ namespace TransCarga
                             micon.Parameters.AddWithValue("@serd", tx_serie.Text);
                             micon.ExecuteNonQuery();
                         }
+                        */
                     }
                 }
             }

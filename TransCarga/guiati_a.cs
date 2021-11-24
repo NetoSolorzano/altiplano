@@ -482,6 +482,7 @@ namespace TransCarga
                             tx_proDrio.Text = du_desti[1];
                             tx_disDrio.Text = du_desti[2];
                             cmb_mon.SelectedValue = tx_dat_mone.Text;
+                            tx_tipcam.Text = dr.GetString("tipcamgri");
                         }
                         else
                         {

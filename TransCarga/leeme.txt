@@ -297,3 +297,6 @@ P.A. res_serv_clte, agregar guias del cliente a reportes ctas ctes clientes ....
 formato CR, ctas ctes clientes, agregar campo guias del cliente .................................... ok 22/10/2021
 form planicarga, adecuacion de seleccion de destino para evitar errores ............................ ok 22/10/2021
 form facelect, arreglo de inicializacion de variable glosdet = "" .................................. ok 27/10/2021 - no se estaba inicializando y por ese se acumulaba y excedia limite de caracteres
+form ingresosv, arreglo en edicion de soles, no estaba actualizando valorMN ........................ ok 31/10/2021
+form guiati_a, correccion en jalaoc() para jalar tipo de cambio y permitir anulacion ............... ok 02/11/2021
+form facelect, carga unica, posibilitar dos lineas de detalle para la descripción .................. ok 16/11/2021 (operador debe contar 50 caracteres inc.espacios) x cada fila
