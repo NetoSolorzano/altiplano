@@ -1753,7 +1753,7 @@ namespace TransCarga
         {
             // valida existencia en vehiculos como trompa
             // si existe pone la conf. vehicular y autorizacion
-            if (rb_propio.Checked == true && tx_pla_placa.Text.Trim() != "")
+            if (tx_pla_placa.Text.Trim() != "")    // rb_propio.Checked == true &&    -- 24/11/2021
             {
                 string[] datos = ValPlaCarr("P", tx_pla_placa.Text);
                 if (datos[0].Length < 1)
@@ -1781,7 +1781,7 @@ namespace TransCarga
         {
             // valida existencia en vehiculos como CARRETA
             // si existe CONCATENA la conf. vehicular
-            if (rb_propio.Checked == true && tx_pla_carret.Text.Trim() != "")
+            if (tx_pla_carret.Text.Trim() != "")   // rb_propio.Checked == true &&    -- 24/11/2021
             {
                 string[] datos = ValPlaCarr("C", tx_pla_carret.Text);
                 if (datos[0].Length < 1)

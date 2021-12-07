@@ -300,3 +300,4 @@ form facelect, arreglo de inicializacion de variable glosdet = "" ..............
 form ingresosv, arreglo en edicion de soles, no estaba actualizando valorMN ........................ ok 31/10/2021
 form guiati_a, correccion en jalaoc() para jalar tipo de cambio y permitir anulacion ............... ok 02/11/2021
 form facelect, carga unica, posibilitar dos lineas de detalle para la descripción .................. ok 16/11/2021 (operador debe contar 50 caracteres inc.espacios) x cada fila
+form planicarga, cuando es placa de tercero no jala datos .......................................... ok 24/11/2021
