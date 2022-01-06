@@ -80,6 +80,7 @@ namespace TransCarga
         string imgpe4 = "";                                             // imagen 4 administ - ingresos varios
         string imgpe5 = "";                                             // imagen 5 administ - reportes
         string imgvc1 = "";                                             // imagen 1 ventas - contratos
+        string imgvbc1 = "";                                            // imagen 1 operaciones - correcciones
         string imgvpc1 = "";                                            // imagen 1 operaciones 
         string imgvic1 = "";                                            // imagen 1 operaciones - 
         string imgvsc1 = "";                                            // imagen 1 operaciones - 
@@ -268,6 +269,7 @@ namespace TransCarga
                         if (row["param"].ToString() == "imgvsc1") imgvsc1 = row["valor"].ToString().Trim();         // imagen1 de ventas salidas pedidos clientes
                         if (row["param"].ToString() == "imgvtc1") imgvtc1 = row["valor"].ToString().Trim();         // imagen1 operaciones transbordos
                         if (row["param"].ToString() == "imgvre1") imgvre1 = row["valor"].ToString().Trim();         // imagen1 de ventas clientes reportes
+                        if (row["param"].ToString() == "imgvbc1") imgvbc1 = row["valor"].ToString().Trim();         // imagen1 de busqueda y correccion de guias
                         if (row["param"].ToString() == "imgalm1") imgalm1 = row["valor"].ToString().Trim();         // imagen1 de almace - gestion
                         if (row["param"].ToString() == "imgalm2") imgalm2 = row["valor"].ToString().Trim();         // imagen2 de almace - movimientos fisicos
                         if (row["param"].ToString() == "imgalm3") imgalm3 = row["valor"].ToString().Trim();         // imagen3 de almace - historico de ventas
@@ -479,6 +481,7 @@ namespace TransCarga
             Image img_v_s = Image.FromFile(imgvsc1);
             Image img_v_t = Image.FromFile(imgvtc1);
             Image img_v_r = Image.FromFile(imgvre1);
+            Image img_v_b = Image.FromFile(imgvbc1);
             //
             pic_icon_menu.Image = TransCarga.Properties.Resources.etiq_venta32;
             menuStrip1.Items.Clear();
@@ -488,6 +491,7 @@ namespace TransCarga
             menuStrip1.Items.Add("Plan.Carga",img_v_s, vsc_registro_Click);
             menuStrip1.Items.Add("Transbordo", img_v_t, vtc_registro_Click);
             menuStrip1.Items.Add("Reportes",img_v_r, vc_reportes_Click);
+            menuStrip1.Items.Add("Corrección", img_v_b, vbc_registro_Click);
             menuStrip1.Visible = true;
         }
         private void vc_registro_Click(object sender, EventArgs e)          // Pre guías transportista
@@ -552,6 +556,17 @@ namespace TransCarga
                 this.Width = this.Width + (this.Width - frv.Width) + 20;
             }
             frv.BringToFront();
+        }
+        private void vbc_registro_Click(object sender, EventArgs e)         // busqueda y correccion de guias
+        {
+            busyarreg fba = new busyarreg();
+            fba.TopLevel = false;
+            fba.Parent = this;
+            pn_centro.Controls.Add(fba);
+            //fba.Location = new Point((pn_centro.Width - fba.Width) / 2, (pn_centro.Height));
+            fba.Anchor = AnchorStyles.None;
+            fba.Show();
+            fba.BringToFront();
         }
         //
         private void bt_pedidos_Click(object sender, EventArgs e)           // Administración - caja

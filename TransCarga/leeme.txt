@@ -301,3 +301,7 @@ form ingresosv, arreglo en edicion de soles, no estaba actualizando valorMN ....
 form guiati_a, correccion en jalaoc() para jalar tipo de cambio y permitir anulacion ............... ok 02/11/2021
 form facelect, carga unica, posibilitar dos lineas de detalle para la descripción .................. ok 16/11/2021 (operador debe contar 50 caracteres inc.espacios) x cada fila
 form planicarga, cuando es placa de tercero no jala datos .......................................... ok 24/11/2021
+TRIGGER cabcobran_after_update, arreglos para anulacion de boletas anuladas ........................ ok 06/01/2021 (en serv. local)
+form TransMain, adecuaciones para opcion de correcciones dentro del modulo operaciones ............. ok 06/01/2021
+form busyarreg, form para buscar y arreglar correlativos de guias .................................. ok 06/01/2021
+from publico, agregar codigo para nuevas funcionalidades de la clase publico ....................... ok 06/01/2021
