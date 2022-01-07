@@ -2025,7 +2025,8 @@ namespace TransCarga
         {
             bool retorna = false;
             tdfe.Rows.Clear();
-            for (int s = 0; s < dataGridView1.Rows.Count - 1; s++)
+            int tfg = (dataGridView1.Rows.Count == int.Parse(v_mfildet)) ? int.Parse(v_mfildet) : dataGridView1.Rows.Count - 1;
+            for (int s = 0; s < tfg; s++)  // int s = 0; s < dataGridView1.Rows.Count - 1; s++
             {
                 glosser2 = dataGridView1.Rows[s].Cells["OriDest"].Value.ToString() + " - " + tx_totcant.Text.Trim() + " " + tx_dat_nombd.Text; // " Bultos"; 
                 DataRow row = tdfe.NewRow();
@@ -3367,7 +3368,8 @@ namespace TransCarga
                 if (dataGridView1.Rows.Count > 0)
                 {
                     int fila = 1;
-                    for (int i = 0; i < dataGridView1.Rows.Count - 1; i++)
+                    int tfg = (dataGridView1.Rows.Count == int.Parse(v_mfildet)) ? int.Parse(v_mfildet) : dataGridView1.Rows.Count - 1;
+                    for (int i = 0; i < tfg; i++)  // int i = 0; i < dataGridView1.Rows.Count - 1; i++
                     {
                         if (dataGridView1.Rows[i].Cells[0].Value.ToString().Trim() != "")
                         {
@@ -4768,7 +4770,8 @@ namespace TransCarga
                     StringFormat alder = new StringFormat(StringFormatFlags.DirectionRightToLeft);
                     SizeF siz = new SizeF(70, 15);
                     RectangleF recto = new RectangleF(puntoF, siz);
-                    for (int l = 0; l < dataGridView1.Rows.Count - 1; l++)
+                    int tfg = (dataGridView1.Rows.Count == int.Parse(v_mfildet)) ? int.Parse(v_mfildet) : dataGridView1.Rows.Count - 1;
+                    for (int l = 0; l < tfg; l++)  // int l = 0; l < dataGridView1.Rows.Count - 1; l++
                     {
                         if (!string.IsNullOrEmpty(dataGridView1.Rows[l].Cells[0].Value.ToString()))
                         {

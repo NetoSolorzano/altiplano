@@ -493,7 +493,7 @@ namespace TransCarga
         static System.Collections.Hashtable ht = new System.Collections.Hashtable();
         public static void AddItem(string key, object value, uint timeToCache)
         {
-            if (timeToCache > 3600)
+            if (timeToCache > 36000)    // aumentado de 3600 a 36000 07/01/2022
                 throw new ArgumentOutOfRangeException("Cache time cannot be more than 1 hour.");
             System.Threading.Timer t = new System.Threading.Timer(new TimerCallback(TimerProc));
             t.Change(timeToCache * 1000, System.Threading.Timeout.Infinite);
