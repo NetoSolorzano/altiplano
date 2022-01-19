@@ -73,6 +73,16 @@ namespace TransCarga.Properties {
         /// <summary>
         ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap close_square {
+            get {
+                object obj = ResourceManager.GetObject("close_square", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap etiq_venta32 {
             get {
                 object obj = ResourceManager.GetObject("etiq_venta32", resourceCulture);
@@ -176,6 +186,16 @@ namespace TransCarga.Properties {
         internal static System.Drawing.Bitmap service_manager {
             get {
                 object obj = ResourceManager.GetObject("service_manager", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap ticket32 {
+            get {
+                object obj = ResourceManager.GetObject("ticket32", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

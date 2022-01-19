@@ -86,6 +86,7 @@ namespace TransCarga
         string imgvsc1 = "";                                            // imagen 1 operaciones - 
         string imgvtc1 = "";                                            // imagen 1 operaciones - transbordos
         string imgvre1 = "";                                            // imagen 1 operaciones - reportes
+        string imgalm0 = "";                                            // imagen 0 almacen - mov. ingresos
         string imgalm1 = "";                                            // imagen 1 almacen - gestion
         string imgalm2 = "";                                            // imagen 2 almacen - movimientos fiscos
         string imgalm3 = "";                                            // imagen 3 almacen - historico de ventas
@@ -270,6 +271,7 @@ namespace TransCarga
                         if (row["param"].ToString() == "imgvtc1") imgvtc1 = row["valor"].ToString().Trim();         // imagen1 operaciones transbordos
                         if (row["param"].ToString() == "imgvre1") imgvre1 = row["valor"].ToString().Trim();         // imagen1 de ventas clientes reportes
                         if (row["param"].ToString() == "imgvbc1") imgvbc1 = row["valor"].ToString().Trim();         // imagen1 de busqueda y correccion de guias
+                        if (row["param"].ToString() == "imgalm0") imgalm0 = row["valor"].ToString().Trim();         // imagen1 de almace - mov. ingresos
                         if (row["param"].ToString() == "imgalm1") imgalm1 = row["valor"].ToString().Trim();         // imagen1 de almace - gestion
                         if (row["param"].ToString() == "imgalm2") imgalm2 = row["valor"].ToString().Trim();         // imagen2 de almace - movimientos fisicos
                         if (row["param"].ToString() == "imgalm3") imgalm3 = row["valor"].ToString().Trim();         // imagen3 de almace - historico de ventas
@@ -787,18 +789,35 @@ namespace TransCarga
         private void bt_almacen_Click(object sender, EventArgs e)       // Almacen
         {
             pic_icon_menu.Image = Properties.Resources.almacen48;
+            Image img_alm0 = Image.FromFile(imgalm0);
             Image img_alm1 = Image.FromFile(imgalm1);
             Image img_alm2 = Image.FromFile(imgalm2);
             Image img_alm3 = Image.FromFile(imgalm3);
             menuStrip1.Items.Clear();
-            menuStrip1.Items.Add("Gestión", img_alm1, alm_gestion_Click);                    // gestion de almacen
-            menuStrip1.Items.Add("Mov.Físicos", img_alm2, alm_movfisicos_Click);             // movimientos fisicos
-            menuStrip1.Items.Add("Reportes", img_alm3, alm_historicos_Click);                // 
+            menuStrip1.Items.Add("Mov. Ingresos", img_alm0, alm_movingresos_Click);     // movimientos fisicos ingresos
+            menuStrip1.Items.Add("Gestión", img_alm1, alm_gestion_Click);               // gestion de almacen
+            menuStrip1.Items.Add("Traslados ALM", img_alm2, alm_movfisicos_Click);       // movimientos fisicos salidas
+            menuStrip1.Items.Add("Reportes", img_alm3, alm_historicos_Click);           // reportes
             menuStrip1.Visible = true;
+        }
+        private void alm_movingresos_Click(object sender, EventArgs e)          // INGRESOS ALMACEN
+        {
+            ingcargalm fic = new ingcargalm();
+            fic.TopLevel = false;
+            fic.Parent = this;
+            pn_centro.Controls.Add(fic);
+            fic.Show();
+            fic.BringToFront();
         }
         private void alm_gestion_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Form Gestión de almacénes", "Primavera 2021", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            //MessageBox.Show("Form Gestión de almacénes", "Primavera 2021", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            almgestion fga = new almgestion();
+            fga.TopLevel = false;
+            fga.Parent = this;
+            pn_centro.Controls.Add(fga);
+            fga.Show();
+            fga.BringToFront();
         }
         private void alm_movfisicos_Click(object sender, EventArgs e)
         {
@@ -806,7 +825,18 @@ namespace TransCarga
         }
         private void alm_historicos_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Form Reportes de Almacén", "Primavera 2021", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            repsalmac fral = new repsalmac();
+            fral.TopLevel = false;
+            fral.Parent = this;
+            pn_centro.Controls.Add(fral);
+            //fral.Location = new Point((pn_centro.Width - fral.Width) / 2, (pn_centro.Height - fral.Height) / 2);
+            //fral.Anchor = AnchorStyles.None;
+            fral.Show();
+            if (fral.Parent.Width < fral.Width)
+            {
+                this.Width = this.Width + (this.Width - fral.Width) + 20;
+            }
+            fral.BringToFront();
         }
         //
         private void pictureBox1_Click(object sender, EventArgs e)

@@ -100,6 +100,12 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="almgestion.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="almgestion.designer.cs">
+      <DependentUpon>almgestion.cs</DependentUpon>
+    </Compile>
     <Compile Include="ayccaja.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -216,6 +222,12 @@
     <Compile Include="guiati_a.designer.cs">
       <DependentUpon>guiati_a.cs</DependentUpon>
     </Compile>
+    <Compile Include="ingcargalm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ingcargalm.designer.cs">
+      <DependentUpon>ingcargalm.cs</DependentUpon>
+    </Compile>
     <Compile Include="ingresosv.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -230,6 +242,18 @@
     </Compile>
     <Compile Include="login.designer.cs">
       <DependentUpon>login.cs</DependentUpon>
+    </Compile>
+    <Compile Include="movim.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="movim.designer.cs">
+      <DependentUpon>movim.cs</DependentUpon>
+    </Compile>
+    <Compile Include="movimas.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="movimas.designer.cs">
+      <DependentUpon>movimas.cs</DependentUpon>
     </Compile>
     <Compile Include="notcredclts.cs">
       <SubType>Form</SubType>
@@ -299,6 +323,12 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>repCobSem.rpt</DependentUpon>
       <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="repsalmac.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="repsalmac.designer.cs">
+      <DependentUpon>repsalmac.cs</DependentUpon>
     </Compile>
     <Compile Include="repsoper.cs">
       <SubType>Form</SubType>
@@ -377,6 +407,9 @@
     <Compile Include="vtipcam.designer.cs">
       <DependentUpon>vtipcam.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="almgestion.resx">
+      <DependentUpon>almgestion.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ayccaja.resx">
       <DependentUpon>ayccaja.cs</DependentUpon>
     </EmbeddedResource>
@@ -437,11 +470,20 @@
     <EmbeddedResource Include="guiati_a.resx">
       <DependentUpon>guiati_a.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="ingcargalm.resx">
+      <DependentUpon>ingcargalm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ingresosv.resx">
       <DependentUpon>ingresosv.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="login.resx">
       <DependentUpon>login.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="movim.resx">
+      <DependentUpon>movim.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="movimas.resx">
+      <DependentUpon>movimas.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="notcredclts.resx">
       <DependentUpon>notcredclts.cs</DependentUpon>
@@ -481,6 +523,9 @@
     <EmbeddedResource Include="repCobSem.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>repCobSem.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="repsalmac.resx">
+      <DependentUpon>repsalmac.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="repsoper.resx">
       <DependentUpon>repsoper.cs</DependentUpon>
@@ -563,6 +608,11 @@
     <Content Include="leeme.txt" />
     <Content Include="Properties\process32.png" />
     <None Include="Resources\logo_solorsoft.png" />
+    <Content Include="Resources\abajo100T.png" />
+    <Content Include="Resources\close_square.png" />
+    <Content Include="Resources\flecha100.png" />
+    <Content Include="Resources\flecha100T.png" />
+    <None Include="Resources\ticket32.png" />
     <Content Include="solorsoft.ico" />
   </ItemGroup>
   <ItemGroup>

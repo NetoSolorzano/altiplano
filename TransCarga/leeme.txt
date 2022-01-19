@@ -307,3 +307,9 @@ form busyarreg, form para buscar y arreglar correlativos de guias ..............
 from publico, agregar codigo para nuevas funcionalidades de la clase publico ....................... ok 06/01/2022
 form publico, aumente de 3600 a 36000 los segundos de permanencia del cacheManager ................. ok 07/01/2022
 form facelect, arreglo de limite de guias en detalle ............................................... ok 07/01/2022
+form TransMain, agregar tema de almacén ............................................................ ok 12/01/2022
+form ingcargalm, creación del form, copiado de transcarga carrion .................................. ok 12/01/2022
+form almgestion, creación del form, copiado de transcarga carrion .................................. ok 12/01/2022
+form movim, creación del form, copiado de transcarga carrion ....................................... ok 12/01/2022
+form movimas, creación del form, copiado de transcarga carrion ..................................... ok 12/01/2022
+************************** ALTIPLANO CAMBIOS PARA TRABAJAR CON HORIZONT - FACT.ELECTRONICA ***************************
