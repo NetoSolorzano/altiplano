@@ -84,7 +84,8 @@ namespace TransCarga
         string tipdo = "";              // CODIGO SUNAT tipo de documento de venta
         string tipoDocEmi = "";         // CODIGO SUNAT tipo de documento RUC/DNI
         string tipoMoneda = "";         // CODIGO SUNAT tipo de moneda
-        string glosdet = "";            // glosa para las operaciones con detraccion
+        string glosdetra = "";          // glosa original para las detracciones en tabla enlaces
+        string glosdet = "";            // glosa para las operaciones con detraccion en el txt
         string glosser = "";            // glosa que va en el detalle del doc. de venta
         string glosser2 = "";           // glosa 2 que va despues de la glosa principal
         string restexto = "xxx";        // texto resolucion sunat autorizando prov. fact electronica
@@ -132,7 +133,7 @@ namespace TransCarga
         DataTable tdfe = new DataTable();       // facturacion electronica -detalle
         string[] datcltsR = { "", "", "", "", "", "", "", "", "" };
         string[] datcltsD = { "", "", "", "", "", "", "", "", "" };
-        string[] datguias = { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }; // 17
+        string[] datguias = { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }; // 18
         string[] datcargu = { "", "", "", "", "", "", "", "", "", "", "", "", "", "" };    // 14
         public facelect()
         {
@@ -294,6 +295,10 @@ namespace TransCarga
                     tx_idcaja.Text = v_idcaj;
                 }
             }
+            if (Tx_modo.Text == "EDITAR")
+            {
+                fshoy = tx_fechope.Text;
+            }
             if (Tx_modo.Text == "NUEVO")
             {
                 if (v_habpago == "SI")
@@ -405,7 +410,7 @@ namespace TransCarga
                             if (row["param"].ToString() == "nomfor_cr") v_CR_gr_ind = row["valor"].ToString().Trim();
                         }
                         if (row["campo"].ToString() == "moneda" && row["param"].ToString() == "default") MonDeft = row["valor"].ToString().Trim();      // moneda por defecto
-                        if (row["campo"].ToString() == "detraccion" && row["param"].ToString() == "glosa") glosdet = row["valor"].ToString().Trim();    // glosa detraccion
+                        if (row["campo"].ToString() == "detraccion" && row["param"].ToString() == "glosa") glosdetra = row["valor"].ToString().Trim();    // glosa detraccion
                         if (row["campo"].ToString() == "factelect")
                         {
                             if (row["param"].ToString() == "textaut") restexto = row["valor"].ToString().Trim();
@@ -630,7 +635,7 @@ namespace TransCarga
         {
             string jalad = "select a.filadet,a.codgror,a.cantbul,d.unimedpro,a.descpro,a.pesogro,a.codmogr,a.totalgr," +
                 "g.totgrMN,g.codMN,g.fechopegr,g.docsremit,g.tipmongri,concat(lo.descrizionerid,' - ',ld.descrizionerid) as orides," +
-                "b.porcendscto,b.valordscto " +
+                "b.porcendscto,b.valordscto,d.unimedpro " +
                 "from detfactu a left join cabguiai g on concat(g.sergui,'-',g.numgui)=a.codgror " +
                 "left join detguiai d on d.idc=g.id " +
                 "left join desc_loc lo on lo.idcodice=g.locorigen " +
@@ -670,7 +675,8 @@ namespace TransCarga
                                 row[12].ToString(),     // codmondoc
                                 row[13].ToString(),     // OriDest
                                 "",                     // saldo
-                                valorel);               // valorel
+                                valorel,               // valorel
+                                row[16].ToString());    // unidad de medida
                             tx_dat_nombd.Text = row[3].ToString();
                             //glosser2 = dataGridView1.Rows[0].Cells["OriDest"].Value.ToString() + " - " + tx_totcant.Text.Trim() + " " + tx_dat_nombd.Text;
                             glosser2 = row[13].ToString() + " - " + tx_totcant.Text.Trim() + " " + tx_dat_nombd.Text;
@@ -894,6 +900,7 @@ namespace TransCarga
                 datguias[14] = "";   // conf. vehicular
                 datguias[15] = "";  // local origen-destino
                 datguias[16] = "";  // saldo de la GR
+                datguias[17] = "";  // unidad medida 
                 //
                 datcargu[0] = "";   // direc. partida
                 datcargu[1] = "";   // depart. pto. partida
@@ -949,8 +956,8 @@ namespace TransCarga
                             "ifnull(b1.numerotel2,'') as numtel2R,a.tidodegri,a.nudodegri,b2.razonsocial as nombdegri,b2.direcc1 as diredegri,b2.ubigeo as ubigdegri,ifnull(b2.email,'') as emailD," +
                             "ifnull(b2.numerotel1,'') as numtel1D,ifnull(b2.numerotel2,'') as numtel2D,a.tipmongri,a.totgri,a.salgri,SUM(d.cantprodi) AS bultos,date(a.fechopegr) as fechopegr,a.tipcamgri," +
                             "max(d.descprodi) AS descrip,ifnull(m.descrizionerid,'') as mon,a.totgrMN,a.codMN,c.fecdocvta,b1.tiposocio as tipsrem,b2.tiposocio as tipsdes,a.docsremit," +
-                            "a.plaplagri,a.carplagri,a.autplagri,a.confvegri,concat(lo.descrizionerid,' - ',ld.descrizionerid) as orides,c.saldofina," +
-                            "a.direregri as dirpartida,a.ubigregri as ubigpartida,a.diredegri as dirllegada,a.ubigdegri as ubigllegada,ifnull(a.fechplani,'') as fechplani,a.proplagri,ifnull(p.RazonSocial,'') as RazonSocial " +
+                            "a.plaplagri,a.carplagri,a.autplagri,a.confvegri,concat(lo.descrizionerid,' - ',ld.descrizionerid) as orides,c.saldofina,a.direregri as dirpartida," +
+                            "a.ubigregri as ubigpartida,a.diredegri as dirllegada,a.ubigdegri as ubigllegada,ifnull(a.fechplani,'') as fechplani,a.proplagri,ifnull(p.RazonSocial,'') as RazonSocial,d.unimedpro " +
                             "from cabguiai a left join detguiai d on d.idc=a.id " +
                             "LEFT JOIN controlg c ON c.serguitra = a.sergui AND c.numguitra = a.numgui " +
                             "left join anag_for p on p.ruc=a.proplagri " +
@@ -1009,6 +1016,7 @@ namespace TransCarga
                                         datguias[14] = dr.GetString("confvegri");
                                         datguias[15] = dr.GetString("orides");
                                         datguias[16] = dr.GetString("salgri");
+                                        datguias[17] = dr.GetString("unimedpro");
                                         //
                                         datcargu[0] = dr.GetString("dirpartida");
                                         datcargu[4] = dr.GetString("ubigpartida");   // ubigeo punto partida
@@ -1346,7 +1354,7 @@ namespace TransCarga
             }
             return retorna;
         }
-        private bool crearTXT(string tipdo, string serie, string corre, string file_path)
+        private bool crearTXT(string tipdo, string serie, string corre, string file_path)       // horizont
         {
             bool retorna;
             retorna = false;
@@ -1425,6 +1433,38 @@ namespace TransCarga
             string _forpa = "";                                                         // glosa de forma de pago SUNAT
             string _valcr = "";                                                         // valor credito
             string _fechc = "";                                                         // fecha programada del pago credito
+            // cargas unicas y dolares
+            string cu_cpapp = "PE";
+            string cu_ubipp = "";                   // 03    Ubigeo del punto de partida 
+            string cu_deppp = "";                   // 04    Departamento del punto de partida
+            string cu_propp = "";                   // 05    Provincia del punto de partida
+            string cu_dispp = "";                   // 06    Distrito del punto de partida
+            string cu_urbpp = "";                              // 07    Urbanización del punto de partida
+            string cu_dirpp = "";                   // 08    Dirección detallada del punto de partida
+            string cu_cppll = "";                              // 09    Código país del punto de llegada
+            string cu_ubpll = "";                   // 10    Ubigeo del punto de llegada
+            string cu_depll = "";                   // 11    Departamento del punto de llegada
+            string cu_prpll = "";                   // 12    Provincia del punto de llegada
+            string cu_dipll = "";                   // 13    Distrito del punto de llegada
+            string cu_urbpl = "";                              // 14    Urbanización del punto de llegada
+            string cu_ddpll = "";                   // 15    Dirección detallada del punto de llegada
+            string cu_placa = "";                   // 16    Placa del Vehículo
+            string cu_coins = "";                   // 17    Constancia de inscripción del vehículo o certificado de habilitación vehicular
+            string cu_marca = "";                   // 18    Marca del Vehículo
+            string cu_breve = "";                   // 19    Nro.de licencia de conducir
+            string cu_ructr = "";                   // 20    RUC del transportista
+            string cu_nomtr = "";                   // 21    Razón social del Transportista
+            string cu_modtr = "";                    // 22    Modalidad de Transporte
+            string cu_pesbr = "";   // tx_cetm.Text;        // 23    Total Peso Bruto
+            string cu_motra = "";                   // 24    Código de Motivo de Traslado
+            string cu_fechi = "";               // 25    Fecha de Inicio de Traslado
+            string cu_remtc = "";                           // 26    Registro MTC
+            string cu_nudch = "";              // 27    Nro.Documento del conductor
+            string cu_tidch = "";                          // 28    Tipo de Documento del conductor
+            string cu_plac2 = "";                           // 29    Placa del Vehículo secundario
+            string cu_insub = "";                           // 30   Indicador de subcontratación
+
+            //
             if (tx_dat_tdv.Text == codfact)                          // campos solo para facturas "formas de pago"
             {
                 if (rb_si.Checked == true)
@@ -1458,6 +1498,38 @@ namespace TransCarga
                     }
                 }
             }
+            if (chk_cunica.Checked == true && tx_dat_tdv.Text == codfact)     // factura de cargas unicas ... 
+            {
+                cu_cpapp = "PE";
+                cu_ubipp = tx_dat_upo.Text;                   // 03    Ubigeo del punto de partida 
+                cu_deppp = tx_dp_dep.Text;                   // 04    Departamento del punto de partida
+                cu_propp = tx_dp_pro.Text;                   // 05    Provincia del punto de partida
+                cu_dispp = tx_dp_dis.Text;                   // 06    Distrito del punto de partida
+                cu_urbpp = "-";                              // 07    Urbanización del punto de partida
+                cu_dirpp = tx_dat_dpo.Text;                   // 08    Dirección detallada del punto de partida
+                cu_cppll = "PE";                              // 09    Código país del punto de llegada
+                cu_ubpll = tx_dat_upd.Text;                   // 10    Ubigeo del punto de llegada
+                cu_depll = tx_dd_dep.Text;                   // 11    Departamento del punto de llegada
+                cu_prpll = tx_dd_pro.Text;                   // 12    Provincia del punto de llegada
+                cu_dipll = tx_dd_dis.Text;                   // 13    Distrito del punto de llegada
+                cu_urbpl = "-";                              // 14    Urbanización del punto de llegada
+                cu_ddpll = tx_dat_dpd.Text;                   // 15    Dirección detallada del punto de llegada
+                cu_placa = tx_pla_placa.Text;                   // 16    Placa del Vehículo
+                cu_coins = tx_pla_autor.Text;                   // 17    Constancia de inscripción del vehículo o certificado de habilitación vehicular
+                cu_marca = "";                   // 18    Marca del Vehículo
+                cu_breve = "";                   // 19    Nro.de licencia de conducir
+                cu_ructr = tx_rucT.Text;                   // 20    RUC del transportista
+                cu_nomtr = tx_razonS.Text;                   // 21    Razón social del Transportista
+                cu_modtr = texmotran;                    // 22    Modalidad de Transporte
+                cu_pesbr = "";   // tx_cetm.Text;        // 23    Total Peso Bruto
+                cu_motra = codtxmotran;                   // 24    Código de Motivo de Traslado
+                cu_fechi = tx_fecini.Text;               // 25    Fecha de Inicio de Traslado
+                cu_remtc = "";                           // 26    Registro MTC
+                cu_nudch = tx_dniChof.Text;              // 27    Nro.Documento del conductor
+                cu_tidch = "1";                          // 28    Tipo de Documento del conductor
+                cu_plac2 = "";                           // 29    Placa del Vehículo secundario
+                cu_insub = "";                           // 30   Indicador de subcontratación
+            }
             /* *********************   calculo y campos de detracciones   ****************************** */
             if (double.Parse(tx_flete.Text) > double.Parse(Program.valdetra) && tx_dat_tdv.Text == codfact && tx_dat_mone.Text == MonDeft)    // soles
             {
@@ -1484,16 +1556,16 @@ namespace TransCarga
                 //d_vrepr = "0";               // valor referencial preliminar
                 codleyt = "1000";            // codigoLeyenda 1 - valor en letras
                 totdet = Math.Round(double.Parse(tx_flete.Text) * double.Parse(Program.pordetra) / 100, 2);    // totalDetraccion
+                _valcr = Math.Round((double.Parse(tx_flete.Text) - totdet), 2).ToString("#0.00");               // cuota credito = valor - detraccion
                 codleyd = "2006";
                 tipOper = "1001";
-                glosdet = glosdet + " " + d_ctade;                // leyenda de la detración
+                glosdet = glosdetra + " " + d_ctade;                // leyenda de la detración
             }
             if (tx_dat_mone.Text != MonDeft)
             {
                 _morefD = tx_dat_monsunat.Text;                                      // moneda de refencia para el tipo de cambio
                 _monobj = "PEN";        //tipoMoneda;                                // moneda objetivo del tipo de cambio
                 _tipcam = tx_tipcam.Text;                                            // tipo de cambio con 3 decimales
-                //_fechca = string.Format("{0:yyyy-MM-dd}", tx_fechope.Text);          // fecha del tipo de cambio
                 _fechca = tx_fechope.Text.Substring(6, 4) + "-" + tx_fechope.Text.Substring(3, 2) + "-" + tx_fechope.Text.Substring(0, 2);
                 if (double.Parse(tx_flete.Text) > (double.Parse(Program.valdetra) / double.Parse(tx_tipcam.Text)) && tx_dat_tdv.Text == codfact)
                 {
@@ -1514,6 +1586,7 @@ namespace TransCarga
                     codleyd = "2006";
                     tipOper = "1001";
                     totdet = Math.Round(double.Parse(tx_fletMN.Text) * double.Parse(Program.pordetra) / 100, 2);    // totalDetraccion
+                    glosdet = glosdetra + " " + d_ctade;                // leyenda de la detración
                 }
             }
             /* ********************************************** GENERAMOS EL TXT    ************************************* */
@@ -1600,16 +1673,17 @@ namespace TransCarga
                 _forpa + sep +                  // INF.ADICIONAL FORMA DE PAGO
                 _valcr + sep                    // INF.ADICIONAL FORMA DE PAGO
             );
-            for (int s = 0; s < dataGridView1.Rows.Count - 1; s++)  // DETALLE
+            int tfg = (dataGridView1.Rows.Count == int.Parse(v_mfildet) && int.Parse(tx_tfil.Text) == int.Parse(v_mfildet)) ? int.Parse(v_mfildet) : dataGridView1.Rows.Count - 1;
+            for (int s = 0; s < tfg; s++)  // DETALLE
             {
                 double _msigv = double.Parse(dataGridView1.Rows[s].Cells["valor"].Value.ToString()) / (1 + (double.Parse(v_igv) / 100));
                 string Ipreuni = double.Parse(dataGridView1.Rows[s].Cells["valor"].Value.ToString()).ToString("#0.00");     // Precio de venta unitario CON IGV
                 if (tx_dat_mone.Text != MonDeft && dataGridView1.Rows[s].Cells["codmondoc"].Value.ToString() == MonDeft)   // 
                 {
-                    _msigv = Math.Round(_msigv / double.Parse(tx_tipcam.Text),2);
-                    Ipreuni = Math.Round(double.Parse(dataGridView1.Rows[s].Cells["valor"].Value.ToString())/ double.Parse(tx_tipcam.Text), 2).ToString("#0.00");
+                    _msigv = Math.Round(_msigv / double.Parse(tx_tipcam.Text), 2);
+                    Ipreuni = Math.Round(double.Parse(dataGridView1.Rows[s].Cells["valor"].Value.ToString()) / double.Parse(tx_tipcam.Text), 2).ToString("#0.00");
                 }
-                if (tx_dat_mone.Text == MonDeft && dataGridView1.Rows[s].Cells["codmondoc"].Value.ToString() != MonDeft)
+                if (tx_dat_mone.Text == MonDeft && (dataGridView1.Rows[s].Cells["codmondoc"].Value.ToString().Trim() != "" && dataGridView1.Rows[s].Cells["codmondoc"].Value.ToString() != MonDeft))
                 {
                     _msigv = Math.Round(_msigv * double.Parse(tx_tipcam.Text), 2);
                     Ipreuni = Math.Round(double.Parse(dataGridView1.Rows[s].Cells["valor"].Value.ToString()) * double.Parse(tx_tipcam.Text), 2).ToString("#0.00");
@@ -1623,9 +1697,10 @@ namespace TransCarga
                 string Icogtin = "";                                                        // tipo de producto GTIN
                 string Inplaca = "";                                                        // numero placa de vehiculo
                 string Idescri = glosser + " " + dataGridView1.Rows[s].Cells["Descrip"].Value.ToString();   // Descripcion
+                string Idescr2 = dataGridView1.Rows[s].Cells["Cant"].Value.ToString() + " " + dataGridView1.Rows[s].Cells["umed"].Value.ToString();
                 string Ivaluni = _msigv.ToString("#0.00");                                  // Valor unitario del item SIN IMPUESTO 
                 string Ivalref = "";                                                        // valor referencial del item cuando la venta es gratuita
-                string Iigvite = Math.Round(double.Parse(Ipreuni) - double.Parse(Ivaluni),2).ToString("#0.00");     // monto IGV del item
+                string Iigvite = Math.Round(double.Parse(Ipreuni) - double.Parse(Ivaluni), 2).ToString("#0.00");     // monto IGV del item
                 string Imonbas = Ivaluni;                                                   // monto base (valor sin igv * cantidad)
                 string Isumigv = Iigvite;                                                   // Sumatoria de igv
                 string Itasigv = Math.Round(double.Parse(v_igv), 2).ToString("#0.00");      // tasa del igv
@@ -1650,7 +1725,7 @@ namespace TransCarga
                     Icodgs1 + sep +     // codigo de producto GS1
                     Icogtin + sep +     // tipo de producto GTIN
                     Inplaca + sep +     // numero placa de vehiculo
-                    Idescri + sep +     // descripcion del servicio
+                    Idescri + " " + Idescr2 + sep +     // descripcion del servicio
                     Ivaluni + sep +     // Valor unitario por ítem - SIN IGV
                     Ipreuni + sep +     // Precio de venta unitario por ítem - CON IGV
                     Ivalref + sep +     // valor referencial del item cuando la venta es gratuita
@@ -1674,7 +1749,7 @@ namespace TransCarga
                     "" + sep + "" + sep + "" + sep                      // BOLSAS DE PLASTICO
                 );
             }
-            for (int s = 0; s < dataGridView1.Rows.Count - 1; s++)
+            for (int s = 0; s < tfg; s++)
             {
                 writer.WriteLine("T" + sep +
                     "31" + sep +
@@ -1731,7 +1806,7 @@ namespace TransCarga
                 codleyd + sep +         // codigo leyenda monto en letras
                 glosdet + sep);            // Leyenda: Monto expresado en Letras
             }
-            for (int s = 0; s < dataGridView1.Rows.Count - 1; s++)
+            for (int s = 0; s < tfg; s++)
             {
                 writer.WriteLine("E" + sep +
                 codobs + sep +
@@ -1741,40 +1816,10 @@ namespace TransCarga
             writer.Close();
             retorna = true;
             return retorna;
-            /*
-            d_valre + sep +                // valor referencial
-                    d_numre + sep +                // numero registro mtc del camion
-                    d_confv + sep +                // config. vehicular del camion
-                    d_ptori + sep +                // Pto de origen
-                    d_ptode + sep +                // Pto de destino
-                    d_vrepr + sep +                      // valor referencial preliminar
-                    "" + sep + "" + sep + "" + sep + "" + sep +     // monto anticipos, numero, ruc emisor, total anticipos
-                        "" + sep + "" + sep + "" + sep + "" + sep +     // Tipo de nota(Crédito/Débito),Tipo del documento afectado,Numeración de documento afectado,Motivo del documento afectado
-                        conPago + sep +     // Condición de Pago
-                        "" + sep +          // Plazo de Pago
-                        "" + sep +          // Fecha de vencimiento
-                        "" + sep + "" + sep + "" + sep + "" + sep + "" + sep + "" + sep +           // Forma de Pago del 1 al 6
-                        "" + sep + "" + sep +                           // Número del pedido, Número de la orden de compra
-                        "" + sep + "" + sep + "" + sep + "" + sep +     // sector publico: Numero de Expediente,Código de unidad ejecutora, Nº de contrato,Nº de proceso de selección
-                        "" + sep + "" + sep + "" + sep + "" + sep + "" + sep + "" + sep + "" + sep + "" + sep + "" + sep +  // varios campos opcionales
-                        obser1 + sep + obser2 + sep + "" + sep +        // observaciones del documento 1 y 2
-                        _totoin + sep +                  // Total operaciones inafectas
-                        _totoex + sep +                  // total operaciones exoneradas
-                        "" + sep +                       // total operaciones gratuitas gratuitas
-                        "" + sep +                       // Monto Fondo Inclusión Social Energético FISE
-                        _toisc + sep +                          // Total ISC
-                        "" + sep + "" + sep + "" + sep + "" + sep +  // Total otros tributos,Total otros,Descuento Global,Total descuento
-                        "" + sep +      // Leyenda: Transferencia gratuita o servicio prestado gratuitamente
-                        "" + sep +      // Leyenda: Bienes transferidos en la Amazonía
-                        "" + sep +      // Leyenda: Servicios prestados en la Amazonía
-                        "" + sep +      // Leyenda: Contratos de construcción ejecutados en la Amazonía
-                        "" + sep + "" + sep + "");  // Leyenda: Exoneradas,Leyenda: Inafectas,Leyenda: Emisor itinerante
-            */        
         }
-        private bool bajaTXT(string tipdo, string _fecemi, string _codbaj, string _secuen, string file_path, int cuenta, string serie, string corre)
+        private bool bajaTXT(string tipdo, string _fecemi, string _codbaj, string _secuen, string file_path, int cuenta, string serie, string corre)    // horizont
         {
             bool retorna = false;
-
             string Prazsoc = nomclie.Trim();                                            // razon social del emisor
             string Prucpro = Program.ruc;                                               // Ruc del emisor
             string Pcrupro = "6";                                                       // codigo Ruc emisor
@@ -1803,10 +1848,9 @@ namespace TransCarga
             writer.Flush();
             writer.Close();
             retorna = true;
-
             return retorna;
         }
-        private bool datosTXT(string tipdo, string serie, string corre, string file_path)
+        private bool datosTXT(string tipdo, string serie, string corre, string file_path)       // peru secure
         {
             bool retorna = false;
             tcfe.Rows.Clear();
@@ -2021,7 +2065,7 @@ namespace TransCarga
 
             return retorna;
         }
-        private bool datDetxt(string tipdo, string serie, string corre)
+        private bool datDetxt(string tipdo, string serie, string corre)                         // peru secure
         {
             bool retorna = false;
             tdfe.Rows.Clear();
@@ -2178,7 +2222,7 @@ namespace TransCarga
             }
             return retorna;
         }
-        private bool generaTxt(string tipdo, string serie, string corre, string file_path)
+        private bool generaTxt(string tipdo, string serie, string corre, string file_path)      // peru secure
         {
             bool retorna = false;
             DataRow row = tcfe.Rows[0];
@@ -2429,7 +2473,7 @@ namespace TransCarga
             retorna = true;
             return retorna;
         }
-        private bool baja2TXT(string tipdo, string _fecemi, string _codbaj, string _secuen, string file_path, int cuenta, string serie, string corre)
+        private bool baja2TXT(string tipdo, string _fecemi, string _codbaj, string _secuen, string file_path, int cuenta, string serie, string corre)   // peru secure
         {
             bool retorna = false;
 
@@ -2663,7 +2707,7 @@ namespace TransCarga
                     rb_desGR.PerformClick();
                 }
                 //dataGridView1.Rows.Clear(); nooooo, se puede hacer una fact de varias guias, n guias
-                dataGridView1.Rows.Add(datguias[0], datguias[1], datguias[2], datguias[3], datguias[4], datguias[5], datguias[6], datguias[9], datguias[10], datguias[7], datguias[15],datguias[16]);     // insertamos en la grilla los datos de la GR
+                dataGridView1.Rows.Add(datguias[0], datguias[1], datguias[2], datguias[3], datguias[4], datguias[5], datguias[6], datguias[9], datguias[10], datguias[7], datguias[15],datguias[16],datguias[17]);     // insertamos en la grilla los datos de la GR
                 int totfil = 0;
                 int totcant = 0;
                 decimal totflet = 0;    // acumulador en moneda de la GR 
