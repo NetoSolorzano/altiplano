@@ -1586,6 +1586,7 @@ namespace TransCarga
                     codleyd = "2006";
                     tipOper = "1001";
                     totdet = Math.Round(double.Parse(tx_fletMN.Text) * double.Parse(Program.pordetra) / 100, 2);    // totalDetraccion
+                    _valcr = Math.Round((double.Parse(tx_flete.Text) - (totdet / double.Parse(tx_tipcam.Text))), 2).ToString("#0.00");               // cuota credito = valor - detraccion
                     glosdet = glosdetra + " " + d_ctade;                // leyenda de la detración
                 }
             }
@@ -2707,7 +2708,7 @@ namespace TransCarga
                     rb_desGR.PerformClick();
                 }
                 //dataGridView1.Rows.Clear(); nooooo, se puede hacer una fact de varias guias, n guias
-                dataGridView1.Rows.Add(datguias[0], datguias[1], datguias[2], datguias[3], datguias[4], datguias[5], datguias[6], datguias[9], datguias[10], datguias[7], datguias[15],datguias[16],datguias[17]);     // insertamos en la grilla los datos de la GR
+                dataGridView1.Rows.Add(datguias[0], datguias[1], datguias[2], datguias[3], datguias[4], datguias[5], datguias[6], datguias[9], datguias[10], datguias[7], datguias[15],datguias[16],datguias[16],datguias[17]);     // insertamos en la grilla los datos de la GR
                 int totfil = 0;
                 int totcant = 0;
                 decimal totflet = 0;    // acumulador en moneda de la GR 

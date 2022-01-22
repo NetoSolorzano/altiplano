@@ -2549,7 +2549,6 @@
             // 
             this.umed.HeaderText = "Umed";
             this.umed.Name = "umed";
-            this.umed.Visible = false;
             // 
             // facelect
             // 
