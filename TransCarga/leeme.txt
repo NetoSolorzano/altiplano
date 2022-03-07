@@ -313,5 +313,7 @@ form almgestion, creación del form, copiado de transcarga carrion .............
 form movim, creación del form, copiado de transcarga carrion ....................................... ok 12/01/2022
 form movimas, creación del form, copiado de transcarga carrion ..................................... ok 12/01/2022
 ************************** ALTIPLANO CAMBIOS PARA TRABAJAR CON HORIZONT - FACT.ELECTRONICA ***************************
-form notcredclts, adecuaciones para trabajar en modo nota credito por anulacion .................... ok 19/01/2022
-form facelect, adecuaciones para trabajar con el nuevo proveedor ................................... 
+form notcredclts, adecuaciones para trabajar en modo nota credito por anulacion .................... ok 19/01/2022 
+form facelect, adecuaciones para trabajar con el nuevo proveedor ................................... ok 27/01/2022
+**********************************************************************************************************************
+form ayccaja, cerrar el form y salir del sistema al abrir la caja .................................. ok 07/03/2022

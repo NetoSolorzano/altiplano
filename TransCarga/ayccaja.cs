@@ -398,7 +398,9 @@ namespace TransCarga
                 // vamos con todo
                 if (tx_idr.Text.Trim() == "")
                 {
-                    var aa = MessageBox.Show("Confirma que desea " + keta + " la caja?", "Confirme por favor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                    var aa = MessageBox.Show("Confirma que desea " + keta + " la caja?" + Environment.NewLine + 
+                        "El sistema se CERRARÁ inmediatamente, alerta!" + Environment.NewLine + 
+                        "cuando vuelva a ingresar la caja ya estará abierta", "Confirme por favor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                     if (aa == DialogResult.Yes)
                     {
                         if (true)
@@ -411,31 +413,8 @@ namespace TransCarga
                                 {
                                     MessageBox.Show(resulta, "Error en actualización de seguimiento", MessageBoxButtons.OK, MessageBoxIcon.Error);
                                 }
-                                if (keta == "CERRAR")
-                                {
-                                    var aaa = MessageBox.Show("Desea imprimir el cuadre de caja?", "Confirme", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                                    if (aaa == DialogResult.Yes )
-                                    {
-                                        using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
-                                        {
-                                            if (lib.procConn(conn) == true)
-                                            {
-                                                using (MySqlCommand micon = new MySqlCommand("rep_cuadre_sede", conn))
-                                                {
-                                                    micon.CommandType = CommandType.StoredProcedure;
-                                                    micon.Parameters.AddWithValue("@idc", tx_idr.Text);
-                                                    using (MySqlDataAdapter da = new MySqlDataAdapter(micon))
-                                                    {
-                                                        dtcuad.Rows.Clear();
-                                                        da.Fill(dtcuad);
-                                                        setParaCrystal("cuadre_caja");
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
                                 this.Close();
+                                Application.Exit();     // 07-03-2022 sale del sistema despues de abrir caja
                             }
                         }
                     }
@@ -458,7 +437,30 @@ namespace TransCarga
                             {
                                 MessageBox.Show(resulta, "Error en actualización de seguimiento", MessageBoxButtons.OK, MessageBoxIcon.Error);
                             }
-                            //jalaoc("tx_idcaja");
+                            if (keta == "CERRAR")
+                            {
+                                var aaa = MessageBox.Show("Desea imprimir el cuadre de caja?", "Confirme", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                                if (aaa == DialogResult.Yes)
+                                {
+                                    using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
+                                    {
+                                        if (lib.procConn(conn) == true)
+                                        {
+                                            using (MySqlCommand micon = new MySqlCommand("rep_cuadre_sede", conn))
+                                            {
+                                                micon.CommandType = CommandType.StoredProcedure;
+                                                micon.Parameters.AddWithValue("@idc", tx_idr.Text);
+                                                using (MySqlDataAdapter da = new MySqlDataAdapter(micon))
+                                                {
+                                                    dtcuad.Rows.Clear();
+                                                    da.Fill(dtcuad);
+                                                    setParaCrystal("cuadre_caja");
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
                             this.Close();
                         }
                     }

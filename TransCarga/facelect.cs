@@ -249,6 +249,7 @@ namespace TransCarga
             tx_pla_placa.MaxLength = 7;
             tx_pla_confv.MaxLength = 15;
             tx_pla_autor.MaxLength = 15;
+            tx_dniChof.MaxLength = 8;
             // grilla
             dataGridView1.ReadOnly = true;
             dataGridView1.Columns[0].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
@@ -1697,8 +1698,10 @@ namespace TransCarga
                 string Icodgs1 = "";                                                        // codigo del producto GS1
                 string Icogtin = "";                                                        // tipo de producto GTIN
                 string Inplaca = "";                                                        // numero placa de vehiculo
+                //string Idescri = glosser + " " + dataGridView1.Rows[s].Cells["Descrip"].Value.ToString();   // Descripcion
                 string Idescri = glosser + " " + dataGridView1.Rows[s].Cells["Descrip"].Value.ToString();   // Descripcion
-                string Idescr2 = dataGridView1.Rows[s].Cells["Cant"].Value.ToString() + " " + dataGridView1.Rows[s].Cells["umed"].Value.ToString();
+                string Idescr2 = dataGridView1.Rows[s].Cells["Cant"].Value.ToString() + " " + dataGridView1.Rows[s].Cells["umed"].Value.ToString() +
+                     " - Según GRT " + dataGridView1.Rows[s].Cells["guias"].Value.ToString() + " S/GR Remitente " + dataGridView1.Rows[s].Cells["guiasclte"].Value.ToString(); ;
                 string Ivaluni = _msigv.ToString("#0.00");                                  // Valor unitario del item SIN IMPUESTO 
                 string Ivalref = "";                                                        // valor referencial del item cuando la venta es gratuita
                 string Iigvite = Math.Round(double.Parse(Ipreuni) - double.Parse(Ivaluni), 2).ToString("#0.00");     // monto IGV del item
@@ -1762,37 +1765,80 @@ namespace TransCarga
                 codleyt + sep +         // codigo leyenda monto en letras
                 monLet + sep            // Leyenda: Monto expresado en Letras
             );
-            if (chk_cunica.Checked == true && double.Parse(tx_flete.Text) > double.Parse(Program.valdetra))     // carga unica con detracción
+            if (chk_cunica.Checked == true)     // carga unica con detracción
             {
-                writer.WriteLine("Q" + sep +
-                "1" + sep +                              // item de detalle, como es carga unica siempre es 1
-                tx_dat_upo.Text + sep +                  // ubigeo punto de origen
-                tx_dat_dpo.Text + sep +                  // direccion detallada del pto de origen
-                tx_dat_upd.Text + sep +                  // ubigeo punto destino
-                tx_dat_dpd.Text + sep +                  // direccion detallada del pto destino
-                "zzzzzz" + sep +                         // detalle del viaje
-                "01" + sep +                             // tipo de valor referencial 1
-                tx_valref1.Text + sep +                  // valor referencial del serv de transporte
-                _moneda + sep +                          // tipo moneda 
-                "02" + sep +                             // tipo de valor referencial 2
-                tx_valref2.Text + sep +                  // valor referencial sobre la carga efectiva
-                _moneda + sep +                          // tipo moneda 
-                "03" + sep +                             // tipo de valor referencial 2
-                tx_valref3.Text + sep +                  // valor referencial sobre la carga util nominal
-                _moneda + sep +                          // tipo moneda 
-                "" + sep +                              // inicio datos de tramo
-                "" + sep +                              // aca no aplica porque todas son de un tramo
-                "" + sep +                              // ..
-                "" + sep +                              // ..
-                "" + sep +                              // ..
-                "" + sep +                              // ..
-                "" + sep +                              // fin datos de tramo
-                "" + sep +                              // inicio detalle del vehiculo
-                "" + sep + "" + sep + "" + sep +        // ..
-                "" + sep + "" + sep + "" + sep +        // ..
-                "" + sep + "" + sep + "" + sep +        // ..
-                "" + sep + "" + sep + "" + sep          // fin detalle del vehiculo
-                );
+                if (double.Parse(tx_flete.Text) > double.Parse(Program.valdetra))
+                {
+                    writer.WriteLine("Q" + sep +
+                        "1" + sep +                              // item de detalle, como es carga unica siempre es 1
+                        tx_dat_upo.Text + sep +                  // ubigeo punto de origen
+                        tx_dat_dpo.Text + sep +                  // direccion detallada del pto de origen
+                        tx_dat_upd.Text + sep +                  // ubigeo punto destino
+                        tx_dat_dpd.Text + sep +                  // direccion detallada del pto destino
+                        "" + sep +                               // detalle del viaje
+                        "01" + sep +                             // tipo de valor referencial 1
+                        tx_valref1.Text + sep +                  // valor referencial del serv de transporte
+                        _moneda + sep +                          // tipo moneda 
+                        "02" + sep +                             // tipo de valor referencial 2
+                        tx_valref2.Text + sep +                  // valor referencial sobre la carga efectiva
+                        _moneda + sep +                          // tipo moneda 
+                        "03" + sep +                             // tipo de valor referencial 2
+                        tx_valref3.Text + sep +                  // valor referencial sobre la carga util nominal
+                        _moneda + sep +                          // tipo moneda 
+                        "" + sep +                              // inicio datos de tramo
+                        "" + sep +                              // aca no aplica porque todas son de un tramo
+                        "" + sep +                              // ..
+                        "" + sep +                              // ..
+                        "" + sep +                              // ..
+                        "" + sep +                              // ..
+                        "" + sep +                              // fin datos de tramo
+                        tx_pla_confv.Text + sep +               // inicio detalle del vehiculo - Conf. Vehicular
+                        "01" + sep +                            // identificador
+                        "01" + sep +                            // identificador de carga
+                        tx_cutm.Text + sep +                    // carga util del vehiculo en TM
+                        "TNE" + sep +                           // unidad de medida
+                        "02" + sep +                            // identificador de carga
+                        tx_cetm.Text + sep +                    // carga efectiva del vehiculo en TM
+                        "TNE" + sep +                           // unidad de medida
+                        "" + sep +                              // Valor Referencial por TM
+                        "" + sep +                              // Valor Referencial por TM (moneda)
+                        "" + sep +                              // Valor Preliminar Referencial por Carga Útil Nominal (Tratándose de más de 1 vehículo)
+                        "" + sep +                              // Valor Preliminar Referencial por Carga Útil Nominal (Tratándose de más de 1 vehículo)
+                        "false" + sep                           // Indica factor de retorno de viaje
+                    );
+                }
+                else
+                {
+                    writer.WriteLine("Q" + sep +
+                    "1" + sep +                              // item de detalle, como es carga unica siempre es 1
+                    tx_dat_upo.Text + sep +                  // ubigeo punto de origen
+                    tx_dat_dpo.Text + sep +                  // direccion detallada del pto de origen
+                    tx_dat_upd.Text + sep +                  // ubigeo punto destino
+                    tx_dat_dpd.Text + sep +                  // direccion detallada del pto destino
+                    "zzzzzz" + sep +                         // detalle del viaje
+                    "01" + sep +                             // tipo de valor referencial 1
+                    tx_valref1.Text + sep +                  // valor referencial del serv de transporte
+                    _moneda + sep +                          // tipo moneda 
+                    "02" + sep +                             // tipo de valor referencial 2
+                    tx_valref2.Text + sep +                  // valor referencial sobre la carga efectiva
+                    _moneda + sep +                          // tipo moneda 
+                    "03" + sep +                             // tipo de valor referencial 2
+                    tx_valref3.Text + sep +                  // valor referencial sobre la carga util nominal
+                    _moneda + sep +                          // tipo moneda 
+                    "" + sep +                              // inicio datos de tramo
+                    "" + sep +                              // aca no aplica porque todas son de un tramo
+                    "" + sep +                              // ..
+                    "" + sep +                              // ..
+                    "" + sep +                              // ..
+                    "" + sep +                              // ..
+                    "" + sep +                              // fin datos de tramo
+                    "" + sep +                              // inicio detalle del vehiculo
+                    "" + sep + "" + sep + "" + sep +        // ..
+                    "" + sep + "" + sep + "" + sep +        // ..
+                    "" + sep + "" + sep + "" + sep +        // ..
+                    "" + sep + "" + sep + "" + sep          // fin detalle del vehiculo
+                    );
+                }
             }
             if (_forpa == "Credito")
             {
@@ -1807,12 +1853,13 @@ namespace TransCarga
                 codleyd + sep +         // codigo leyenda monto en letras
                 glosdet + sep);            // Leyenda: Monto expresado en Letras
             }
+            /*  27/01/2022 -> ahora estas guias remitente van en la descripcion
             for (int s = 0; s < tfg; s++)
             {
                 writer.WriteLine("E" + sep +
                 codobs + sep +
                 dataGridView1.Rows[s].Cells["guiasclte"].Value.ToString() + sep);
-            }
+            } */
             writer.Flush();
             writer.Close();
             retorna = true;
