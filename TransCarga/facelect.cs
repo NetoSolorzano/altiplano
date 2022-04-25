@@ -2172,7 +2172,7 @@ namespace TransCarga
                         row["Icantid"] = Math.Round((double.Parse(dataGridView1.Rows[s].Cells["Cant"].Value.ToString()) * double.Parse(tx_cetm.Text)) / double.Parse(tx_totcant.Text), 2);
                     }
                 }
-                if (dataGridView1.Rows[s].Cells["valorel"].Value == null || dataGridView1.Rows[s].Cells["valorel"].Value.ToString().Trim() == "0.00" || dataGridView1.Rows[s].Cells["valorel"].Value.ToString().Trim() == "")
+                if (dataGridView1.Rows[s].Cells["valorel"].Value == null || dataGridView1.Rows[s].Cells["valorel"].Value.ToString().Trim() == "0.000" || dataGridView1.Rows[s].Cells["valorel"].Value.ToString().Trim() == "")
                 {
                     row["_msigv"] = Math.Round(double.Parse(dataGridView1.Rows[s].Cells["valor"].Value.ToString()) - (double.Parse(dataGridView1.Rows[s].Cells["valor"].Value.ToString()) / (1 + (double.Parse(v_igv) / 100))), 2);
 

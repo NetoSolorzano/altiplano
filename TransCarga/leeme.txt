@@ -317,3 +317,4 @@ form notcredclts, adecuaciones para trabajar en modo nota credito por anulacion 
 form facelect, adecuaciones para trabajar con el nuevo proveedor ................................... ok 27/01/2022
 **********************************************************************************************************************
 form ayccaja, cerrar el form y salir del sistema al abrir la caja .................................. ok 07/03/2022
+form facelect, error en generar comprobante de una guía cobrada, no llenaba el detalle correctamente ok 25/04/2022
