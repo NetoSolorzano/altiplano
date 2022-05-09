@@ -479,8 +479,10 @@ namespace TransCarga
                     string consulta = "select a.id,a.fechope,a.martdve,a.tipdvta,a.serdvta,a.numdvta,a.ticltgr,a.tidoclt,a.nudoclt,a.nombclt,a.direclt,a.dptoclt,a.provclt,a.distclt,a.ubigclt,a.corrclt,a.teleclt," +
                         "a.locorig,a.dirorig,a.ubiorig,a.obsdvta,a.canfidt,a.canbudt,a.mondvta,a.tcadvta,a.subtota,a.igvtota,a.porcigv,a.totdvta,a.totpags,a.saldvta,a.estdvta,a.frase01,a.impreso," +
                         "a.tipoclt,a.m1clien,a.tippago,a.ferecep,a.userc,a.fechc,a.userm,a.fechm,b.descrizionerid as nomest,ifnull(c.id,'') as cobra,a.idcaja,a.plazocred,a.totdvMN," +
-                        "a.cargaunica,a.porcendscto,a.valordscto," +
-                        "ad.placa,ad.confv,ad.autoriz,ad.cargaEf,ad.cargaUt,ad.rucTrans,ad.nomTrans,date_format(ad.fecIniTras,'%Y-%m-%d') as fecIniTras,ad.dirPartida,ad.ubiPartida,ad.dirDestin,ad.ubiDestin,ad.dniChof,ad.brevete,ad.valRefViaje,ad.valRefVehic,ad.valRefTon " +
+                        "a.cargaunica,a.porcendscto,a.valordscto,a.conPago,a.pagauto,ifnull(ad.placa,'') as placa,ifnull(ad.confv,'') as confv,ifnull(ad.autoriz,'') as autoriz," +
+                        "ifnull(ad.cargaEf,0) as cargaEf,ifnull(ad.cargaUt,0) as cargaUt,ifnull(ad.rucTrans,'') as rucTrans,ifnull(ad.nomTrans,'') as nomTrans,ifnull(date_format(ad.fecIniTras,'%Y-%m-%d'),'') as fecIniTras," +
+                        "ifnull(ad.dirPartida,'') as dirPartida,ifnull(ad.ubiPartida,'') as ubiPartida,ifnull(ad.dirDestin,'') as dirDestin,ifnull(ad.ubiDestin,'') as ubiDestin,ifnull(ad.dniChof,'') as dniChof," +
+                        "ifnull(ad.brevete,'') as brevete,ifnull(ad.valRefViaje,0) as valRefViaje,ifnull(ad.valRefVehic,0) as valRefVehic,ifnull(ad.valRefTon,0) as valRefTon " +
                         "from cabfactu a " +
                         "left join adifactu ad on ad.idc=a.id and ad.tipoAd=1 " +
                         "left join desc_est b on b.idcodice=a.estdvta " +
@@ -550,8 +552,26 @@ namespace TransCarga
                             tx_estado.Text = dr.GetString("nomest");   // lib.nomstat(tx_dat_estad.Text);
                             if (dr.GetString("userm") == "") tx_digit.Text = lib.nomuser(dr.GetString("userc"));
                             else tx_digit.Text = lib.nomuser(dr.GetString("userm"));
-                            if (decimal.Parse(tx_salxcob.Text) == decimal.Parse(tx_flete.Text)) rb_no.Checked = true;
-                            else rb_si.Checked = true;
+                            if (dr.GetString("conPago") != "")
+                            {
+                                if (dr.GetString("conPago") == "0") rb_contado.Checked = true;
+                                if (dr.GetString("conPago") == "1") rb_credito.Checked = true;
+                                if (dr.GetString("pagauto") == "S") rb_si.Checked = true;
+                                else rb_no.Checked = true;
+                            }
+                            else
+                            {
+                                if (dr.GetString("pagauto") == "S")
+                                {
+                                    rb_contado.Checked = true;
+                                    rb_si.Checked = true;
+                                }
+                                else
+                                {
+                                    rb_no.Checked = true;
+                                    rb_credito.Checked = true;
+                                }
+                            }
                             tx_valdscto.Text = dr.GetString("valordscto");
                             tx_dat_porcDscto.Text = dr.GetString("porcendscto");
                             tx_dat_plazo.Text = dr.GetString("plazocred");
@@ -1979,25 +1999,41 @@ namespace TransCarga
             row["_fechc"] = "";                                                         // fecha programada del pago credito
             if (tx_dat_tdv.Text == codfact)                          // campos solo para facturas "formas de pago"
             {
-                if (rb_si.Checked == true)
+                if (rb_contado.Checked == true)
                 {
-                    if (true)  // forma de pago, campos para usarse a partir del 01/04/2021 según resolucion sunat
-                    {   // Convert.ToDateTime(fshoy) >= Convert.ToDateTime("2021-04-01")
-                        row["conPago"] = "01";
-                        row["_forpa"] = "Contado";
-                        row["_valcr"] = "";
-                        row["_fechc"] = row["_fecemi"];
-                    }
+                    row["conPago"] = "01";
+                    row["_forpa"] = "Contado";
+                    row["_valcr"] = "";
+                    row["_fechc"] = row["_fecemi"];
                 }
                 else
                 {
-                    if (rb_no.Checked == true)
+                    if (rb_credito.Checked == true)  // rb_no.Checked == true
                     {
                         if (tx_dat_dpla.Text.Trim() == "") tx_dat_dpla.Text = "7";
                         string fansi = tx_fechope.Text.Substring(6, 4) + "-" + tx_fechope.Text.Substring(3, 2) + "-" + tx_fechope.Text.Substring(0, 2);
                         row["_fechc"] = DateTime.Parse(fansi).AddDays(double.Parse(tx_dat_dpla.Text)).Date.ToString("yyyy-MM-dd");        // fecha de emision + dias plazo credito
-                        if (true)  // forma de pago, campos para usarse a partir del 01/04/2021 según resolucion sunat
-                        {   // Convert.ToDateTime(fshoy) >= Convert.ToDateTime("2021-04-01")
+                        row["conPago"] = "02";
+                        row["_forpa"] = "Credito";
+                        row["_valcr"] = tx_flete.Text;
+                        row["plaPago"] = int.Parse(tx_dat_dpla.Text).ToString();
+                        row["_fvcmto"] = row["_fechc"];
+                        row["fvencto"] = row["_fechc"];
+                    }
+                    else
+                    {   // SI NO ESTA CHECK EN CONTADO TAMPOCO ESTA EN CREDITO, ES UN REGISTRO ANTERIOR A LA ADECUACION DEL 09/05/22 Y SE ....
+                        if (rb_si.Checked == true)
+                        {
+                            row["conPago"] = "01";
+                            row["_forpa"] = "Contado";
+                            row["_valcr"] = "";
+                            row["_fechc"] = row["_fecemi"];
+                        }
+                        else
+                        {
+                            if (tx_dat_dpla.Text.Trim() == "") tx_dat_dpla.Text = "7";
+                            string fansi = tx_fechope.Text.Substring(6, 4) + "-" + tx_fechope.Text.Substring(3, 2) + "-" + tx_fechope.Text.Substring(0, 2);
+                            row["_fechc"] = DateTime.Parse(fansi).AddDays(double.Parse(tx_dat_dpla.Text)).Date.ToString("yyyy-MM-dd");        // fecha de emision + dias plazo credito
                             row["conPago"] = "02";
                             row["_forpa"] = "Credito";
                             row["_valcr"] = tx_flete.Text;
@@ -2005,13 +2041,6 @@ namespace TransCarga
                             row["_fvcmto"] = row["_fechc"];
                             row["fvencto"] = row["_fechc"];
                         }
-                    }
-                    else
-                    {   // SI NO ESTA CHECK EN SI TAMPOCO ESTA EN NO, ENTONCES SE ASUME SI, EFECTIVO
-                        row["conPago"] = "01";
-                        row["_forpa"] = "Contado";
-                        row["_valcr"] = "";
-                        row["_fechc"] = row["_fecemi"];
                     }
                 }
             }
@@ -2706,6 +2735,11 @@ namespace TransCarga
                 tx_dat_upd.Text = "";
                 tx_dat_nombd.Text = "Bultos";
                 tx_dat_nombd.ReadOnly = true;
+                //
+                rb_si.Checked = false;
+                rb_no.Checked = false;
+                rb_contado.Checked = false;
+                rb_credito.Checked = false;
             }
         }
         private void limpia_chk()    
@@ -2943,6 +2977,13 @@ namespace TransCarga
             string iserror = "no";
             if (modo == "NUEVO")
             {
+                // valida contado o credito
+                if (rb_contado.Checked == false && rb_credito.Checked == false)
+                {
+                    MessageBox.Show("Seleccione si el comprobante se mitirá" + Environment.NewLine +
+                         "al Contado o al Crédito", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
                 // valida pago y calcula
                 if (rb_si.Checked == false && rb_no.Checked == false && rb_no.Enabled == true)
                 {
@@ -3370,12 +3411,12 @@ namespace TransCarga
                     "fechope,martdve,tipdvta,serdvta,numdvta,ticltgr,tidoclt,nudoclt,nombclt,direclt,dptoclt,provclt,distclt,ubigclt,corrclt,teleclt," +
                     "locorig,dirorig,ubiorig,obsdvta,canfidt,canbudt,mondvta,tcadvta,subtota,igvtota,porcigv,totdvta,totpags,saldvta,estdvta,frase01," +
                     "tipoclt,m1clien,tippago,ferecep,impreso,codMN,subtMN,igvtMN,totdvMN,pagauto,tipdcob,idcaja,plazocred,porcendscto,valordscto," +
-                    "cargaunica,placa,confveh,autoriz,detPeso,detputil,detMon1,detMon2,detMon3,dirporig,ubiporig,dirpdest,ubipdest," +
+                    "cargaunica,placa,confveh,autoriz,detPeso,detputil,detMon1,detMon2,detMon3,dirporig,ubiporig,dirpdest,ubipdest,conPago," +
                     "verApp,userc,fechc,diriplan4,diripwan4,netbname) values (" +
                     "@fechop,@mtdvta,@ctdvta,@serdv,@numdv,@tcdvta,@tdcrem,@ndcrem,@nomrem,@dircre,@dptocl,@provcl,@distcl,@ubicre,@mailcl,@telecl," +
                     "@ldcpgr,@didegr,@ubdegr,@obsprg,@canfil,@totcpr,@monppr,@tcoper,@subpgr,@igvpgr,@porcigv,@totpgr,@pagpgr,@salxpa,@estpgr,@frase1," +
                     "@ticlre,@m1clte,@tipacc,@feredv,@impSN,@codMN,@subMN,@igvMN,@totMN,@pagaut,@tipdco,@idcaj,@plazc,@pordesc,@valdesc," +
-                    "@caruni,@placa,@confv,@autor,@dPeso,@dputil,@dMon1,@dMon2,@dMon3,@dporig,@uporig,@dpdest,@updest," +
+                    "@caruni,@placa,@confv,@autor,@dPeso,@dputil,@dMon1,@dMon2,@dMon3,@dporig,@uporig,@dpdest,@updest,@conPag," +
                     "@verApp,@asd,now(),@iplan,@ipwan,@nbnam)";
                 using (MySqlCommand micon = new MySqlCommand(inserta, conn))
                 {
@@ -3439,6 +3480,7 @@ namespace TransCarga
                     micon.Parameters.AddWithValue("@uporig", tx_dat_upo.Text);
                     micon.Parameters.AddWithValue("@dpdest", tx_dat_dpd.Text);
                     micon.Parameters.AddWithValue("@updest", tx_dat_upd.Text);
+                    micon.Parameters.AddWithValue("@conPag", (rb_contado.Checked == true)? "0" : "1");  // 0=contado, 1=credito
                     micon.Parameters.AddWithValue("@verApp", verapp);
                     micon.Parameters.AddWithValue("@asd", asd);
                     micon.Parameters.AddWithValue("@iplan", lib.iplan());
@@ -4165,6 +4207,36 @@ namespace TransCarga
         {
             val_NoCaracteres(tx_obser1);
         }
+        private void rb_contado_Click(object sender, EventArgs e)
+        {
+            if (Tx_modo.Text == "NUEVO")
+            {
+                if (rb_contado.Checked == true)
+                {
+                    rb_si.Checked = false;
+                    rb_si.Enabled = true;
+                    rb_no.Checked = false;
+                    rb_no.Enabled = true;
+                    cmb_plazoc.SelectedIndex = -1;
+                    tx_dat_dpla.Text = "";
+                    cmb_plazoc.Enabled = false;
+                }
+            }
+        }
+        private void rb_credito_Click(object sender, EventArgs e)
+        {
+            if (Tx_modo.Text == "NUEVO")
+            {
+                if (rb_credito.Checked == true)
+                {
+                    rb_si.Checked = false;
+                    rb_si.Enabled = false;
+                    rb_no.Checked = true;
+                    rb_no.Enabled = true;
+                    cmb_plazoc.Enabled = true;
+                }
+            }
+        }
         private void rb_si_Click(object sender, EventArgs e)
         {
             if (tx_idcaja.Text != "")
@@ -4225,9 +4297,15 @@ namespace TransCarga
             tx_pagado.Text = "0.00";
             tx_salxcob.Text = once.ToString("#0.00"); // tx_flete.Text;
             tx_salxcob.BackColor = Color.Red;
-            cmb_plazoc.Enabled = true;
-            cmb_plazoc.SelectedValue = codppc;
-            tx_dat_plazo.Text = codppc;
+            if (rb_credito.Checked == true)
+            {
+                cmb_plazoc.Enabled = true;
+                cmb_plazoc.SelectedValue = codppc;
+                tx_dat_plazo.Text = codppc;
+                cmb_plazoc.Enabled = true;
+                cmb_plazoc.SelectedValue = codppc;
+                tx_dat_plazo.Text = codppc;
+            }
         }
         private void chk_sinco_CheckedChanged(object sender, EventArgs e)
         {
@@ -4636,17 +4714,17 @@ namespace TransCarga
         private bool imprimeTK()
         {
             bool retorna = false;
-            //try
+            try
             {
                 printDocument1.PrinterSettings.PrinterName = v_impTK;
                 printDocument1.Print();
                 retorna = true;
             }
-            //catch (Exception ex)
-            //{
-            //    MessageBox.Show(ex.Message,"Error en imprimir TK");
-            //    retorna = false;
-            //}
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message,"Impresora " + v_impTK);
+                retorna = false;
+            }
             return retorna;
         }
         private void printDoc_PrintPage(object sender, System.Drawing.Printing.PrintPageEventArgs e)
@@ -4972,14 +5050,14 @@ namespace TransCarga
                         // forma de pago
                         posi = posi + (alfi / 1.5F);
                         string ahiva = "";
-                        if (rb_si.Checked == true)
-                        {
-                            ahiva = "PAGO AL CONTADO " + tx_flete.Text;
-                        }
-                        else
+                        if (rb_no.Checked == true && rb_credito.Checked == true)    //   rb_si.Checked == true
                         {
                             string _fechc = DateTime.Parse(tx_fechope.Text).AddDays(double.Parse(tx_dat_dpla.Text)).Date.ToString("dd-MM-yyyy");    // "yyyy-MM-dd"
                             ahiva = "- AL CREDITO -" + " 1 CUOTA - VCMTO: " + _fechc;
+                        }
+                        else
+                        {
+                            ahiva = "PAGO AL CONTADO " + tx_flete.Text;
                         }
                         puntoF = new PointF(coli, posi);
                         e.Graphics.DrawString(ahiva, lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);

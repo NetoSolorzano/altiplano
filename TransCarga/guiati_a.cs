@@ -62,6 +62,7 @@ namespace TransCarga
         string v_igv = "";              // igv
         string caractNo = "";           // caracter prohibido en campos texto, caracter delimitador para los TXT de fact. electronica
         string v_idoco = "";            // letras iniciales del campo docs.origen
+        string v_uedo = "";             // usuarios que pueden modificar campo Docs. Origen
         //
         static libreria lib = new libreria();   // libreria de procedimientos
         publico lp = new publico();             // libreria de clases
@@ -322,6 +323,7 @@ namespace TransCarga
                             if (row["param"].ToString() == "frase2") v_fra2 = row["valor"].ToString().Trim();               // frase de si va con clave la guia
                             if (row["param"].ToString() == "serieAnu") v_sanu = row["valor"].ToString().Trim();               // serie anulacion interna
                             if (row["param"].ToString() == "inidocor") v_idoco = row["valor"].ToString().Trim();            // iniciales de documento origen
+                            if (row["param"].ToString() == "usediDrem") v_uedo = row["valor"].ToString().Trim();            // usuarios que pueden modificar documentos del remitente
                         }
                         if (row["campo"].ToString() == "impresion")
                         {
@@ -1282,7 +1284,7 @@ namespace TransCarga
                 {
                     // no tiene guía y SI esta impreso => NO se puede modificar y SI anular
                     //sololee();
-                    MessageBox.Show("Se modifica observaciones y consignatario", "La Guía esta impresa", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show("Se modifica observaciones, consignatario y docs. origen", "La Guía esta impresa", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     //tx_dat_tdRem.Focus();
                     //return;
                 }
@@ -1679,7 +1681,7 @@ namespace TransCarga
                 try
                 {
                     if (tx_impreso.Text != "S")     // EDICION DE CABECERA ... Al 06/01/2021 solo se permite editar observ y consignatario
-                    {
+                    {                               // EDICION DE CABECERA ... al 05/05/2022 se permite editar docs.origen si eres usuario autorizado
                         decimal subtgr = Math.Round(decimal.Parse(tx_flete.Text) / (decimal.Parse(v_igv) / 100 + 1), 3);
                         decimal igvtgr = Math.Round(decimal.Parse(tx_flete.Text) - subtgr, 3);
                         decimal subMN = Math.Round(decimal.Parse(tx_fletMN.Text) / (decimal.Parse(v_igv) / 100 + 1), 3);
@@ -1788,6 +1790,7 @@ namespace TransCarga
                     if (tx_impreso.Text == "S")
                     {
                         // EDICION DE CABECERA ... Al 06/01/2021 solo se permite editar observ y consignatario
+                        // EDICION DE CABECERA ... al 05/05/2022 se permite editar docs.origen si eres usuario autorizado
                         string actua = "update cabguiai a set " +
                             "a.docsremit=@dooprg,a.obspregri=@obsprg,a.clifingri=@conprg," +
                             "a.verApp=@verApp,a.userm=@asd,a.fechm=now(),a.diriplan4=@iplan,a.diripwan4=@ipwan,a.netbname=@nbnam " +
@@ -2237,24 +2240,30 @@ namespace TransCarga
                     if ((tx_pregr_num.Text.Trim() == "") && tx_impreso.Text == "N")
                     {
                         // no tiene guía y no esta impreso => se puede modificar todo y SI anular
+                        tx_obser1.Enabled = true;
+                        tx_consig.Enabled = true;
+                        tx_docsOr.Enabled = true;
                     }
                     if ((tx_pregr_num.Text.Trim() == "") && tx_impreso.Text == "S")
                     {
                         // no tiene pre guía y SI esta impreso => NO se puede modificar y SI anular
                         tx_obser1.Enabled = true;
                         tx_consig.Enabled = true;
+                        if (v_uedo.ToUpper().Contains(asd.ToUpper()) == true) tx_docsOr.Enabled = true;
                     }
                     if ((tx_pregr_num.Text.Trim() != "") && tx_impreso.Text == "N")
                     {
                         // si tiene pre guía y no esta impreso => NO se puede modificar NO anular
                         tx_obser1.Enabled = true;
                         tx_consig.Enabled = true;
+                        if (v_uedo.ToUpper().Contains(asd.ToUpper()) == true) tx_docsOr.Enabled = true;
                     }
                     if ((tx_pregr_num.Text.Trim() != "") && tx_impreso.Text == "S")
                     {
                         // si tiene pre guía y si esta impreso => NO se puede modificar NO anular
                         tx_obser1.Enabled = true;
                         tx_consig.Enabled = true;
+                        if (v_uedo.ToUpper().Contains(asd.ToUpper()) == true) tx_docsOr.Enabled = true;
                     }
                 }
                 if (Tx_modo.Text == "ANULAR") tx_obser1.Enabled = true;
@@ -2647,6 +2656,7 @@ namespace TransCarga
             Tx_modo.Text = "EDITAR";
             button1.Image = Image.FromFile(img_grab);
             initIngreso();
+            //if (v_uedo.ToUpper().Contains(asd.ToUpper()) == true) tx_docsOr.Enabled = true;
             tx_obser1.Enabled = true;
             tx_pregr_num.Text = "";
             tx_numero.Text = "";
