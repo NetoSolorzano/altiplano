@@ -2258,9 +2258,7 @@ namespace TransCarga
                 row["Icogtin"] = "";                                                        // tipo de producto GTIN
                 row["Inplaca"] = "";                                                        // numero placa de vehiculo
                 row["Idesglo"] = "";                                                        // descricion de la glosa del item 
-                //row["Ivaluni"] = Math.Round((double.Parse(row["Ipreuni"].ToString()) - double.Parse(row["_msigv"].ToString())), 10).ToString();     // Valor unitario del item SIN IMPUESTO 
                 row["Ivalref"] = "";                                                        // valor referencial del item cuando la venta es gratuita
-                //row["Iigvite"] = Math.Round(double.Parse(row["Ipreuni"].ToString()) - double.Parse(row["Ivaluni"].ToString()), 2).ToString("#0.00");     // monto IGV del item
                 row["Iigvite"] = row["_msigv"];
                 //row["Imonbas"] = row["Ivaluni"];                                            // monto base (valor sin igv * cantidad)
                 //row["Isumigv"] = row["Iigvite"];                                            // Sumatoria de igv

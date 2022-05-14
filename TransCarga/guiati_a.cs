@@ -1732,7 +1732,7 @@ namespace TransCarga
                         micon.Parameters.AddWithValue("@clavse", claveSeg);
                         micon.Parameters.AddWithValue("@m1clte", v_clte_rem);
                         micon.Parameters.AddWithValue("@m2clte", v_clte_des);
-                        micon.Parameters.AddWithValue("@canfil", tx_tfil.Text);
+                        micon.Parameters.AddWithValue("@canfil", (tx_tfil.Text.Trim() == "")? "1" : tx_tfil.Text.Trim());
                         micon.Parameters.AddWithValue("@stMN", subMN.ToString());
                         micon.Parameters.AddWithValue("@igMN", igvMN.ToString());
                         micon.Parameters.AddWithValue("@tgMN", tx_fletMN.Text);
