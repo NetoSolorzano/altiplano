@@ -2207,10 +2207,10 @@ namespace TransCarga
 
                     if (chk_cunica.Checked == true && tx_dat_tdv.Text == codfact)
                     {
-                        row["Ipreuni"] = (double.Parse(dataGridView1.Rows[s].Cells["valor"].Value.ToString()) / double.Parse(row["Icantid"].ToString())).ToString("#0.0000000000");    // * (1 + (double.Parse(v_igv) / 100)).ToString("#0.0000000000");
-                        row["Ivaluni"] = (double.Parse(row["Ipreuni"].ToString()) / (1 + (double.Parse(v_igv) / 100))).ToString("#0.0000000000");
-                        //row["Ivaluni"] = ((double.Parse(dataGridView1.Rows[s].Cells["valor"].Value.ToString()) - (double)row["_msigv"]) / double.Parse(tx_cetm.Text)).ToString("#0.0000000000");
-                        //row["Ipreuni"] = ((double.Parse(dataGridView1.Rows[s].Cells["valor"].Value.ToString()) - (double)row["_msigv"]) / double.Parse(tx_cetm.Text) * (1 + (double.Parse(v_igv) / 100))).ToString("#0.0000000000");    // * (1 + (double.Parse(v_igv) / 100)).ToString("#0.0000000000");
+                        //row["Ipreuni"] = (double.Parse(dataGridView1.Rows[s].Cells["valor"].Value.ToString()) / double.Parse(row["Icantid"].ToString())).ToString("#0.0000000000");    // * (1 + (double.Parse(v_igv) / 100)).ToString("#0.0000000000");
+                        //row["Ivaluni"] = (double.Parse(row["Ipreuni"].ToString()) / (1 + (double.Parse(v_igv) / 100))).ToString("#0.0000000000");
+                        row["Ivaluni"] = ((double.Parse(dataGridView1.Rows[s].Cells["valor"].Value.ToString()) - (double)row["_msigv"]) / double.Parse(tx_cetm.Text)).ToString("#0.0000000000");
+                        row["Ipreuni"] = ((double.Parse(dataGridView1.Rows[s].Cells["valor"].Value.ToString()) - (double)row["_msigv"]) / double.Parse(tx_cetm.Text) * (1 + (double.Parse(v_igv) / 100))).ToString("#0.0000000000");    // * (1 + (double.Parse(v_igv) / 100)).ToString("#0.0000000000");
                     }
                     else
                     {
@@ -2234,8 +2234,16 @@ namespace TransCarga
                 else
                 {       // tiene descuento la fila, aplica valorel
                     row["_msigv"] = Math.Round(double.Parse(dataGridView1.Rows[s].Cells["valorel"].Value.ToString()) - (double.Parse(dataGridView1.Rows[s].Cells["valorel"].Value.ToString()) / (1 + (double.Parse(v_igv) / 100))), 2);
-                    row["Ipreuni"] = double.Parse(dataGridView1.Rows[s].Cells["valorel"].Value.ToString()).ToString("#0.0000000000");     // Precio de venta unitario CON IGV
-                    row["Ivaluni"] = (double.Parse(dataGridView1.Rows[s].Cells["valorel"].Value.ToString()) - (double)row["_msigv"]).ToString("#0.0000000000");
+                    if (chk_cunica.Checked == true && tx_dat_tdv.Text == codfact)
+                    {
+                        row["Ivaluni"] = ((double.Parse(dataGridView1.Rows[s].Cells["valorel"].Value.ToString()) - (double)row["_msigv"]) / double.Parse(tx_cetm.Text)).ToString("#0.0000000000");
+                        row["Ipreuni"] = ((double.Parse(dataGridView1.Rows[s].Cells["valorel"].Value.ToString()) - (double)row["_msigv"]) / double.Parse(tx_cetm.Text) * (1 + (double.Parse(v_igv) / 100))).ToString("#0.0000000000");    // * (1 + (double.Parse(v_igv) / 100)).ToString("#0.0000000000");
+                    }
+                    else
+                    {
+                        row["Ipreuni"] = double.Parse(dataGridView1.Rows[s].Cells["valorel"].Value.ToString()).ToString("#0.0000000000");     // Precio de venta unitario CON IGV
+                        row["Ivaluni"] = (double.Parse(dataGridView1.Rows[s].Cells["valorel"].Value.ToString()) - (double)row["_msigv"]).ToString("#0.0000000000");
+                    }
                     if (tx_dat_mone.Text != MonDeft && dataGridView1.Rows[s].Cells["codmondoc"].Value.ToString() == MonDeft)   // 
                     {
                         //row["_msigv"] = Math.Round(double.Parse(dataGridView1.Rows[s].Cells["valor"].Value.ToString()) / (1 + (double.Parse(v_igv) / 100)) / double.Parse(tx_tipcam.Text), 2);

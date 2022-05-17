@@ -321,3 +321,5 @@ form facelect, error en generar comprobante de una guía cobrada, no llenaba el 
 form guiati_a, permitir que se pueda editar campo "Docs. Origen" ................................... ok 06/05/2022
 form facelect, adecuaciones seleccion CONDICION DE PAGO: contado, credito | cancelado o no ......... ok 09/05/2022
 form guiati_a, corregir error en cant filas detalle, siempre es un detalle ......................... ok 10/05/2022
+form facelect, fact elect soya, en detalle los precio sin y con igv del item estan mal ............. ok 16/05/2022
+
