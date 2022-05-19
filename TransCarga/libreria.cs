@@ -2245,6 +2245,31 @@ namespace TransCarga
             }
             return retorna;
         }
+        public string fechCajaLoc(string loca, string estAbi)               // retorna fecha de la caja ABIERTA del local, si no esta abierta retorna en blanco
+        {
+            string retorna = "";    // retorna en formato ansi
+            string consulta = "select DATE_FORMAT(fechope, '%Y-%m-%d') from cabccaja where loccaja=@loc and statusc=@eca";
+            using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
+            {
+                conn.Open();
+                if (conn.State == ConnectionState.Open)
+                {
+                    using (MySqlCommand micon = new MySqlCommand(consulta, conn))
+                    {
+                        micon.Parameters.AddWithValue("@loc", loca);
+                        micon.Parameters.AddWithValue("@eca", estAbi);
+                        using (MySqlDataReader dr = micon.ExecuteReader())
+                        {
+                            if (dr.Read())
+                            {
+                                retorna = dr.GetString(0);
+                            }
+                        }
+                    }
+                }
+            }
+            return retorna;
+        }
         public string idegresos(string idcaja)                              // retorna el idr de egresos segun id de caja
         {
             string retorna = "";

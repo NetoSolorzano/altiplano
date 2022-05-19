@@ -568,8 +568,16 @@ namespace TransCarga
                                 }
                                 else
                                 {
-                                    rb_no.Checked = true;
-                                    rb_credito.Checked = true;
+                                    if (dr.GetString("pagauto") == "N" && dr.GetString("tippago") == v_mpag)
+                                    {
+                                        //rb_contado.Checked = false;
+                                        rb_si.Checked = true;
+                                    }
+                                    else
+                                    {
+                                        rb_no.Checked = true;
+                                        rb_credito.Checked = true;
+                                    }
                                 }
                             }
                             tx_valdscto.Text = dr.GetString("valordscto");
@@ -2702,6 +2710,7 @@ namespace TransCarga
         {
             lp.escribe(this);
             tx_nomRem.ReadOnly = true;
+            tx_serie.ReadOnly = true;
             //tx_dirRem.ReadOnly = true;
             //tx_dptoRtt.ReadOnly = true;
             //tx_provRtt.ReadOnly = true;
@@ -3020,6 +3029,11 @@ namespace TransCarga
                             return;
                         }
                     }
+                }
+                if (fshoy != lib.fechCajaLoc(TransCarga.Program.almuser, codGene) && rb_si.Checked == true) // si la caja esta abierta permite cobrar sino NO!
+                {
+                    MessageBox.Show("No puede cobrar en automático", "No existe caja abierta");
+                    rb_no.PerformClick();
                 }
                 if (chk_cunica.Checked == true)
                 {
@@ -4728,7 +4742,7 @@ namespace TransCarga
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message,"Impresora " + v_impTK);
+                MessageBox.Show(ex.Message,"Error en Impresora o plazo " + v_impTK);
                 retorna = false;
             }
             return retorna;
