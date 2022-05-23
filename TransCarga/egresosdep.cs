@@ -708,7 +708,7 @@ namespace TransCarga
                     var aa = MessageBox.Show("Confirma que desea crear el Egreso?", "Confirme por favor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                     if (aa == DialogResult.Yes)
                     {
-                        if (true)
+                        if (lib.fechCajaLoc(v_clu, codAbie) == tx_fechope.Text.Substring(6,4)+"-"+tx_fechope.Text.Substring(3,2)+"-"+tx_fechope.Text.Substring(0,2))
                         {
                             if (graba() == true)
                             {
@@ -830,11 +830,13 @@ namespace TransCarga
                     var aa = MessageBox.Show("Confirma que desea ANULAR el Egreso?", "Confirme por favor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                     if (aa == DialogResult.Yes)
                     {
-                        anula();
-                        string resulta = lib.ult_mov(nomform, nomtab, asd);
-                        if (resulta != "OK")
+                        if (anula() == true)
                         {
-                            MessageBox.Show(resulta, "Error en actualización de seguimiento", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            string resulta = lib.ult_mov(nomform, nomtab, asd);
+                            if (resulta != "OK")
+                            {
+                                MessageBox.Show(resulta, "Error en actualización de seguimiento", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
                         }
                     }
                     else
@@ -950,7 +952,7 @@ namespace TransCarga
             {
                 try
                 {
-                    if (true)     // donde validas que la caja este abierta ?????
+                    if (lib.validacaja(v_clu, codAbie) == tx_idcaja.Text)
                     {
                         string actua = "update cabegresos a set " +
                             "a.fechope=@fechop,a.locegre=@ldcpgr,a.estdegr=@estado,a.tipegre=@tipegr,a.codtegr=@codteg,a.tipdoco=@tipdoc,a.martdve=@martdv,a.serdoco=@serdoc," +
@@ -991,6 +993,10 @@ namespace TransCarga
                         // EDICION DEL DETALLE .... no hay detalle
                         micon.Dispose();
                     }
+                    else
+                    {
+                        MessageBox.Show("No existe caja abierta!","Error en caja",MessageBoxButtons.OK,MessageBoxIcon.Error);
+                    }
                     conn.Close();
                 }
                 catch (MySqlException ex)
@@ -1007,34 +1013,45 @@ namespace TransCarga
                 return;
             }
         }
-        private void anula()
+        private bool anula()
         {
-            // en este caso solo hay ANULACION FISICA
-            // Anulacion fisica se "anula" el numero del documento en sistema y
-            // se borran todos los enlaces mediante triggers en la B.D.
-            using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
+            bool retorna = false;
+            if (lib.validacaja(v_clu, codAbie) == tx_idcaja.Text)
             {
-                conn.Open();
-                if (conn.State == ConnectionState.Open)
+                // en este caso solo hay ANULACION FISICA
+                // Anulacion fisica se "anula" el numero del documento en sistema y
+                // se borran todos los enlaces mediante triggers en la B.D.
+                using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
                 {
-                    string canul = "update cabegresos set estdegr=@estser,obscobc=@obse,usera=@asd,fecha=now()," +
-                        "verApp=@veap,diriplan4=@dil4,diripwan4=@diw4,netbname=@nbnp,estintreg=@eiar " +
-                        "where id=@idr";
-                    using (MySqlCommand micon = new MySqlCommand(canul, conn))
+                    conn.Open();
+                    if (conn.State == ConnectionState.Open)
                     {
-                        micon.Parameters.AddWithValue("@idr", tx_idr.Text);
-                        micon.Parameters.AddWithValue("@estser", codAnul);
-                        micon.Parameters.AddWithValue("@obse", tx_obser1.Text);
-                        micon.Parameters.AddWithValue("@asd", asd);
-                        micon.Parameters.AddWithValue("@dil4", lib.iplan());
-                        micon.Parameters.AddWithValue("@diw4", TransCarga.Program.vg_ipwan);
-                        micon.Parameters.AddWithValue("@nbnp", Environment.MachineName);
-                        micon.Parameters.AddWithValue("@veap", verapp);
-                        micon.Parameters.AddWithValue("@eiar", (vint_A0 == codAnul) ? "A0" : "");  // codigo anulacion interna en DB A0
-                        micon.ExecuteNonQuery();
+                        string canul = "update cabegresos set estdegr=@estser,obscobc=@obse,usera=@asd,fecha=now()," +
+                            "verApp=@veap,diriplan4=@dil4,diripwan4=@diw4,netbname=@nbnp,estintreg=@eiar " +
+                            "where id=@idr";
+                        using (MySqlCommand micon = new MySqlCommand(canul, conn))
+                        {
+                            micon.Parameters.AddWithValue("@idr", tx_idr.Text);
+                            micon.Parameters.AddWithValue("@estser", codAnul);
+                            micon.Parameters.AddWithValue("@obse", tx_obser1.Text);
+                            micon.Parameters.AddWithValue("@asd", asd);
+                            micon.Parameters.AddWithValue("@dil4", lib.iplan());
+                            micon.Parameters.AddWithValue("@diw4", TransCarga.Program.vg_ipwan);
+                            micon.Parameters.AddWithValue("@nbnp", Environment.MachineName);
+                            micon.Parameters.AddWithValue("@veap", verapp);
+                            micon.Parameters.AddWithValue("@eiar", (vint_A0 == codAnul) ? "A0" : "");  // codigo anulacion interna en DB A0
+                            micon.ExecuteNonQuery();
+                            retorna = true;
+                        }
                     }
                 }
             }
+            else
+            {
+                MessageBox.Show("La caja esta cerrada o es otra?" + Environment.NewLine + 
+                    "No se puede grabar la operación","Error en caja",MessageBoxButtons.OK,MessageBoxIcon.Error);
+            }
+            return retorna;
         }
         #endregion boton_form;
 

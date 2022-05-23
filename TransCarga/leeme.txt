@@ -326,4 +326,7 @@ form facelect, fact elect soya, en detalle los precio sin y con igv del item est
 form facelect, verificar que la caja este abierta antes de grabar venta con pago ................... ok 19/05/2022
 form facelect, adecuacion mas detallada de visualizacion de comprob. sin contado credito ........... ok 19/05/2022
 form facelect, evitar que el operador cambie la serie del comprobante .............................. ok 19/05/2022
-
+form facelect, agregar código para validar que la GR a facturar tenga el detalle completo .......... ok 20/05/2022
+form cobranzas, verificar que la caja este abierta antes de grabar y anular ........................ ok 23/05/2022
+form egresosdep, verificar que la caja este abierta antes de grabar, editar y anular ............... ok 23/05/2022
+form ingresosv, verificar que la caja este abierta antes de grabar, editar y anular ................ ok 23/05/2022

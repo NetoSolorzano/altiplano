@@ -1045,7 +1045,7 @@ namespace TransCarga
                     var aa = MessageBox.Show("Confirma que desea crear la cobranza?", "Confirme por favor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                     if (aa == DialogResult.Yes)
                     {
-                        if (true)
+                        if (lib.fechCajaLoc(v_clu, codAbie) == tx_fechope.Text.Substring(6,4)+"-"+tx_fechope.Text.Substring(3,2)+"-"+tx_fechope.Text.Substring(0,2))
                         {
                             if (graba() == true)
                             {
@@ -1061,6 +1061,11 @@ namespace TransCarga
                                     Bt_print.PerformClick();
                                 }
                             }
+                        }
+                        else
+                        {
+                            MessageBox.Show("No hay caja abierta en este momento", "Error en caja", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return;
                         }
                     }
                     else
@@ -1145,6 +1150,12 @@ namespace TransCarga
                     var aa = MessageBox.Show("Confirma que desea ANULAR la cobranza?", "Confirme por favor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                     if (aa == DialogResult.Yes)
                     {
+                        if (lib.fechCajaLoc(v_clu, codAbie) == "")
+                        {
+                            MessageBox.Show("No existe caja Abierta!, la caja" + Environment.NewLine +
+                                "fue cerrada recientemente", "No puede continuar", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return;
+                        }
                         anula();
                         string resulta = lib.ult_mov(nomform, nomtab, asd);
                         if (resulta != "OK")
@@ -1259,7 +1270,7 @@ namespace TransCarga
             {
                 try
                 {
-                    if (true)     // EDICION DE CABECERA
+                    if (true)     // EDICION DE CABECERA - solo observaciones
                     {
                         string actua = "update cabcobran a set a.obscobc=@obsprg," +
                             "a.verApp=@verApp,a.userm=@asd,a.fechm=now(),a.diriplan4=@iplan,a.diripwan4=@ipwan,a.netbname=@nbnam " +

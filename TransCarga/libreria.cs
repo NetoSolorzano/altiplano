@@ -2498,17 +2498,17 @@ namespace TransCarga
             }
             return retorna;
         }
-        public string validacaja(string loca)                               // valida existencia de caja abierta
+        public string validacaja(string loca, string estAbi)               // valida existencia de caja ABIERTA, devuelve ID de caja abierta en la fecha
         {
             string retorna = "";       // busca en la maestra de cajas buscando una que este abierta
-            string consulta = "select id from macajas where local=@loc and status=@sta order by id desc limit 1";
+            string consulta = "select ifnull(id,'') from cabccaja where loccaja=@loc and statusc=@sta order by id desc limit 1";
             MySqlConnection conl = new MySqlConnection(DB_CONN_STR);
             conl.Open();
             if (conl.State == ConnectionState.Open)
             {
                 MySqlCommand micon = new MySqlCommand(consulta, conl);
                 micon.Parameters.AddWithValue("@loc", loca);
-                micon.Parameters.AddWithValue("@sta", enlaces("frmcajas", "tx_status", "Default"));
+                micon.Parameters.AddWithValue("@sta", estAbi);
                 try
                 {
                     MySqlDataReader dr = micon.ExecuteReader();
@@ -2520,12 +2520,11 @@ namespace TransCarga
                     else
                     {
                         dr.Close();
-                        MessageBox.Show("No existe caja abierta!", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                 }
                 catch (MySqlException ex)
                 {
-                    MessageBox.Show(ex.Message, "Error en busqueda de caja");
+                    MessageBox.Show(ex.Message, "Error en busqueda de id caja");
                     Application.Exit();
                 }
                 finally { conl.Close(); }
