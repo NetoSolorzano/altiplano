@@ -587,7 +587,7 @@ namespace TransCarga
                     tx_pagoMN.Text = tx_PAGO.Text;
                 }
             }
-            if (lib.validacaja(v_clu, codAbie) == tx_idcaja.Text)
+            if (lib.validacaja(v_clu, codAbie) != tx_idcaja.Text)
             {
                 MessageBox.Show("La caja esta cerrada o sin fecha", "Atención, no puede continuar", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
