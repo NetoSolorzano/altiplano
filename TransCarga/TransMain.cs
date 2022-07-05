@@ -716,7 +716,15 @@ namespace TransCarga
         }
         private void ma_rrhh_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Form Recursos Humanos", "Otoño 2021", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            //MessageBox.Show("Form Recursos Humanos", "Otoño 2021", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            recshum frh = new recshum();
+            frh.TopLevel = false;
+            frh.Parent = this;
+            pn_centro.Controls.Add(frh);
+            frh.Location = new Point((pn_centro.Width - frh.Width) / 2, (pn_centro.Height - frh.Height) / 2);
+            frh.Anchor = AnchorStyles.None;
+            frh.Show();
+            frh.BringToFront();
         }
         private void ma_tipcam_Click(object sender, EventArgs e)
         {

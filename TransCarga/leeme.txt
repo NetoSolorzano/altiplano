@@ -330,3 +330,8 @@ form facelect, agregar código para validar que la GR a facturar tenga el detall
 form cobranzas, verificar que la caja este abierta antes de grabar y anular ........................ ok 23/05/2022
 form egresosdep, verificar que la caja este abierta antes de grabar, editar y anular ............... ok 23/05/2022
 form ingresosv, verificar que la caja este abierta antes de grabar, editar y anular ................ ok 23/05/2022
+************************ ADECUACIONES PARA SAN JOSE, TRABAJOS CON ALMACEN ***************************
+form main, agregar imagenes de almacen ............................................................. ok 04/07/2022
+Trigers, procedimientos, tablas para almacen ....................................................... ok 05/07/2022
+form recshum, puesta del form copiado de carrion ................................................... ok 05/07/2022
+form main, formulario de rr.hh. .................................................................... ok 05/07/2022
