@@ -335,3 +335,4 @@ form main, agregar imagenes de almacen .........................................
 Trigers, procedimientos, tablas para almacen ....................................................... ok 05/07/2022
 form recshum, puesta del form copiado de carrion ................................................... ok 05/07/2022
 form main, formulario de rr.hh. .................................................................... ok 05/07/2022
+form recshum, arreglo codigo en bloqueado o no ..................................................... ok 06/07/2022

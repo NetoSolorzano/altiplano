@@ -31,7 +31,7 @@ namespace TransCarga
         string img_btq = "";
         string img_grab = "";
         string img_anul = "";
-        string vEstAnu = "";            // estado de serie anulada
+        string vEstAnu = "";            // 
         string vtd_ruc = "";
         string v_tipcarr = "";          // tipo de placa CARRETA
         libreria lib = new libreria();
@@ -260,7 +260,7 @@ namespace TransCarga
         {
             if (campo == "tx_rind")
             {
-                chk_habil.Checked = (advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells["bloqueado"].Value.ToString() != vEstAnu) ? true : false;
+                chk_habil.Checked = (advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells["bloqueado"].Value.ToString() == "0") ? true : false;
                 tx_codigo.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells["codigo"].Value.ToString();     // codigo empleado
                 tx_dni.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells["numdoc"].Value.ToString();        // DNI DEL EMPLEADO
                 tx_nombre.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells["nombre"].Value.ToString();     // nombre p
@@ -581,7 +581,7 @@ namespace TransCarga
                     iserror = "no";
                     string consulta = "update cabrrhh set " +
                         "codigo=@cod,numdoc=@dni,nombre=@nom,usersist=@pas,coment=@com,fnacim=@fna,fingres=@fin,telefono1=@te1,telefono2=@te2,direccion=@dir," +
-                        "a.correo=@cor,brevete=@bre,sede=@sed,tipdoc=@tde,codtipo=@tip,genero=@gen," +
+                        "correo=@cor,brevete=@bre,sede=@sed,tipdoc=@tde,codtipo=@tip,genero=@gen,bloqueado=@bloq," +
                         "verApp=@vapp,userm=@asd,fechm=now(),diriplan4=@dil4,diripwan4=@diw4,nbname=@nbna " +
                         "where id=@idc";
                     using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
@@ -606,12 +606,14 @@ namespace TransCarga
                             mycom.Parameters.AddWithValue("@tde", "");
                             mycom.Parameters.AddWithValue("@tip", tx_dat_tipo.Text);
                             mycom.Parameters.AddWithValue("@gen", (rb_fem.Checked == true)? 0 : 1);
+                            mycom.Parameters.AddWithValue("@bloq", (chk_habil.Checked == true)? 1 : 0);
                             //
                             mycom.Parameters.AddWithValue("@asd", asd);
                             mycom.Parameters.AddWithValue("@vapp", verapp);
                             mycom.Parameters.AddWithValue("@dil4", lib.iplan());
                             mycom.Parameters.AddWithValue("@diw4", TransCarga.Program.vg_ipwan);
                             mycom.Parameters.AddWithValue("@nbna", lib.nbname());
+                            mycom.ExecuteNonQuery();
                             try
                             {
                                 // actualizamos el datatable
@@ -785,6 +787,7 @@ namespace TransCarga
             limpia_otros();
             limpia_combos();
             limpia_chk();
+            chk_habil.Enabled = false;
             tx_codigo.ReadOnly = false;
             tx_codigo.Focus();
         }
@@ -804,6 +807,7 @@ namespace TransCarga
             limpia_otros();
             limpia_combos();
             limpia_chk();
+            chk_habil.Enabled = true;
             tx_codigo.ReadOnly = true;
         }
         private void Bt_close_Click(object sender, EventArgs e)
