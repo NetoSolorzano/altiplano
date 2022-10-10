@@ -487,7 +487,7 @@ namespace TransCarga
             //
             pic_icon_menu.Image = TransCarga.Properties.Resources.etiq_venta32;
             menuStrip1.Items.Clear();
-            menuStrip1.Items.Add("Pre-Guías",img_v_c, vc_registro_Click);
+            menuStrip1.Items.Add("GRE Transp.",img_v_c, vc_registro_Click);
             menuStrip1.Items.Add("GR Transp.",img_v_pc, vpc_registro_Click);
             menuStrip1.Items.Add("GR Remitente",img_v_i, vic_registro_Click);
             menuStrip1.Items.Add("Plan.Carga",img_v_s, vsc_registro_Click);
@@ -496,9 +496,9 @@ namespace TransCarga
             menuStrip1.Items.Add("Corrección", img_v_b, vbc_registro_Click);
             menuStrip1.Visible = true;
         }
-        private void vc_registro_Click(object sender, EventArgs e)          // Pre guías transportista
+        private void vc_registro_Click(object sender, EventArgs e)          // Guías remisión ELECTRONICA transportista
         {
-            preguiat fvc = new preguiat();
+            guiati_e fvc = new guiati_e();
             fvc.TopLevel = false;
             fvc.Parent = this;
             pn_centro.Controls.Add(fvc);

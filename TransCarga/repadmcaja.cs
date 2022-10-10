@@ -532,6 +532,7 @@ namespace TransCarga
                         using (MySqlCommand micon = new MySqlCommand("rep_cuadre_sede", conn))
                         {
                             micon.CommandType = CommandType.StoredProcedure;
+                            micon.CommandTimeout = 300;
                             micon.Parameters.AddWithValue("@idc", dgv_ccaja.CurrentRow.Cells[0].Value.ToString());
                             using (MySqlDataAdapter da = new MySqlDataAdapter(micon))
                             {
