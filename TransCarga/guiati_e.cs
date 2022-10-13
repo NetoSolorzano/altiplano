@@ -8,6 +8,8 @@ using MySql.Data.MySqlClient;
 using System.Text;
 using System.IO;
 using Newtonsoft.Json.Linq;
+using RestSharp;
+using Newtonsoft.Json;
 
 namespace TransCarga
 {
@@ -1059,6 +1061,7 @@ namespace TransCarga
         private bool sunat_api()
         {
             bool retorna = false;
+            
             if (conex_token() != null && conex_token() != "")
             {
                 retorna = true;
@@ -1066,14 +1069,47 @@ namespace TransCarga
 
             return retorna;
         }
-        private string conex_token()                                                // obtenemos el token de Sunat
+        private string conex_token()
         {
             string retorna = "";
-            string host = "https://api-seguridad.sunat.gob.pe/v1/clientessol/" + client_id_sunat + "/oauth2/token/";
             System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls12;
+            var client = new RestClient("https://api-seguridad.sunat.gob.pe/v1/clientessol/9613540b-a94d-45c6-b201-7521413ed391/oauth2/token/");
+            client.Timeout = -1;
+            var request = new RestRequest(Method.POST);
+            request.AddHeader("Content-Type", "application/x-www-form-urlencoded");
+            request.AddHeader("Cookie", "TS019e7fc2=019edc9eb804e5899340ca3cd8b25a1098eb57b21624caa574cefc11fed3597c7bcb5f241fc66c79229d8b9a37710e7b9371a6c2ba");
+            request.AddParameter("grant_type", "password");
+            request.AddParameter("scope", "https://api-cpe.sunat.gob.pe");
+            request.AddParameter("client_id", "9613540b-a94d-45c6-b201-7521413ed391");
+            request.AddParameter("client_secret", "gmlqIVugA1+Fgd1wUN6Kyg==");
+            request.AddParameter("username", "20430100344PTIONVAL");
+            request.AddParameter("password", "patocralr");
+
+            IRestResponse response = client.Execute(request);
+            
+            if (response.StatusCode.ToString() != "OK")
+            {
+                MessageBox.Show("NO se pudo obtener el token" + Environment.NewLine + 
+                    response.StatusDescription,"Error de conexión a Sunat",MessageBoxButtons.OK,MessageBoxIcon.Error);
+            }
+            else
+            {
+                Token token = JsonConvert.DeserializeObject<Token>(response.Content);
+                MessageBox.Show(token.access_token);
+            }
+
+            return retorna;
+        }
+        private string conex_tokenX()                                                // obtenemos el token de Sunat
+        {
+            string retorna = "";
+            
+            string host = "https://api-seguridad.sunat.gob.pe/v1/clientessol/" + client_id_sunat + "/oauth2/token/";
+            //System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls12;
             // create a request
             var httpWebRequest = (HttpWebRequest)WebRequest.Create(host);
             httpWebRequest.Method = "POST";
+            httpWebRequest.ContentType = "Application/x-www-form-urlencoded";    //  "Application/json";
             //string postData = "grant_type=password" + "&scope=" + scope_sunat + "&client_id=" + client_id_sunat + "&client_secret=" + 
             //    client_pass_sunat + "&username=" + Program.ruc + u_sol_sunat + "&password=" + c_sol_sunat;
             string postData = "grant_type=password" + "&scope=" + scope_sunat + "&client_id=" + client_id_sunat + "&client_secret=" +
@@ -1081,10 +1117,9 @@ namespace TransCarga
 
             ASCIIEncoding encoding = new ASCIIEncoding();
             byte[] bytes = encoding.GetBytes(postData);
-            httpWebRequest.ContentType = "Application/x-www-form-urlencoded";    //  "Application/json";
+            
             httpWebRequest.ContentLength = bytes.Length;
             Stream newStream = httpWebRequest.GetRequestStream();
-            
             newStream.Write(bytes, 0, bytes.Length);
             try
             {
@@ -1105,6 +1140,7 @@ namespace TransCarga
             {
                 MessageBox.Show(ex.Message, "Error");
             }
+            
             return retorna;
         }
         #endregion
@@ -3538,4 +3574,11 @@ namespace TransCarga
         #endregion
 
     }
+    public class Token
+    {
+        public string access_token { get; set; }
+        public string token_type { get; set; }
+        public int expires_in { get; set; }
+    }
+    
 }
