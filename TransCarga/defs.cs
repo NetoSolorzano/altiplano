@@ -155,7 +155,7 @@ namespace TransCarga
             advancedDataGridView1.Columns[5].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
             // ACTIVO
             advancedDataGridView1.Columns[6].Visible = true;    
-            advancedDataGridView1.Columns[6].HeaderText = "MARCA";
+            advancedDataGridView1.Columns[6].HeaderText = "ACTIVO";
             advancedDataGridView1.Columns[6].Width = 40;
             advancedDataGridView1.Columns[6].ReadOnly = true;
             advancedDataGridView1.Columns[6].Tag = "validaSI";
@@ -232,10 +232,18 @@ namespace TransCarga
             tx_det3.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[9].Value.ToString();  // detalle 3
             tx_det4.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[10].Value.ToString();  // detalle 4
             tx_det5.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[11].Value.ToString();  // detalle 5 / ubigeo
-            chk_marc1.Checked = (advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[12].Value.ToString() == "1") ? true : false;
+            if (advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[1].Value.ToString() == "TPA")
+            {
+                chk_marc1.Checked = false;
+                tx_enla1.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[12].Value.ToString();  // enlace1
+            }
+            else
+            {
+                chk_marc1.Checked = (advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[12].Value.ToString() == "1") ? true : false;
+                tx_enla1.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[15].Value.ToString();  // enlace1
+            }
             chk_marc2.Checked = (advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[13].Value.ToString() == "1") ? true : false;
             chk_marc3.Checked = (advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[14].Value.ToString() == "1") ? true : false;
-            tx_enla1.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[15].Value.ToString();  // enlace1
             comboBox1.SelectedValue = textBox4.Text;
         }
         public void dataload()                  // jala datos para los combos y la grilla
@@ -340,7 +348,12 @@ namespace TransCarga
                     chk_marc3.Text = "Usa Num.VALES Automat.";
                     lb_enla1.Text = "Zona destino";
                     break;
-                case "xxx":
+                case "TPA":
+                    lb_idcodice.Text = "Id Código";
+                    lb_codigo.Text = "Código2";
+                    lb_descriz.Text = "Descripción";
+                    lb_descrizrid.Text = "Descrip. Corta";
+                    lb_enla1.Text = "Días plazo";
                     break;
             }
         }
@@ -521,10 +534,18 @@ namespace TransCarga
                     mycomand.Parameters.AddWithValue("@det3", tx_det3.Text);
                     mycomand.Parameters.AddWithValue("@det4", tx_det4.Text);
                     mycomand.Parameters.AddWithValue("@det5", tx_det5.Text);
-                    mycomand.Parameters.AddWithValue("@mar1", (chk_marc1.Checked == true) ? "1" : "0");
+                    if (textBox4.Text == "TPA")
+                    {
+                        mycomand.Parameters.AddWithValue("@mar1", tx_enla1.Text);
+                        mycomand.Parameters.AddWithValue("@enl1", "");
+                    }
+                    else
+                    {
+                        mycomand.Parameters.AddWithValue("@mar1", (chk_marc1.Checked == true) ? "1" : "0");
+                        mycomand.Parameters.AddWithValue("@enl1", tx_enla1.Text);
+                    }
                     mycomand.Parameters.AddWithValue("@mar2", (chk_marc2.Checked == true) ? "1" : "0");
                     mycomand.Parameters.AddWithValue("@mar3", (chk_marc3.Checked == true) ? "1" : "0");
-                    mycomand.Parameters.AddWithValue("@enl1", tx_enla1.Text);
                     mycomand.Parameters.AddWithValue("@veap", verapp);
                     mycomand.Parameters.AddWithValue("@asd", asd);
                     mycomand.Parameters.AddWithValue("@dipl", lib.iplan());
@@ -564,10 +585,10 @@ namespace TransCarga
                     dr[9] = tx_det3.Text;
                     dr[10] = tx_det4.Text;
                     dr[11] = tx_det5.Text;
-                    dr[12] = (chk_marc1.Checked == true) ? "1" : "0";
+                    dr[12] = (textBox4.Text == "TPA")? tx_enla1.Text : (chk_marc1.Checked == true) ? "1" : "0";
                     dr[13] = (chk_marc2.Checked == true) ? "1" : "0";
                     dr[14] = (chk_marc3.Checked == true) ? "1" : "0";
-                    dr[15] = tx_enla1.Text;
+                    dr[15] = (textBox4.Text == "TPA") ? "" : tx_enla1.Text;
                     dtg.Rows.Add(dr);
                 }
                 else
@@ -599,10 +620,18 @@ namespace TransCarga
                     mycom.Parameters.AddWithValue("@det3", tx_det3.Text);
                     mycom.Parameters.AddWithValue("@det4", tx_det4.Text);
                     mycom.Parameters.AddWithValue("@det5", tx_det5.Text);
-                    mycom.Parameters.AddWithValue("@mar1", (chk_marc1.Checked == true) ? "1" : "0");
+                    if (textBox4.Text == "TPA")
+                    {
+                        mycom.Parameters.AddWithValue("@mar1", tx_enla1.Text);
+                        mycom.Parameters.AddWithValue("@enl1", "");
+                    }
+                    else
+                    {
+                        mycom.Parameters.AddWithValue("@mar1", (chk_marc1.Checked == true) ? "1" : "0");
+                        mycom.Parameters.AddWithValue("@enl1", tx_enla1.Text);
+                    }
                     mycom.Parameters.AddWithValue("@mar2", (chk_marc2.Checked == true) ? "1" : "0");
                     mycom.Parameters.AddWithValue("@mar3", (chk_marc3.Checked == true) ? "1" : "0");
-                    mycom.Parameters.AddWithValue("@enl1", tx_enla1.Text);
                     mycom.Parameters.AddWithValue("@veap", verapp);
                     mycom.Parameters.AddWithValue("@asd", asd);
                     mycom.Parameters.AddWithValue("@dipl", lib.iplan());
@@ -641,10 +670,10 @@ namespace TransCarga
                             dtg.Rows[i][9] = tx_det3.Text;
                             dtg.Rows[i][10] = tx_det4.Text;
                             dtg.Rows[i][11] = tx_det5.Text;
-                            dtg.Rows[i][12] = (chk_marc1.Checked == true) ? "1" : "0";
+                            dtg.Rows[i][12] = (textBox4.Text == "TPA") ? tx_enla1.Text : (chk_marc1.Checked == true) ? "1" : "0";
                             dtg.Rows[i][13] = (chk_marc2.Checked == true) ? "1" : "0";
                             dtg.Rows[i][14] = (chk_marc3.Checked == true) ? "1" : "0";
-                            dtg.Rows[i][15] = tx_enla1.Text;
+                            dtg.Rows[i][15] = (textBox4.Text == "TPA") ? "" : tx_enla1.Text;
                         }
                     }
                 }

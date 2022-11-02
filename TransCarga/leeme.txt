@@ -339,4 +339,7 @@ form main, formulario de rr.hh. ................................................
 form recshum, arreglo codigo en bloqueado o no ..................................................... ok 06/07/2022
 form login, arreglos para hacer igual las mascaras ................................................. ok 07/10/2022
 ********************** ADECUACIONES PARA GUIAS DE REMISION ELECTRONICAS *****************************
-form guiati_e, creacion del form y menu en main .................................................... 
+form guiati_e, creacion del form y menu en main .................................................... ok 02/11/2022 pendiente de terminar
+form guiati_a, corrección de espacio en blanco al iniciar num doc remitente y destinatario ......... ok 02/11/2022
+form defs, TPA, mostrar en el form dias de credito en numero ....................................... ok 02/11/2022
+

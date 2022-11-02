@@ -1506,12 +1506,12 @@ namespace TransCarga
                     micon.Parameters.AddWithValue("@numgr", tx_numero.Text);
                     micon.Parameters.AddWithValue("@npregr", tx_pregr_num.Text);
                     micon.Parameters.AddWithValue("@tdcdes", tx_dat_tDdest.Text);
-                    micon.Parameters.AddWithValue("@ndcdes", tx_numDocDes.Text);
+                    micon.Parameters.AddWithValue("@ndcdes", tx_numDocDes.Text.Trim());
                     micon.Parameters.AddWithValue("@nomdes", tx_nomDrio.Text);
                     micon.Parameters.AddWithValue("@dircde", tx_dirDrio.Text);
                     micon.Parameters.AddWithValue("@ubicde", tx_ubigDtt.Text);
                     micon.Parameters.AddWithValue("@tdcrem", tx_dat_tdRem.Text);
-                    micon.Parameters.AddWithValue("@ndcrem", tx_numDocRem.Text);
+                    micon.Parameters.AddWithValue("@ndcrem", tx_numDocRem.Text.Trim());
                     micon.Parameters.AddWithValue("@nomrem", tx_nomRem.Text);
                     micon.Parameters.AddWithValue("@dircre", tx_dirRem.Text);
                     micon.Parameters.AddWithValue("@ubicre", tx_ubigRtt.Text);

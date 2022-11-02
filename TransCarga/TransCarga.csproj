@@ -393,6 +393,7 @@
     <Compile Include="TransMain.designer.cs">
       <DependentUpon>TransMain.cs</DependentUpon>
     </Compile>
+    <Compile Include="UBL-DespatchAdvice-2_1.cs" />
     <Compile Include="users.cs">
       <SubType>Form</SubType>
     </Compile>

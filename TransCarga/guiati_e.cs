@@ -10,6 +10,9 @@ using System.IO;
 using Newtonsoft.Json.Linq;
 using RestSharp;
 using Newtonsoft.Json;
+using System.Xml;
+using System.Xml.Linq;
+using System.Xml.Serialization;
 
 namespace TransCarga
 {
@@ -73,6 +76,8 @@ namespace TransCarga
         string u_sol_sunat = "";        // usuario sol sunat del cliente
         string c_sol_sunat = "";        // clave sol sunat del cliente
         string scope_sunat = "";        // scope sunat del api
+        string cGR_sunat = "";          // codigo sunat para GR transportista
+        string usa_gre = "";            // usa GRE en la organización? S/N
         //
         static libreria lib = new libreria();   // libreria de procedimientos
         publico lp = new publico();             // libreria de clases
@@ -135,15 +140,10 @@ namespace TransCarga
             toolboton();
             this.KeyPreview = true;
             autodepa();                                     // autocompleta departamentos
-            if (valiVars() == false)
-            {
-                Application.Exit();
-                return;
-            }
         }
         private void init()
         {
-            this.BackColor = Color.FromName(colback);
+            //this.BackColor = Color.FromName(colback);
             toolStrip1.BackColor = Color.FromName(colstrp);
             //dataGridView1.DefaultCellStyle.BackColor = Color.FromName(colgrid);
             //dataGridView1.DefaultCellStyle.ForeColor = Color.FromName(colfogr);
@@ -230,6 +230,7 @@ namespace TransCarga
             rb_ent_clte.Checked = true;
             rb_car_ofi.Checked = true;
             sololee();
+
         }
         private void initIngreso()
         {
@@ -311,11 +312,13 @@ namespace TransCarga
                         }
                         if (row["campo"].ToString() == "sunat")
                         {
+                            if (row["param"].ToString() == "usa_gre") usa_gre = row["valor"].ToString().Trim();                   // se usa GRE? S/N
                             if (row["param"].ToString() == "client_id") client_id_sunat = row["valor"].ToString().Trim();         // id del api sunat
                             if (row["param"].ToString() == "client_pass") client_pass_sunat = row["valor"].ToString().Trim();     // password del api sunat
                             if (row["param"].ToString() == "user_sol") u_sol_sunat = row["valor"].ToString().Trim();              // usuario sol portal sunat del cliente 
                             if (row["param"].ToString() == "clave_sol") c_sol_sunat = row["valor"].ToString().Trim();             // clave sol portal sunat del cliente 
                             if (row["param"].ToString() == "scope") scope_sunat = row["valor"].ToString().Trim();                 // scope del api sunat
+                            if (row["param"].ToString() == "codgre") cGR_sunat = row["valor"].ToString().Trim();                 // codigo sunat para GR transportista
                         }  
                     }
                     if (row["formulario"].ToString() == "clients" && row["campo"].ToString() == "documento")
@@ -767,6 +770,11 @@ namespace TransCarga
         private bool valiVars()                 // valida existencia de datos en variables del form
         {
             bool retorna = true;
+            if (usa_gre != "S")
+            {
+                lib.messagebox("NO se usan las GRE en esta organización");
+                retorna = false;
+            }
             if (vtc_dni == "")           // variable tipo cliente natural
             {
                 lib.messagebox("Tipo de cliente Natural");
@@ -1061,11 +1069,66 @@ namespace TransCarga
         private bool sunat_api()
         {
             bool retorna = false;
-            
-            if (conex_token() != null && conex_token() != "")
+            string token = conex_token();
+            if (token != null && token != "")
             {
+                arma_guiaE(token);
+                
                 retorna = true;
             }
+
+            return retorna;
+        }
+        private string arma_guiaE(string token)
+        {
+            string retorna = "";
+            DespatchAdviceType despatch = new DespatchAdviceType();     // objeto guia
+
+            /************************  datos de la guía  ************************/
+            UBLVersionIDType ubltipo = new UBLVersionIDType();
+            ubltipo.Value = "2.1";
+            CustomizationIDType cusid = new CustomizationIDType();
+            cusid.Value = "1.0";
+            IDType iD = new IDType();
+            iD.Value = "T" + tx_serie.Text + tx_numero.Text;
+            IssueDateType fec = new IssueDateType();
+            fec.Value = DateTime.Parse(tx_fechope.Text);
+            IssueTimeType hora = new IssueTimeType();
+            //TimeSpan th = new TimeSpan(DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second);
+            hora.Value = DateTime.Now;
+            DespatchAdviceTypeCodeType codsunat = new DespatchAdviceTypeCodeType();
+            codsunat.Value = cGR_sunat;
+            NoteType observ = new NoteType();
+            observ.Value = "Observaciones";
+
+            
+            /**********************  datos del emisor ***********************/
+            CustomerAssignedAccountIDType tdEmi = new CustomerAssignedAccountIDType();
+            tdEmi.schemeID = "6";
+            //tdEmi.Value = Program.ruc;
+            SupplierPartyType rucEmi = new SupplierPartyType();
+            rucEmi.CustomerAssignedAccountID.Value = Program.ruc;
+            
+
+            /*********************** ponemos los datos en el objeto guia *********************/
+            despatch.UBLVersionID = ubltipo;
+            despatch.CustomizationID = cusid;
+            despatch.ID = iD;
+            despatch.IssueDate = fec;
+            despatch.IssueTime = hora;
+            despatch.DespatchAdviceTypeCode = codsunat;
+            //despatch.Note = observ;
+            despatch.DespatchSupplierParty = rucEmi;                    // Acá hay un problema
+            
+            
+
+
+            /************************** serializamos y grabamos el xml ***************************/
+            XmlSerializer serializado = new XmlSerializer(typeof(DespatchAdviceType));
+            var oStringWriter = new StringWriter();
+            serializado.Serialize(XmlWriter.Create(oStringWriter), despatch);
+            string GRExml = oStringWriter.ToString();
+            File.WriteAllText(@"c:\temp\xmlsunat.xml", GRExml);
 
             return retorna;
         }
@@ -1073,17 +1136,22 @@ namespace TransCarga
         {
             string retorna = "";
             System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls12;
-            var client = new RestClient("https://api-seguridad.sunat.gob.pe/v1/clientessol/9613540b-a94d-45c6-b201-7521413ed391/oauth2/token/");
+            //var client = new RestClient("https://api-seguridad.sunat.gob.pe/v1/clientessol/9613540b-a94d-45c6-b201-7521413ed391/oauth2/token/");
+            var client = new RestClient("https://api-seguridad.sunat.gob.pe/v1/clientessol/" + client_id_sunat + "/oauth2/token/");
             client.Timeout = -1;
             var request = new RestRequest(Method.POST);
+
+            string postData = "grant_type=password" + "&scope=" + scope_sunat + "&client_id=" + client_id_sunat + "&client_secret=" +
+                client_pass_sunat + "&username=" + "20430100344" + u_sol_sunat + "&password=" + c_sol_sunat;
+
             request.AddHeader("Content-Type", "application/x-www-form-urlencoded");
             request.AddHeader("Cookie", "TS019e7fc2=019edc9eb804e5899340ca3cd8b25a1098eb57b21624caa574cefc11fed3597c7bcb5f241fc66c79229d8b9a37710e7b9371a6c2ba");
             request.AddParameter("grant_type", "password");
-            request.AddParameter("scope", "https://api-cpe.sunat.gob.pe");
-            request.AddParameter("client_id", "9613540b-a94d-45c6-b201-7521413ed391");
-            request.AddParameter("client_secret", "gmlqIVugA1+Fgd1wUN6Kyg==");
-            request.AddParameter("username", "20430100344PTIONVAL");
-            request.AddParameter("password", "patocralr");
+            request.AddParameter("scope", scope_sunat);                                 // "https://api-cpe.sunat.gob.pe");
+            request.AddParameter("client_id", client_id_sunat);                         // "9613540b-a94d-45c6-b201-7521413ed391");
+            request.AddParameter("client_secret", client_pass_sunat);                   // "gmlqIVugA1+Fgd1wUN6Kyg==");
+            request.AddParameter("username", "20430100344" + u_sol_sunat);              // "20430100344PTIONVAL");  // Program.ruc + u_sol_sunat
+            request.AddParameter("password", c_sol_sunat);                              // "patocralr");
 
             IRestResponse response = client.Execute(request);
             
@@ -1095,52 +1163,9 @@ namespace TransCarga
             else
             {
                 Token token = JsonConvert.DeserializeObject<Token>(response.Content);
+                retorna = token.access_token;
                 MessageBox.Show(token.access_token);
             }
-
-            return retorna;
-        }
-        private string conex_tokenX()                                                // obtenemos el token de Sunat
-        {
-            string retorna = "";
-            
-            string host = "https://api-seguridad.sunat.gob.pe/v1/clientessol/" + client_id_sunat + "/oauth2/token/";
-            //System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls12;
-            // create a request
-            var httpWebRequest = (HttpWebRequest)WebRequest.Create(host);
-            httpWebRequest.Method = "POST";
-            httpWebRequest.ContentType = "Application/x-www-form-urlencoded";    //  "Application/json";
-            //string postData = "grant_type=password" + "&scope=" + scope_sunat + "&client_id=" + client_id_sunat + "&client_secret=" + 
-            //    client_pass_sunat + "&username=" + Program.ruc + u_sol_sunat + "&password=" + c_sol_sunat;
-            string postData = "grant_type=password" + "&scope=" + scope_sunat + "&client_id=" + client_id_sunat + "&client_secret=" +
-                client_pass_sunat + "&username=" + "20430100344" + u_sol_sunat + "&password=" + c_sol_sunat;
-
-            ASCIIEncoding encoding = new ASCIIEncoding();
-            byte[] bytes = encoding.GetBytes(postData);
-            
-            httpWebRequest.ContentLength = bytes.Length;
-            Stream newStream = httpWebRequest.GetRequestStream();
-            newStream.Write(bytes, 0, bytes.Length);
-            try
-            {
-                var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
-
-                using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
-                {
-                    var result = streamReader.ReadToEnd();
-                    var masticado = JObject.Parse(result);
-                    retorna = masticado["..."].ToString();
-                    if (retorna == null)
-                    {
-                        
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Error");
-            }
-            
             return retorna;
         }
         #endregion
@@ -2712,76 +2737,90 @@ namespace TransCarga
         #region botones
         private void Bt_add_Click(object sender, EventArgs e)
         {
-            Tx_modo.Text = "NUEVO";
-            button1.Image = Image.FromFile(img_grab);
-            panel1.Enabled = true;
-            panel2.Enabled = true;
-            // local usa o no: pre-guias, numeracion automatica de GR
-            DataRow[] fila = dtu.Select("idcodice='" + v_clu + "'");
-            if(fila.Length > 0)
+            if (valiVars() == false)
             {
-                if (fila[0][3].ToString() == "1")   // usa pre guias y consecuentemente la num de las guias automaticas
-                {
-                    sololee();
-                    gbox_serie.Enabled = true;
-                    tx_pregr_num.Enabled = true;
-                    tx_pregr_num.ReadOnly = false;
-                    tx_serie.ReadOnly = true;
-                    tx_numero.ReadOnly = true;
-                    initIngreso();  // limpiamos/preparamos todo para el ingreso
-                    tx_pregr_num.Focus();
-                }
-                if (fila[0][3].ToString() == "0")   // no usa pre guias
-                {
-                    escribe();
-                    tx_serie.Text = "";
-                    initIngreso();
-                    gbox_flete.Enabled = true;
-                    if (fila[0][4].ToString() == "1")   // usa numeracion de guias automáticas
-                    {
-                        tx_numero.Text = "";
-                        tx_n_auto.Text = "A";   // numeracion automatica
-                        cmb_destino.Focus();
-                    }
-                    else
-                    {                                   // usamos numeracion de guias manual
-                        tx_n_auto.Text = "M";   // numeracion manual
-                        tx_numero.Enabled = true;
-                        tx_numero.ReadOnly = false;
-                        tx_numero.Text = "";
-                        tx_numero.Focus();
-                    }
-                }
+                Bt_close.PerformClick();
             }
-            // Guía va con flete impreso?
-            chk_flete.Enabled = true;
-            if (vtc_flete == "SI") chk_flete.Checked = true;
-            else chk_flete.Checked = false;
-            Bt_ini.Enabled = false;
-            Bt_sig.Enabled = false;
-            Bt_ret.Enabled = false;
-            Bt_fin.Enabled = false;
-            tx_numero.Focus();              //cmb_destino.Focus();
+            else
+            {
+                Tx_modo.Text = "NUEVO";
+                button1.Image = Image.FromFile(img_grab);
+                panel1.Enabled = true;
+                panel2.Enabled = true;
+                // local usa o no: pre-guias, numeracion automatica de GR
+                DataRow[] fila = dtu.Select("idcodice='" + v_clu + "'");
+                if (fila.Length > 0)
+                {
+                    if (fila[0][3].ToString() == "1")   // usa pre guias y consecuentemente la num de las guias automaticas
+                    {
+                        sololee();
+                        gbox_serie.Enabled = true;
+                        tx_pregr_num.Enabled = true;
+                        tx_pregr_num.ReadOnly = false;
+                        tx_serie.ReadOnly = true;
+                        tx_numero.ReadOnly = true;
+                        initIngreso();  // limpiamos/preparamos todo para el ingreso
+                        tx_pregr_num.Focus();
+                    }
+                    if (fila[0][3].ToString() == "0")   // no usa pre guias
+                    {
+                        escribe();
+                        tx_serie.Text = "";
+                        initIngreso();
+                        gbox_flete.Enabled = true;
+                        if (fila[0][4].ToString() == "1")   // usa numeracion de guias automáticas
+                        {
+                            tx_numero.Text = "";
+                            tx_n_auto.Text = "A";   // numeracion automatica
+                            cmb_destino.Focus();
+                        }
+                        else
+                        {                                   // usamos numeracion de guias manual
+                            tx_n_auto.Text = "M";   // numeracion manual
+                            tx_numero.Enabled = true;
+                            tx_numero.ReadOnly = false;
+                            tx_numero.Text = "";
+                            tx_numero.Focus();
+                        }
+                    }
+                }
+                // Guía va con flete impreso?
+                chk_flete.Enabled = true;
+                if (vtc_flete == "SI") chk_flete.Checked = true;
+                else chk_flete.Checked = false;
+                Bt_ini.Enabled = false;
+                Bt_sig.Enabled = false;
+                Bt_ret.Enabled = false;
+                Bt_fin.Enabled = false;
+                tx_numero.Focus();              //cmb_destino.Focus();
+            }
         }
         private void Bt_edit_Click(object sender, EventArgs e)
         {
-            escribe();
-            panel1.Enabled = true;
-            panel2.Enabled = true;
-            Tx_modo.Text = "EDITAR";
-            button1.Image = Image.FromFile(img_grab);
-            initIngreso();
-            //if (v_uedo.ToUpper().Contains(asd.ToUpper()) == true) tx_docsOr.Enabled = true;
-            tx_obser1.Enabled = true;
-            tx_pregr_num.Text = "";
-            tx_numero.Text = "";
-            tx_numero.ReadOnly = false;
-            tx_serie.Focus();
-            //
-            Bt_ini.Enabled = true;
-            Bt_sig.Enabled = true;
-            Bt_ret.Enabled = true;
-            Bt_fin.Enabled = true;
+            if (valiVars() == false)
+            {
+                Bt_close.PerformClick();
+            }
+            else
+            {
+                escribe();
+                panel1.Enabled = true;
+                panel2.Enabled = true;
+                Tx_modo.Text = "EDITAR";
+                button1.Image = Image.FromFile(img_grab);
+                initIngreso();
+                //if (v_uedo.ToUpper().Contains(asd.ToUpper()) == true) tx_docsOr.Enabled = true;
+                tx_obser1.Enabled = true;
+                tx_pregr_num.Text = "";
+                tx_numero.Text = "";
+                tx_numero.ReadOnly = false;
+                tx_serie.Focus();
+                //
+                Bt_ini.Enabled = true;
+                Bt_sig.Enabled = true;
+                Bt_ret.Enabled = true;
+                Bt_fin.Enabled = true;
+            }
         }
         private void Bt_close_Click(object sender, EventArgs e)
         {
@@ -2829,38 +2868,52 @@ namespace TransCarga
         }
         private void Bt_anul_Click(object sender, EventArgs e)
         {
-            sololee();
-            Tx_modo.Text = "ANULAR";
-            button1.Image = Image.FromFile(img_anul);
-            initIngreso();
-            tx_obser1.Enabled = true;
-            gbox_serie.Enabled = true;
-            tx_serie.ReadOnly = false;
-            tx_numero.ReadOnly = false;
-            tx_serie.Focus();
-            //
-            Bt_ini.Enabled = true;
-            Bt_sig.Enabled = true;
-            Bt_ret.Enabled = true;
-            Bt_fin.Enabled = true;
+            if (valiVars() == false)
+            {
+                Bt_close.PerformClick();
+            }
+            else
+            {
+                sololee();
+                Tx_modo.Text = "ANULAR";
+                button1.Image = Image.FromFile(img_anul);
+                initIngreso();
+                tx_obser1.Enabled = true;
+                gbox_serie.Enabled = true;
+                tx_serie.ReadOnly = false;
+                tx_numero.ReadOnly = false;
+                tx_serie.Focus();
+                //
+                Bt_ini.Enabled = true;
+                Bt_sig.Enabled = true;
+                Bt_ret.Enabled = true;
+                Bt_fin.Enabled = true;
+            }
         }
         private void Bt_ver_Click(object sender, EventArgs e)
         {
-            sololee();
-            panel1.Enabled = false;
-            panel2.Enabled = false;
-            Tx_modo.Text = "VISUALIZAR";
-            button1.Image = Image.FromFile(img_ver);
-            initIngreso();
-            gbox_serie.Enabled = true;
-            tx_serie.ReadOnly = false;
-            tx_numero.ReadOnly = false;
-            tx_serie.Focus();
-            //
-            Bt_ini.Enabled = true;
-            Bt_sig.Enabled = true;
-            Bt_ret.Enabled = true;
-            Bt_fin.Enabled = true;
+            if (valiVars() == false)
+            {
+                Bt_close.PerformClick();
+            }
+            else
+            {
+                sololee();
+                panel1.Enabled = false;
+                panel2.Enabled = false;
+                Tx_modo.Text = "VISUALIZAR";
+                button1.Image = Image.FromFile(img_ver);
+                initIngreso();
+                gbox_serie.Enabled = true;
+                tx_serie.ReadOnly = false;
+                tx_numero.ReadOnly = false;
+                tx_serie.Focus();
+                //
+                Bt_ini.Enabled = true;
+                Bt_sig.Enabled = true;
+                Bt_ret.Enabled = true;
+                Bt_fin.Enabled = true;
+            }
         }
         private void Bt_first_Click(object sender, EventArgs e)
         {
@@ -3580,5 +3633,25 @@ namespace TransCarga
         public string token_type { get; set; }
         public int expires_in { get; set; }
     }
-    
+    public static class DocumentExtensions
+    {
+        public static XmlDocument ToXmlDocument(this XDocument xDocument)
+        {
+            var xmlDocument = new XmlDocument();
+            using (var xmlReader = xDocument.CreateReader())
+            {
+                xmlDocument.Load(xmlReader);
+            }
+            return xmlDocument;
+        }
+
+        public static XDocument ToXDocument(this XmlDocument xmlDocument)
+        {
+            using (var nodeReader = new XmlNodeReader(xmlDocument))
+            {
+                nodeReader.MoveToContent();
+                return XDocument.Load(nodeReader);
+            }
+        }
+    }
 }
