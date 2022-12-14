@@ -105,6 +105,7 @@ namespace TransCarga
         string texmotran = "";          // texto modalidad de transporte
         string codtxmotran = "";        // codigo motivo de traslado de bienes
         int ccf_pdf = 0;                // cantidad de caracteres por fila limite para detalle de cargas unicas
+        string rucsEmcoper = "";        // rucs separados por comas para el modelo especial de pdf de Emcoper coordinado con PSnet 07/12/2022 
         //
         static libreria lib = new libreria();   // libreria de procedimientos
         publico lp = new publico();             // libreria de clases
@@ -400,7 +401,8 @@ namespace TransCarga
                             if (row["param"].ToString() == "userdscto") cusdscto = row["valor"].ToString();                 // usuarios que pueden hacer descuentos
                             if (row["param"].ToString() == "cltesBol") tdocsBol = row["valor"].ToString();                  // tipos de documento de clientes para boletas
                             if (row["param"].ToString() == "cltesFac") tdocsFac = row["valor"].ToString();
-                            if (row["param"].ToString() == "pagaSN") v_habpago = row["valor"].ToString();                  // permite cancelar en el form, SI o NO
+                            if (row["param"].ToString() == "pagaSN") v_habpago = row["valor"].ToString();                     // permite cancelar en el form, SI o NO
+                            if (row["param"].ToString() == "emcoper") rucsEmcoper = row["valor"].ToString();                  // rucs separados por comas, formato Emcoper del pdf coordinado con PeruSecurenet 07/12/2022
                         }
                         if (row["campo"].ToString() == "impresion")
                         {
@@ -1200,6 +1202,8 @@ namespace TransCarga
             tcfe.Columns.Add("fvencto");    // fecha de vencimiento de la fact credito yyyy-mm-dd
             tcfe.Columns.Add("_codgui");    // Código de la guia de remision TRANSPORTISTA
             tcfe.Columns.Add("_scotro");    // serie y numero concatenado de la guia
+            tcfe.Columns.Add("codgrem");
+            tcfe.Columns.Add("scogrem");
             tcfe.Columns.Add("obser1");     // observacion del documento
             tcfe.Columns.Add("obser2");     // mas observaciones
             tcfe.Columns.Add("maiAdq");     // correo del adquiriente
@@ -1968,6 +1972,16 @@ namespace TransCarga
             //row["conPago"] = "01";                                                      // condicion de pago
             row["_codgui"] = "31";                                                      // Código de la guia de remision TRANSPORTISTA
             row["_scotro"] = dataGridView1.Rows[0].Cells[0].Value.ToString();           // serie y numero concatenado de la guia
+            if (chk_cunica.Checked == true && rucsEmcoper.Contains(tx_numDocRem.Text))  // caso especial emcoper
+            {
+                row["codgrem"] = "99";                                                      // Código de la guia de remision REMITENTE -------------| esto aplica
+                row["scogrem"] = dataGridView1.Rows[0].Cells[8].Value.ToString().Trim();           // serie y numero concatenado de la guia del remitente--| a cargas unicas
+            }
+            else
+            {
+                row["codgrem"] = "";
+                row["scogrem"] = "";
+            }
             row["obser1"] = tx_obser1.Text.Trim();                                      // observacion del documento
             //row["obser2"] = "";                                                         // mas observaciones
             row["maiAdq"] = tx_email.Text.Trim();                                       // correo del adquiriente
@@ -2164,49 +2178,91 @@ namespace TransCarga
                 row["Icantid"] = "1.00";                                                    // Cantidad de items   n(12,3)         16
                 if (chk_cunica.Checked == true && tx_dat_tdv.Text == codfact)               // datos para el pdf si es carga unica
                 {
-                    char saltoL = (char)8;  //   //(char)30;
+                    char saltoL = (char)8;
                     char saltoL5 = (char)5;
                     int ld = 0;
-                    if (dataGridView1.Rows.Count > 2)
+                    if (rucsEmcoper.Contains(tx_numDocRem.Text))    // caso especial Empcoper 27/12/2022
                     {
-                        ld = dataGridView1.Rows[s].Cells["Descrip"].Value.ToString().Length;
-                        if (ld > ccf_pdf)
+                        if (dataGridView1.Rows.Count > 2)
                         {
-                            row["Idatper"] = dataGridView1.Rows[s].Cells["Descrip"].Value.ToString().Substring(0,ccf_pdf) + saltoL + saltoL5 +
-                                dataGridView1.Rows[s].Cells["Descrip"].Value.ToString().Substring(ccf_pdf,ld-ccf_pdf) + saltoL + saltoL5 +
-                                dataGridView1.Rows[s].Cells["Cant"].Value.ToString() + " " + tx_dat_nombd.Text + saltoL + saltoL5 +
-                                "GUIA TRANSPORTISTA " + dataGridView1.Rows[s].Cells["guias"].Value.ToString() + saltoL + saltoL5 +
-                                "GUIA REMITENTE " + dataGridView1.Rows[s].Cells["guiasclte"].Value.ToString();  // tx_totcant.Text
+                            row["Idescri"] = dataGridView1.Rows[s].Cells["Descrip"].Value.ToString();   // Descripcion
+                            ld = dataGridView1.Rows[s].Cells["Descrip"].Value.ToString().Length;
+                            if (ld > ccf_pdf)
+                            {
+                                row["Idatper"] = dataGridView1.Rows[s].Cells["Descrip"].Value.ToString().Substring(0, ccf_pdf) + saltoL + saltoL5 +
+                                    dataGridView1.Rows[s].Cells["Descrip"].Value.ToString().Substring(ccf_pdf, ld - ccf_pdf) + saltoL + saltoL5 +
+                                    dataGridView1.Rows[s].Cells["Cant"].Value.ToString() + " " + tx_dat_nombd.Text;
+                            }
+                            else
+                            {
+                                row["Idatper"] = dataGridView1.Rows[s].Cells["Descrip"].Value.ToString() + saltoL + saltoL5 +
+                                    dataGridView1.Rows[s].Cells["Cant"].Value.ToString() + " " + tx_dat_nombd.Text;
+                            }
+                            //row["Idescri"] = glosser;
+                            row["Icantid"] = Math.Round((double.Parse(dataGridView1.Rows[s].Cells["Cant"].Value.ToString()) * double.Parse(tx_cetm.Text)) / double.Parse(tx_totcant.Text), 2);
                         }
                         else
                         {
-                            row["Idatper"] = dataGridView1.Rows[s].Cells["Descrip"].Value.ToString() + saltoL + saltoL5 +
-                                dataGridView1.Rows[s].Cells["Cant"].Value.ToString() + " " + tx_dat_nombd.Text + saltoL + saltoL5 +
-                                "GUIA TRANSPORTISTA " + dataGridView1.Rows[s].Cells["guias"].Value.ToString() + saltoL + saltoL5 +
-                                "GUIA REMITENTE " + dataGridView1.Rows[s].Cells["guiasclte"].Value.ToString();  // tx_totcant.Text
+                            ld = dataGridView1.Rows[s].Cells["Descrip"].Value.ToString().Length;
+                            if (ld > ccf_pdf)
+                            {
+                                row["Idatper"] = dataGridView1.Rows[s].Cells["Descrip"].Value.ToString().Substring(0, ccf_pdf) + saltoL + saltoL5 +
+                                    dataGridView1.Rows[s].Cells["Descrip"].Value.ToString().Substring(ccf_pdf, ld - ccf_pdf) + saltoL + saltoL5 +
+                                    dataGridView1.Rows[s].Cells["Cant"].Value.ToString() + " " + tx_dat_nombd.Text;
+                            }
+                            else
+                            {
+                                row["Idatper"] = dataGridView1.Rows[s].Cells["Descrip"].Value.ToString() + saltoL + saltoL5 +
+                                    dataGridView1.Rows[s].Cells["Cant"].Value.ToString() + " " + tx_dat_nombd.Text;
+                            }
+                            //row["Idescri"] = glosser;
+                            row["Idescri"] = dataGridView1.Rows[s].Cells["Descrip"].Value.ToString();   // Descripcion
+                            row["Icantid"] = Math.Round((double.Parse(dataGridView1.Rows[s].Cells["Cant"].Value.ToString()) * double.Parse(tx_cetm.Text)) / double.Parse(tx_totcant.Text), 2);
                         }
-                        row["Idescri"] = glosser;
-                        row["Icantid"] = Math.Round((double.Parse(dataGridView1.Rows[s].Cells["Cant"].Value.ToString()) * double.Parse(tx_cetm.Text)) / double.Parse(tx_totcant.Text), 2);
                     }
                     else
                     {
-                        ld = dataGridView1.Rows[s].Cells["Descrip"].Value.ToString().Length;
-                        if (ld > ccf_pdf)
+                        if (dataGridView1.Rows.Count > 2)
                         {
-                            row["Idatper"] = dataGridView1.Rows[s].Cells["Descrip"].Value.ToString().Substring(0, ccf_pdf) + saltoL + saltoL5 +
-                                dataGridView1.Rows[s].Cells["Descrip"].Value.ToString().Substring(ccf_pdf, ld-ccf_pdf) + saltoL + saltoL5 +
-                                dataGridView1.Rows[s].Cells["Cant"].Value.ToString() + " " + tx_dat_nombd.Text + saltoL + saltoL5 +
-                                "GUIA TRANSPORTISTA " + dataGridView1.Rows[s].Cells["guias"].Value.ToString() + saltoL + saltoL5 +
-                                "GUIA REMITENTE " + dataGridView1.Rows[s].Cells["guiasclte"].Value.ToString();  // tx_totcant.Text
+                            ld = dataGridView1.Rows[s].Cells["Descrip"].Value.ToString().Length;
+                            if (ld > ccf_pdf)
+                            {
+                                row["Idatper"] = dataGridView1.Rows[s].Cells["Descrip"].Value.ToString().Substring(0, ccf_pdf) + saltoL + saltoL5 +
+                                    dataGridView1.Rows[s].Cells["Descrip"].Value.ToString().Substring(ccf_pdf, ld - ccf_pdf) + saltoL + saltoL5 +
+                                    dataGridView1.Rows[s].Cells["Cant"].Value.ToString() + " " + tx_dat_nombd.Text + saltoL + saltoL5 +
+                                    "GUIA TRANSPORTISTA " + dataGridView1.Rows[s].Cells["guias"].Value.ToString() + saltoL + saltoL5 +
+                                    "GUIA REMITENTE " + dataGridView1.Rows[s].Cells["guiasclte"].Value.ToString();  // tx_totcant.Text
+                            }
+                            else
+                            {
+                                row["Idatper"] = dataGridView1.Rows[s].Cells["Descrip"].Value.ToString() + saltoL + saltoL5 +
+                                    dataGridView1.Rows[s].Cells["Cant"].Value.ToString() + " " + tx_dat_nombd.Text + saltoL + saltoL5 +
+                                    "GUIA TRANSPORTISTA " + dataGridView1.Rows[s].Cells["guias"].Value.ToString() + saltoL + saltoL5 +
+                                    "GUIA REMITENTE " + dataGridView1.Rows[s].Cells["guiasclte"].Value.ToString();  // tx_totcant.Text
+                            }
+                            row["Idescri"] = glosser;
+                            row["Icantid"] = Math.Round((double.Parse(dataGridView1.Rows[s].Cells["Cant"].Value.ToString()) * double.Parse(tx_cetm.Text)) / double.Parse(tx_totcant.Text), 2);
                         }
                         else
                         {
-                            row["Idatper"] = dataGridView1.Rows[s].Cells["Descrip"].Value.ToString() + saltoL + saltoL5 +
-                                dataGridView1.Rows[s].Cells["Cant"].Value.ToString() + " " + tx_dat_nombd.Text + saltoL + saltoL5 +
-                                "GUIA REMITENTE " + dataGridView1.Rows[s].Cells["guiasclte"].Value.ToString();  // tx_totcant.Text
+                            ld = dataGridView1.Rows[s].Cells["Descrip"].Value.ToString().Length;
+                            if (ld > ccf_pdf)
+                            {
+                                row["Idatper"] = dataGridView1.Rows[s].Cells["Descrip"].Value.ToString().Substring(0, ccf_pdf) + saltoL + saltoL5 +
+                                    dataGridView1.Rows[s].Cells["Descrip"].Value.ToString().Substring(ccf_pdf, ld - ccf_pdf) + saltoL + saltoL5 +
+                                    dataGridView1.Rows[s].Cells["Cant"].Value.ToString() + " " + tx_dat_nombd.Text + saltoL + saltoL5 +
+                                    "GUIA TRANSPORTISTA " + dataGridView1.Rows[s].Cells["guias"].Value.ToString() + saltoL + saltoL5 +
+                                    "GUIA REMITENTE " + dataGridView1.Rows[s].Cells["guiasclte"].Value.ToString();  // tx_totcant.Text
+                            }
+                            else
+                            {
+                                row["Idatper"] = dataGridView1.Rows[s].Cells["Descrip"].Value.ToString() + saltoL + saltoL5 +
+                                    dataGridView1.Rows[s].Cells["Cant"].Value.ToString() + " " + tx_dat_nombd.Text + saltoL + saltoL5 +
+                                    "GUIA REMITENTE " + dataGridView1.Rows[s].Cells["guiasclte"].Value.ToString();  // tx_totcant.Text
+                            }
+                            row["Idescri"] = glosser;
+                            row["Icantid"] = Math.Round((double.Parse(dataGridView1.Rows[s].Cells["Cant"].Value.ToString()) * double.Parse(tx_cetm.Text)) / double.Parse(tx_totcant.Text), 2);
                         }
-                        row["Idescri"] = glosser;
-                        row["Icantid"] = Math.Round((double.Parse(dataGridView1.Rows[s].Cells["Cant"].Value.ToString()) * double.Parse(tx_cetm.Text)) / double.Parse(tx_totcant.Text), 2);
                     }
                 }
                 if (dataGridView1.Rows[s].Cells["valorel"].Value == null || dataGridView1.Rows[s].Cells["valorel"].Value.ToString().Trim() == "0.000" || dataGridView1.Rows[s].Cells["valorel"].Value.ToString().Trim() == "")
@@ -2342,7 +2398,7 @@ namespace TransCarga
                 "" + sep + "" + sep +                           // 31,32 Número del pedido, Número de la orden de compra
                 "" + sep + "" + sep + "" + sep + "" + sep +     // 33,34,35,36 sector publico: Numero de Expediente,Código de unidad ejecutora, Nº de contrato,Nº de proceso de selección
                 row["_codgui"] + sep + row["_scotro"] + sep +   // 37,38 tipo de guia y serie+numero
-                "" + sep + "" + sep +                           // 39,40 Tipo otro doc relacionado, numero doc relacionado
+                row["codgrem"] + sep + row["scogrem"] + sep +   // 39,40 Tipo otro doc relacionado, numero doc relacionado .. Guía remitente y numero ... SOLO PARA EMCOPER 
                 "" + sep + "" + sep + "" + sep + "" + sep + "" + sep + "" + sep + "" + sep +  // varios campos opcionales
                 "" + sep +                                      // 48 pais de uso si es 0201 o 0208 V.3006
                 row["obser1"] + sep + row["obser2"] + sep + "" + sep +    // 49,50,51 observaciones del documento 1 y 2
@@ -3131,9 +3187,9 @@ namespace TransCarga
                     {
                         if (lib.DirectoryVisible(rutatxt) == true)      // OJO, crear ruta aunque sea para las notas de venta sin fact. electronica 15/08/2021
                         {
-                            if (graba() == true)
+                            if (factElec(nipfe, "txt", "alta", 0) == true)
                             {
-                                if (factElec(nipfe, "txt", "alta", 0) == true)       // facturacion electrónica
+                                if (graba() == true)       // facturacion electrónica
                                 {
                                     // actualizamos la tabla seguimiento de usuarios
                                     string resulta = lib.ult_mov(nomform, nomtab, asd);
@@ -3152,10 +3208,14 @@ namespace TransCarga
                                 }
                                 else
                                 {
+                                    /*
                                     MessageBox.Show("No se puede generar el documento de venta electrónico" + Environment.NewLine +
                                         "Se generó una anulación interna para el presente documento", "Error en proveedor de Fact.Electrónica");
                                     iserror = "si";
                                     anula("INT");
+                                    */
+                                    MessageBox.Show("No se puede grabar el documento de venta electrónico", "Error en conexión");
+                                    iserror = "si";
                                 }
                             }
                             else
