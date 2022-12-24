@@ -2190,13 +2190,13 @@ namespace TransCarga
                             if (ld > ccf_pdf)
                             {
                                 row["Idatper"] = dataGridView1.Rows[s].Cells["Descrip"].Value.ToString().Substring(0, ccf_pdf) + saltoL + saltoL5 +
-                                    dataGridView1.Rows[s].Cells["Descrip"].Value.ToString().Substring(ccf_pdf, ld - ccf_pdf) + saltoL + saltoL5 +
-                                    dataGridView1.Rows[s].Cells["Cant"].Value.ToString() + " " + tx_dat_nombd.Text;
+                                    dataGridView1.Rows[s].Cells["Descrip"].Value.ToString().Substring(ccf_pdf, ld - ccf_pdf);   // + saltoL + saltoL5 +
+                                    //dataGridView1.Rows[s].Cells["Cant"].Value.ToString() + " " + tx_dat_nombd.Text;
                             }
                             else
                             {
-                                row["Idatper"] = dataGridView1.Rows[s].Cells["Descrip"].Value.ToString() + saltoL + saltoL5 +
-                                    dataGridView1.Rows[s].Cells["Cant"].Value.ToString() + " " + tx_dat_nombd.Text;
+                                row["Idatper"] = dataGridView1.Rows[s].Cells["Descrip"].Value.ToString();   // + saltoL + saltoL5 +
+                                    //dataGridView1.Rows[s].Cells["Cant"].Value.ToString() + " " + tx_dat_nombd.Text;
                             }
                             //row["Idescri"] = glosser;
                             row["Icantid"] = Math.Round((double.Parse(dataGridView1.Rows[s].Cells["Cant"].Value.ToString()) * double.Parse(tx_cetm.Text)) / double.Parse(tx_totcant.Text), 2);
@@ -2207,13 +2207,13 @@ namespace TransCarga
                             if (ld > ccf_pdf)
                             {
                                 row["Idatper"] = dataGridView1.Rows[s].Cells["Descrip"].Value.ToString().Substring(0, ccf_pdf) + saltoL + saltoL5 +
-                                    dataGridView1.Rows[s].Cells["Descrip"].Value.ToString().Substring(ccf_pdf, ld - ccf_pdf) + saltoL + saltoL5 +
-                                    dataGridView1.Rows[s].Cells["Cant"].Value.ToString() + " " + tx_dat_nombd.Text;
+                                    dataGridView1.Rows[s].Cells["Descrip"].Value.ToString().Substring(ccf_pdf, ld - ccf_pdf);   // + saltoL + saltoL5 +
+                                    //dataGridView1.Rows[s].Cells["Cant"].Value.ToString() + " " + tx_dat_nombd.Text;
                             }
                             else
                             {
-                                row["Idatper"] = dataGridView1.Rows[s].Cells["Descrip"].Value.ToString() + saltoL + saltoL5 +
-                                    dataGridView1.Rows[s].Cells["Cant"].Value.ToString() + " " + tx_dat_nombd.Text;
+                                row["Idatper"] = dataGridView1.Rows[s].Cells["Descrip"].Value.ToString(); //+ saltoL + saltoL5 +
+                                    //dataGridView1.Rows[s].Cells["Cant"].Value.ToString() + " " + tx_dat_nombd.Text;
                             }
                             //row["Idescri"] = glosser;
                             row["Idescri"] = dataGridView1.Rows[s].Cells["Descrip"].Value.ToString();   // Descripcion
@@ -3187,9 +3187,9 @@ namespace TransCarga
                     {
                         if (lib.DirectoryVisible(rutatxt) == true)      // OJO, crear ruta aunque sea para las notas de venta sin fact. electronica 15/08/2021
                         {
-                            if (factElec(nipfe, "txt", "alta", 0) == true)
+                            if (graba() == true)  // 
                             {
-                                if (graba() == true)       // facturacion electrónica
+                                if (factElec(nipfe, "txt", "alta", 0) == true)       // facturacion electrónica
                                 {
                                     // actualizamos la tabla seguimiento de usuarios
                                     string resulta = lib.ult_mov(nomform, nomtab, asd);
@@ -3208,14 +3208,14 @@ namespace TransCarga
                                 }
                                 else
                                 {
-                                    /*
                                     MessageBox.Show("No se puede generar el documento de venta electrónico" + Environment.NewLine +
                                         "Se generó una anulación interna para el presente documento", "Error en proveedor de Fact.Electrónica");
                                     iserror = "si";
                                     anula("INT");
-                                    */
+                                    /*
                                     MessageBox.Show("No se puede grabar el documento de venta electrónico", "Error en conexión");
                                     iserror = "si";
+                                    */
                                 }
                             }
                             else

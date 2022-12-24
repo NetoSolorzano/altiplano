@@ -347,4 +347,4 @@ form facelect, si el ruc del cliente de la factura es: 20370038083 o 20170276621
 				marcado el check de "Carga Unica" aplica estos cambios:
 				- Las guías del cliente van en la parte superior derecha en el formato pdf
 				- La descripción del detalle solo va lo que escribe el operador
-
+				.................................................................................... 
