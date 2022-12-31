@@ -2154,7 +2154,12 @@ namespace TransCarga
                     row["codleyt"] = "1000";            // codigoLeyenda 1 - valor en letras
                     row["codleyd"] = "2006";
                     row["tipOper"] = "1001";
-                    row["totdet"] = Math.Round(double.Parse(tx_fletMN.Text) * double.Parse(Program.pordetra) / 100, 2);    // totalDetraccion
+                    if (tx_valref1.Text.Trim() != "" && double.Parse(tx_valref1.Text) > 0)   // usamos en los casos en que el cliente quiere el calculo de la detraccion según el valor referencial o no
+                    {
+                        row["totdet"] = Math.Round(double.Parse(tx_valref1.Text) * double.Parse(Program.pordetra) / 100, 2);    // totalDetraccion en base al valor referencial
+                    }
+                    else row["totdet"] = Math.Round(double.Parse(tx_fletMN.Text) * double.Parse(Program.pordetra) / 100, 2);    // totalDetraccion "normal"
+                    //
                     glosdet = glosdet + " " + row["d_ctade"];                // leyenda de la detración
                     row["glosdet"] = glosdet;
                 }
@@ -2427,7 +2432,15 @@ namespace TransCarga
             {
                 string fansi = tx_fechope.Text.Substring(6, 4) + "-" + tx_fechope.Text.Substring(3, 2) + "-" + tx_fechope.Text.Substring(0, 2);
                 string _fechc = DateTime.Parse(fansi).AddDays(double.Parse(tx_dat_dpla.Text)).Date.ToString("yyyy-MM-dd");        // fecha de emision + dias plazo credito
-                string vneto = Math.Round(double.Parse(row["_totven"].ToString()) - double.Parse(row["totdet"].ToString()),2).ToString("#0.00"); // 
+                string vneto = "0";
+                if (cmb_mon.SelectedIndex == 0) // operacion en soles
+                {
+                    vneto = Math.Round(double.Parse(row["_totven"].ToString()) - double.Parse(row["totdet"].ToString()),2).ToString("#0.00"); 
+                }
+                else
+                {                               // operacion en dolares
+                    vneto = Math.Round(double.Parse(row["_totven"].ToString()) - double.Parse(row["totdet"].ToString()) / double.Parse(tx_tipcam.Text), 2).ToString("#0.00");
+                }
                 writer.WriteLine("ENCABEZADO-CREDITO" + sep +
                     vneto + sep                        // OJO, las ventas a credito, son totales, no tenemos pagos parciales facturados, factura = pago total
                     );
@@ -2529,46 +2542,93 @@ namespace TransCarga
                 //DataRow rdrow = tdfe.Rows[0];
                 // tdfe.Rows[0].ItemArray[4].ToString().Replace(vint_gg," ") + sep +                    // 6 Descripcion 
                 // tx_totcant.Text + " " + tdfe.Rows[0].ItemArray[8].ToString() + sep +        // 7 descricion de la glosa del item   250
-                foreach (DataRow rdrow in tdfe.Rows)
+                if (rucsEmcoper.Contains(tx_numDocRem.Text))
                 {
-                    writer.WriteLine(
-                        "ITEM" + sep +
-                        rdrow["Inumord"] + sep +        // "1"      // 2 orden
-                        rdrow["Idatper"] + sep +                    // 3 Datos personilazados del item       
-                        "TNE" + sep +                               // 4 Unidad de medida                    3
-                        rdrow["Icantid"] + sep +    // tx_cetm.Text.Trim()             // 5 Cantidad de items             n(12,2)
-                        rdrow["Idescri"] + sep +                    // 6 Descripcion                       500
-                        "" + sep +                                  // 7 descricion de la glosa del item   250
-                        rdrow["Icodprd"] + sep +                    // 8 codigo del producto del cliente    30
-                        rdrow["Icodpro"] + sep +                    // 9 codigo del producto SUNAT           8
-                        rdrow["Icodgs1"] + sep +                    // 10 codigo del producto GS1           14
-                        rdrow["Icogtin"] + sep +                    // 11 tipo de producto GTIN             14
-                        rdrow["Inplaca"] + sep +                    // 12 numero placa de vehiculo
-                        rdrow["Ivaluni"] + sep +                    // 13 Valor unitario del item SIN IMPUESTO 
-                        rdrow["Ipreuni"] + sep +                    // 14 Precio de venta unitario CON IGV
-                        rdrow["Ivalref"] + sep +                    // 15 valor referencial del item cuando la venta es gratuita
-                        rdrow["Iigvite"] + sep +                     // 16 monto igv   .. ."_msigv"
-                        rdrow["Icatigv"] + sep +                    // 17 tipo/codigo de afectacion igv
-                        rdrow["Itasigv"] + sep +                    // 18 tasa del igv
-                        rdrow["Iigvite"] + sep +                    // 19 monto IGV del item
-                        rdrow["Icodtri"] + sep +                    // 20 codigo del tributo por item
-                        rdrow["Iiscmba"] + sep +                    // 21 ISC monto base
-                        rdrow["Iisctas"] + sep +                    // 22 ISC tasa del tributo
-                        rdrow["Iisctip"] + sep +                    // 23 ISC tipo de afectacion
-                        rdrow["Iiscmon"] + sep +                    // 24 ISC monto del tributo
-                        rdrow["Icbper1"] + sep +                    // 25 indicador de afecto a ICBPER
-                        rdrow["Icbper2"] + sep +                    // 26 monto unitario de ICBPER
-                        rdrow["Icbper3"] + sep +                    // 27 monto total ICBPER del item
-                        rdrow["Iotrtri"] + sep +                    // 28 otros tributos monto base
-                        rdrow["Iotrtas"] + sep +                    // 29 otros tributos tasa del tributo
-                        rdrow["Iotrlin"] + sep +                    // 30 otros tributos monto unitario
-                        rdrow["Itdscto"] + sep +                    // 31 Descuentos por ítem
-                        rdrow["Iincard"] + sep +                    // 32 indicador de cargo/descuento
-                        rdrow["Icodcde"] + sep +                    // 33 codigo de cargo/descuento
-                        rdrow["Ifcades"] + sep +                    // 34 Factor de cargo/descuento
-                        rdrow["Imoncde"] + sep +                    // 35 Monto de cargo/descuento
-                        rdrow["Imobacd"] + sep +                    // 36 Monto base del cargo/descuento
-                        rdrow["Ivalvta"] + sep);                    // 37 Valor de venta del ítem
+                    foreach (DataRow rdrow in tdfe.Rows)
+                    {
+                        writer.WriteLine(
+                            "ITEM" + sep +
+                            rdrow["Inumord"] + sep +        // "1"      // 2 orden
+                            "" + sep +                    // 3 Datos personilazados del item       
+                            "TNE" + sep +                               // 4 Unidad de medida                    3
+                            rdrow["Icantid"] + sep +                    // tx_cetm.Text.Trim()             // 5 Cantidad de items             n(12,2)
+                            rdrow["Idatper"] + sep +                    // 6 Descripcion                       500
+                            "" + sep +                                  // 7 descricion de la glosa del item   250
+                            rdrow["Icodprd"] + sep +                    // 8 codigo del producto del cliente    30
+                            rdrow["Icodpro"] + sep +                    // 9 codigo del producto SUNAT           8
+                            rdrow["Icodgs1"] + sep +                    // 10 codigo del producto GS1           14
+                            rdrow["Icogtin"] + sep +                    // 11 tipo de producto GTIN             14
+                            rdrow["Inplaca"] + sep +                    // 12 numero placa de vehiculo
+                            rdrow["Ivaluni"] + sep +                    // 13 Valor unitario del item SIN IMPUESTO 
+                            rdrow["Ipreuni"] + sep +                    // 14 Precio de venta unitario CON IGV
+                            rdrow["Ivalref"] + sep +                    // 15 valor referencial del item cuando la venta es gratuita
+                            rdrow["Iigvite"] + sep +                     // 16 monto igv   .. ."_msigv"
+                            rdrow["Icatigv"] + sep +                    // 17 tipo/codigo de afectacion igv
+                            rdrow["Itasigv"] + sep +                    // 18 tasa del igv
+                            rdrow["Iigvite"] + sep +                    // 19 monto IGV del item
+                            rdrow["Icodtri"] + sep +                    // 20 codigo del tributo por item
+                            rdrow["Iiscmba"] + sep +                    // 21 ISC monto base
+                            rdrow["Iisctas"] + sep +                    // 22 ISC tasa del tributo
+                            rdrow["Iisctip"] + sep +                    // 23 ISC tipo de afectacion
+                            rdrow["Iiscmon"] + sep +                    // 24 ISC monto del tributo
+                            rdrow["Icbper1"] + sep +                    // 25 indicador de afecto a ICBPER
+                            rdrow["Icbper2"] + sep +                    // 26 monto unitario de ICBPER
+                            rdrow["Icbper3"] + sep +                    // 27 monto total ICBPER del item
+                            rdrow["Iotrtri"] + sep +                    // 28 otros tributos monto base
+                            rdrow["Iotrtas"] + sep +                    // 29 otros tributos tasa del tributo
+                            rdrow["Iotrlin"] + sep +                    // 30 otros tributos monto unitario
+                            rdrow["Itdscto"] + sep +                    // 31 Descuentos por ítem
+                            rdrow["Iincard"] + sep +                    // 32 indicador de cargo/descuento
+                            rdrow["Icodcde"] + sep +                    // 33 codigo de cargo/descuento
+                            rdrow["Ifcades"] + sep +                    // 34 Factor de cargo/descuento
+                            rdrow["Imoncde"] + sep +                    // 35 Monto de cargo/descuento
+                            rdrow["Imobacd"] + sep +                    // 36 Monto base del cargo/descuento
+                            rdrow["Ivalvta"] + sep);                    // 37 Valor de venta del ítem
+                    }
+                }
+                else
+                {
+                    foreach (DataRow rdrow in tdfe.Rows)
+                    {
+                        writer.WriteLine(
+                            "ITEM" + sep +
+                            rdrow["Inumord"] + sep +        // "1"      // 2 orden
+                            rdrow["Idatper"] + sep +                    // 3 Datos personilazados del item       
+                            "TNE" + sep +                               // 4 Unidad de medida                    3
+                            rdrow["Icantid"] + sep +    // tx_cetm.Text.Trim()             // 5 Cantidad de items             n(12,2)
+                            rdrow["Idescri"] + sep +                    // 6 Descripcion                       500
+                            "" + sep +                                  // 7 descricion de la glosa del item   250
+                            rdrow["Icodprd"] + sep +                    // 8 codigo del producto del cliente    30
+                            rdrow["Icodpro"] + sep +                    // 9 codigo del producto SUNAT           8
+                            rdrow["Icodgs1"] + sep +                    // 10 codigo del producto GS1           14
+                            rdrow["Icogtin"] + sep +                    // 11 tipo de producto GTIN             14
+                            rdrow["Inplaca"] + sep +                    // 12 numero placa de vehiculo
+                            rdrow["Ivaluni"] + sep +                    // 13 Valor unitario del item SIN IMPUESTO 
+                            rdrow["Ipreuni"] + sep +                    // 14 Precio de venta unitario CON IGV
+                            rdrow["Ivalref"] + sep +                    // 15 valor referencial del item cuando la venta es gratuita
+                            rdrow["Iigvite"] + sep +                     // 16 monto igv   .. ."_msigv"
+                            rdrow["Icatigv"] + sep +                    // 17 tipo/codigo de afectacion igv
+                            rdrow["Itasigv"] + sep +                    // 18 tasa del igv
+                            rdrow["Iigvite"] + sep +                    // 19 monto IGV del item
+                            rdrow["Icodtri"] + sep +                    // 20 codigo del tributo por item
+                            rdrow["Iiscmba"] + sep +                    // 21 ISC monto base
+                            rdrow["Iisctas"] + sep +                    // 22 ISC tasa del tributo
+                            rdrow["Iisctip"] + sep +                    // 23 ISC tipo de afectacion
+                            rdrow["Iiscmon"] + sep +                    // 24 ISC monto del tributo
+                            rdrow["Icbper1"] + sep +                    // 25 indicador de afecto a ICBPER
+                            rdrow["Icbper2"] + sep +                    // 26 monto unitario de ICBPER
+                            rdrow["Icbper3"] + sep +                    // 27 monto total ICBPER del item
+                            rdrow["Iotrtri"] + sep +                    // 28 otros tributos monto base
+                            rdrow["Iotrtas"] + sep +                    // 29 otros tributos tasa del tributo
+                            rdrow["Iotrlin"] + sep +                    // 30 otros tributos monto unitario
+                            rdrow["Itdscto"] + sep +                    // 31 Descuentos por ítem
+                            rdrow["Iincard"] + sep +                    // 32 indicador de cargo/descuento
+                            rdrow["Icodcde"] + sep +                    // 33 codigo de cargo/descuento
+                            rdrow["Ifcades"] + sep +                    // 34 Factor de cargo/descuento
+                            rdrow["Imoncde"] + sep +                    // 35 Monto de cargo/descuento
+                            rdrow["Imobacd"] + sep +                    // 36 Monto base del cargo/descuento
+                            rdrow["Ivalvta"] + sep);                    // 37 Valor de venta del ítem
+                    }
                 }
             }
             else
