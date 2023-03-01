@@ -349,4 +349,6 @@ form facelect, si el ruc del cliente de la factura es: 20370038083 o 20170276621
 				- La descripción del detalle solo va lo que escribe el operador
 				.................................................................................... ok 24/12/2022
 form facelect, adecuar el campo tx_valref1 para poner ahí el valor referencial de la ruta, en base 
-	a este campo calculamos la detracción y el importe a pagar...................................... 
+	a este campo calculamos la detracción y el importe a pagar...................................... ok 30/12/2022
+******************* IMPLEMENTACION DE G R TRANSPORTISTA ELECTRONICA CON PSNET **********************
+form guiati_e, adecuaciones a los avanzado para adecuarlo a PSNet .................................. 

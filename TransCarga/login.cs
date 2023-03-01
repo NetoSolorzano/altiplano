@@ -298,7 +298,8 @@ namespace TransCarga
             MySqlConnection cn = new MySqlConnection(DB_CONN_STR);
             if (lib.procConn(cn) == true)
             {
-                string consulta = "SELECT a.param,a.value,a.used,b.cliente,b.ruc,b.igv,b.direcc,b.distrit,b.provin,b.depart,b.ubigeo,b.ctadetra,b.valdetra,b.detra,b.coddetra,b.email,b.telef1 " +
+                string consulta = "SELECT a.param,a.value,a.used,b.cliente,b.ruc,b.igv,b.direcc,b.distrit,b.provin,b.depart,b.ubigeo," +
+                    "b.ctadetra,b.valdetra,b.detra,b.coddetra,b.email,b.telef1,b.referen2 " +
                     "from confmod a INNER JOIN baseconf b";
                 MySqlCommand micon = new MySqlCommand(consulta, cn);
                 MySqlDataReader dr = micon.ExecuteReader();
@@ -340,6 +341,7 @@ namespace TransCarga
                         TransCarga.Program.coddetra = dr.GetString(14);         // codigo detraccion sunat
                         TransCarga.Program.mailclte = dr.GetString(15);         // correo electronico emisor
                         TransCarga.Program.telclte1 = dr.GetString(16);         // telefono emisor
+                        TransCarga.Program.regmtc = dr.GetString(17);           // Num. Registro del MTC
                     }
                     dr.Close();
                     micon.Dispose();

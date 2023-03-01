@@ -134,6 +134,8 @@
             this.label9 = new System.Windows.Forms.Label();
             this.tx_consig = new System.Windows.Forms.TextBox();
             this.gbox_flete = new System.Windows.Forms.GroupBox();
+            this.rb_pDes = new System.Windows.Forms.RadioButton();
+            this.rb_pOri = new System.Windows.Forms.RadioButton();
             this.groupBox37 = new System.Windows.Forms.GroupBox();
             this.groupBox38 = new System.Windows.Forms.GroupBox();
             this.groupBox39 = new System.Windows.Forms.GroupBox();
@@ -224,6 +226,11 @@
             this.rb_car_clte = new System.Windows.Forms.RadioButton();
             this.rb_car_ofi = new System.Windows.Forms.RadioButton();
             this.gb_detalle = new System.Windows.Forms.GroupBox();
+            this.groupBox51 = new System.Windows.Forms.GroupBox();
+            this.groupBox52 = new System.Windows.Forms.GroupBox();
+            this.panel3 = new System.Windows.Forms.Panel();
+            this.rb_tn = new System.Windows.Forms.RadioButton();
+            this.rb_kg = new System.Windows.Forms.RadioButton();
             this.lb_glodeta = new System.Windows.Forms.Label();
             this.groupBox49 = new System.Windows.Forms.GroupBox();
             this.groupBox50 = new System.Windows.Forms.GroupBox();
@@ -231,8 +238,6 @@
             this.groupBox45 = new System.Windows.Forms.GroupBox();
             this.groupBox48 = new System.Windows.Forms.GroupBox();
             this.tx_det_umed = new System.Windows.Forms.TextBox();
-            this.groupBox51 = new System.Windows.Forms.GroupBox();
-            this.groupBox52 = new System.Windows.Forms.GroupBox();
             this.tx_det_peso = new TransCarga.NumericTextBox();
             this.groupBox46 = new System.Windows.Forms.GroupBox();
             this.groupBox47 = new System.Windows.Forms.GroupBox();
@@ -245,6 +250,8 @@
             this.tx_totpes = new TransCarga.NumericTextBox();
             this.tx_totcant = new TransCarga.NumericTextBox();
             this.chk_man = new System.Windows.Forms.CheckBox();
+            this.tx_marCpropio = new System.Windows.Forms.TextBox();
+            this.tx_pla_dniChof = new System.Windows.Forms.TextBox();
             this.toolStrip1.SuspendLayout();
             this.groupBox11.SuspendLayout();
             this.groupBox7.SuspendLayout();
@@ -274,9 +281,10 @@
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.gb_detalle.SuspendLayout();
+            this.groupBox51.SuspendLayout();
+            this.panel3.SuspendLayout();
             this.groupBox49.SuspendLayout();
             this.groupBox45.SuspendLayout();
-            this.groupBox51.SuspendLayout();
             this.groupBox46.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -1337,6 +1345,8 @@
             // gbox_flete
             // 
             this.gbox_flete.BackColor = System.Drawing.Color.Transparent;
+            this.gbox_flete.Controls.Add(this.rb_pDes);
+            this.gbox_flete.Controls.Add(this.rb_pOri);
             this.gbox_flete.Controls.Add(this.groupBox37);
             this.gbox_flete.Controls.Add(this.groupBox39);
             this.gbox_flete.Controls.Add(this.label24);
@@ -1353,6 +1363,26 @@
             this.gbox_flete.Size = new System.Drawing.Size(133, 111);
             this.gbox_flete.TabIndex = 26;
             this.gbox_flete.TabStop = false;
+            // 
+            // rb_pDes
+            // 
+            this.rb_pDes.AutoSize = true;
+            this.rb_pDes.Location = new System.Drawing.Point(101, 86);
+            this.rb_pDes.Name = "rb_pDes";
+            this.rb_pDes.Size = new System.Drawing.Size(14, 13);
+            this.rb_pDes.TabIndex = 408;
+            this.rb_pDes.TabStop = true;
+            this.rb_pDes.UseVisualStyleBackColor = true;
+            // 
+            // rb_pOri
+            // 
+            this.rb_pOri.AutoSize = true;
+            this.rb_pOri.Location = new System.Drawing.Point(101, 60);
+            this.rb_pOri.Name = "rb_pOri";
+            this.rb_pOri.Size = new System.Drawing.Size(14, 13);
+            this.rb_pOri.TabIndex = 407;
+            this.rb_pOri.TabStop = true;
+            this.rb_pOri.UseVisualStyleBackColor = true;
             // 
             // groupBox37
             // 
@@ -1394,45 +1424,47 @@
             // 
             this.label24.AutoSize = true;
             this.label24.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label24.Location = new System.Drawing.Point(3, 86);
+            this.label24.Location = new System.Drawing.Point(7, 86);
             this.label24.Name = "label24";
-            this.label24.Size = new System.Drawing.Size(56, 13);
+            this.label24.Size = new System.Drawing.Size(86, 13);
             this.label24.TabIndex = 404;
-            this.label24.Text = "Por cobrar";
+            this.label24.Text = "Paga en Destino";
             this.label24.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // tx_salxcob
             // 
             this.tx_salxcob.AllowSpace = false;
             this.tx_salxcob.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_salxcob.Location = new System.Drawing.Point(59, 83);
+            this.tx_salxcob.Location = new System.Drawing.Point(54, 10);
             this.tx_salxcob.Name = "tx_salxcob";
             this.tx_salxcob.ReadOnly = true;
             this.tx_salxcob.Size = new System.Drawing.Size(69, 20);
             this.tx_salxcob.TabIndex = 403;
             this.tx_salxcob.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.tx_salxcob.Visible = false;
             // 
             // label32
             // 
             this.label32.AutoSize = true;
             this.label32.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label32.Location = new System.Drawing.Point(4, 60);
+            this.label32.Location = new System.Drawing.Point(7, 60);
             this.label32.Name = "label32";
-            this.label32.Size = new System.Drawing.Size(44, 13);
+            this.label32.Size = new System.Drawing.Size(81, 13);
             this.label32.TabIndex = 402;
-            this.label32.Text = "Pagado";
+            this.label32.Text = "Paga en Origen";
             this.label32.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // tx_pagado
             // 
             this.tx_pagado.AllowSpace = false;
             this.tx_pagado.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_pagado.Location = new System.Drawing.Point(59, 57);
+            this.tx_pagado.Location = new System.Drawing.Point(59, 11);
             this.tx_pagado.Name = "tx_pagado";
             this.tx_pagado.ReadOnly = true;
             this.tx_pagado.Size = new System.Drawing.Size(69, 20);
             this.tx_pagado.TabIndex = 401;
             this.tx_pagado.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.tx_pagado.Visible = false;
             // 
             // tx_dat_mone
             // 
@@ -1519,11 +1551,11 @@
             // 
             this.label16.AutoSize = true;
             this.label16.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label16.Location = new System.Drawing.Point(405, 438);
+            this.label16.Location = new System.Drawing.Point(419, 438);
             this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(77, 13);
+            this.label16.Size = new System.Drawing.Size(61, 13);
             this.label16.TabIndex = 321;
-            this.label16.Text = "Total Peso Kg.";
+            this.label16.Text = "Total Peso ";
             this.label16.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // tx_estado
@@ -2283,12 +2315,13 @@
             // gb_detalle
             // 
             this.gb_detalle.BackColor = System.Drawing.Color.LightGray;
+            this.gb_detalle.Controls.Add(this.groupBox51);
+            this.gb_detalle.Controls.Add(this.panel3);
             this.gb_detalle.Controls.Add(this.lb_glodeta);
             this.gb_detalle.Controls.Add(this.groupBox49);
             this.gb_detalle.Controls.Add(this.tx_det_desc);
             this.gb_detalle.Controls.Add(this.groupBox45);
             this.gb_detalle.Controls.Add(this.tx_det_umed);
-            this.gb_detalle.Controls.Add(this.groupBox51);
             this.gb_detalle.Controls.Add(this.tx_det_peso);
             this.gb_detalle.Controls.Add(this.groupBox46);
             this.gb_detalle.Controls.Add(this.tx_det_cant);
@@ -2302,6 +2335,57 @@
             this.gb_detalle.TabIndex = 23;
             this.gb_detalle.TabStop = false;
             this.gb_detalle.Text = " Detalle ";
+            // 
+            // groupBox51
+            // 
+            this.groupBox51.BackColor = System.Drawing.Color.White;
+            this.groupBox51.Controls.Add(this.groupBox52);
+            this.groupBox51.Location = new System.Drawing.Point(17, 131);
+            this.groupBox51.Name = "groupBox51";
+            this.groupBox51.Size = new System.Drawing.Size(254, 1);
+            this.groupBox51.TabIndex = 342;
+            this.groupBox51.TabStop = false;
+            // 
+            // groupBox52
+            // 
+            this.groupBox52.Location = new System.Drawing.Point(0, -26);
+            this.groupBox52.Name = "groupBox52";
+            this.groupBox52.Size = new System.Drawing.Size(164, 1);
+            this.groupBox52.TabIndex = 113;
+            this.groupBox52.TabStop = false;
+            // 
+            // panel3
+            // 
+            this.panel3.Controls.Add(this.rb_tn);
+            this.panel3.Controls.Add(this.rb_kg);
+            this.panel3.Location = new System.Drawing.Point(106, 109);
+            this.panel3.Name = "panel3";
+            this.panel3.Size = new System.Drawing.Size(103, 23);
+            this.panel3.TabIndex = 365;
+            // 
+            // rb_tn
+            // 
+            this.rb_tn.AutoSize = true;
+            this.rb_tn.ForeColor = System.Drawing.Color.Black;
+            this.rb_tn.Location = new System.Drawing.Point(53, 3);
+            this.rb_tn.Name = "rb_tn";
+            this.rb_tn.Size = new System.Drawing.Size(47, 17);
+            this.rb_tn.TabIndex = 1;
+            this.rb_tn.TabStop = true;
+            this.rb_tn.Text = "TNE";
+            this.rb_tn.UseVisualStyleBackColor = true;
+            // 
+            // rb_kg
+            // 
+            this.rb_kg.AutoSize = true;
+            this.rb_kg.ForeColor = System.Drawing.Color.Black;
+            this.rb_kg.Location = new System.Drawing.Point(3, 3);
+            this.rb_kg.Name = "rb_kg";
+            this.rb_kg.Size = new System.Drawing.Size(49, 17);
+            this.rb_kg.TabIndex = 0;
+            this.rb_kg.TabStop = true;
+            this.rb_kg.Text = "KGM";
+            this.rb_kg.UseVisualStyleBackColor = true;
             // 
             // lb_glodeta
             // 
@@ -2350,7 +2434,7 @@
             this.groupBox45.Controls.Add(this.groupBox48);
             this.groupBox45.Location = new System.Drawing.Point(17, 69);
             this.groupBox45.Name = "groupBox45";
-            this.groupBox45.Size = new System.Drawing.Size(187, 1);
+            this.groupBox45.Size = new System.Drawing.Size(189, 1);
             this.groupBox45.TabIndex = 338;
             this.groupBox45.TabStop = false;
             // 
@@ -2366,34 +2450,16 @@
             // 
             this.tx_det_umed.BackColor = System.Drawing.SystemColors.Window;
             this.tx_det_umed.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_det_umed.Location = new System.Drawing.Point(104, 52);
+            this.tx_det_umed.Location = new System.Drawing.Point(106, 52);
             this.tx_det_umed.MaxLength = 0;
             this.tx_det_umed.Name = "tx_det_umed";
             this.tx_det_umed.Size = new System.Drawing.Size(100, 18);
             this.tx_det_umed.TabIndex = 24;
             // 
-            // groupBox51
-            // 
-            this.groupBox51.BackColor = System.Drawing.Color.White;
-            this.groupBox51.Controls.Add(this.groupBox52);
-            this.groupBox51.Location = new System.Drawing.Point(17, 131);
-            this.groupBox51.Name = "groupBox51";
-            this.groupBox51.Size = new System.Drawing.Size(135, 1);
-            this.groupBox51.TabIndex = 342;
-            this.groupBox51.TabStop = false;
-            // 
-            // groupBox52
-            // 
-            this.groupBox52.Location = new System.Drawing.Point(0, -26);
-            this.groupBox52.Name = "groupBox52";
-            this.groupBox52.Size = new System.Drawing.Size(164, 1);
-            this.groupBox52.TabIndex = 113;
-            this.groupBox52.TabStop = false;
-            // 
             // tx_det_peso
             // 
             this.tx_det_peso.AllowSpace = false;
-            this.tx_det_peso.Location = new System.Drawing.Point(91, 112);
+            this.tx_det_peso.Location = new System.Drawing.Point(210, 112);
             this.tx_det_peso.Name = "tx_det_peso";
             this.tx_det_peso.Size = new System.Drawing.Size(61, 20);
             this.tx_det_peso.TabIndex = 26;
@@ -2403,9 +2469,9 @@
             // 
             this.groupBox46.BackColor = System.Drawing.Color.White;
             this.groupBox46.Controls.Add(this.groupBox47);
-            this.groupBox46.Location = new System.Drawing.Point(17, 40);
+            this.groupBox46.Location = new System.Drawing.Point(21, 40);
             this.groupBox46.Name = "groupBox46";
-            this.groupBox46.Size = new System.Drawing.Size(135, 1);
+            this.groupBox46.Size = new System.Drawing.Size(146, 1);
             this.groupBox46.TabIndex = 336;
             this.groupBox46.TabStop = false;
             // 
@@ -2420,7 +2486,7 @@
             // tx_det_cant
             // 
             this.tx_det_cant.AllowSpace = false;
-            this.tx_det_cant.Location = new System.Drawing.Point(91, 21);
+            this.tx_det_cant.Location = new System.Drawing.Point(106, 22);
             this.tx_det_cant.Name = "tx_det_cant";
             this.tx_det_cant.Size = new System.Drawing.Size(61, 20);
             this.tx_det_cant.TabIndex = 23;
@@ -2432,9 +2498,9 @@
             this.label40.ForeColor = System.Drawing.SystemColors.ControlText;
             this.label40.Location = new System.Drawing.Point(19, 116);
             this.label40.Name = "label40";
-            this.label40.Size = new System.Drawing.Size(57, 13);
+            this.label40.Size = new System.Drawing.Size(36, 13);
             this.label40.TabIndex = 341;
-            this.label40.Text = "PESO KG.";
+            this.label40.Text = "PESO";
             // 
             // label39
             // 
@@ -2510,6 +2576,28 @@
             this.chk_man.UseVisualStyleBackColor = true;
             this.chk_man.CheckedChanged += new System.EventHandler(this.chk_man_CheckedChanged);
             // 
+            // tx_marCpropio
+            // 
+            this.tx_marCpropio.BackColor = System.Drawing.SystemColors.Window;
+            this.tx_marCpropio.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_marCpropio.Location = new System.Drawing.Point(739, 434);
+            this.tx_marCpropio.Name = "tx_marCpropio";
+            this.tx_marCpropio.Size = new System.Drawing.Size(24, 18);
+            this.tx_marCpropio.TabIndex = 367;
+            this.tx_marCpropio.Tag = "0=camion propio, 1=subcontratado";
+            this.tx_marCpropio.Visible = false;
+            // 
+            // tx_pla_dniChof
+            // 
+            this.tx_pla_dniChof.BackColor = System.Drawing.SystemColors.Window;
+            this.tx_pla_dniChof.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_pla_dniChof.Location = new System.Drawing.Point(0, 432);
+            this.tx_pla_dniChof.Name = "tx_pla_dniChof";
+            this.tx_pla_dniChof.Size = new System.Drawing.Size(28, 18);
+            this.tx_pla_dniChof.TabIndex = 368;
+            this.tx_pla_dniChof.Tag = "dni del chofer";
+            this.tx_pla_dniChof.Visible = false;
+            // 
             // guiati_e
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -2517,6 +2605,8 @@
             this.AutoSize = true;
             this.BackColor = System.Drawing.Color.BurlyWood;
             this.ClientSize = new System.Drawing.Size(766, 614);
+            this.Controls.Add(this.tx_pla_dniChof);
+            this.Controls.Add(this.tx_marCpropio);
             this.Controls.Add(this.chk_man);
             this.Controls.Add(this.gb_detalle);
             this.Controls.Add(this.panel2);
@@ -2653,9 +2743,11 @@
             this.panel2.PerformLayout();
             this.gb_detalle.ResumeLayout(false);
             this.gb_detalle.PerformLayout();
+            this.groupBox51.ResumeLayout(false);
+            this.panel3.ResumeLayout(false);
+            this.panel3.PerformLayout();
             this.groupBox49.ResumeLayout(false);
             this.groupBox45.ResumeLayout(false);
-            this.groupBox51.ResumeLayout(false);
             this.groupBox46.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -2879,5 +2971,12 @@
         private System.Windows.Forms.TextBox tx_aut_carret;
         private System.Windows.Forms.TextBox tx_marCarret;
         private System.Windows.Forms.CheckBox chk_man;
+        private System.Windows.Forms.Panel panel3;
+        private System.Windows.Forms.RadioButton rb_tn;
+        private System.Windows.Forms.RadioButton rb_kg;
+        private System.Windows.Forms.TextBox tx_marCpropio;
+        private System.Windows.Forms.RadioButton rb_pDes;
+        private System.Windows.Forms.RadioButton rb_pOri;
+        private System.Windows.Forms.TextBox tx_pla_dniChof;
     }
 }

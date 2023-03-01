@@ -78,6 +78,11 @@ namespace TransCarga
         string scope_sunat = "";        // scope sunat del api
         string cGR_sunat = "";          // codigo sunat para GR transportista
         string usa_gre = "";            // usa GRE en la organización? S/N
+        string rutatxt = "";            // ruta para las guias de remision electronicas
+        string tipdo = "";              // CODIGO SUNAT tipo de documento guia remision transportista
+        string tipoDocEmi = "";         // CODIGO SUNAT tipo de documento RUC/DNI emisor
+        string tipoDocRem = "";         // CODIGO SUNAT tipo de documento RUC/DNI remitente de la GRT
+        string tipoDocDes = "";         // CODIGO SUNAT tipo de documento RUC/DNI destinatario de la GRT
         //
         static libreria lib = new libreria();   // libreria de procedimientos
         publico lp = new publico();             // libreria de clases
@@ -85,7 +90,9 @@ namespace TransCarga
         string claveSeg = "";                       // clave de seguridad del envío
         string nomclie = Program.cliente;           // cliente usuario del sistema
         string rucclie = Program.ruc;               // ruc del cliente usuario del sistema
-        string asd = TransCarga.Program.vg_user;    // usuario conectado al sistema
+        string ubiclie = Program.ubidirfis;         // ubigeo direc fiscal
+        string asd = Program.vg_user;               // usuario conectado al sistema
+        string nRegMTC = Program.regmtc;            // numero registro del MTC
         #endregion
 
         AutoCompleteStringCollection departamentos = new AutoCompleteStringCollection();// autocompletado departamentos
@@ -103,6 +110,9 @@ namespace TransCarga
         DataTable dttd0 = new DataTable();
         DataTable dttd1 = new DataTable();
         DataTable dtm = new DataTable();
+        DataTable dttdv = new DataTable();          // tipo documentos guias
+        DataTable tcfe = new DataTable();           // GRT electronica - cabecera
+        DataTable tdfe = new DataTable();           // GRT electronica -detalle
         string[] datosR = { "" };                   // datos del remitente si existe en la B.D.
         string[] datosD = { "" };                   // datos del destinatario si existe en la B.D.
         string[] rl = { "" };                       // datos del NUEVO remitente
@@ -319,7 +329,11 @@ namespace TransCarga
                             if (row["param"].ToString() == "clave_sol") c_sol_sunat = row["valor"].ToString().Trim();             // clave sol portal sunat del cliente 
                             if (row["param"].ToString() == "scope") scope_sunat = row["valor"].ToString().Trim();                 // scope del api sunat
                             if (row["param"].ToString() == "codgre") cGR_sunat = row["valor"].ToString().Trim();                 // codigo sunat para GR transportista
-                        }  
+                        }
+                        if (row["campo"].ToString() == "rutas")
+                        {
+                            if (row["param"].ToString() == "grt_txt") rutatxt = row["valor"].ToString().Trim();         // ruta de los txt para las guías elect
+                        }
                     }
                     if (row["formulario"].ToString() == "clients" && row["campo"].ToString() == "documento")
                     {
@@ -339,7 +353,7 @@ namespace TransCarga
                         if (row["campo"].ToString() == "documento")
                         {
                             if (row["param"].ToString() == "flete") vtc_flete = row["valor"].ToString().Trim();           // imprime precio del flete ?
-                            if (row["param"].ToString() == "c_int") v_cid = row["valor"].ToString().Trim();               // codigo interno pre guias
+                            if (row["param"].ToString() == "c_int") v_cid = row["valor"].ToString().Trim();               // codigo interno guias de remision
                             if (row["param"].ToString() == "frase1") v_fra1 = row["valor"].ToString().Trim();               // frase para documento anulado
                             if (row["param"].ToString() == "frase2") v_fra2 = row["valor"].ToString().Trim();               // frase de si va con clave la guia
                             if (row["param"].ToString() == "serieAnu") v_sanu = row["valor"].ToString().Trim();               // serie anulacion interna
@@ -680,7 +694,7 @@ namespace TransCarga
             cmb_destino.ValueMember = "idcodice";
             //  datos para los combobox de tipo de documento
             cmb_docRem.Items.Clear();
-            MySqlCommand cdu = new MySqlCommand("select idcodice,descrizionerid,codigo from desc_doc where numero=@bloq", conn);
+            MySqlCommand cdu = new MySqlCommand("select idcodice,descrizionerid,codigo,codsunat from desc_doc where numero=@bloq", conn);
             cdu.Parameters.AddWithValue("@bloq", 1);
             MySqlDataAdapter datd = new MySqlDataAdapter(cdu);
             dttd0.Clear();
@@ -695,6 +709,16 @@ namespace TransCarga
             cmb_docDes.DataSource = dttd1;
             cmb_docDes.DisplayMember = "descrizionerid";
             cmb_docDes.ValueMember = "idcodice";
+            // datos para tipo de documento 
+            string consu = "select idcodice,descrizione,descrizionerid,codsunat,deta1 from desc_tdv where codigo=''";
+            using (MySqlCommand cdv = new MySqlCommand(consu, conn))
+            {
+                using (MySqlDataAdapter datv = new MySqlDataAdapter(cdv))
+                {
+                    dttdv.Clear();
+                    datv.Fill(dttdv);
+                }
+            }
             // datos para el combo de moneda
             cmb_mon.Items.Clear();
             MySqlCommand cmo = new MySqlCommand("select idcodice,descrizionerid from desc_mon where numero=@bloq", conn);
@@ -1065,7 +1089,8 @@ namespace TransCarga
         }
         #endregion limpiadores_modos;
 
-        #region  guia electronica en sunat
+        #region  guia electronica en sunat y psnet
+        #region sunat
         private bool sunat_api()
         {
             bool retorna = false;
@@ -1170,10 +1195,360 @@ namespace TransCarga
         }
         #endregion
 
+        #region psnet
+        private void armagret()                  // arma cabecera
+        {
+            tcfe.Clear();
+            //  DATOS TRIBUTARIOS DEL DOCUMENTO ELECTRÓNICO
+            tcfe.Columns.Add("idsistp");                                    // Id del comprobante en ERP del Cliente
+            tcfe.Columns.Add("_tipdoc");                                    // Tipo de Comprobante Electrónico
+            tcfe.Columns.Add("_sercor");                                    // Numeración de Comprobante Electrónico
+            tcfe.Columns.Add("_fecemi");                                    // fecha de emision   yyyy-mm-dd
+            tcfe.Columns.Add("observ1");                                    // observacion del documento
+                                                                            /* DATOS DEL EMISOR */
+            tcfe.Columns.Add("Prucpro");                                    // Ruc del emisor
+            tcfe.Columns.Add("Prazsoc");                                    // razon social del emisor
+            tcfe.Columns.Add("Pnomcom");                                    // nombre comercial del emisor
+            tcfe.Columns.Add("nregMTC");                                    // Número de Registro MTC
+            tcfe.Columns.Add("nautEsp");                                    // Número de autorización especial
+            tcfe.Columns.Add("entemEs");                                    // Entidad emisora de la autorización especial  
+            tcfe.Columns.Add("paisEmi");                                    // Código de país
+            tcfe.Columns.Add("ubigEmi");                                    // UBIGEO DOMICILIO FISCAL
+            tcfe.Columns.Add("Pdf_dep");                                    // DOMICILIO FISCAL - departamento
+            tcfe.Columns.Add("Pdf_pro");                                    // DOMICILIO FISCAL - provincia
+            tcfe.Columns.Add("Pdf_dis");                                    // DOMICILIO FISCAL - distrito
+            tcfe.Columns.Add("Pdf_urb");                                    // DOMICILIO FISCAL - Urbanizacion
+            tcfe.Columns.Add("Pdf_dir");                                    // DOMICILIO FISCAL - direccion
+            tcfe.Columns.Add("Ptelef1");                                    // teléfono del emisor
+            tcfe.Columns.Add("Ptelef2");                                    // telef o fax del emisor
+            tcfe.Columns.Add("correoE");                                    // correo electronico
+            /* DOCUMENTO RELACIONADO 
+                * (las guías es lo primero que hacemos, no hay forma de tener la boleta o FT al momento de generar este documento)
+            */
+            tcfe.Columns.Add("ctipdre");                                    // Código del tipo de documento
+            tcfe.Columns.Add("ndocrel");                                    // Numero de documento
+            tcfe.Columns.Add("rucedre");                                    // Número de RUC del emisor del doc 
+            /* DATOS DE ENVÍO */
+            tcfe.Columns.Add("Pcrupro");                                    // Tipo de documento de identidad del remitente
+            tcfe.Columns.Add("Cnumdoc");                                    // Numero de documento de identidad del remitente
+            tcfe.Columns.Add("Cnomcli");                                    // denominacion o razon social del remitente
+            tcfe.Columns.Add("Ctipdoc");                                    // Tipo de documento de identidad del destinatario
+            tcfe.Columns.Add("Dnumdoc");                                    // Numero de documento de identidad del destinatario
+            tcfe.Columns.Add("Dnomcli");                                    // denominacion o razon social del destinatario
+            tcfe.Columns.Add("fectras");                                    // fecha inicio del traslado
+            tcfe.Columns.Add("pesotot");                                    // Peso bruto total de los bienes
+            tcfe.Columns.Add("unimedp");                                    // Unidad de medida del peso bruto
+            tcfe.Columns.Add("trastot");                                    // Indicador de traslado total de bienes 0=falso, 1=verdadero
+            tcfe.Columns.Add("indret1");                                    // Indicador de retorno de vehículo con envases o embalajes vacíos 0=falso, 1=verdadero
+            tcfe.Columns.Add("indretv");                                    // Indicador de retorno de vehículo vacío 0=falso, 1=verdadero
+            tcfe.Columns.Add("indtran");                                    // Indicador de transbordo programado 0=falso, 1=verdadero
+            tcfe.Columns.Add("indsubc");                                    // Indicador de transporte subcontratado
+            tcfe.Columns.Add("tipdsub");                                    // Tipo de documento de identidad del subcontratador, 6=ruc
+            tcfe.Columns.Add("numdocs");                                    // Numero de documento de identidad del subcontratador
+            tcfe.Columns.Add("nomsubc");                                    // denominacion o razon social del subcontratador
+            tcfe.Columns.Add("indpagf");                                    // Indicador de pagador de flete - 1: Pagador de flete Remitente, 2: Pagador de flete Subcontratador, 3: Pagador de flete Tercero
+            tcfe.Columns.Add("tipdocp");                                    // Tipo de documento de identidad de quien paga el servicio
+            tcfe.Columns.Add("numdocp");                                    // Numero de documento de identidad de de quien paga el servicio
+            tcfe.Columns.Add("nompaga");                                    // denominacion o razon social de quien paga el servicio
+            tcfe.Columns.Add("ubigpar");                                    // Ubigeo del punto de partida
+            tcfe.Columns.Add("direpar");                                    // Direccion completa y detallada del punto de partida
+            tcfe.Columns.Add("gepLong");                                    // Punto de georreferencia del punto de partida, Longitud
+            tcfe.Columns.Add("geplati");                                    // Punto de georreferencia del punto de partida, Latitud
+            tcfe.Columns.Add("ubilleg");                                    // Ubigeo del punto de llegada
+            tcfe.Columns.Add("dirlleg");                                    // Direccion completa y detallada del punto de llegada
+            tcfe.Columns.Add("gelLong");                                    // Punto de georreferencia del punto de llegada, Longitud
+            tcfe.Columns.Add("gellati");                                    // Punto de georreferencia del punto de llegada, Latitud
+            /* DATOS DE VEHICULOS */
+            tcfe.Columns.Add("plaTrac");                                    // Número de placa del vehículo
+            tcfe.Columns.Add("ntaruni");                                    // Número de la Tarjeta Única deCirculación
+            tcfe.Columns.Add("autcirc");                                    // Número de autorización del vehículo emitido por la entidad
+            tcfe.Columns.Add("entauto");                                    // Entidad emisora de la autorización
+            /* DATOS DE CONDUCTORES  */
+            tcfe.Columns.Add("tipdcho");                                    // Tipo de documento de identidad 
+            tcfe.Columns.Add("numdcho");                                    // Numero de documento de identidad 
+            tcfe.Columns.Add("nomdcho");                                    // Apellidos y nombres
+            tcfe.Columns.Add("bredcho");                                    // Número de licencia de conducir
+            /* BIENES A TRANSPORTAR */
+            tcfe.Columns.Add("nordite");                                    // Numero de orden del item
+            tcfe.Columns.Add("umedite");                                    // Unidad de medida del item
+            tcfe.Columns.Add("cantite");                                    // Cantidad del item
+            tcfe.Columns.Add("descite");                                    // Descripcion detallada del item
+            tcfe.Columns.Add("codiite");                                    // Codigo del item
+            tcfe.Columns.Add("cosuite");                                    // Código producto SUNAT
+            tcfe.Columns.Add("cgtnite");                                    // Código GTIN
+            tcfe.Columns.Add("paraite");                                    // Partida arancelaria
+            tcfe.Columns.Add("nparite");                                    // Nombre del concepto de la partida arancelaria
+            tcfe.Columns.Add("cparite");                                    // Código del concepto de la partida arancelaria
+            tcfe.Columns.Add("inbnite");                                    // Indicador de bien normalizado
+
+        }
+        private bool psnet_api()
+        {
+            bool retorna = false;
+            armagret();
+            if (arma_GRTE_psnet("alta") != "") retorna = true;
+            return retorna;
+        }
+        private string arma_GRTE_psnet(string accion)
+        {
+            string retorna = "";
+
+            DataRow[] row = dttdv.Select("idcodice='" + v_cid + "'");             // tipo de documento guia remision transportista
+            tipdo = row[0][3].ToString();
+            string serie = row[0][4].ToString().Substring(0, 1) + lib.Right(tx_serie.Text, 3);
+            string corre = tx_numero.Text;
+            DataRow[] rowd = dttd0.Select("idcodice='" + tx_dat_tdRem.Text + "'");          // tipo de documento del remitente
+            tipoDocRem = rowd[0][3].ToString().Trim();
+            rowd = dttd0.Select("idcodice='" + tx_dat_tDdest.Text + "'");          // tipo de documento destinatario
+            tipoDocDes = rowd[0][3].ToString().Trim();
+
+            string ruta = rutatxt;
+            string archi = "";
+            if (accion == "alta")
+            {
+                archi = rucclie + "-" + tipdo + "-" + serie + "-" + corre;
+                if (datosTXT(tipdo, serie, corre, ruta + archi) == true)
+                {
+                    if (true)
+                    {
+                        if (generaTxt(tipdo, serie, corre, ruta + archi) == true)
+                        {
+                            retorna = tipdo+serie+corre;   // que retorno acá ?
+                        }
+                    }
+                }
+            }
+            return retorna;
+        }
+        private bool datosTXT(string tipdo, string serie, string corre, string file_path)       // peru secure
+        {
+            bool retorna = false;
+            tcfe.Rows.Clear();
+            DataRow row = tcfe.NewRow();
+            try
+            {
+                //  DATOS TRIBUTARIOS DEL DOCUMENTO ELECTRÓNICO
+                row["idsistp"] = "";                                                        // Id del comprobante en ERP del Cliente
+                row["_tipdoc"] = tipdo;                                                     // Tipo de Comprobante Electrónico
+                row["_sercor"] = serie + "-" + corre;                                       // Numeración de Comprobante Electrónico
+                row["_fecemi"] = tx_fechope.Text.Substring(6, 4) + "-" + tx_fechope.Text.Substring(3, 2) + "-" + tx_fechope.Text.Substring(0, 2);   // fecha de emision   yyyy-mm-dd
+                row["observ1"] = tx_obser1.Text.Trim();                                      // observacion del documento
+                /* DATOS DEL EMISOR */
+                row["Prucpro"] = Program.ruc;                                               // Ruc del emisor
+                row["Prazsoc"] = nomclie.Trim();                                            // razon social del emisor
+                row["Pnomcom"] = "";                                                        // nombre comercial del emisor
+                row["nregMTC"] = nRegMTC;                                                   // Número de Registro MTC
+                row["nautEsp"] = "";                                                        // Número de autorización especial
+                row["entemEs"] = "";                                                        // Entidad emisora de la autorización especial  
+                row["paisEmi"] = "PE";                                                      // Código de país
+                row["ubigEmi"] = ubiclie;                                                   // UBIGEO DOMICILIO FISCAL
+                row["Pdf_dep"] = Program.depfisc.Trim();                                    // DOMICILIO FISCAL - departamento
+                row["Pdf_pro"] = Program.provfis.Trim();                                    // DOMICILIO FISCAL - provincia
+                row["Pdf_dis"] = Program.distfis.Trim();                                    // DOMICILIO FISCAL - distrito
+                row["Pdf_urb"] = "-";                                                       // DOMICILIO FISCAL - Urbanizacion
+                row["Pdf_dir"] = Program.dirfisc.Trim();                                    // DOMICILIO FISCAL - direccion
+                row["Ptelef1"] = Program.telclte1.Trim();                                   // teléfono del emisor
+                row["Ptelef2"] = "";                                                        // telef o fax del emisor
+                row["correoE"] = Program.mailclte;                                          // correo electrónico del emisor
+                /* DOCUMENTO RELACIONADO 
+                * (las guías es lo primero que hacemos, no hay forma de tener la boleta o FT al momento de generar este documento)
+
+                row["ctipdre"] = "";                                                        // Código del tipo de documento
+                row["ndocrel"] = "";                                                        // Numero de documento
+                row["rucedre"] = "";                                                        // Número de RUC del emisor del doc 
+                */
+                /* DATOS DE ENVÍO */
+                row["Pcrupro"] = tipoDocRem;                                                // Tipo de documento de identidad del remitente
+                row["Cnumdoc"] = tx_numDocRem.Text;                                         // Numero de documento de identidad del remitente
+                row["Cnomcli"] = tx_nomRem.Text.Trim();                                     // denominacion o razon social del remitente
+                row["Ctipdoc"] = tipoDocDes;                                                // Tipo de documento de identidad del destinatario
+                row["Dnumdoc"] = tx_numDocDes.Text;                                         // Numero de documento de identidad del destinatario
+                row["Dnomcli"] = tx_nomDrio.Text.Trim();                                    // denominacion o razon social del destinatario
+                row["fectras"] = tx_pla_fech.Text.Substring(6, 4) + "-" + tx_pla_fech.Text.Substring(3, 2) + "-" + tx_pla_fech.Text.Substring(0, 2);   // fecha inicio del traslado
+                row["observ1"] = "";                                                        // Anotación opcional sobre los bienes
+                row["pesotot"] = tx_totpes.Text;                                            // Peso bruto total de los bienes
+                row["unimedp"] = (rb_kg.Checked == true) ? rb_kg.Text : rb_tn.Text;          // Unidad de medida del peso bruto
+                row["trastot"] = 1;  // (todas las cargas son completas)                    // Indicador de traslado total de bienes 0=falso, 1=verdadero
+                row["indret1"] = 0;  // no se retorna nada de esto                          // Indicador de retorno de vehículo con envases o embalajes vacíos 0=falso, 1=verdadero
+                row["indretv"] = 0;  // ningún vehículo retorna vacío                       // Indicador de retorno de vehículo vacío 0=falso, 1=verdadero
+                row["indtran"] = 0;  // no tenemos esa modalidad                            // Indicador de transbordo programado 0=falso, 1=verdadero
+                row["indsubc"] = tx_marCpropio.Text;                                        // Indicador de transporte subcontratado
+                row["tipdsub"] = (tx_marCpropio.Text == "1") ? "6" : "";                    // Tipo de documento de identidad del subcontratador, 6=ruc
+                row["numdocs"] = (tx_marCpropio.Text == "1") ? Program.ruc : "";            // Numero de documento de identidad del subcontratador
+                row["nomsubc"] = (tx_marCpropio.Text == "1") ? Program.cliente : "";        // denominacion o razon social del subcontratador
+                row["indpagf"] = (rb_pOri.Checked == true) ? 1 : 3;                         // Indicador de pagador de flete - 1: Pagador de flete Remitente, 2: Pagador de flete Subcontratador, 3: Pagador de flete Tercero
+                if (rb_pOri.Checked == true)
+                {
+                    row["tipdocp"] = tipoDocRem;                                            // Tipo de documento de identidad de quien paga el servicio
+                    row["numdocp"] = tx_numDocRem.Text;                                     // Numero de documento de identidad de de quien paga el servicio
+                    row["nompaga"] = tx_nomRem.Text.Trim();                                 // denominacion o razon social de quien paga el servicio
+                }
+                else
+                {
+                    row["tipdocp"] = tipoDocDes;                                            // Tipo de documento de identidad de quien paga el servicio
+                    row["numdocp"] = tx_numDocDes.Text;                                     // Numero de documento de identidad de de quien paga el servicio
+                    row["nompaga"] = tx_nomDrio.Text.Trim();                                // denominacion o razon social de quien paga el servicio
+                }
+                row["ubigpar"] = tx_ubigRtt.Text;                                           // Ubigeo del punto de partida
+                row["direpar"] = tx_dirRem.Text.Trim() + " " + tx_dptoRtt.Text.Trim() + " " +
+                    tx_provRtt.Text.Trim() + " " + tx_distRtt.Text.Trim();                  // Direccion completa y detallada del punto de partida
+                row["gepLong"] = "";                                                        // Punto de georreferencia del punto de partida, Longitud
+                row["geplati"] = "";                                                        // Punto de georreferencia del punto de partida, Latitud
+                row["ubilleg"] = tx_ubigDtt.Text;                                           // Ubigeo del punto de llegada
+                row["dirlleg"] = tx_dirDrio.Text.Trim() + " " + tx_dptoDrio.Text.Trim() + " " +
+                    tx_proDrio.Text.Trim() + " " + tx_disDrio.Text.Trim();                  // Direccion completa y detallada del punto de llegada
+                row["gelLong"] = "";                                                        // Punto de georreferencia del punto de llegada, Longitud
+                row["gellati"] = "";                                                        // Punto de georreferencia del punto de llegada, Latitud
+                /* DATOS DE VEHICULOS */
+                row["plaTrac"] = tx_pla_placa.Text;                                         // Número de placa del vehículo
+                row["ntaruni"] = tx_pla_autor.Text;                                         // Número de la Tarjeta Única deCirculación
+                row["autcirc"] = "";                                                        // Número de autorización del vehículo emitido por la entidad
+                row["entauto"] = "MTC";                                                     // Entidad emisora de la autorización
+                /* DATOS DE CONDUCTORES  */
+                row["tipdcho"] = "01";                                                      // Tipo de documento de identidad 
+                row["numdcho"] = tx_pla_dniChof.Text;                                       // Numero de documento de identidad 
+                row["nomdcho"] = tx_pla_nomcho.Text;                                        // Apellidos y nombres
+                row["bredcho"] = tx_pla_brevet.Text;                                        // Número de licencia de conducir
+                /* BIENES A TRANSPORTAR */
+                row["nordite"] = "1";                                                       // Numero de orden del item
+                row["umedite"] = (rb_kg.Checked == true) ? rb_kg.Text : rb_tn.Text;          // Unidad de medida del item
+                row["cantite"] = tx_det_peso.Text;                                          // Cantidad del item
+                row["descite"] = tx_det_desc.Text;                                          // Descripcion detallada del item
+                row["codiite"] = "";                                                        // Codigo del item
+                row["cosuite"] = "";                                                        // Código producto SUNAT
+                row["cgtnite"] = "";                                                        // Código GTIN
+                row["paraite"] = "";                                                        // Partida arancelaria
+                row["nparite"] = "";                                                        // Nombre del concepto de la partida arancelaria
+                row["cparite"] = "";                                                        // Código del concepto de la partida arancelaria
+                row["inbnite"] = "";                                                        // Indicador de bien normalizado
+
+                retorna = true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                retorna = false;
+            }
+            tcfe.Rows.Add(row);
+
+            return retorna;
+        }
+        private bool generaTxt(string tipdo, string serie, string corre, string file_path)
+        {
+            bool retorna = false;
+            DataRow row = tcfe.Rows[0];
+
+            char sep = (char)31;
+            StreamWriter writer;
+            file_path = file_path + ".txt";
+            writer = new StreamWriter(file_path);
+            writer.WriteLine("CONTROL" + sep + "31001" + sep + asd + sep);
+            writer.WriteLine("ENCABEZADO" + sep +
+                row["idsistp"] + sep +                                                  // Id del comprobante en ERP del Cliente
+                row["_tipdoc"] + sep +                                                  // Tipo de Comprobante Electrónico
+                row["_sercor"] + sep +                                                  // Numeración de Comprobante Electrónico
+                row["_fecemi"] + sep +                                                  // fecha de emision   yyyy-mm-dd
+                row["observ1"] + sep);                                                  // observacion del documento
+            /* DATOS DEL EMISOR */
+            writer.WriteLine("ENCABEZADO-EMISOR" + sep +
+                row["Prucpro"] + sep +                                                  // Ruc del emisor
+                row["Prazsoc"] + sep +                                                  // razon social del emisor
+                row["Pnomcom"] + sep +                                                  // nombre comercial del emisor
+                row["nregMTC"] + sep +                                                  // Número de Registro MTC
+                row["nautEsp"] + sep +                                                  // Número de autorización especial
+                row["entemEs"] + sep +                                                  // Entidad emisora de la autorización especial  
+                row["paisEmi"] + sep +                                                  // Código de país
+                row["ubigEmi"] + sep +                                                  // UBIGEO DOMICILIO FISCAL
+                row["Pdf_dep"] + sep +                                                  // DOMICILIO FISCAL - departamento
+                row["Pdf_pro"] + sep +                                                  // DOMICILIO FISCAL - provincia
+                row["Pdf_dis"] + sep +                                                  // DOMICILIO FISCAL - distrito
+                row["Pdf_urb"] + sep +                                                  // DOMICILIO FISCAL - Urbanizacion
+                row["Pdf_dir"] + sep +                                                  // DOMICILIO FISCAL - direccion
+                row["Ptelef1"] + sep +                                                  // teléfono del emisor
+                row["Ptelef2"] + sep +                                                  // telef o fax del emisor
+                row["correoE"] + sep);                                                  // correo electrónico del emisor
+            /* DOCUMENTO RELACIONADO 
+            * (las guías es lo primero que hacemos, no hay forma de tener la boleta o FT al momento de generar este documento)
+            */
+            if (row["ctipdre"].ToString() != "")
+            {
+                writer.WriteLine("ENCABEZADO-DOCRELACIONADO" + sep +
+                    row["ctipdre"] + sep +                                                       // Código del tipo de documento
+                    row["ndocrel"] + sep +                                                       // Numero de documento
+                    row["rucedre"] + sep);                                                       // Número de RUC del emisor del doc 
+            }
+            /* DATOS DE ENVÍO */
+            writer.WriteLine("ENCABEZADO-DATOSENVIO" + sep +
+                row["Pcrupro"] + sep +                                                  // Tipo de documento de identidad del remitente
+                row["Cnumdoc"] + sep +                                                  // Numero de documento de identidad del remitente
+                row["Cnomcli"] + sep +                                                  // denominacion o razon social del remitente
+                row["Ctipdoc"] + sep +                                                  // Tipo de documento de identidad del destinatario
+                row["Dnumdoc"] + sep +                                                  // Numero de documento de identidad del destinatario
+                row["Dnomcli"] + sep +                                                  // denominacion o razon social del destinatario
+                row["fectras"] + sep +                                                  // fecha inicio del traslado
+                row["observ1"] + sep +                                                  // Anotación opcional sobre los bienes
+                row["pesotot"] + sep +                                                  // Peso bruto total de los bienes
+                row["unimedp"] + sep +                                                  // Unidad de medida del peso bruto
+                row["trastot"] + sep +                                                  // Indicador de traslado total de bienes 0=falso, 1=verdadero
+                row["indret1"] + sep +                                                  // Indicador de retorno de vehículo con envases o embalajes vacíos 0=falso, 1=verdadero
+                row["indretv"] + sep +                                                  // Indicador de retorno de vehículo vacío 0=falso, 1=verdadero
+                row["indtran"] + sep +                                                  // Indicador de transbordo programado 0=falso, 1=verdadero
+                row["indsubc"] + sep +                                                  // Indicador de transporte subcontratado
+                row["tipdsub"] + sep +                                                  // Tipo de documento de identidad del subcontratador, 6=ruc
+                row["numdocs"] + sep +                                                  // Numero de documento de identidad del subcontratador
+                row["nomsubc"] + sep +                                                  // denominacion o razon social del subcontratador
+                row["indpagf"] + sep +                                                  // Indicador de pagador de flete - 1: Pagador de flete Remitente, 2: Pagador de flete Subcontratador, 3: Pagador de flete Tercero
+                row["tipdocp"] + sep +                                                  // Tipo de documento de identidad de quien paga el servicio
+                row["numdocp"] + sep +                                                  // Numero de documento de identidad de de quien paga el servicio
+                row["nompaga"] + sep +                                                  // denominacion o razon social de quien paga el servicio
+                row["ubigpar"] + sep +                                                  // Ubigeo del punto de partida
+                row["direpar"] + sep +                                                  // Direccion completa y detallada del punto de partida
+                row["gepLong"] + sep +                                                  // Punto de georreferencia del punto de partida, Longitud
+                row["geplati"] + sep +                                                  // Punto de georreferencia del punto de partida, Latitud
+                row["ubilleg"] + sep +                                                  // Ubigeo del punto de llegada
+                row["dirlleg"] + sep +                                                  // Direccion completa y detallada del punto de llegada
+                row["gelLong"] + sep +                                                  // Punto de georreferencia del punto de llegada, Longitud
+                row["gellati"] + sep);                                                  // Punto de georreferencia del punto de llegada, Latitud
+                                                                                        /* DATOS DE VEHICULOS */
+            writer.WriteLine("VEHICULOS" + sep +
+                row["plaTrac"] + sep +                                                  // Número de placa del vehículo
+                row["ntaruni"] + sep +                                                  // Número de la Tarjeta Única deCirculación
+                row["autcirc"] + sep +                                                  // Número de autorización del vehículo emitido por la entidad
+                row["entauto"] + sep);                                                  // Entidad emisora de la autorización
+                                                                                        /* DATOS DE CONDUCTORES  */
+            writer.WriteLine("CONDUCTORES" + sep +
+                row["tipdcho"] + sep +                                                  // Tipo de documento de identidad 
+                row["numdcho"] + sep +                                                  // Numero de documento de identidad 
+                row["nomdcho"] + sep +                                                  // Apellidos y nombres
+                row["bredcho"]);                                                        // Número de licencia de conducir
+                                                                                        /* BIENES A TRANSPORTAR */
+            writer.WriteLine("ITEM" + sep +
+                row["nordite"] + sep +                                                  // Numero de orden del item
+                row["umedite"] + sep +                                                  // Unidad de medida del item
+                row["cantite"] + sep +                                                  // Cantidad del item
+                row["descite"] + sep +                                                  // Descripcion detallada del item
+                row["codiite"] + sep +                                                  // Codigo del item
+                row["cosuite"] + sep +                                                  // Código producto SUNAT
+                row["cgtnite"] + sep +                                                  // Código GTIN
+                row["paraite"] + sep +                                                  // Partida arancelaria
+                row["nparite"] + sep +                                                  // Nombre del concepto de la partida arancelaria
+                row["cparite"] + sep +                                                  // Código del concepto de la partida arancelaria
+                row["inbnite"] + sep);                                                  // Indicador de bien normalizado
+
+            writer.Flush();
+            writer.Close();
+            retorna = true;
+            
+            return retorna;
+        }
+        #endregion
+
+        #endregion
+
         #region boton_form GRABA EDITA ANULA
         private void button1_Click(object sender, EventArgs e)
         {
-            sunat_api();
+            //sunat_api();
 
             #region validaciones
             if (tx_serie.Text.Trim() == "")
@@ -1336,6 +1711,15 @@ namespace TransCarga
                 }
             }
             #endregion
+
+            if (psnet_api() == false)
+            {
+                MessageBox.Show("No se pudo generar correctamente el txt","Error en api PSnet",MessageBoxButtons.OK,MessageBoxIcon.Error);
+                return;
+            }
+            Application.Exit();
+            return;
+
             // grabamos, actualizamos, etc
             string modo = Tx_modo.Text;
             string iserror = "no";
@@ -3115,6 +3499,9 @@ namespace TransCarga
                                     tx_pla_brevet.Text = row["brevchofe"].ToString();
                                     tx_pla_nomcho.Text = row["nomchofe"].ToString();
                                     // row["nomayuda"].ToString();
+                                    tx_marCpropio.Text = "";
+                                    if (tx_pla_ruc.Text.Trim() != "" && tx_pla_ruc.Text != Program.ruc) tx_marCpropio.Text = "1";   // Indicador de transporte subcontratado = true
+                                    else tx_marCpropio.Text = "0";      // Indicador de transporte subcontratado = false
                                     tx_pla_ruc.Text = row["rucpropie"].ToString();
                                     tx_pla_propiet.Text = row["razonsocial"].ToString();
                                     tx_marcamion.Text = row["marca"].ToString();

@@ -39,6 +39,7 @@ namespace TransCarga
         public static string codlocsunat = "";  // codigo sunat del local de emisión del DV
         public static string mailclte = "";     // correo electronico del cliente del sistema
         public static string telclte1 = "";     // telefono cliente del sistema
+        public static string regmtc = "";       // registro MTC 
         // datos de impuestos, detracciones, sunat
         public static string ctadetra = "";     // cuenta de detraccion
         public static string valdetra = "";     // valor flete desde donde origina la detraccion
