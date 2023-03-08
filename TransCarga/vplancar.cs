@@ -49,6 +49,7 @@ namespace TransCarga
             dataGridView1.Columns[13].Visible = false;   // b.razonsocial,
             dataGridView1.Columns[14].Visible = false;   // c.marca,
             dataGridView1.Columns[15].Visible = false;   // modelo
+            dataGridView1.Columns[16].Visible = false;   // dni chofer
         }
         private void vplancar_KeyDown(object sender, KeyEventArgs e)
         {
@@ -63,8 +64,14 @@ namespace TransCarga
 
         private void button1_Click(object sender, EventArgs e)
         {
-            ReturnValue1 = dataGridView1.CurrentRow.Index;
-            //
+            if (dataGridView1.CurrentRow == null)   // dataGridView1.CurrentRow.Index <= -1
+            {
+                MessageBox.Show("No seleccionó ninguna placa","Atención",MessageBoxButtons.OK,MessageBoxIcon.Information);
+            }
+            else
+            {
+                ReturnValue1 = dataGridView1.CurrentRow.Index;
+            }
             this.Close();
         }
     }

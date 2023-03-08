@@ -39,6 +39,8 @@
             this.Bt_edit = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.Bt_anul = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator12 = new System.Windows.Forms.ToolStripSeparator();
+            this.Bt_ver = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.Tx_modo = new System.Windows.Forms.ToolStripTextBox();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
@@ -120,8 +122,10 @@
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.button1 = new System.Windows.Forms.Button();
-            this.Bt_ver = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator12 = new System.Windows.Forms.ToolStripSeparator();
+            this.label1 = new System.Windows.Forms.Label();
+            this.groupBox35 = new System.Windows.Forms.GroupBox();
+            this.groupBox36 = new System.Windows.Forms.GroupBox();
+            this.tx_csunat = new System.Windows.Forms.TextBox();
             this.toolStrip1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabgrilla.SuspendLayout();
@@ -144,6 +148,7 @@
             this.groupBox3.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox11.SuspendLayout();
+            this.groupBox35.SuspendLayout();
             this.SuspendLayout();
             // 
             // toolStrip1
@@ -264,6 +269,25 @@
             this.Bt_anul.Text = "Bt_close";
             this.Bt_anul.ToolTipText = "Anular usuario";
             this.Bt_anul.Click += new System.EventHandler(this.Bt_anul_Click);
+            // 
+            // toolStripSeparator12
+            // 
+            this.toolStripSeparator12.AutoSize = false;
+            this.toolStripSeparator12.ForeColor = System.Drawing.Color.Black;
+            this.toolStripSeparator12.Name = "toolStripSeparator12";
+            this.toolStripSeparator12.Size = new System.Drawing.Size(3, 45);
+            // 
+            // Bt_ver
+            // 
+            this.Bt_ver.AutoSize = false;
+            this.Bt_ver.BackColor = System.Drawing.SystemColors.Control;
+            this.Bt_ver.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.Bt_ver.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.Bt_ver.Name = "Bt_ver";
+            this.Bt_ver.Size = new System.Drawing.Size(32, 32);
+            this.Bt_ver.Text = "Bt_close";
+            this.Bt_ver.ToolTipText = "Visualizar (Ctrl O)";
+            this.Bt_ver.Click += new System.EventHandler(this.Bt_ver_Click);
             // 
             // toolStripSeparator4
             // 
@@ -421,6 +445,9 @@
             // tabreg
             // 
             this.tabreg.BackColor = System.Drawing.Color.Silver;
+            this.tabreg.Controls.Add(this.label1);
+            this.tabreg.Controls.Add(this.groupBox35);
+            this.tabreg.Controls.Add(this.tx_csunat);
             this.tabreg.Controls.Add(this.groupBox31);
             this.tabreg.Controls.Add(this.groupBox33);
             this.tabreg.Controls.Add(this.tx_enla1);
@@ -903,7 +930,7 @@
             this.comboBox1.Location = new System.Drawing.Point(168, 32);
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(144, 21);
-            this.comboBox1.TabIndex = 1;
+            this.comboBox1.TabIndex = 0;
             this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
             this.comboBox1.SelectionChangeCommitted += new System.EventHandler(this.comboBox1_SelectionChangeCommitted);
             // 
@@ -1067,7 +1094,7 @@
             this.textBox2.Location = new System.Drawing.Point(167, 85);
             this.textBox2.Name = "textBox2";
             this.textBox2.Size = new System.Drawing.Size(94, 18);
-            this.textBox2.TabIndex = 3;
+            this.textBox2.TabIndex = 2;
             // 
             // textBox1
             // 
@@ -1077,7 +1104,7 @@
             this.textBox1.MaxLength = 10;
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(94, 18);
-            this.textBox1.TabIndex = 2;
+            this.textBox1.TabIndex = 1;
             this.textBox1.Leave += new System.EventHandler(this.textBox1_Leave);
             // 
             // button1
@@ -1090,24 +1117,43 @@
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
-            // Bt_ver
+            // label1
             // 
-            this.Bt_ver.AutoSize = false;
-            this.Bt_ver.BackColor = System.Drawing.SystemColors.Control;
-            this.Bt_ver.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.Bt_ver.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.Bt_ver.Name = "Bt_ver";
-            this.Bt_ver.Size = new System.Drawing.Size(32, 32);
-            this.Bt_ver.Text = "Bt_close";
-            this.Bt_ver.ToolTipText = "Visualizar (Ctrl O)";
-            this.Bt_ver.Click += new System.EventHandler(this.Bt_ver_Click);
+            this.label1.AutoSize = true;
+            this.label1.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.label1.Location = new System.Drawing.Point(381, 84);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(71, 13);
+            this.label1.TabIndex = 221;
+            this.label1.Text = "Código Sunat";
+            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // toolStripSeparator12
+            // groupBox35
             // 
-            this.toolStripSeparator12.AutoSize = false;
-            this.toolStripSeparator12.ForeColor = System.Drawing.Color.Black;
-            this.toolStripSeparator12.Name = "toolStripSeparator12";
-            this.toolStripSeparator12.Size = new System.Drawing.Size(3, 45);
+            this.groupBox35.BackColor = System.Drawing.Color.White;
+            this.groupBox35.Controls.Add(this.groupBox36);
+            this.groupBox35.Location = new System.Drawing.Point(380, 100);
+            this.groupBox35.Name = "groupBox35";
+            this.groupBox35.Size = new System.Drawing.Size(180, 1);
+            this.groupBox35.TabIndex = 220;
+            this.groupBox35.TabStop = false;
+            // 
+            // groupBox36
+            // 
+            this.groupBox36.Location = new System.Drawing.Point(0, -26);
+            this.groupBox36.Name = "groupBox36";
+            this.groupBox36.Size = new System.Drawing.Size(164, 1);
+            this.groupBox36.TabIndex = 113;
+            this.groupBox36.TabStop = false;
+            // 
+            // tx_csunat
+            // 
+            this.tx_csunat.BackColor = System.Drawing.SystemColors.Window;
+            this.tx_csunat.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_csunat.Location = new System.Drawing.Point(466, 83);
+            this.tx_csunat.Name = "tx_csunat";
+            this.tx_csunat.Size = new System.Drawing.Size(94, 18);
+            this.tx_csunat.TabIndex = 3;
             // 
             // defs
             // 
@@ -1153,6 +1199,7 @@
             this.groupBox3.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
             this.groupBox11.ResumeLayout(false);
+            this.groupBox35.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -1251,5 +1298,9 @@
         private System.Windows.Forms.Label lb_enla1;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator12;
         private System.Windows.Forms.ToolStripButton Bt_ver;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.GroupBox groupBox35;
+        private System.Windows.Forms.GroupBox groupBox36;
+        private System.Windows.Forms.TextBox tx_csunat;
     }
 }
