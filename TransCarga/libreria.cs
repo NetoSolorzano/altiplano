@@ -3103,7 +3103,7 @@ namespace TransCarga
         {
             MessageBox.Show(texto, "FALTA CONFIGURAR", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
-        public bool procConn(MySqlConnection con)
+        public bool procConn(MySqlConnection con)                           // conexión a la base de datos
         {
             bool retorna = false;
             while (con.State != ConnectionState.Open)
