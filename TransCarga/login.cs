@@ -372,6 +372,7 @@ namespace TransCarga
                     using (MySqlDataAdapter da = new MySqlDataAdapter(mico))
                     {
                         da.Fill(dt_enlaces);
+                        
                         foreach (DataRow row in dt_enlaces.Rows)
                         {
                             /*
