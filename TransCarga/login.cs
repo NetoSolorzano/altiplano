@@ -367,11 +367,24 @@ namespace TransCarga
             using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
             {
                 conn.Open();
-                using (MySqlCommand mico = new MySqlCommand("select * from enlaces", conn))
+                using (MySqlCommand mico = new MySqlCommand("select id,formulario,campo,descrip,valor,param from enlaces", conn))
                 {
                     using (MySqlDataAdapter da = new MySqlDataAdapter(mico))
                     {
                         da.Fill(dt_enlaces);
+                        foreach (DataRow row in dt_enlaces.Rows)
+                        {
+                            /*
+                            configuracion.dt_enlacesRow nr = setC.dt_enlaces.Newdt_enlacesRow();
+                            nr.id = int.Parse(row.ItemArray[0].ToString());
+                            nr.formulario = row.ItemArray[1].ToString();
+                            nr.campo = row.ItemArray[2].ToString();
+                            nr.descrip = row.ItemArray[3].ToString();
+                            nr.valor = row.ItemArray[4].ToString();
+                            nr.param = row.ItemArray[5].ToString();
+                            setC.dt_enlaces.Adddt_enlacesRow(nr);
+                            */
+                        }
                     }
                 }
             }

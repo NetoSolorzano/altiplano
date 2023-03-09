@@ -149,8 +149,7 @@ namespace TransCarga
             */
             this.Focus();
             MessageBox.Show("vamos a iniciar jalainfo_dt");
-            //jalainfo();
-            jalainfo_dt();
+            jalainfo();
             init();
             MessageBox.Show("vamos a iniciar dataload");
             dataload();
@@ -400,35 +399,6 @@ namespace TransCarga
                 Application.Exit();
                 return;
             }
-        }
-        private void jalainfo_dt()
-        {
-            login log = new login();
-            DataTable table = log.dt_enlaces;   // me quede acá, dt_enlaces esta vacio
-            DataRow[] fila = table.Select("formulario='main' and campo='imagenes'");
-            foreach (DataRow row in fila)
-            {
-                if (row["param"].ToString() == "img_btN") img_btN = row["valor"].ToString().Trim();         // imagen del boton de accion NUEVO
-                if (row["param"].ToString() == "img_btE") img_btE = row["valor"].ToString().Trim();         // imagen del boton de accion EDITAR
-                if (row["param"].ToString() == "img_btA") img_btA = row["valor"].ToString().Trim();         // imagen del boton de accion ANULAR/BORRAR
-                if (row["param"].ToString() == "img_btQ") img_btq = row["valor"].ToString().Trim();         // imagen del boton de accion SALIR
-                if (row["param"].ToString() == "img_btP") img_btP = row["valor"].ToString().Trim();         // imagen del boton de accion IMPRIMIR
-                if (row["param"].ToString() == "img_btV") img_btV = row["valor"].ToString().Trim();         // imagen del boton de accion visualizar
-                if (row["param"].ToString() == "img_bti") img_bti = row["valor"].ToString().Trim();         // imagen del boton de accion IR AL INICIO
-                if (row["param"].ToString() == "img_bts") img_bts = row["valor"].ToString().Trim();         // imagen del boton de accion SIGUIENTE
-                if (row["param"].ToString() == "img_btr") img_btr = row["valor"].ToString().Trim();         // imagen del boton de accion RETROCEDE
-                if (row["param"].ToString() == "img_btf") img_btf = row["valor"].ToString().Trim();         // imagen del boton de accion IR AL FINAL
-                if (row["param"].ToString() == "img_gra") img_grab = row["valor"].ToString().Trim();         // imagen del boton grabar nuevo
-                if (row["param"].ToString() == "img_anu") img_anul = row["valor"].ToString().Trim();         // imagen del boton grabar anular
-                if (row["param"].ToString() == "img_preview") img_ver = row["valor"].ToString().Trim();         // imagen del boton grabar visualizar
-            }
-            fila = log.dt_enlaces.Select("formulario='main' and campo='estado'");
-            foreach (DataRow row in fila)
-            {
-                if (row["param"].ToString() == "anulado") codAnul = row["valor"].ToString().Trim();         // codigo doc anulado
-                if (row["param"].ToString() == "generado") codGene = row["valor"].ToString().Trim();        // codigo doc generado
-            }
-
         }
         private void jalaoc(string campo)       // jala guia individual
         {
