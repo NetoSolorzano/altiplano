@@ -352,4 +352,6 @@ form facelect, adecuar el campo tx_valref1 para poner ahí el valor referencial 
 	a este campo calculamos la detracción y el importe a pagar...................................... ok 30/12/2022
 ******************* IMPLEMENTACION DE G R TRANSPORTISTA ELECTRONICA CON PSNET **********************
 form defs, agregar campo sunat ..................................................................... ok 01/03/2023
-form guiati_e, adecuaciones para PSNet .................................. 
+form guiati_e, adecuaciones para PSNet ............................................................. ok 08/03/2023 
+form login, jalar tabla enlaces en datatable publica ............................................... ok 08/03/2023
+form guiati_e, jalar jalainfo() de la tabla publica dt_enlaces ..................................... 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
+using System.Data;
 using MySql.Data.MySqlClient;
 using System.Configuration;
 using System.Drawing;
@@ -19,6 +20,7 @@ namespace TransCarga
         public static string data = ConfigurationManager.AppSettings["data"].ToString();
         public static string ctl = ConfigurationManager.AppSettings["ConnectionLifeTime"].ToString();
         string DB_CONN_STR = "server=" + serv + ";uid=" + usua + ";pwd=" + cont + ";database=" + data + ";";
+        public DataTable dt_enlaces = new DataTable();
 
         public login()
         {
@@ -40,7 +42,7 @@ namespace TransCarga
             init();
             // jala datos de configuracion
             jaladatos();
-            //
+            backgroundWorker1.RunWorkerAsync();     // 08/03/2023
             Tx_user.Focus();
         }
         private void init()
@@ -358,6 +360,21 @@ namespace TransCarga
         {
             if(checkBox1.Checked == true) tx_newcon.Visible = true;
             else tx_newcon.Visible = false;
+        }
+
+        private void backgroundWorker1_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
+        {
+            using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
+            {
+                conn.Open();
+                using (MySqlCommand mico = new MySqlCommand("select * from enlaces", conn))
+                {
+                    using (MySqlDataAdapter da = new MySqlDataAdapter(mico))
+                    {
+                        da.Fill(dt_enlaces);
+                    }
+                }
+            }
         }
     }
 }

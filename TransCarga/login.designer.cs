@@ -39,10 +39,11 @@
             this.Button2 = new System.Windows.Forms.Button();
             this.Button1 = new System.Windows.Forms.Button();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.label1 = new System.Windows.Forms.Label();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.lb_version = new System.Windows.Forms.Label();
             this.lb_titulo = new System.Windows.Forms.Label();
+            this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.groupBox1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -162,16 +163,6 @@
             this.panel2.Size = new System.Drawing.Size(286, 347);
             this.panel2.TabIndex = 31;
             // 
-            // pictureBox1
-            // 
-            this.pictureBox1.Image = global::TransCarga.Properties.Resources.logo_solorsoft;
-            this.pictureBox1.Location = new System.Drawing.Point(4, 97);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(279, 110);
-            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBox1.TabIndex = 0;
-            this.pictureBox1.TabStop = false;
-            // 
             // label1
             // 
             this.label1.AutoSize = true;
@@ -183,6 +174,16 @@
             this.label1.TabIndex = 34;
             this.label1.Text = "Derechos reservados a: \r\nLucio Ernesto Solórzano Ramos\r\nneto.solorzano@solorsoft." +
     "com\r\nwww.solorsoft.com";
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Image = global::TransCarga.Properties.Resources.logo_solorsoft;
+            this.pictureBox1.Location = new System.Drawing.Point(4, 97);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(279, 110);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox1.TabIndex = 0;
+            this.pictureBox1.TabStop = false;
             // 
             // lb_version
             // 
@@ -204,6 +205,10 @@
             this.lb_titulo.TabIndex = 34;
             this.lb_titulo.Text = "titulo";
             this.lb_titulo.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // backgroundWorker1
+            // 
+            this.backgroundWorker1.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker1_DoWork);
             // 
             // login
             // 
@@ -255,6 +260,7 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label lb_version;
         private System.Windows.Forms.Label lb_titulo;
+        private System.ComponentModel.BackgroundWorker backgroundWorker1;
     }
 }
 

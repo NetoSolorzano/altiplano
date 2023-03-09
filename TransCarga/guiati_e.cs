@@ -148,8 +148,11 @@ namespace TransCarga
             toolTipNombre.SetToolTip(toolStrip1, nomform);   // Set up the ToolTip text for the object
             */
             this.Focus();
-            jalainfo();
+            MessageBox.Show("vamos a iniciar jalainfo_dt");
+            //jalainfo();
+            jalainfo_dt();
             init();
+            MessageBox.Show("vamos a iniciar dataload");
             dataload();
             toolboton();
             this.KeyPreview = true;
@@ -398,6 +401,35 @@ namespace TransCarga
                 return;
             }
         }
+        private void jalainfo_dt()
+        {
+            login log = new login();
+            DataTable table = log.dt_enlaces;   // me quede acá, dt_enlaces esta vacio
+            DataRow[] fila = table.Select("formulario='main' and campo='imagenes'");
+            foreach (DataRow row in fila)
+            {
+                if (row["param"].ToString() == "img_btN") img_btN = row["valor"].ToString().Trim();         // imagen del boton de accion NUEVO
+                if (row["param"].ToString() == "img_btE") img_btE = row["valor"].ToString().Trim();         // imagen del boton de accion EDITAR
+                if (row["param"].ToString() == "img_btA") img_btA = row["valor"].ToString().Trim();         // imagen del boton de accion ANULAR/BORRAR
+                if (row["param"].ToString() == "img_btQ") img_btq = row["valor"].ToString().Trim();         // imagen del boton de accion SALIR
+                if (row["param"].ToString() == "img_btP") img_btP = row["valor"].ToString().Trim();         // imagen del boton de accion IMPRIMIR
+                if (row["param"].ToString() == "img_btV") img_btV = row["valor"].ToString().Trim();         // imagen del boton de accion visualizar
+                if (row["param"].ToString() == "img_bti") img_bti = row["valor"].ToString().Trim();         // imagen del boton de accion IR AL INICIO
+                if (row["param"].ToString() == "img_bts") img_bts = row["valor"].ToString().Trim();         // imagen del boton de accion SIGUIENTE
+                if (row["param"].ToString() == "img_btr") img_btr = row["valor"].ToString().Trim();         // imagen del boton de accion RETROCEDE
+                if (row["param"].ToString() == "img_btf") img_btf = row["valor"].ToString().Trim();         // imagen del boton de accion IR AL FINAL
+                if (row["param"].ToString() == "img_gra") img_grab = row["valor"].ToString().Trim();         // imagen del boton grabar nuevo
+                if (row["param"].ToString() == "img_anu") img_anul = row["valor"].ToString().Trim();         // imagen del boton grabar anular
+                if (row["param"].ToString() == "img_preview") img_ver = row["valor"].ToString().Trim();         // imagen del boton grabar visualizar
+            }
+            fila = log.dt_enlaces.Select("formulario='main' and campo='estado'");
+            foreach (DataRow row in fila)
+            {
+                if (row["param"].ToString() == "anulado") codAnul = row["valor"].ToString().Trim();         // codigo doc anulado
+                if (row["param"].ToString() == "generado") codGene = row["valor"].ToString().Trim();        // codigo doc generado
+            }
+
+        }
         private void jalaoc(string campo)       // jala guia individual
         {
             //try
@@ -405,11 +437,11 @@ namespace TransCarga
                 string parte = "";
                 if (campo == "tx_idr")
                 {
-                    parte = "where a.id=@ida";
+                    parte = "where a.marca_gre=@marGR and a.id=@ida";
                 }
                 if (campo == "sernum")
                 {
-                    parte = "where a.sergui=@ser and a.numgui=@num";
+                    parte = "where a.marca_gre=@marGR and a.sergui=@ser and a.numgui=@num";
                 }
                 MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
                 conn.Open();
@@ -426,7 +458,8 @@ namespace TransCarga
                         "ifnull(b.totdocvta,0) as totdocvta,ifnull(b.codmonpag,'') as codmonpag,ifnull(b.totpagado,0) as totpagado,ifnull(b.saldofina,0) as saldofina," +
                         "ifnull(b.feculpago,'') as feculpago,ifnull(b.estadoser,'') as estadoser,ifnull(c.razonsocial,'') as razonsocial,a.grinumaut," +
                         "ifnull(d.marca,'') as marca,ifnull(d.modelo,'') as modelo,ifnull(r.marca,'') as marCarret,ifnull(r.confve,'') as confvCarret,ifnull(r.autor1,'') as autCarret," +
-                        "ifnull(er.numerotel1,'') as telrem,ifnull(ed.numerotel1,'') as teldes,ifnull(t.nombclt,'') as clifact " +
+                        "ifnull(er.numerotel1,'') as telrem,ifnull(ed.numerotel1,'') as teldes,ifnull(t.nombclt,'') as clifact," +
+                        "a.marca_gre,a.tidocor,a.rucDorig,a.lpagop,a.pesoKT " +
                         "from cabguiai a " +
                         "left join controlg b on b.serguitra=a.sergui and b.numguitra=a.numgui " +
                         "left join desc_tdv f on f.idcodice=b.tipdocvta " +
@@ -439,6 +472,7 @@ namespace TransCarga
                         "left join anag_cli ed on ed.ruc=a.nudodegri and ed.tipdoc=a.tidodegri " + parte;
                     MySqlCommand micon = new MySqlCommand(consulta, conn);
                     micon.Parameters.AddWithValue("@tdep", vtc_ruc);
+                    micon.Parameters.AddWithValue("@marGR", v_marGRET);
                     if (campo == "tx_idr") micon.Parameters.AddWithValue("@ida", tx_idr.Text);
                     if (campo == "sernum")
                     {
@@ -507,6 +541,15 @@ namespace TransCarga
                             DataRow[] row = dtm.Select("idcodice='" + dr.GetString("codmonvta") + "'");
                             lb_impDV.Text = lb_impDV.Text + ((row.Length > 0)? row[0][1].ToString() : "");
                             tx_impDV.Text = dr.GetDecimal("totdocvta").ToString("#.##");
+                            // "a.marca_gre,a.tidocor,a.rucDorig,a.lpagop,a.pesoKT " +
+                            tx_dat_docOr.Text = dr.GetString("tidocor");
+                            tx_rucEorig.Text = dr.GetString("rucDorig");
+                            if (dr.GetString("pesoKT") == "K") rb_kg.Checked = true;
+                            else rb_tn.Checked = true;
+                            if (dr.GetString("lpagop") == "O") rb_pOri.Checked = true;
+                            else rb_pDes.Checked = true;
+                            cmb_docorig.SelectedValue = tx_dat_docOr.Text;
+                            cmb_docorig_SelectionChangeCommitted(null, null);
                             //
                             tx_estado.Text = lib.nomstat(tx_dat_estad.Text);
                             cmb_origen.SelectedValue = tx_dat_locori.Text;
@@ -1765,10 +1808,10 @@ namespace TransCarga
                     var aa = MessageBox.Show("Confirma que desea crear la guía?", "Confirme por favor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                     if (aa == DialogResult.Yes)
                     {
-                        correlativo();
-                        if (psnet_api() == true)   // sunat_api() -> genera GRE-Transportista en sunat
+                        correlativo();                  // corretalivo del local y serie
+                        if (psnet_api() == true)        // sunat_api() -> genera GRE-Transportista en sunat
                         {
-                            if (true == true)    // graba() == true
+                            if (graba() == true)        // graba en las tablas de la BD
                             {
                                 // actualizamos la tabla seguimiento de usuarios
                                 string resulta = lib.ult_mov(nomform, nomtab, asd);
@@ -2131,7 +2174,7 @@ namespace TransCarga
                     micon.Parameters.AddWithValue("@tdocor", tx_dat_docOr.Text);                            // tipo del documento origen
                     micon.Parameters.AddWithValue("@rucDor", tx_rucEorig.Text);                             // ruc del emisor del doc origen
                     micon.Parameters.AddWithValue("@lpagop", (rb_pOri.Checked == true)? "O" : "D");         // mara de pago en origen o destino
-                    micon.Parameters.AddWithValue("@pesoKT", tx_det_peso.Text);                             // peso en: Kilos o Toneladas
+                    micon.Parameters.AddWithValue("@pesoKT", (rb_kg.Checked == true) ? "K" : "T");          // peso en: Kilos o Toneladas
                     //
                     micon.Parameters.AddWithValue("@verApp", verapp);
                     micon.Parameters.AddWithValue("@asd", asd);
@@ -2395,15 +2438,8 @@ namespace TransCarga
         }
         private void anula()
         {
-            // en el caso guias y otros documentos HAY 2: ANULACION FISICA y ANULACION INTERNA (serie ANU)
-            // Anulacion fisica se "anula" el numero del documento en sistema y en fisico se tacha, marca anulado 
-            // Anulación interna (ANU) el numero se recupera tanto en fisico como en sistema, el anulado internamente pasa a ser serie ANU
-            // se borran todos los enlaces en cualquier tipo de anulacion
-            var aa = MessageBox.Show("Anulación interna para recuperar el número?" + Environment.NewLine +
-                "Se cambia la serie a ANU", "Atención, confirme por favor",
-                MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-            string parte = " ";
-            if (aa == DialogResult.Yes) parte = ",sergui=@coad ";
+            // En Guías de remisión electrónicas NO HAY ANULACION INTERNA, todas las anulaciones (bajas de comprobante)
+            // se hacen DESPUES de haberse hecho en sunat en el portal con clave SOL o en el app emprender 08/03/2023
             using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
             {
                 conn.Open();
@@ -2411,7 +2447,7 @@ namespace TransCarga
                 {
                     string canul = "update cabguiai set obspregri=@obsr1,estadoser=@estser,usera=@asd,fecha=now(),idplani=0,fechplani=NULL," +
                         "serplagri='',numplagri='',plaplagri='',carplagri='',autplagri='',confvegri='',breplagri='',proplagri=''," +
-                        "verApp=@veap,diriplan4=@dil4,diripwan4=@diw4,netbname=@nbnp,estintreg=@eiar" + parte +
+                        "verApp=@veap,diriplan4=@dil4,diripwan4=@diw4,netbname=@nbnp,estintreg=@eiar " +
                         "where id=@idr";
                     using (MySqlCommand micon = new MySqlCommand(canul, conn))
                     {
@@ -2424,7 +2460,6 @@ namespace TransCarga
                         micon.Parameters.AddWithValue("@nbnp", Environment.MachineName);
                         micon.Parameters.AddWithValue("@veap", verapp);
                         micon.Parameters.AddWithValue("@eiar", (vint_A0 == codAnul) ? "A0" : "");  // codigo anulacion interna en DB A0
-                        if (aa == DialogResult.Yes) micon.Parameters.AddWithValue("@coad", v_sanu);
                         micon.ExecuteNonQuery();
                     }
                 }
@@ -3696,8 +3731,16 @@ namespace TransCarga
             bool retorna = false;
             try
             {
-                for (int i = 1; i <= int.Parse(vi_copias); i++)
-                {
+                if (Tx_modo.Text == "NUEVO")
+                {   // si es nuevo, se imprimen 2 copias
+                    for (int i = 1; i <= int.Parse(vi_copias); i++)
+                    {
+                        printDocument1.PrinterSettings.PrinterName = v_impTK;
+                        printDocument1.Print();
+                    }
+                }
+                else
+                {   // si NO es nuevo, se imprime 1 copia
                     printDocument1.PrinterSettings.PrinterName = v_impTK;
                     printDocument1.Print();
                 }
