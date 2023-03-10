@@ -6,6 +6,7 @@ using System.Configuration;
 using System.Drawing;
 using System.Security.Cryptography;
 using System.Text;
+using Microsoft.Data.Sqlite;
 
 namespace TransCarga
 {
@@ -21,6 +22,7 @@ namespace TransCarga
         public static string ctl = ConfigurationManager.AppSettings["ConnectionLifeTime"].ToString();
         string DB_CONN_STR = "server=" + serv + ";uid=" + usua + ";pwd=" + cont + ";database=" + data + ";";
         public DataTable dt_enlaces = new DataTable();
+        public static string CadenaConexion = "Data Source=TransCarga.db";   // Data Source=TransCarga;Mode=Memory;Cache=Shared
 
         public login()
         {
@@ -372,19 +374,39 @@ namespace TransCarga
                     using (MySqlDataAdapter da = new MySqlDataAdapter(mico))
                     {
                         da.Fill(dt_enlaces);
-                        
-                        foreach (DataRow row in dt_enlaces.Rows)
+                        using (SqliteConnection cnx = new SqliteConnection(CadenaConexion))
                         {
-                            /*
-                            configuracion.dt_enlacesRow nr = setC.dt_enlaces.Newdt_enlacesRow();
-                            nr.id = int.Parse(row.ItemArray[0].ToString());
-                            nr.formulario = row.ItemArray[1].ToString();
-                            nr.campo = row.ItemArray[2].ToString();
-                            nr.descrip = row.ItemArray[3].ToString();
-                            nr.valor = row.ItemArray[4].ToString();
-                            nr.param = row.ItemArray[5].ToString();
-                            setC.dt_enlaces.Adddt_enlacesRow(nr);
-                            */
+                            cnx.Open();
+                            string sqlborra = "DROP TABLE IF EXISTS dt_enlaces";
+                            using (SqliteCommand cmdB = new SqliteCommand(sqlborra, cnx))
+                            {
+                                cmdB.ExecuteNonQuery();
+                            }
+                            string sqlTabla = "create table dt_enlaces (id integer primary key autoincrement, formulario varchar(20), campo varchar(20), descrip varchar(150), valor varchar(100), param varchar(50))";
+                            using (SqliteCommand cmd = new SqliteCommand(sqlTabla, cnx))
+                            {
+                                cmd.ExecuteNonQuery();
+                            }
+                            foreach (DataRow row in dt_enlaces.Rows)
+                            {
+                                string metela = "insert into dt_enlaces (formulario, campo, descrip, valor, param) " +
+                                    "values ('" + row.ItemArray[1].ToString() + "','" + row.ItemArray[2].ToString() + "','" +
+                                    row.ItemArray[3].ToString() + "','" + row.ItemArray[4].ToString() + "','" + row.ItemArray[5].ToString() + "')";
+                                using (SqliteCommand cmd = new SqliteCommand(metela, cnx))
+                                {
+                                    cmd.ExecuteNonQuery();
+                                }
+                                /*
+                                configuracion.dt_enlacesRow nr = setC.dt_enlaces.Newdt_enlacesRow();
+                                nr.id = int.Parse(row.ItemArray[0].ToString());
+                                nr.formulario = row.ItemArray[1].ToString();
+                                nr.campo = row.ItemArray[2].ToString();
+                                nr.descrip = row.ItemArray[3].ToString();
+                                nr.valor = row.ItemArray[4].ToString();
+                                nr.param = row.ItemArray[5].ToString();
+                                setC.dt_enlaces.Adddt_enlacesRow(nr);
+                                */
+                            }
                         }
                     }
                 }

@@ -13,6 +13,7 @@ using Newtonsoft.Json;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Serialization;
+using Microsoft.Data.Sqlite;
 
 namespace TransCarga
 {
@@ -102,11 +103,12 @@ namespace TransCarga
         AutoCompleteStringCollection provincias = new AutoCompleteStringCollection();   // autocompletado provincias
         AutoCompleteStringCollection distritos = new AutoCompleteStringCollection();    // autocompletado distritos
         AutoCompleteStringCollection desdet = new AutoCompleteStringCollection();       // autompletatado descripcion detalle
-        AutoCompleteStringCollection bultos = new AutoCompleteStringCollection();       // autompletatado bultos del detalle
+        //AutoCompleteStringCollection bultos = new AutoCompleteStringCollection();       // autompletatado bultos del detalle
         DataTable dataUbig = (DataTable)CacheManager.GetItem("ubigeos");
 
         // string de conexion
         string DB_CONN_STR = "server=" + login.serv + ";uid=" + login.usua + ";pwd=" + login.cont + ";database=" + login.data + ";";
+        public static string CadenaConexion = "Data Source=TransCarga.db";  // Data Source=TransCarga;Mode=Memory;Cache=Shared
 
         DataTable dtu = new DataTable();            // local origen
         DataTable dtd = new DataTable();            // local destino 
@@ -148,10 +150,8 @@ namespace TransCarga
             toolTipNombre.SetToolTip(toolStrip1, nomform);   // Set up the ToolTip text for the object
             */
             this.Focus();
-            MessageBox.Show("vamos a iniciar jalainfo_dt");
             jalainfo();
             init();
-            MessageBox.Show("vamos a iniciar dataload");
             dataload();
             toolboton();
             this.KeyPreview = true;
@@ -202,9 +202,9 @@ namespace TransCarga
             tx_disDrio.AutoCompleteMode = AutoCompleteMode.Suggest;             // distritos
             tx_disDrio.AutoCompleteSource = AutoCompleteSource.CustomSource;    // distritos
             tx_disDrio.AutoCompleteCustomSource = distritos;                    // distritos
-            tx_det_umed.AutoCompleteMode = AutoCompleteMode.Suggest;
-            tx_det_umed.AutoCompleteSource = AutoCompleteSource.CustomSource;
-            tx_det_umed.AutoCompleteCustomSource = bultos; //;
+            //tx_det_umed.AutoCompleteMode = AutoCompleteMode.Suggest;
+            //tx_det_umed.AutoCompleteSource = AutoCompleteSource.CustomSource;
+            //tx_det_umed.AutoCompleteCustomSource = bultos; //;
             tx_det_desc.AutoCompleteMode = AutoCompleteMode.Suggest;
             tx_det_desc.AutoCompleteSource = AutoCompleteSource.CustomSource;
             tx_det_desc.AutoCompleteCustomSource = desdet; //;
@@ -290,108 +290,110 @@ namespace TransCarga
         {
             try
             {
-                MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
-                conn.Open();
-                string consulta = "select formulario,campo,param,valor from enlaces where formulario in (@nofo,@nfin,@nofa,@nofi,@nofe)";
-                MySqlCommand micon = new MySqlCommand(consulta, conn);
-                micon.Parameters.AddWithValue("@nofo", "main");
-                micon.Parameters.AddWithValue("@nfin", "interno");
-                micon.Parameters.AddWithValue("@nofi", "clients");
-                micon.Parameters.AddWithValue("@nofe", "facelect");
-                micon.Parameters.AddWithValue("@nofa", "guiati_e");        // nomform
-                MySqlDataAdapter da = new MySqlDataAdapter(micon);
-                DataTable dt = new DataTable();
-                da.Fill(dt);
-                for (int t = 0; t < dt.Rows.Count; t++)
+                using (SqliteConnection cnx = new SqliteConnection(CadenaConexion))
                 {
-                    DataRow row = dt.Rows[t];
-                    if (row["formulario"].ToString() == "main")
+                    cnx.Open();
+                    string consulta = "select formulario,campo,param,valor from dt_enlaces where formulario in (@nofo,@nfin,@nofa,@nofi,@nofe)";
+                    using (SqliteCommand micon = new SqliteCommand(consulta, cnx))
                     {
-                        if (row["campo"].ToString() == "imagenes")
+                        micon.Parameters.AddWithValue("@nofo", "main");
+                        micon.Parameters.AddWithValue("@nfin", "interno");
+                        micon.Parameters.AddWithValue("@nofi", "clients");
+                        micon.Parameters.AddWithValue("@nofe", "facelect");
+                        micon.Parameters.AddWithValue("@nofa", "guiati_e");
+                        SqliteDataReader lite = micon.ExecuteReader();
+                        if (lite.HasRows == true)
                         {
-                            if (row["param"].ToString() == "img_btN") img_btN = row["valor"].ToString().Trim();         // imagen del boton de accion NUEVO
-                            if (row["param"].ToString() == "img_btE") img_btE = row["valor"].ToString().Trim();         // imagen del boton de accion EDITAR
-                            if (row["param"].ToString() == "img_btA") img_btA = row["valor"].ToString().Trim();         // imagen del boton de accion ANULAR/BORRAR
-                            if (row["param"].ToString() == "img_btQ") img_btq = row["valor"].ToString().Trim();         // imagen del boton de accion SALIR
-                            if (row["param"].ToString() == "img_btP") img_btP = row["valor"].ToString().Trim();         // imagen del boton de accion IMPRIMIR
-                            if (row["param"].ToString() == "img_btV") img_btV = row["valor"].ToString().Trim();         // imagen del boton de accion visualizar
-                            if (row["param"].ToString() == "img_bti") img_bti = row["valor"].ToString().Trim();         // imagen del boton de accion IR AL INICIO
-                            if (row["param"].ToString() == "img_bts") img_bts = row["valor"].ToString().Trim();         // imagen del boton de accion SIGUIENTE
-                            if (row["param"].ToString() == "img_btr") img_btr = row["valor"].ToString().Trim();         // imagen del boton de accion RETROCEDE
-                            if (row["param"].ToString() == "img_btf") img_btf = row["valor"].ToString().Trim();         // imagen del boton de accion IR AL FINAL
-                            if (row["param"].ToString() == "img_gra") img_grab = row["valor"].ToString().Trim();         // imagen del boton grabar nuevo
-                            if (row["param"].ToString() == "img_anu") img_anul = row["valor"].ToString().Trim();         // imagen del boton grabar anular
-                            if (row["param"].ToString() == "img_preview") img_ver = row["valor"].ToString().Trim();         // imagen del boton grabar visualizar
+                            while(lite.Read())
+                            {
+                                lite.GetString(0).ToString();
+                                if (lite.GetString(0).ToString() == "main")
+                                {
+                                    if (lite.GetString(1).ToString() == "imagenes")
+                                    {
+                                        if (lite.GetString(2).ToString() == "img_btN") img_btN = lite.GetString(3).ToString().Trim();         // imagen del boton de accion NUEVO
+                                        if (lite.GetString(2).ToString() == "img_btE") img_btE = lite.GetString(3).ToString().Trim();         // imagen del boton de accion EDITAR
+                                        if (lite.GetString(2).ToString() == "img_btA") img_btA = lite.GetString(3).ToString().Trim();         // imagen del boton de accion ANULAR/BORRAR
+                                        if (lite.GetString(2).ToString() == "img_btQ") img_btq = lite.GetString(3).ToString().Trim();         // imagen del boton de accion SALIR
+                                        if (lite.GetString(2).ToString() == "img_btP") img_btP = lite.GetString(3).ToString().Trim();         // imagen del boton de accion IMPRIMIR
+                                        if (lite.GetString(2).ToString() == "img_btV") img_btV = lite.GetString(3).ToString().Trim();         // imagen del boton de accion visualizar
+                                        if (lite.GetString(2).ToString() == "img_bti") img_bti = lite.GetString(3).ToString().Trim();         // imagen del boton de accion IR AL INICIO
+                                        if (lite.GetString(2).ToString() == "img_bts") img_bts = lite.GetString(3).ToString().Trim();         // imagen del boton de accion SIGUIENTE
+                                        if (lite.GetString(2).ToString() == "img_btr") img_btr = lite.GetString(3).ToString().Trim();         // imagen del boton de accion RETROCEDE
+                                        if (lite.GetString(2).ToString() == "img_btf") img_btf = lite.GetString(3).ToString().Trim();         // imagen del boton de accion IR AL FINAL
+                                        if (lite.GetString(2).ToString() == "img_gra") img_grab = lite.GetString(3).ToString().Trim();         // imagen del boton grabar nuevo
+                                        if (lite.GetString(2).ToString() == "img_anu") img_anul = lite.GetString(3).ToString().Trim();         // imagen del boton grabar anular
+                                        if (lite.GetString(2).ToString() == "img_preview") img_ver = lite.GetString(3).ToString().Trim();         // imagen del boton grabar visualizar
+                                    }
+                                    if (lite.GetString(1).ToString() == "estado")
+                                    {
+                                        if (lite.GetString(2).ToString() == "anulado") codAnul = lite.GetString(3).ToString().Trim();         // codigo doc anulado
+                                        if (lite.GetString(2).ToString() == "generado") codGene = lite.GetString(3).ToString().Trim();        // codigo doc generado
+                                    }
+                                    if (lite.GetString(1).ToString() == "sunat")
+                                    {
+                                        if (lite.GetString(2).ToString() == "usa_gre") usa_gre = lite.GetString(3).ToString().Trim();                   // se usa GRE? S/N
+                                        if (lite.GetString(2).ToString() == "client_id") client_id_sunat = lite.GetString(3).ToString().Trim();         // id del api sunat
+                                        if (lite.GetString(2).ToString() == "client_pass") client_pass_sunat = lite.GetString(3).ToString().Trim();     // password del api sunat
+                                        if (lite.GetString(2).ToString() == "user_sol") u_sol_sunat = lite.GetString(3).ToString().Trim();              // usuario sol portal sunat del cliente 
+                                        if (lite.GetString(2).ToString() == "clave_sol") c_sol_sunat = lite.GetString(3).ToString().Trim();             // clave sol portal sunat del cliente 
+                                        if (lite.GetString(2).ToString() == "scope") scope_sunat = lite.GetString(3).ToString().Trim();                 // scope del api sunat
+                                        if (lite.GetString(2).ToString() == "codgre") cGR_sunat = lite.GetString(3).ToString().Trim();                 // codigo sunat para GR transportista
+                                    }
+                                    if (lite.GetString(1).ToString() == "rutas")
+                                    {
+                                        if (lite.GetString(2).ToString() == "grt_txt") rutatxt = lite.GetString(3).ToString().Trim();         // ruta de los txt para las guías elect
+                                    }
+                                }
+                                if (lite.GetString(0).ToString() == "clients" && lite.GetString(1).ToString() == "documento")
+                                {
+                                    if (lite.GetString(2).ToString() == "dni") vtc_dni = lite.GetString(3).ToString().Trim();
+                                    if (lite.GetString(2).ToString() == "ruc") vtc_ruc = lite.GetString(3).ToString().Trim();
+                                    if (lite.GetString(2).ToString() == "ext") vtc_ext = lite.GetString(3).ToString().Trim();
+                                }
+                                if (lite.GetString(0).ToString() == "facelect")
+                                {
+                                    if (lite.GetString(1).ToString() == "factelect")
+                                    {
+                                        if (lite.GetString(2).ToString() == "caracterNo") caractNo = lite.GetString(3).ToString().Trim();
+                                    }
+                                }
+                                if (lite.GetString(0).ToString() == "guiati_e")    // guias de remision electrónicas de transportista
+                                {
+                                    if (lite.GetString(1).ToString() == "documento")
+                                    {
+                                        if (lite.GetString(2).ToString() == "c_int") v_cid = lite.GetString(3).ToString().Trim();                 // codigo interno guias de remision
+                                        if (lite.GetString(2).ToString() == "frase1") v_fra1 = lite.GetString(3).ToString().Trim();               // frase para documento anulado
+                                        if (lite.GetString(2).ToString() == "frase2") v_fra2 = lite.GetString(3).ToString().Trim();               // frase de si va con clave la guia
+                                        if (lite.GetString(2).ToString() == "serieAnu") v_sanu = lite.GetString(3).ToString().Trim();             // serie anulacion interna
+                                        if (lite.GetString(2).ToString() == "usediDrem") v_uedo = lite.GetString(3).ToString().Trim();            // usuarios que pueden modificar documentos del remitente
+                                        if (lite.GetString(2).ToString() == "marca") v_marGRET = lite.GetString(3).ToString().Trim();             // marca de guía transportista electrónica
+                                        if (lite.GetString(2).ToString() == "ini_GRET") v_iniGRET = lite.GetString(3).ToString().Trim();          // inicial (sigla) de las GRE-T
+                                    }
+                                    if (lite.GetString(1).ToString() == "impresion")
+                                    {
+                                        if (lite.GetString(2).ToString() == "formato") vi_formato = lite.GetString(3).ToString().Trim();
+                                        if (lite.GetString(2).ToString() == "copias") vi_copias = lite.GetString(3).ToString().Trim();
+                                        if (lite.GetString(2).ToString() == "impMatris") v_impA5 = lite.GetString(3).ToString().Trim();
+                                        if (lite.GetString(2).ToString() == "impTK") v_impTK = lite.GetString(3).ToString().Trim();
+                                        if (lite.GetString(2).ToString() == "nomGRi_cr") v_CR_gr_ind = lite.GetString(3).ToString().Trim();
+                                    }
+                                    if (lite.GetString(1).ToString() == "moneda" && lite.GetString(2).ToString() == "default") MonDeft = lite.GetString(3).ToString().Trim();             // moneda por defecto
+                                    if (lite.GetString(1).ToString() == "detalle" && lite.GetString(2).ToString() == "glosa") gloDeta = lite.GetString(3).ToString().Trim();             // glosa del detalle
+                                }
+                                if (lite.GetString(0).ToString() == "interno")              // codigo enlace interno de anulacion del cliente con en BD A0
+                                {
+                                    if (lite.GetString(1).ToString() == "anulado" && lite.GetString(2).ToString() == "A0") vint_A0 = lite.GetString(3).ToString().Trim();
+                                    if (lite.GetString(1).ToString() == "igv" && lite.GetString(2).ToString() == "%") v_igv = lite.GetString(3).ToString().Trim();
+                                }
+                            }
                         }
-                        if (row["campo"].ToString() == "estado")
-                        {
-                            if (row["param"].ToString() == "anulado") codAnul = row["valor"].ToString().Trim();         // codigo doc anulado
-                            if (row["param"].ToString() == "generado") codGene = row["valor"].ToString().Trim();        // codigo doc generado
-                        }
-                        if (row["campo"].ToString() == "sunat")
-                        {
-                            if (row["param"].ToString() == "usa_gre") usa_gre = row["valor"].ToString().Trim();                   // se usa GRE? S/N
-                            if (row["param"].ToString() == "client_id") client_id_sunat = row["valor"].ToString().Trim();         // id del api sunat
-                            if (row["param"].ToString() == "client_pass") client_pass_sunat = row["valor"].ToString().Trim();     // password del api sunat
-                            if (row["param"].ToString() == "user_sol") u_sol_sunat = row["valor"].ToString().Trim();              // usuario sol portal sunat del cliente 
-                            if (row["param"].ToString() == "clave_sol") c_sol_sunat = row["valor"].ToString().Trim();             // clave sol portal sunat del cliente 
-                            if (row["param"].ToString() == "scope") scope_sunat = row["valor"].ToString().Trim();                 // scope del api sunat
-                            if (row["param"].ToString() == "codgre") cGR_sunat = row["valor"].ToString().Trim();                 // codigo sunat para GR transportista
-                        }
-                        if (row["campo"].ToString() == "rutas")
-                        {
-                            if (row["param"].ToString() == "grt_txt") rutatxt = row["valor"].ToString().Trim();         // ruta de los txt para las guías elect
-                        }
-                    }
-                    if (row["formulario"].ToString() == "clients" && row["campo"].ToString() == "documento")
-                    {
-                        if (row["param"].ToString() == "dni") vtc_dni = row["valor"].ToString().Trim();
-                        if (row["param"].ToString() == "ruc") vtc_ruc = row["valor"].ToString().Trim();
-                        if (row["param"].ToString() == "ext") vtc_ext = row["valor"].ToString().Trim();
-                    }
-                    if (row["formulario"].ToString() == "facelect")
-                    {
-                        if (row["campo"].ToString() == "factelect")
-                        {
-                            if (row["param"].ToString() == "caracterNo") caractNo = row["valor"].ToString().Trim();
-                        }
-                    }
-                    if (row["formulario"].ToString() == "guiati_e")    // guias de remision electrónicas de transportista
-                    {
-                        if (row["campo"].ToString() == "documento")
-                        {
-                            if (row["param"].ToString() == "c_int") v_cid = row["valor"].ToString().Trim();                 // codigo interno guias de remision
-                            if (row["param"].ToString() == "frase1") v_fra1 = row["valor"].ToString().Trim();               // frase para documento anulado
-                            if (row["param"].ToString() == "frase2") v_fra2 = row["valor"].ToString().Trim();               // frase de si va con clave la guia
-                            if (row["param"].ToString() == "serieAnu") v_sanu = row["valor"].ToString().Trim();             // serie anulacion interna
-                            if (row["param"].ToString() == "usediDrem") v_uedo = row["valor"].ToString().Trim();            // usuarios que pueden modificar documentos del remitente
-                            if (row["param"].ToString() == "marca") v_marGRET = row["valor"].ToString().Trim();             // marca de guía transportista electrónica
-                            if (row["param"].ToString() == "ini_GRET") v_iniGRET = row["valor"].ToString().Trim();          // inicial (sigla) de las GRE-T
-                        }
-                        if (row["campo"].ToString() == "impresion")
-                        {
-                            if (row["param"].ToString() == "formato") vi_formato = row["valor"].ToString().Trim();
-                            if (row["param"].ToString() == "copias") vi_copias = row["valor"].ToString().Trim();
-                            if (row["param"].ToString() == "impMatris") v_impA5 = row["valor"].ToString().Trim();
-                            if (row["param"].ToString() == "impTK") v_impTK = row["valor"].ToString().Trim();
-                            if (row["param"].ToString() == "nomGRi_cr") v_CR_gr_ind = row["valor"].ToString().Trim();
-                        }
-                        if (row["campo"].ToString() == "moneda" && row["param"].ToString() == "default") MonDeft = row["valor"].ToString().Trim();             // moneda por defecto
-                        if (row["campo"].ToString() == "detalle" && row["param"].ToString() == "glosa") gloDeta = row["valor"].ToString().Trim();             // glosa del detalle
-                    }
-                    if (row["formulario"].ToString() == "interno")              // codigo enlace interno de anulacion del cliente con en BD A0
-                    {
-                        if (row["campo"].ToString() == "anulado" && row["param"].ToString() == "A0") vint_A0 = row["valor"].ToString().Trim();
-                        if (row["campo"].ToString() == "igv" && row["param"].ToString() == "%") v_igv = row["valor"].ToString().Trim();
                     }
                 }
-                da.Dispose();
-                dt.Dispose();
                 // jalamos datos del usuario y local
                 v_clu = lib.codloc(asd);                // codigo local usuario
                 v_slu = lib.serlocs(v_clu);             // serie local usuario
                 v_nbu = lib.nomuser(asd);               // nombre del usuario
-                conn.Close();
             }
             catch (MySqlException ex)
             {
@@ -747,7 +749,7 @@ namespace TransCarga
             cmb_mon.DataSource = dtm;
             cmb_mon.DisplayMember = "descrizionerid";
             cmb_mon.ValueMember = "idcodice";
-            //
+            /*
             MySqlCommand jala = new MySqlCommand("SELECT unimedpro FROM detguiai GROUP BY unimedpro", conn);
             MySqlDataAdapter dajala = new MySqlDataAdapter(jala);
             DataTable dtjala = new DataTable();
@@ -757,6 +759,7 @@ namespace TransCarga
             {
                 bultos.Add(row["unimedpro"].ToString());
             }
+            */
             // documento origen - documentos relacionados con transporte de mercancias
             using (MySqlCommand mydorig = new MySqlCommand("select * from desc_dtm where numero=@bloq", conn))
             {
@@ -770,7 +773,7 @@ namespace TransCarga
                     cmb_docorig.ValueMember = "idcodice";
                 }
             }
-            //
+            /*
             string carajo = "SELECT SUBSTRING_INDEX(REPLACE(descprodi,'" + gloDeta + " ',''),' ',1) as descprodi FROM detguiai GROUP BY REPLACE(descprodi,'" + gloDeta + " ','')";
             // "SELECT SUBSTRING_INDEX(REPLACE(descprodi,@vglos,''),' ',1) as descprodi FROM detguiai GROUP BY REPLACE(descprodi,@vglos,'')"
             MySqlCommand jalad = new MySqlCommand(carajo, conn);
@@ -783,7 +786,7 @@ namespace TransCarga
             {
                 desdet.Add(row["descprodi"].ToString());
             }
-            //
+            */
             cmo.Dispose();
             ccl.Dispose();
             cdu.Dispose();

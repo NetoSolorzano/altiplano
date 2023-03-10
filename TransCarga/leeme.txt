@@ -353,5 +353,5 @@ form facelect, adecuar el campo tx_valref1 para poner ahí el valor referencial 
 ******************* IMPLEMENTACION DE G R TRANSPORTISTA ELECTRONICA CON PSNET **********************
 form defs, agregar campo sunat ..................................................................... ok 01/03/2023
 form guiati_e, adecuaciones para PSNet ............................................................. ok 08/03/2023 
-form login, jalar tabla enlaces en datatable publica ............................................... ok 08/03/2023
-form guiati_e, jalar jalainfo() de la tabla publica dt_enlaces ..................................... 
+form login, jalar tabla enlaces en tabla sqlite en memoria ......................................... ok 09/03/2023
+form guiati_e, jalar jalainfo() de la tabla publica en memoria dt_enlaces .......................... 
