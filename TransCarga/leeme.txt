@@ -354,4 +354,7 @@ form facelect, adecuar el campo tx_valref1 para poner ahí el valor referencial 
 form defs, agregar campo sunat ..................................................................... ok 01/03/2023
 form guiati_e, adecuaciones para PSNet ............................................................. ok 08/03/2023 
 form login, jalar tabla enlaces en tabla sqlite en memoria ......................................... ok 09/03/2023
-form guiati_e, jalar jalainfo() de la tabla publica en memoria dt_enlaces .......................... 
+form guiati_e, jalar jalainfo() de la tabla publica en disco local, ruta del sistema dt_enlaces .... ok 09/03/2023
+form guiati_a, jalainfo() desde tabla publica y otras mejoras hechas en guiati_e ................... ok 09/03/2023
+form guiati_e, quitar el backgroundworker porque en provincia da problemas por el interent ......... ok 13/03/2023
+form guiati_a, quitar el backgroundworker porque en provincia da problemas por el interent ......... ok 13/03/2023

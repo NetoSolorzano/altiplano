@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using CrystalDecisions.CrystalReports.Engine;
 using MySql.Data.MySqlClient;
+using Microsoft.Data.Sqlite;
 
 namespace TransCarga
 {
@@ -76,12 +77,13 @@ namespace TransCarga
         AutoCompleteStringCollection departamentos = new AutoCompleteStringCollection();// autocompletado departamentos
         AutoCompleteStringCollection provincias = new AutoCompleteStringCollection();   // autocompletado provincias
         AutoCompleteStringCollection distritos = new AutoCompleteStringCollection();    // autocompletado distritos
-        AutoCompleteStringCollection desdet = new AutoCompleteStringCollection();       // autompletatado descripcion detalle
-        AutoCompleteStringCollection bultos = new AutoCompleteStringCollection();       // autompletatado bultos del detalle
+        //AutoCompleteStringCollection desdet = new AutoCompleteStringCollection();       // autompletatado descripcion detalle
+        //AutoCompleteStringCollection bultos = new AutoCompleteStringCollection();       // autompletatado bultos del detalle
         DataTable dataUbig = (DataTable)CacheManager.GetItem("ubigeos");
 
         // string de conexion
         string DB_CONN_STR = "server=" + login.serv + ";uid=" + login.usua + ";pwd=" + login.cont + ";database=" + login.data + ";";
+        public static string CadenaConexion = "Data Source=TransCarga.db";  // Data Source=TransCarga;Mode=Memory;Cache=Shared
 
         DataTable dtu = new DataTable();            // local origen
         DataTable dtd = new DataTable();            // local destino 
@@ -120,6 +122,7 @@ namespace TransCarga
             */
             this.Focus();
             jalainfo();
+            //backgroundWorker1.RunWorkerAsync();     // 09/03/2023
             init();
             dataload();
             toolboton();
@@ -176,12 +179,14 @@ namespace TransCarga
             tx_disDrio.AutoCompleteMode = AutoCompleteMode.Suggest;             // distritos
             tx_disDrio.AutoCompleteSource = AutoCompleteSource.CustomSource;    // distritos
             tx_disDrio.AutoCompleteCustomSource = distritos;                    // distritos
+            /*
             tx_det_umed.AutoCompleteMode = AutoCompleteMode.Suggest;
             tx_det_umed.AutoCompleteSource = AutoCompleteSource.CustomSource;
             tx_det_umed.AutoCompleteCustomSource = bultos; //;
             tx_det_desc.AutoCompleteMode = AutoCompleteMode.Suggest;
             tx_det_desc.AutoCompleteSource = AutoCompleteSource.CustomSource;
             tx_det_desc.AutoCompleteCustomSource = desdet; //;
+            */
             // longitudes maximas de campos
             tx_pregr_num.MaxLength = 8;
             tx_serie.MaxLength = 4;         // serie pre guia
@@ -258,6 +263,109 @@ namespace TransCarga
             chk_man.Enabled = false;        // solo se habilita en modo NUEVO y cuando el destino de la GR tiene manifiesto
         }
         private void jalainfo()                 // obtiene datos de imagenes y variables
+        {
+            try
+            {
+                using (SqliteConnection cnx = new SqliteConnection(CadenaConexion))
+                {
+                    cnx.Open();
+                    string consulta = "select formulario,campo,param,valor from dt_enlaces where formulario in (@nofo,@nfin,@nofa,@nofi,@nofe)";
+                    using (SqliteCommand micon = new SqliteCommand(consulta, cnx))
+                    {
+                        micon.Parameters.AddWithValue("@nofo", "main");
+                        micon.Parameters.AddWithValue("@nfin", "interno");
+                        micon.Parameters.AddWithValue("@nofi", "clients");
+                        micon.Parameters.AddWithValue("@nofe", "facelect");
+                        micon.Parameters.AddWithValue("@nofa", "guiati_a");
+                        SqliteDataReader lite = micon.ExecuteReader();
+                        if (lite.HasRows == true)
+                        {
+                            while (lite.Read())
+                            {
+                                lite.GetString(0).ToString();
+                                if (lite.GetString(0).ToString() == "main")
+                                {
+                                    if (lite.GetString(1).ToString() == "imagenes")
+                                    {
+                                        if (lite.GetString(2).ToString() == "img_btN") img_btN = lite.GetString(3).ToString().Trim();         // imagen del boton de accion NUEVO
+                                        if (lite.GetString(2).ToString() == "img_btE") img_btE = lite.GetString(3).ToString().Trim();         // imagen del boton de accion EDITAR
+                                        if (lite.GetString(2).ToString() == "img_btA") img_btA = lite.GetString(3).ToString().Trim();         // imagen del boton de accion ANULAR/BORRAR
+                                        if (lite.GetString(2).ToString() == "img_btQ") img_btq = lite.GetString(3).ToString().Trim();         // imagen del boton de accion SALIR
+                                        if (lite.GetString(2).ToString() == "img_btP") img_btP = lite.GetString(3).ToString().Trim();         // imagen del boton de accion IMPRIMIR
+                                        if (lite.GetString(2).ToString() == "img_btV") img_btV = lite.GetString(3).ToString().Trim();         // imagen del boton de accion visualizar
+                                        if (lite.GetString(2).ToString() == "img_bti") img_bti = lite.GetString(3).ToString().Trim();         // imagen del boton de accion IR AL INICIO
+                                        if (lite.GetString(2).ToString() == "img_bts") img_bts = lite.GetString(3).ToString().Trim();         // imagen del boton de accion SIGUIENTE
+                                        if (lite.GetString(2).ToString() == "img_btr") img_btr = lite.GetString(3).ToString().Trim();         // imagen del boton de accion RETROCEDE
+                                        if (lite.GetString(2).ToString() == "img_btf") img_btf = lite.GetString(3).ToString().Trim();         // imagen del boton de accion IR AL FINAL
+                                        if (lite.GetString(2).ToString() == "img_gra") img_grab = lite.GetString(3).ToString().Trim();         // imagen del boton grabar nuevo
+                                        if (lite.GetString(2).ToString() == "img_anu") img_anul = lite.GetString(3).ToString().Trim();         // imagen del boton grabar anular
+                                        if (lite.GetString(2).ToString() == "img_preview") img_ver = lite.GetString(3).ToString().Trim();         // imagen del boton grabar visualizar
+                                    }
+                                    if (lite.GetString(1).ToString() == "estado")
+                                    {
+                                        if (lite.GetString(2).ToString() == "anulado") codAnul = lite.GetString(3).ToString().Trim();         // codigo doc anulado
+                                        if (lite.GetString(2).ToString() == "generado") codGene = lite.GetString(3).ToString().Trim();        // codigo doc generado
+                                    }
+                                }
+                                if (lite.GetString(0).ToString() == "clients" && lite.GetString(1).ToString() == "documento")
+                                {
+                                    if (lite.GetString(2).ToString() == "dni") vtc_dni = lite.GetString(3).ToString().Trim();
+                                    if (lite.GetString(2).ToString() == "ruc") vtc_ruc = lite.GetString(3).ToString().Trim();
+                                    if (lite.GetString(2).ToString() == "ext") vtc_ext = lite.GetString(3).ToString().Trim();
+                                }
+                                if (lite.GetString(0).ToString() == "facelect")
+                                {
+                                    if (lite.GetString(1).ToString() == "factelect")
+                                    {
+                                        if (lite.GetString(2).ToString() == "caracterNo") caractNo = lite.GetString(3).ToString().Trim();
+                                    }
+                                }
+                                if (lite.GetString(0).ToString() == "guiati_a")    // guias de remision electrónicas de transportista
+                                {
+                                    if (lite.GetString(1).ToString() == "documento")
+                                    {
+                                        if (lite.GetString(2).ToString() == "inidocor") v_idoco = lite.GetString(3).ToString().Trim();            // iniciales de documento origen
+                                        if (lite.GetString(2).ToString() == "flete") vtc_flete = lite.GetString(3).ToString().Trim();           // imprime precio del flete ?
+                                        if (lite.GetString(2).ToString() == "c_int") v_cid = lite.GetString(3).ToString().Trim();                 // codigo interno guias de remision
+                                        if (lite.GetString(2).ToString() == "frase1") v_fra1 = lite.GetString(3).ToString().Trim();               // frase para documento anulado
+                                        if (lite.GetString(2).ToString() == "frase2") v_fra2 = lite.GetString(3).ToString().Trim();               // frase de si va con clave la guia
+                                        if (lite.GetString(2).ToString() == "serieAnu") v_sanu = lite.GetString(3).ToString().Trim();             // serie anulacion interna
+                                        if (lite.GetString(2).ToString() == "usediDrem") v_uedo = lite.GetString(3).ToString().Trim();            // usuarios que pueden modificar documentos del remitente
+                                    }
+                                    if (lite.GetString(1).ToString() == "impresion")
+                                    {
+                                        if (lite.GetString(2).ToString() == "filasDet") v_mfildet = lite.GetString(3).ToString().Trim();       // maxima cant de filas de detalle
+                                        if (lite.GetString(2).ToString() == "formato") vi_formato = lite.GetString(3).ToString().Trim();
+                                        if (lite.GetString(2).ToString() == "copias") vi_copias = lite.GetString(3).ToString().Trim();
+                                        if (lite.GetString(2).ToString() == "impMatris") v_impA5 = lite.GetString(3).ToString().Trim();
+                                        if (lite.GetString(2).ToString() == "impTK") v_impTK = lite.GetString(3).ToString().Trim();
+                                        if (lite.GetString(2).ToString() == "nomGRi_cr") v_CR_gr_ind = lite.GetString(3).ToString().Trim();
+                                    }
+                                    if (lite.GetString(1).ToString() == "moneda" && lite.GetString(2).ToString() == "default") MonDeft = lite.GetString(3).ToString().Trim();             // moneda por defecto
+                                    if (lite.GetString(1).ToString() == "detalle" && lite.GetString(2).ToString() == "glosa") gloDeta = lite.GetString(3).ToString().Trim();             // glosa del detalle
+                                }
+                                if (lite.GetString(0).ToString() == "interno")              // codigo enlace interno de anulacion del cliente con en BD A0
+                                {
+                                    if (lite.GetString(1).ToString() == "anulado" && lite.GetString(2).ToString() == "A0") vint_A0 = lite.GetString(3).ToString().Trim();
+                                    if (lite.GetString(1).ToString() == "igv" && lite.GetString(2).ToString() == "%") v_igv = lite.GetString(3).ToString().Trim();
+                                }
+                            }
+                        }
+                    }
+                }
+                // jalamos datos del usuario y local
+                v_clu = lib.codloc(asd);                // codigo local usuario
+                v_slu = lib.serlocs(v_clu);             // serie local usuario
+                v_nbu = lib.nomuser(asd);               // nombre del usuario
+            }
+            catch (MySqlException ex)
+            {
+                MessageBox.Show(ex.Message, "Error de conexión");
+                Application.Exit();
+                return;
+            }
+        }
+        private void jalainfo_ex()                 // obtiene datos de imagenes y variables
         {
             try
             {
@@ -684,7 +792,7 @@ namespace TransCarga
             cmb_mon.DataSource = dtm;
             cmb_mon.DisplayMember = "descrizionerid";
             cmb_mon.ValueMember = "idcodice";
-            //
+            /*
             MySqlCommand jala = new MySqlCommand("SELECT unimedpro FROM detguiai GROUP BY unimedpro", conn);
             MySqlDataAdapter dajala = new MySqlDataAdapter(jala);
             DataTable dtjala = new DataTable();
@@ -707,7 +815,7 @@ namespace TransCarga
             {
                 desdet.Add(row["descprodi"].ToString());
             }
-            //
+            */
             cmo.Dispose();
             ccl.Dispose();
             cdu.Dispose();
@@ -3458,5 +3566,9 @@ namespace TransCarga
         }
         #endregion
 
+        private void backgroundWorker1_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
+        {
+            jalainfo();
+        }
     }
 }

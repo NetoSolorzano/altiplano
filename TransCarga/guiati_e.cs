@@ -151,14 +151,8 @@ namespace TransCarga
             */
             this.Focus();
             jalainfo();
-            init();
-            dataload();
-            toolboton();
-            this.KeyPreview = true;
-            autodepa();                                     // autocompleta departamentos
-        }
-        private void init()
-        {
+            //backgroundWorker1.RunWorkerAsync();     // 08/03/2023
+            //
             //this.BackColor = Color.FromName(colback);
             toolStrip1.BackColor = Color.FromName(colstrp);
             //dataGridView1.DefaultCellStyle.BackColor = Color.FromName(colgrid);
@@ -168,6 +162,14 @@ namespace TransCarga
             gbox_planilla.BackColor = Color.FromName(colpage);
             gbox_docvta.BackColor = Color.FromName(colsfon);
             //
+            init();
+            dataload();
+            toolboton();
+            this.KeyPreview = true;
+            autodepa();                                     // autocompleta departamentos
+        }
+        private void init()
+        {
             tx_user.Text += asd;
             tx_nomuser.Text = lib.nomuser(asd);
             tx_locuser.Text += lib.locuser(asd);
@@ -4416,6 +4418,10 @@ namespace TransCarga
         }
         #endregion
 
+        private void backgroundWorker1_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
+        {
+            jalainfo();
+        }
     }
     public class Token
     {
