@@ -81,6 +81,7 @@ namespace TransCarga
         string tipoDocEmi = "";         // CODIGO SUNAT tipo de documento RUC/DNI emisor
         string tipoDocRem = "";         // CODIGO SUNAT tipo de documento RUC/DNI remitente de la GRT
         string tipoDocDes = "";         // CODIGO SUNAT tipo de documento RUC/DNI destinatario de la GRT
+        string v_urege = "";            // usuarios que pueden regenerar txt
         // GRE
         string v_marGRET = "";          // marca de guía de remisión electrónica
         string v_iniGRET = "";          // sigla, inicicla, marca de las GRE-T
@@ -371,6 +372,7 @@ namespace TransCarga
                                         if (lite.GetString(2).ToString() == "usediDrem") v_uedo = lite.GetString(3).ToString().Trim();            // usuarios que pueden modificar documentos del remitente
                                         if (lite.GetString(2).ToString() == "marca") v_marGRET = lite.GetString(3).ToString().Trim();             // marca de guía transportista electrónica
                                         if (lite.GetString(2).ToString() == "ini_GRET") v_iniGRET = lite.GetString(3).ToString().Trim();          // inicial (sigla) de las GRE-T
+                                        if (lite.GetString(2).ToString() == "UsuRegen") v_urege = lite.GetString(3).ToString().Trim();            // usuarios que pueden regenerar txt
                                     }
                                     if (lite.GetString(1).ToString() == "impresion")
                                     {
@@ -508,7 +510,9 @@ namespace TransCarga
                             tx_pla_nomcho.Text = dr.GetString("chocamcar");
                             tx_pla_ruc.Text = dr.GetString("proplagri");
                             tx_pla_propiet.Text = dr.GetString("razonsocial");
-                            //
+                            tx_pla_dniChof.Text = lib.Right(dr.GetString("breplagri").ToString(), 8);         // aca debería ser un campo separado 07/03/2023
+                            tx_marCpropio.Text = (tx_pla_ruc.Text.Trim() != "" && tx_pla_ruc.Text != Program.ruc) ? "1" : "0";   // Indicador de transporte subcontratado = true
+
                             tx_fecDV.Text = dr.GetString("fecdocvta");  //.Substring(0,10);
                             tx_DV.Text = dr.GetString("tipdocvta") + "-" + dr.GetString("serdocvta") + "-" + dr.GetString("numdocvta");
                             tx_clteDV.Text = dr.GetString("clifact");
@@ -1416,7 +1420,8 @@ namespace TransCarga
                 row["Ctipdoc"] = tipoDocDes;                                                // Tipo de documento de identidad del destinatario
                 row["Dnumdoc"] = tx_numDocDes.Text;                                         // Numero de documento de identidad del destinatario
                 row["Dnomcli"] = tx_nomDrio.Text.Trim();                                    // denominacion o razon social del destinatario
-                row["fectras"] = tx_pla_fech.Text.Substring(6, 4) + "-" + tx_pla_fech.Text.Substring(3, 2) + "-" + tx_pla_fech.Text.Substring(0, 2);   // fecha inicio del traslado
+                //row["fectras"] = tx_pla_fech.Text.Substring(6, 4) + "-" + tx_pla_fech.Text.Substring(3, 2) + "-" + tx_pla_fech.Text.Substring(0, 2);   
+                row["fectras"] = tx_pla_fech.Text;                                          // fecha inicio del traslado
                 row["observ1"] = "";                                                        // Anotación opcional sobre los bienes
                 row["pesotot"] = tx_totpes.Text;                                            // Peso bruto total de los bienes
                 row["unimedp"] = (rb_kg.Checked == true) ? rb_kg.Text : rb_tn.Text;          // Unidad de medida del peso bruto
@@ -1424,7 +1429,7 @@ namespace TransCarga
                 row["indret1"] = 0;  // no se retorna nada de esto                          // Indicador de retorno de vehículo con envases o embalajes vacíos 0=falso, 1=verdadero
                 row["indretv"] = 0;  // ningún vehículo retorna vacío                       // Indicador de retorno de vehículo vacío 0=falso, 1=verdadero
                 row["indtran"] = 0;  // no tenemos esa modalidad                            // Indicador de transbordo programado 0=falso, 1=verdadero
-                row["indsubc"] = tx_marCpropio.Text;                                        // Indicador de transporte subcontratado
+                row["indsubc"] = tx_marCpropio.Text;                                        // Indicador de trans|porte subcontratado
                 row["tipdsub"] = (tx_marCpropio.Text == "1") ? "6" : "";                    // Tipo de documento de identidad del subcontratador, 6=ruc
                 row["numdocs"] = (tx_marCpropio.Text == "1") ? Program.ruc : "";            // Numero de documento de identidad del subcontratador
                 row["nomsubc"] = (tx_marCpropio.Text == "1") ? Program.cliente : "";        // denominacion o razon social del subcontratador
@@ -1862,7 +1867,7 @@ namespace TransCarga
                 {
                     // no tiene guía y SI esta impreso => NO se puede modificar y SI anular
                     //sololee();
-                    MessageBox.Show("Se modifica observaciones, consignatario y docs. origen", "La Guía esta impresa", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show("Se modifica observaciones y consignatario", "La Guía esta impresa", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     //tx_dat_tdRem.Focus();
                     //return;
                 }
@@ -1902,6 +1907,17 @@ namespace TransCarga
                             if (resulta != "OK")
                             {
                                 MessageBox.Show(resulta, "Error en actualización de seguimiento", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
+                            if (v_urege.Contains(asd) == true)
+                            {
+                                var bb = MessageBox.Show("Desea regenerar el txt?", "Atención", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                                if (bb == DialogResult.Yes)
+                                {
+                                    if (psnet_api() == false)
+                                    {
+                                        MessageBox.Show("No se pudo regenar el txt","Error",MessageBoxButtons.OK,MessageBoxIcon.Error);
+                                    }
+                                }
                             }
                         }
                         else
