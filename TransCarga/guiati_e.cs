@@ -1457,7 +1457,7 @@ namespace TransCarga
                 row["gelLong"] = "";                                                        // Punto de georreferencia del punto de llegada, Longitud
                 row["gellati"] = "";                                                        // Punto de georreferencia del punto de llegada, Latitud
                 /* DATOS DE VEHICULOS */
-                row["plaTrac"] = tx_pla_placa.Text;                                         // Número de placa del vehículo
+                row["plaTrac"] = tx_pla_placa.Text.Replace("-", "");                        // Número de placa del vehículo
                 row["ntaruni"] = tx_pla_autor.Text;                                         // Número de la Tarjeta Única deCirculación
                 row["autcirc"] = tx_pla_autor.Text;                                         // Número de autorización del vehículo emitido por la entidad
                 row["entauto"] = "06";                                                      // Entidad emisora de la autorización MTC=06
@@ -1465,7 +1465,7 @@ namespace TransCarga
                 row["tipdcho"] = "01";                                                      // Tipo de documento de identidad 
                 row["numdcho"] = tx_pla_dniChof.Text;                                       // Numero de documento de identidad 
                 row["nomdcho"] = tx_pla_nomcho.Text;                                        // Apellidos y nombres
-                row["bredcho"] = tx_pla_brevet.Text;                                        // Número de licencia de conducir
+                row["bredcho"] = tx_pla_brevet.Text.Replace("-", "");                       // Número de licencia de conducir
                 /* BIENES A TRANSPORTAR */
                 row["nordite"] = "1";                                                       // Numero de orden del item
                 row["umedite"] = (rb_kg.Checked == true) ? rb_kg.Text : rb_tn.Text;         // Unidad de medida del item

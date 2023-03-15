@@ -359,3 +359,4 @@ form guiati_a, jalainfo() desde tabla publica y otras mejoras hechas en guiati_e
 form guiati_e, quitar el backgroundworker porque en provincia da problemas por el interent ......... ok 13/03/2023
 form guiati_a, quitar el backgroundworker porque en provincia da problemas por el interent ......... ok 13/03/2023
 form guiati_e, adecuar la regeneración de txt desde EDICION ........................................ ok 14/03/2023
+form guiati_e, psnet_api() quitar guion en la placa del camion o placas en general ................. ok 14/03/2023
