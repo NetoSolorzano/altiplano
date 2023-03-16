@@ -3568,7 +3568,7 @@ namespace TransCarga
 
         private void backgroundWorker1_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
         {
-            jalainfo();
+            //jalainfo();
         }
     }
 }

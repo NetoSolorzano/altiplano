@@ -1420,8 +1420,8 @@ namespace TransCarga
                 row["Ctipdoc"] = tipoDocDes;                                                // Tipo de documento de identidad del destinatario
                 row["Dnumdoc"] = tx_numDocDes.Text;                                         // Numero de documento de identidad del destinatario
                 row["Dnomcli"] = tx_nomDrio.Text.Trim();                                    // denominacion o razon social del destinatario
-                //row["fectras"] = tx_pla_fech.Text.Substring(6, 4) + "-" + tx_pla_fech.Text.Substring(3, 2) + "-" + tx_pla_fech.Text.Substring(0, 2);   
-                row["fectras"] = tx_pla_fech.Text;                                          // fecha inicio del traslado
+                if (Tx_modo.Text == "NUEVO") row["fectras"] = tx_pla_fech.Text.Substring(6, 4) + "-" + tx_pla_fech.Text.Substring(3, 2) + "-" + tx_pla_fech.Text.Substring(0, 2);   
+                else row["fectras"] = tx_pla_fech.Text;                                          // fecha inicio del traslado
                 row["observ1"] = "";                                                        // Anotación opcional sobre los bienes
                 row["pesotot"] = tx_totpes.Text;                                            // Peso bruto total de los bienes
                 row["unimedp"] = (rb_kg.Checked == true) ? rb_kg.Text : rb_tn.Text;          // Unidad de medida del peso bruto
@@ -4436,7 +4436,7 @@ namespace TransCarga
 
         private void backgroundWorker1_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
         {
-            jalainfo();
+            //jalainfo();
         }
     }
     public class Token
