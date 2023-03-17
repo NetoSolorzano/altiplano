@@ -44,9 +44,8 @@ namespace TransCarga
             init();
             // jala datos de configuracion
             jaladatos();
-            jaladatper();
-            //backgroundWorker1.RunWorkerAsync();     // 08/03/2023
-            Tx_user.Focus();
+            //jaladatper();
+            //Tx_user.Focus();
         }
         private void init()
         {
@@ -55,6 +54,10 @@ namespace TransCarga
             tx_newcon.MaxLength = 10;
             //
             this.BackColor = System.Drawing.ColorTranslator.FromHtml(Program.colbac);
+            //
+            Tx_user.ReadOnly = true;
+            Tx_pwd.ReadOnly = true;
+            backgroundWorker1.RunWorkerAsync();     // 08/03/2023
         }
         private void Button1_Click(object sender, EventArgs e)
         {
@@ -414,6 +417,15 @@ namespace TransCarga
         }
         private void backgroundWorker1_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
         {
+            int i = 10;
+            backgroundWorker1.ReportProgress(i);
+            //jaladatos();
+            i = i + 50;
+            backgroundWorker1.ReportProgress(i);
+            jaladatper();
+            i = i + 30;
+            backgroundWorker1.ReportProgress(i);
+            /*
             using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
             {
                 conn.Open();
@@ -453,12 +465,24 @@ namespace TransCarga
                                 nr.valor = row.ItemArray[4].ToString();
                                 nr.param = row.ItemArray[5].ToString();
                                 setC.dt_enlaces.Adddt_enlacesRow(nr);
-                                */
+                                
                             }
                         }
                     }
                 }
             }
+            */
+        }
+        private void backgroundWorker1_ProgressChanged(object sender, System.ComponentModel.ProgressChangedEventArgs e)
+        {
+            ProgressBar bar = new ProgressBar();
+            bar.Value = e.ProgressPercentage;
+        }
+        private void backgroundWorker1_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
+        {
+            Tx_user.ReadOnly = false;
+            Tx_pwd.ReadOnly = false;
+            Tx_user.Focus();
         }
     }
 }

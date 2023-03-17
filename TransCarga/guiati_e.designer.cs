@@ -2728,6 +2728,7 @@
             this.cmb_docorig2.Size = new System.Drawing.Size(92, 21);
             this.cmb_docorig2.TabIndex = 374;
             this.cmb_docorig2.SelectionChangeCommitted += new System.EventHandler(this.cmb_docorig2_SelectionChangeCommitted);
+            this.cmb_docorig2.KeyDown += new System.Windows.Forms.KeyEventHandler(this.cmb_docorig2_KeyDown);
             // 
             // label43
             // 

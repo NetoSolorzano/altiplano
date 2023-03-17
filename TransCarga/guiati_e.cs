@@ -786,8 +786,9 @@ namespace TransCarga
                     cmb_docorig.DisplayMember = "descrizionerid";
                     cmb_docorig.ValueMember = "idcodice";
                     //
+                    dtdor2.Clear();
                     da.Fill(dtdor2);
-                    cmb_docorig2.DataSource = dtdor;
+                    cmb_docorig2.DataSource = dtdor2;
                     cmb_docorig2.DisplayMember = "descrizionerid";
                     cmb_docorig2.ValueMember = "idcodice";
                 }
@@ -1513,7 +1514,7 @@ namespace TransCarga
                 row["autcirc"] = tx_pla_autor.Text;                                         // Número de autorización del vehículo emitido por la entidad
                 row["entauto"] = "06";                                                      // Entidad emisora de la autorización MTC=06
                 /* DATOS DE CONDUCTORES  */
-                row["tipdcho"] = "01";                                                      // Tipo de documento de identidad 
+                row["tipdcho"] = "1";                                                       // Tipo de documento de identidad 
                 row["numdcho"] = tx_pla_dniChof.Text;                                       // Numero de documento de identidad 
                 row["nomdcho"] = tx_pla_nomcho.Text;                                        // Apellidos y nombres
                 row["bredcho"] = tx_pla_brevet.Text.Replace("-", "");                       // Número de licencia de conducir
@@ -1824,10 +1825,28 @@ namespace TransCarga
                 cmb_docorig.Focus();
                 return;
             }
+            if (tx_docsOr.Text.Trim() == "")
+            {
+                MessageBox.Show("Ingrese el documento origen", "Faltan datos", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                tx_docsOr.Focus();
+                return;
+            }
             if (tx_rucEorig.Text.Trim() == "")
             {
                 MessageBox.Show("Ingrese el ruc del emisor del documento origen", "Faltan datos", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 tx_rucEorig.Focus();
+                return;
+            }
+            if (tx_dat_docOr2.Text.Trim() != "" && tx_docsOr2.Text.Trim() == "")
+            {
+                MessageBox.Show("Ingrese el documento origen 2", "Faltan datos", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                tx_docsOr2.Focus();
+                return;
+            }
+            if (tx_dat_docOr2.Text.Trim() != "" && tx_rucEorig2.Text == "")
+            {
+                MessageBox.Show("Ingrese el ruc del documento origen 2", "Faltan datos", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                tx_rucEorig2.Focus();
                 return;
             }
             if (tx_pla_dniChof.Text.Trim() == "")
@@ -3621,6 +3640,16 @@ namespace TransCarga
                     DataRow[] fila = dtdor.Select("idcodice='" + tx_dat_docOr.Text + "'");
                     tx_dat_dorigS.Text = fila[0][8].ToString();     // codsunat
                 }
+                //
+                tx_docsOr.ReadOnly = false;
+                tx_rucEorig.ReadOnly = false;
+            }
+            else
+            {
+                tx_docsOr.Text = "";
+                tx_docsOr.ReadOnly = true;
+                tx_rucEorig.Text = "";
+                tx_rucEorig.ReadOnly = true;
             }
         }
         private void cmb_docorig2_SelectionChangeCommitted(object sender, EventArgs e)
@@ -3634,7 +3663,27 @@ namespace TransCarga
                     tx_dat_dorigS2.Text = fila[0][8].ToString();     // codsunat
                 }
             }
+            else
+            {
+                //
+            }
         }
+        private void cmb_docorig2_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (Tx_modo.Text == "NUEVO" || Tx_modo.Text == "EDITAR")
+            {
+                if (e.KeyCode == Keys.Delete)
+                {
+                    cmb_docorig2.SelectedIndex = -1;
+                    tx_dat_docOr2.Text = "";
+                    tx_docsOr2.Text = "";
+                    tx_docsOr2.ReadOnly = true;
+                    tx_rucEorig2.Text = "";
+                    tx_rucEorig2.ReadOnly = true;
+                }
+            }
+        }
+
         #endregion comboboxes
 
         #region datagridview
@@ -4073,6 +4122,7 @@ namespace TransCarga
         {
             //jalainfo();
         }
+
     }
     public class Token
     {
