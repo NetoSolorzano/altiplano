@@ -41,6 +41,7 @@ namespace TransCarga
             Button2.Image = salir;
             Button2.ImageAlign = ContentAlignment.MiddleCenter;
             //Button1.Image = entrar;
+            barra.Visible = false;
             init();
             // jala datos de configuracion
             jaladatos();
@@ -57,6 +58,7 @@ namespace TransCarga
             //
             Tx_user.ReadOnly = true;
             Tx_pwd.ReadOnly = true;
+            barra.Visible = true;
             backgroundWorker1.RunWorkerAsync();     // 08/03/2023
         }
         private void Button1_Click(object sender, EventArgs e)
@@ -419,13 +421,6 @@ namespace TransCarga
         {
             int i = 10;
             backgroundWorker1.ReportProgress(i);
-            //jaladatos();
-            i = i + 50;
-            backgroundWorker1.ReportProgress(i);
-            jaladatper();
-            i = i + 30;
-            backgroundWorker1.ReportProgress(i);
-            /*
             using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
             {
                 conn.Open();
@@ -434,6 +429,9 @@ namespace TransCarga
                     using (MySqlDataAdapter da = new MySqlDataAdapter(mico))
                     {
                         da.Fill(dt_enlaces);
+                        i = i + 40;
+                        backgroundWorker1.ReportProgress(i);
+
                         using (SqliteConnection cnx = new SqliteConnection(CadenaConexion))
                         {
                             cnx.Open();
@@ -447,6 +445,9 @@ namespace TransCarga
                             {
                                 cmd.ExecuteNonQuery();
                             }
+                            i = i + 49;
+                            backgroundWorker1.ReportProgress(i);
+
                             foreach (DataRow row in dt_enlaces.Rows)
                             {
                                 string metela = "insert into dt_enlaces (formulario, campo, descrip, valor, param) " +
@@ -465,21 +466,27 @@ namespace TransCarga
                                 nr.valor = row.ItemArray[4].ToString();
                                 nr.param = row.ItemArray[5].ToString();
                                 setC.dt_enlaces.Adddt_enlacesRow(nr);
-                                
+                                */
                             }
+                            i = i + 1;
+                            backgroundWorker1.ReportProgress(i);
+
                         }
                     }
                 }
             }
-            */
+            
         }
         private void backgroundWorker1_ProgressChanged(object sender, System.ComponentModel.ProgressChangedEventArgs e)
         {
-            ProgressBar bar = new ProgressBar();
-            bar.Value = e.ProgressPercentage;
+            //ProgressBar bar = new ProgressBar();
+            //bar.Value = e.ProgressPercentage;
+            progressBar1.Value = e.ProgressPercentage;
         }
         private void backgroundWorker1_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
         {
+            barra.Visible = false;
+            MessageBox.Show("Carga de datos terminada","Atención");
             Tx_user.ReadOnly = false;
             Tx_pwd.ReadOnly = false;
             Tx_user.Focus();

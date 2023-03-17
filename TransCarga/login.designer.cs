@@ -44,10 +44,14 @@
             this.lb_version = new System.Windows.Forms.Label();
             this.lb_titulo = new System.Windows.Forms.Label();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
+            this.barra = new System.Windows.Forms.Panel();
+            this.progressBar1 = new System.Windows.Forms.ProgressBar();
+            this.label3 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            this.barra.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox1
@@ -213,12 +217,40 @@
             this.backgroundWorker1.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.backgroundWorker1_ProgressChanged);
             this.backgroundWorker1.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorker1_RunWorkerCompleted);
             // 
+            // barra
+            // 
+            this.barra.BackColor = System.Drawing.Color.DarkSeaGreen;
+            this.barra.Controls.Add(this.label3);
+            this.barra.Controls.Add(this.progressBar1);
+            this.barra.Location = new System.Drawing.Point(290, 172);
+            this.barra.Name = "barra";
+            this.barra.Size = new System.Drawing.Size(315, 27);
+            this.barra.TabIndex = 36;
+            // 
+            // progressBar1
+            // 
+            this.progressBar1.Location = new System.Drawing.Point(128, 2);
+            this.progressBar1.Name = "progressBar1";
+            this.progressBar1.Size = new System.Drawing.Size(185, 23);
+            this.progressBar1.TabIndex = 36;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.Location = new System.Drawing.Point(4, 4);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(124, 18);
+            this.label3.TabIndex = 37;
+            this.label3.Text = "Datos iniciales ";
+            // 
             // login
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.ClientSize = new System.Drawing.Size(608, 347);
+            this.Controls.Add(this.barra);
             this.Controls.Add(this.lb_titulo);
             this.Controls.Add(this.lb_version);
             this.Controls.Add(this.panel2);
@@ -242,6 +274,8 @@
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            this.barra.ResumeLayout(false);
+            this.barra.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -264,6 +298,9 @@
         private System.Windows.Forms.Label lb_version;
         private System.Windows.Forms.Label lb_titulo;
         private System.ComponentModel.BackgroundWorker backgroundWorker1;
+        private System.Windows.Forms.Panel barra;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.ProgressBar progressBar1;
     }
 }
 
