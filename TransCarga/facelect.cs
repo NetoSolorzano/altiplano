@@ -1389,76 +1389,82 @@ namespace TransCarga
             {
                 string ruta = rutatxt + "DATA/";           //  rutatxt = %dirSistema%/SFS_v1.4/sunat_archivos/sfs/ + "DATA/"
                 string archi = "";
+                string sep = "|";    // char sep = (char)31;
+                int tfg = dataGridView1.Rows.Count - 1;
+
                 if (accion == "alta")
                 {
                     archi = rucclie + "-" + tipdo + "-" + serie + "-" + corre;
+                    double vsubt = double.Parse(tx_subt.Text);
+                    double vigvt = double.Parse(tx_igv.Text);
+                    double vflet = double.Parse(tx_flete.Text);
                     // 
-                    if (generaCAB(tipdo, serie, corre, ruta + archi) == false)  // Archivo: Cabecera (RRRRRRRRRRR-CC-XXXX-99999999.CAB)
+                    if (generaCAB(tipdo, serie, corre, ruta + archi, sep, vsubt, vigvt, vflet) == false)  // Archivo: Cabecera (RRRRRRRRRRR-CC-XXXX-99999999.CAB)
                     {
                         MessageBox.Show("Error en cabecera del archivo plano","Error en CAB",MessageBoxButtons.OK,MessageBoxIcon.Error);
                         return retorna;
                     }
-                    if (generaDET(tipdo, serie, corre, ruta + archi) == false)    // Archivo: Detalle (RRRRRRRRRRR-CC-XXXX-999999999.DET)
+                    if (generaDET(tipdo, serie, corre, ruta + archi, sep, tfg) == false)    // Archivo: Detalle (RRRRRRRRRRR-CC-XXXX-999999999.DET)
                     {
                         MessageBox.Show("Error en detalle del archivo plano", "Error en DET", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return retorna;
                     }
-                    if (generaTRI(tipdo, serie, corre, ruta + archi) == false)    // Archivo: Tributos Generales (RRRRRRRRRRR-CC-XXXX-999999999.TRI)
+                    if (generaTRI(tipdo, serie, corre, ruta + archi, sep, vsubt, vigvt, vflet) == false)    // Archivo: Tributos Generales (RRRRRRRRRRR-CC-XXXX-999999999.TRI)
                     {
                         MessageBox.Show("Error en tributos del archivo plano", "Error en TRI", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return retorna;
                     }
-                    if (generaLEY(tipdo, serie, corre, ruta + archi) == false)    // Archivo: Leyendas (RRRRRRRRRRR-CC-XXXX-999999999.LEY)
+                    if (generaLEY(tipdo, serie, corre, ruta + archi, sep) == false)    // Archivo: Leyendas (RRRRRRRRRRR-CC-XXXX-999999999.LEY)
                     {
                         MessageBox.Show("Error en leyendas del archivo plano", "Error en LEY", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return retorna;
                     }
-                    if (generaREL(tipdo, serie, corre, ruta + archi) == false)    // Archivo: Documentos relacionados (RRRRRRRRRRR-CC-XXXX-999999999.REL)
+                    if (generaREL(tipdo, serie, corre, ruta + archi, sep, tfg) == false)    // Archivo: Documentos relacionados (RRRRRRRRRRR-CC-XXXX-999999999.REL)
                     {
                         MessageBox.Show("Error en docs relacionados del archivo plano", "Error en REL", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return retorna;
                     }
-                    if (generaACA(tipdo, serie, corre, ruta + archi) == false)    // Archivo: Adicionales de cabecera (RRRRRRRRRRR-CC-XXXX-999999999.ACA)
+                    if (generaACA(tipdo, serie, corre, ruta + archi, sep) == false)    // Archivo: Adicionales de cabecera (RRRRRRRRRRR-CC-XXXX-999999999.ACA)
                     {
                         MessageBox.Show("Error en adicionales de CAB del archivo plano", "Error en ACA", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return retorna;
                     }
-                    if (generaADE(tipdo, serie, corre, ruta + archi) == false)    // Archivo: Adicionales de detalle (RRRRRRRRRRR-CC-XXXX-999999999.ADE)
+                    if (generaADE(tipdo, serie, corre, ruta + archi, sep) == false)    // Archivo: Adicionales de detalle (RRRRRRRRRRR-CC-XXXX-999999999.ADE)
                     {
                         MessageBox.Show("Error en adicionales de DET del archivo plano", "Error en ADE", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return retorna;
                     }
-                    if (generaACV(tipdo, serie, corre, ruta + archi) == false)    // Archivo: Adicionales de Cabecera Variable (RRRRRRRRRRR-CC-XXXX-999999999.ACV)
+                    if (generaACV(tipdo, serie, corre, ruta + archi, sep) == false)    // Archivo: Adicionales de Cabecera Variable (RRRRRRRRRRR-CC-XXXX-999999999.ACV)
                     {
                         MessageBox.Show("Error en adicionales de ACV del archivo plano", "Error en ACV", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return retorna;
                     }
-                    if (generaSTC(tipdo, serie, corre, ruta + archi) == false)    // Archivo: Detracciones - Servicio de transporte de Carga (RRRRRRRRRRR-CC-XXXX-99999999.STC)
+                    if (generaSTC(tipdo, serie, corre, ruta + archi, sep) == false)    // Archivo: Detracciones - Servicio de transporte de Carga (RRRRRRRRRRR-CC-XXXX-99999999.STC)
                     {
                         MessageBox.Show("Error en detraciones del archivo plano", "Error en STC", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return retorna;
                     }
-                    if (generaTRA(tipdo, serie, corre, ruta + archi) == false)    // Archivo: Detracciones - Servicio de transporte de Carga - Detalle de tramos (De corresponder)   (RRRRRRRRRRR-CC-XXXX-99999999.TRA)
+                    if (generaTRA(tipdo, serie, corre, ruta + archi, sep) == false)    // Archivo: Detracciones - Servicio de transporte de Carga - Detalle de tramos (De corresponder)   (RRRRRRRRRRR-CC-XXXX-99999999.TRA)
                     {
                         MessageBox.Show("Error en detraciones tramos del archivo plano", "Error en TRA", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return retorna;
                     }
-                    if (generaVEH(tipdo, serie, corre, ruta + archi) == false)    // Archivo: Detracciones - Servicio de transporte de Carga - Servicio de transporte de Carga - Detalle del(os) Vehículo(s)  (RRRRRRRRRRR-CC-XXXX-99999999.VEH)
+                    if (generaVEH(tipdo, serie, corre, ruta + archi, sep) == false)    // Archivo: Detracciones - Servicio de transporte de Carga - Servicio de transporte de Carga - Detalle del(os) Vehículo(s)  (RRRRRRRRRRR-CC-XXXX-99999999.VEH)
                     {
                         MessageBox.Show("Error en detraciones vehiculos del archivo plano", "Error en VEH", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return retorna;
                     }
-                    if (generaPAG(tipdo, serie, corre, ruta + archi) == false)    // Archivo: Datos de la forma de pago (RRRRRRRRRRR-CC-XXXX-999999999.PAG)
+                    if (generaPAG(tipdo, serie, corre, ruta + archi, sep) == false)    // Archivo: Datos de la forma de pago (RRRRRRRRRRR-CC-XXXX-999999999.PAG)
                     {
                         MessageBox.Show("Error en pagos del archivo plano", "Error en PAG", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return retorna;
                     }
-                    if (generaDPA(tipdo, serie, corre, ruta + archi) == false)    // Archivo: Detalles de la forma de pago al crédito (RRRRRRRRRRR-CC-XXXX-999999999.DPA)
+                    if (generaDPA(tipdo, serie, corre, ruta + archi, sep) == false)    // Archivo: Detalles de la forma de pago al crédito (RRRRRRRRRRR-CC-XXXX-999999999.DPA)
                     {
                         MessageBox.Show("Error en pagos al crédito del archivo plano", "Error en DPA", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return retorna;
                     }
-                    if (generaRTN(tipdo, serie, corre, ruta + archi) == false)    // Archivo: Datos de la Retención del IGV (RRRRRRRRRRR-CC-XXXX-999999999.RTN)
+                    if (generaRTN(tipdo, serie, corre, ruta + archi, sep) == false)    // Archivo: Datos de la Retención del IGV (RRRRRRRRRRR-CC-XXXX-999999999.RTN)
                     {
                         MessageBox.Show("Error en retenciones del archivo plano", "Error en RTN", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return retorna;
@@ -2812,11 +2818,11 @@ namespace TransCarga
         }
 
         #region factSunat
-        private bool generaCAB(string tipdo, string serie, string corre, string file_path)
+        private bool generaCAB(string tipdo, string serie, string corre, string file_path, string sep,
+            double vsubt, double vigvt, double vflet)
         {
             bool retorna = true;
             string ta = ".CAB";
-            string sep = "|";    // char sep = (char)31;
             string fecemi = tx_fechope.Text.Substring(6, 4) + "-" + tx_fechope.Text.Substring(3, 2) + "-" + tx_fechope.Text.Substring(0, 2);
             string horemi = DateTime.Now.ToString("HH:mm:ss");
 
@@ -2832,29 +2838,27 @@ namespace TransCarga
                 tipoDocEmi + sep +              // Tipo de documento de identidad del adquirente o usuario
                 tx_numDocRem.Text + sep +       // Número de documento de identidad del adquirente o usuario
                 tx_nomRem.Text.Trim() + sep +   // Apellidos y nombres, denominación o razón social del adquirente o usuario 
-                tipoMoneda + sep +              // Tipo de moneda en la cual se emite la factura electrónica
-                tx_igv.Text + sep +             // Sumatoria Tributos
-                tx_flete.Text + sep +           // Total valor de venta 
-                tx_flete.Text + sep +           // Total Precio de Venta
-                "0" + sep +                     // Total descuentos (no afectan la base imponible del IGV/IVAP)
-                "0" + sep +                     // Sumatoria otros Cargos
-                "0" + sep +                     // Total Anticipos
-                tx_flete.Text + sep +           // Importe total de la venta, cesión en uso o del servicio prestado
-                "2.1" + sep +                   // Versión UBL
+                tipoMoneda + sep +                  // Tipo de moneda en la cual se emite la factura electrónica
+                vigvt.ToString("#0.00") + sep +           // Sumatoria Tributos
+                vflet.ToString("#0.00") + sep +           // Total valor de venta 
+                vflet.ToString("#0.00") + sep +           // Total Precio de Venta
+                "0" + sep +                               // Total descuentos (no afectan la base imponible del IGV/IVAP)
+                "0" + sep +                               // Sumatoria otros Cargos
+                "0" + sep +                               // Total Anticipos
+                vflet.ToString("#0.00") + sep +           // Importe total de la venta, cesión en uso o del servicio prestado
+                "2.1" + sep +                       // Versión UBL
                 "2.0"                           // Customization Documento
                 );
             writer.Flush();
             writer.Close();
             return retorna;
         }
-        private bool generaDET(string tipdo, string serie, string corre, string file_path)
+        private bool generaDET(string tipdo, string serie, string corre, string file_path, string sep, int tfg)
         {
             bool retorna = false;
             string ta = ".DET";
-            string sep = "|";    // char sep = (char)31;
             string fecemi = tx_fechope.Text.Substring(6, 4) + "-" + tx_fechope.Text.Substring(3, 2) + "-" + tx_fechope.Text.Substring(0, 2);
             string horemi = DateTime.Now.ToString("HH:mm:ss");
-            int tfg = dataGridView1.Rows.Count - 1;
             StreamWriter writer;
             file_path = file_path + ta;
             writer = new StreamWriter(file_path);
@@ -2864,6 +2868,7 @@ namespace TransCarga
                 double preunit = double.Parse(dataGridView1.Rows[s].Cells[4].Value.ToString());
                 double valunit = double.Parse(dataGridView1.Rows[s].Cells[4].Value.ToString()) / (1 + (double.Parse(v_igv) / 100));
                 double sumimpl = double.Parse(dataGridView1.Rows[s].Cells[4].Value.ToString()) - valunit;
+
                 writer.WriteLine(
                     "ZZ" + sep +             // Código de unidad de medida por ítem
                     "1" + sep +              // Cantidad de unidades por ítem
@@ -2908,87 +2913,219 @@ namespace TransCarga
 
             return retorna;
         }
-        private bool generaTRI(string tipdo, string serie, string corre, string file_path)
+        private bool generaTRI(string tipdo, string serie, string corre, string file_path, string sep,
+            double vsubt, double vigvt, double vflet)
         {
             bool retorna = false;
-            string ta = "TRI";
+            string ta = ".TRI";
+            StreamWriter writer;
+            file_path = file_path + ta;
+            writer = new StreamWriter(file_path);
+            writer.WriteLine(
+                "1000" + sep +                      // Identificador de tributo
+                "IGV" + sep +                       // Nombre de tributo
+                "VAT" + sep +                       // Código de tipo de tributo
+                vsubt.ToString("#0.00") + sep +     // Base imponible
+                vigvt.ToString("#0.00")             // Monto de Tributo
+                );
+            writer.Flush();
+            writer.Close();
 
             return retorna;
         }
-        private bool generaLEY(string tipdo, string serie, string corre, string file_path)
+        private bool generaLEY(string tipdo, string serie, string corre, string file_path, string sep)
         {
             bool retorna = false;
-            string ta = "LEY";
+            string ta = ".LEY";
+            StreamWriter writer;
+            file_path = file_path + ta;
+            writer = new StreamWriter(file_path);
+            writer.WriteLine(
+                "1000" + sep +              // Código de leyenda
+                "SON: " + tx_fletLetras.Text           // "Monto en Letras"
+                );
+            if (tx_dat_mone.Text == MonDeft)
+            {
+                if (double.Parse(tx_flete.Text) > (double.Parse(Program.valdetra)))
+                {
+                    writer.WriteLine(
+                        "2006" + sep +
+                        glosdetra + " " + Program.ctadetra
+                        );
+                }
+            }
+            else
+            {
+                if (double.Parse(tx_flete.Text) > (double.Parse(Program.valdetra) / double.Parse(tx_tipcam.Text)))
+                {
+                    writer.WriteLine(
+                        "2006" + sep +
+                        glosdetra + " " + Program.ctadetra
+                        );
+                }
+            }
+            writer.Flush();
+            writer.Close();
 
             return retorna;
         }
-        private bool generaREL(string tipdo, string serie, string corre, string file_path)
+        private bool generaREL(string tipdo, string serie, string corre, string file_path, string sep, int tfg)
         {
             bool retorna = false;
-            string ta = "REL";
+            string ta = ".REL";
+            StreamWriter writer;
+            file_path = file_path + ta;
+            writer = new StreamWriter(file_path);
+            for (int s = 0; s < tfg; s++)
+            {
+                string vg = dataGridView1.Rows[s].Cells[0].Value.ToString();
+                writer.WriteLine(
+                    "1" + sep +                         // Indicador de documento relacionado (1: Guía
+                    "-" + sep +                         // Número identificador del anticipo (solo para el Caso: 2 Anticipo).
+                    "31" + sep +                        // Tipo de documento relacionado
+                    vg + sep +                          // Serie numero
+                    "" + sep +                          // OPCIONAL NO USAMOS Tipo de documento del emisor del documento relacionado, OSEA RUC DEL TRANSPORTISTA
+                    "" + sep +                          // OPCIONAL NO USAMOS Número de documento del emisor del documento relacionado
+                    ""                                  // OPCIONAL NO USAMOS monto de la guía
+                    );
+            }
+            writer.Flush();
+            writer.Close();
 
             return retorna;
         }
-        private bool generaACA(string tipdo, string serie, string corre, string file_path)
+        private bool generaACA(string tipdo, string serie, string corre, string file_path, string sep)
         {
             bool retorna = false;
-            string ta = "ACA";
+            string ta = ".ACA";
+            StreamWriter writer;
+            file_path = file_path + ta;
+            writer = new StreamWriter(file_path);
+            writer.WriteLine(
+
+                );
+            writer.Flush();
+            writer.Close();
 
             return retorna;
         }
-        private bool generaADE(string tipdo, string serie, string corre, string file_path)
+        private bool generaADE(string tipdo, string serie, string corre, string file_path, string sep)
         {
             bool retorna = false;
-            string ta = "ADE";
+            string ta = ".ADE";
+            StreamWriter writer;
+            file_path = file_path + ta;
+            writer = new StreamWriter(file_path);
+            writer.WriteLine(
+
+                );
+            writer.Flush();
+            writer.Close();
 
             return retorna;
         }
-        private bool generaACV(string tipdo, string serie, string corre, string file_path)
+        private bool generaACV(string tipdo, string serie, string corre, string file_path, string sep)
         {
             bool retorna = false;
-            string ta = "ACV";
+            string ta = ".ACV";
+            StreamWriter writer;
+            file_path = file_path + ta;
+            writer = new StreamWriter(file_path);
+            writer.WriteLine(
+
+                );
+            writer.Flush();
+            writer.Close();
 
             return retorna;
         }
-        private bool generaSTC(string tipdo, string serie, string corre, string file_path)
+        private bool generaSTC(string tipdo, string serie, string corre, string file_path, string sep)
         {
             bool retorna = false;
-            string ta = "STC";
+            string ta = ".STC";
+            StreamWriter writer;
+            file_path = file_path + ta;
+            writer = new StreamWriter(file_path);
+            writer.WriteLine(
+
+                );
+            writer.Flush();
+            writer.Close();
 
             return retorna;
         }
-        private bool generaTRA(string tipdo, string serie, string corre, string file_path)
+        private bool generaTRA(string tipdo, string serie, string corre, string file_path, string sep)
         {
             bool retorna = false;
-            string ta = "TRA";
+            string ta = ".TRA";
+            StreamWriter writer;
+            file_path = file_path + ta;
+            writer = new StreamWriter(file_path);
+            writer.WriteLine(
+
+                );
+            writer.Flush();
+            writer.Close();
 
             return retorna;
         }
-        private bool generaVEH(string tipdo, string serie, string corre, string file_path)
+        private bool generaVEH(string tipdo, string serie, string corre, string file_path, string sep)
         {
             bool retorna = false;
-            string ta = "VEH";
+            string ta = ".VEH";
+            StreamWriter writer;
+            file_path = file_path + ta;
+            writer = new StreamWriter(file_path);
+            writer.WriteLine(
+
+                );
+            writer.Flush();
+            writer.Close();
 
             return retorna;
         }
-        private bool generaPAG(string tipdo, string serie, string corre, string file_path)
+        private bool generaPAG(string tipdo, string serie, string corre, string file_path, string sep)
         {
             bool retorna = false;
-            string ta = "PAG";
+            string ta = ".PAG";
+            StreamWriter writer;
+            file_path = file_path + ta;
+            writer = new StreamWriter(file_path);
+            writer.WriteLine(
+
+                );
+            writer.Flush();
+            writer.Close();
 
             return retorna;
         }
-        private bool generaDPA(string tipdo, string serie, string corre, string file_path)
+        private bool generaDPA(string tipdo, string serie, string corre, string file_path, string sep)
         {
             bool retorna = false;
-            string ta = "DPA";
+            string ta = ".DPA";
+            StreamWriter writer;
+            file_path = file_path + ta;
+            writer = new StreamWriter(file_path);
+            writer.WriteLine(
+
+                );
+            writer.Flush();
+            writer.Close();
 
             return retorna;
         }
-        private bool generaRTN(string tipdo, string serie, string corre, string file_path)
+        private bool generaRTN(string tipdo, string serie, string corre, string file_path, string sep)
         {
             bool retorna = false;
-            string ta = "RTN";
+            string ta = ".RTN";
+            StreamWriter writer;
+            file_path = file_path + ta;
+            writer = new StreamWriter(file_path);
+            writer.WriteLine(
+
+                );
+            writer.Flush();
+            writer.Close();
 
             return retorna;
         }
