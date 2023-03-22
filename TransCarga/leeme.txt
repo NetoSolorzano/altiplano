@@ -364,4 +364,6 @@ form login, evitar poner usuario y clave mientras jala datos al disco local ....
 form guiati_e, agregar una fila de documento relacionado, deben ser 2 .............................. ok 16/03/2023
 form guiati_e, arreglar funcionamiento doc relacionado 2 ........................................... ok 17/03/2023
 form login, colocar un aviso mientras carga los datos iniciales .................................... ok 17/03/2023
+form guiati_e, se corrigió el correlativo aumentado dos veces ...................................... ok 21/03/2023
+form guiati_e, correccion de llamada armagret() daba error, se paso al load() ...................... ok 21/03/2023
 form facelect, agregar opcion factSunat a los metodos de gestión ................................... 

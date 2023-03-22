@@ -169,6 +169,8 @@ namespace TransCarga
             toolboton();
             this.KeyPreview = true;
             autodepa();                                     // autocompleta departamentos
+            armagret();
+
         }
         private void init()
         {
@@ -1388,7 +1390,8 @@ namespace TransCarga
         private bool psnet_api()
         {
             bool retorna = false;
-            armagret();
+            //armagret();
+            tcfe.Clear();
             if (arma_GRTE_psnet("alta") != "") retorna = true;
             return retorna;
         }
@@ -2112,6 +2115,7 @@ namespace TransCarga
                 // EL NUMERO DE GUIA SIEMPRE DEBE SER AUTOMÁTICO ... ya no desde el 08/12/2020
                 if (tx_n_auto.Text == "A")
                 {
+                    /* EN GUIAS ELECTRONICAS SI O SI ES AUTOMATICO Y EL NUMERADOR YA SE CORRIO ANTES DEL TXT  21/03/2023
                     string todo = "corre_serie";
                     using (MySqlCommand micon = new MySqlCommand(todo, conn))
                     {
@@ -2134,6 +2138,7 @@ namespace TransCarga
                         MessageBox.Show("Falta configurar numeración", "Error en configuración", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return retorna;
                     }
+                    */
                 }
                 if (tx_tipcam.Text.Trim() == "") tx_tipcam.Text = "0";
                 decimal subtgr = Math.Round(decimal.Parse(tx_flete.Text) / (decimal.Parse(v_igv) / 100 + 1), 3);
