@@ -232,6 +232,7 @@ namespace TransCarga
             tx_dd_dis.AutoCompleteCustomSource = distritos;
             // longitudes maximas de campos
             tx_serie.MaxLength = 4;         // serie doc vta
+            tx_serie.CharacterCasing = CharacterCasing.Upper;
             tx_numero.MaxLength = 8;        // numero doc vta
             tx_serGR.MaxLength = 4;         // serie guia
             tx_numGR.MaxLength = 8;         // numero guia
@@ -1395,9 +1396,26 @@ namespace TransCarga
                 if (accion == "alta")
                 {
                     archi = rucclie + "-" + tipdo + "-" + serie + "-" + corre;
-                    double vsubt = double.Parse(tx_subt.Text);
-                    double vigvt = double.Parse(tx_igv.Text);
-                    double vflet = double.Parse(tx_flete.Text);
+                    double vsubt = double.Parse(tx_subt.Text);      // sub total
+                    double vigvt = double.Parse(tx_igv.Text);       // igv
+                    double vflet = double.Parse(tx_flete.Text);     // total
+                    double monDet = 0;
+
+                    if (tx_dat_mone.Text == MonDeft)
+                    {
+                        if (double.Parse(tx_flete.Text) > (double.Parse(Program.valdetra)))
+                        {
+                            monDet = Math.Round(double.Parse(tx_flete.Text) * double.Parse(Program.pordetra) / 100, 2);
+                        }
+                    }
+                    else
+                    {
+                        if (double.Parse(tx_flete.Text) > (double.Parse(Program.valdetra) / double.Parse(tx_tipcam.Text)))
+                        {
+                            // OJO, la detracción es en SOLES, la cuenta detracción en el BN es en soles
+                            monDet = Math.Round((double.Parse(tx_flete.Text) * double.Parse(Program.pordetra) / 100) / double.Parse(tx_tipcam.Text), 2);
+                        }
+                    }
                     // 
                     if (generaCAB(tipdo, serie, corre, ruta + archi, sep, vsubt, vigvt, vflet) == false)  // Archivo: Cabecera (RRRRRRRRRRR-CC-XXXX-99999999.CAB)
                     {
@@ -1424,7 +1442,7 @@ namespace TransCarga
                         MessageBox.Show("Error en docs relacionados del archivo plano", "Error en REL", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return retorna;
                     }
-                    if (generaACA(tipdo, serie, corre, ruta + archi, sep) == false)    // Archivo: Adicionales de cabecera (RRRRRRRRRRR-CC-XXXX-999999999.ACA)
+                    if (generaACA(tipdo, serie, corre, ruta + archi, sep, monDet) == false)    // Archivo: Adicionales de cabecera (RRRRRRRRRRR-CC-XXXX-999999999.ACA)
                     {
                         MessageBox.Show("Error en adicionales de CAB del archivo plano", "Error en ACA", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return retorna;
@@ -1439,17 +1457,17 @@ namespace TransCarga
                         MessageBox.Show("Error en adicionales de ACV del archivo plano", "Error en ACV", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return retorna;
                     }
-                    if (generaSTC(tipdo, serie, corre, ruta + archi, sep) == false)    // Archivo: Detracciones - Servicio de transporte de Carga (RRRRRRRRRRR-CC-XXXX-99999999.STC)
+                    if (generaSTC(tipdo, serie, corre, ruta + archi, sep, monDet) == false)    // Archivo: Detracciones - Servicio de transporte de Carga (RRRRRRRRRRR-CC-XXXX-99999999.STC)
                     {
                         MessageBox.Show("Error en detraciones del archivo plano", "Error en STC", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return retorna;
                     }
-                    if (generaTRA(tipdo, serie, corre, ruta + archi, sep) == false)    // Archivo: Detracciones - Servicio de transporte de Carga - Detalle de tramos (De corresponder)   (RRRRRRRRRRR-CC-XXXX-99999999.TRA)
+                    if (generaTRA(tipdo, serie, corre, ruta + archi, sep, monDet) == false)    // Archivo: Detracciones - Servicio de transporte de Carga - Detalle de tramos (De corresponder)   (RRRRRRRRRRR-CC-XXXX-99999999.TRA)
                     {
                         MessageBox.Show("Error en detraciones tramos del archivo plano", "Error en TRA", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return retorna;
                     }
-                    if (generaVEH(tipdo, serie, corre, ruta + archi, sep) == false)    // Archivo: Detracciones - Servicio de transporte de Carga - Servicio de transporte de Carga - Detalle del(os) Vehículo(s)  (RRRRRRRRRRR-CC-XXXX-99999999.VEH)
+                    if (generaVEH(tipdo, serie, corre, ruta + archi, sep, monDet) == false)    // Archivo: Detracciones - Servicio de transporte de Carga - Servicio de transporte de Carga - Detalle del(os) Vehículo(s)  (RRRRRRRRRRR-CC-XXXX-99999999.VEH)
                     {
                         MessageBox.Show("Error en detraciones vehiculos del archivo plano", "Error en VEH", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return retorna;
@@ -1470,6 +1488,7 @@ namespace TransCarga
                         return retorna;
                     }
                     //
+                    retorna = true;
                 }
                 if (accion == "baja")
                 {
@@ -2855,7 +2874,7 @@ namespace TransCarga
         }
         private bool generaDET(string tipdo, string serie, string corre, string file_path, string sep, int tfg)
         {
-            bool retorna = false;
+            bool retorna = true;
             string ta = ".DET";
             string fecemi = tx_fechope.Text.Substring(6, 4) + "-" + tx_fechope.Text.Substring(3, 2) + "-" + tx_fechope.Text.Substring(0, 2);
             string horemi = DateTime.Now.ToString("HH:mm:ss");
@@ -2916,7 +2935,7 @@ namespace TransCarga
         private bool generaTRI(string tipdo, string serie, string corre, string file_path, string sep,
             double vsubt, double vigvt, double vflet)
         {
-            bool retorna = false;
+            bool retorna = true;
             string ta = ".TRI";
             StreamWriter writer;
             file_path = file_path + ta;
@@ -2935,7 +2954,7 @@ namespace TransCarga
         }
         private bool generaLEY(string tipdo, string serie, string corre, string file_path, string sep)
         {
-            bool retorna = false;
+            bool retorna = true;
             string ta = ".LEY";
             StreamWriter writer;
             file_path = file_path + ta;
@@ -2971,7 +2990,7 @@ namespace TransCarga
         }
         private bool generaREL(string tipdo, string serie, string corre, string file_path, string sep, int tfg)
         {
-            bool retorna = false;
+            bool retorna = true;
             string ta = ".REL";
             StreamWriter writer;
             file_path = file_path + ta;
@@ -2994,24 +3013,40 @@ namespace TransCarga
 
             return retorna;
         }
-        private bool generaACA(string tipdo, string serie, string corre, string file_path, string sep)
+        private bool generaACA(string tipdo, string serie, string corre, string file_path, string sep,
+            double monDet)
         {
-            bool retorna = false;
+            bool retorna = true;
             string ta = ".ACA";
             StreamWriter writer;
             file_path = file_path + ta;
-            writer = new StreamWriter(file_path);
-            writer.WriteLine(
-
-                );
-            writer.Flush();
-            writer.Close();
-
+            if (monDet > 0)
+            {
+                writer = new StreamWriter(file_path);
+                {
+                    writer.WriteLine(
+                        Program.ctadetra + sep +                // Cuenta del banco de la nacion (detraccion)
+                        "027" + sep +                           // Codigo del bien o producto sujeto a detracción 
+                        Program.pordetra + sep +                // Porcentaje de la detracción
+                        monDet.ToString("#0.00") + sep +        // Monto de la detracción
+                        "001" + sep +                           // Medio de pago
+                        "-" + sep + 
+                        "" + sep +
+                        "" + sep +
+                        "-" + sep +
+                        "" + sep +
+                        "" 
+                        );
+                }
+                writer.Flush();
+                writer.Close();
+            }
             return retorna;
         }
         private bool generaADE(string tipdo, string serie, string corre, string file_path, string sep)
         {
-            bool retorna = false;
+            bool retorna = true;
+            /* 22/03/2023 no tenemos adicionales en detalle
             string ta = ".ADE";
             StreamWriter writer;
             file_path = file_path + ta;
@@ -3021,12 +3056,13 @@ namespace TransCarga
                 );
             writer.Flush();
             writer.Close();
-
+            */
             return retorna;
         }
         private bool generaACV(string tipdo, string serie, string corre, string file_path, string sep)
         {
-            bool retorna = false;
+            bool retorna = true;
+            /* 22/03/2023 no tenemos adicionales de cabecera variable
             string ta = ".ACV";
             StreamWriter writer;
             file_path = file_path + ta;
@@ -3036,57 +3072,92 @@ namespace TransCarga
                 );
             writer.Flush();
             writer.Close();
-
+            */
             return retorna;
         }
-        private bool generaSTC(string tipdo, string serie, string corre, string file_path, string sep)
+        private bool generaSTC(string tipdo, string serie, string corre, string file_path, string sep,
+            double monDet)
         {
-            bool retorna = false;
-            string ta = ".STC";
-            StreamWriter writer;
-            file_path = file_path + ta;
-            writer = new StreamWriter(file_path);
-            writer.WriteLine(
-
-                );
-            writer.Flush();
-            writer.Close();
-
+            bool retorna = true;
+            if (chk_cunica.Checked == true && monDet > 0)
+            {
+                string ta = ".STC";
+                StreamWriter writer;
+                file_path = file_path + ta;
+                writer = new StreamWriter(file_path);
+                writer.WriteLine(
+                    "1" + sep +             // Linea item
+                    "" + sep +              // Detalle del Viaje
+                    tx_dat_upo.Text + sep + // Código de Ubigeo Origen
+                    tx_dat_dpo.Text + sep + // Dirección detallada del origen 
+                    tx_dat_upd.Text + sep + // Código de Ubigeo Destino
+                    tx_dat_dpd.Text + sep + // Dirección detallada del destino
+                    "01" + sep +            // Tipo referencial del servicio 
+                    tx_valref1.Text + sep + // Valor referencial del servicio 
+                    "02" + sep +            // Tipo referencial sobre la carga efectiva
+                    tx_valref2.Text + sep + // Valor referencial sobre la carga efectiva
+                    "03" + sep +            // Tipo referencial sobre la carga útil nominal
+                    tx_valref3.Text         // Valor referencial sobre la carga útil nominal
+                    );
+                writer.Flush();
+                writer.Close();
+            }
             return retorna;
         }
-        private bool generaTRA(string tipdo, string serie, string corre, string file_path, string sep)
+        private bool generaTRA(string tipdo, string serie, string corre, string file_path, string sep,
+            double monDet)
         {
-            bool retorna = false;
-            string ta = ".TRA";
-            StreamWriter writer;
-            file_path = file_path + ta;
-            writer = new StreamWriter(file_path);
-            writer.WriteLine(
-
-                );
-            writer.Flush();
-            writer.Close();
-
+            bool retorna = true;
+            if (chk_cunica.Checked == true && monDet > 0)
+            {
+                string ta = ".TRA";
+                StreamWriter writer;
+                file_path = file_path + ta;
+                writer = new StreamWriter(file_path);
+                writer.WriteLine(
+                    "1" + sep +                         // Linea item
+                    "01" + sep +                        // Identificador del tramo
+                    "Recorrido total" + sep +           // Descripción del tramo
+                    tx_valref2.Text + sep +             // Valor preliminar referencial sobre la Carga Efectiva (Por el tramo virtual recorrido)
+                    tx_valref3.Text + sep +             // Valor Preliminar Referencial por Carga Útil Nominal (Tratándose de más de 1 vehículo)
+                    tx_dat_upo.Text + sep +             // Código de Ubigeo - ORIGEN
+                    tx_dat_upd.Text                     // Código de Ubigeo - DESTINO
+                    );
+                writer.Flush();
+                writer.Close();
+            }
             return retorna;
         }
-        private bool generaVEH(string tipdo, string serie, string corre, string file_path, string sep)
+        private bool generaVEH(string tipdo, string serie, string corre, string file_path, string sep,
+            double monDet)
         {
-            bool retorna = false;
-            string ta = ".VEH";
-            StreamWriter writer;
-            file_path = file_path + ta;
-            writer = new StreamWriter(file_path);
-            writer.WriteLine(
-
-                );
-            writer.Flush();
-            writer.Close();
-
+            bool retorna = true;
+            if (chk_cunica.Checked == true && monDet > 0)
+            {
+                string ta = ".VEH";
+                StreamWriter writer;
+                file_path = file_path + ta;
+                writer = new StreamWriter(file_path);
+                writer.WriteLine(
+                    "1" + sep +                 // Linea item
+                    "01" + sep +                // Identificador del tramo, el mismo que en .TRA
+                    tx_pla_confv.Text + sep +   // Configuracion vehicular del vehículo
+                    "false" + sep +             // Indica factor de retorno de viaje
+                    tx_valRefTM.Text + sep +    // Valor Referencial por TM
+                    "02" + sep +                // Carga Efectiva en TM del vehículo - Tipo
+                    tx_cetm.Text + sep +        // Carga Efectiva en TM del vehículo - Valor
+                    "01" + sep +                // Carga Util en TM del vehículo - Tipo
+                    tx_cutm.Text                // Carga Util en TM del vehículo - Valor
+                    );
+                writer.Flush();
+                writer.Close();
+            }
             return retorna;
         }
         private bool generaPAG(string tipdo, string serie, string corre, string file_path, string sep)
         {
-            bool retorna = false;
+            bool retorna = true;
+            /* 23/03/2023 no ponemos nada a ver que pasa
             string ta = ".PAG";
             StreamWriter writer;
             file_path = file_path + ta;
@@ -3096,12 +3167,13 @@ namespace TransCarga
                 );
             writer.Flush();
             writer.Close();
-
+            */
             return retorna;
         }
         private bool generaDPA(string tipdo, string serie, string corre, string file_path, string sep)
         {
-            bool retorna = false;
+            bool retorna = true;
+            /* 23/03/2023 veremos si no mandamos pagos a ver que pasa
             string ta = ".DPA";
             StreamWriter writer;
             file_path = file_path + ta;
@@ -3111,12 +3183,13 @@ namespace TransCarga
                 );
             writer.Flush();
             writer.Close();
-
+            */
             return retorna;
         }
         private bool generaRTN(string tipdo, string serie, string corre, string file_path, string sep)
         {
-            bool retorna = false;
+            bool retorna = true;
+            /* 23/03/2023 no tengo cliente con retencion de igv ... no usamos
             string ta = ".RTN";
             StreamWriter writer;
             file_path = file_path + ta;
@@ -3126,7 +3199,7 @@ namespace TransCarga
                 );
             writer.Flush();
             writer.Close();
-
+            */
             return retorna;
         }
         #endregion
@@ -3698,7 +3771,7 @@ namespace TransCarga
                         else
                         {
                             MessageBox.Show("No existe ruta o no es valida para" + Environment.NewLine +
-                                        "generar la anulación electrónica", "Ruta para Fact.Electrónica", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+                                        "generar comprobante - " + rutatxt, "Ruta para Fact.Electrónica", MessageBoxButtons.OK, MessageBoxIcon.Hand);
                             iserror = "si";
                         }
                     }
@@ -4556,7 +4629,7 @@ namespace TransCarga
         }
         private void tx_serie_Leave(object sender, EventArgs e)
         {
-            tx_serie.Text = lib.Right("0000" + tx_serie.Text, 4);
+            //tx_serie.Text = lib.Right("0000" + tx_serie.Text, 4);
             if (Tx_modo.Text == "NUEVO") tx_serGR.Focus();
         }
         private void tx_flete_Leave(object sender, EventArgs e)
@@ -4634,7 +4707,8 @@ namespace TransCarga
         }
         private void tx_serGR_Leave(object sender, EventArgs e)
         {
-            tx_serGR.Text = lib.Right("0000" + tx_serGR.Text, 4);
+            //tx_serGR.Text = lib.Right("0000" + tx_serGRx.Text, 4);
+
         }
         private void tx_numGR_Leave(object sender, EventArgs e)
         {
