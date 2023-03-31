@@ -106,6 +106,8 @@ namespace TransCarga
         string codtxmotran = "";        // codigo motivo de traslado de bienes
         int ccf_pdf = 0;                // cantidad de caracteres por fila limite para detalle de cargas unicas
         string rucsEmcoper = "";        // rucs separados por comas para el modelo especial de pdf de Emcoper coordinado con PSnet 07/12/2022 
+        string webdni = "";             // ruta web del buscador de DNI
+        string NoRetGl = "";                // glosa de retorno cuando umasapa no encuentra el dni o ruc
         //
         static libreria lib = new libreria();   // libreria de procedimientos
         publico lp = new publico();             // libreria de clases
@@ -373,6 +375,11 @@ namespace TransCarga
                         if (row["campo"].ToString() == "rutas")
                         {
                             if (row["param"].ToString() == "fe_txt") rutatxt = row["valor"].ToString().Trim();         // ruta de los txt para la fact. electronica
+                            if (row["param"].ToString() == "web_dni") webdni = row["valor"].ToString().Trim();         // web para busqueda de dni 
+                        }
+                        if (row["campo"].ToString() == "conector")
+                        {
+                            if (row["param"].ToString() == "noRetGlosa") NoRetGl = row["valor"].ToString().Trim();          // glosa que retorna umasapa cuando no encuentra dato
                         }
                     }
                     if (row["formulario"].ToString() == "clients" && row["campo"].ToString() == "documento")
@@ -1318,6 +1325,85 @@ namespace TransCarga
             //tdfe.Columns.Add("Imonbas");                    // monto base (valor sin igv * cantidad)
             //tdfe.Columns.Add("Isumigv");                    // Sumatoria de igv
             //tdfe.Columns.Add("Iindgra");                    // indicador de gratuito
+        }
+        private string[] busqueda_clt_conector(string tipoD, string numeD)  // retorna datos del cliente del conector externo
+        {
+            string[] retorna = new string[8];
+            retorna[0] = ""; retorna[1] = ""; retorna[2] = ""; retorna[3] = "";
+            retorna[4] = ""; retorna[5] = ""; retorna[6] = ""; retorna[7] = "";
+
+            if (tx_dat_tdRem.Text == vtc_ruc)
+            {
+                if (lib.valiruc(tx_numDocRem.Text, tx_dat_tdRem.Text) == false)
+                {
+                    MessageBox.Show("Número de ruc es inválido", "Error de validación", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    tx_numDocRem.Text = "";
+                    tx_nomRem.Text = "";
+                    return retorna;
+                }
+            }
+            // si no hay Y SI DOCUMENTO ES RUC O DNI, vamos al conector a buscarlo por ahí
+            string[] biene = lib.conectorSolorsoft(cmb_docRem.Text.ToUpper().Trim(), tx_numDocRem.Text);
+            string myStr = biene[0].Replace("\r\n", "");
+            if (biene[0] == "" || myStr == NoRetGl)  // compara retorno vacio o glosa cuando no encuentra el dato
+            {
+                if (tx_dat_tdRem.Text == vtc_ruc)
+                {
+                    var aa = MessageBox.Show(" No encontramos el documento en ningún registro. " + Environment.NewLine +
+                    " Deberá ingresarlo manualmente si esta seguro(a) " + Environment.NewLine +
+                    " de la validez del número y documento. " + Environment.NewLine +
+                    "" + Environment.NewLine +
+                    "Confirma que desea ingresarlo manualmente?", "Atención", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                    if (aa == DialogResult.No)
+                    {
+                        tx_numDocRem.Text = "";
+                        tx_numDocRem.Focus();
+                        return retorna;
+                    }
+                }
+                if (tx_dat_tdRem.Text == vtc_dni)
+                {
+                    MessageBox.Show("No encontramos el DNI en la busqueda inicial, estamos abriendo" + Environment.NewLine +
+                                    "una página web para que efectúe la busqueda manualmente", "Redirección a web de DNI", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    System.Diagnostics.Process.Start(webdni);    // "https://eldni.com/pe/buscar-por-dni"
+                    tx_nomRem.Enabled = true;
+                    tx_nomRem.ReadOnly = false;
+                }
+            }
+            else
+            {
+                if (tx_dat_tdRem.Text == vtc_ruc)
+                {
+                    if (biene[6] != "ACTIVO" || biene[7] != "HABIDO")
+                    {
+                        var aa = MessageBox.Show("No debería generar el comprobante" + Environment.NewLine +
+                            "el ruc tiene el estado o condición no correcto" + Environment.NewLine + Environment.NewLine +
+                            "Condición: " + biene[7] + Environment.NewLine +
+                            "Estado: " + biene[6] + Environment.NewLine + Environment.NewLine +
+                            "CONFIRMA QUE DESEA CONTINUAR?", "Alerta - no debería continuar", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                        if (aa == DialogResult.No)
+                        {
+                            tx_numDocRem.Text = "";
+                            tx_numDocRem.Focus();
+                            return retorna;
+                        }
+                    }
+                    retorna[0] = biene[0];     // razon social; 
+                    retorna[1] = biene[1];     // ubigeo
+                    retorna[2] = biene[2];     // direccion
+                    retorna[3] = biene[3];     // departamento
+                    retorna[4] = biene[4];     // provincia
+                    retorna[5] = biene[5];     // distrito
+                    retorna[6] = biene[6];     // estado del contrib.
+                    retorna[7] = biene[7];     // situación de domicilio
+                }
+                if (tx_dat_tdRem.Text == vtc_dni)
+                {
+                    //tx_nombre.Text = biene[0];   // razon social
+                    retorna[0] = biene[0];     // razon social; 
+                }
+            }
+            return retorna;
         }
 
         #region facturacion electronica
@@ -3005,7 +3091,7 @@ namespace TransCarga
                     vg + sep +                          // Serie numero
                     "" + sep +                          // OPCIONAL NO USAMOS Tipo de documento del emisor del documento relacionado, OSEA RUC DEL TRANSPORTISTA
                     "" + sep +                          // OPCIONAL NO USAMOS Número de documento del emisor del documento relacionado
-                    ""                                  // OPCIONAL NO USAMOS monto de la guía
+                    "0"                            // OPCIONAL NO USAMOS monto de la guía
                     );
             }
             writer.Flush();
@@ -3157,17 +3243,29 @@ namespace TransCarga
         private bool generaPAG(string tipdo, string serie, string corre, string file_path, string sep)
         {
             bool retorna = true;
-            /* 23/03/2023 no ponemos nada a ver que pasa
+            string mp = "";
+            string vp = tx_flete.Text;
+            if (rb_contado.Checked == true)
+            {
+                mp = "Contado";
+                vp = "-";
+            }
+            else
+            {
+                mp = "Credito";
+            }
             string ta = ".PAG";
             StreamWriter writer;
             file_path = file_path + ta;
             writer = new StreamWriter(file_path);
             writer.WriteLine(
-
+                 mp + sep +             // Forma de pago
+                 vp + sep +             // Monto neto pendiente de pago
+                tipoMoneda              // Tipo de moneda del monto pendiente de pago
                 );
             writer.Flush();
             writer.Close();
-            */
+            
             return retorna;
         }
         private bool generaDPA(string tipdo, string serie, string corre, string file_path, string sep)
@@ -4571,6 +4669,21 @@ namespace TransCarga
                         encuentra = "si";
                         tx_dat_m1clte.Text = "E";
                     }
+                    else
+                    {
+                        {
+                            // llamada a la funcion
+                            string[] biene = busqueda_clt_conector(tx_dat_tdRem.Text, tx_numDocRem.Text);
+                            tx_nomRem.Text = biene[0];   // razon social
+                            //biene[1];                  // ubigeo
+                            tx_dirRem.Text = biene[2];    // direccion
+                            tx_dptoRtt.Text = biene[3];     // departamento
+                            tx_provRtt.Text = biene[4];     // provincia
+                            tx_distRtt.Text = biene[5];     // distrito
+                            tx_dat_m1clte.Text = "N";
+                        }
+                    }
+                    /*
                     if (tx_dat_tdRem.Text == vtc_ruc)
                     {
                         if (encuentra == "no")
@@ -4601,6 +4714,7 @@ namespace TransCarga
                             }
                         }
                     }
+                    */
                 }
             }
             if (tx_numDocRem.Text.Trim() != "" && tx_mld.Text.Trim() == "")

@@ -3001,7 +3001,7 @@ namespace TransCarga
                         string result = reader.ReadToEnd();
                         string[] datos = result.Split('|');
 
-                        retorna[0] = datos[1].Replace("?","Ñ");         // razon social
+                        retorna[0] = datos[1].Replace("¥", "Ñ");        // razon social
                         retorna[1] = datos[4];                          // ubigeo
                         retorna[2] = datos[5];                          // direccion
                         retorna[3] = datos[8];                          // departamento
