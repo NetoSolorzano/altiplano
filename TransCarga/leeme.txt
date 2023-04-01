@@ -368,4 +368,6 @@ form guiati_e, se corrigió el correlativo aumentado dos veces .................
 form guiati_e, correccion de llamada armagret() daba error, se paso al load() ...................... ok 21/03/2023
 form facelect, adecuaciones para facturar guias electronicas (V015) ................................ no había nada que hacer, si se podía 
 form facelect, mejorar el conector solorsoft para avisar si ruc es inactivo, etc, y si dni no hay .. ok 31/03/2023
+form guiati_a, Si es dni nuevo y el conector no lo jala, llama a dni.com.pe para jalarlo de ahí .... ok 31/03/2023
+form guiati_e, Si es dni nuevo y el conector no lo jala, llama a dni.com.pe para jalarlo de ahí .... ok 31/03/2023
 form facelect, agregar opcion factSunat a los metodos de gestión ................................... 

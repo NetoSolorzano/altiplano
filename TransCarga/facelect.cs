@@ -107,7 +107,7 @@ namespace TransCarga
         int ccf_pdf = 0;                // cantidad de caracteres por fila limite para detalle de cargas unicas
         string rucsEmcoper = "";        // rucs separados por comas para el modelo especial de pdf de Emcoper coordinado con PSnet 07/12/2022 
         string webdni = "";             // ruta web del buscador de DNI
-        string NoRetGl = "";                // glosa de retorno cuando umasapa no encuentra el dni o ruc
+        string NoRetGl = "";            // glosa de retorno cuando umasapa no encuentra el dni o ruc
         //
         static libreria lib = new libreria();   // libreria de procedimientos
         publico lp = new publico();             // libreria de clases
