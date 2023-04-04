@@ -1475,7 +1475,7 @@ namespace TransCarga
                 row["ctipdre"] = tx_dat_dorigS.Text;                                        // Código del tipo de documento
                 row["ndocrel"] = tx_docsOr.Text.Replace(" ", "");                           // Numero de documento
                 row["rucedre"] = tx_rucEorig.Text;                                          // Número de RUC del emisor del doc 
-                if (tx_dat_docOr2.Text != "")
+                if (tx_dat_docOr2.Text.Trim() != "")
                 {
                     row["ctipdre2"] = tx_dat_dorigS2.Text;                                  // Código del tipo de documento
                     row["ndocrel2"] = tx_docsOr2.Text.Replace(" ", "");                     // Numero de documento
@@ -1836,6 +1836,7 @@ namespace TransCarga
                     tx_fletMN.Text = tx_flete.Text;
                 }
             }
+
             if (tx_dat_docOr.Text.Trim() == "")
             {
                 MessageBox.Show("Seleccione un documento origen","Faltan datos",MessageBoxButtons.OK,MessageBoxIcon.Information);
@@ -1852,6 +1853,12 @@ namespace TransCarga
             {
                 MessageBox.Show("Ingrese el ruc del emisor del documento origen", "Faltan datos", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 tx_rucEorig.Focus();
+                return;
+            }
+            if (tx_dat_docOr2.Text.Trim() == "")
+            {
+                MessageBox.Show("Seleccione el tipo de documento origen 2", "Faltan datos", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                cmb_docorig2.Focus();
                 return;
             }
             if (tx_dat_docOr2.Text.Trim() != "" && tx_docsOr2.Text.Trim() == "")
