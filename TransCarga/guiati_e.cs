@@ -561,6 +561,7 @@ namespace TransCarga
                             tx_dptoDrio.Text = du_desti[0];
                             tx_proDrio.Text = du_desti[1];
                             tx_disDrio.Text = du_desti[2];
+                            tx_dirDrio.Text = dr.GetString("diredegri");
                             cmb_mon.SelectedValue = tx_dat_mone.Text;
                             tx_tipcam.Text = dr.GetString("tipcamgri");
                         }
@@ -1855,7 +1856,7 @@ namespace TransCarga
                 tx_rucEorig.Focus();
                 return;
             }
-            if (tx_dat_docOr2.Text.Trim() == "")
+            if (tx_dat_docOr2.Text.Trim() == "" && tx_docsOr2.Text.Trim() != "")
             {
                 MessageBox.Show("Seleccione el tipo de documento origen 2", "Faltan datos", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 cmb_docorig2.Focus();
