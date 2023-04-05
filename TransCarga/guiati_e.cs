@@ -1342,7 +1342,7 @@ namespace TransCarga
             tcfe.Columns.Add("ctipdre");                                    // Código del tipo de documento
             tcfe.Columns.Add("ndocrel");                                    // Numero de documento
             tcfe.Columns.Add("rucedre");                                    // Número de RUC del emisor del doc 
-            if (tx_dat_docOr2.Text != "")
+            //if (tx_dat_docOr2.Text != "")
             {
                 tcfe.Columns.Add("ctipdre2");                               // Código del tipo de documento
                 tcfe.Columns.Add("ndocrel2");                               // Numero de documento
