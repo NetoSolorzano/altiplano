@@ -2831,6 +2831,11 @@ namespace TransCarga
             }
             else
             {
+                if (Tx_modo.Text == "NUEVO")
+                {
+                    MessageBox.Show("No se puede imprimir sin grabar!","Atención",MessageBoxButtons.OK,MessageBoxIcon.Warning);
+                    return;
+                }
                 if (vi_formato == "A4")            // Seleccion de formato ... A4
                 {
                     if (imprimeA4() == true) updateprint("S");

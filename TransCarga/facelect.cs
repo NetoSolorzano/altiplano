@@ -5239,6 +5239,11 @@ namespace TransCarga
             }
             else
             {
+                if (tx_numero.Text.Trim() == "")
+                {
+                    MessageBox.Show("Debe grabar el comprobante!","Atención",MessageBoxButtons.OK,MessageBoxIcon.Warning);
+                    return;
+                }
                 if (vi_formato == "A4")            // Seleccion de formato ... A4
                 {
                     if (imprimeA4() == true) updateprint("S");
