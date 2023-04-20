@@ -2300,7 +2300,7 @@ namespace TransCarga
                             if (TransCarga.Program.vg_conSol == true) // conector solorsoft para dni
                             {
                                 dl = lib.conectorSolorsoft("DNI", tx_numDocDes.Text);
-                                if (rl[0].Replace("\r\n", "") == NoRetGl)
+                                if (dl[0].Replace("\r\n", "") == NoRetGl)
                                 {
                                     MessageBox.Show("No encontramos el DNI en la busqueda inicial, estamos abriendo" + Environment.NewLine +
                                     "una página web para que efectúe la busqueda manualmente", "Redirección a web de DNI", MessageBoxButtons.OK, MessageBoxIcon.Information);

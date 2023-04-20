@@ -374,4 +374,6 @@ form guiati_e, error en tx_dat_docOr2.Text al momento de grabar ................
 form facelect, No permitir imprimir NUEVO sin grabar el comprobantes antes ......................... ok 12/04/2023
 form guiati_a, si es NUEVO validar que este grabado antes de imprimir .............................. ok 12/04/2023
 form guiati_e, si es NUEVO validar que este grabado antes de imprimir .............................. ok 12/04/2023
+form guiati_a, en dni destinatario no esta jalando correctamente ................................... ok 20/04/2023
+form guiati_e, en dni destinatario no esta jalando correctamente ................................... ok 20/04/2023
 form facelect, agregar opcion factSunat a los metodos de gestión ................................... 
