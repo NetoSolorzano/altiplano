@@ -1358,7 +1358,8 @@ namespace TransCarga
                                             }
                                         }
                                     }
-                                    Bt_print.PerformClick();
+                                    //Bt_print.PerformClick();
+                                    if (imprimeA5() == true) updateprint("S");
                                 }
                                 catch(Exception ex)
                                 {
