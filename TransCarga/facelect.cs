@@ -1474,7 +1474,7 @@ namespace TransCarga
             }
             if (provee == "factSunat")
             {
-                string ruta = rutatxt + "DATA/";           //  rutatxt = %dirSistema%/SFS_v1.4/sunat_archivos/sfs/ + "DATA/"
+                string ruta = rutatxt + "DATA/";           //  rutatxt = %dirSistema%/sunat_archivos/sfs/ + "DATA/"
                 string archi = "";
                 string sep = "|";    // char sep = (char)31;
                 int tfg = dataGridView1.Rows.Count - 1;
@@ -1523,50 +1523,59 @@ namespace TransCarga
                         MessageBox.Show("Error en leyendas del archivo plano", "Error en LEY", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return retorna;
                     }
-                    if (generaREL(tipdo, serie, corre, ruta + archi, sep, tfg) == false)    // Archivo: Documentos relacionados (RRRRRRRRRRR-CC-XXXX-999999999.REL)
+                    if (tx_dat_tdv.Text == codfact)
                     {
-                        MessageBox.Show("Error en docs relacionados del archivo plano", "Error en REL", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        return retorna;
-                    }
-                    if (generaACA(tipdo, serie, corre, ruta + archi, sep, monDet) == false)    // Archivo: Adicionales de cabecera (RRRRRRRRRRR-CC-XXXX-999999999.ACA)
-                    {
-                        MessageBox.Show("Error en adicionales de CAB del archivo plano", "Error en ACA", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        return retorna;
-                    }
-                    if (generaADE(tipdo, serie, corre, ruta + archi, sep) == false)    // Archivo: Adicionales de detalle (RRRRRRRRRRR-CC-XXXX-999999999.ADE)
-                    {
-                        MessageBox.Show("Error en adicionales de DET del archivo plano", "Error en ADE", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        return retorna;
-                    }
-                    if (generaACV(tipdo, serie, corre, ruta + archi, sep) == false)    // Archivo: Adicionales de Cabecera Variable (RRRRRRRRRRR-CC-XXXX-999999999.ACV)
-                    {
-                        MessageBox.Show("Error en adicionales de ACV del archivo plano", "Error en ACV", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        return retorna;
+                        if (generaPAG(tipdo, serie, corre, ruta + archi, sep) == false)    // Archivo: Datos de la forma de pago (RRRRRRRRRRR-CC-XXXX-999999999.PAG)
+                        {
+                            MessageBox.Show("Error en pagos del archivo plano", "Error en PAG", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return retorna;
+                        }
+                        if (rb_credito.Checked == true)
+                        {
+                            if (generaDPA(tipdo, serie, corre, ruta + archi, sep) == false)    // Archivo: Detalles de la forma de pago al crédito (RRRRRRRRRRR-CC-XXXX-999999999.DPA)
+                            {
+                                MessageBox.Show("Error en pagos al crédito del archivo plano", "Error en DPA", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                return retorna;
+                            }
+                        }
                     }
                     if (generaSTC(tipdo, serie, corre, ruta + archi, sep, monDet) == false)    // Archivo: Detracciones - Servicio de transporte de Carga (RRRRRRRRRRR-CC-XXXX-99999999.STC)
                     {
                         MessageBox.Show("Error en detraciones del archivo plano", "Error en STC", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return retorna;
                     }
-                    if (generaTRA(tipdo, serie, corre, ruta + archi, sep, monDet) == false)    // Archivo: Detracciones - Servicio de transporte de Carga - Detalle de tramos (De corresponder)   (RRRRRRRRRRR-CC-XXXX-99999999.TRA)
+                    if (chk_cunica.Checked == true)
                     {
-                        MessageBox.Show("Error en detraciones tramos del archivo plano", "Error en TRA", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        return retorna;
-                    }
-                    if (generaVEH(tipdo, serie, corre, ruta + archi, sep, monDet) == false)    // Archivo: Detracciones - Servicio de transporte de Carga - Servicio de transporte de Carga - Detalle del(os) Vehículo(s)  (RRRRRRRRRRR-CC-XXXX-99999999.VEH)
-                    {
-                        MessageBox.Show("Error en detraciones vehiculos del archivo plano", "Error en VEH", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        return retorna;
-                    }
-                    if (generaPAG(tipdo, serie, corre, ruta + archi, sep) == false)    // Archivo: Datos de la forma de pago (RRRRRRRRRRR-CC-XXXX-999999999.PAG)
-                    {
-                        MessageBox.Show("Error en pagos del archivo plano", "Error en PAG", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        return retorna;
-                    }
-                    if (generaDPA(tipdo, serie, corre, ruta + archi, sep) == false)    // Archivo: Detalles de la forma de pago al crédito (RRRRRRRRRRR-CC-XXXX-999999999.DPA)
-                    {
-                        MessageBox.Show("Error en pagos al crédito del archivo plano", "Error en DPA", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        return retorna;
+                        if (generaREL(tipdo, serie, corre, ruta + archi, sep, tfg) == false)    // Archivo: Documentos relacionados (RRRRRRRRRRR-CC-XXXX-999999999.REL)
+                        {
+                            MessageBox.Show("Error en docs relacionados del archivo plano", "Error en REL", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return retorna;
+                        }
+                        if (generaACA(tipdo, serie, corre, ruta + archi, sep, monDet) == false)    // Archivo: Adicionales de cabecera (RRRRRRRRRRR-CC-XXXX-999999999.ACA)
+                        {
+                            MessageBox.Show("Error en adicionales de CAB del archivo plano", "Error en ACA", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return retorna;
+                        }
+                        if (generaADE(tipdo, serie, corre, ruta + archi, sep) == false)    // Archivo: Adicionales de detalle (RRRRRRRRRRR-CC-XXXX-999999999.ADE)
+                        {
+                            MessageBox.Show("Error en adicionales de DET del archivo plano", "Error en ADE", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return retorna;
+                        }
+                        if (generaACV(tipdo, serie, corre, ruta + archi, sep) == false)    // Archivo: Adicionales de Cabecera Variable (RRRRRRRRRRR-CC-XXXX-999999999.ACV)
+                        {
+                            MessageBox.Show("Error en adicionales de ACV del archivo plano", "Error en ACV", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return retorna;
+                        }
+                        if (generaTRA(tipdo, serie, corre, ruta + archi, sep, monDet) == false)    // Archivo: Detracciones - Servicio de transporte de Carga - Detalle de tramos (De corresponder)   (RRRRRRRRRRR-CC-XXXX-99999999.TRA)
+                        {
+                            MessageBox.Show("Error en detraciones tramos del archivo plano", "Error en TRA", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return retorna;
+                        }
+                        if (generaVEH(tipdo, serie, corre, ruta + archi, sep, monDet) == false)    // Archivo: Detracciones - Servicio de transporte de Carga - Servicio de transporte de Carga - Detalle del(os) Vehículo(s)  (RRRRRRRRRRR-CC-XXXX-99999999.VEH)
+                        {
+                            MessageBox.Show("Error en detraciones vehiculos del archivo plano", "Error en VEH", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return retorna;
+                        }
                     }
                     if (generaRTN(tipdo, serie, corre, ruta + archi, sep) == false)    // Archivo: Datos de la Retención del IGV (RRRRRRRRRRR-CC-XXXX-999999999.RTN)
                     {
@@ -2930,7 +2939,11 @@ namespace TransCarga
             string ta = ".CAB";
             string fecemi = tx_fechope.Text.Substring(6, 4) + "-" + tx_fechope.Text.Substring(3, 2) + "-" + tx_fechope.Text.Substring(0, 2);
             string horemi = DateTime.Now.ToString("HH:mm:ss");
-
+            string fansi = fecemi;
+            if (tx_dat_dpla.Text.Trim() != "" && rb_credito.Checked == true)
+            {
+                fansi = DateTime.Parse(fansi).AddDays(double.Parse(tx_dat_dpla.Text)).Date.ToString("yyyy-MM-dd");        // fecha de emision + dias plazo credito
+            }
             StreamWriter writer;
             file_path = file_path + ta;
             writer = new StreamWriter(file_path);
@@ -2938,8 +2951,8 @@ namespace TransCarga
                 "0101" + sep +                  // Tipo de operación 
                 fecemi + sep +                  // Fecha de emisión
                 horemi + sep +                  // Hora de Emisión
-                "-" + sep +                     // fecha de vencimiento del doc.venta
-                Program.codlocsunat + sep +     // Código del domicilio fiscal o de local anexo del emisor
+                fansi + sep +                   // fecha de vencimiento del doc.venta
+                ((Program.codlocsunat == "")? "0000" : Program.codlocsunat) + sep +     // Código del domicilio fiscal o de local anexo del emisor
                 tipoDocEmi + sep +              // Tipo de documento de identidad del adquirente o usuario
                 tx_numDocRem.Text + sep +       // Número de documento de identidad del adquirente o usuario
                 tx_nomRem.Text.Trim() + sep +   // Apellidos y nombres, denominación o razón social del adquirente o usuario 
@@ -2952,7 +2965,7 @@ namespace TransCarga
                 "0" + sep +                               // Total Anticipos
                 vflet.ToString("#0.00") + sep +           // Importe total de la venta, cesión en uso o del servicio prestado
                 "2.1" + sep +                       // Versión UBL
-                "2.0"                           // Customization Documento
+                "2.0" + sep                          // Customization Documento
                 );
             writer.Flush();
             writer.Close();
@@ -2979,7 +2992,7 @@ namespace TransCarga
                     "1" + sep +              // Cantidad de unidades por ítem
                     "" + sep +               // Código de producto
                     "-" + sep +              // Codigo producto SUNAT
-                    descrip + sep +          // Descripción detallada del servicio prestado, bien vendido o cedido en uso, indicando las características.
+                    descrip.Trim() + sep +          // Descripción detallada del servicio prestado, bien vendido o cedido en uso, indicando las características.
                     valunit.ToString("#0.00") + sep +           // Valor Unitario(cac:InvoiceLine / cac:Price / cbc:PriceAmount)
                     sumimpl.ToString("#0.00") + sep +           // Sumatoria Tributos por item
                     "1000" + sep +           // Tributo: Códigos de tipos de tributos IGV
@@ -3010,7 +3023,7 @@ namespace TransCarga
                     "" + sep +               // Tributo ICBPER: Monto de tributo ICBPER por Unidad
                     preunit.ToString("#0.00") + sep +            // Precio de venta unitario cac: InvoiceLine / cac:PricingReference / cac:AlternativeConditionPrice
                     valunit.ToString("#0.00") + sep +            // Valor de venta por Item cac: InvoiceLine / cbc:LineExtensionAmount
-                    "-"                      // Valor REFERENCIAL unitario(gratuitos) cac: InvoiceLine / cac:PricingReference / cac:AlternativeConditionPrice
+                    "0.00" + sep             // Valor REFERENCIAL unitario(gratuitos) cac: InvoiceLine / cac:PricingReference / cac:AlternativeConditionPrice
                 );
             }
             writer.Flush();
@@ -3031,7 +3044,7 @@ namespace TransCarga
                 "IGV" + sep +                       // Nombre de tributo
                 "VAT" + sep +                       // Código de tipo de tributo
                 vsubt.ToString("#0.00") + sep +     // Base imponible
-                vigvt.ToString("#0.00")             // Monto de Tributo
+                vigvt.ToString("#0.00") + sep       // Monto de Tributo
                 );
             writer.Flush();
             writer.Close();
@@ -3046,8 +3059,8 @@ namespace TransCarga
             file_path = file_path + ta;
             writer = new StreamWriter(file_path);
             writer.WriteLine(
-                "1000" + sep +              // Código de leyenda
-                "SON: " + tx_fletLetras.Text           // "Monto en Letras"
+                "1000" + sep +                              // Código de leyenda
+                "SON: " + tx_fletLetras.Text + sep          // "Monto en Letras"
                 );
             if (tx_dat_mone.Text == MonDeft)
             {
@@ -3055,7 +3068,7 @@ namespace TransCarga
                 {
                     writer.WriteLine(
                         "2006" + sep +
-                        glosdetra + " " + Program.ctadetra
+                        glosdetra + " " + Program.ctadetra + sep
                         );
                 }
             }
@@ -3065,7 +3078,7 @@ namespace TransCarga
                 {
                     writer.WriteLine(
                         "2006" + sep +
-                        glosdetra + " " + Program.ctadetra
+                        glosdetra + " " + Program.ctadetra + sep
                         );
                 }
             }
@@ -3091,7 +3104,7 @@ namespace TransCarga
                     vg + sep +                          // Serie numero
                     "" + sep +                          // OPCIONAL NO USAMOS Tipo de documento del emisor del documento relacionado, OSEA RUC DEL TRANSPORTISTA
                     "" + sep +                          // OPCIONAL NO USAMOS Número de documento del emisor del documento relacionado
-                    "0"                            // OPCIONAL NO USAMOS monto de la guía
+                    "0" + sep                           // OPCIONAL NO USAMOS monto de la guía
                     );
             }
             writer.Flush();
@@ -3121,7 +3134,7 @@ namespace TransCarga
                         "" + sep +
                         "-" + sep +
                         "" + sep +
-                        "" 
+                        "" + sep
                         );
                 }
                 writer.Flush();
@@ -3165,7 +3178,7 @@ namespace TransCarga
             double monDet)
         {
             bool retorna = true;
-            if (chk_cunica.Checked == true && monDet > 0)
+            if (monDet > 0)                 // chk_cunica.Checked == true && 
             {
                 string ta = ".STC";
                 StreamWriter writer;
@@ -3183,7 +3196,7 @@ namespace TransCarga
                     "02" + sep +            // Tipo referencial sobre la carga efectiva
                     tx_valref2.Text + sep + // Valor referencial sobre la carga efectiva
                     "03" + sep +            // Tipo referencial sobre la carga útil nominal
-                    tx_valref3.Text         // Valor referencial sobre la carga útil nominal
+                    tx_valref3.Text + sep   // Valor referencial sobre la carga útil nominal
                     );
                 writer.Flush();
                 writer.Close();
@@ -3207,7 +3220,7 @@ namespace TransCarga
                     tx_valref2.Text + sep +             // Valor preliminar referencial sobre la Carga Efectiva (Por el tramo virtual recorrido)
                     tx_valref3.Text + sep +             // Valor Preliminar Referencial por Carga Útil Nominal (Tratándose de más de 1 vehículo)
                     tx_dat_upo.Text + sep +             // Código de Ubigeo - ORIGEN
-                    tx_dat_upd.Text                     // Código de Ubigeo - DESTINO
+                    tx_dat_upd.Text + sep               // Código de Ubigeo - DESTINO
                     );
                 writer.Flush();
                 writer.Close();
@@ -3233,7 +3246,7 @@ namespace TransCarga
                     "02" + sep +                // Carga Efectiva en TM del vehículo - Tipo
                     tx_cetm.Text + sep +        // Carga Efectiva en TM del vehículo - Valor
                     "01" + sep +                // Carga Util en TM del vehículo - Tipo
-                    tx_cutm.Text                // Carga Util en TM del vehículo - Valor
+                    tx_cutm.Text + sep          // Carga Util en TM del vehículo - Valor
                     );
                 writer.Flush();
                 writer.Close();
@@ -3261,7 +3274,7 @@ namespace TransCarga
             writer.WriteLine(
                  mp + sep +             // Forma de pago
                  vp + sep +             // Monto neto pendiente de pago
-                tipoMoneda              // Tipo de moneda del monto pendiente de pago
+                tipoMoneda + sep        // Tipo de moneda del monto pendiente de pago
                 );
             writer.Flush();
             writer.Close();
