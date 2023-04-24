@@ -1539,13 +1539,13 @@ namespace TransCarga
                             }
                         }
                     }
-                    if (generaSTC(tipdo, serie, corre, ruta + archi, sep, monDet) == false)    // Archivo: Detracciones - Servicio de transporte de Carga (RRRRRRRRRRR-CC-XXXX-99999999.STC)
-                    {
-                        MessageBox.Show("Error en detraciones del archivo plano", "Error en STC", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        return retorna;
-                    }
                     if (chk_cunica.Checked == true)
                     {
+                        if (generaSTC(tipdo, serie, corre, ruta + archi, sep, monDet) == false)    // Archivo: Detracciones - Servicio de transporte de Carga (RRRRRRRRRRR-CC-XXXX-99999999.STC)
+                        {
+                            MessageBox.Show("Error en detraciones del archivo plano", "Error en STC", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return retorna;
+                        }
                         if (generaREL(tipdo, serie, corre, ruta + archi, sep, tfg) == false)    // Archivo: Documentos relacionados (RRRRRRRRRRR-CC-XXXX-999999999.REL)
                         {
                             MessageBox.Show("Error en docs relacionados del archivo plano", "Error en REL", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -2958,7 +2958,7 @@ namespace TransCarga
                 tx_nomRem.Text.Trim() + sep +   // Apellidos y nombres, denominación o razón social del adquirente o usuario 
                 tipoMoneda + sep +                  // Tipo de moneda en la cual se emite la factura electrónica
                 vigvt.ToString("#0.00") + sep +           // Sumatoria Tributos
-                vflet.ToString("#0.00") + sep +           // Total valor de venta 
+                vsubt.ToString("#0.00") + sep +           // Total valor de venta 
                 vflet.ToString("#0.00") + sep +           // Total Precio de Venta
                 "0" + sep +                               // Total descuentos (no afectan la base imponible del IGV/IVAP)
                 "0" + sep +                               // Sumatoria otros Cargos

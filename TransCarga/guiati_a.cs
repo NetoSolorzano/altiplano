@@ -2542,6 +2542,7 @@ namespace TransCarga
                     tx_proDrio.Text = datosD[3];
                     tx_disDrio.Text = datosD[4];
                 }
+                cmb_docRem.Focus();
             }
         }
         private void rb_car_ofi_Click(object sender, EventArgs e)
@@ -2946,6 +2947,11 @@ namespace TransCarga
                 }
             }
         }
+        private void cmb_docRem_Enter(object sender, EventArgs e)
+        {
+            cmb_docRem.SelectedValue = vtc_ruc;
+            cmb_docRem_SelectionChangeCommitted(null, null);
+        }
         private void cmb_docDes_SelectionChangeCommitted(object sender, EventArgs e)
         {
             if (cmb_docDes.SelectedIndex > -1)
@@ -3122,7 +3128,7 @@ namespace TransCarga
                         }
                     }
                     cmb_docRem.Focus();
-                    cmb_docRem.DroppedDown = true;
+                    //cmb_docRem.DroppedDown = true;
                 }
                 /*
                 if (lib.valientabla("cabguiai", "concat(sergui,numgui)", tx_serie.Text + tx_numero.Text) == "1")
@@ -3138,7 +3144,8 @@ namespace TransCarga
                 DataRow[] fila = dtd.Select("idcodice='" + tx_dat_locdes.Text + "'");
                 tx_ubigD.Text = fila[0][2].ToString();
             }
-            if(Tx_modo.Text == "NUEVO") rb_ent_clte.PerformClick();
+            //if(Tx_modo.Text == "NUEVO") rb_ent_clte.PerformClick();
+            //cmb_docRem.Focus();
         }
         #endregion comboboxes
 
@@ -3430,15 +3437,16 @@ namespace TransCarga
                     e.Graphics.DrawString("FLETE S/. " + tx_flete.Text, lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
                 }
                 // datos de la placa
-                posi = pie;
-                alfi = 20;
-                lt_tit = new Font("Arial", 10);     // Lucida Console
+                posi = pie + 20;
+                alfi = 17;      // 20
+                lt_tit = new Font("Arial", 9);     // "Arial", 10 
                 float avance = 80.0F;
                 ptoimp = new PointF(coli + avance, posi);
-                e.Graphics.DrawString(tx_marcamion.Text + " / " + tx_marCarret.Text, lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
+                e.Graphics.DrawString(tx_marcamion.Text + " / " + tx_marCarret.Text.PadRight(10).Substring(0,10), lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
+                //e.Graphics.DrawString(tx_marcamion.Text, lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
                 if (tx_pla_ruc.Text.Trim() != Program.ruc)              // si no es ruc de la empresa es contratado o tercero
                 {                                                       // en el formulario si muestra, en la impresion NO
-                    ptoimp = new PointF(coli + avance + 140.0F, posi);   // 
+                    ptoimp = new PointF(colm + 5.0F, posi);   // 
                     e.Graphics.DrawString(tx_pla_propiet.Text, lt_tit, Brushes.Black, ptoimp, StringFormat.GenericTypographic);
                 }
                 posi = posi + alfi;
@@ -3602,5 +3610,6 @@ namespace TransCarga
         {
             //jalainfo();
         }
+
     }
 }
