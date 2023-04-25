@@ -35,6 +35,8 @@ namespace TransCarga
         string vapadef = "";            // variable pais por defecto para los clientes
         string vtc_dni = "";
         string vtc_ruc = "";
+        string NoRetGl = "";            // glosa retornada por externo cuando no encuentra el cliente
+        string webdni = "";             // direccion web del buscador de dni
         static libreria lib = new libreria();
         DataTable dataUbig = (DataTable)CacheManager.GetItem("ubigeos");
         string verapp = System.Diagnostics.FileVersionInfo.GetVersionInfo(Application.ExecutablePath).FileVersion;
@@ -161,6 +163,14 @@ namespace TransCarga
                     if (row["formulario"].ToString() == "main" && row["campo"].ToString() == "pais" && row["param"].ToString() == "default")
                     {
                         vapadef = row["valor"].ToString().Trim();            // pais por defecto
+                    }
+                    if (row["formulario"].ToString() == "main" && row["campo"].ToString() == "rutas")
+                    {
+                        if (row["param"].ToString() == "web_dni") webdni = row["valor"].ToString().Trim();         // web para busqueda de dni 
+                    }
+                    if (row["formulario"].ToString() == "main" && row["campo"].ToString() == "conector")
+                    {
+                        if (row["param"].ToString() == "noRetGlosa") NoRetGl = row["valor"].ToString().Trim();          // glosa que retorna umasapa cuando no encuentra dato
                     }
                     if (row["formulario"].ToString() == nomform && row["campo"].ToString() == "documento")
                     {
@@ -852,8 +862,17 @@ namespace TransCarga
                                 if (TransCarga.Program.vg_conSol == true) // conector solorsoft para dni
                                 {
                                     string[] rl = lib.conectorSolorsoft("DNI", textBox3.Text);
-                                    textBox4.Text = rl[0];      // nombre
-                                    textBox3.Text = rl[1];     // num dni
+                                    if (rl[0].Replace("\r\n", "") == NoRetGl)
+                                    {
+                                        MessageBox.Show("No encontramos el DNI en la busqueda inicial, estamos abriendo" + Environment.NewLine +
+                                        "una página web para que efectúe la busqueda manualmente", "Redirección a web de DNI", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                        System.Diagnostics.Process.Start(webdni);
+                                    }
+                                    else
+                                    {
+                                        textBox4.Text = rl[0];    // nombre
+                                        //textBox3.Text = rl[1];     // num dni
+                                    }
                                 }
                             }
                         }

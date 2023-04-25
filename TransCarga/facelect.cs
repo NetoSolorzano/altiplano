@@ -1503,7 +1503,7 @@ namespace TransCarga
                         }
                     }
                     // 
-                    if (generaCAB(tipdo, serie, corre, ruta + archi, sep, vsubt, vigvt, vflet) == false)  // Archivo: Cabecera (RRRRRRRRRRR-CC-XXXX-99999999.CAB)
+                    if (generaCAB(tipdo, serie, corre, ruta + archi, sep, vsubt, vigvt, vflet, monDet) == false)  // Archivo: Cabecera (RRRRRRRRRRR-CC-XXXX-99999999.CAB)
                     {
                         MessageBox.Show("Error en cabecera del archivo plano","Error en CAB",MessageBoxButtons.OK,MessageBoxIcon.Error);
                         return retorna;
@@ -1539,6 +1539,11 @@ namespace TransCarga
                             }
                         }
                     }
+                    if (generaACA(tipdo, serie, corre, ruta + archi, sep, monDet) == false)    // Archivo: Adicionales de cabecera (RRRRRRRRRRR-CC-XXXX-999999999.ACA)
+                    {
+                        MessageBox.Show("Error en adicionales de CAB del archivo plano", "Error en ACA", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return retorna;
+                    }
                     if (chk_cunica.Checked == true)
                     {
                         if (generaSTC(tipdo, serie, corre, ruta + archi, sep, monDet) == false)    // Archivo: Detracciones - Servicio de transporte de Carga (RRRRRRRRRRR-CC-XXXX-99999999.STC)
@@ -1549,11 +1554,6 @@ namespace TransCarga
                         if (generaREL(tipdo, serie, corre, ruta + archi, sep, tfg) == false)    // Archivo: Documentos relacionados (RRRRRRRRRRR-CC-XXXX-999999999.REL)
                         {
                             MessageBox.Show("Error en docs relacionados del archivo plano", "Error en REL", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            return retorna;
-                        }
-                        if (generaACA(tipdo, serie, corre, ruta + archi, sep, monDet) == false)    // Archivo: Adicionales de cabecera (RRRRRRRRRRR-CC-XXXX-999999999.ACA)
-                        {
-                            MessageBox.Show("Error en adicionales de CAB del archivo plano", "Error en ACA", MessageBoxButtons.OK, MessageBoxIcon.Error);
                             return retorna;
                         }
                         if (generaADE(tipdo, serie, corre, ruta + archi, sep) == false)    // Archivo: Adicionales de detalle (RRRRRRRRRRR-CC-XXXX-999999999.ADE)
@@ -2933,22 +2933,24 @@ namespace TransCarga
 
         #region factSunat
         private bool generaCAB(string tipdo, string serie, string corre, string file_path, string sep,
-            double vsubt, double vigvt, double vflet)
+            double vsubt, double vigvt, double vflet, double monDet)
         {
             bool retorna = true;
             string ta = ".CAB";
             string fecemi = tx_fechope.Text.Substring(6, 4) + "-" + tx_fechope.Text.Substring(3, 2) + "-" + tx_fechope.Text.Substring(0, 2);
             string horemi = DateTime.Now.ToString("HH:mm:ss");
             string fansi = fecemi;
+            string vtipO = "0101";      // codigo tipo operación venta interna SIN DETRACCION
             if (tx_dat_dpla.Text.Trim() != "" && rb_credito.Checked == true)
             {
                 fansi = DateTime.Parse(fansi).AddDays(double.Parse(tx_dat_dpla.Text)).Date.ToString("yyyy-MM-dd");        // fecha de emision + dias plazo credito
             }
+            if (monDet > 0) vtipO = "1001";      // codigo tipo operación sujeta a detracción
             StreamWriter writer;
             file_path = file_path + ta;
             writer = new StreamWriter(file_path);
             writer.WriteLine(
-                "0101" + sep +                  // Tipo de operación 
+                vtipO + sep +                  // Tipo de operación 
                 fecemi + sep +                  // Fecha de emisión
                 horemi + sep +                  // Hora de Emisión
                 fansi + sep +                   // fecha de vencimiento del doc.venta
@@ -3130,11 +3132,11 @@ namespace TransCarga
                         monDet.ToString("#0.00") + sep +        // Monto de la detracción
                         "001" + sep +                           // Medio de pago
                         "-" + sep + 
-                        "" + sep +
-                        "" + sep +
                         "-" + sep +
-                        "" + sep +
-                        "" + sep
+                        "-" + sep +
+                        "-" + sep +
+                        "-" + sep +
+                        "-" + sep
                         );
                 }
                 writer.Flush();
@@ -3284,17 +3286,21 @@ namespace TransCarga
         private bool generaDPA(string tipdo, string serie, string corre, string file_path, string sep)
         {
             bool retorna = true;
-            /* 23/03/2023 veremos si no mandamos pagos a ver que pasa
+            string vp = tx_flete.Text;
+            string _fechc = DateTime.Parse(tx_fechope.Text).AddDays(double.Parse(tx_dat_dpla.Text)).Date.ToString("yyyy-MM-dd");
+
             string ta = ".DPA";
             StreamWriter writer;
             file_path = file_path + ta;
             writer = new StreamWriter(file_path);
             writer.WriteLine(
-
+                vp + sep +
+                _fechc + sep +
+                tipoMoneda + sep
                 );
             writer.Flush();
             writer.Close();
-            */
+            
             return retorna;
         }
         private bool generaRTN(string tipdo, string serie, string corre, string file_path, string sep)

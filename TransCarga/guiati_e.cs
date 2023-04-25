@@ -1378,16 +1378,24 @@ namespace TransCarga
             tcfe.Columns.Add("dirlleg");                                    // Direccion completa y detallada del punto de llegada
             tcfe.Columns.Add("gelLong");                                    // Punto de georreferencia del punto de llegada, Longitud
             tcfe.Columns.Add("gellati");                                    // Punto de georreferencia del punto de llegada, Latitud
-            /* DATOS DE VEHICULOS */
+            /* DATOS DE VEHICULOS TRACKTO*/
             tcfe.Columns.Add("plaTrac");                                    // Número de placa del vehículo
             tcfe.Columns.Add("ntaruni");                                    // Número de la Tarjeta Única deCirculación
             tcfe.Columns.Add("autcirc");                                    // Número de autorización del vehículo emitido por la entidad
             tcfe.Columns.Add("entauto");                                    // Entidad emisora de la autorización
+            /* DATOS DE VEHICULO CARRETA */
+            tcfe.Columns.Add("plaCarr");                                    // Número de placa de la carreta
+            tcfe.Columns.Add("ntarunC");                                    // Número de la Tarjeta Única deCirculación de la carreta
+            tcfe.Columns.Add("aucircC");                                    // Autorización del mtc de la carreta
             /* DATOS DE CONDUCTORES  */
             tcfe.Columns.Add("tipdcho");                                    // Tipo de documento de identidad 
             tcfe.Columns.Add("numdcho");                                    // Numero de documento de identidad 
             tcfe.Columns.Add("nomdcho");                                    // Apellidos y nombres
             tcfe.Columns.Add("bredcho");                                    // Número de licencia de conducir
+            tcfe.Columns.Add("tipdch2");                                    // Tipo de documento de identidad, chofer 2
+            tcfe.Columns.Add("numdch2");                                    // Numero de documento de identidad , chofer 2
+            tcfe.Columns.Add("nomdch2");                                    // Apellidos y nombres, chofer 2
+            tcfe.Columns.Add("bredch2");                                    // Número de licencia de conducir, chofer 2
             /* BIENES A TRANSPORTAR */
             tcfe.Columns.Add("nordite");                                    // Numero de orden del item
             tcfe.Columns.Add("umedite");                                    // Unidad de medida del item
@@ -1526,11 +1534,15 @@ namespace TransCarga
                     tx_proDrio.Text.Trim() + " " + tx_disDrio.Text.Trim();                  // Direccion completa y detallada del punto de llegada
                 row["gelLong"] = "";                                                        // Punto de georreferencia del punto de llegada, Longitud
                 row["gellati"] = "";                                                        // Punto de georreferencia del punto de llegada, Latitud
-                /* DATOS DE VEHICULOS */
+                /* DATOS DE VEHICULOS - TRACKTO */ 
                 row["plaTrac"] = tx_pla_placa.Text.Replace("-", "");                        // Número de placa del vehículo
                 row["ntaruni"] = tx_pla_autor.Text;                                         // Número de la Tarjeta Única deCirculación
                 row["autcirc"] = tx_pla_autor.Text;                                         // Número de autorización del vehículo emitido por la entidad
                 row["entauto"] = "06";                                                      // Entidad emisora de la autorización MTC=06
+                /* DATOS DE VEHICULOS - CARRETA */
+                row["plaCarr"] = tx_pla_carret.Text.Replace("-", "");                       // Número de placa de la carreta
+                row["ntarunC"] = tx_aut_carret.Text;                                        // Número de la Tarjeta Única deCirculación de la carreta
+                row["aucircC"] = tx_aut_carret.Text;                                        // Número de autorización del vehículo de la carreta
                 /* DATOS DE CONDUCTORES  */
                 row["tipdcho"] = "1";                                                       // Tipo de documento de identidad 
                 row["numdcho"] = tx_pla_dniChof.Text;                                       // Numero de documento de identidad 
@@ -1644,6 +1656,14 @@ namespace TransCarga
                 row["ntaruni"] + sep +                                                  // Número de la Tarjeta Única deCirculación
                 row["autcirc"] + sep +                                                  // Número de autorización del vehículo emitido por la entidad
                 row["entauto"] + sep);                                                  // Entidad emisora de la autorización
+            if (tx_pla_carret.Text.Trim() != "")
+            {
+                writer.WriteLine("VEHICULOS" + sep +
+                row["plaCarr"] + sep +                                                  // Número de placa del vehículo CARRETA
+                row["ntarunC"] + sep +                                                  // Número de la Tarjeta Única deCirculación CARRETA
+                row["aucircC"] + sep +                                                  // Número de autorización del vehículo emitido por la entidad CARRETA
+                row["entauto"] + sep);                                                  // Entidad emisora de la autorización es la misma que del trackto
+            }
                                                                                         /* DATOS DE CONDUCTORES  */
             writer.WriteLine("CONDUCTORES" + sep +
                 row["tipdcho"] + sep +                                                  // Tipo de documento de identidad 
