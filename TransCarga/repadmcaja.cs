@@ -254,8 +254,9 @@ namespace TransCarga
                     dgv_ccaja.RowTemplate.Height = 15;
                     //dgv_ccaja.DefaultCellStyle.BackColor = Color.MediumAquamarine;
                     dgv_ccaja.AllowUserToAddRows = false;
-                    dgv_ccaja.Width = Parent.Width - 50;    // 1015;
                     if (dgv_ccaja.DataSource == null) dgv_ccaja.ColumnCount = 1;
+                    /*
+                    dgv_ccaja.Width = Parent.Width - 50;    // 1015;
                     if (dgv_ccaja.Rows.Count > 0)
                     {
                         for (int i = 0; i < dgv_ccaja.Columns.Count; i++)
@@ -275,6 +276,7 @@ namespace TransCarga
                         if (b < dgv_ccaja.Width) dgv_ccaja.Width = b - 20;
                         dgv_ccaja.ReadOnly = true;
                     }
+                    */
                     suma_grilla("dgv_ccaja");
                     break;
                 case "dgv_vtas":                                    // COBRANZAS
@@ -283,8 +285,9 @@ namespace TransCarga
                     dgv_vtas.RowTemplate.Height = 15;
                     //dgv_vtas.DefaultCellStyle.BackColor = Color.MediumAquamarine;
                     dgv_vtas.AllowUserToAddRows = false;
-                    dgv_vtas.Width = Parent.Width - 50; // 1015;
                     if (dgv_vtas.DataSource == null) dgv_vtas.ColumnCount = 11;
+                    /*
+                    dgv_vtas.Width = Parent.Width - 50; // 1015;
                     if (dgv_vtas.Rows.Count > 0)
                     {
                         for (int i = 0; i < dgv_vtas.Columns.Count; i++)
@@ -305,6 +308,7 @@ namespace TransCarga
                         dgv_vtas.Width = b + 50;
                         dgv_vtas.ReadOnly = true;
                     }
+                    */
                     suma_grilla("dgv_vtas");
                     break;
                 case "dgv_guias":                                   // EGRESOS
@@ -312,8 +316,9 @@ namespace TransCarga
                     dgv_guias.DefaultCellStyle.Font = tiplg;
                     dgv_guias.RowTemplate.Height = 15;
                     dgv_guias.AllowUserToAddRows = false;
-                    dgv_guias.Width = Parent.Width - 50; // 1015;
                     if (dgv_guias.DataSource == null) dgv_guias.ColumnCount = 11;
+                    /*
+                    dgv_guias.Width = Parent.Width - 50; // 1015;
                     if (dgv_guias.Rows.Count > 0)
                     {
                         for (int i = 0; i < dgv_guias.Columns.Count; i++)
@@ -333,6 +338,7 @@ namespace TransCarga
                         if (b < dgv_guias.Width) dgv_guias.Width = b - 20;
                         dgv_guias.ReadOnly = true;
                     }
+                    */
                     suma_grilla("dgv_guias");
                     break;
                 case "dgv_plan":                                // INGRESOS VARIOS
@@ -340,8 +346,9 @@ namespace TransCarga
                     dgv_plan.DefaultCellStyle.Font = tiplg;
                     dgv_plan.RowTemplate.Height = 15;
                     dgv_plan.AllowUserToAddRows = false;
-                    dgv_plan.Width = Parent.Width - 50; // 1015;
                     if (dgv_plan.DataSource == null) dgv_plan.ColumnCount = 11;
+                    /*
+                    dgv_plan.Width = Parent.Width - 50; // 1015;
                     if (dgv_plan.Rows.Count > 0)
                     {
                         for (int i = 0; i < dgv_plan.Columns.Count; i++)
@@ -361,6 +368,7 @@ namespace TransCarga
                         if (b < dgv_plan.Width) dgv_plan.Width = b - 20;
                         dgv_plan.ReadOnly = true;
                     }
+                    */
                     suma_grilla("dgv_plan");
                     break;
                 case "dgv_pend":
@@ -368,8 +376,9 @@ namespace TransCarga
                     dgv_pend.DefaultCellStyle.Font = tiplg;
                     dgv_pend.RowTemplate.Height = 15;
                     dgv_pend.AllowUserToAddRows = false;
-                    dgv_pend.Width = Parent.Width - 50;
                     if (dgv_pend.DataSource == null) dgv_pend.ColumnCount = 11;
+                    /*
+                    dgv_pend.Width = Parent.Width - 50;
                     if (dgv_pend.Rows.Count > 0)
                     {
                         for (int i = 0; i < dgv_pend.Columns.Count; i++)
@@ -389,6 +398,7 @@ namespace TransCarga
                         if (b < dgv_pend.Width) dgv_pend.Width = b - 20;
                         dgv_pend.ReadOnly = true;
                     }
+                    */
                     suma_grilla("dgv_pend");
                     break;
             }

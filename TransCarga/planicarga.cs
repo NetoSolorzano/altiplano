@@ -936,6 +936,17 @@ namespace TransCarga
                 dataGridView1.AllowUserToAddRows = true;
             }
         }
+        private bool valrepetidas(string SguiaI, string NguiaI)             // valida que no repitan guias en modo edición
+        {
+            bool retorna = false;               // false = No existe la guia en la grilla | true = Si existe la guía en la grilla
+            foreach (DataGridViewRow row in dataGridView1.Rows)
+            {
+                if (row.Cells[2].Value.ToString() == SguiaI &&
+                    row.Cells[3].Value.ToString() == NguiaI) retorna = true;
+            }
+
+            return retorna;
+        }
 
         #region limpiadores_modos
         private void sololee()
@@ -2324,6 +2335,13 @@ namespace TransCarga
                     completo = lib.Right("0000000" + e.FormattedValue, 8);
                     if (dataGridView1.EditingControl != null) dataGridView1.EditingControl.Text = completo;
                 }
+                if (valrepetidas(dataGridView1.Rows[e.RowIndex].Cells[2].Value.ToString(), completo) == true)   // validamos que no estemos repitiendo la guía
+                {
+                    MessageBox.Show("Esta repitiendo la guía!","Atención",MessageBoxButtons.OK,MessageBoxIcon.Exclamation);
+                    dataGridView1.Rows[e.RowIndex].Cells[3].Value = "";
+                    e.Cancel = true;
+                    return;
+                }
                 if (completo.Length == 8 && dataGridView1.Rows[e.RowIndex].Cells[2].Value.ToString().Trim().Length == 4 && 
                     dataGridView1.Rows[e.RowIndex].Cells[11].Value == null)
                 {
@@ -2364,6 +2382,7 @@ namespace TransCarga
                                     {
                                         MessageBox.Show("La Guía ingresada ya está registrada" + Environment.NewLine +
                                             "Planilla: " + dr.GetString(8).Trim(), "Atención", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                        dataGridView1.Rows[e.RowIndex].Cells[3].Value = "";
                                         e.Cancel = true;
                                     }
                                 }

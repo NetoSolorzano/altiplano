@@ -381,14 +381,18 @@ form guiati_a, impresion, subcontratado, muy largo y descuadrado ...............
 form guiati_a, tipo doc del remitente, por defecto Ruc ............................................. ok 24/04/2023
 form clients, no esta jalando correctamente la nueva funcionalidad de ruc y dni .................... ok 24/04/2023
 form guiati_e, agregar datos de la carreta, estan exigiendo ahora 25/4/2023 ........................ ok 25/04/2023
+form repadmcaja, arreglar problemas de columnas en las grillas ..................................... ok 03/05/2023
+form repsoper, arreglar problemas de columnas en las grillas ....................................... ok 03/05/2023
+form repsventas, arreglar problemas de columnas en las grillas ..................................... ok 03/05/2023
+form planicarga, problema con agregar guias en edición de manifiestos .............................. falta probar
 form facelect, agregar opcion factSunat a los metodos de gestión:
 	- F y B normales, sin detracción en soles al contado ........................................... ok 23/04/2023
 	- Fact. con detracción en soles al contado ..................................................... ok 25/04/2023	No puede haber boletas con detracción, solo las Fact
-	- Fact. sin detracción en soles al crédito 1 cuota .............................................	al crédito y detracciones solo se acepta Fact NO boletas
-	- Fact. con detracción en soles al crédito 1 cuota .............................................	al crédito y detracciones solo se acepta Fact NO boletas
+	- Fact. sin detracción en soles al crédito 1 cuota ............................................. ok 25/04/2023	al crédito y detracciones solo se acepta Fact NO boletas
+	- Fact. con detracción en soles al crédito 1 cuota ............................................. ok 25/04/2023	al crédito y detracciones solo se acepta Fact NO boletas
 	- Fact. con detracción en dólares al contado ...................................................	las detracciones solo afectan a las Facturas
 	- Fact. con detracción en dólares al crédito 1 cuota ...........................................	las detracciones solo afectan a las Facturas
-Formatos jrxml de fcturas y boletas estándares multimoneda y con/sin detracción, contado/credito ...
+Formatos jrxml de fcturas y boletas estándares multimoneda y con/sin detracción, contado/credito ... 
 form facelect, agregar opciones de cargas únicas tipo soya:
 	- Facturas cargas únicas "tipo soya" en soles al crédito 1 cuota ............................... 
 	- Facturas cargas únicas "tipo soya" en dólares al crédito 1 cuota ............................. 

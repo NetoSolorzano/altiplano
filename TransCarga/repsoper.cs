@@ -318,8 +318,9 @@ namespace TransCarga
                     dgv_vtas.RowTemplate.Height = 15;
                     //dgv_vtas.DefaultCellStyle.BackColor = Color.MediumAquamarine;
                     dgv_vtas.AllowUserToAddRows = false;
-                    dgv_vtas.Width = this.Parent.Width - 50; // 1015;
                     if (dgv_vtas.DataSource == null) dgv_vtas.ColumnCount = 11;
+                    /*
+                    dgv_vtas.Width = this.Parent.Width - 50; // 1015;
                     if (dgv_vtas.Rows.Count > 0)
                     {
                         for (int i = 0; i < dgv_vtas.Columns.Count; i++)
@@ -339,15 +340,16 @@ namespace TransCarga
                         if (b < dgv_vtas.Width) dgv_vtas.Width = b - 20;
                         dgv_vtas.ReadOnly = true;
                     }
+                    */
                     break;
                 case "dgv_guias":
                     dgv_guias.Font = tiplg;
                     dgv_guias.DefaultCellStyle.Font = tiplg;
                     dgv_guias.RowTemplate.Height = 15;
                     dgv_guias.AllowUserToAddRows = false;
-                    dgv_guias.Width = Parent.Width - 50; // 1015;
-                    //dgv_guias.AutoGenerateColumns = false;                              // aca
                     if (dgv_guias.DataSource == null) dgv_guias.ColumnCount = 11;
+                    /*
+                    dgv_guias.Width = Parent.Width - 50; // 1015;
                     if (dgv_guias.Rows.Count > 0)
                     {
                         dgv_guias.Columns[0].Width = 30;
@@ -368,6 +370,7 @@ namespace TransCarga
                         if (b < dgv_guias.Width) dgv_guias.Width = b - 20;
                         dgv_guias.ReadOnly = true;
                     }
+                    */
                     sumaGrilla("dgv_guias");
                     break;
                 case "dgv_plan":
@@ -375,8 +378,9 @@ namespace TransCarga
                     dgv_plan.DefaultCellStyle.Font = tiplg;
                     dgv_plan.RowTemplate.Height = 15;
                     dgv_plan.AllowUserToAddRows = false;
-                    dgv_guias.Width = Parent.Width - 50; // 1015;
                     if (dgv_plan.DataSource == null) dgv_plan.ColumnCount = 11;
+                    /*
+                    dgv_guias.Width = Parent.Width - 50; // 1015;
                     if (dgv_plan.Rows.Count > 0)
                     {
                         for (int i = 0; i < dgv_plan.Columns.Count; i++)
@@ -396,6 +400,7 @@ namespace TransCarga
                         if (b < dgv_plan.Width) dgv_plan.Width = b - 20;
                         dgv_plan.ReadOnly = true;
                     }
+                    */
                     sumaGrilla("dgv_plan");
                     break;
                 case "dgv_reval":
@@ -403,8 +408,9 @@ namespace TransCarga
                     dgv_reval.DefaultCellStyle.Font = tiplg;
                     dgv_reval.RowTemplate.Height = 15;
                     dgv_reval.AllowUserToAddRows = false;
-                    dgv_reval.Width = Parent.Width - 50; // 1015;
                     if (dgv_reval.DataSource == null) dgv_reval.ColumnCount = 11;
+                    /*
+                    dgv_reval.Width = Parent.Width - 50; // 1015;
                     if (dgv_reval.Rows.Count > 0)
                     {
                         for (int i = 0; i < dgv_reval.Columns.Count; i++)
@@ -424,6 +430,7 @@ namespace TransCarga
                         if (b < dgv_reval.Width) dgv_reval.Width = b - 20;
                         dgv_reval.ReadOnly = true;
                     }
+                    */
                     sumaGrilla("dgv_reval");
                     break;
                 case "dgv_histGR":
@@ -431,8 +438,9 @@ namespace TransCarga
                     dgv_histGR.DefaultCellStyle.Font = tiplg;
                     dgv_histGR.RowTemplate.Height = 15;
                     dgv_histGR.AllowUserToAddRows = false;
-                    dgv_histGR.Width = Parent.Width - 50; // 1015;
                     if (dgv_histGR.DataSource == null) dgv_histGR.ColumnCount = 8;
+                    /*
+                    dgv_histGR.Width = Parent.Width - 50; // 1015;
                     if (dgv_histGR.Rows.Count > 0)
                     {
                         for (int i = 0; i < dgv_histGR.Columns.Count; i++)
@@ -452,6 +460,7 @@ namespace TransCarga
                         if (b < dgv_histGR.Width) dgv_histGR.Width = dgv_histGR.Width - 10;
                         dgv_histGR.ReadOnly = true;
                     }
+                    */
                     break;
             }
         }
