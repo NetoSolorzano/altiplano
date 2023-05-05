@@ -2383,7 +2383,7 @@ namespace TransCarga
         {
             bool retorna = false;
             tdfe.Rows.Clear();
-            int tfg = (dataGridView1.Rows.Count == int.Parse(v_mfildet)) ? int.Parse(v_mfildet) : dataGridView1.Rows.Count - 1;
+            int tfg = ((dataGridView1.Rows.Count -1) == int.Parse(v_mfildet)) ? int.Parse(v_mfildet) : dataGridView1.Rows.Count - 1;
             for (int s = 0; s < tfg; s++)  // int s = 0; s < dataGridView1.Rows.Count - 1; s++
             {
                 glosser2 = dataGridView1.Rows[s].Cells["OriDest"].Value.ToString() + " - " + tx_totcant.Text.Trim() + " " + tx_dat_nombd.Text; // " Bultos"; 

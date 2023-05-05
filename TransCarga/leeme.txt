@@ -384,7 +384,8 @@ form guiati_e, agregar datos de la carreta, estan exigiendo ahora 25/4/2023 ....
 form repadmcaja, arreglar problemas de columnas en las grillas ..................................... ok 03/05/2023
 form repsoper, arreglar problemas de columnas en las grillas ....................................... ok 03/05/2023
 form repsventas, arreglar problemas de columnas en las grillas ..................................... ok 03/05/2023
-form planicarga, problema con agregar guias en edición de manifiestos .............................. falta probar
+form facelect, problema al generar el txt cuando las guias es 9 .................................... ok 04/05/2023
+form planicarga, problema con agregar guias en edición de manifiestos .............................. ok 05/05/2023
 form facelect, agregar opcion factSunat a los metodos de gestión:
 	- F y B normales, sin detracción en soles al contado ........................................... ok 23/04/2023
 	- Fact. con detracción en soles al contado ..................................................... ok 25/04/2023	No puede haber boletas con detracción, solo las Fact
