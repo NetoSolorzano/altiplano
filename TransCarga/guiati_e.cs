@@ -172,7 +172,7 @@ namespace TransCarga
             this.KeyPreview = true;
             autodepa();                                     // autocompleta departamentos
             armagret();
-
+            CreaTablaLiteGRE();                             // creamos la tabla sqlite para las guías metodo SFS 1.9
         }
         private void init()
         {
@@ -738,7 +738,7 @@ namespace TransCarga
             cmb_destino.ValueMember = "idcodice";
             //  datos para los combobox de tipo de documento
             cmb_docRem.Items.Clear();
-            MySqlCommand cdu = new MySqlCommand("select idcodice,descrizionerid,codigo,codsunat from desc_doc where numero=@bloq", conn);
+            MySqlCommand cdu = new MySqlCommand("select idcodice,descrizionerid,codigo,codsunat,descrizione from desc_doc where numero=@bloq", conn);
             cdu.Parameters.AddWithValue("@bloq", 1);
             MySqlDataAdapter datd = new MySqlDataAdapter(cdu);
             dttd0.Clear();
@@ -1206,7 +1206,8 @@ namespace TransCarga
         #endregion limpiadores_modos;
 
         #region  guia electronica en sunat y psnet
-        #region sunat
+
+        #region Sunat metodo directo
         private bool sunat_api()
         {
             bool retorna = false;
@@ -1311,8 +1312,273 @@ namespace TransCarga
         }
         #endregion
 
+        #region Sunat metodo SFS V.1.9
+        static private void CreaTablaLiteGRE()          // llamado en el load del form, crea las tablas al iniciar
+        {
+            using (SqliteConnection cnx = new SqliteConnection(CadenaConexion))
+            {
+                cnx.Open();
+                string sqlborra = "DROP TABLE IF EXISTS dt_cabgre; DROP TABLE IF EXISTS dt_detgre";
+                using (SqliteCommand cmdB = new SqliteCommand(sqlborra, cnx))
+                {
+                    cmdB.ExecuteNonQuery();
+                }
+                string sqlTabla = "create table dt_cabgre (" +
+                    // cabecera
+                    "id integer primary key autoincrement, " +
+                    "EmisRuc varchar(11), " +           // ruc del emisor de la guía
+                    "EmisNom varchar(150), " +
+                    "EmisUbi varchar(6), " +            // ubigeo del emisor
+                    "EmisDir varchar(200), " +
+                    "EmisDep varchar(50), " +
+                    "EmisPro varchar(50), " +
+                    "EmisDis varchar(50), " +
+                    "EmisUrb varchar(50), " +           // urbanización, pueblo, localidad
+                    "EmisPai varchar(2), " +            // código sunat del país emisor
+                    "EmisCor varchar(100), " +          // correo del emisor de la guía
+                    "NumGuia varchar(12), " +           // serie+numero
+                    "FecEmis varchar(10), " +
+                    "HorEmis varchar(8), " +
+                    "CodGuia varchar(2), " +            // código sunat de la guía de remisión
+                    "NomGuia varchar(50), " +           // glosa, texto o nombre sunat de la guía de remisión
+                    "CantBul integer, " +
+                    "PesoTot real, " +
+                    "CodUnid varchar(3), " +             // código unidad de medida de sunat
+                    "FecIniT varchar(10), " +
+                    "CargaUn varchar(5), " +            // carga unica si="true", no="false"
+                                                        // documentos relacionados
+                    "DocRelnu1 varchar(11), " +         // código,número,identificador del documento relacionado 1
+                    "DocRelti1 varchar(2), " +          // código sunat para el tipo de documento relacionado 1
+                    "DocRelnr1 varchar(11), " +         // número del ruc/dni/etc del emisor del documento relacionado 1
+                    "DocRelcs1 varchar(2), " +          // código sunat del tipo de documento del emisor del documento relacionado 1
+                    "DocRelnm1 varchar(50), " +         // glosa, texto o nombre sunat del documento relacionado 1
+                    "DocRelnu2 varchar(11), " +         // código,número,identificador del documento relacionado 2
+                    "DocRelti2 varchar(2), " +          // código sunat para el tipo de documento relacionado 2
+                    "DocRelnr2 varchar(11), " +         // número del ruc/dni/etc del emisor del documento relacionado 2
+                    "DocRelcs2 varchar(2), " +          // código sunat del tipo de documento del emisor del documento relacionado 2
+                    "DocRelnm2 varchar(50), " +         // glosa, texto o nombre sunat del documento relacionado 1
+                                                        // datos del destinatario
+                    "DstTipdoc varchar(2), " +          // código sunat del tipo de documento del destinatario
+                    "DstNomTdo varchar(50), " +         // glosa, texto o nombre sunat del documento del destinatario
+                    "DstNumdoc varchar(11), " +         // número del documento del destinatario
+                    "DstNombre varchar(150), " +        // nombre o razón social del destinatario
+                    "DstDirecc varchar(200), " +
+                    "DstUbigeo varchar(6), " +
+                    // datos del remitente
+                    "RemTipdoc varchar(2), " +
+                    "RemNomTdo varchar(50), " +
+                    "RemNumdoc varchar(11), " +
+                    "RemNombre varchar(150), " +
+                    "RemDirecc varchar(200), " +
+                    "RemUbigeo varchar(6), " +
+                    // datos de quien paga el servicio
+                    "PagTipdoc varchar(2), " +          // código del tipo de documento sunat
+                    "PagNomTip varchar(50), " +         // glosa, texto o nombre sunat del documento
+                    "PagNumdoc varchar(11), " +         // número del documento
+                    "PagNombre varchar(150), " +        // nombre o razón social
+                                                        // datos de transportista subcontratado (si lo hubiera) 
+                    "SConTipdo varchar(2), " +          // código sunat del tipo de documento
+                    "SConNomTi varchar(50), " +         // glosa, texto o nombre sunat del documento
+                    "SConNumdo varchar(11), " +         // número del documento
+                    "SconNombr varchar(150), " +        // nombre o razón social del subcontratado
+                                                        // datos del envío del (los) camiones, autorizaciones de trackto y carreta
+                    "EnvPlaca1 varchar(6), " +          // placa del vahículo principal (placa sin guión medio)
+                    "EnvAutor1 varchar(15), " +         // número o código de autorización de circulación
+                    "EnvRegis1 varchar(15), " +         // número o código del registro en la entidad autorizadora
+                    "EnvCodEn1 varchar(2), " +          // código sunat de la entidad que da el registro  ( MTC=06 )
+                    "EnvNomEn1 varchar(50), " +         // glosa, texto o nombre sunat de la entidad
+                    "EnvPlaca2 varchar(6), " +
+                    "EnvAutor2 varchar(15), " +
+                    "EnvRegis2 varchar(15), " +
+                    "EnvCodEn2 varchar(2), " +
+                    "EnvNomEn2 varchar(50), " +
+                    // datos de los choferes
+                    "ChoTipDi1 varchar(1), " +          // código sunat del tipo de documento del chofer 1
+                    "ChoNumDi1 varchar(11), " +         // número de documento de identidad
+                    "ChoNomTi1 varchar(50), " +         // glosa, texto o nombre sunat del documento
+                    "ChoNombr1 varchar(150), " +        // nombres completos del chofer 1
+                    "ChoApell1 varchar(150), " +        // apellidos completos del chofer 1
+                    "ChoLicen1 varchar(10), " +         // licencia de conducir del chofer 1
+                    "ChoTipDi2 varchar(1), " +
+                    "ChoNumDi2 varchar(11), " +
+                    "ChoNomTi2 varchar(50), " +
+                    "ChoNombr2 varchar(150), " +
+                    "ChoApell2 varchar(150), " +
+                    "ChoLicen2 varchar(10), " +
+                    // datos de direcciones partida y llegada
+                    "DirParUbi varchar(6), " +
+                    "DirParDir varchar(200), " +
+                    "DirLLeUbi varchar(6), " +
+                    "DirLLeDir varchar(200) " +
+                    ")";
+                using (SqliteCommand cmd = new SqliteCommand(sqlTabla, cnx))
+                {
+                    cmd.ExecuteNonQuery();
+                }
+                // ********************* DETALLE ************************ //
+                sqlTabla = "create table dt_detgre (" +
+                    "id integer primary key autoincrement, " +
+                    "NumGuia varchar(12), " +
+                    "clinea integer, " +
+                    "cant integer, " +
+                    "codigo varchar(3), " +       // código bien o servicio
+                    "peso real, " +               // peso de la carga, va unido a la unidad de medida 
+                    "umed varchar(3), " +         // codigo unidad de medida de sunat
+                    "deta1 varchar(100), " +
+                    "deta2 varchar(100))";
+                using (SqliteCommand cmd = new SqliteCommand(sqlTabla, cnx))
+                {
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+        private void llenaTablaLiteGRE()
+        {
+            using (SqliteConnection cnx = new SqliteConnection(CadenaConexion))
+            {
+                // CABECERA
+                string metela = "insert into dt_cabgre (" +
+                    "EmisRuc,EmisNom,EmisUbi,EmisDir,EmisDep,EmisPro,EmisDis,EmisUrb,EmisPai,EmisCor,NumGuia,FecEmis,HorEmis,CodGuia,NomGuia,CantBul,PesoTot,CodUnid,FecIniT,CargaUn," +
+                    "DocRelnu1,DocRelti1,DocRelnr1,DocRelcs1,DocRelnm1,DocRelnu2,DocRelti2,DocRelnr2,DocRelcs2,DocRelnm2," +
+                    "DstTipdoc,DstNomTdo,DstNumdoc,DstNombre,DstDirecc,DstUbigeo," +
+                    "RemTipdoc,RemNomTdo,RemNumdoc,RemNombre,RemDirecc,RemUbigeo," +
+                    "PagTipdoc,PagNomTip,PagNumdoc,PagNombre," +
+                    "SConTipdo,SConNomTi,SConNumdo,SconNombr," +
+                    "EnvPlaca1,EnvAutor1,EnvRegis1,EnvCodEn1,EnvNomEn1,EnvPlaca2,EnvAutor2,EnvRegis2,EnvCodEn2,EnvNomEn2," +
+                    "ChoTipDi1,ChoNumDi1,ChoNomTi1,ChoNombr1,ChoApell1,ChoLicen1,ChoTipDi2,ChoNumDi2,ChoNomTi2,ChoNombr2,ChoApell2,ChoLicen2," +
+                    "DirParUbi,DirParDir,DirLLeUbi,DirLLeDir) " +
+                    "values (" +
+                    "@EmisRuc,@EmisNom,@EmisUbi,@EmisDir,@EmisDep,@EmisPro,@EmisDis,@EmisUrb,@EmisPai,@EmisCor,@NumGuia,@FecEmis,@HorEmis,@CodGuia,@NomGuia,@CantBul,@PesoTot,@CodUnid,@FecIniT,@CargaUn," +
+                    "@DocRelnu1,@DocRelti1,@DocRelnr1,@DocRelcs1,@DocRelnm1,@DocRelnu2,@DocRelti2,@DocRelnr2,@DocRelcs2,@DocRelnm2," +
+                    "@DstTipdoc,@DstNomTdo,@DstNumdoc,@DstNombre,@DstDirecc,@DstUbigeo," +
+                    "@RemTipdoc,@RemNomTdo,@RemNumdoc,@RemNombre,@RemDirecc,@RemUbigeo," +
+                    "@PagTipdoc,@PagNomTip,@PagNumdoc,@PagNombre," +
+                    "@SConTipdo,@SConNomTi,@SConNumdo,@SconNombr," +
+                    "@EnvPlaca1,@EnvAutor1,@EnvRegis1,@EnvCodEn1,@EnvNomEn1,@EnvPlaca2,@EnvAutor2,@EnvRegis2,@EnvCodEn2,@EnvNomEn2," +
+                    "@ChoTipDi1,@ChoNumDi1,@ChoNomTi1,@ChoNombr1,@ChoApell1,@ChoLicen1,@ChoTipDi2,@ChoNumDi2,@ChoNomTi2,@ChoNombr2,@ChoApell2,@ChoLicen2," +
+                    "@DirParUbi,@DirParDir,@DirLLeUbi,@DirLLeDir)";
+                using (SqliteCommand cmd = new SqliteCommand(metela, cnx))
+                {
+                    // cabecera
+                    cmd.Parameters.AddWithValue("@EmisRuc", Program.ruc);                 // "20430100344"
+                    cmd.Parameters.AddWithValue("@EmisNom", Program.cliente);             // "J&L Technology SAC"
+                    cmd.Parameters.AddWithValue("@EmisUbi", Program.ubidirfis);           // "070101"
+                    cmd.Parameters.AddWithValue("@EmisDir", Program.dirfisc);             // "Calle Sigma Mz.A19 Lt.16 Sector I"
+                    cmd.Parameters.AddWithValue("@EmisDep", Program.depfisc);             // "Callao"
+                    cmd.Parameters.AddWithValue("@EmisPro", Program.provfis);             // "Callao"
+                    cmd.Parameters.AddWithValue("@EmisDis", Program.distfis);             // "Callao"
+                    cmd.Parameters.AddWithValue("@EmisUrb", "-");                         // "Bocanegra"
+                    cmd.Parameters.AddWithValue("@EmisPai", "PE");                        // país del emisor
+                    cmd.Parameters.AddWithValue("@EmisCor", Program.mailclte);            // "neto.solorzano@solorsoft.com"
+                    cmd.Parameters.AddWithValue("@NumGuia", tx_serie.Text + "-" + tx_numero.Text);         // "V001-98000006"
+                    cmd.Parameters.AddWithValue("@FecEmis", tx_fechope.Text.Substring(6, 4) + "-" + tx_fechope.Text.Substring(3, 2) + "-" + tx_fechope.Text.Substring(0, 2));              // "2023-05-19"
+                    cmd.Parameters.AddWithValue("@HorEmis", DateTime.Now.Hour + ":" + DateTime.Now.Minute + ":" + DateTime.Now.Second);  // "12:21:13"
+                    cmd.Parameters.AddWithValue("@CodGuia", "31");
+                    cmd.Parameters.AddWithValue("@NomGuia", "GUIA TRANSPORTISTA");
+                    cmd.Parameters.AddWithValue("@CantBul", 1);
+                    cmd.Parameters.AddWithValue("@PesoTot", tx_totpes.Text);              // 30
+                    cmd.Parameters.AddWithValue("@CodUnid", (rb_tn.Checked == true) ? "KGM" : "TNE");           // "KGM"
+                    cmd.Parameters.AddWithValue("@FecIniT", tx_pla_fech.Text);          // "2023-05-19"
+                    cmd.Parameters.AddWithValue("@CargaUn", (chk_cunica.Checked == true) ? "true" : "false");   // "true"
+                    // documentos relacionados
+                    cmd.Parameters.AddWithValue("@DocRelnu1", tx_docsOr.Text);            // "001-00054323" OJO, me esta validando 12 caracteres = SSS-NNNNNNNN | debería ser 13, ver en producción
+                    cmd.Parameters.AddWithValue("@DocRelti1", tx_dat_dorigS.Text);        // "09"
+                    cmd.Parameters.AddWithValue("@DocRelnr1", tx_rucEorig.Text);          // "20430100344"
+                    cmd.Parameters.AddWithValue("@DocRelcs1", "6");                       // sunat 6 = tipo documento ruc
+                    cmd.Parameters.AddWithValue("@DocRelnm1", cmb_docorig.Text.ToUpper());    // "GUIA DE REMISION REMITENTE"
+                    cmd.Parameters.AddWithValue("@DocRelnu2", tx_docsOr2.Text);
+                    cmd.Parameters.AddWithValue("@DocRelti2", tx_dat_dorigS2.Text);
+                    cmd.Parameters.AddWithValue("@DocRelnr2", tx_rucEorig2.Text);
+                    cmd.Parameters.AddWithValue("@DocRelcs2", "6");                      // como se pide el ruc del emisor  entonces el tipo es 6
+                    cmd.Parameters.AddWithValue("@DocRelnm2", cmb_docorig2.Text);
+                    // datos del destinatario
+                    cmd.Parameters.AddWithValue("@DstTipdoc", tx_dat_codsu.Text);       // "1"
+                    cmd.Parameters.AddWithValue("@DstNomTdo", tx_dat_nomcsd.Text);      // "Documento Nacional de Identidad"
+                    cmd.Parameters.AddWithValue("@DstNumdoc", tx_numDocDes.Text);       // "09314486"
+                    cmd.Parameters.AddWithValue("@DstNombre", tx_nomDrio.Text);
+                    cmd.Parameters.AddWithValue("@DstDirecc", tx_dirDrio.Text);
+                    cmd.Parameters.AddWithValue("@DstUbigeo", tx_ubigDtt.Text);         // "070101"
+                    // datos del remitente
+                    cmd.Parameters.AddWithValue("@RemTipdoc", tx_dat_csrem.Text);
+                    cmd.Parameters.AddWithValue("@RemNomTdo", tx_dat_nomcsr.Text);        // "Documento Nacional de Identidad"
+                    cmd.Parameters.AddWithValue("@RemNumdoc", tx_numDocRem.Text);        // "10401018"
+                    cmd.Parameters.AddWithValue("@RemNombre", tx_nomRem.Text);
+                    cmd.Parameters.AddWithValue("@RemDirecc", tx_dirRem.Text);         // "Bocanegra sector 1"
+                    cmd.Parameters.AddWithValue("@RemUbigeo", tx_ubigRtt.Text);        // "070101"
+                    // datos de quien paga el servicio
+                    if (rb_pOri.Checked == true)        // paga remitente
+                    {
+                        cmd.Parameters.AddWithValue("@PagTipdoc", tx_dat_csrem.Text);
+                        cmd.Parameters.AddWithValue("@PagNomTip", tx_dat_nomcsr.Text);
+                        cmd.Parameters.AddWithValue("@PagNumdoc", tx_numDocRem.Text);
+                        cmd.Parameters.AddWithValue("@PagNombre", tx_nomRem.Text);
+                    }
+                    if (rb_pDes.Checked == true)        // paga destinatario
+                    {
+                        cmd.Parameters.AddWithValue("@PagTipdoc", tx_dat_codsu.Text);
+                        cmd.Parameters.AddWithValue("@PagNomTip", tx_dat_nomcsd.Text);
+                        cmd.Parameters.AddWithValue("@PagNumdoc", tx_numDocDes.Text);
+                        cmd.Parameters.AddWithValue("@PagNombre", tx_nomDrio.Text);
+                    }
+                    // datos de transportista subcontratado (si lo hubiera)
+                    cmd.Parameters.AddWithValue("@SConTipdo", "");
+                    cmd.Parameters.AddWithValue("@SConNomTi", "");
+                    cmd.Parameters.AddWithValue("@SConNumdo", "");
+                    cmd.Parameters.AddWithValue("@SconNombr", "");
+                    // datos del envío del (los) camiones, autorizaciones de trackto y carreta
+                    cmd.Parameters.AddWithValue("@EnvPlaca1", "F2N714");
+                    cmd.Parameters.AddWithValue("@EnvAutor1", "0151742078");
+                    cmd.Parameters.AddWithValue("@EnvRegis1", "1550877CNG");
+                    cmd.Parameters.AddWithValue("@EnvCodEn1", "06");
+                    cmd.Parameters.AddWithValue("@EnvNomEn1", "Ministerio de Transportes y Comunicaciones");
+                    cmd.Parameters.AddWithValue("@EnvPlaca2", "AYS991");
+                    cmd.Parameters.AddWithValue("@EnvAutor2", "15M21028161E");
+                    cmd.Parameters.AddWithValue("@EnvRegis2", "1550877CNG");
+                    cmd.Parameters.AddWithValue("@EnvCodEn2", "06");
+                    cmd.Parameters.AddWithValue("@EnvNomEn2", "Ministerio de Transportes y Comunicaciones");
+                    // datos de los choferes
+                    cmd.Parameters.AddWithValue("@ChoTipDi1", "1");
+                    cmd.Parameters.AddWithValue("@ChoNumDi1", "46785663");
+                    cmd.Parameters.AddWithValue("@ChoNomTi1", "Documento Nacional de Identidad");
+                    cmd.Parameters.AddWithValue("@ChoNombr1", "Williams Octavio");
+                    cmd.Parameters.AddWithValue("@ChoApell1", "Yanqui Mamani");
+                    cmd.Parameters.AddWithValue("@ChoLicen1", "U46785663");
+                    cmd.Parameters.AddWithValue("@ChoTipDi2", "1");
+                    cmd.Parameters.AddWithValue("@ChoNumDi2", "09314486");
+                    cmd.Parameters.AddWithValue("@ChoNomTi2", "Documento Nacional de Identidad");
+                    cmd.Parameters.AddWithValue("@ChoNombr2", "Neto");
+                    cmd.Parameters.AddWithValue("@ChoApell2", "Solórzano Ramos");
+                    cmd.Parameters.AddWithValue("@ChoLicen2", "Z09314486");
+                    // datos de direcciones partida y llegada
+                    cmd.Parameters.AddWithValue("@DirParUbi", "150115");
+                    cmd.Parameters.AddWithValue("@DirParDir", "Jr. Hipolito Unanue 878 - La Victoria - Lima");
+                    cmd.Parameters.AddWithValue("@DirLLeUbi", "070101");
+                    cmd.Parameters.AddWithValue("@DirLLeDir", "Mz.A19 Lt.16 Sector I Bocanegra - Callao - Callao");
+                    cmd.ExecuteNonQuery();
+                }
+                // DETALLE
+                metela = "insert into dt_detgre (" +
+                    "NumGuia,clinea,cant,codigo,peso,umed,deta1,deta2) values (" +
+                    "@NumGuia,@clinea,@cant,@codigo,@peso,@umed,@deta1,@deta2)";
+                using (SqliteCommand cmd = new SqliteCommand(metela, cnx))
+                {
+                    cmd.Parameters.AddWithValue("@NumGuia", "V001-98000006");
+                    cmd.Parameters.AddWithValue("@clinea", 1);
+                    cmd.Parameters.AddWithValue("@cant", 30);
+                    cmd.Parameters.AddWithValue("@codigo", "ZZ");
+                    cmd.Parameters.AddWithValue("@peso", 150);
+                    cmd.Parameters.AddWithValue("@umed", "KGM");
+                    cmd.Parameters.AddWithValue("@deta1", "Servicio de Transporte de carga terrestre ");
+                    cmd.Parameters.AddWithValue("@deta2", "Dice contener Enseres domésticos");
+
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+        #endregion
+
         #region psnet
-        private void armagret()                  // arma cabecera
+        private void armagret()                         // arma cabecera general para todos los metodos
         {
             tcfe.Clear();
             //  DATOS TRIBUTARIOS DEL DOCUMENTO ELECTRÓNICO
@@ -1410,7 +1676,7 @@ namespace TransCarga
             tcfe.Columns.Add("inbnite");                                    // Indicador de bien normalizado
 
         }
-        private bool psnet_api()
+        private bool psnet_api()                        // metodo PSNet
         {
             bool retorna = false;
             //armagret();
@@ -1418,7 +1684,7 @@ namespace TransCarga
             if (arma_GRTE_psnet("alta") != "") retorna = true;
             return retorna;
         }
-        private string arma_GRTE_psnet(string accion)
+        private string arma_GRTE_psnet(string accion)   // metodo PSNet
         {
             string retorna = "";
 
@@ -1449,7 +1715,7 @@ namespace TransCarga
             }
             return retorna;
         }
-        private bool datosTXT(string tipdo, string serie, string corre, string file_path)       // peru secure
+        private bool datosTXT(string tipdo, string serie, string corre, string file_path)    // peru secure net
         {
             bool retorna = false;
             tcfe.Rows.Clear();
@@ -1572,7 +1838,7 @@ namespace TransCarga
 
             return retorna;
         }
-        private bool generaTxt(string tipdo, string serie, string corre, string file_path)
+        private bool generaTxt(string tipdo, string serie, string corre, string file_path)   // peru secure net
         {
             bool retorna = false;
             DataRow row = tcfe.Rows[0];
@@ -3501,6 +3767,8 @@ namespace TransCarga
                 foreach (DataRow row in fila)
                 {
                     tx_mld.Text = row[2].ToString();
+                    tx_dat_csrem.Text = row[3].ToString();
+                    tx_dat_nomcsr.Text = row[4].ToString();
                 }
             }
         }
@@ -3513,6 +3781,8 @@ namespace TransCarga
                 foreach (DataRow row in fila)
                 {
                     tx_mldD.Text = row[2].ToString();
+                    tx_dat_codsu.Text = row[3].ToString();
+                    tx_dat_nomcsd.Text = row[4].ToString();
                 }
             }
         }

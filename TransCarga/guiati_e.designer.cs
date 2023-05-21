@@ -121,6 +121,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.tx_dirDrio = new System.Windows.Forms.TextBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.tx_dat_codsu = new System.Windows.Forms.TextBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.label2 = new System.Windows.Forms.Label();
             this.tx_nomDrio = new System.Windows.Forms.TextBox();
@@ -227,6 +228,7 @@
             this.gb_detalle = new System.Windows.Forms.GroupBox();
             this.groupBox51 = new System.Windows.Forms.GroupBox();
             this.groupBox52 = new System.Windows.Forms.GroupBox();
+            this.chk_cunica = new System.Windows.Forms.CheckBox();
             this.panel3 = new System.Windows.Forms.Panel();
             this.rb_tn = new System.Windows.Forms.RadioButton();
             this.rb_kg = new System.Windows.Forms.RadioButton();
@@ -266,6 +268,9 @@
             this.cmb_docorig2 = new System.Windows.Forms.ComboBox();
             this.label43 = new System.Windows.Forms.Label();
             this.tx_docsOr2 = new System.Windows.Forms.TextBox();
+            this.tx_dat_nomcsd = new System.Windows.Forms.TextBox();
+            this.tx_dat_csrem = new System.Windows.Forms.TextBox();
+            this.tx_dat_nomcsr = new System.Windows.Forms.TextBox();
             this.toolStrip1.SuspendLayout();
             this.groupBox11.SuspendLayout();
             this.groupBox7.SuspendLayout();
@@ -1231,12 +1236,22 @@
             // groupBox3
             // 
             this.groupBox3.BackColor = System.Drawing.Color.White;
+            this.groupBox3.Controls.Add(this.tx_dat_codsu);
             this.groupBox3.Controls.Add(this.groupBox4);
             this.groupBox3.Location = new System.Drawing.Point(12, 177);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(740, 1);
             this.groupBox3.TabIndex = 304;
             this.groupBox3.TabStop = false;
+            // 
+            // tx_dat_codsu
+            // 
+            this.tx_dat_codsu.BackColor = System.Drawing.SystemColors.Window;
+            this.tx_dat_codsu.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_dat_codsu.Location = new System.Drawing.Point(52, -9);
+            this.tx_dat_codsu.Name = "tx_dat_codsu";
+            this.tx_dat_codsu.Size = new System.Drawing.Size(26, 18);
+            this.tx_dat_codsu.TabIndex = 382;
             // 
             // groupBox4
             // 
@@ -2323,6 +2338,7 @@
             // 
             this.gb_detalle.BackColor = System.Drawing.Color.LightGray;
             this.gb_detalle.Controls.Add(this.groupBox51);
+            this.gb_detalle.Controls.Add(this.chk_cunica);
             this.gb_detalle.Controls.Add(this.panel3);
             this.gb_detalle.Controls.Add(this.lb_glodeta);
             this.gb_detalle.Controls.Add(this.groupBox49);
@@ -2349,7 +2365,7 @@
             this.groupBox51.Controls.Add(this.groupBox52);
             this.groupBox51.Location = new System.Drawing.Point(18, 102);
             this.groupBox51.Name = "groupBox51";
-            this.groupBox51.Size = new System.Drawing.Size(254, 1);
+            this.groupBox51.Size = new System.Drawing.Size(398, 1);
             this.groupBox51.TabIndex = 342;
             this.groupBox51.TabStop = false;
             // 
@@ -2360,6 +2376,18 @@
             this.groupBox52.Size = new System.Drawing.Size(164, 1);
             this.groupBox52.TabIndex = 113;
             this.groupBox52.TabStop = false;
+            // 
+            // chk_cunica
+            // 
+            this.chk_cunica.AutoSize = true;
+            this.chk_cunica.ForeColor = System.Drawing.Color.Black;
+            this.chk_cunica.Location = new System.Drawing.Point(284, 86);
+            this.chk_cunica.Name = "chk_cunica";
+            this.chk_cunica.Size = new System.Drawing.Size(135, 17);
+            this.chk_cunica.TabIndex = 256;
+            this.chk_cunica.Text = "Carga única en camión";
+            this.chk_cunica.UseVisualStyleBackColor = true;
+            this.chk_cunica.Visible = false;
             // 
             // panel3
             // 
@@ -2750,6 +2778,38 @@
             this.tx_docsOr2.Size = new System.Drawing.Size(232, 18);
             this.tx_docsOr2.TabIndex = 375;
             // 
+            // tx_dat_nomcsd
+            // 
+            this.tx_dat_nomcsd.BackColor = System.Drawing.SystemColors.Window;
+            this.tx_dat_nomcsd.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_dat_nomcsd.Location = new System.Drawing.Point(146, 153);
+            this.tx_dat_nomcsd.Name = "tx_dat_nomcsd";
+            this.tx_dat_nomcsd.Size = new System.Drawing.Size(26, 18);
+            this.tx_dat_nomcsd.TabIndex = 382;
+            this.tx_dat_nomcsd.Visible = false;
+            // 
+            // tx_dat_csrem
+            // 
+            this.tx_dat_csrem.BackColor = System.Drawing.SystemColors.Window;
+            this.tx_dat_csrem.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_dat_csrem.Location = new System.Drawing.Point(146, 103);
+            this.tx_dat_csrem.Name = "tx_dat_csrem";
+            this.tx_dat_csrem.Size = new System.Drawing.Size(26, 18);
+            this.tx_dat_csrem.TabIndex = 383;
+            this.tx_dat_csrem.Tag = "código sunat del tipo doc remitente";
+            this.tx_dat_csrem.Visible = false;
+            // 
+            // tx_dat_nomcsr
+            // 
+            this.tx_dat_nomcsr.BackColor = System.Drawing.SystemColors.Window;
+            this.tx_dat_nomcsr.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_dat_nomcsr.Location = new System.Drawing.Point(177, 103);
+            this.tx_dat_nomcsr.Name = "tx_dat_nomcsr";
+            this.tx_dat_nomcsr.Size = new System.Drawing.Size(26, 18);
+            this.tx_dat_nomcsr.TabIndex = 384;
+            this.tx_dat_nomcsr.Tag = "nombre sunat del tipo doc remitente";
+            this.tx_dat_nomcsr.Visible = false;
+            // 
             // guiati_e
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -2757,6 +2817,9 @@
             this.AutoSize = true;
             this.BackColor = System.Drawing.Color.Peru;
             this.ClientSize = new System.Drawing.Size(766, 614);
+            this.Controls.Add(this.tx_dat_nomcsr);
+            this.Controls.Add(this.tx_dat_csrem);
+            this.Controls.Add(this.tx_dat_nomcsd);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.tx_dat_dorigS2);
             this.Controls.Add(this.tx_dat_docOr2);
@@ -2885,6 +2948,7 @@
             this.groupBox19.ResumeLayout(false);
             this.groupBox21.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);
+            this.groupBox3.PerformLayout();
             this.groupBox13.ResumeLayout(false);
             this.gbox_flete.ResumeLayout(false);
             this.gbox_flete.PerformLayout();
@@ -3158,5 +3222,10 @@
         private System.Windows.Forms.ComboBox cmb_docorig2;
         private System.Windows.Forms.Label label43;
         private System.Windows.Forms.TextBox tx_docsOr2;
+        private System.Windows.Forms.CheckBox chk_cunica;
+        private System.Windows.Forms.TextBox tx_dat_codsu;
+        private System.Windows.Forms.TextBox tx_dat_nomcsd;
+        private System.Windows.Forms.TextBox tx_dat_csrem;
+        private System.Windows.Forms.TextBox tx_dat_nomcsr;
     }
 }
