@@ -174,7 +174,7 @@ namespace TransCarga
             advancedDataGridView1.Columns[9].ReadOnly = true;
             advancedDataGridView1.Columns[9].Tag = "validaNO";
             advancedDataGridView1.Columns[9].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-            // codigo tipo de usuario
+            // codigo tipo doc usuario
             advancedDataGridView1.Columns[10].Visible = false;
             advancedDataGridView1.Columns[10].HeaderText = "CODTIPU";
             advancedDataGridView1.Columns[10].Width = 70;
@@ -260,8 +260,10 @@ namespace TransCarga
         {
             if (campo == "tx_rind")
             {
-                chk_habil.Checked = (advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells["bloqueado"].Value.ToString() == "0") ? true : false;
+                chk_habil.Checked = (advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells["bloqueado"].Value.ToString() == "1") ? true : false;
                 tx_codigo.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells["codigo"].Value.ToString();     // codigo empleado
+                tx_dat_doc.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells["tipdoc"].Value.ToString();
+                cmb_doc.SelectedValue = tx_dat_doc.Text;
                 tx_dni.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells["numdoc"].Value.ToString();        // DNI DEL EMPLEADO
                 tx_nombre.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells["nombre"].Value.ToString();     // nombre p
                 tx_dat_tipo.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells["codtipo"].Value.ToString();   // tipo empleado
@@ -272,6 +274,8 @@ namespace TransCarga
                 tx_telef1.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells["telefono1"].Value.ToString();    // telefono 1
                 tx_usersis.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells["usersist"].Value.ToString();   // usuario
                 tx_coment.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells["coment"].Value.ToString();      // comentario
+                rb_fem.Checked = (advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells["genero"].Value.ToString() == "False") ? true : false;
+                rb_mas.Checked = (advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells["genero"].Value.ToString() == "True") ? true : false;
             }
             if (campo == "tx_idr")
             {
@@ -307,6 +311,17 @@ namespace TransCarga
                     cmb_local.DataSource = dtloc;
                     cmb_local.DisplayMember = "descrizionerid";
                     cmb_local.ValueMember = "idcodice";
+                    // DATOS DEL TIPO DE DOCUMENTO DEL TRABAJADOR
+                    cmb_doc.Items.Clear();
+                    const string condoc = "select idcodice,descrizionerid,descrizione,codigo,codsunat from desc_doc " +
+                        "order by idcodice";
+                    cmbtpu = new MySqlCommand(condoc, conn);
+                    DataTable dtdoc = new DataTable();
+                    datpu = new MySqlDataAdapter(cmbtpu);
+                    datpu.Fill(dtdoc);
+                    cmb_doc.DataSource = dtdoc;
+                    cmb_doc.DisplayMember = "descrizionerid";
+                    cmb_doc.ValueMember = "idcodice";
                     // datos recshum
                     string datgri = "SELECT a.id,lo.DescrizioneRid AS nomloc,a.codigo,a.genero,a.numdoc,a.nombre,te.DescrizioneRid as nomte,a.telefono1,a.usersist,a.brevete," +
                         "a.tipdoc,a.sede,a.bloqueado," +
@@ -448,6 +463,7 @@ namespace TransCarga
         {
             cmb_tipo.SelectedIndex = -1;
             cmb_local.SelectedIndex = -1;
+            cmb_doc.SelectedIndex = -1;
         }
         #endregion limpiadores_modos;
 
@@ -459,6 +475,12 @@ namespace TransCarga
             {
                 MessageBox.Show("Ingrese el código", " Error! ");
                 tx_codigo.Focus();
+                return;
+            }
+            if (tx_dat_doc.Text == "")
+            {
+                MessageBox.Show("Seleccione el tipo de documento", " Error! ");
+                cmb_doc.Focus();
                 return;
             }
             if (tx_dni.Text == "")
@@ -494,9 +516,10 @@ namespace TransCarga
                 if (aa == DialogResult.Yes)
                 {
                     iserror = "no";
-                    string consulta = "insert into cabrrhh (codigo,numdoc,nombre,usersist,coment,fnacim,fingres,telefono1,telefono2,direccion,correo,brevete,sede,tipdoc,codtipo," +
-                        "verApp,userc,fechc,diriplan4,diripwan4,nbname)" +
-                        " values (@cod,@dni,@nom,@pas,@com,@fna,@fin,@te1,@te2,@dir,@cor,@bre,@sed,@tde,@tip," +
+                    string consulta = "insert into cabrrhh (" +
+                        "codigo,numdoc,nombre,usersist,coment,fnacim,fingres,telefono1,telefono2,direccion,correo,brevete,sede,tipdoc,codtipo,genero," +
+                        "verApp,userc,fechc,diriplan4,diripwan4,nbname) " +
+                        "values (@cod,@dni,@nom,@pas,@com,@fna,@fin,@te1,@te2,@dir,@cor,@bre,@sed,@tde,@tip,@gen," +
                         "@vapp,@asd,now(),@dil4,@diw4,@nbna)";
                     using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
                     {
@@ -517,9 +540,9 @@ namespace TransCarga
                                 mycomand.Parameters.AddWithValue("@cor", "");
                                 mycomand.Parameters.AddWithValue("@bre", tx_brevete.Text);
                                 mycomand.Parameters.AddWithValue("@sed", tx_dat_loca.Text);
-                                mycomand.Parameters.AddWithValue("@tde", "");
+                                mycomand.Parameters.AddWithValue("@tde", tx_dat_doc.Text);
                                 mycomand.Parameters.AddWithValue("@tip", tx_dat_tipo.Text);
-                                //
+                                mycomand.Parameters.AddWithValue("@gen", (rb_fem.Checked == true) ? 0 : 1);
                                 mycomand.Parameters.AddWithValue("@asd", asd);
                                 mycomand.Parameters.AddWithValue("@vapp", verapp);
                                 mycomand.Parameters.AddWithValue("@dil4", lib.iplan());
@@ -546,9 +569,9 @@ namespace TransCarga
                                         drs[7] = tx_telef1.Text;
                                         drs[8] = tx_usersis.Text;
                                         drs[9] = tx_brevete.Text;
-                                        drs[10] = tx_dat_tipo.Text;
+                                        drs[10] = tx_dat_doc.Text;
                                         drs[11] = tx_dat_loca.Text;
-                                        drs[12] = (chk_habil.Checked == true) ? "0" : "1";
+                                        drs[12] = (chk_habil.Checked == true) ? "1" : "0";
                                         drs[13] = tx_dat_tipo.Text;
                                         drs[14] = "";
                                         drs[15] = tx_coment.Text;
@@ -603,7 +626,7 @@ namespace TransCarga
                             mycom.Parameters.AddWithValue("@cor", "");
                             mycom.Parameters.AddWithValue("@bre", tx_brevete.Text);
                             mycom.Parameters.AddWithValue("@sed", tx_dat_loca.Text);
-                            mycom.Parameters.AddWithValue("@tde", "");
+                            mycom.Parameters.AddWithValue("@tde", tx_dat_doc.Text);
                             mycom.Parameters.AddWithValue("@tip", tx_dat_tipo.Text);
                             mycom.Parameters.AddWithValue("@gen", (rb_fem.Checked == true)? 0 : 1);
                             mycom.Parameters.AddWithValue("@bloq", (chk_habil.Checked == true)? 1 : 0);
@@ -631,9 +654,9 @@ namespace TransCarga
                                         dtg.Rows[i][7] = tx_telef1.Text;
                                         dtg.Rows[i][8] = tx_usersis.Text;
                                         dtg.Rows[i][9] = tx_brevete.Text;
-                                        dtg.Rows[i][10] = tx_dat_tipo.Text;
+                                        dtg.Rows[i][10] = tx_dat_doc.Text;
                                         dtg.Rows[i][11] = tx_dat_loca.Text;
-                                        dtg.Rows[i][12] = (chk_habil.Checked == true) ? "0" : "1";
+                                        dtg.Rows[i][12] = (chk_habil.Checked == true) ? "1" : "0";
                                         dtg.Rows[i][13] = tx_dat_tipo.Text;
                                         dtg.Rows[i][14] = "";
                                         dtg.Rows[i][15] = tx_coment.Text;
@@ -694,13 +717,16 @@ namespace TransCarga
         }
         private void tabreg_Enter(object sender, EventArgs e)
         {
-            if(Tx_modo.Text == "EDITAR" && tx_rind.Text.Trim() == "" && tx_codigo.Text.Trim() == "")
+            if (Tx_modo.Text != "NUEVO")
             {
-                tx_codigo.ReadOnly = false;
-            }
-            else
-            {
-                tx_codigo.ReadOnly = true;
+                if (tx_rind.Text.Trim() == "" && tx_codigo.Text.Trim() == "")
+                {
+                    tx_codigo.ReadOnly = false;
+                }
+                else
+                {
+                    tx_codigo.ReadOnly = true;
+                }
             }
         }
         #endregion leaves;
@@ -787,7 +813,7 @@ namespace TransCarga
             limpia_otros();
             limpia_combos();
             limpia_chk();
-            chk_habil.Enabled = false;
+            chk_habil.Enabled = true;
             tx_codigo.ReadOnly = false;
             tx_codigo.Focus();
         }
@@ -890,6 +916,14 @@ namespace TransCarga
             {
                 DataRow row = ((DataTable)cmb_local.DataSource).Rows[cmb_local.SelectedIndex];
                 tx_dat_loca.Text = (string)row["idcodice"];
+            }
+        }
+        private void cmb_doc_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (cmb_doc.SelectedIndex > -1)
+            {
+                DataRow row = ((DataTable)cmb_doc.DataSource).Rows[cmb_doc.SelectedIndex];
+                tx_dat_doc.Text = row["idcodice"].ToString();
             }
         }
         #endregion comboboxes

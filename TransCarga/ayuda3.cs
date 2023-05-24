@@ -31,6 +31,7 @@ namespace TransCarga
         {
             loadgrids();    // datos del grid
             this.Text = this.Text;
+            //this.Width = dataGridView1.Width + 10;
         }
         private void ayuda3_KeyDown(object sender, KeyEventArgs e)
         {
@@ -128,6 +129,24 @@ namespace TransCarga
                     ReturnValueA = new string[5] { "", "", "", "", "" };
                 }
             }
+            if (para1 == "rrhh")
+            {
+                string filtro1 = "";
+                if (para2 == "choferes") filtro1 = "and a.brevete <> ''";
+                consulta = "SELECT a.id,ifnull(b.descrizionerid,'DNI') as DOC,a.numdoc as NUMERO,a.nombre as NOMBRE,a.brevete as LICENCIA " +
+                    "from cabrrhh a LEFT JOIN desc_doc b ON b.idcodice = a.tipdoc " +
+                    "where a.bloqueado = 0 " + filtro1 + " order by a.nombre";
+                using (MySqlCommand micon = new MySqlCommand(consulta, conn))
+                {
+                    using (MySqlDataAdapter da = new MySqlDataAdapter(micon))
+                    {
+                        da.Fill(dtDatos);
+                        dataGridView1.DataSource = dtDatos;
+                        dataGridView1.ReadOnly = true;
+                    }
+                    ReturnValueA = new string[5] { "", "", "", "", "" };
+                }
+            }
             // formateo de la grilla
             //dataGridView1.Font = tiplg;
             //dataGridView1.DefaultCellStyle.Font = tiplg;
@@ -162,7 +181,7 @@ namespace TransCarga
         private void button1_Click(object sender, EventArgs e)
         {
             ReturnValue0 = tx_id.Text;         // id
-            ReturnValue1 = tx_codigo.Text;     // codigo/serie
+            ReturnValue1 = tx_codigo.Text;     // codigo/serie/numero
             ReturnValue2 = tx_nombre.Text;     // nombre/numero
             Close();
         }
@@ -210,11 +229,24 @@ namespace TransCarga
                 tx_nombre.Text = dataGridView1.CurrentRow.Cells[2].Value.ToString();
                 tx_codigo.Text = cellva;
                 //
-                ReturnValueA[0] = dataGridView1.CurrentRow.Cells[0].Value.ToString();   // tipo doc
-                ReturnValueA[1] = dataGridView1.CurrentRow.Cells[1].Value.ToString();   // num doc
+                ReturnValueA[0] = dataGridView1.CurrentRow.Cells[0].Value.ToString();   // num dni
+                ReturnValueA[1] = dataGridView1.CurrentRow.Cells[1].Value.ToString();   // nombre
                 ReturnValueA[2] = dataGridView1.CurrentRow.Cells[2].Value.ToString();   // nombre
                 ReturnValueA[3] = dataGridView1.CurrentRow.Cells[5].Value.ToString();   // codigo tip doc
                 ReturnValueA[4] = "";
+            }
+            if (para1 == "rrhh" && para2 == "choferes")
+            {
+                tx_id.Text = dataGridView1.CurrentRow.Cells[0].Value.ToString();        // id
+                cellva = dataGridView1.CurrentRow.Cells[2].Value.ToString();            // num dni
+                tx_nombre.Text = dataGridView1.CurrentRow.Cells[3].Value.ToString();    // nombre
+                tx_codigo.Text = cellva;
+                //
+                ReturnValueA[0] = dataGridView1.CurrentRow.Cells[0].Value.ToString();   // id
+                ReturnValueA[1] = dataGridView1.CurrentRow.Cells[1].Value.ToString();   // tipo doc
+                ReturnValueA[2] = dataGridView1.CurrentRow.Cells[2].Value.ToString();   // num doc
+                ReturnValueA[3] = dataGridView1.CurrentRow.Cells[3].Value.ToString();   // nombre
+                ReturnValueA[4] = dataGridView1.CurrentRow.Cells[4].Value.ToString();   // brevete
             }
             TransCarga.Program.retorna1 = cellva;
             tx_codigo.Focus();
@@ -235,6 +267,14 @@ namespace TransCarga
                     ReturnValueA[2] = dataGridView1.CurrentRow.Cells[3].Value.ToString();   // modelo
                     ReturnValueA[3] = dataGridView1.CurrentRow.Cells[4].Value.ToString();   // conf. vehicular
                     ReturnValueA[4] = dataGridView1.CurrentRow.Cells[5].Value.ToString();   // autoriz.
+                }
+                if (para1 == "rrhh" && para2 == "choferes")
+                {
+                    ReturnValueA[0] = dataGridView1.CurrentRow.Cells[0].Value.ToString();   // id
+                    ReturnValueA[1] = dataGridView1.CurrentRow.Cells[1].Value.ToString();   // tipo doc
+                    ReturnValueA[2] = dataGridView1.CurrentRow.Cells[2].Value.ToString();   // num doc
+                    ReturnValueA[3] = dataGridView1.CurrentRow.Cells[3].Value.ToString();   // nombre
+                    ReturnValueA[4] = dataGridView1.CurrentRow.Cells[4].Value.ToString();   // brevete
                 }
                 Close();
             }

@@ -169,6 +169,36 @@ namespace TransCarga
                 }
                 return true;
             }
+            if (keyData == Keys.F1 && tx_dniC.Focused == true)
+            {
+                para1 = "rrhh";
+                para2 = "choferes";
+                para3 = "";
+                ayuda3 ayu3 = new ayuda3(para1, para2, para3);
+                var result = ayu3.ShowDialog();
+                if (result == DialogResult.Cancel)  // deberia ser OK, pero que chuuu
+                {
+                    tx_dniC.Text = ayu3.ReturnValueA[2];   // ayu3.ReturnValue0;
+                    tx_pla_brevet.Text = ayu3.ReturnValueA[4];
+                    tx_pla_nomcho.Text = ayu3.ReturnValueA[3];
+                }
+                return true;
+            }
+            if (keyData == Keys.F1 && tx_dniA.Focused == true)
+            {
+                para1 = "rrhh";
+                para2 = "choferes";
+                para3 = "";
+                ayuda3 ayu3 = new ayuda3(para1, para2, para3);
+                var result = ayu3.ShowDialog();
+                if (result == DialogResult.Cancel)  // deberia ser OK, pero que chuuu
+                {
+                    tx_dniA.Text = ayu3.ReturnValueA[2];
+                    tx_pla_ayud.Text = ayu3.ReturnValueA[4]; ;
+                    tx_pla_nomayu.Text = ayu3.ReturnValueA[3];
+                }
+                return true;
+            }
             // Call the base class
             return base.ProcessCmdKey(ref msg, keyData);
         }
@@ -813,7 +843,7 @@ namespace TransCarga
         }
         private string[] ValPlaCarr(string pc,string codigo)    // pc=P ó C, codigo=placa de trompa o carreta
         {
-            string[] retorna = { "", "", "", "", "" };      // cofig.vehicular, autorizacion, placa asociada, marca, modelo
+            string[] retorna = { "", "", "", "", "", "" };      // cofig.vehicular, autorizacion, placa asociada, marca, modelo
             using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
             {
                 conn.Open();
@@ -829,7 +859,7 @@ namespace TransCarga
                     parte1 = "tipo = @tipo";    // variable codigo carreta
                 }
 
-                string consulta = "select confve,autor1,placAsoc,marca,modelo from vehiculos where status<>@estdes and placa=@codigo"; // and " + parte0 + " and " + parte1;
+                string consulta = "select confve,autor1,placAsoc,marca,modelo,numreg1 from vehiculos where status<>@estdes and placa=@codigo"; // and " + parte0 + " and " + parte1;
                 using (MySqlCommand micon = new MySqlCommand(consulta,conn))
                 {
                     micon.Parameters.AddWithValue("@estdes", codAnul);
@@ -843,6 +873,7 @@ namespace TransCarga
                         retorna[2] = dr.GetString(2);   // (pc == "P") ? dr.GetString(2) : dr.GetString(3);   // carreta retorna marca, placa retorna placa asoc
                         retorna[3] = dr.GetString(3);
                         retorna[4] = dr.GetString(4);
+                        retorna[5] = dr.GetString(5);
                     }
                     dr.Dispose();
                 }
@@ -1242,10 +1273,12 @@ namespace TransCarga
                     "fechope,serplacar,locorigen,locdestin,obsplacar,cantfilas,cantotpla,pestotpla,tipmonpla,tipcampla,subtotpla," +
                     "igvplacar,totplacar,totpagado,salxpagar,estadoser,fleteimp,platracto,placarret,autorizac,confvehic,brevchofe," +
                     "brevayuda,rucpropie,tipoplani,nomchofe,nomayuda,marcaTrac,modeloTrac,marcaCarret,modelCarret,autorCarret,confvCarret," +
+                    "dnichofer,dniayudante,nregtrackto,nregcarreta," +
                     "verApp,userc,fechc,diriplan4,diripwan4,netbname) " +
                     "values (@fecho,@serpl,@locor,@locde,@obspl,@cantf,@canto,@pesto,@tipmo,@tipca,@subto," +
                     "@igvpl,@totpl,@totpa,@salxp,@estad,@fleim,@platr,@placa,@autor,@confv,@brevc," +
                     "@breva,@rucpr,@tipop,@nocho,@noayu,@marca,@model,@marCarr,@modCarr,@autCarr,@conCarr," +
+                    "@dnicho,@dniayu,@nregtr,@nregcar," +
                     "@verApp,@asd,now(),@iplan,@ipwan,@nbnam)"; // 
                 using (MySqlCommand micon = new MySqlCommand(inserta, conn))
                 {
@@ -1281,7 +1314,11 @@ namespace TransCarga
                     micon.Parameters.AddWithValue("@rucpr", (tx_pla_ruc.Text.Trim() == "")? tx_car3ro_ruc.Text : tx_pla_ruc.Text);
                     micon.Parameters.AddWithValue("@tipop", vtip);              // tipo planilla, tipo transporte/transportista
                     micon.Parameters.AddWithValue("@marca", tx_pla_marca.Text);
-                    micon.Parameters.AddWithValue("@model", tx_pla_modelo.Text);
+                    micon.Parameters.AddWithValue("@model", tx_pla_modelo.Text); 
+                    micon.Parameters.AddWithValue("@dnicho", tx_dniC.Text);
+                    micon.Parameters.AddWithValue("@dniayu", tx_dniA.Text);
+                    micon.Parameters.AddWithValue("@nregtr", tx_nregP.Text);
+                    micon.Parameters.AddWithValue("@nregcar", tx_nregC.Text);
                     micon.Parameters.AddWithValue("@verApp", verapp);
                     micon.Parameters.AddWithValue("@asd", asd);
                     micon.Parameters.AddWithValue("@iplan", lib.iplan());
@@ -1395,8 +1432,7 @@ namespace TransCarga
                             "tipcampla=@tipca,subtotpla=@subto,igvplacar=@igvpl,totplacar=@totpl,totpagado=@totpa,salxpagar=@salxp,fleteimp=@fleim," +
                             "platracto=@platr,placarret=@placa,autorizac=@autor,confvehic=@confv,brevchofe=@brevc,brevayuda=@breva,rucpropie=@rucpr,tipoplani=@tipop," +
                             "verApp=@verApp,userm=@asd,fechm=now(),diriplan4=@iplan,diripwan4=@ipwan,netbname=@nbnam,nomchofe=@nocho,nomayuda=@noayu,estadoser=@estad," +
-                            "marcaCarret=@marCarr,modelCarret=@modCarr,autorCarret=@autCarr,confvCarret=@conCarr," +
-                            "marcaTrac=@marca,modeloTrac=@model " +
+                            "marcaCarret=@marCarr,modelCarret=@modCarr,autorCarret=@autCarr,confvCarret=@conCarr,dnichofer=@dnicho,dniayudante=@dniayu,nregtrackto=@nregtr,nregcarreta=@nregcar " +
                             "where serplacar=@serpl and numplacar=@numpl";
                         MySqlCommand micon = new MySqlCommand(actua, conn);
                         micon.Parameters.AddWithValue("@fecho", tx_fechope.Text.Substring(6, 4) + "-" + tx_fechope.Text.Substring(3, 2) + "-" + tx_fechope.Text.Substring(0, 2));
@@ -1447,6 +1483,10 @@ namespace TransCarga
                         }
                         micon.Parameters.AddWithValue("@marca", tx_pla_marca.Text);
                         micon.Parameters.AddWithValue("@model", tx_pla_modelo.Text);
+                        micon.Parameters.AddWithValue("@dnicho", tx_dniC.Text);
+                        micon.Parameters.AddWithValue("@dniayu", tx_dniA.Text);
+                        micon.Parameters.AddWithValue("@nregtr", tx_nregP.Text);
+                        micon.Parameters.AddWithValue("@nregcar", tx_nregC.Text);
                         micon.Parameters.AddWithValue("@verApp", verapp);
                         micon.Parameters.AddWithValue("@asd", asd);
                         micon.Parameters.AddWithValue("@iplan", lib.iplan());
@@ -1784,6 +1824,7 @@ namespace TransCarga
                     tx_pla_carret.Text = datos[2];
                     tx_pla_marca.Text = datos[3]; // ayu3.ReturnValueA[1];
                     tx_pla_modelo.Text = datos[4]; //ayu3.ReturnValueA[2];
+                    tx_nregP.Text = datos[5];
                     if (tx_pla_carret.Text.Trim() != "")
                     {
                         carreta_Leave(null,null);
@@ -1812,6 +1853,7 @@ namespace TransCarga
                     tx_carret_autoriz.Text = datos[1].Trim();
                     tx_carret_marca.Text = datos[3].Trim();
                     tx_carret_modelo.Text = datos[4].Trim();
+                    tx_nregC.Text = datos[5].Trim();
                 }
             }
         }
