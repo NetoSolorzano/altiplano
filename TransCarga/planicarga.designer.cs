@@ -876,6 +876,7 @@
             // rb_bus
             // 
             this.rb_bus.AutoSize = true;
+            this.rb_bus.Enabled = false;
             this.rb_bus.ForeColor = System.Drawing.Color.Black;
             this.rb_bus.Location = new System.Drawing.Point(175, 19);
             this.rb_bus.Name = "rb_bus";
@@ -970,7 +971,7 @@
             this.splitContainer1.Panel2.Controls.Add(this.tx_car3ro_ruc);
             this.splitContainer1.Panel2.Controls.Add(this.label1);
             this.splitContainer1.Size = new System.Drawing.Size(748, 126);
-            this.splitContainer1.SplitterDistance = 684;
+            this.splitContainer1.SplitterDistance = 719;
             this.splitContainer1.TabIndex = 383;
             // 
             // groupBox34
@@ -979,7 +980,7 @@
             this.groupBox34.Controls.Add(this.groupBox35);
             this.groupBox34.Location = new System.Drawing.Point(10, 72);
             this.groupBox34.Name = "groupBox34";
-            this.groupBox34.Size = new System.Drawing.Size(665, 1);
+            this.groupBox34.Size = new System.Drawing.Size(695, 1);
             this.groupBox34.TabIndex = 418;
             this.groupBox34.TabStop = false;
             // 
@@ -997,7 +998,7 @@
             this.groupBox13.Controls.Add(this.groupBox14);
             this.groupBox13.Location = new System.Drawing.Point(10, 48);
             this.groupBox13.Name = "groupBox13";
-            this.groupBox13.Size = new System.Drawing.Size(665, 1);
+            this.groupBox13.Size = new System.Drawing.Size(695, 1);
             this.groupBox13.TabIndex = 400;
             this.groupBox13.TabStop = false;
             // 
@@ -1011,9 +1012,9 @@
             // 
             // tx_nregC
             // 
-            this.tx_nregC.Location = new System.Drawing.Point(600, 53);
+            this.tx_nregC.Location = new System.Drawing.Point(614, 53);
             this.tx_nregC.Name = "tx_nregC";
-            this.tx_nregC.Size = new System.Drawing.Size(75, 20);
+            this.tx_nregC.Size = new System.Drawing.Size(91, 20);
             this.tx_nregC.TabIndex = 436;
             this.tx_nregC.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -1021,7 +1022,7 @@
             // 
             this.label36.AutoSize = true;
             this.label36.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label36.Location = new System.Drawing.Point(558, 57);
+            this.label36.Location = new System.Drawing.Point(572, 57);
             this.label36.Name = "label36";
             this.label36.Size = new System.Drawing.Size(41, 13);
             this.label36.TabIndex = 437;
@@ -1030,9 +1031,9 @@
             // 
             // tx_nregP
             // 
-            this.tx_nregP.Location = new System.Drawing.Point(600, 29);
+            this.tx_nregP.Location = new System.Drawing.Point(614, 29);
             this.tx_nregP.Name = "tx_nregP";
-            this.tx_nregP.Size = new System.Drawing.Size(75, 20);
+            this.tx_nregP.Size = new System.Drawing.Size(91, 20);
             this.tx_nregP.TabIndex = 438;
             this.tx_nregP.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -1040,7 +1041,7 @@
             // 
             this.label37.AutoSize = true;
             this.label37.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label37.Location = new System.Drawing.Point(558, 33);
+            this.label37.Location = new System.Drawing.Point(572, 33);
             this.label37.Name = "label37";
             this.label37.Size = new System.Drawing.Size(41, 13);
             this.label37.TabIndex = 435;
@@ -1097,7 +1098,7 @@
             this.groupBox11.Controls.Add(this.groupBox12);
             this.groupBox11.Location = new System.Drawing.Point(10, 96);
             this.groupBox11.Name = "groupBox11";
-            this.groupBox11.Size = new System.Drawing.Size(665, 1);
+            this.groupBox11.Size = new System.Drawing.Size(695, 1);
             this.groupBox11.TabIndex = 414;
             this.groupBox11.TabStop = false;
             // 
@@ -1115,7 +1116,7 @@
             this.groupBox15.Controls.Add(this.groupBox17);
             this.groupBox15.Location = new System.Drawing.Point(10, 119);
             this.groupBox15.Name = "groupBox15";
-            this.groupBox15.Size = new System.Drawing.Size(665, 1);
+            this.groupBox15.Size = new System.Drawing.Size(695, 1);
             this.groupBox15.TabIndex = 415;
             this.groupBox15.TabStop = false;
             // 
@@ -1174,7 +1175,7 @@
             // 
             this.tx_carret_autoriz.Location = new System.Drawing.Point(475, 53);
             this.tx_carret_autoriz.Name = "tx_carret_autoriz";
-            this.tx_carret_autoriz.Size = new System.Drawing.Size(75, 20);
+            this.tx_carret_autoriz.Size = new System.Drawing.Size(93, 20);
             this.tx_carret_autoriz.TabIndex = 423;
             this.tx_carret_autoriz.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -1191,9 +1192,9 @@
             // 
             // tx_carret_conf
             // 
-            this.tx_carret_conf.Location = new System.Drawing.Point(385, 53);
+            this.tx_carret_conf.Location = new System.Drawing.Point(383, 53);
             this.tx_carret_conf.Name = "tx_carret_conf";
-            this.tx_carret_conf.Size = new System.Drawing.Size(42, 20);
+            this.tx_carret_conf.Size = new System.Drawing.Size(46, 20);
             this.tx_carret_conf.TabIndex = 422;
             this.tx_carret_conf.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -1201,7 +1202,7 @@
             // 
             this.label24.AutoSize = true;
             this.label24.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label24.Location = new System.Drawing.Point(345, 57);
+            this.label24.Location = new System.Drawing.Point(343, 57);
             this.label24.Name = "label24";
             this.label24.Size = new System.Drawing.Size(40, 13);
             this.label24.TabIndex = 424;
@@ -1247,7 +1248,7 @@
             // 
             this.tx_pla_nomayu.Location = new System.Drawing.Point(300, 100);
             this.tx_pla_nomayu.Name = "tx_pla_nomayu";
-            this.tx_pla_nomayu.Size = new System.Drawing.Size(376, 20);
+            this.tx_pla_nomayu.Size = new System.Drawing.Size(406, 20);
             this.tx_pla_nomayu.TabIndex = 389;
             // 
             // label2
@@ -1265,7 +1266,7 @@
             // 
             this.tx_pla_nomcho.Location = new System.Drawing.Point(300, 77);
             this.tx_pla_nomcho.Name = "tx_pla_nomcho";
-            this.tx_pla_nomcho.Size = new System.Drawing.Size(376, 20);
+            this.tx_pla_nomcho.Size = new System.Drawing.Size(406, 20);
             this.tx_pla_nomcho.TabIndex = 386;
             // 
             // label23
@@ -1285,7 +1286,7 @@
             this.groupBox8.Controls.Add(this.groupBox9);
             this.groupBox8.Location = new System.Drawing.Point(10, 24);
             this.groupBox8.Name = "groupBox8";
-            this.groupBox8.Size = new System.Drawing.Size(665, 1);
+            this.groupBox8.Size = new System.Drawing.Size(695, 1);
             this.groupBox8.TabIndex = 398;
             this.groupBox8.TabStop = false;
             // 
@@ -1301,7 +1302,7 @@
             // 
             this.tx_pla_autor.Location = new System.Drawing.Point(475, 29);
             this.tx_pla_autor.Name = "tx_pla_autor";
-            this.tx_pla_autor.Size = new System.Drawing.Size(75, 20);
+            this.tx_pla_autor.Size = new System.Drawing.Size(93, 20);
             this.tx_pla_autor.TabIndex = 429;
             this.tx_pla_autor.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -1318,9 +1319,9 @@
             // 
             // tx_pla_confv
             // 
-            this.tx_pla_confv.Location = new System.Drawing.Point(385, 29);
+            this.tx_pla_confv.Location = new System.Drawing.Point(383, 29);
             this.tx_pla_confv.Name = "tx_pla_confv";
-            this.tx_pla_confv.Size = new System.Drawing.Size(42, 20);
+            this.tx_pla_confv.Size = new System.Drawing.Size(46, 20);
             this.tx_pla_confv.TabIndex = 421;
             this.tx_pla_confv.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -1328,7 +1329,7 @@
             // 
             this.label27.AutoSize = true;
             this.label27.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label27.Location = new System.Drawing.Point(345, 33);
+            this.label27.Location = new System.Drawing.Point(343, 33);
             this.label27.Name = "label27";
             this.label27.Size = new System.Drawing.Size(40, 13);
             this.label27.TabIndex = 387;
@@ -1379,7 +1380,7 @@
             // 
             this.tx_pla_propiet.Location = new System.Drawing.Point(161, 5);
             this.tx_pla_propiet.Name = "tx_pla_propiet";
-            this.tx_pla_propiet.Size = new System.Drawing.Size(514, 20);
+            this.tx_pla_propiet.Size = new System.Drawing.Size(544, 20);
             this.tx_pla_propiet.TabIndex = 381;
             this.tx_pla_propiet.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -1417,18 +1418,19 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tx_car_3ro_nombre.Location = new System.Drawing.Point(66, 48);
             this.tx_car_3ro_nombre.Name = "tx_car_3ro_nombre";
-            this.tx_car_3ro_nombre.Size = new System.Drawing.Size(14, 20);
+            this.tx_car_3ro_nombre.Size = new System.Drawing.Size(0, 20);
             this.tx_car_3ro_nombre.TabIndex = 387;
             this.tx_car_3ro_nombre.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // tx_car3ro_ruc
             // 
             this.tx_car3ro_ruc.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.tx_car3ro_ruc.Location = new System.Drawing.Point(-4, 14);
+            this.tx_car3ro_ruc.Location = new System.Drawing.Point(-22, 14);
             this.tx_car3ro_ruc.Name = "tx_car3ro_ruc";
             this.tx_car3ro_ruc.Size = new System.Drawing.Size(100, 20);
             this.tx_car3ro_ruc.TabIndex = 386;
             this.tx_car3ro_ruc.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.tx_car3ro_ruc.Visible = false;
             this.tx_car3ro_ruc.Leave += new System.EventHandler(this.ruc_transp_Leave);
             // 
             // label1

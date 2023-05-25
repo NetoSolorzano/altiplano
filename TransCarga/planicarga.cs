@@ -346,6 +346,7 @@ namespace TransCarga
             limpia_otros();
             limpia_combos();
             armagrilla();
+            rb_bus.Enabled = false;
             tx_fechope.Text = DateTime.Today.ToString("dd/MM/yyyy");
             tx_digit.Text = v_nbu;
             tx_dat_estad.Text = codGene;
@@ -485,11 +486,11 @@ namespace TransCarga
                             {
                                 case "1":   // propio
                                     rb_propio.Checked = true;
-                                    splitContainer1.SplitterDistance = 560;
+                                    splitContainer1.SplitterDistance = 780;
                                     break;
                                 case "2":   // tercero
                                     rb_3ro.Checked = true;
-                                    splitContainer1.SplitterDistance = 560;
+                                    splitContainer1.SplitterDistance = 780;
                                     break;
                                 case "3":   // agencia bus carga
                                     rb_bus.Checked = true;
@@ -1712,7 +1713,7 @@ namespace TransCarga
         }
         private void rb_propio_Click(object sender, EventArgs e)
         {
-            splitContainer1.SplitterDistance = 560;
+            splitContainer1.SplitterDistance = 780;
             splitContainer1.Enabled = true;
             splitContainer1.Panel1.Enabled = true;
             tx_car3ro_ruc.Text = "";
@@ -1728,7 +1729,7 @@ namespace TransCarga
         }
         private void rb_3ro_Click(object sender, EventArgs e)
         {
-            splitContainer1.SplitterDistance = 560;
+            splitContainer1.SplitterDistance = 780;
             splitContainer1.Enabled = true;
             splitContainer1.Panel1.Enabled = true;
             tx_car3ro_ruc.Text = "";
@@ -1742,6 +1743,7 @@ namespace TransCarga
         }
         private void rb_bus_Click(object sender, EventArgs e)
         {
+            /*
             splitContainer1.SplitterDistance = 30;
             splitContainer1.Enabled = true;
             splitContainer1.Panel1.Enabled = false;
@@ -1757,6 +1759,7 @@ namespace TransCarga
             tx_pla_autor.Text = "";
             splitContainer1.Panel2.Enabled = true;
             splitContainer1.Panel2.Focus();
+            */
         }
         private void brev_chof_Leave(object sender, EventArgs e)
         {

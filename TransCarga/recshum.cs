@@ -329,7 +329,7 @@ namespace TransCarga
                         "FROM cabrrhh a " +
                         "LEFT JOIN desc_loc lo ON lo.IDCodice = a.sede " +
                         "LEFT JOIN desc_doc dc ON dc.IDCodice = a.tipdoc " +
-                        "LEFT JOIN desc_tem te ON te.IDCodice = a.codtipo ";
+                        "LEFT JOIN desc_tem te ON te.IDCodice = a.codtipo ";    // OJO, no debe haber where acá, esta bien así
                     MySqlCommand cdg = new MySqlCommand(datgri, conn);
                     MySqlDataAdapter dag = new MySqlDataAdapter(cdg);
                     dtg.Clear();
@@ -373,6 +373,7 @@ namespace TransCarga
             }
             return retorna;
         }
+        
 
         #region limpiadores_modos
         public void sololee(Form lfrm)
@@ -703,13 +704,73 @@ namespace TransCarga
                 //jalaoc("tx_idr");               // jalamos los datos del registro
             }
         }
-        private void tx_ruc_Leave(object sender, EventArgs e)
+        private void tx_ruc_Leave(object sender, EventArgs e)       // valida dni
         {
-            // aca podria ir el conector para dni
+            // validamos tipo de documento y número que no se repita
+            if (Tx_modo.Text == "NUEVO")
+            {
+                if (tx_dat_doc.Text == "" || tx_dni.Text.Trim() == "")
+                {
+                    MessageBox.Show("Seleccione correctamente el tipo de documento y su número", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    cmb_doc.Focus();
+                    return;
+                }
+                DataRow[] row = dtg.Select("tipdoc='" + tx_dat_doc.Text + "' and numdoc='" + tx_dni.Text + "'");
+                if (row.Length > 0)
+                {
+                    MessageBox.Show("Esta repitiendo el documento");
+                    tx_dni.Text = "";
+                    cmb_doc.Focus();
+                    return;
+                }
+            }
+            if (Tx_modo.Text != "NUEVO" && tx_dni.Text.Trim() != "")
+            {
+                DataRow[] row = dtg.Select("tipdoc='" + tx_dat_doc.Text + "' and numdoc='" + tx_dni.Text + "'");
+                if (row.Length > 0)
+                {
+                    int i = int.Parse(row[0].ItemArray[0].ToString()) - 1;
+                    advancedDataGridView1.Rows[i].Selected = true;
+                    DataGridViewCell cell = advancedDataGridView1.Rows[i].Cells[3];
+                    //
+                    advancedDataGridView1.CurrentCell = cell;
+                    tx_rind.Text = advancedDataGridView1.CurrentRow.Index.ToString();
+                    tx_idr.Text = advancedDataGridView1.CurrentRow.Cells[0].Value.ToString();
+                    jalaoc("tx_rind");
+                }
+            }
         }
-        private void tx_placa_Leave(object sender, EventArgs e)
+        private void tx_placa_Leave(object sender, EventArgs e)     // valida codigo
         {
-            // 
+            if (Tx_modo.Text == "NUEVO")
+            {
+                if (tx_codigo.Text.Trim() != "")
+                {
+                    DataRow[] row = dtg.Select("codigo='" + tx_codigo.Text + "'");
+                    if (row.Length > 0)
+                    {
+                        MessageBox.Show("Esta repitiendo el código");
+                        tx_codigo.Text = "";
+                        tx_codigo.Focus();
+                        return;
+                    }
+                }
+            }
+            if (Tx_modo.Text != "NUEVO" && tx_codigo.Text.Trim() != "")
+            {
+                DataRow[] row = dtg.Select("codigo='" + tx_codigo.Text + "'");
+                if (row.Length > 0)
+                {
+                    int i = int.Parse(row[0].ItemArray[0].ToString()) - 1;
+                    advancedDataGridView1.Rows[i].Selected = true;
+                    DataGridViewCell cell = advancedDataGridView1.Rows[i].Cells[3];
+                    //
+                    advancedDataGridView1.CurrentCell = cell;
+                    tx_rind.Text = advancedDataGridView1.CurrentRow.Index.ToString();
+                    tx_idr.Text = advancedDataGridView1.CurrentRow.Cells[0].Value.ToString();
+                    jalaoc("tx_rind");
+                }
+            }
         }
         private void tx_trackAsoc_Leave(object sender, EventArgs e)
         {

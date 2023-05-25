@@ -208,7 +208,10 @@ namespace TransCarga
             tx_obser1.MaxLength = 150;
             tx_telD.MaxLength = 19;
             tx_telR.MaxLength = 19;
-            // 
+            //
+            tx_det_umed.MaxLength = 15;
+            tx_det_desc.MaxLength = 100;
+            //
             tx_nomRem.CharacterCasing = CharacterCasing.Upper;
             tx_dirRem.CharacterCasing = CharacterCasing.Upper;
             tx_dptoRtt.CharacterCasing = CharacterCasing.Upper;

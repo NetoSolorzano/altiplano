@@ -220,6 +220,9 @@ namespace TransCarga
             tx_det_desc.AutoCompleteSource = AutoCompleteSource.CustomSource;
             tx_det_desc.AutoCompleteCustomSource = desdet; //;
             // longitudes maximas de campos
+            tx_det_umed.MaxLength = 14;
+            tx_det_desc.MaxLength = 100;
+            //
             tx_pregr_num.MaxLength = 8;
             tx_serie.MaxLength = 4;         // serie pre guia
             tx_numero.MaxLength = 8;        // numero pre guia

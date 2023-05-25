@@ -400,6 +400,10 @@ form facelect, agregar opciones de cargas únicas tipo soya:
 Tabla cabplacar, agregar campos dnichofer,dniayudante .............................................. OK 22/05/2023 
 form guiati_e, se agrego check Carga única, falta agregar en tabla y Grabar(),jalaoc() ............. ok 22/05/2023 (cabguiai.marca1) -> carga unica = 1, normal = 0
 form guiati_e, agregar opción SFS V.1.9 de sunat ................................................... ok 22/05/2023 
-form planicarga, agregar campos para dni del chofer y ayudante ..................................... 
-form ayuda3, busqueda de dni en el caso de planicarga, dnis de choferes en cabrrhh ................. 
+form planicarga, agregar campos para dni del chofer y ayudante ..................................... ok 24/05/2023
+form ayuda3, busqueda de dni en el caso de planicarga, dnis de choferes en cabrrhh ................. ok 24/05/2023
 form recshum, agregar tipo de documento y mejorar la funcionalidad ................................. ok 23/05/2023
+OJO: form planicarga, validar DNI y bloquear brevete y nombre CUANDO ESTE LLENO RR.HH. ............. 
+form recshum, validar documento de identidad ....................................................... ok 24/05/2023
+form guiati_a, validar en init ancho correcto del detalle y unidad de medida ....................... ok 24/05/2023
+form guiati_e, validar en init ancho correcto del detalle y unidad de medida ....................... ok 24/05/2023
