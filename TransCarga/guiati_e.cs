@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Net;
+using Newtonsoft.Json; // using Newtonsoft.Json.Linq;
+using RestSharp;
 using System.Data;
 using System.Drawing;
 using System.Windows.Forms;
@@ -7,9 +9,7 @@ using CrystalDecisions.CrystalReports.Engine;
 using MySql.Data.MySqlClient;
 using System.Text;
 using System.IO;
-using Newtonsoft.Json.Linq;
-using RestSharp;
-using Newtonsoft.Json;
+using System.IO.Compression;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Serialization;
@@ -78,7 +78,7 @@ namespace TransCarga
         string cGR_sunat = "";          // codigo sunat para GR transportista
         string usa_gre = "";            // usa GRE en la organización? S/N
         string rutatxt = "";            // ruta para las guias de remision electronicas
-        string rutaxml = "";            // ruta para los XML de las guias de remision SFS v1.9
+        string rutaxml = "";            // ruta para los XML de las guias de remision
         string tipdo = "";              // CODIGO SUNAT tipo de documento guia remision transportista
         string tipoDocEmi = "";         // CODIGO SUNAT tipo de documento RUC/DNI emisor
         string tipoDocRem = "";         // CODIGO SUNAT tipo de documento RUC/DNI remitente de la GRT
@@ -93,6 +93,11 @@ namespace TransCarga
         string otro = "";               // ruta y nombre del png código QR
         string ipeeg = "";              // identificador de proveedor de emisor electrónico 
         string despedida = "Gracias por su confianza en nosotros";
+
+        double tiempoT = 0;             // Sunat Webservice - contador EN SEGUNDOS de vigencia del token
+        string TokenAct = "";           // Sunat Webservice - Token actual vigente
+        TimeSpan horaT;                 // Sunat Webservice - Hora de emisión del token
+        int plazoT = 0;                 // Sunat Webservice - Cantidad en segundos
         //
         static libreria lib = new libreria();   // libreria de procedimientos
         publico lp = new publico();             // libreria de clases
@@ -591,12 +596,14 @@ namespace TransCarga
                     }
                     dr.Dispose();
                     micon.Dispose();
-                    /*
-                    if (Tx_modo.Text == "EDITAR" && (tx_pla_plani.Text != "" || tx_DV.Text != ""))
+                    
+                    if (Tx_modo.Text != "NUEVO" && (tx_estaSunat.Text != "Aceptado" && tx_estaSunat.Text != "Rechazado"))
                     {
-                        sololee();
-                        dataGridView1.ReadOnly = true;
-                    } */
+                        // llamar el metodo que consultará el estado del comprobante y actualizara 
+                        // 2 opciones: 
+                        // 1 -> web service de consulta de comprobante
+                        // 2 -> leer el directorio del SFS buscando la respuesta del comprobante, deszipeando y leyendo el cdr
+                    }
                 }
                 conn.Close();
             }
@@ -1233,111 +1240,95 @@ namespace TransCarga
         #region  guia electronica en sunat y psnet
 
         #region Sunat metodo directo
-        private bool sunat_api()
+        private bool sunat_api()                    // SI VAMOS A USAR 26/05/2023 este metodo directo
         {
             bool retorna = false;
-            string token = conex_token();
+            string token = conex_token();           // este metodo funciona bien .. 26/05/2023
             if (token != null && token != "")
             {
-                arma_guiaE(token);
-                
-                retorna = true;
+                string aZip = "";
+                string aXml = arma_guiaE();         // 
+                if (aXml != "")
+                {
+                    aZip = aXml.Replace(".xml", "") + ".zip";                     // - zipear el xml, 
+                    using (ZipArchive zip = ZipFile.Open(aZip, ZipArchiveMode.Create))
+                    {
+                        string source = rutaxml + aXml;
+                        zip.CreateEntryFromFile(source, aXml);
+                        // zip.CreateEntryFromFile(@"c:\temp\Guias\20555954884-31-V015-00000089.xml", @"20555954884-31-V015-00000089.xml");
+                    }
+
+                }
+                                                    // - hashear y byte[]ar el zip, 
+                                                    // - y POSTearlo al servicio   
+                                                    // - leer el zip retornado y obtener el CDR
+                                                    // - grabar el cdr, resultado, etc, en la tabla respectiva
+
+                retorna = true;                     // 
             }
-
             return retorna;
         }
-        private string arma_guiaE(string token)
+        private string arma_guiaE()     // metodo para cambiar, el app xmlGRE se debe usar para generar el xml
         {
             string retorna = "";
-            DespatchAdviceType despatch = new DespatchAdviceType();     // objeto guia
-
-            /************************  datos de la guía  ************************/
-            UBLVersionIDType ubltipo = new UBLVersionIDType();
-            ubltipo.Value = "2.1";
-            CustomizationIDType cusid = new CustomizationIDType();
-            cusid.Value = "1.0";
-            IDType iD = new IDType();
-            iD.Value = "T" + tx_serie.Text + tx_numero.Text;
-            IssueDateType fec = new IssueDateType();
-            fec.Value = DateTime.Parse(tx_fechope.Text);
-            IssueTimeType hora = new IssueTimeType();
-            //TimeSpan th = new TimeSpan(DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second);
-            hora.Value = DateTime.Now;
-            DespatchAdviceTypeCodeType codsunat = new DespatchAdviceTypeCodeType();
-            codsunat.Value = cGR_sunat;
-            NoteType observ = new NoteType();
-            observ.Value = "Observaciones";
-
-            
-            /**********************  datos del emisor ***********************/
-            CustomerAssignedAccountIDType tdEmi = new CustomerAssignedAccountIDType();
-            tdEmi.schemeID = "6";
-            //tdEmi.Value = Program.ruc;
-            SupplierPartyType rucEmi = new SupplierPartyType();
-            rucEmi.CustomerAssignedAccountID.Value = Program.ruc;
-            
-
-            /*********************** ponemos los datos en el objeto guia *********************/
-            despatch.UBLVersionID = ubltipo;
-            despatch.CustomizationID = cusid;
-            despatch.ID = iD;
-            despatch.IssueDate = fec;
-            despatch.IssueTime = hora;
-            despatch.DespatchAdviceTypeCode = codsunat;
-            //despatch.Note = observ;
-            despatch.DespatchSupplierParty = rucEmi;                    // Acá hay un problema
-            
-            
-
-
-            /************************** serializamos y grabamos el xml ***************************/
-            XmlSerializer serializado = new XmlSerializer(typeof(DespatchAdviceType));
-            var oStringWriter = new StringWriter();
-            serializado.Serialize(XmlWriter.Create(oStringWriter), despatch);
-            string GRExml = oStringWriter.ToString();
-            File.WriteAllText(@"c:\temp\xmlsunat.xml", GRExml);
-
-            return retorna;
-        }
-        private string conex_token()
-        {
-            string retorna = "";
-            System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls12;
-            //var client = new RestClient("https://api-seguridad.sunat.gob.pe/v1/clientessol/9613540b-a94d-45c6-b201-7521413ed391/oauth2/token/");
-            var client = new RestClient("https://api-seguridad.sunat.gob.pe/v1/clientessol/" + client_id_sunat + "/oauth2/token/");
-            client.Timeout = -1;
-            var request = new RestRequest(Method.POST);
-
-            string postData = "grant_type=password" + "&scope=" + scope_sunat + "&client_id=" + client_id_sunat + "&client_secret=" +
-                client_pass_sunat + "&username=" + "20430100344" + u_sol_sunat + "&password=" + c_sol_sunat;
-
-            request.AddHeader("Content-Type", "application/x-www-form-urlencoded");
-            request.AddHeader("Cookie", "TS019e7fc2=019edc9eb804e5899340ca3cd8b25a1098eb57b21624caa574cefc11fed3597c7bcb5f241fc66c79229d8b9a37710e7b9371a6c2ba");
-            request.AddParameter("grant_type", "password");
-            request.AddParameter("scope", scope_sunat);                                 // "https://api-cpe.sunat.gob.pe");
-            request.AddParameter("client_id", client_id_sunat);                         // "9613540b-a94d-45c6-b201-7521413ed391");
-            request.AddParameter("client_secret", client_pass_sunat);                   // "gmlqIVugA1+Fgd1wUN6Kyg==");
-            request.AddParameter("username", "20430100344" + u_sol_sunat);              // "20430100344PTIONVAL");  // Program.ruc + u_sol_sunat
-            request.AddParameter("password", c_sol_sunat);                              // "patocralr");
-
-            IRestResponse response = client.Execute(request);
-            
-            if (response.StatusCode.ToString() != "OK")
+            //CreaTablaLiteGRE();
+            if (llenaTablaLiteGRE() != true)
             {
-                MessageBox.Show("NO se pudo obtener el token" + Environment.NewLine + 
-                    response.StatusDescription,"Error de conexión a Sunat",MessageBoxButtons.OK,MessageBoxIcon.Error);
+                MessageBox.Show("No se pudo crear el archivo xml", "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            else retorna = Program.ruc + "-" + "31" + "-" + tx_serie.Text + "-" + tx_numero.Text + ".xml";
+            return retorna;
+        }
+        private void consultaC(string ticket, string token)                    // consulta comprobante
+        {
+            //ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+            var client = new RestClient("https://api-cpe.sunat.gob.pe/v1/contribuyente/gem/comprobantes/envios/" + ticket);
+            client.Timeout = -1;
+            var request = new RestRequest(Method.GET);
+            request.AddHeader("Authorization", "Bearer " + token);
+            IRestResponse response = client.Execute(request);
+            var Rpta = JsonConvert.DeserializeObject<Rspta_Consulta>(response.Content);
+            MessageBox.Show(response.Content);    // me quede acá
+        }
+        private string conex_token()                // obtenemos el token de conexión
+        {
+            string retorna = "";
+            tiempoT = (DateTime.Now.TimeOfDay.Subtract(horaT).TotalSeconds);
+            if (tiempoT >= (plazoT-60))             // un minuto antes que venza la vigencia del token
+            {
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+                var client = new RestClient("https://api-seguridad.sunat.gob.pe/v1/clientessol/" + client_id_sunat + "/oauth2/token/");
+                client.Timeout = -1;
+                var request = new RestRequest(Method.POST);
+                request.AddHeader("Content-Type", "application/x-www-form-urlencoded");
+                request.AddHeader("Cookie", "TS019e7fc2=014dc399cb268cb3d074c3b37bb5b735ab83b63307dfe5263ff5802065fe226640c58236dcd71073fbe01e3206d01bfa3c513e69c4");
+                request.AddParameter("grant_type", "password");
+                request.AddParameter("scope", scope_sunat);                     // "https://api-cpe.sunat.gob.pe"
+                request.AddParameter("client_id", client_id_sunat);             // "9613540b-a94d-45c6-b201-7521413ed391"
+                request.AddParameter("client_secret", client_pass_sunat);       // "gmlqIVugA1+Fgd1wUN6Kyg=="
+                request.AddParameter("username", u_sol_sunat);                  // "20430100344PTIONVAL"
+                request.AddParameter("password", c_sol_sunat);                  // "patocralr"
+                IRestResponse response = client.Execute(request);
+                if (response.StatusCode.ToString() != "OK")
+                {
+                    MessageBox.Show("NO se pudo obtener el token" + Environment.NewLine +
+                        response.StatusDescription, "Error de conexión a Sunat", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                else
+                {
+                    var result = JsonConvert.DeserializeObject<Token>(response.Content);
+                    retorna = result.access_token;
+                    plazoT = result.expires_in;
+                    horaT = DateTime.Now.TimeOfDay;
+                    TokenAct = result.access_token;
+                }
             }
             else
             {
-                Token token = JsonConvert.DeserializeObject<Token>(response.Content);
-                retorna = token.access_token;
-                MessageBox.Show(token.access_token);
+                retorna = TokenAct;     // retorna el token actual
             }
             return retorna;
         }
-        #endregion
-
-        #region Sunat metodo SFS V.1.9
         static private void CreaTablaLiteGRE()          // llamado en el load del form, crea las tablas al iniciar
         {
             using (SqliteConnection cnx = new SqliteConnection(CadenaConexion))
@@ -1457,7 +1448,7 @@ namespace TransCarga
                 }
             }
         }
-        private bool llenaTablaLiteGRE()
+        private bool llenaTablaLiteGRE()            // llena tabla con los datos de la guía y llama al app que crea el xml
         {
             bool retorna = false;
             using (SqliteConnection cnx = new SqliteConnection(CadenaConexion))
@@ -1549,12 +1540,13 @@ namespace TransCarga
                     }
                     // datos de transportista subcontratado (si lo hubiera)
                     if (tx_pla_ruc.Text != Program.ruc)     // valida si es carro contratado
-                    {   
+                    {
                         cmd.Parameters.AddWithValue("@SConTipdo", "6");     // por defecto el tipo es 6 = Ruc
                         cmd.Parameters.AddWithValue("@SConNomTi", "Registro Unico de Contributentes");
                         cmd.Parameters.AddWithValue("@SConNumdo", tx_pla_ruc.Text);
                         cmd.Parameters.AddWithValue("@SconNombr", tx_pla_propiet.Text);
-                    }else
+                    }
+                    else
                     {
                         cmd.Parameters.AddWithValue("@SConTipdo", "");
                         cmd.Parameters.AddWithValue("@SConNomTi", "");
@@ -1577,7 +1569,7 @@ namespace TransCarga
                     cmd.Parameters.AddWithValue("@ChoTipDi1", "1");
                     cmd.Parameters.AddWithValue("@ChoNumDi1", tx_pla_dniChof.Text);
                     cmd.Parameters.AddWithValue("@ChoNomTi1", "Documento Nacional de Identidad");
-                    cmd.Parameters.AddWithValue("@ChoNombr1", partidor(tx_pla_nomcho.Text," ")[0]);        // tx_pla_nomcho.Text
+                    cmd.Parameters.AddWithValue("@ChoNombr1", partidor(tx_pla_nomcho.Text, " ")[0]);        // tx_pla_nomcho.Text
                     cmd.Parameters.AddWithValue("@ChoApell1", partidor(tx_pla_nomcho.Text, " ")[1]);
                     cmd.Parameters.AddWithValue("@ChoLicen1", tx_pla_brevet.Text);        // "U46785663"
                     cmd.Parameters.AddWithValue("@ChoTipDi2", "1");
@@ -1604,7 +1596,7 @@ namespace TransCarga
                     cmd.Parameters.AddWithValue("@cant", tx_det_cant.Text);                             // 30
                     cmd.Parameters.AddWithValue("@codigo", "ZZ");
                     cmd.Parameters.AddWithValue("@peso", tx_det_peso.Text);                             // 150
-                    cmd.Parameters.AddWithValue("@umed", (rb_kg.Checked == true)? "KGM" : "TNE");       // "KGM"
+                    cmd.Parameters.AddWithValue("@umed", (rb_kg.Checked == true) ? "KGM" : "TNE");       // "KGM"
                     cmd.Parameters.AddWithValue("@deta1", lb_glodeta.Text);    // "Servicio de Transporte de carga terrestre "
                     cmd.Parameters.AddWithValue("@deta2", tx_det_desc.Text);    //"Dice contener Enseres domésticos"
 
@@ -1621,7 +1613,8 @@ namespace TransCarga
 
             return retorna;
         }
-        #endregion
+
+        #endregion Sunat metodo directo
 
         #region psnet
         private void armagret()                         // arma cabecera general para todos los metodos
@@ -2241,16 +2234,23 @@ namespace TransCarga
 
                                 if (ipeeg == "secure")                      // Peru Secure Net
                                 {
-                                    if (psnet_api() == false)              // 22/05/2023
+                                    if (psnet_api() == false)               // 22/05/2023
                                     {
-                                        MessageBox.Show("No se pudo regenar el txt", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                        MessageBox.Show("No se pudo genar el txt", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                                     }
                                 }
                                 if (ipeeg == "SFS")                         // Facturador Sunat - SFS
                                 {
-                                    if (llenaTablaLiteGRE() == false)         // 22/05/2023
+                                    if (llenaTablaLiteGRE() == false)       // 22/05/2023
                                     {
-                                        MessageBox.Show("No se pudo regenar el txt", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                        MessageBox.Show("No se pudo genar el txt", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    }
+                                }
+                                if (ipeeg == "API_SUNAT")                   // Emisión directa consumiendo los servicios web de sunat api-rest
+                                {
+                                    if (sunat_api() == false)               // 27/05/2023
+                                    {
+                                        MessageBox.Show("No se pudo genar el txt", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                                     }
                                 }
 
@@ -3718,15 +3718,15 @@ namespace TransCarga
                     MessageBox.Show("No se puede imprimir sin grabar!", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
-                if (vi_formato == "A4")            // Seleccion de formato ... A4
+                if (vi_formato == "A4")     // no existe aún
                 {
                     if (imprimeA4() == true) updateprint("S");
                 }
-                if (vi_formato == "A5")
+                if (vi_formato == "A5")     // formato de imprenta "manual"
                 {
                     if (imprimeA5() == true) updateprint("S");
                 }
-                if (vi_formato == "TK")
+                if (vi_formato == "TK")     // Electrónica
                 {
                     if (imprimeTK() == true) updateprint("S");
                 }
@@ -4551,6 +4551,13 @@ namespace TransCarga
             //jalainfo();
         }
 
+    }
+    public class Rspta_Consulta
+    {
+        public string codRespuesta { get; set; }
+        public string arcCdr { get; set; }
+        public string indCdrGenerado { get; set; }
+        public string error { get; set; }
     }
     public class Token
     {

@@ -282,6 +282,9 @@
             this.tx_tfil = new TransCarga.NumericTextBox();
             this.tx_totpes = new TransCarga.NumericTextBox();
             this.tx_totcant = new TransCarga.NumericTextBox();
+            this.label46 = new System.Windows.Forms.Label();
+            this.label47 = new System.Windows.Forms.Label();
+            this.tx_estaSunat = new System.Windows.Forms.TextBox();
             this.toolStrip1.SuspendLayout();
             this.groupBox11.SuspendLayout();
             this.groupBox7.SuspendLayout();
@@ -597,7 +600,7 @@
             // 
             this.tx_ubigO.BackColor = System.Drawing.SystemColors.Window;
             this.tx_ubigO.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_ubigO.Location = new System.Drawing.Point(734, 34);
+            this.tx_ubigO.Location = new System.Drawing.Point(733, 48);
             this.tx_ubigO.MaxLength = 6;
             this.tx_ubigO.Name = "tx_ubigO";
             this.tx_ubigO.Size = new System.Drawing.Size(33, 18);
@@ -726,10 +729,10 @@
             // 
             // tx_idr
             // 
-            this.tx_idr.Location = new System.Drawing.Point(70, 4);
+            this.tx_idr.Location = new System.Drawing.Point(69, 4);
             this.tx_idr.Name = "tx_idr";
             this.tx_idr.ReadOnly = true;
-            this.tx_idr.Size = new System.Drawing.Size(75, 20);
+            this.tx_idr.Size = new System.Drawing.Size(71, 20);
             this.tx_idr.TabIndex = 277;
             this.tx_idr.Leave += new System.EventHandler(this.tx_idr_Leave);
             // 
@@ -817,7 +820,7 @@
             // 
             this.label4.AutoSize = true;
             this.label4.ForeColor = System.Drawing.Color.Black;
-            this.label4.Location = new System.Drawing.Point(155, 36);
+            this.label4.Location = new System.Drawing.Point(151, 36);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(67, 13);
             this.label4.TabIndex = 276;
@@ -827,7 +830,7 @@
             // 
             this.label7.AutoSize = true;
             this.label7.ForeColor = System.Drawing.Color.Black;
-            this.label7.Location = new System.Drawing.Point(155, 65);
+            this.label7.Location = new System.Drawing.Point(151, 65);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(72, 13);
             this.label7.TabIndex = 277;
@@ -837,7 +840,7 @@
             // 
             this.cmb_origen.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmb_origen.FormattingEnabled = true;
-            this.cmb_origen.Location = new System.Drawing.Point(228, 32);
+            this.cmb_origen.Location = new System.Drawing.Point(224, 32);
             this.cmb_origen.Name = "cmb_origen";
             this.cmb_origen.Size = new System.Drawing.Size(98, 21);
             this.cmb_origen.TabIndex = 331;
@@ -847,7 +850,7 @@
             // 
             this.cmb_destino.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmb_destino.FormattingEnabled = true;
-            this.cmb_destino.Location = new System.Drawing.Point(228, 61);
+            this.cmb_destino.Location = new System.Drawing.Point(224, 61);
             this.cmb_destino.Name = "cmb_destino";
             this.cmb_destino.Size = new System.Drawing.Size(98, 21);
             this.cmb_destino.TabIndex = 3;
@@ -857,27 +860,27 @@
             // 
             this.tx_dirOrigen.BackColor = System.Drawing.SystemColors.Window;
             this.tx_dirOrigen.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_dirOrigen.Location = new System.Drawing.Point(326, 35);
+            this.tx_dirOrigen.Location = new System.Drawing.Point(322, 35);
             this.tx_dirOrigen.MaxLength = 0;
             this.tx_dirOrigen.Name = "tx_dirOrigen";
-            this.tx_dirOrigen.Size = new System.Drawing.Size(323, 18);
+            this.tx_dirOrigen.Size = new System.Drawing.Size(278, 18);
             this.tx_dirOrigen.TabIndex = 32;
             // 
             // tx_dirDestino
             // 
             this.tx_dirDestino.BackColor = System.Drawing.SystemColors.Window;
             this.tx_dirDestino.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_dirDestino.Location = new System.Drawing.Point(326, 64);
+            this.tx_dirDestino.Location = new System.Drawing.Point(322, 64);
             this.tx_dirDestino.MaxLength = 0;
             this.tx_dirDestino.Name = "tx_dirDestino";
-            this.tx_dirDestino.Size = new System.Drawing.Size(323, 18);
+            this.tx_dirDestino.Size = new System.Drawing.Size(278, 18);
             this.tx_dirDestino.TabIndex = 33;
             // 
             // label10
             // 
             this.label10.AutoSize = true;
             this.label10.ForeColor = System.Drawing.Color.Black;
-            this.label10.Location = new System.Drawing.Point(15, 6);
+            this.label10.Location = new System.Drawing.Point(15, 7);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(52, 13);
             this.label10.TabIndex = 282;
@@ -887,7 +890,7 @@
             // 
             this.label11.AutoSize = true;
             this.label11.ForeColor = System.Drawing.Color.Black;
-            this.label11.Location = new System.Drawing.Point(155, 6);
+            this.label11.Location = new System.Drawing.Point(158, 7);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(63, 13);
             this.label11.TabIndex = 283;
@@ -897,11 +900,11 @@
             // 
             this.tx_fechope.BackColor = System.Drawing.SystemColors.Window;
             this.tx_fechope.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_fechope.Location = new System.Drawing.Point(220, 5);
+            this.tx_fechope.Location = new System.Drawing.Point(223, 5);
             this.tx_fechope.MaxLength = 0;
             this.tx_fechope.Name = "tx_fechope";
             this.tx_fechope.ReadOnly = true;
-            this.tx_fechope.Size = new System.Drawing.Size(126, 18);
+            this.tx_fechope.Size = new System.Drawing.Size(92, 18);
             this.tx_fechope.TabIndex = 288;
             this.tx_fechope.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -909,18 +912,18 @@
             // 
             this.tx_digit.BackColor = System.Drawing.SystemColors.Window;
             this.tx_digit.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_digit.Location = new System.Drawing.Point(409, 5);
+            this.tx_digit.Location = new System.Drawing.Point(384, 5);
             this.tx_digit.MaxLength = 0;
             this.tx_digit.Name = "tx_digit";
             this.tx_digit.ReadOnly = true;
-            this.tx_digit.Size = new System.Drawing.Size(232, 18);
+            this.tx_digit.Size = new System.Drawing.Size(216, 18);
             this.tx_digit.TabIndex = 299;
             // 
             // label13
             // 
             this.label13.AutoSize = true;
             this.label13.ForeColor = System.Drawing.Color.Black;
-            this.label13.Location = new System.Drawing.Point(357, 6);
+            this.label13.Location = new System.Drawing.Point(332, 7);
             this.label13.Name = "label13";
             this.label13.Size = new System.Drawing.Size(49, 13);
             this.label13.TabIndex = 285;
@@ -932,7 +935,7 @@
             this.groupBox5.Controls.Add(this.groupBox6);
             this.groupBox5.Location = new System.Drawing.Point(12, 22);
             this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(744, 1);
+            this.groupBox5.Size = new System.Drawing.Size(587, 1);
             this.groupBox5.TabIndex = 287;
             this.groupBox5.TabStop = false;
             // 
@@ -1106,9 +1109,9 @@
             // 
             this.groupBox19.BackColor = System.Drawing.Color.White;
             this.groupBox19.Controls.Add(this.groupBox20);
-            this.groupBox19.Location = new System.Drawing.Point(153, 52);
+            this.groupBox19.Location = new System.Drawing.Point(149, 52);
             this.groupBox19.Name = "groupBox19";
-            this.groupBox19.Size = new System.Drawing.Size(496, 1);
+            this.groupBox19.Size = new System.Drawing.Size(451, 1);
             this.groupBox19.TabIndex = 291;
             this.groupBox19.TabStop = false;
             // 
@@ -1124,9 +1127,9 @@
             // 
             this.groupBox21.BackColor = System.Drawing.Color.White;
             this.groupBox21.Controls.Add(this.groupBox22);
-            this.groupBox21.Location = new System.Drawing.Point(153, 81);
+            this.groupBox21.Location = new System.Drawing.Point(149, 81);
             this.groupBox21.Name = "groupBox21";
-            this.groupBox21.Size = new System.Drawing.Size(496, 1);
+            this.groupBox21.Size = new System.Drawing.Size(451, 1);
             this.groupBox21.TabIndex = 292;
             this.groupBox21.TabStop = false;
             // 
@@ -1554,7 +1557,7 @@
             // 
             this.tx_dat_locori.BackColor = System.Drawing.SystemColors.Window;
             this.tx_dat_locori.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_dat_locori.Location = new System.Drawing.Point(177, 23);
+            this.tx_dat_locori.Location = new System.Drawing.Point(173, 23);
             this.tx_dat_locori.Name = "tx_dat_locori";
             this.tx_dat_locori.Size = new System.Drawing.Size(26, 18);
             this.tx_dat_locori.TabIndex = 316;
@@ -1564,7 +1567,7 @@
             // 
             this.tx_dat_locdes.BackColor = System.Drawing.SystemColors.Window;
             this.tx_dat_locdes.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_dat_locdes.Location = new System.Drawing.Point(177, 53);
+            this.tx_dat_locdes.Location = new System.Drawing.Point(173, 53);
             this.tx_dat_locdes.Name = "tx_dat_locdes";
             this.tx_dat_locdes.Size = new System.Drawing.Size(51, 18);
             this.tx_dat_locdes.TabIndex = 317;
@@ -1596,7 +1599,7 @@
             // 
             this.tx_estado.BackColor = System.Drawing.SystemColors.Window;
             this.tx_estado.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_estado.Location = new System.Drawing.Point(659, 5);
+            this.tx_estado.Location = new System.Drawing.Point(660, 5);
             this.tx_estado.MaxLength = 0;
             this.tx_estado.Name = "tx_estado";
             this.tx_estado.ReadOnly = true;
@@ -1619,7 +1622,7 @@
             // 
             this.tx_dat_estad.BackColor = System.Drawing.SystemColors.Window;
             this.tx_dat_estad.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_dat_estad.Location = new System.Drawing.Point(643, 5);
+            this.tx_dat_estad.Location = new System.Drawing.Point(597, -2);
             this.tx_dat_estad.Name = "tx_dat_estad";
             this.tx_dat_estad.Size = new System.Drawing.Size(26, 18);
             this.tx_dat_estad.TabIndex = 325;
@@ -2421,7 +2424,7 @@
             this.panel2.Controls.Add(this.label36);
             this.panel2.Controls.Add(this.rb_car_clte);
             this.panel2.Controls.Add(this.rb_car_ofi);
-            this.panel2.Location = new System.Drawing.Point(153, 83);
+            this.panel2.Location = new System.Drawing.Point(150, 83);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(253, 23);
             this.panel2.TabIndex = 363;
@@ -2431,7 +2434,7 @@
             this.label36.AutoSize = true;
             this.label36.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label36.ForeColor = System.Drawing.Color.Black;
-            this.label36.Location = new System.Drawing.Point(3, 3);
+            this.label36.Location = new System.Drawing.Point(4, 3);
             this.label36.Name = "label36";
             this.label36.Size = new System.Drawing.Size(69, 15);
             this.label36.TabIndex = 2;
@@ -2441,7 +2444,7 @@
             // 
             this.rb_car_clte.AutoSize = true;
             this.rb_car_clte.ForeColor = System.Drawing.Color.Black;
-            this.rb_car_clte.Location = new System.Drawing.Point(152, 3);
+            this.rb_car_clte.Location = new System.Drawing.Point(153, 3);
             this.rb_car_clte.Name = "rb_car_clte";
             this.rb_car_clte.Size = new System.Drawing.Size(95, 17);
             this.rb_car_clte.TabIndex = 1;
@@ -2454,7 +2457,7 @@
             // 
             this.rb_car_ofi.AutoSize = true;
             this.rb_car_ofi.ForeColor = System.Drawing.Color.Black;
-            this.rb_car_ofi.Location = new System.Drawing.Point(75, 3);
+            this.rb_car_ofi.Location = new System.Drawing.Point(80, 3);
             this.rb_car_ofi.Name = "rb_car_ofi";
             this.rb_car_ofi.Size = new System.Drawing.Size(67, 17);
             this.rb_car_ofi.TabIndex = 0;
@@ -2687,7 +2690,7 @@
             // 
             this.chk_cunica.AutoSize = true;
             this.chk_cunica.ForeColor = System.Drawing.Color.Black;
-            this.chk_cunica.Location = new System.Drawing.Point(673, 41);
+            this.chk_cunica.Location = new System.Drawing.Point(643, 48);
             this.chk_cunica.Name = "chk_cunica";
             this.chk_cunica.Size = new System.Drawing.Size(83, 30);
             this.chk_cunica.TabIndex = 256;
@@ -2937,6 +2940,40 @@
             this.tx_totcant.TabIndex = 329;
             this.tx_totcant.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
+            // label46
+            // 
+            this.label46.AutoSize = true;
+            this.label46.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label46.ForeColor = System.Drawing.Color.Black;
+            this.label46.Location = new System.Drawing.Point(612, 8);
+            this.label46.Name = "label46";
+            this.label46.Size = new System.Drawing.Size(46, 13);
+            this.label46.TabIndex = 385;
+            this.label46.Text = "Estado";
+            // 
+            // label47
+            // 
+            this.label47.AutoSize = true;
+            this.label47.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label47.ForeColor = System.Drawing.Color.Black;
+            this.label47.Location = new System.Drawing.Point(609, 28);
+            this.label47.Name = "label47";
+            this.label47.Size = new System.Drawing.Size(49, 13);
+            this.label47.TabIndex = 387;
+            this.label47.Text = "SUNAT";
+            // 
+            // tx_estaSunat
+            // 
+            this.tx_estaSunat.BackColor = System.Drawing.SystemColors.Window;
+            this.tx_estaSunat.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_estaSunat.Location = new System.Drawing.Point(660, 26);
+            this.tx_estaSunat.MaxLength = 0;
+            this.tx_estaSunat.Name = "tx_estaSunat";
+            this.tx_estaSunat.ReadOnly = true;
+            this.tx_estaSunat.Size = new System.Drawing.Size(97, 18);
+            this.tx_estaSunat.TabIndex = 386;
+            this.tx_estaSunat.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
             // guiati_e
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -2944,6 +2981,10 @@
             this.AutoSize = true;
             this.BackColor = System.Drawing.Color.Peru;
             this.ClientSize = new System.Drawing.Size(766, 614);
+            this.Controls.Add(this.label47);
+            this.Controls.Add(this.tx_estaSunat);
+            this.Controls.Add(this.label46);
+            this.Controls.Add(this.tx_idr);
             this.Controls.Add(this.tx_dat_nomcsr);
             this.Controls.Add(this.chk_cunica);
             this.Controls.Add(this.tx_dat_csrem);
@@ -3049,7 +3090,6 @@
             this.Controls.Add(this.tx_estado);
             this.Controls.Add(this.tx_digit);
             this.Controls.Add(this.tx_fechope);
-            this.Controls.Add(this.tx_idr);
             this.ForeColor = System.Drawing.SystemColors.ControlLight;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -3368,5 +3408,8 @@
         private System.Windows.Forms.TextBox tx_dat_dniC2;
         private System.Windows.Forms.TextBox tx_dat_carrNreg;
         private System.Windows.Forms.TextBox tx_dat_plaNreg;
+        private System.Windows.Forms.Label label46;
+        private System.Windows.Forms.Label label47;
+        private System.Windows.Forms.TextBox tx_estaSunat;
     }
 }
