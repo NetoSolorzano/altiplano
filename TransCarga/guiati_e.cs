@@ -3,9 +3,11 @@ using System.Net;
 using Newtonsoft.Json; // using Newtonsoft.Json.Linq;
 using RestSharp;
 using System.Data;
+using Gma.QrCodeNet.Encoding;
+using Gma.QrCodeNet.Encoding.Windows.Render;
 using System.Drawing;
 using System.Windows.Forms;
-using CrystalDecisions.CrystalReports.Engine;
+using System.Security.Cryptography;
 using MySql.Data.MySqlClient;
 using System.Text;
 using System.IO;
@@ -15,6 +17,9 @@ using System.Xml.Linq;
 using System.Xml.Serialization;
 using Microsoft.Data.Sqlite;
 using System.Diagnostics;
+using System.Linq;
+using System.Net.Http;
+using System.Drawing.Imaging;
 
 namespace TransCarga
 {
@@ -460,8 +465,9 @@ namespace TransCarga
                         "ifnull(b.feculpago,'') as feculpago,ifnull(b.estadoser,'') as estadoser,ifnull(c.razonsocial,'') as razonsocial,a.grinumaut," +
                         "ifnull(d.marca,'') as marca,ifnull(d.modelo,'') as modelo,ifnull(r.marca,'') as marCarret,ifnull(r.confve,'') as confvCarret,ifnull(r.autor1,'') as autCarret," +
                         "ifnull(er.numerotel1,'') as telrem,ifnull(ed.numerotel1,'') as teldes,ifnull(t.nombclt,'') as clifact," +
-                        "a.marca_gre,a.tidocor,a.rucDorig,a.lpagop,a.pesoKT,a.tidocor2,a.rucDorig2,a.docsremit2,a.marca1 " +
+                        "a.marca_gre,a.tidocor,a.rucDorig,a.lpagop,a.pesoKT,a.tidocor2,a.rucDorig2,a.docsremit2,a.marca1,ifnull(ad.nticket,'') as nticket,ifnull(ad.estadoS,'') as estadoS " +
                         "from cabguiai a " +
+                        "left join adiguias ad on ad.idg=a.id " +
                         "left join controlg b on b.serguitra=a.sergui and b.numguitra=a.numgui " +
                         "left join desc_tdv f on f.idcodice=b.tipdocvta " +
                         "left join cabfactu t on t.tipdvta=a.tipdocvta and t.serdvta=a.serdocvta and t.numdvta=a.numdocvta " +
@@ -538,7 +544,7 @@ namespace TransCarga
                             tx_pla_propiet.Text = dr.GetString("razonsocial");
                             tx_pla_dniChof.Text = lib.Right(dr.GetString("breplagri").ToString(), 8);         // aca debería ser un campo separado 07/03/2023
                             tx_marCpropio.Text = (tx_pla_ruc.Text.Trim() != "" && tx_pla_ruc.Text != Program.ruc) ? "1" : "0";   // Indicador de transporte subcontratado = true
-
+                            tx_dat_tickSunat.Text = dr.GetString("nticket");
                             tx_fecDV.Text = dr.GetString("fecdocvta");  //.Substring(0,10);
                             tx_DV.Text = dr.GetString("tipdocvta") + "-" + dr.GetString("serdocvta") + "-" + dr.GetString("numdocvta");
                             tx_clteDV.Text = dr.GetString("clifact");
@@ -562,6 +568,7 @@ namespace TransCarga
                             cmb_docorig2_SelectionChangeCommitted(null, null);
                             //
                             tx_estado.Text = lib.nomstat(tx_dat_estad.Text);
+                            tx_estaSunat.Text = dr.GetString("estadoS");
                             cmb_origen.SelectedValue = tx_dat_locori.Text;
                             cmb_origen_SelectionChangeCommitted(null, null);
                             cmb_destino.SelectedValue = tx_dat_locdes.Text;
@@ -599,10 +606,8 @@ namespace TransCarga
                     
                     if (Tx_modo.Text != "NUEVO" && (tx_estaSunat.Text != "Aceptado" && tx_estaSunat.Text != "Rechazado"))
                     {
-                        // llamar el metodo que consultará el estado del comprobante y actualizara 
-                        // 2 opciones: 
-                        // 1 -> web service de consulta de comprobante
-                        // 2 -> leer el directorio del SFS buscando la respuesta del comprobante, deszipeando y leyendo el cdr
+                        // llamada al metodo que consultará el estado del comprobante y actualizara 
+                        consultaC(tx_dat_tickSunat.Text, conex_token());
                     }
                 }
                 conn.Close();
@@ -1240,35 +1245,92 @@ namespace TransCarga
         #region  guia electronica en sunat y psnet
 
         #region Sunat metodo directo
-        private bool sunat_api()                    // SI VAMOS A USAR 26/05/2023 este metodo directo
+        private bool sunat_api()                                // SI VAMOS A USAR 26/05/2023 este metodo directo
         {
             bool retorna = false;
             string token = conex_token();           // este metodo funciona bien .. 26/05/2023
             if (token != null && token != "")
             {
-                string aZip = "";
-                string aXml = arma_guiaE();         // 
+                string aZip;
+                string aXml = "20430100344-09-T001-1.xml";         // arma_guiaE();     //
                 if (aXml != "")
                 {
-                    aZip = aXml.Replace(".xml", "") + ".zip";                     // - zipear el xml, 
-                    using (ZipArchive zip = ZipFile.Open(aZip, ZipArchiveMode.Create))
+                    // - zipear el xml, 
+                    aZip = aXml.Replace(".xml", ".zip");
+                    if (File.Exists(rutaxml + aZip) == true)
+                    {
+                        File.Delete(rutaxml + aZip);
+                    } 
+                    using (ZipArchive zip = ZipFile.Open(rutaxml + aZip, ZipArchiveMode.Create))
                     {
                         string source = rutaxml + aXml;
+                        //MessageBox.Show(source,"source");
                         zip.CreateEntryFromFile(source, aXml);
-                        // zip.CreateEntryFromFile(@"c:\temp\Guias\20555954884-31-V015-00000089.xml", @"20555954884-31-V015-00000089.xml");
                     }
-
+                    // - byte[]ar el zip, 
+                    var bytexml = File.ReadAllBytes(rutaxml + aZip); // aXml.Replace(".xml", ""
+                    var base64 = Convert.ToBase64String(bytexml);
+                    // - hashear 
+                    string hash = "";
+                    using (SHA256 sha256 = SHA256.Create())
+                    {
+                        hash = string.Concat(sha256.ComputeHash(bytexml).Select(x => x.ToString("x2")));
+                    }
+                    //MessageBox.Show("Posteando ... ");
+                    // Postear 
+                    string url = "https://api-cpe.sunat.gob.pe/v1/contribuyente/gem/comprobantes/" + aXml.Replace(".xml", "");
+                    var oData = new
+                    {
+                        archivo = new
+                        {
+                            nomArchivo = aZip,
+                            arcGreZip = base64,
+                            hashZip = hash
+                        }
+                    };
+                    var json = JsonConvert.SerializeObject(oData);
+                    //var Body = new StringContent(json, Encoding.UTF8, "application/json");
+                    ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+                    var poste = new RestClient(url);
+                    poste.Timeout = -1;
+                    var request = new RestRequest(Method.POST);
+                    request.AddHeader("Authorization", "Bearer " + token);
+                    request.AddHeader("Content-Type", "application/json");
+                    request.AddParameter("application/json", json, ParameterType.RequestBody);
+                    //
+                    IRestResponse response = poste.Execute(request);
+                    var result = JsonConvert.DeserializeObject<Ticket_Rpta>(response.Content);
+                    if (response.ResponseStatus.ToString() != "200") 
+                    {
+                        MessageBox.Show(response.Content.ToString(),"Error " + response.ResponseStatus.ToString());
+                    }
+                    else
+                    {
+                        // actualizamos los campos de la tabla cabguiai
+                        string actua = "insert into adiguias (idg,serie,numero,nticket,fticket,estadoS,cdr) values (@idg,@seg,@nug,@nti,@fti,@est,@cdr)";
+                        using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
+                        {
+                            conn.Open();
+                            using (MySqlCommand micon = new MySqlCommand(actua, conn))
+                            {
+                                micon.Parameters.AddWithValue("@idg", tx_idr.Text);
+                                micon.Parameters.AddWithValue("@seg", tx_serie.Text);
+                                micon.Parameters.AddWithValue("@nug", tx_numero.Text);
+                                micon.Parameters.AddWithValue("@nti", result.numTicket);
+                                micon.Parameters.AddWithValue("@fti", result.fecRecepcion);
+                                micon.Parameters.AddWithValue("@est", "Enviado");
+                                micon.Parameters.AddWithValue("@cdr", "0");
+                                micon.ExecuteNonQuery();
+                            }
+                        }
+                    }
                 }
-                                                    // - hashear y byte[]ar el zip, 
-                                                    // - y POSTearlo al servicio   
-                                                    // - leer el zip retornado y obtener el CDR
-                                                    // - grabar el cdr, resultado, etc, en la tabla respectiva
 
-                retorna = true;                     // 
+                retorna = true;
             }
             return retorna;
         }
-        private string arma_guiaE()     // metodo para cambiar, el app xmlGRE se debe usar para generar el xml
+        private string arma_guiaE()                             // metodo para cambiar, el app xmlGRE se debe usar para generar el xml
         {
             string retorna = "";
             //CreaTablaLiteGRE();
@@ -1279,7 +1341,7 @@ namespace TransCarga
             else retorna = Program.ruc + "-" + "31" + "-" + tx_serie.Text + "-" + tx_numero.Text + ".xml";
             return retorna;
         }
-        private void consultaC(string ticket, string token)                    // consulta comprobante
+        private void consultaC(string ticket, string token)     // consulta comprobante
         {
             //ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             var client = new RestClient("https://api-cpe.sunat.gob.pe/v1/contribuyente/gem/comprobantes/envios/" + ticket);
@@ -1287,10 +1349,47 @@ namespace TransCarga
             var request = new RestRequest(Method.GET);
             request.AddHeader("Authorization", "Bearer " + token);
             IRestResponse response = client.Execute(request);
-            var Rpta = JsonConvert.DeserializeObject<Rspta_Consulta>(response.Content);
-            MessageBox.Show(response.Content);    // me quede acá
+            if (response.Content.Contains("error"))
+            {
+                tx_estaSunat.Text = "Error";
+                tx_estaSunat.Tag = response.Content.ToString();
+                using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
+                {
+                    conn.Open();
+                    string actua = "update adiguias set estadoS=@est,cdr=@cdr where idg=@idg";
+                    using (MySqlCommand micon = new MySqlCommand(actua, conn))
+                    {
+                        micon.Parameters.AddWithValue("@est", "Error");
+                        micon.Parameters.AddWithValue("@cdr", response.Content.ToString());
+                        micon.Parameters.AddWithValue("@idg", tx_idr.Text);
+                        micon.ExecuteNonQuery();
+                    }
+                }
+            }
+            else
+            {
+                var Rpta = JsonConvert.DeserializeObject<Rspta_Consulta>(response.Content);
+                if (Rpta.arcCdr != null)
+                {
+                    string CodRrpta = Rpta.codRespuesta.ToString();
+                    tx_estaSunat.Text = (CodRrpta == "0") ? "Aceptado" : (CodRrpta == "98") ? "En Proceso" : "Rechazado";
+                    using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
+                    {
+                        conn.Open();
+                        string actua = "update adiguias set estadoS=@est,cdr=@cdr,cdrgener=@gen where idg=@idg";  // (serie, numero, , @seg, @nug, @nti, @fti)";
+                        using (MySqlCommand micon = new MySqlCommand(actua, conn))
+                        {
+                            micon.Parameters.AddWithValue("@est", (CodRrpta == "0") ? "Aceptado" : (CodRrpta == "98") ? "En Proceso" : "Rechazado");
+                            micon.Parameters.AddWithValue("@cdr", Rpta.arcCdr.ToString());
+                            micon.Parameters.AddWithValue("@gen", Rpta.indCdrGenerado.ToString());
+                            micon.Parameters.AddWithValue("@idg", tx_idr.Text);
+                            micon.ExecuteNonQuery();
+                        }
+                    }
+                }
+            }
         }
-        private string conex_token()                // obtenemos el token de conexión
+        private string conex_token()                            // obtenemos el token de conexión
         {
             string retorna = "";
             tiempoT = (DateTime.Now.TimeOfDay.Subtract(horaT).TotalSeconds);
@@ -1329,7 +1428,7 @@ namespace TransCarga
             }
             return retorna;
         }
-        static private void CreaTablaLiteGRE()          // llamado en el load del form, crea las tablas al iniciar
+        static private void CreaTablaLiteGRE()                  // llamado en el load del form, crea las tablas al iniciar
         {
             using (SqliteConnection cnx = new SqliteConnection(CadenaConexion))
             {
@@ -1448,7 +1547,7 @@ namespace TransCarga
                 }
             }
         }
-        private bool llenaTablaLiteGRE()            // llena tabla con los datos de la guía y llama al app que crea el xml
+        private bool llenaTablaLiteGRE()                        // llena tabla con los datos de la guía y llama al app que crea el xml
         {
             bool retorna = false;
             using (SqliteConnection cnx = new SqliteConnection(CadenaConexion))
@@ -1603,10 +1702,11 @@ namespace TransCarga
                     cmd.ExecuteNonQuery();
                 }
                 // llamada al programa de generación del xml de la guía
+                string rutalocal = System.IO.Path.GetDirectoryName(Application.ExecutablePath);
                 string[] parametros = new string[] { rutaxml, Program.ruc, tx_serie.Text + "-" + tx_numero.Text };
                 ProcessStartInfo p = new ProcessStartInfo();
                 p.Arguments = rutaxml + " " + Program.ruc + " " + tx_serie.Text + "-" + tx_numero.Text;
-                p.FileName = @"c:/TRANSCARGA/xmlGRE/xmlGRE.exe";
+                p.FileName = @rutalocal + "/xmlGRE/xmlGRE.exe";
                 Process.Start(p);
                 retorna = true;
             }
@@ -2002,6 +2102,8 @@ namespace TransCarga
         #region boton_form GRABA EDITA ANULA
         private void button1_Click(object sender, EventArgs e)
         {
+            //sunat_api();        // BORRAME !!!
+
             #region validaciones
             if (tx_serie.Text.Trim() == "")
             {
@@ -2370,7 +2472,7 @@ namespace TransCarga
                                 {
                                     if (ipeeg == "secure")      // Peru Secure Net
                                     {
-                                        if (psnet_api() == false)              // 22/05/2023
+                                        if (psnet_api() == false)  //              // 22/05/2023
                                         {
                                             MessageBox.Show("No se pudo regenar el txt", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                                         }
@@ -2380,6 +2482,13 @@ namespace TransCarga
                                         if (llenaTablaLiteGRE() == false)         // 22/05/2023
                                         {
                                             MessageBox.Show("No se pudo regenar el txt", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                        }
+                                    }
+                                    if (ipeeg == "API_SUNAT")                   // Emisión directa consumiendo los servicios web de sunat api-rest
+                                    {
+                                        if (sunat_api() == false)               // 27/05/2023
+                                        {
+                                            MessageBox.Show("No se pudo genar el txt", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                                         }
                                     }
                                 }
@@ -4229,8 +4338,8 @@ namespace TransCarga
                 //Image photo = Image.FromFile(logoclt);
                 for (int i = 1; i <= copias; i++)
                 {
-                    /* código QR
-                    string separ = "|";
+                    // código QR
+                    //string separ = "|";
                     string codigo = "solo sunat emite el QR";   // aca debería estar el texto plano del QR de sunat
                     var rnd = Path.GetRandomFileName();
                     otro = Path.GetFileNameWithoutExtension(rnd);
@@ -4249,8 +4358,8 @@ namespace TransCarga
                     RectangleF rec = new RectangleF(puntoF, cuadro);
                     e.Graphics.DrawImage(png, rec);
                     png.Dispose();
-                    */
-                    PointF puntoF = new PointF(coli, posi);
+                    //
+                    puntoF = new PointF(coli, posi);
 
                     /*/ imprimimos el logo o el nombre comercial del emisor
                     if (logoclt != "")
@@ -4271,7 +4380,7 @@ namespace TransCarga
                     string titdoc = "Guía de Remisión Electrónica Transportista";
                     posi = posi + alfi + 8;
                     //float lt = (lib.CentimeterToPixel(anchTik) - e.Graphics.MeasureString(titdoc, lt_gra).Width) / 2;
-                    float lt = (ancho - e.Graphics.MeasureString(titdoc, lt_gra).Width) / 2;
+                    lt = (ancho - e.Graphics.MeasureString(titdoc, lt_gra).Width) / 2;
                     puntoF = new PointF(lt, posi);
                     e.Graphics.DrawString(titdoc, lt_gra, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                     posi = posi + alfi + 8;
@@ -4552,14 +4661,19 @@ namespace TransCarga
         }
 
     }
-    public class Rspta_Consulta
+    public class Ticket_Rpta                            // respuesta del post envio comprobante
+    {
+        public string numTicket { get; set; }           // código ticket respuesta
+        public DateTime fecRecepcion { get; set; }      // fecha hora de la respuesta
+    }
+    public class Rspta_Consulta                         // respuesta a la consulta de estado de comprobante
     {
         public string codRespuesta { get; set; }
         public string arcCdr { get; set; }
         public string indCdrGenerado { get; set; }
         public string error { get; set; }
     }
-    public class Token
+    public class Token                                  // token de acceso de 3600 segundos
     {
         public string access_token { get; set; }
         public string token_type { get; set; }

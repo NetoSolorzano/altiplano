@@ -407,3 +407,6 @@ OJO: form planicarga, validar DNI y bloquear brevete y nombre CUANDO ESTE LLENO 
 form recshum, validar documento de identidad ....................................................... ok 24/05/2023
 form guiati_a, validar en init ancho correcto del detalle y unidad de medida ....................... ok 24/05/2023
 form guiati_e, validar en init ancho correcto del detalle y unidad de medida ....................... ok 24/05/2023
+form guiati_e, agregar a la impresion TK la generación del QR en base al CDR ....................... 
+form .... crear dentro de reportes operaciones un reporte de guias/sunat donde se vea el estado en
+	 sunat, su cdr, visualización en pdf e impresion, individual y grupal ..........................

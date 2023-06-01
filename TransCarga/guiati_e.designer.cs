@@ -285,6 +285,11 @@
             this.label46 = new System.Windows.Forms.Label();
             this.label47 = new System.Windows.Forms.Label();
             this.tx_estaSunat = new System.Windows.Forms.TextBox();
+            this.groupBox57 = new System.Windows.Forms.GroupBox();
+            this.groupBox58 = new System.Windows.Forms.GroupBox();
+            this.groupBox59 = new System.Windows.Forms.GroupBox();
+            this.groupBox60 = new System.Windows.Forms.GroupBox();
+            this.tx_dat_tickSunat = new System.Windows.Forms.TextBox();
             this.toolStrip1.SuspendLayout();
             this.groupBox11.SuspendLayout();
             this.groupBox7.SuspendLayout();
@@ -322,6 +327,8 @@
             this.groupBox45.SuspendLayout();
             this.groupBox46.SuspendLayout();
             this.groupBox2.SuspendLayout();
+            this.groupBox57.SuspendLayout();
+            this.groupBox59.SuspendLayout();
             this.SuspendLayout();
             // 
             // toolStrip1
@@ -2974,6 +2981,52 @@
             this.tx_estaSunat.TabIndex = 386;
             this.tx_estaSunat.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
+            // groupBox57
+            // 
+            this.groupBox57.BackColor = System.Drawing.Color.White;
+            this.groupBox57.Controls.Add(this.groupBox58);
+            this.groupBox57.Location = new System.Drawing.Point(608, 22);
+            this.groupBox57.Name = "groupBox57";
+            this.groupBox57.Size = new System.Drawing.Size(149, 1);
+            this.groupBox57.TabIndex = 407;
+            this.groupBox57.TabStop = false;
+            // 
+            // groupBox58
+            // 
+            this.groupBox58.Location = new System.Drawing.Point(0, -26);
+            this.groupBox58.Name = "groupBox58";
+            this.groupBox58.Size = new System.Drawing.Size(164, 1);
+            this.groupBox58.TabIndex = 113;
+            this.groupBox58.TabStop = false;
+            // 
+            // groupBox59
+            // 
+            this.groupBox59.BackColor = System.Drawing.Color.White;
+            this.groupBox59.Controls.Add(this.groupBox60);
+            this.groupBox59.Location = new System.Drawing.Point(608, 43);
+            this.groupBox59.Name = "groupBox59";
+            this.groupBox59.Size = new System.Drawing.Size(149, 1);
+            this.groupBox59.TabIndex = 408;
+            this.groupBox59.TabStop = false;
+            // 
+            // groupBox60
+            // 
+            this.groupBox60.Location = new System.Drawing.Point(0, -26);
+            this.groupBox60.Name = "groupBox60";
+            this.groupBox60.Size = new System.Drawing.Size(164, 1);
+            this.groupBox60.TabIndex = 113;
+            this.groupBox60.TabStop = false;
+            // 
+            // tx_dat_tickSunat
+            // 
+            this.tx_dat_tickSunat.BackColor = System.Drawing.SystemColors.Window;
+            this.tx_dat_tickSunat.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_dat_tickSunat.Location = new System.Drawing.Point(606, 38);
+            this.tx_dat_tickSunat.Name = "tx_dat_tickSunat";
+            this.tx_dat_tickSunat.Size = new System.Drawing.Size(26, 18);
+            this.tx_dat_tickSunat.TabIndex = 409;
+            this.tx_dat_tickSunat.Visible = false;
+            // 
             // guiati_e
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -2981,6 +3034,9 @@
             this.AutoSize = true;
             this.BackColor = System.Drawing.Color.Peru;
             this.ClientSize = new System.Drawing.Size(766, 614);
+            this.Controls.Add(this.tx_dat_tickSunat);
+            this.Controls.Add(this.groupBox59);
+            this.Controls.Add(this.groupBox57);
             this.Controls.Add(this.label47);
             this.Controls.Add(this.tx_estaSunat);
             this.Controls.Add(this.label46);
@@ -3149,6 +3205,8 @@
             this.groupBox45.ResumeLayout(false);
             this.groupBox46.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
+            this.groupBox57.ResumeLayout(false);
+            this.groupBox59.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -3411,5 +3469,10 @@
         private System.Windows.Forms.Label label46;
         private System.Windows.Forms.Label label47;
         private System.Windows.Forms.TextBox tx_estaSunat;
+        private System.Windows.Forms.GroupBox groupBox57;
+        private System.Windows.Forms.GroupBox groupBox58;
+        private System.Windows.Forms.GroupBox groupBox59;
+        private System.Windows.Forms.GroupBox groupBox60;
+        private System.Windows.Forms.TextBox tx_dat_tickSunat;
     }
 }
