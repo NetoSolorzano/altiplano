@@ -290,6 +290,7 @@
             this.groupBox59 = new System.Windows.Forms.GroupBox();
             this.groupBox60 = new System.Windows.Forms.GroupBox();
             this.tx_dat_tickSunat = new System.Windows.Forms.TextBox();
+            this.tx_dat_textoqr = new System.Windows.Forms.TextBox();
             this.toolStrip1.SuspendLayout();
             this.groupBox11.SuspendLayout();
             this.groupBox7.SuspendLayout();
@@ -3027,6 +3028,16 @@
             this.tx_dat_tickSunat.TabIndex = 409;
             this.tx_dat_tickSunat.Visible = false;
             // 
+            // tx_dat_textoqr
+            // 
+            this.tx_dat_textoqr.BackColor = System.Drawing.SystemColors.Window;
+            this.tx_dat_textoqr.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_dat_textoqr.Location = new System.Drawing.Point(608, 59);
+            this.tx_dat_textoqr.Name = "tx_dat_textoqr";
+            this.tx_dat_textoqr.Size = new System.Drawing.Size(26, 18);
+            this.tx_dat_textoqr.TabIndex = 410;
+            this.tx_dat_textoqr.Visible = false;
+            // 
             // guiati_e
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -3034,6 +3045,7 @@
             this.AutoSize = true;
             this.BackColor = System.Drawing.Color.Peru;
             this.ClientSize = new System.Drawing.Size(766, 614);
+            this.Controls.Add(this.tx_dat_textoqr);
             this.Controls.Add(this.tx_dat_tickSunat);
             this.Controls.Add(this.groupBox59);
             this.Controls.Add(this.groupBox57);
@@ -3474,5 +3486,6 @@
         private System.Windows.Forms.GroupBox groupBox59;
         private System.Windows.Forms.GroupBox groupBox60;
         private System.Windows.Forms.TextBox tx_dat_tickSunat;
+        private System.Windows.Forms.TextBox tx_dat_textoqr;
     }
 }

@@ -465,7 +465,8 @@ namespace TransCarga
                         "ifnull(b.feculpago,'') as feculpago,ifnull(b.estadoser,'') as estadoser,ifnull(c.razonsocial,'') as razonsocial,a.grinumaut," +
                         "ifnull(d.marca,'') as marca,ifnull(d.modelo,'') as modelo,ifnull(r.marca,'') as marCarret,ifnull(r.confve,'') as confvCarret,ifnull(r.autor1,'') as autCarret," +
                         "ifnull(er.numerotel1,'') as telrem,ifnull(ed.numerotel1,'') as teldes,ifnull(t.nombclt,'') as clifact," +
-                        "a.marca_gre,a.tidocor,a.rucDorig,a.lpagop,a.pesoKT,a.tidocor2,a.rucDorig2,a.docsremit2,a.marca1,ifnull(ad.nticket,'') as nticket,ifnull(ad.estadoS,'') as estadoS " +
+                        "a.marca_gre,a.tidocor,a.rucDorig,a.lpagop,a.pesoKT,a.tidocor2,a.rucDorig2,a.docsremit2,a.marca1," +
+                        "ifnull(ad.nticket,'') as nticket,ifnull(ad.estadoS,'') as estadoS, ifnull(ad.cdr,'') as cdr,ifnull(ad.cdrgener,'') as cdrgener,ifnull(ad.textoQR,'') as textoQR " +
                         "from cabguiai a " +
                         "left join adiguias ad on ad.idg=a.id " +
                         "left join controlg b on b.serguitra=a.sergui and b.numguitra=a.numgui " +
@@ -544,7 +545,6 @@ namespace TransCarga
                             tx_pla_propiet.Text = dr.GetString("razonsocial");
                             tx_pla_dniChof.Text = lib.Right(dr.GetString("breplagri").ToString(), 8);         // aca debería ser un campo separado 07/03/2023
                             tx_marCpropio.Text = (tx_pla_ruc.Text.Trim() != "" && tx_pla_ruc.Text != Program.ruc) ? "1" : "0";   // Indicador de transporte subcontratado = true
-                            tx_dat_tickSunat.Text = dr.GetString("nticket");
                             tx_fecDV.Text = dr.GetString("fecdocvta");  //.Substring(0,10);
                             tx_DV.Text = dr.GetString("tipdocvta") + "-" + dr.GetString("serdocvta") + "-" + dr.GetString("numdocvta");
                             tx_clteDV.Text = dr.GetString("clifact");
@@ -568,7 +568,10 @@ namespace TransCarga
                             cmb_docorig2_SelectionChangeCommitted(null, null);
                             //
                             tx_estado.Text = lib.nomstat(tx_dat_estad.Text);
+                            tx_dat_tickSunat.Text = dr.GetString("nticket");
                             tx_estaSunat.Text = dr.GetString("estadoS");
+                            tx_dat_textoqr.Text = dr.GetString("textoQR");
+
                             cmb_origen.SelectedValue = tx_dat_locori.Text;
                             cmb_origen_SelectionChangeCommitted(null, null);
                             cmb_destino.SelectedValue = tx_dat_locdes.Text;
@@ -601,14 +604,19 @@ namespace TransCarga
                         MessageBox.Show("No existe el número buscado!", "Atención - dato incorrecto",
                             MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                     }
-                    dr.Dispose();
-                    micon.Dispose();
-                    
                     if (Tx_modo.Text != "NUEVO" && (tx_estaSunat.Text != "Aceptado" && tx_estaSunat.Text != "Rechazado"))
                     {
                         // llamada al metodo que consultará el estado del comprobante y actualizara 
                         consultaC(tx_dat_tickSunat.Text, conex_token());
                     }
+                    else
+                    {
+                        // aca no hay nada que hacer ... el campo textoQR para el QR ya tiene info ahí. 
+                        //if (Tx_modo.Text != "NUEVO" && (tx_estaSunat.Text == "Aceptado" && dr.GetString("cdrgener") == "1")) convierteCDR(dr.GetString("cdr"));
+                    }
+
+                    dr.Dispose();
+                    micon.Dispose();
                 }
                 conn.Close();
             }
@@ -1252,7 +1260,7 @@ namespace TransCarga
             if (token != null && token != "")
             {
                 string aZip;
-                string aXml = "20430100344-09-T001-1.xml";         // arma_guiaE();     //
+                string aXml = arma_guiaE();     // "20430100344-09-T001-1.xml";         
                 if (aXml != "")
                 {
                     // - zipear el xml, 
@@ -1372,18 +1380,44 @@ namespace TransCarga
                 if (Rpta.arcCdr != null)
                 {
                     string CodRrpta = Rpta.codRespuesta.ToString();
-                    tx_estaSunat.Text = (CodRrpta == "0") ? "Aceptado" : (CodRrpta == "98") ? "En Proceso" : "Rechazado";
-                    using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
+                    if (CodRrpta == "0" || CodRrpta == "99")
                     {
-                        conn.Open();
-                        string actua = "update adiguias set estadoS=@est,cdr=@cdr,cdrgener=@gen where idg=@idg";  // (serie, numero, , @seg, @nug, @nti, @fti)";
-                        using (MySqlCommand micon = new MySqlCommand(actua, conn))
+                        tx_estaSunat.Text = "Aceptado";
+                        // descompone el arcCDR para obtener los datos del QR
+                        string cuidado = convierteCDR(Rpta.arcCdr);
+                        if (cuidado != null && cuidado != "")
                         {
-                            micon.Parameters.AddWithValue("@est", (CodRrpta == "0") ? "Aceptado" : (CodRrpta == "98") ? "En Proceso" : "Rechazado");
-                            micon.Parameters.AddWithValue("@cdr", Rpta.arcCdr.ToString());
-                            micon.Parameters.AddWithValue("@gen", Rpta.indCdrGenerado.ToString());
-                            micon.Parameters.AddWithValue("@idg", tx_idr.Text);
-                            micon.ExecuteNonQuery();
+                            using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
+                            {
+                                conn.Open();
+                                string actua = "update adiguias set estadoS=@est,cdr=@cdr,cdrgener=@gen,textoQR=@tqr where idg=@idg";  // (serie, numero, , @seg, @nug, @nti, @fti)";
+                                using (MySqlCommand micon = new MySqlCommand(actua, conn))
+                                {
+                                    micon.Parameters.AddWithValue("@est", "Aceptado");
+                                    micon.Parameters.AddWithValue("@cdr", Rpta.arcCdr.ToString());
+                                    micon.Parameters.AddWithValue("@gen", Rpta.indCdrGenerado.ToString());
+                                    micon.Parameters.AddWithValue("@tqr", cuidado);
+                                    micon.Parameters.AddWithValue("@idg", tx_idr.Text);
+                                    micon.ExecuteNonQuery();
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        tx_estaSunat.Text = (CodRrpta == "98") ? "En Proceso" : "Rechazado";
+                        using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
+                        {
+                            conn.Open();
+                            string actua = "update adiguias set estadoS=@est,cdr=@cdr,cdrgener=@gen where idg=@idg";  // (serie, numero, , @seg, @nug, @nti, @fti)";
+                            using (MySqlCommand micon = new MySqlCommand(actua, conn))
+                            {
+                                micon.Parameters.AddWithValue("@est", (CodRrpta == "0") ? "Aceptado" : (CodRrpta == "98") ? "En Proceso" : "Rechazado");
+                                micon.Parameters.AddWithValue("@cdr", Rpta.arcCdr.ToString());
+                                micon.Parameters.AddWithValue("@gen", Rpta.indCdrGenerado.ToString());
+                                micon.Parameters.AddWithValue("@idg", tx_idr.Text);
+                                micon.ExecuteNonQuery();
+                            }
                         }
                     }
                 }
@@ -1713,7 +1747,37 @@ namespace TransCarga
 
             return retorna;
         }
+        private string convierteCDR(string arCdr)               // genera el cdr a partir de la respuesta de sunat arcCDR del json
+        {
+            string retorna = "";
 
+            if (File.Exists(@"c:/temp/temporal.zip"))
+            {
+                File.Delete(@"c:/temp/temporal.zip");
+            }
+            string archi = "R-" + Program.ruc + "-" + "31" + "-" + tx_serie.Text + "-" + tx_numero.Text + ".xml";
+            if (File.Exists(@"c:/temp/" + archi))
+            {
+                File.Delete(@"c:/temp/" + archi);
+            }
+            // grabamos en memoria el xml y obtenemos el dato del tag <cbc:DocumentDescription> ahí esta el texto a convertir en código QR
+            //byte[] xmlbytes = Base64DecodeString(arCdr);
+            byte[] xmlbytes = Convert.FromBase64CharArray(arCdr.ToCharArray(), 0, arCdr.Length);
+            FileStream fstrm = new FileStream(@"c:/temp/temporal.zip", FileMode.CreateNew, FileAccess.Write);
+            BinaryWriter writer = new BinaryWriter(fstrm);
+            writer.Write(xmlbytes);
+            writer.Close();
+            fstrm.Close();
+
+            System.IO.Compression.ZipFile.ExtractToDirectory(@"c:/temp/temporal.zip", @"c:/temp/");
+            FileStream archiS = new FileStream(@"c:/temp/" + archi, FileMode.Open, FileAccess.Read);
+            XmlDocument archiXml = new XmlDocument();
+            archiXml.Load(archiS);
+            XmlNode fqr = archiXml.GetElementsByTagName("DocumentDescription", "urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2").Item(0);
+            retorna = fqr.InnerText;
+
+            return retorna;
+        }
         #endregion Sunat metodo directo
 
         #region psnet
@@ -4335,45 +4399,21 @@ namespace TransCarga
                 int alfi = 15;                                      // alto de cada fila
                 float ancho = 360.0F;                                // ancho de la impresion
                 int copias = 1;                                     // cantidad de copias del ticket
-                //Image photo = Image.FromFile(logoclt);
+
                 for (int i = 1; i <= copias; i++)
                 {
-                    // código QR
-                    //string separ = "|";
-                    string codigo = "solo sunat emite el QR";   // aca debería estar el texto plano del QR de sunat
-                    var rnd = Path.GetRandomFileName();
-                    otro = Path.GetFileNameWithoutExtension(rnd);
-                    otro = otro + ".png";
-                    //
-                    var qrEncoder = new QrEncoder(ErrorCorrectionLevel.H);
-                    var qrCode = qrEncoder.Encode(codigo);
-                    var renderer = new GraphicsRenderer(new FixedModuleSize(5, QuietZoneModules.Two), Brushes.Black, Brushes.White);
-                    using (var stream = new FileStream(otro, FileMode.Create))
-                        renderer.WriteToStream(qrCode.Matrix, ImageFormat.Png, stream);
-                    Bitmap png = new Bitmap(otro);
-                    posi = posi + alfi + 7;
-                    float lt = (lib.CentimeterToPixel(anchTik) - lib.CentimeterToPixel(3)) / 2;
+                    // ************************ código QR *************************** //
+                    float lt = 0;
                     PointF puntoF = new PointF(lt, posi);
-                    SizeF cuadro = new SizeF(lib.CentimeterToPixel(3), lib.CentimeterToPixel(3));    // 5x5 cm
-                    RectangleF rec = new RectangleF(puntoF, cuadro);
-                    e.Graphics.DrawImage(png, rec);
-                    png.Dispose();
-                    //
                     puntoF = new PointF(coli, posi);
-
-                    /*/ imprimimos el logo o el nombre comercial del emisor
-                    if (logoclt != "")
-                    {
-                        SizeF cuadLogo = new SizeF(lib.CentimeterToPixel(anchTik) - 20.0F, alfi * 6);
-                        RectangleF reclogo = new RectangleF(puntoF, cuadLogo);
-                        //e.Graphics.DrawImage(photo, reclogo);
-                    }
-                    else
-                    {
-                        e.Graphics.DrawString(nomclie, lt_gra, Brushes.Black, puntoF, StringFormat.GenericTypographic);
-                    }
-                    NO VAN LOGOS ACA */
-
+                    // imprimimos el NOMBRE Y RUC DEL EMISOR
+                    posi = posi + 1;
+                    puntoF = new PointF(coli, posi);
+                    e.Graphics.DrawString(rasclie, lt_gra, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                    //lt = (ancho - e.Graphics.MeasureString("RUC: " + rucclie, lt_gra).Width) / 2;
+                    posi = posi + alfi;
+                    puntoF = new PointF(coli, posi);
+                    e.Graphics.DrawString("RUC: " + rucclie, lt_gra, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                     // imprimimos el titulo del comprobante y el numero
                     string serie = tx_serie.Text;
                     string corre = tx_numero.Text;
@@ -4389,17 +4429,30 @@ namespace TransCarga
                     lt = (ancho - e.Graphics.MeasureString(titnum, lt_gra).Width) / 2;
                     puntoF = new PointF(lt, posi);
                     e.Graphics.DrawString(titnum, lt_gra, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+
+                    if (tx_dat_textoqr.Text != "")
+                    {
+                        string codigo = tx_dat_textoqr.Text;
+                        var rnd = Path.GetRandomFileName();
+                        otro = Path.GetFileNameWithoutExtension(rnd);
+                        otro = otro + ".png";
+                        //
+                        var qrEncoder = new QrEncoder(ErrorCorrectionLevel.H);
+                        var qrCode = qrEncoder.Encode(codigo);
+                        var renderer = new GraphicsRenderer(new FixedModuleSize(5, QuietZoneModules.Two), Brushes.Black, Brushes.White);
+                        using (var stream = new FileStream(otro, FileMode.Create))
+                            renderer.WriteToStream(qrCode.Matrix, ImageFormat.Png, stream);
+                        Bitmap png = new Bitmap(otro);
+                        posi = posi + alfi + 7;
+                        lt = (lib.CentimeterToPixel(anchTik) - lib.CentimeterToPixel(3)) / 2 + 20;
+                        puntoF = new PointF(lt, posi);
+                        SizeF cuadro = new SizeF(lib.CentimeterToPixel(3), lib.CentimeterToPixel(3));    // 5x5 cm
+                        RectangleF rec = new RectangleF(puntoF, cuadro);
+                        e.Graphics.DrawImage(png, rec);
+                        png.Dispose();
+                    }
                     
-                    // imprimimos el NOMBRE Y RUC DEL EMISOR
-                    posi = posi + alfi + alfi;
-                    lt = (ancho - e.Graphics.MeasureString(rasclie, lt_gra).Width) / 2;
-                    puntoF = new PointF(lt, posi);
-                    e.Graphics.DrawString(rasclie, lt_gra, Brushes.Black, puntoF, StringFormat.GenericTypographic);
-                    lt = (ancho - e.Graphics.MeasureString("RUC: " + rucclie, lt_gra).Width) / 2;
-                    posi = posi + alfi;
-                    puntoF = new PointF(lt, posi);
-                    e.Graphics.DrawString("RUC: " + rucclie, lt_gra, Brushes.Black, puntoF, StringFormat.GenericTypographic);
-                    posi = posi + alfi * 2;
+                    posi = posi + alfi * 7;
                     puntoF = new PointF(coli, posi);
                     e.Graphics.DrawString("Dom.Fiscal", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                     posi = posi + alfi;
@@ -4434,15 +4487,6 @@ namespace TransCarga
                     e.Graphics.DrawString(":", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                     puntoF = new PointF(coli + 140, posi);
                     e.Graphics.DrawString(DateTime.Now.Hour.ToString() + ":" + DateTime.Now.Minute.ToString(), lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
-                    /*
-                    posi = posi + alfi;
-                    puntoF = new PointF(coli + 20, posi);
-                    e.Graphics.DrawString("Tipo de Evento", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
-                    puntoF = new PointF(coli + 65, posi);
-                    e.Graphics.DrawString(":", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
-                    puntoF = new PointF(coli + 70, posi);
-                    e.Graphics.DrawString("Tipo de Evento", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
-                    NO ES UNA GRE POR EVENTO*/
 
                     // imprimimos los documentos relacionados
                     posi = posi + alfi * 2;
@@ -4598,12 +4642,16 @@ namespace TransCarga
                     puntoF = new PointF(coli + 20, posi);
                     e.Graphics.DrawString(tx_det_peso.Text + " " + ((rb_kg.Checked == true) ? rb_kg.Text : rb_tn.Text), 
                         lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                    string gDetalle = lb_glodeta.Text + " " + tx_det_desc.Text;
+                    double xxx = (e.Graphics.MeasureString(gDetalle, lt_peq).Width / lib.CentimeterToPixel(anchTik)) + 1;
+                    cuad = new SizeF(lib.CentimeterToPixel(anchTik) - (coli + 10), alfi * (int)xxx);
                     posi = posi + alfi;
-                    puntoF = new PointF(coli + 20, posi);
-                    e.Graphics.DrawString(lb_glodeta.Text + " " + tx_det_desc.Text, lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
-
+                    puntoF = new PointF(coli, posi);
+                    recdom = new RectangleF(puntoF, cuad);
+                    e.Graphics.DrawString(gDetalle, lt_med, Brushes.Black, recdom, StringFormat.GenericTypographic);
+                    posi = posi + alfi;
                     // final del comprobante
-                    string repre = "Representación impresa de la";
+                    string repre = "Representación impresa sin valor legal de la";
                     lt = (ancho - e.Graphics.MeasureString(repre, lt_med).Width) / 2;
                     posi = posi + alfi * 2;
                     puntoF = new PointF(lt, posi);
