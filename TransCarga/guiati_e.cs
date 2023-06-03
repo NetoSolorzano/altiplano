@@ -98,6 +98,9 @@ namespace TransCarga
         string otro = "";               // ruta y nombre del png código QR
         string ipeeg = "";              // identificador de proveedor de emisor electrónico 
         string despedida = "Gracias por su confianza en nosotros";
+        string firmDocElec = "";        // Firma xml, true=firma, false=no firma
+        string rutaCertifc = "";        // Ruta y nombre del certificado .pfx
+        string claveCertif = "";        // Clave del certificado
 
         double tiempoT = 0;             // Sunat Webservice - contador EN SEGUNDOS de vigencia del token
         string TokenAct = "";           // Sunat Webservice - Token actual vigente
@@ -365,6 +368,10 @@ namespace TransCarga
                                         if (lite.GetString(2).ToString() == "clave_sol") c_sol_sunat = lite.GetString(3).ToString().Trim();             // clave sol portal sunat del cliente 
                                         if (lite.GetString(2).ToString() == "scope") scope_sunat = lite.GetString(3).ToString().Trim();                 // scope del api sunat
                                         if (lite.GetString(2).ToString() == "codgre") cGR_sunat = lite.GetString(3).ToString().Trim();                 // codigo sunat para GR transportista
+                                        //  "true" + " " + "certificado.pfx" + " " + "190969Sorol"
+                                        if (lite.GetString(2).ToString() == "firmDocElec") firmDocElec = lite.GetString(3).ToString().Trim();                 // Firma xml, true=firma, false=no firma
+                                        if (lite.GetString(2).ToString() == "rutaCertifc") rutaCertifc = lite.GetString(3).ToString().Trim();                 // Ruta y nombre del certificado .pfx
+                                        if (lite.GetString(2).ToString() == "claveCertif") claveCertif = lite.GetString(3).ToString().Trim();                 // Clave del certificado
                                     }
                                     if (lite.GetString(1).ToString() == "rutas")
                                     {
@@ -607,7 +614,7 @@ namespace TransCarga
                     if (Tx_modo.Text != "NUEVO" && (tx_estaSunat.Text != "Aceptado" && tx_estaSunat.Text != "Rechazado"))
                     {
                         // llamada al metodo que consultará el estado del comprobante y actualizara 
-                        consultaC(tx_dat_tickSunat.Text, conex_token());
+                        if (tx_dat_tickSunat.Text != "") consultaC(tx_dat_tickSunat.Text, conex_token());
                     }
                     else
                     {
@@ -1260,7 +1267,13 @@ namespace TransCarga
             if (token != null && token != "")
             {
                 string aZip;
-                string aXml = arma_guiaE();     // "20430100344-09-T001-1.xml";         
+                //string aXml = arma_guiaE();     // "20430100344-09-T001-1.xml";         
+                string aXml = "";
+                if (llenaTablaLiteGRE() != true)
+                {
+                    MessageBox.Show("No se pudo llenar las tablas sqlite", "Error interno", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                else aXml = Program.ruc + "-" + "31" + "-" + tx_serie.Text + "-" + tx_numero.Text + ".xml";
                 if (aXml != "")
                 {
                     // - zipear el xml, 
@@ -1336,17 +1349,6 @@ namespace TransCarga
 
                 retorna = true;
             }
-            return retorna;
-        }
-        private string arma_guiaE()                             // metodo para cambiar, el app xmlGRE se debe usar para generar el xml
-        {
-            string retorna = "";
-            //CreaTablaLiteGRE();
-            if (llenaTablaLiteGRE() != true)
-            {
-                MessageBox.Show("No se pudo crear el archivo xml", "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            else retorna = Program.ruc + "-" + "31" + "-" + tx_serie.Text + "-" + tx_numero.Text + ".xml";
             return retorna;
         }
         private void consultaC(string ticket, string token)     // consulta comprobante
@@ -1739,7 +1741,7 @@ namespace TransCarga
                 string rutalocal = System.IO.Path.GetDirectoryName(Application.ExecutablePath);
                 string[] parametros = new string[] { rutaxml, Program.ruc, tx_serie.Text + "-" + tx_numero.Text };
                 ProcessStartInfo p = new ProcessStartInfo();
-                p.Arguments = rutaxml + " " + Program.ruc + " " + tx_serie.Text + "-" + tx_numero.Text;
+                p.Arguments = rutaxml + " " + Program.ruc + " " + tx_serie.Text + "-" + tx_numero.Text + " " + firmDocElec + " " + rutaCertifc + " " + claveCertif;
                 p.FileName = @rutalocal + "/xmlGRE/xmlGRE.exe";
                 Process.Start(p);
                 retorna = true;
@@ -2166,8 +2168,6 @@ namespace TransCarga
         #region boton_form GRABA EDITA ANULA
         private void button1_Click(object sender, EventArgs e)
         {
-            //sunat_api();        // BORRAME !!!
-
             #region validaciones
             if (tx_serie.Text.Trim() == "")
             {
@@ -4567,7 +4567,7 @@ namespace TransCarga
                     puntoF = new PointF(coli + 135, posi);
                     e.Graphics.DrawString(":", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                     puntoF = new PointF(coli + 140, posi);
-                    e.Graphics.DrawString(tx_pla_fech.Text.Substring(6, 4) + "-" + tx_pla_fech.Text.Substring(3, 2) + "-" + tx_pla_fech.Text.Substring(0, 2), 
+                    if (tx_pla_fech.Text != "") e.Graphics.DrawString(tx_pla_fech.Text.Substring(6, 4) + "-" + tx_pla_fech.Text.Substring(3, 2) + "-" + tx_pla_fech.Text.Substring(0, 2), 
                         lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                     posi = posi + alfi;
                     puntoF = new PointF(coli + 20, posi);
@@ -4575,7 +4575,7 @@ namespace TransCarga
                     puntoF = new PointF(coli + 135, posi);
                     e.Graphics.DrawString(":", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                     puntoF = new PointF(coli + 140, posi);
-                    e.Graphics.DrawString(tx_totpes.Text + " " + ((rb_kg.Checked == true) ? rb_kg.Text : rb_tn.Text), 
+                    if (tx_totpes.Text.Trim() != "" && tx_totpes.Text.Trim() != "0") e.Graphics.DrawString(tx_totpes.Text + " " + ((rb_kg.Checked == true) ? rb_kg.Text : rb_tn.Text), 
                         lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                     posi = posi + alfi;
                     puntoF = new PointF(coli + 20, posi);
@@ -4606,14 +4606,14 @@ namespace TransCarga
                     puntoF = new PointF(coli + 135, posi);
                     e.Graphics.DrawString(":", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                     puntoF = new PointF(coli + 140, posi);
-                    e.Graphics.DrawString(tx_pla_placa.Text, lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                    if (tx_pla_placa.Text != "") e.Graphics.DrawString(tx_pla_placa.Text, lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                     posi = posi + alfi;
                     puntoF = new PointF(coli + 20, posi);
                     e.Graphics.DrawString("Autorización", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                     puntoF = new PointF(coli + 135, posi);
                     e.Graphics.DrawString(":", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                     puntoF = new PointF(coli + 140, posi);
-                    e.Graphics.DrawString(tx_pla_autor.Text, lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                    if (tx_pla_autor.Text != "") e.Graphics.DrawString(tx_pla_autor.Text, lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
 
                     // imprimimos los datos del chofer
                     posi = posi + alfi * 2;
@@ -4625,13 +4625,13 @@ namespace TransCarga
                     puntoF = new PointF(coli + 135, posi);
                     e.Graphics.DrawString(":", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                     puntoF = new PointF(coli + 140, posi);
-                    e.Graphics.DrawString(tx_pla_brevet.Text, lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                    if (tx_pla_brevet.Text != "") e.Graphics.DrawString(tx_pla_brevet.Text, lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                     posi = posi + alfi;
                     puntoF = new PointF(coli + 20, posi);
                     e.Graphics.DrawString("Nombre", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                     posi = posi + alfi;
                     puntoF = new PointF(coli + 20, posi);
-                    e.Graphics.DrawString(tx_pla_nomcho.Text, lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                    if (tx_pla_nomcho.Text != "") e.Graphics.DrawString(tx_pla_nomcho.Text, lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                     // row["numdcho"] = tx_pla_dniChof.Text;                                       // Numero de documento de identidad 
 
                     // imprimimos los bienes a transportar
