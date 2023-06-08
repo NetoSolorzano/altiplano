@@ -647,6 +647,7 @@
     <Content Include="Resources\flecha100.png" />
     <Content Include="Resources\flecha100T.png" />
     <None Include="Resources\ticket32.png" />
+    <None Include="Resources\pdf-logo-24x11.png" />
     <Content Include="solorsoft.ico" />
   </ItemGroup>
   <ItemGroup>

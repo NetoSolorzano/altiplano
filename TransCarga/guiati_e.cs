@@ -106,6 +106,7 @@ namespace TransCarga
         string TokenAct = "";           // Sunat Webservice - Token actual vigente
         TimeSpan horaT;                 // Sunat Webservice - Hora de emisión del token
         int plazoT = 0;                 // Sunat Webservice - Cantidad en segundos
+        string[] c_t = new string[6] { "", "", "", "", "", ""}; // parametros para generar el token
         //
         static libreria lib = new libreria();   // libreria de procedimientos
         publico lp = new publico();             // libreria de clases
@@ -435,6 +436,13 @@ namespace TransCarga
                 v_clu = lib.codloc(asd);                // codigo local usuario
                 v_slu = lib.serlocs(v_clu);             // serie local usuario
                 v_nbu = lib.nomuser(asd);               // nombre del usuario
+                // parametros para token
+                c_t[0] = client_id_sunat;
+                c_t[1] = scope_sunat;
+                c_t[2] = client_id_sunat;
+                c_t[3] = client_pass_sunat;
+                c_t[4] = u_sol_sunat;
+                c_t[5] = c_sol_sunat;
             }
             catch (MySqlException ex)
             {
@@ -614,7 +622,7 @@ namespace TransCarga
                     if (Tx_modo.Text != "NUEVO" && (tx_estaSunat.Text != "Aceptado" && tx_estaSunat.Text != "Rechazado"))
                     {
                         // llamada al metodo que consultará el estado del comprobante y actualizara 
-                        if (tx_dat_tickSunat.Text != "") consultaC(tx_dat_tickSunat.Text, conex_token());
+                        if (tx_dat_tickSunat.Text != "") consultaC(tx_dat_tickSunat.Text, conex_token(c_t));
                     }
                     else
                     {
@@ -1263,7 +1271,7 @@ namespace TransCarga
         private bool sunat_api()                                // SI VAMOS A USAR 26/05/2023 este metodo directo
         {
             bool retorna = false;
-            string token = conex_token();           // este metodo funciona bien .. 26/05/2023
+            string token = conex_token(c_t);           // este metodo funciona bien .. 26/05/2023
             if (token != null && token != "")
             {
                 string aZip;
@@ -1351,8 +1359,9 @@ namespace TransCarga
             }
             return retorna;
         }
-        private void consultaC(string ticket, string token)     // consulta comprobante
+        public string consultaC(string ticket, string token)     // consulta comprobante
         {
+            string retorna = "";
             //ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             var client = new RestClient("https://api-cpe.sunat.gob.pe/v1/contribuyente/gem/comprobantes/envios/" + ticket);
             client.Timeout = -1;
@@ -1363,6 +1372,7 @@ namespace TransCarga
             {
                 tx_estaSunat.Text = "Error";
                 tx_estaSunat.Tag = response.Content.ToString();
+                retorna = tx_estaSunat.Text;
                 using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
                 {
                     conn.Open();
@@ -1385,8 +1395,9 @@ namespace TransCarga
                     if (CodRrpta == "0" || CodRrpta == "99")
                     {
                         tx_estaSunat.Text = "Aceptado";
+                        retorna = tx_estaSunat.Text;
                         // descompone el arcCDR para obtener los datos del QR
-                        string cuidado = convierteCDR(Rpta.arcCdr);
+                        string cuidado = convierteCDR(Rpta.arcCdr, tx_serie.Text, tx_numero.Text, rutatxt);
                         if (cuidado != null && cuidado != "")
                         {
                             using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
@@ -1408,6 +1419,7 @@ namespace TransCarga
                     else
                     {
                         tx_estaSunat.Text = (CodRrpta == "98") ? "En Proceso" : "Rechazado";
+                        retorna = tx_estaSunat.Text;
                         using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
                         {
                             conn.Open();
@@ -1424,25 +1436,26 @@ namespace TransCarga
                     }
                 }
             }
+            return retorna;
         }
-        private string conex_token()                            // obtenemos el token de conexión
+        public string conex_token(string[] c_t)                            // obtenemos el token de conexión
         {
             string retorna = "";
             tiempoT = (DateTime.Now.TimeOfDay.Subtract(horaT).TotalSeconds);
             if (tiempoT >= (plazoT-60))             // un minuto antes que venza la vigencia del token
             {
                 ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-                var client = new RestClient("https://api-seguridad.sunat.gob.pe/v1/clientessol/" + client_id_sunat + "/oauth2/token/");
+                var client = new RestClient("https://api-seguridad.sunat.gob.pe/v1/clientessol/" + c_t[0] + "/oauth2/token/"); // client_id_sunat + "/oauth2/token/"
                 client.Timeout = -1;
                 var request = new RestRequest(Method.POST);
                 request.AddHeader("Content-Type", "application/x-www-form-urlencoded");
                 request.AddHeader("Cookie", "TS019e7fc2=014dc399cb268cb3d074c3b37bb5b735ab83b63307dfe5263ff5802065fe226640c58236dcd71073fbe01e3206d01bfa3c513e69c4");
                 request.AddParameter("grant_type", "password");
-                request.AddParameter("scope", scope_sunat);                     // "https://api-cpe.sunat.gob.pe"
-                request.AddParameter("client_id", client_id_sunat);             // "9613540b-a94d-45c6-b201-7521413ed391"
-                request.AddParameter("client_secret", client_pass_sunat);       // "gmlqIVugA1+Fgd1wUN6Kyg=="
-                request.AddParameter("username", u_sol_sunat);                  // "20430100344PTIONVAL"
-                request.AddParameter("password", c_sol_sunat);                  // "patocralr"
+                request.AddParameter("scope", c_t[1]);                          // scope_sunat         "https://api-cpe.sunat.gob.pe"
+                request.AddParameter("client_id", c_t[2]);                      // client_id_sunat     "9613540b-a94d-45c6-b201-7521413ed391"
+                request.AddParameter("client_secret", c_t[3]);                  // client_pass_sunat   "gmlqIVugA1+Fgd1wUN6Kyg=="
+                request.AddParameter("username", c_t[4]);                       // u_sol_sunat         "20430100344PTIONVAL"
+                request.AddParameter("password", c_t[5]);                       // c_sol_sunat         "patocralr"
                 IRestResponse response = client.Execute(request);
                 if (response.StatusCode.ToString() != "OK")
                 {
@@ -1749,30 +1762,30 @@ namespace TransCarga
 
             return retorna;
         }
-        private string convierteCDR(string arCdr)               // genera el cdr a partir de la respuesta de sunat arcCDR del json
+        public string convierteCDR(string arCdr, string serie, string corre, string ruta)               // genera el cdr a partir de la respuesta de sunat arcCDR del json
         {
             string retorna = "";
 
-            if (File.Exists(@"c:/temp/temporal.zip"))
+            if (File.Exists(ruta + "temporal.zip"))   // @"c:/temp/temporal.zip"
             {
-                File.Delete(@"c:/temp/temporal.zip");
+                File.Delete(ruta + "temporal.zip");   // @"c:/temp/temporal.zip"
             }
-            string archi = "R-" + Program.ruc + "-" + "31" + "-" + tx_serie.Text + "-" + tx_numero.Text + ".xml";
-            if (File.Exists(@"c:/temp/" + archi))
+            string archi = "R-" + Program.ruc + "-" + "31" + "-" + serie + "-" + corre + ".xml";
+            if (File.Exists(ruta + archi))           // @"c:/temp/" + archi
             {
-                File.Delete(@"c:/temp/" + archi);
+                File.Delete(ruta + archi);           // @"c:/temp/" + archi
             }
             // grabamos en memoria el xml y obtenemos el dato del tag <cbc:DocumentDescription> ahí esta el texto a convertir en código QR
             //byte[] xmlbytes = Base64DecodeString(arCdr);
             byte[] xmlbytes = Convert.FromBase64CharArray(arCdr.ToCharArray(), 0, arCdr.Length);
-            FileStream fstrm = new FileStream(@"c:/temp/temporal.zip", FileMode.CreateNew, FileAccess.Write);
+            FileStream fstrm = new FileStream(ruta + "temporal.zip", FileMode.CreateNew, FileAccess.Write);   // @"c:/temp/temporal.zip"
             BinaryWriter writer = new BinaryWriter(fstrm);
             writer.Write(xmlbytes);
             writer.Close();
             fstrm.Close();
 
-            System.IO.Compression.ZipFile.ExtractToDirectory(@"c:/temp/temporal.zip", @"c:/temp/");
-            FileStream archiS = new FileStream(@"c:/temp/" + archi, FileMode.Open, FileAccess.Read);
+            System.IO.Compression.ZipFile.ExtractToDirectory(ruta + "temporal.zip", ruta);        // @"c:/temp/temporal.zip", @"c:/temp/"
+            FileStream archiS = new FileStream(ruta + archi, FileMode.Open, FileAccess.Read);        // @"c:/temp/" + archi, FileMode.Open, FileAccess.Read
             XmlDocument archiXml = new XmlDocument();
             archiXml.Load(archiS);
             XmlNode fqr = archiXml.GetElementsByTagName("DocumentDescription", "urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2").Item(0);

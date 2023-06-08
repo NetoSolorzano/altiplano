@@ -143,6 +143,16 @@ namespace TransCarga.Properties {
         /// <summary>
         ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap pdf_logo_24x11 {
+            get {
+                object obj = ResourceManager.GetObject("pdf_logo_24x11", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap permiso_16 {
             get {
                 object obj = ResourceManager.GetObject("permiso_16", resourceCulture);

@@ -235,7 +235,45 @@
             this.tx_num = new System.Windows.Forms.TextBox();
             this.button6 = new System.Windows.Forms.Button();
             this.bt_hisGR = new System.Windows.Forms.Button();
+            this.tabGREstad = new System.Windows.Forms.TabPage();
+            this.groupBox57 = new System.Windows.Forms.GroupBox();
+            this.groupBox58 = new System.Windows.Forms.GroupBox();
+            this.bt_consMas = new System.Windows.Forms.Button();
+            this.panel10 = new System.Windows.Forms.Panel();
+            this.bt_GRE_impri = new System.Windows.Forms.Button();
+            this.chk_GRE_imp = new System.Windows.Forms.CheckBox();
+            this.label41 = new System.Windows.Forms.Label();
+            this.label42 = new System.Windows.Forms.Label();
+            this.tx_GRE_fa = new TransCarga.NumericTextBox();
+            this.tx_GRE_fv = new TransCarga.NumericTextBox();
+            this.groupBox53 = new System.Windows.Forms.GroupBox();
+            this.groupBox54 = new System.Windows.Forms.GroupBox();
+            this.groupBox55 = new System.Windows.Forms.GroupBox();
+            this.groupBox56 = new System.Windows.Forms.GroupBox();
+            this.dtp_GRE_fter = new System.Windows.Forms.DateTimePicker();
+            this.dtp_GRE_fini = new System.Windows.Forms.DateTimePicker();
+            this.bt_greEst = new System.Windows.Forms.Button();
+            this.label38 = new System.Windows.Forms.Label();
+            this.label39 = new System.Windows.Forms.Label();
+            this.panel9 = new System.Windows.Forms.Panel();
+            this.rb_GRE_dest = new System.Windows.Forms.RadioButton();
+            this.rb_GRE_orig = new System.Windows.Forms.RadioButton();
+            this.chk_GRE = new System.Windows.Forms.CheckBox();
+            this.groupBox49 = new System.Windows.Forms.GroupBox();
+            this.groupBox50 = new System.Windows.Forms.GroupBox();
+            this.tx_dat_GRE_est = new System.Windows.Forms.TextBox();
+            this.cmb_GRE_est = new System.Windows.Forms.ComboBox();
+            this.dgv_GRE_est = new ADGV.AdvancedDataGridView();
+            this.label36 = new System.Windows.Forms.Label();
+            this.groupBox51 = new System.Windows.Forms.GroupBox();
+            this.groupBox52 = new System.Windows.Forms.GroupBox();
+            this.label37 = new System.Windows.Forms.Label();
+            this.tx_dat_GRE_sede = new System.Windows.Forms.TextBox();
+            this.cmb_GRE_sede = new System.Windows.Forms.ComboBox();
             this.printDocument1 = new System.Drawing.Printing.PrintDocument();
+            this.chk_GRE_iAcep = new System.Windows.Forms.CheckBox();
+            this.chk_GRE_iEnpr = new System.Windows.Forms.CheckBox();
+            this.chk_GRE_iEnvia = new System.Windows.Forms.CheckBox();
             this.toolStrip1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabres.SuspendLayout();
@@ -278,6 +316,15 @@
             this.tabgrhist.SuspendLayout();
             this.panel7.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgv_histGR)).BeginInit();
+            this.tabGREstad.SuspendLayout();
+            this.groupBox57.SuspendLayout();
+            this.panel10.SuspendLayout();
+            this.groupBox53.SuspendLayout();
+            this.groupBox55.SuspendLayout();
+            this.panel9.SuspendLayout();
+            this.groupBox49.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgv_GRE_est)).BeginInit();
+            this.groupBox51.SuspendLayout();
             this.SuspendLayout();
             // 
             // toolStrip1
@@ -311,7 +358,7 @@
             this.toolStripSeparator10,
             this.Bt_fin,
             this.toolStripSeparator11});
-            this.toolStrip1.Location = new System.Drawing.Point(0, 408);
+            this.toolStrip1.Location = new System.Drawing.Point(0, 415);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(1040, 35);
             this.toolStrip1.TabIndex = 34;
@@ -544,11 +591,12 @@
             this.tabControl1.Controls.Add(this.tabplacar);
             this.tabControl1.Controls.Add(this.tabreval);
             this.tabControl1.Controls.Add(this.tabgrhist);
+            this.tabControl1.Controls.Add(this.tabGREstad);
             this.tabControl1.Location = new System.Drawing.Point(3, 3);
             this.tabControl1.Multiline = true;
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(1034, 403);
+            this.tabControl1.Size = new System.Drawing.Size(1034, 410);
             this.tabControl1.TabIndex = 4;
             // 
             // tabres
@@ -587,7 +635,7 @@
             this.tabres.Controls.Add(this.bt_resumen);
             this.tabres.Location = new System.Drawing.Point(4, 22);
             this.tabres.Name = "tabres";
-            this.tabres.Size = new System.Drawing.Size(1026, 377);
+            this.tabres.Size = new System.Drawing.Size(1026, 384);
             this.tabres.TabIndex = 3;
             this.tabres.Text = "Servicio por Cliente";
             this.tabres.UseVisualStyleBackColor = true;
@@ -677,7 +725,7 @@
             this.dgv_resumen.DateWithTime = false;
             this.dgv_resumen.Location = new System.Drawing.Point(4, 69);
             this.dgv_resumen.Name = "dgv_resumen";
-            this.dgv_resumen.Size = new System.Drawing.Size(1019, 275);
+            this.dgv_resumen.Size = new System.Drawing.Size(1019, 282);
             this.dgv_resumen.TabIndex = 389;
             this.dgv_resumen.TimeFilter = false;
             this.dgv_resumen.SortStringChanged += new System.EventHandler(this.advancedDataGridView1_SortStringChanged);
@@ -689,7 +737,7 @@
             this.groupBox42.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.groupBox42.BackColor = System.Drawing.Color.DimGray;
             this.groupBox42.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.groupBox42.Location = new System.Drawing.Point(597, 369);
+            this.groupBox42.Location = new System.Drawing.Point(597, 376);
             this.groupBox42.Name = "groupBox42";
             this.groupBox42.Size = new System.Drawing.Size(166, 1);
             this.groupBox42.TabIndex = 388;
@@ -700,7 +748,7 @@
             this.groupBox41.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.groupBox41.BackColor = System.Drawing.Color.DimGray;
             this.groupBox41.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.groupBox41.Location = new System.Drawing.Point(299, 369);
+            this.groupBox41.Location = new System.Drawing.Point(299, 376);
             this.groupBox41.Name = "groupBox41";
             this.groupBox41.Size = new System.Drawing.Size(171, 1);
             this.groupBox41.TabIndex = 387;
@@ -711,7 +759,7 @@
             this.groupBox40.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.groupBox40.BackColor = System.Drawing.Color.DimGray;
             this.groupBox40.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.groupBox40.Location = new System.Drawing.Point(5, 369);
+            this.groupBox40.Location = new System.Drawing.Point(5, 376);
             this.groupBox40.Name = "groupBox40";
             this.groupBox40.Size = new System.Drawing.Size(134, 1);
             this.groupBox40.TabIndex = 386;
@@ -855,7 +903,7 @@
             // tx_nser
             // 
             this.tx_nser.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.tx_nser.Location = new System.Drawing.Point(77, 350);
+            this.tx_nser.Location = new System.Drawing.Point(77, 357);
             this.tx_nser.Name = "tx_nser";
             this.tx_nser.ReadOnly = true;
             this.tx_nser.Size = new System.Drawing.Size(62, 20);
@@ -866,7 +914,7 @@
             // 
             this.label16.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label16.AutoSize = true;
-            this.label16.Location = new System.Drawing.Point(2, 354);
+            this.label16.Location = new System.Drawing.Point(2, 361);
             this.label16.Name = "label16";
             this.label16.Size = new System.Drawing.Size(73, 13);
             this.label16.TabIndex = 370;
@@ -875,7 +923,7 @@
             // tx_pendien
             // 
             this.tx_pendien.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.tx_pendien.Location = new System.Drawing.Point(675, 350);
+            this.tx_pendien.Location = new System.Drawing.Point(675, 357);
             this.tx_pendien.Name = "tx_pendien";
             this.tx_pendien.ReadOnly = true;
             this.tx_pendien.Size = new System.Drawing.Size(88, 20);
@@ -886,7 +934,7 @@
             // 
             this.label15.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label15.AutoSize = true;
-            this.label15.Location = new System.Drawing.Point(600, 354);
+            this.label15.Location = new System.Drawing.Point(600, 361);
             this.label15.Name = "label15";
             this.label15.Size = new System.Drawing.Size(73, 13);
             this.label15.TabIndex = 368;
@@ -895,7 +943,7 @@
             // tx_valor
             // 
             this.tx_valor.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.tx_valor.Location = new System.Drawing.Point(387, 350);
+            this.tx_valor.Location = new System.Drawing.Point(387, 357);
             this.tx_valor.Name = "tx_valor";
             this.tx_valor.ReadOnly = true;
             this.tx_valor.Size = new System.Drawing.Size(83, 20);
@@ -906,7 +954,7 @@
             // 
             this.label14.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(300, 354);
+            this.label14.Location = new System.Drawing.Point(300, 361);
             this.label14.Name = "label14";
             this.label14.Size = new System.Drawing.Size(85, 13);
             this.label14.TabIndex = 366;
@@ -1002,7 +1050,7 @@
             this.tabvtas.Controls.Add(this.label25);
             this.tabvtas.Location = new System.Drawing.Point(4, 22);
             this.tabvtas.Name = "tabvtas";
-            this.tabvtas.Size = new System.Drawing.Size(1026, 377);
+            this.tabvtas.Size = new System.Drawing.Size(1026, 384);
             this.tabvtas.TabIndex = 6;
             this.tabvtas.Text = "Pre Guías";
             this.tabvtas.UseVisualStyleBackColor = true;
@@ -1107,7 +1155,7 @@
             this.dgv_vtas.DateWithTime = false;
             this.dgv_vtas.Location = new System.Drawing.Point(6, 52);
             this.dgv_vtas.Name = "dgv_vtas";
-            this.dgv_vtas.Size = new System.Drawing.Size(1015, 322);
+            this.dgv_vtas.Size = new System.Drawing.Size(1015, 329);
             this.dgv_vtas.TabIndex = 367;
             this.dgv_vtas.TimeFilter = false;
             this.dgv_vtas.SortStringChanged += new System.EventHandler(this.advancedDataGridView1_SortStringChanged);
@@ -1299,9 +1347,9 @@
             this.tabgrti.Controls.Add(this.tx_totval);
             this.tabgrti.Location = new System.Drawing.Point(4, 22);
             this.tabgrti.Name = "tabgrti";
-            this.tabgrti.Size = new System.Drawing.Size(1026, 377);
+            this.tabgrti.Size = new System.Drawing.Size(1026, 384);
             this.tabgrti.TabIndex = 7;
-            this.tabgrti.Text = "Guías Transp. ";
+            this.tabgrti.Text = "GR M y E";
             this.tabgrti.UseVisualStyleBackColor = true;
             // 
             // panel6
@@ -1396,7 +1444,7 @@
             this.panel4.Controls.Add(this.rb_imComp);
             this.panel4.Controls.Add(this.rb_imSimp);
             this.panel4.Controls.Add(this.chk_impGrp);
-            this.panel4.Location = new System.Drawing.Point(729, 349);
+            this.panel4.Location = new System.Drawing.Point(729, 356);
             this.panel4.Name = "panel4";
             this.panel4.Size = new System.Drawing.Size(292, 27);
             this.panel4.TabIndex = 418;
@@ -1449,7 +1497,7 @@
             this.label19.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label19.AutoSize = true;
             this.label19.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label19.Location = new System.Drawing.Point(151, 356);
+            this.label19.Location = new System.Drawing.Point(151, 363);
             this.label19.Name = "label19";
             this.label19.Size = new System.Drawing.Size(92, 13);
             this.label19.TabIndex = 415;
@@ -1461,7 +1509,7 @@
             this.label20.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label20.AutoSize = true;
             this.label20.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label20.Location = new System.Drawing.Point(9, 356);
+            this.label20.Location = new System.Drawing.Point(9, 363);
             this.label20.Name = "label20";
             this.label20.Size = new System.Drawing.Size(75, 13);
             this.label20.TabIndex = 414;
@@ -1473,7 +1521,7 @@
             this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.groupBox2.BackColor = System.Drawing.Color.DimGray;
             this.groupBox2.Controls.Add(this.groupBox32);
-            this.groupBox2.Location = new System.Drawing.Point(6, 371);
+            this.groupBox2.Location = new System.Drawing.Point(6, 378);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(704, 1);
             this.groupBox2.TabIndex = 413;
@@ -1492,7 +1540,7 @@
             this.label28.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label28.AutoSize = true;
             this.label28.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label28.Location = new System.Drawing.Point(423, 356);
+            this.label28.Location = new System.Drawing.Point(423, 363);
             this.label28.Name = "label28";
             this.label28.Size = new System.Drawing.Size(71, 13);
             this.label28.TabIndex = 411;
@@ -1504,7 +1552,7 @@
             this.label21.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label21.AutoSize = true;
             this.label21.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label21.Location = new System.Drawing.Point(559, 356);
+            this.label21.Location = new System.Drawing.Point(559, 363);
             this.label21.Name = "label21";
             this.label21.Size = new System.Drawing.Size(72, 13);
             this.label21.TabIndex = 410;
@@ -1641,7 +1689,7 @@
             this.dgv_guias.DateWithTime = false;
             this.dgv_guias.Location = new System.Drawing.Point(3, 52);
             this.dgv_guias.Name = "dgv_guias";
-            this.dgv_guias.Size = new System.Drawing.Size(1020, 295);
+            this.dgv_guias.Size = new System.Drawing.Size(1020, 302);
             this.dgv_guias.TabIndex = 385;
             this.dgv_guias.TimeFilter = false;
             this.dgv_guias.SortStringChanged += new System.EventHandler(this.advancedDataGridView1_SortStringChanged);
@@ -1769,7 +1817,7 @@
             this.tx_totv_a.AllowSpace = false;
             this.tx_totv_a.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.tx_totv_a.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_totv_a.Location = new System.Drawing.Point(245, 352);
+            this.tx_totv_a.Location = new System.Drawing.Point(245, 359);
             this.tx_totv_a.Name = "tx_totv_a";
             this.tx_totv_a.ReadOnly = true;
             this.tx_totv_a.Size = new System.Drawing.Size(76, 20);
@@ -1781,7 +1829,7 @@
             this.tx_tfi_a.AllowSpace = false;
             this.tx_tfi_a.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.tx_tfi_a.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_tfi_a.Location = new System.Drawing.Point(86, 352);
+            this.tx_tfi_a.Location = new System.Drawing.Point(86, 359);
             this.tx_tfi_a.Name = "tx_tfi_a";
             this.tx_tfi_a.ReadOnly = true;
             this.tx_tfi_a.Size = new System.Drawing.Size(41, 20);
@@ -1793,7 +1841,7 @@
             this.tx_tfi_f.AllowSpace = false;
             this.tx_tfi_f.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.tx_tfi_f.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_tfi_f.Location = new System.Drawing.Point(495, 352);
+            this.tx_tfi_f.Location = new System.Drawing.Point(495, 359);
             this.tx_tfi_f.Name = "tx_tfi_f";
             this.tx_tfi_f.ReadOnly = true;
             this.tx_tfi_f.Size = new System.Drawing.Size(41, 20);
@@ -1805,7 +1853,7 @@
             this.tx_totval.AllowSpace = false;
             this.tx_totval.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.tx_totval.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_totval.Location = new System.Drawing.Point(633, 352);
+            this.tx_totval.Location = new System.Drawing.Point(633, 359);
             this.tx_totval.Name = "tx_totval";
             this.tx_totval.ReadOnly = true;
             this.tx_totval.Size = new System.Drawing.Size(76, 20);
@@ -1844,7 +1892,7 @@
             this.tabplacar.Controls.Add(this.tx_tflets);
             this.tabplacar.Location = new System.Drawing.Point(4, 22);
             this.tabplacar.Name = "tabplacar";
-            this.tabplacar.Size = new System.Drawing.Size(1026, 377);
+            this.tabplacar.Size = new System.Drawing.Size(1026, 384);
             this.tabplacar.TabIndex = 8;
             this.tabplacar.Text = "Planilla Carga";
             this.tabplacar.UseVisualStyleBackColor = true;
@@ -1854,7 +1902,7 @@
             this.tx_tgrp.AllowSpace = false;
             this.tx_tgrp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.tx_tgrp.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_tgrp.Location = new System.Drawing.Point(490, 352);
+            this.tx_tgrp.Location = new System.Drawing.Point(490, 359);
             this.tx_tgrp.Name = "tx_tgrp";
             this.tx_tgrp.ReadOnly = true;
             this.tx_tgrp.Size = new System.Drawing.Size(41, 20);
@@ -1866,7 +1914,7 @@
             this.label22.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label22.AutoSize = true;
             this.label22.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label22.Location = new System.Drawing.Point(433, 356);
+            this.label22.Location = new System.Drawing.Point(433, 363);
             this.label22.Name = "label22";
             this.label22.Size = new System.Drawing.Size(55, 13);
             this.label22.TabIndex = 426;
@@ -1878,7 +1926,7 @@
             this.label23.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label23.AutoSize = true;
             this.label23.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label23.Location = new System.Drawing.Point(8, 356);
+            this.label23.Location = new System.Drawing.Point(8, 363);
             this.label23.Name = "label23";
             this.label23.Size = new System.Drawing.Size(75, 13);
             this.label23.TabIndex = 423;
@@ -1891,7 +1939,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox38.BackColor = System.Drawing.Color.DimGray;
             this.groupBox38.Controls.Add(this.groupBox43);
-            this.groupBox38.Location = new System.Drawing.Point(5, 371);
+            this.groupBox38.Location = new System.Drawing.Point(5, 378);
             this.groupBox38.Name = "groupBox38";
             this.groupBox38.Size = new System.Drawing.Size(704, 1);
             this.groupBox38.TabIndex = 422;
@@ -1910,7 +1958,7 @@
             this.label29.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label29.AutoSize = true;
             this.label29.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label29.Location = new System.Drawing.Point(291, 356);
+            this.label29.Location = new System.Drawing.Point(291, 363);
             this.label29.Name = "label29";
             this.label29.Size = new System.Drawing.Size(71, 13);
             this.label29.TabIndex = 420;
@@ -1922,7 +1970,7 @@
             this.label30.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label30.AutoSize = true;
             this.label30.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label30.Location = new System.Drawing.Point(555, 356);
+            this.label30.Location = new System.Drawing.Point(555, 363);
             this.label30.Name = "label30";
             this.label30.Size = new System.Drawing.Size(77, 13);
             this.label30.TabIndex = 419;
@@ -2118,7 +2166,7 @@
             this.dgv_plan.DateWithTime = false;
             this.dgv_plan.Location = new System.Drawing.Point(3, 52);
             this.dgv_plan.Name = "dgv_plan";
-            this.dgv_plan.Size = new System.Drawing.Size(1020, 295);
+            this.dgv_plan.Size = new System.Drawing.Size(1020, 302);
             this.dgv_plan.TabIndex = 394;
             this.dgv_plan.TimeFilter = false;
             this.dgv_plan.SortStringChanged += new System.EventHandler(this.advancedDataGridView1_SortStringChanged);
@@ -2187,7 +2235,7 @@
             this.tx_tfp_a.AllowSpace = false;
             this.tx_tfp_a.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.tx_tfp_a.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_tfp_a.Location = new System.Drawing.Point(85, 352);
+            this.tx_tfp_a.Location = new System.Drawing.Point(85, 359);
             this.tx_tfp_a.Name = "tx_tfp_a";
             this.tx_tfp_a.ReadOnly = true;
             this.tx_tfp_a.Size = new System.Drawing.Size(41, 20);
@@ -2199,7 +2247,7 @@
             this.tx_tfp_v.AllowSpace = false;
             this.tx_tfp_v.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.tx_tfp_v.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_tfp_v.Location = new System.Drawing.Point(364, 352);
+            this.tx_tfp_v.Location = new System.Drawing.Point(364, 359);
             this.tx_tfp_v.Name = "tx_tfp_v";
             this.tx_tfp_v.ReadOnly = true;
             this.tx_tfp_v.Size = new System.Drawing.Size(41, 20);
@@ -2211,7 +2259,7 @@
             this.tx_tflets.AllowSpace = false;
             this.tx_tflets.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.tx_tflets.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_tflets.Location = new System.Drawing.Point(632, 352);
+            this.tx_tflets.Location = new System.Drawing.Point(632, 359);
             this.tx_tflets.Name = "tx_tflets";
             this.tx_tflets.ReadOnly = true;
             this.tx_tflets.Size = new System.Drawing.Size(76, 20);
@@ -2238,7 +2286,7 @@
             this.tabreval.Controls.Add(this.tx_treval);
             this.tabreval.Location = new System.Drawing.Point(4, 22);
             this.tabreval.Name = "tabreval";
-            this.tabreval.Size = new System.Drawing.Size(1026, 377);
+            this.tabreval.Size = new System.Drawing.Size(1026, 384);
             this.tabreval.TabIndex = 9;
             this.tabreval.Text = "Revalorizaciones";
             this.tabreval.UseVisualStyleBackColor = true;
@@ -2248,7 +2296,7 @@
             this.tx_trant.AllowSpace = false;
             this.tx_trant.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.tx_trant.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_trant.Location = new System.Drawing.Point(488, 352);
+            this.tx_trant.Location = new System.Drawing.Point(488, 359);
             this.tx_trant.Name = "tx_trant";
             this.tx_trant.ReadOnly = true;
             this.tx_trant.Size = new System.Drawing.Size(76, 20);
@@ -2260,7 +2308,7 @@
             this.label31.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label31.AutoSize = true;
             this.label31.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label31.Location = new System.Drawing.Point(401, 356);
+            this.label31.Location = new System.Drawing.Point(401, 363);
             this.label31.Name = "label31";
             this.label31.Size = new System.Drawing.Size(85, 13);
             this.label31.TabIndex = 433;
@@ -2273,7 +2321,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox44.BackColor = System.Drawing.Color.DimGray;
             this.groupBox44.Controls.Add(this.groupBox45);
-            this.groupBox44.Location = new System.Drawing.Point(251, 371);
+            this.groupBox44.Location = new System.Drawing.Point(251, 378);
             this.groupBox44.Name = "groupBox44";
             this.groupBox44.Size = new System.Drawing.Size(533, 1);
             this.groupBox44.TabIndex = 432;
@@ -2292,7 +2340,7 @@
             this.label32.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label32.AutoSize = true;
             this.label32.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label32.Location = new System.Drawing.Point(254, 356);
+            this.label32.Location = new System.Drawing.Point(254, 363);
             this.label32.Name = "label32";
             this.label32.Size = new System.Drawing.Size(71, 13);
             this.label32.TabIndex = 430;
@@ -2304,7 +2352,7 @@
             this.label33.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label33.AutoSize = true;
             this.label33.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label33.Location = new System.Drawing.Point(590, 356);
+            this.label33.Location = new System.Drawing.Point(590, 363);
             this.label33.Name = "label33";
             this.label33.Size = new System.Drawing.Size(116, 13);
             this.label33.TabIndex = 429;
@@ -2359,7 +2407,7 @@
             this.dgv_reval.DateWithTime = false;
             this.dgv_reval.Location = new System.Drawing.Point(3, 52);
             this.dgv_reval.Name = "dgv_reval";
-            this.dgv_reval.Size = new System.Drawing.Size(1020, 295);
+            this.dgv_reval.Size = new System.Drawing.Size(1020, 302);
             this.dgv_reval.TabIndex = 403;
             this.dgv_reval.TimeFilter = false;
             this.dgv_reval.SortStringChanged += new System.EventHandler(this.advancedDataGridView1_SortStringChanged);
@@ -2427,7 +2475,7 @@
             this.tx_frv.AllowSpace = false;
             this.tx_frv.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.tx_frv.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_frv.Location = new System.Drawing.Point(327, 352);
+            this.tx_frv.Location = new System.Drawing.Point(327, 359);
             this.tx_frv.Name = "tx_frv";
             this.tx_frv.ReadOnly = true;
             this.tx_frv.Size = new System.Drawing.Size(41, 20);
@@ -2439,7 +2487,7 @@
             this.tx_treval.AllowSpace = false;
             this.tx_treval.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.tx_treval.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_treval.Location = new System.Drawing.Point(708, 352);
+            this.tx_treval.Location = new System.Drawing.Point(708, 359);
             this.tx_treval.Name = "tx_treval";
             this.tx_treval.ReadOnly = true;
             this.tx_treval.Size = new System.Drawing.Size(76, 20);
@@ -2458,7 +2506,7 @@
             this.tabgrhist.Controls.Add(this.bt_hisGR);
             this.tabgrhist.Location = new System.Drawing.Point(4, 22);
             this.tabgrhist.Name = "tabgrhist";
-            this.tabgrhist.Size = new System.Drawing.Size(1026, 377);
+            this.tabgrhist.Size = new System.Drawing.Size(1026, 384);
             this.tabgrhist.TabIndex = 10;
             this.tabgrhist.Text = "Seguimiento GR";
             this.tabgrhist.UseVisualStyleBackColor = true;
@@ -2530,7 +2578,7 @@
             this.dgv_histGR.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgv_histGR.Location = new System.Drawing.Point(3, 57);
             this.dgv_histGR.Name = "dgv_histGR";
-            this.dgv_histGR.Size = new System.Drawing.Size(1020, 317);
+            this.dgv_histGR.Size = new System.Drawing.Size(1020, 324);
             this.dgv_histGR.TabIndex = 8;
             // 
             // tx_num
@@ -2564,9 +2612,427 @@
             this.bt_hisGR.UseVisualStyleBackColor = true;
             this.bt_hisGR.Click += new System.EventHandler(this.bt_hisGR_Click);
             // 
+            // tabGREstad
+            // 
+            this.tabGREstad.Controls.Add(this.groupBox57);
+            this.tabGREstad.Controls.Add(this.bt_consMas);
+            this.tabGREstad.Controls.Add(this.panel10);
+            this.tabGREstad.Controls.Add(this.label41);
+            this.tabGREstad.Controls.Add(this.label42);
+            this.tabGREstad.Controls.Add(this.tx_GRE_fa);
+            this.tabGREstad.Controls.Add(this.tx_GRE_fv);
+            this.tabGREstad.Controls.Add(this.groupBox53);
+            this.tabGREstad.Controls.Add(this.groupBox55);
+            this.tabGREstad.Controls.Add(this.dtp_GRE_fter);
+            this.tabGREstad.Controls.Add(this.dtp_GRE_fini);
+            this.tabGREstad.Controls.Add(this.bt_greEst);
+            this.tabGREstad.Controls.Add(this.label38);
+            this.tabGREstad.Controls.Add(this.label39);
+            this.tabGREstad.Controls.Add(this.panel9);
+            this.tabGREstad.Controls.Add(this.chk_GRE);
+            this.tabGREstad.Controls.Add(this.groupBox49);
+            this.tabGREstad.Controls.Add(this.tx_dat_GRE_est);
+            this.tabGREstad.Controls.Add(this.cmb_GRE_est);
+            this.tabGREstad.Controls.Add(this.dgv_GRE_est);
+            this.tabGREstad.Controls.Add(this.label36);
+            this.tabGREstad.Controls.Add(this.groupBox51);
+            this.tabGREstad.Controls.Add(this.label37);
+            this.tabGREstad.Controls.Add(this.tx_dat_GRE_sede);
+            this.tabGREstad.Controls.Add(this.cmb_GRE_sede);
+            this.tabGREstad.Location = new System.Drawing.Point(4, 22);
+            this.tabGREstad.Name = "tabGREstad";
+            this.tabGREstad.Size = new System.Drawing.Size(1026, 384);
+            this.tabGREstad.TabIndex = 11;
+            this.tabGREstad.Text = "GRE Estados";
+            this.tabGREstad.UseVisualStyleBackColor = true;
+            // 
+            // groupBox57
+            // 
+            this.groupBox57.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.groupBox57.BackColor = System.Drawing.Color.DimGray;
+            this.groupBox57.Controls.Add(this.groupBox58);
+            this.groupBox57.Location = new System.Drawing.Point(6, 379);
+            this.groupBox57.Name = "groupBox57";
+            this.groupBox57.Size = new System.Drawing.Size(504, 1);
+            this.groupBox57.TabIndex = 423;
+            this.groupBox57.TabStop = false;
+            // 
+            // groupBox58
+            // 
+            this.groupBox58.Location = new System.Drawing.Point(0, -26);
+            this.groupBox58.Name = "groupBox58";
+            this.groupBox58.Size = new System.Drawing.Size(164, 1);
+            this.groupBox58.TabIndex = 113;
+            this.groupBox58.TabStop = false;
+            // 
+            // bt_consMas
+            // 
+            this.bt_consMas.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.bt_consMas.Location = new System.Drawing.Point(412, 357);
+            this.bt_consMas.Name = "bt_consMas";
+            this.bt_consMas.Size = new System.Drawing.Size(99, 24);
+            this.bt_consMas.TabIndex = 429;
+            this.bt_consMas.Text = "Consulta masiva";
+            this.bt_consMas.UseVisualStyleBackColor = true;
+            this.bt_consMas.Click += new System.EventHandler(this.bt_consMas_Click);
+            // 
+            // panel10
+            // 
+            this.panel10.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel10.Controls.Add(this.chk_GRE_iEnvia);
+            this.panel10.Controls.Add(this.chk_GRE_iEnpr);
+            this.panel10.Controls.Add(this.chk_GRE_iAcep);
+            this.panel10.Controls.Add(this.bt_GRE_impri);
+            this.panel10.Controls.Add(this.chk_GRE_imp);
+            this.panel10.Location = new System.Drawing.Point(567, 356);
+            this.panel10.Name = "panel10";
+            this.panel10.Size = new System.Drawing.Size(454, 27);
+            this.panel10.TabIndex = 428;
+            // 
+            // bt_GRE_impri
+            // 
+            this.bt_GRE_impri.Image = global::TransCarga.Properties.Resources.permiso_16;
+            this.bt_GRE_impri.Location = new System.Drawing.Point(420, 2);
+            this.bt_GRE_impri.Name = "bt_GRE_impri";
+            this.bt_GRE_impri.Size = new System.Drawing.Size(30, 23);
+            this.bt_GRE_impri.TabIndex = 3;
+            this.bt_GRE_impri.UseVisualStyleBackColor = true;
+            // 
+            // chk_GRE_imp
+            // 
+            this.chk_GRE_imp.AutoSize = true;
+            this.chk_GRE_imp.Location = new System.Drawing.Point(8, 5);
+            this.chk_GRE_imp.Name = "chk_GRE_imp";
+            this.chk_GRE_imp.Size = new System.Drawing.Size(105, 17);
+            this.chk_GRE_imp.TabIndex = 0;
+            this.chk_GRE_imp.Text = "Impresión Grupal";
+            this.chk_GRE_imp.UseVisualStyleBackColor = true;
+            // 
+            // label41
+            // 
+            this.label41.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.label41.AutoSize = true;
+            this.label41.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.label41.Location = new System.Drawing.Point(9, 364);
+            this.label41.Name = "label41";
+            this.label41.Size = new System.Drawing.Size(75, 13);
+            this.label41.TabIndex = 424;
+            this.label41.Text = "Filas Anuladas";
+            this.label41.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // label42
+            // 
+            this.label42.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.label42.AutoSize = true;
+            this.label42.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.label42.Location = new System.Drawing.Point(196, 364);
+            this.label42.Name = "label42";
+            this.label42.Size = new System.Drawing.Size(71, 13);
+            this.label42.TabIndex = 421;
+            this.label42.Text = "Filas vigentes";
+            this.label42.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // tx_GRE_fa
+            // 
+            this.tx_GRE_fa.AllowSpace = false;
+            this.tx_GRE_fa.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.tx_GRE_fa.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_GRE_fa.Location = new System.Drawing.Point(86, 360);
+            this.tx_GRE_fa.Name = "tx_GRE_fa";
+            this.tx_GRE_fa.ReadOnly = true;
+            this.tx_GRE_fa.Size = new System.Drawing.Size(41, 20);
+            this.tx_GRE_fa.TabIndex = 426;
+            this.tx_GRE_fa.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // tx_GRE_fv
+            // 
+            this.tx_GRE_fv.AllowSpace = false;
+            this.tx_GRE_fv.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.tx_GRE_fv.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_GRE_fv.Location = new System.Drawing.Point(269, 360);
+            this.tx_GRE_fv.Name = "tx_GRE_fv";
+            this.tx_GRE_fv.ReadOnly = true;
+            this.tx_GRE_fv.Size = new System.Drawing.Size(41, 20);
+            this.tx_GRE_fv.TabIndex = 422;
+            this.tx_GRE_fv.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // groupBox53
+            // 
+            this.groupBox53.BackColor = System.Drawing.Color.DimGray;
+            this.groupBox53.Controls.Add(this.groupBox54);
+            this.groupBox53.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.groupBox53.Location = new System.Drawing.Point(567, 50);
+            this.groupBox53.Name = "groupBox53";
+            this.groupBox53.Size = new System.Drawing.Size(161, 1);
+            this.groupBox53.TabIndex = 409;
+            this.groupBox53.TabStop = false;
+            // 
+            // groupBox54
+            // 
+            this.groupBox54.Location = new System.Drawing.Point(0, -26);
+            this.groupBox54.Name = "groupBox54";
+            this.groupBox54.Size = new System.Drawing.Size(164, 1);
+            this.groupBox54.TabIndex = 113;
+            this.groupBox54.TabStop = false;
+            // 
+            // groupBox55
+            // 
+            this.groupBox55.BackColor = System.Drawing.Color.DimGray;
+            this.groupBox55.Controls.Add(this.groupBox56);
+            this.groupBox55.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.groupBox55.Location = new System.Drawing.Point(567, 26);
+            this.groupBox55.Name = "groupBox55";
+            this.groupBox55.Size = new System.Drawing.Size(161, 1);
+            this.groupBox55.TabIndex = 408;
+            this.groupBox55.TabStop = false;
+            // 
+            // groupBox56
+            // 
+            this.groupBox56.Location = new System.Drawing.Point(0, -26);
+            this.groupBox56.Name = "groupBox56";
+            this.groupBox56.Size = new System.Drawing.Size(164, 1);
+            this.groupBox56.TabIndex = 113;
+            this.groupBox56.TabStop = false;
+            // 
+            // dtp_GRE_fter
+            // 
+            this.dtp_GRE_fter.Checked = false;
+            this.dtp_GRE_fter.Format = System.Windows.Forms.DateTimePickerFormat.Short;
+            this.dtp_GRE_fter.Location = new System.Drawing.Point(633, 31);
+            this.dtp_GRE_fter.Name = "dtp_GRE_fter";
+            this.dtp_GRE_fter.Size = new System.Drawing.Size(95, 20);
+            this.dtp_GRE_fter.TabIndex = 404;
+            // 
+            // dtp_GRE_fini
+            // 
+            this.dtp_GRE_fini.Checked = false;
+            this.dtp_GRE_fini.Format = System.Windows.Forms.DateTimePickerFormat.Short;
+            this.dtp_GRE_fini.Location = new System.Drawing.Point(633, 7);
+            this.dtp_GRE_fini.Name = "dtp_GRE_fini";
+            this.dtp_GRE_fini.Size = new System.Drawing.Size(95, 20);
+            this.dtp_GRE_fini.TabIndex = 403;
+            // 
+            // bt_greEst
+            // 
+            this.bt_greEst.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.bt_greEst.Image = global::TransCarga.Properties.Resources.process24;
+            this.bt_greEst.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.bt_greEst.Location = new System.Drawing.Point(823, 6);
+            this.bt_greEst.Name = "bt_greEst";
+            this.bt_greEst.Size = new System.Drawing.Size(65, 42);
+            this.bt_greEst.TabIndex = 405;
+            this.bt_greEst.Text = " Filtra";
+            this.bt_greEst.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.bt_greEst.UseVisualStyleBackColor = true;
+            this.bt_greEst.Click += new System.EventHandler(this.bt_greEst_Click);
+            // 
+            // label38
+            // 
+            this.label38.AutoSize = true;
+            this.label38.Location = new System.Drawing.Point(577, 36);
+            this.label38.Name = "label38";
+            this.label38.Size = new System.Drawing.Size(53, 13);
+            this.label38.TabIndex = 407;
+            this.label38.Text = "Fech final";
+            // 
+            // label39
+            // 
+            this.label39.AutoSize = true;
+            this.label39.Location = new System.Drawing.Point(569, 11);
+            this.label39.Name = "label39";
+            this.label39.Size = new System.Drawing.Size(61, 13);
+            this.label39.TabIndex = 406;
+            this.label39.Text = "Fech Inicial";
+            // 
+            // panel9
+            // 
+            this.panel9.Controls.Add(this.rb_GRE_dest);
+            this.panel9.Controls.Add(this.rb_GRE_orig);
+            this.panel9.Location = new System.Drawing.Point(334, 4);
+            this.panel9.Name = "panel9";
+            this.panel9.Size = new System.Drawing.Size(126, 26);
+            this.panel9.TabIndex = 402;
+            // 
+            // rb_GRE_dest
+            // 
+            this.rb_GRE_dest.AutoSize = true;
+            this.rb_GRE_dest.Location = new System.Drawing.Point(63, 4);
+            this.rb_GRE_dest.Name = "rb_GRE_dest";
+            this.rb_GRE_dest.Size = new System.Drawing.Size(61, 17);
+            this.rb_GRE_dest.TabIndex = 359;
+            this.rb_GRE_dest.TabStop = true;
+            this.rb_GRE_dest.Text = "Destino";
+            this.rb_GRE_dest.UseVisualStyleBackColor = true;
+            // 
+            // rb_GRE_orig
+            // 
+            this.rb_GRE_orig.AutoSize = true;
+            this.rb_GRE_orig.Location = new System.Drawing.Point(3, 4);
+            this.rb_GRE_orig.Name = "rb_GRE_orig";
+            this.rb_GRE_orig.Size = new System.Drawing.Size(56, 17);
+            this.rb_GRE_orig.TabIndex = 358;
+            this.rb_GRE_orig.TabStop = true;
+            this.rb_GRE_orig.Text = "Origen";
+            this.rb_GRE_orig.UseVisualStyleBackColor = true;
+            // 
+            // chk_GRE
+            // 
+            this.chk_GRE.AutoSize = true;
+            this.chk_GRE.Location = new System.Drawing.Point(351, 33);
+            this.chk_GRE.Name = "chk_GRE";
+            this.chk_GRE.Size = new System.Drawing.Size(63, 17);
+            this.chk_GRE.TabIndex = 401;
+            this.chk_GRE.Text = "Excluye";
+            this.chk_GRE.UseVisualStyleBackColor = true;
+            this.chk_GRE.Visible = false;
+            // 
+            // groupBox49
+            // 
+            this.groupBox49.BackColor = System.Drawing.Color.DimGray;
+            this.groupBox49.Controls.Add(this.groupBox50);
+            this.groupBox49.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.groupBox49.Location = new System.Drawing.Point(173, 50);
+            this.groupBox49.Name = "groupBox49";
+            this.groupBox49.Size = new System.Drawing.Size(171, 1);
+            this.groupBox49.TabIndex = 397;
+            this.groupBox49.TabStop = false;
+            // 
+            // groupBox50
+            // 
+            this.groupBox50.Location = new System.Drawing.Point(0, -26);
+            this.groupBox50.Name = "groupBox50";
+            this.groupBox50.Size = new System.Drawing.Size(164, 1);
+            this.groupBox50.TabIndex = 113;
+            this.groupBox50.TabStop = false;
+            // 
+            // tx_dat_GRE_est
+            // 
+            this.tx_dat_GRE_est.Location = new System.Drawing.Point(153, 33);
+            this.tx_dat_GRE_est.Name = "tx_dat_GRE_est";
+            this.tx_dat_GRE_est.Size = new System.Drawing.Size(17, 20);
+            this.tx_dat_GRE_est.TabIndex = 400;
+            this.tx_dat_GRE_est.Tag = "Estado de sunat para servicios web";
+            this.tx_dat_GRE_est.Visible = false;
+            // 
+            // cmb_GRE_est
+            // 
+            this.cmb_GRE_est.BackColor = System.Drawing.SystemColors.ScrollBar;
+            this.cmb_GRE_est.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmb_GRE_est.DropDownWidth = 100;
+            this.cmb_GRE_est.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.cmb_GRE_est.FormattingEnabled = true;
+            this.cmb_GRE_est.Location = new System.Drawing.Point(260, 30);
+            this.cmb_GRE_est.Name = "cmb_GRE_est";
+            this.cmb_GRE_est.Size = new System.Drawing.Size(85, 21);
+            this.cmb_GRE_est.TabIndex = 399;
+            // 
+            // dgv_GRE_est
+            // 
+            this.dgv_GRE_est.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.dgv_GRE_est.AutoGenerateContextFilters = true;
+            this.dgv_GRE_est.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgv_GRE_est.DateWithTime = false;
+            this.dgv_GRE_est.Location = new System.Drawing.Point(3, 55);
+            this.dgv_GRE_est.Name = "dgv_GRE_est";
+            this.dgv_GRE_est.Size = new System.Drawing.Size(1020, 299);
+            this.dgv_GRE_est.TabIndex = 398;
+            this.dgv_GRE_est.TimeFilter = false;
+            // 
+            // label36
+            // 
+            this.label36.AutoSize = true;
+            this.label36.Location = new System.Drawing.Point(175, 35);
+            this.label36.Name = "label36";
+            this.label36.Size = new System.Drawing.Size(71, 13);
+            this.label36.TabIndex = 396;
+            this.label36.Text = "Estado Sunat";
+            // 
+            // groupBox51
+            // 
+            this.groupBox51.BackColor = System.Drawing.Color.DimGray;
+            this.groupBox51.Controls.Add(this.groupBox52);
+            this.groupBox51.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.groupBox51.Location = new System.Drawing.Point(173, 26);
+            this.groupBox51.Name = "groupBox51";
+            this.groupBox51.Size = new System.Drawing.Size(137, 1);
+            this.groupBox51.TabIndex = 395;
+            this.groupBox51.TabStop = false;
+            // 
+            // groupBox52
+            // 
+            this.groupBox52.Location = new System.Drawing.Point(0, -26);
+            this.groupBox52.Name = "groupBox52";
+            this.groupBox52.Size = new System.Drawing.Size(164, 1);
+            this.groupBox52.TabIndex = 113;
+            this.groupBox52.TabStop = false;
+            // 
+            // label37
+            // 
+            this.label37.AutoSize = true;
+            this.label37.Location = new System.Drawing.Point(175, 11);
+            this.label37.Name = "label37";
+            this.label37.Size = new System.Drawing.Size(61, 13);
+            this.label37.TabIndex = 393;
+            this.label37.Text = "Local Sede";
+            // 
+            // tx_dat_GRE_sede
+            // 
+            this.tx_dat_GRE_sede.Location = new System.Drawing.Point(153, 7);
+            this.tx_dat_GRE_sede.Name = "tx_dat_GRE_sede";
+            this.tx_dat_GRE_sede.Size = new System.Drawing.Size(20, 20);
+            this.tx_dat_GRE_sede.TabIndex = 394;
+            this.tx_dat_GRE_sede.Visible = false;
+            // 
+            // cmb_GRE_sede
+            // 
+            this.cmb_GRE_sede.BackColor = System.Drawing.SystemColors.ScrollBar;
+            this.cmb_GRE_sede.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmb_GRE_sede.DropDownWidth = 100;
+            this.cmb_GRE_sede.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.cmb_GRE_sede.FormattingEnabled = true;
+            this.cmb_GRE_sede.Location = new System.Drawing.Point(243, 6);
+            this.cmb_GRE_sede.Name = "cmb_GRE_sede";
+            this.cmb_GRE_sede.Size = new System.Drawing.Size(85, 21);
+            this.cmb_GRE_sede.TabIndex = 392;
+            // 
             // printDocument1
             // 
             this.printDocument1.PrintPage += new System.Drawing.Printing.PrintPageEventHandler(this.printDocument1_PrintPage);
+            // 
+            // chk_GRE_iAcep
+            // 
+            this.chk_GRE_iAcep.AutoSize = true;
+            this.chk_GRE_iAcep.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.chk_GRE_iAcep.Location = new System.Drawing.Point(142, 6);
+            this.chk_GRE_iAcep.Name = "chk_GRE_iAcep";
+            this.chk_GRE_iAcep.Size = new System.Drawing.Size(78, 16);
+            this.chk_GRE_iAcep.TabIndex = 4;
+            this.chk_GRE_iAcep.Text = "Aceptadas";
+            this.chk_GRE_iAcep.UseVisualStyleBackColor = true;
+            // 
+            // chk_GRE_iEnpr
+            // 
+            this.chk_GRE_iEnpr.AutoSize = true;
+            this.chk_GRE_iEnpr.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.chk_GRE_iEnpr.Location = new System.Drawing.Point(231, 6);
+            this.chk_GRE_iEnpr.Name = "chk_GRE_iEnpr";
+            this.chk_GRE_iEnpr.Size = new System.Drawing.Size(80, 16);
+            this.chk_GRE_iEnpr.TabIndex = 5;
+            this.chk_GRE_iEnpr.Text = "En proceso";
+            this.chk_GRE_iEnpr.UseVisualStyleBackColor = true;
+            // 
+            // chk_GRE_iEnvia
+            // 
+            this.chk_GRE_iEnvia.AutoSize = true;
+            this.chk_GRE_iEnvia.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.chk_GRE_iEnvia.Location = new System.Drawing.Point(322, 6);
+            this.chk_GRE_iEnvia.Name = "chk_GRE_iEnvia";
+            this.chk_GRE_iEnvia.Size = new System.Drawing.Size(71, 16);
+            this.chk_GRE_iEnvia.TabIndex = 6;
+            this.chk_GRE_iEnvia.Text = "Enviadas";
+            this.chk_GRE_iEnvia.UseVisualStyleBackColor = true;
             // 
             // repsoper
             // 
@@ -2575,7 +3041,7 @@
             this.AutoScroll = true;
             this.AutoSize = true;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.ClientSize = new System.Drawing.Size(1040, 443);
+            this.ClientSize = new System.Drawing.Size(1040, 450);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.toolStrip1);
             this.MaximizeBox = false;
@@ -2641,6 +3107,18 @@
             this.panel7.ResumeLayout(false);
             this.panel7.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgv_histGR)).EndInit();
+            this.tabGREstad.ResumeLayout(false);
+            this.tabGREstad.PerformLayout();
+            this.groupBox57.ResumeLayout(false);
+            this.panel10.ResumeLayout(false);
+            this.panel10.PerformLayout();
+            this.groupBox53.ResumeLayout(false);
+            this.groupBox55.ResumeLayout(false);
+            this.panel9.ResumeLayout(false);
+            this.panel9.PerformLayout();
+            this.groupBox49.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dgv_GRE_est)).EndInit();
+            this.groupBox51.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -2855,5 +3333,43 @@
         private System.Windows.Forms.Panel panel8;
         private System.Windows.Forms.RadioButton rb_busDoc;
         private System.Windows.Forms.RadioButton rb_busNom;
+        private System.Windows.Forms.TabPage tabGREstad;
+        private System.Windows.Forms.GroupBox groupBox53;
+        private System.Windows.Forms.GroupBox groupBox54;
+        private System.Windows.Forms.GroupBox groupBox55;
+        private System.Windows.Forms.GroupBox groupBox56;
+        private System.Windows.Forms.DateTimePicker dtp_GRE_fter;
+        private System.Windows.Forms.DateTimePicker dtp_GRE_fini;
+        private System.Windows.Forms.Button bt_greEst;
+        private System.Windows.Forms.Label label38;
+        private System.Windows.Forms.Label label39;
+        private System.Windows.Forms.Panel panel9;
+        private System.Windows.Forms.RadioButton rb_GRE_dest;
+        private System.Windows.Forms.RadioButton rb_GRE_orig;
+        private System.Windows.Forms.CheckBox chk_GRE;
+        private System.Windows.Forms.GroupBox groupBox49;
+        private System.Windows.Forms.GroupBox groupBox50;
+        private System.Windows.Forms.TextBox tx_dat_GRE_est;
+        private System.Windows.Forms.ComboBox cmb_GRE_est;
+        private ADGV.AdvancedDataGridView dgv_GRE_est;
+        private System.Windows.Forms.Label label36;
+        private System.Windows.Forms.GroupBox groupBox51;
+        private System.Windows.Forms.GroupBox groupBox52;
+        private System.Windows.Forms.Label label37;
+        private System.Windows.Forms.TextBox tx_dat_GRE_sede;
+        private System.Windows.Forms.ComboBox cmb_GRE_sede;
+        private System.Windows.Forms.Panel panel10;
+        private System.Windows.Forms.Button bt_GRE_impri;
+        private System.Windows.Forms.CheckBox chk_GRE_imp;
+        private System.Windows.Forms.Label label41;
+        private System.Windows.Forms.GroupBox groupBox57;
+        private System.Windows.Forms.GroupBox groupBox58;
+        private System.Windows.Forms.Label label42;
+        private NumericTextBox tx_GRE_fa;
+        private NumericTextBox tx_GRE_fv;
+        private System.Windows.Forms.Button bt_consMas;
+        private System.Windows.Forms.CheckBox chk_GRE_iEnvia;
+        private System.Windows.Forms.CheckBox chk_GRE_iEnpr;
+        private System.Windows.Forms.CheckBox chk_GRE_iAcep;
     }
 }
