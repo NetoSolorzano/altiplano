@@ -80,6 +80,22 @@ namespace TransCarga
         DataTable dtgrtdet = new DataTable();       // guia rem transpor - detalle
         DataTable dtsunatE = new DataTable();       // guías transp elec - estados
         string[] filaimp = {"","","","","","","","","","","","","" };
+        DataGridViewCheckBoxColumn chkc = new DataGridViewCheckBoxColumn()
+        { 
+            Name = "chck",
+            HeaderText = " ",
+            Width = 30,
+            ReadOnly = false,
+            FillWeight = 10
+        };
+        DataGridViewCheckBoxColumn chkGRE = new DataGridViewCheckBoxColumn()
+        {
+            Name = "chkGRE",
+            HeaderText = " ",
+            Width = 30,
+            ReadOnly = false,
+            FillWeight = 10
+        };
         // string de conexion
         string DB_CONN_STR = "server=" + login.serv + ";uid=" + login.usua + ";pwd=" + login.cont + ";database=" + login.data + ";";
 
@@ -1228,7 +1244,7 @@ namespace TransCarga
                         for (int i = 1; i <= vi_copias; i++)
                         {
                             printDocument1.PrinterSettings.PrinterName = v_impTK;
-                            printDocument1.PrinterSettings.Copies = 2;
+                            printDocument1.PrinterSettings.Copies = 2;      // esto debería estar en una variable
                             printDocument1.Print();
                         }
                     }
@@ -1279,6 +1295,7 @@ namespace TransCarga
         }
         private void bt_greEst_Click(object sender, EventArgs e)        // Guías de Remisión Electrónicas - Estados
         {
+            chk_GRE_imp.Checked = false;
             dtsunatE.Rows.Clear();
             dtsunatE.Columns.Clear();
             string consulta = "SELECT g.fechopegr AS EMISION,concat(g.sergui,'-',g.numgui) AS GUIA_ELEC,lo.descrizionerid AS ORIGEN,ld.DescrizioneRid AS DESTINO," +
@@ -1336,6 +1353,32 @@ namespace TransCarga
             // terminado todo ...
             dgv_GRE_est.Enabled = true;
             bt_consMas.Enabled = true;
+        }
+        private void marca_check(string etiqueta, CheckBox check)       // marca columna 0 de la grilla dgv_GRE_est
+        {
+            // EMISION,GUIA_ELEC,ORIGEN,DESTINO,ESTADO,SUNAT,CDR_GEN,.....,ad.cdr,ad.textoQR,ad.nticket
+            //    0        1         2     3      4      5      6    7 8 9    10     11           12
+            if (check.CheckState == CheckState.Checked)
+            {
+                for (int i = 0; i < dgv_GRE_est.Rows.Count; i++)
+                {
+                    if (dgv_GRE_est.Rows[i].Cells[6].Value.ToString() == etiqueta)
+                    {
+                        dgv_GRE_est.Rows[i].Cells[0].Value = true;
+                    }
+                }
+            }
+            else
+            {
+                for (int i = 0; i < dgv_GRE_est.Rows.Count; i++)
+                {
+                    if (dgv_GRE_est.Rows[i].Cells[6].Value.ToString() == etiqueta)
+                    {
+                        dgv_GRE_est.Rows[i].Cells[0].Value = false;
+                    }
+                }
+            }
+
         }
 
         #region combos
@@ -1557,6 +1600,11 @@ namespace TransCarga
             rb_total.Checked = true;
             //
             rb_busDoc.Checked = true;
+            //
+            chk_GRE_iAcep.Visible = false;
+            chk_GRE_iEnpr.Visible = false;
+            chk_GRE_iEnvia.Visible = false;
+            bt_GRE_impri.Visible = false;
         }
         private void Bt_anul_Click(object sender, EventArgs e)
         {
@@ -2024,17 +2072,11 @@ namespace TransCarga
         {
             if (chk_impGrp.CheckState == CheckState.Checked)
             {
-                DataGridViewCheckBoxColumn chkc = new DataGridViewCheckBoxColumn();
-                chkc.Name = "chkc";
-                chkc.HeaderText = " ";
-                chkc.Width = 30;
-                chkc.ReadOnly = false;
-                chkc.FillWeight = 10;
                 dgv_guias.Columns.Insert(0, chkc);
                 dgv_guias.Enabled = true;
                 dgv_guias.ReadOnly = false;
                 dgv_guias.Columns[0].ReadOnly = false;
-                for (int i=1;i<dgv_guias.Columns.Count;i++)     // NO SALE EL CHECK, NO SE VE
+                for (int i=1;i<dgv_guias.Columns.Count;i++)
                 {
                     dgv_guias.Columns[i].ReadOnly = true;
                 }
@@ -2045,6 +2087,7 @@ namespace TransCarga
                 rb_imComp.Visible = true;
                 rb_imSimp.Visible = true;
                 bt_dale.Visible = true;
+                panel4.ForeColor = Color.FromArgb(32,178,170);
             }
             else
             {
@@ -2052,11 +2095,12 @@ namespace TransCarga
                 {
                     dgv_guias.Rows[i].Cells[0].Value = false;
                 }
-                dgv_guias.Columns.Remove("chkc");
+                dgv_guias.Columns.Remove(chkc);
                 rb_imComp.Visible = false;
                 rb_imSimp.Visible = false;
                 bt_dale.Visible = false;
                 dgv_guias.ReadOnly = true;
+                panel4.ForeColor = Color.FromArgb(255, 255, 255);
             }
         }
         private void rb_busDoc_CheckedChanged(object sender, EventArgs e)
@@ -2090,6 +2134,62 @@ namespace TransCarga
                 // nada
             }
         }
+        private void chk_GRE_imp_CheckStateChanged(object sender, EventArgs e)
+        {
+            if (dgv_GRE_est.Rows.Count > 0)
+            {
+                if (chk_GRE_imp.CheckState == CheckState.Checked)
+                {
+                    dgv_GRE_est.Columns.Insert(0, chkGRE);
+                    dgv_GRE_est.Enabled = true;
+                    dgv_GRE_est.ReadOnly = false;
+                    dgv_GRE_est.Columns[0].ReadOnly = false;
+                    for (int i = 1; i < dgv_GRE_est.Columns.Count - 6; i++)
+                    {
+                        dgv_GRE_est.Columns[i].ReadOnly = true;
+                    }
+                    for (int i = 0; i < dgv_GRE_est.Rows.Count; i++)
+                    {
+                       // dgv_GRE_est.Rows[i].Cells[0].Value = true;
+                    }
+
+                    chk_GRE_iAcep.Visible = true;
+                    chk_GRE_iEnpr.Visible = true;
+                    chk_GRE_iEnvia.Visible = true;
+                    bt_GRE_impri.Visible = true;
+                    panel4.ForeColor = Color.FromArgb(32, 178, 170);
+                }
+                else
+                {
+                    for (int i = 0; i < dgv_GRE_est.Rows.Count; i++)
+                    {
+                        dgv_GRE_est.Rows[i].Cells[0].Value = false;
+                    }
+                    chk_GRE_iAcep.Checked = false;
+                    chk_GRE_iAcep.Visible = false;
+                    chk_GRE_iEnpr.Checked = false;
+                    chk_GRE_iEnpr.Visible = false;
+                    chk_GRE_iEnvia.Checked = false;
+                    chk_GRE_iEnvia.Visible = false;
+                    bt_GRE_impri.Visible = false;
+                    dgv_GRE_est.Columns.Remove(chkGRE);
+                    panel4.ForeColor = Color.FromArgb(255, 255, 255);
+                }
+            }
+        }
+        private void chk_GRE_iAcep_CheckStateChanged(object sender, EventArgs e)
+        {
+            marca_check("Aceptado", chk_GRE_iAcep);
+        }
+        private void chk_GRE_iEnpr_CheckStateChanged(object sender, EventArgs e)
+        {
+            marca_check("En Proceso", chk_GRE_iEnpr);
+        }
+        private void chk_GRE_iEnvia_CheckStateChanged(object sender, EventArgs e)
+        {
+            marca_check("", chk_GRE_iEnvia);    
+        }
+
         #endregion
 
         #region advancedatagridview
@@ -2400,6 +2500,84 @@ namespace TransCarga
                 posi = posi + alfi * 2;
                 puntoF = new PointF(coli, posi);
                 e.Graphics.DrawString(".", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+            }
+        }
+
+        private void bt_GRE_impri_Click(object sender, EventArgs e)
+        {
+            // hacemos un ciclo recorriendo fila x fila y jalamos los datos de la guia
+            for (int i=0; i < dgv_GRE_est.Rows.Count; i++)
+            {
+                if (dgv_GRE_est.Rows[i].Cells[0].Value.ToString() == "True")
+                {
+                    // Jalamos los datos que nos falta y los ponemos en sus arreglos
+                    using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
+                    {
+                        conn.Open();
+                        if (conn.State == ConnectionState.Open)
+                        {
+                            string consulta = "SELECT a.sergui,a.numgui,a.fechopegr,a.dirorigen," +
+                                "a.tidocor,dd1.DescrizioneRid AS 'NomTidor1',a.docsremit,a.rucDorig,ifnull(a.tidocor2, '') AS 'tidocor2',ifnull(dd2.DescrizioneRid, '') AS 'NomTidor2',ifnull(a.docsremit2, '') AS 'docsremit2',ifnull(a.rucDorig2, '') AS 'rucDorig2'," +
+                                "a.tidoregri,dr1.DescrizioneRid AS 'NomDocRem',a.nudoregri,a.nombregri,a.direregri " +
+                                "FROM cabguiai a " +
+                                "LEFT JOIN desc_dtm dd1 ON dd1.IDCodice = a.tidocor " +
+                                "LEFT JOIN desc_dtm dd2 ON dd2.IDCodice = a.tidocor2 " +
+                                "LEFT JOIN desc_doc dr1 ON dr1.IDCodice = a.tidoregri " +
+                                "where a.sergui=@ser and a.numgui=@num";
+                            using (MySqlCommand micon = new MySqlCommand(consulta, conn))
+                            {
+                                micon.Parameters.AddWithValue("@ser", dgv_GRE_est.Rows[i].Cells[2].Value.ToString().Substring(0, 4));
+                                micon.Parameters.AddWithValue("@num", dgv_GRE_est.Rows[i].Cells[2].Value.ToString().Substring(5, 8));
+                                using (MySqlDataReader dr = micon.ExecuteReader())
+                                {
+                                    string[] vs = {"","","","","","","","","","","","",""};
+                                    if (dr != null)
+                                    {
+                                        if (dr.Read())
+                                        {
+                                            vs[0] = dr.GetString("sergui");                         // 0
+                                            vs[1] = dr.GetString("numgui");                         // 1
+                                            vs[2] = dr.GetString("fechopegr").Substring(0, 10);     // 2
+                                            vs[3] = dr.GetString("dirorigen");                      // 3
+                                            vs[4] = dr.GetString("NomTidor1");                      // 4
+                                            vs[5] = dr.GetString("docsremit");                      // 5
+                                            vs[6] = dr.GetString("rucDorig");                       // 6
+                                            vs[7] = dr.GetString("NomTidor2");                      // 7
+                                            vs[8] = dr.GetString("docsremit2");                     // 8
+                                            vs[9] = dr.GetString("rucDorig2");                      // 9
+                                            vs[10] = dr.GetString("NomDocRem");                      // 10
+                                            vs[11] = dr.GetString("nudoregri");                      // 11
+                                            vs[12] = dr.GetString("nombregri");                       // 12
+                                            // falta continuar aqui
+                                            
+                                        }
+                                        else
+                                        {
+                                            MessageBox.Show("No existe el número de guía!", "Atención - Error interno",
+                                            MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                            return;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        MessageBox.Show("No existen datos!", "Atención - Error interno2",
+                                            MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                                        return;
+                                    }
+                                    // detalle
+                                    string[] dt = { "1", "servicio" };
+                                    // varios
+                                    string[] va = { "", "" };
+
+                                    // llamamos a la clase que imprime
+                                    impGRE_T imprime = new impGRE_T(1, "TKFE", vs, dt, va);
+
+                                }
+                            }
+                            
+                        }
+                    }
+                }
             }
         }
 

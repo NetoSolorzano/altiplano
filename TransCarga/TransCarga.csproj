@@ -243,6 +243,7 @@
     <Compile Include="guiati_e.designer.cs">
       <DependentUpon>guiati_e.cs</DependentUpon>
     </Compile>
+    <Compile Include="impGRE_T.cs" />
     <Compile Include="ingcargalm.cs">
       <SubType>Form</SubType>
     </Compile>
