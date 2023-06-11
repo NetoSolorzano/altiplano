@@ -65,6 +65,10 @@ namespace TransCarga
         string claveCertif = "";        // Clave del certificado
         string rutatxt = "";            // ruta de los txt para las guías elect
         string rutaxml = "";            // ruta para los xml de las guías electrónicas
+        string vtc_dni = "";            // codigo dni
+        string vtc_ruc = "";            // codigo ruc
+        string vtc_ext = "";            // codigo carne extranjería
+
         string[] c_t = new string[6] { "", "", "", "", "", "" }; // parametros para generar el token
         //int pageCount = 1, cuenta = 0;
         #endregion
@@ -264,6 +268,12 @@ namespace TransCarga
                         {
                             if (row["param"].ToString() == "grSimple") impriLogi = row["valor"].ToString().Trim();         // SI= imprime logo | NO=no imprime logo
                         }
+                    }
+                    if (row["formulario"].ToString() == "clients" && row["campo"].ToString() == "documento")
+                    {
+                        if (row["param"].ToString() == "dni") vtc_dni = row["valor"].ToString().Trim();
+                        if (row["param"].ToString() == "ruc") vtc_ruc = row["valor"].ToString().Trim();
+                        if (row["param"].ToString() == "ext") vtc_ext = row["valor"].ToString().Trim();
                     }
                 }
                 da.Dispose();
@@ -2516,21 +2526,39 @@ namespace TransCarga
                         conn.Open();
                         if (conn.State == ConnectionState.Open)
                         {
-                            string consulta = "SELECT a.sergui,a.numgui,a.fechopegr,a.dirorigen," +
+                            string consulta = "SELECT X.*,ur1.nombre AS 'Dpto_Rem',ur2.nombre AS 'Prov_Rem',ur3.nombre AS 'Dist_Rem' FROM (" +
+                                "SELECT a.sergui,a.numgui,a.fechopegr,a.dirorigen," +
                                 "a.tidocor,dd1.DescrizioneRid AS 'NomTidor1',a.docsremit,a.rucDorig,ifnull(a.tidocor2, '') AS 'tidocor2',ifnull(dd2.DescrizioneRid, '') AS 'NomTidor2',ifnull(a.docsremit2, '') AS 'docsremit2',ifnull(a.rucDorig2, '') AS 'rucDorig2'," +
-                                "a.tidoregri,dr1.DescrizioneRid AS 'NomDocRem',a.nudoregri,a.nombregri,a.direregri " +
+                                "a.tidoregri,dr1.DescrizioneRid AS 'NomDocRem',a.nudoregri,a.nombregri,a.direregri,a.ubigregri," +
+                                "LEFT(a.ubigregri, 2) AS 'dept_ure',concat(SUBSTRING(a.ubigregri, 1, 4), '00') AS 'prov_ure',a.ubigregri AS 'dist_ure'," +
+                                "a.tidodegri,dr2.DescrizioneRid AS 'NomDocDes',a.nudodegri,a.nombdegri,a.diredegri,a.ubigdegri," +
+                                "a.fechplani,a.pestotgri,a.pesoKT," +
+                                "a.serplagri,a.numplagri,a.plaplagri,a.carplagri,a.autplagri,a.confvegri,a.breplagri,a.proplagri," +
+                                "ifnull(c.razonsocial,'') as razonsocial,ifnull(d.marca, '') as marca, ifnull(d.modelo, '') as modelo,ifnull(r.marca, '') as marCarret," +
+                                "ifnull(r.confve, '') as confvCarret,ifnull(r.autor1, '') as autCarret,ifnull(p.nomchofe,'') as chocamcar " +
                                 "FROM cabguiai a " +
                                 "LEFT JOIN desc_dtm dd1 ON dd1.IDCodice = a.tidocor " +
                                 "LEFT JOIN desc_dtm dd2 ON dd2.IDCodice = a.tidocor2 " +
                                 "LEFT JOIN desc_doc dr1 ON dr1.IDCodice = a.tidoregri " +
-                                "where a.sergui=@ser and a.numgui=@num";
+                                "LEFT JOIN desc_doc dr2 ON dr2.IDCodice = a.tidodegri " +
+                                "left join anag_for c on c.ruc=a.proplagri and c.tipdoc=@tdep " +
+                                "left join vehiculos d on d.placa=a.plaplagri " +
+                                "left join vehiculos r on r.placa=a.carplagri " +
+                                "left join cabplacar p on p.id=a.idplani " +
+                                "where a.sergui = @ser AND a.numgui = @num)X " +
+                                "LEFT JOIN ubigeos ur1 ON ur1.depart = dept_ure " +
+                                "LEFT JOIN ubigeos ur2 ON CONCAT(ur2.depart, ur2.provin,'00')= prov_ure " +
+                                "LEFT JOIN ubigeos ur3 ON CONCAT(ur3.depart, ur3.provin, ur3.distri)= dist_ure LIMIT 1";
                             using (MySqlCommand micon = new MySqlCommand(consulta, conn))
                             {
                                 micon.Parameters.AddWithValue("@ser", dgv_GRE_est.Rows[i].Cells[2].Value.ToString().Substring(0, 4));
                                 micon.Parameters.AddWithValue("@num", dgv_GRE_est.Rows[i].Cells[2].Value.ToString().Substring(5, 8));
+                                micon.Parameters.AddWithValue("@tdep", vtc_ruc);
                                 using (MySqlDataReader dr = micon.ExecuteReader())
                                 {
-                                    string[] vs = {"","","","","","","","","","","","",""};
+                                    string[] vs = {"","","","","","","","","","","","","", "", "", "", "", "", "", "",   // 20
+                                                    "", "", "", "", ""};    // 5
+                                    string[] vc = { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" };   // 16
                                     if (dr != null)
                                     {
                                         if (dr.Read())
@@ -2545,11 +2573,39 @@ namespace TransCarga
                                             vs[7] = dr.GetString("NomTidor2");                      // 7
                                             vs[8] = dr.GetString("docsremit2");                     // 8
                                             vs[9] = dr.GetString("rucDorig2");                      // 9
-                                            vs[10] = dr.GetString("NomDocRem");                      // 10
-                                            vs[11] = dr.GetString("nudoregri");                      // 11
-                                            vs[12] = dr.GetString("nombregri");                       // 12
-                                            // falta continuar aqui
-                                            
+                                            vs[10] = dr.GetString("NomDocRem");                     // 10
+                                            vs[11] = dr.GetString("nudoregri");                     // 11
+                                            vs[12] = dr.GetString("nombregri");                     // 12
+                                            vs[13] = dr.GetString("NomDocDes");                     // 13
+                                            vs[14] = dr.GetString("nudodegri");                     // 14
+                                            vs[15] = dr.GetString("nombdegri");                     // 15
+                                            vs[16] = dr.GetString("fechplani");                     // 16
+                                            vs[17] = dr.GetString("pestotgri");                     // 17
+                                            vs[18] = dr.GetString("pesoKT");                        // 18
+                                            vs[19] = dr.GetString("direregri");                     // 19
+                                            vs[20] = dr.GetString("Dpto_Rem");                      // 20
+                                            vs[21] = dr.GetString("Prov_Rem");                      // 21
+                                            vs[22] = dr.GetString("Dist_Rem");                      // 22
+                                            vs[23] = dr.GetString("diredegri");                  // 23
+                                            //vs[24] = dr.GetString("");                  // 24
+                                            //
+                                            vc[0] = dr.GetString("plaplagri");                   // Placa veh principal
+                                            vc[1] = dr.GetString("autplagri");                   // Autoriz. vehicular
+                                            //vc[2] = dr.GetString("");                   // Num Registro MTC 
+                                            vc[3] = dr.GetString("confvegri");                   // Conf. vehicular
+                                            //vc[4] = dr.GetString("");                   // Placa carreta
+                                            //vc[5] = dr.GetString("");                   // Autoriz. vehicular
+                                            //vc[6] = dr.GetString("");                   // Num Registro MTC
+                                            //vc[7] = dr.GetString("");                   // Conf. vehicular 
+                                            //vc[8] = dr.GetString("");                   // Choferes - Dni chofer principal
+                                            vc[9] = dr.GetString("breplagri");                   // Choferes - Brevete chofer principal
+                                            vc[10] = dr.GetString("chocamcar");                  // Choferes - Nombres 
+                                            //vc[11] = dr.GetString("");                   // Choferes - Apellidos
+                                            //vc[12] = dr.GetString("");                   // Choferes - Dni chofer secundario
+                                            //vc[13] = dr.GetString("");                   // Choferes - Brevete chofer secundario
+                                            //vc[14] = dr.GetString("");                   // Choferes - Nombres
+                                            //vc[15] = dr.GetString("");                   // Choferes - Apellidos
+
                                         }
                                         else
                                         {
@@ -2570,7 +2626,7 @@ namespace TransCarga
                                     string[] va = { "", "" };
 
                                     // llamamos a la clase que imprime
-                                    impGRE_T imprime = new impGRE_T(1, "TKFE", vs, dt, va);
+                                    impGRE_T imprime = new impGRE_T(1, "TKFE", vs, dt, va, vc);
 
                                 }
                             }

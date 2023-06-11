@@ -15,12 +15,14 @@ namespace TransCarga
     class impGRE_T
     {
         libreria lib = new libreria();
-        string[] cab = { "", "", "", "", "", "", "", "", "", "", "", "", "" };  // aca aumentar
+        string[] cab = { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",    // 20
+                         "", "", "", "", "" };  // 5
         string[] det = { "", ""};
         string[] var = { "", ""};
+        string[] vch = { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" };  // 16
         short copias = 0;
         string otro = "";               // ruta y nombre del png código QR
-        public impGRE_T(int nCopias, string nomImp, string[] cabecera, string[] detalle, string[] varios)
+        public impGRE_T(int nCopias, string nomImp, string[] cabecera, string[] detalle, string[] varios, string[] vehChof)
         {
             copias = (short)nCopias;
             cab[0] = cabecera[0];   // serie de la GRE
@@ -36,12 +38,43 @@ namespace TransCarga
             cab[10] = cabecera[10];   // Datos remitente -> cmb_docRem.Text
             cab[11] = cabecera[11];   // Datos remitente -> tx_numDocRem.Text
             cab[12] = cabecera[12];   // Datos remitente -> tx_nomRem.Text.Trim()
+            cab[13] = cabecera[13];   // Datos destinatario -> cmb_docDes.Text
+            cab[14] = cabecera[14];   // Datos destinatario -> tx_numDocDes.Text
+            cab[15] = cabecera[15];   // Datos destinatario -> tx_nomDrio.Text.Trim()
+            cab[16] = cabecera[16];     // Fecha de traslado -> tx_pla_fech.Text
+            cab[17] = cabecera[17];     // Peso de la carga -> tx_totpes.Text.Trim()
+            cab[18] = cabecera[18];     // Unid medida del peso, KG o TM
+            cab[19] = cabecera[19];   // Direccion de partida - dirección -> tx_dirRem.Text
+            cab[20] = cabecera[20];   // Direccion de partida - departamento 
+            cab[21] = cabecera[21];   // Direccion de partida - provincia
+            cab[22] = cabecera[22];   // Direccion de partida - distrito
+            cab[23] = cabecera[23];   // Direccion de llegada - dirección -> tx_dirDrio.Text
+            cab[24] = cabecera[24];   // Direccion de llegada - departamento
+            cab[25] = cabecera[25];   // Direccion de llegada - provincia
+            cab[26] = cabecera[26];   // Direccion de llegada - distrito
 
             det[0] = detalle[0];
             det[1] = detalle[1];
 
-            var[0] = varios[0];     // Varios: texto del código QR ->tx_dat_textoqr.Text
-            var[1] = varios[1];     // 
+            var[0] = varios[0];         // Varios: texto del código QR ->tx_dat_textoqr.Text
+            var[1] = varios[1];         // 
+
+            vch[0] = vehChof[0];        // Vehiculos - Placa veh principal -> tx_pla_placa.Text
+            vch[1] = vehChof[1];        // Vehiculos - Autoriz. vehicular -> tx_pla_autor.Text
+            vch[2] = vehChof[2];        // Vehiculos - Num Registro MTC -> 
+            vch[3] = vehChof[3];        // Vehiculos - Conf. vehicular ->
+            vch[4] = vehChof[4];        // Vehiculos - Placa carreta -> 
+            vch[5] = vehChof[5];        // Vehiculos - Autoriz. vehicular -> 
+            vch[6] = vehChof[6];        // Vehiculos - Num Registro MTC -> 
+            vch[7] = vehChof[7];        // Vehiculos - Conf. vehicular ->
+            vch[8] = vehChof[8];          // Choferes - Dni chofer principal ->
+            vch[9] = vehChof[9];          // Choferes - Brevete chofer principal ->  tx_pla_brevet.Text
+            vch[10] = vehChof[10];        // Choferes - Nombres -> tx_pla_nomcho.Text
+            vch[11] = vehChof[11];        // Choferes - Apellidos -> tx_pla_nomcho.Text
+            vch[12] = vehChof[12];        // Choferes - Dni chofer secundario ->
+            vch[13] = vehChof[13];        // Choferes - Brevete chofer secundario ->
+            vch[14] = vehChof[14];        // Choferes - Nombres ->
+            vch[15] = vehChof[15];        // Choferes - Apellidos ->
 
             PrintDocument print = new PrintDocument();
             print.PrintPage += new PrintPageEventHandler(imprime_TK);
@@ -222,24 +255,23 @@ namespace TransCarga
                     posi = posi + alfi;
                     puntoF = new PointF(coli + 20, posi);
                     e.Graphics.DrawString(cab[12], lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);
-                    /*
                     posi = posi + alfi;
                     puntoF = new PointF(coli + 20, posi);
                     e.Graphics.DrawString("Destinatario", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                     puntoF = new PointF(coli + 135, posi);
                     e.Graphics.DrawString(":", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                     puntoF = new PointF(coli + 140, posi);
-                    e.Graphics.DrawString(cmb_docDes.Text + " " + tx_numDocDes.Text, lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                    e.Graphics.DrawString(cab[13] + " " + cab[14], lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                     posi = posi + alfi;
                     puntoF = new PointF(coli + 20, posi);
-                    e.Graphics.DrawString(tx_nomDrio.Text.Trim(), lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                    e.Graphics.DrawString(cab[15], lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                     posi = posi + alfi;
                     puntoF = new PointF(coli + 20, posi);
                     e.Graphics.DrawString("Fecha de Traslado", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                     puntoF = new PointF(coli + 135, posi);
                     e.Graphics.DrawString(":", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                     puntoF = new PointF(coli + 140, posi);
-                    if (tx_pla_fech.Text != "") e.Graphics.DrawString(tx_pla_fech.Text.Substring(6, 4) + "-" + tx_pla_fech.Text.Substring(3, 2) + "-" + tx_pla_fech.Text.Substring(0, 2),
+                    if (cab[16] != "") e.Graphics.DrawString(cab[16].Substring(6, 4) + "-" + cab[16].Substring(3, 2) + "-" + cab[16].Substring(0, 2),
                         lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                     posi = posi + alfi;
                     puntoF = new PointF(coli + 20, posi);
@@ -247,7 +279,7 @@ namespace TransCarga
                     puntoF = new PointF(coli + 135, posi);
                     e.Graphics.DrawString(":", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                     puntoF = new PointF(coli + 140, posi);
-                    if (tx_totpes.Text.Trim() != "" && tx_totpes.Text.Trim() != "0") e.Graphics.DrawString(tx_totpes.Text + " " + ((rb_kg.Checked == true) ? rb_kg.Text : rb_tn.Text),
+                    if (cab[17].Trim() != "" && cab[17].Trim().Trim() != "0") e.Graphics.DrawString(cab[17] + " " + ((cab[17] == "K") ? "KGM" : "TNM"),
                         lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                     posi = posi + alfi;
                     puntoF = new PointF(coli + 20, posi);
@@ -256,7 +288,7 @@ namespace TransCarga
                     puntoF = new PointF(coli + 20, posi);
                     cuad = new SizeF(lib.CentimeterToPixel(anchTik) - (coli + 20), alfi * 2);
                     recdom = new RectangleF(puntoF, cuad);
-                    e.Graphics.DrawString(tx_dirRem.Text.Trim() + " " + tx_dptoRtt.Text.Trim() + " " + tx_provRtt.Text.Trim() + " " + tx_distRtt.Text.Trim(),
+                    e.Graphics.DrawString(cab[19].Trim() + " " + cab[20].Trim() + " " + cab[21].Trim() + " " + cab[22].Trim(),
                         lt_peq, Brushes.Black, recdom, StringFormat.GenericTypographic);
                     posi = posi + alfi * 2;
                     puntoF = new PointF(coli + 20, posi);
@@ -265,9 +297,9 @@ namespace TransCarga
                     puntoF = new PointF(coli + 20, posi);
                     cuad = new SizeF(lib.CentimeterToPixel(anchTik) - (coli + 20), alfi * 2);
                     recdom = new RectangleF(puntoF, cuad);
-                    e.Graphics.DrawString(tx_dirDrio.Text.Trim() + " " + tx_dptoDrio.Text.Trim() + " " + tx_proDrio.Text.Trim() + " " + tx_disDrio.Text.Trim(),
+                    e.Graphics.DrawString(cab[23].Trim() + " " + cab[24].Trim() + " " + cab[25].Trim() + " " + cab[26].Trim(),
                         lt_peq, Brushes.Black, recdom, StringFormat.GenericTypographic);
-
+                    
                     // imprimimos datos del vehiculo
                     posi = posi + alfi * 3;
                     puntoF = new PointF(coli, posi);
@@ -278,15 +310,15 @@ namespace TransCarga
                     puntoF = new PointF(coli + 135, posi);
                     e.Graphics.DrawString(":", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                     puntoF = new PointF(coli + 140, posi);
-                    if (tx_pla_placa.Text != "") e.Graphics.DrawString(tx_pla_placa.Text, lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                    if (vch[0] != "") e.Graphics.DrawString(vch[0], lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                     posi = posi + alfi;
                     puntoF = new PointF(coli + 20, posi);
                     e.Graphics.DrawString("Autorización", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                     puntoF = new PointF(coli + 135, posi);
                     e.Graphics.DrawString(":", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                     puntoF = new PointF(coli + 140, posi);
-                    if (tx_pla_autor.Text != "") e.Graphics.DrawString(tx_pla_autor.Text, lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
-
+                    if (vch[1] != "") e.Graphics.DrawString(vch[1], lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                    
                     // imprimimos los datos del chofer
                     posi = posi + alfi * 2;
                     puntoF = new PointF(coli, posi);
@@ -297,15 +329,15 @@ namespace TransCarga
                     puntoF = new PointF(coli + 135, posi);
                     e.Graphics.DrawString(":", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                     puntoF = new PointF(coli + 140, posi);
-                    if (tx_pla_brevet.Text != "") e.Graphics.DrawString(tx_pla_brevet.Text, lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                    if (vch[9] != "") e.Graphics.DrawString(vch[9], lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                     posi = posi + alfi;
                     puntoF = new PointF(coli + 20, posi);
                     e.Graphics.DrawString("Nombre", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                     posi = posi + alfi;
                     puntoF = new PointF(coli + 20, posi);
-                    if (tx_pla_nomcho.Text != "") e.Graphics.DrawString(tx_pla_nomcho.Text, lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                    if (vch[10].Trim() + vch[11].Trim() != "") e.Graphics.DrawString(vch[10].Trim() + vch[11].Trim(), lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                     // row["numdcho"] = tx_pla_dniChof.Text;                                       // Numero de documento de identidad 
-
+                    /*
                     // imprimimos los bienes a transportar
                     posi = posi + alfi * 2;
                     puntoF = new PointF(coli, posi);
@@ -322,6 +354,7 @@ namespace TransCarga
                     recdom = new RectangleF(puntoF, cuad);
                     e.Graphics.DrawString(gDetalle, lt_med, Brushes.Black, recdom, StringFormat.GenericTypographic);
                     posi = posi + alfi;
+
                     // final del comprobante
                     string repre = "Representación impresa sin valor legal de la";
                     lt = (ancho - e.Graphics.MeasureString(repre, lt_med).Width) / 2;
