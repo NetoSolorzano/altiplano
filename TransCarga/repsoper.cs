@@ -68,6 +68,10 @@ namespace TransCarga
         string vtc_dni = "";            // codigo dni
         string vtc_ruc = "";            // codigo ruc
         string vtc_ext = "";            // codigo carne extranjería
+        string despedid1 = "";          // despedida del ticket 1
+        string despedid2 = "";          // despedida del ticket 2
+        string glosa1 = "";             // glosa comprobante final 1
+        string glosa2 = "";             // 
 
         string[] c_t = new string[6] { "", "", "", "", "", "" }; // parametros para generar el token
         //int pageCount = 1, cuenta = 0;
@@ -190,13 +194,14 @@ namespace TransCarga
             {
                 MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
                 conn.Open();
-                string consulta = "select formulario,campo,param,valor from enlaces where formulario in(@nofo,@pla,@clie,@grt,@nofi)";
+                string consulta = "select formulario,campo,param,valor from enlaces where formulario in(@nofo,@pla,@clie,@grt,@nofi,@gret)";
                 MySqlCommand micon = new MySqlCommand(consulta, conn);
                 micon.Parameters.AddWithValue("@nofo", "main");
                 micon.Parameters.AddWithValue("@pla", "planicarga");
                 micon.Parameters.AddWithValue("@clie", "clients");
                 micon.Parameters.AddWithValue("@grt", "guiati");
                 micon.Parameters.AddWithValue("@nofi", nomform);
+                micon.Parameters.AddWithValue("@gret", "guiati_e");
                 MySqlDataAdapter da = new MySqlDataAdapter(micon);
                 DataTable dt = new DataTable();
                 da.Fill(dt);
@@ -259,7 +264,13 @@ namespace TransCarga
                     }
                     if (row["formulario"].ToString() == "clients")
                     {
-                        if (row["campo"].ToString() == "documento" && row["param"].ToString() == "ruc") v_tipdocR = row["valor"].ToString().Trim();         // tipo documento RUC
+                        if (row["campo"].ToString() == "documento")
+                        {
+                            if (row["param"].ToString() == "ruc") v_tipdocR = row["valor"].ToString().Trim();         // tipo documento RUC
+                            if (row["param"].ToString() == "dni") vtc_dni = row["valor"].ToString().Trim();
+                            if (row["param"].ToString() == "ruc") vtc_ruc = row["valor"].ToString().Trim();
+                            if (row["param"].ToString() == "ext") vtc_ext = row["valor"].ToString().Trim();
+                        }
                         if (row["campo"].ToString() == "impresion" && row["param"].ToString() == "ctacte_cr") v_CR_ctacte = row["valor"].ToString().Trim(); // 
                     }
                     if (row["formulario"].ToString() == nomform)
@@ -269,11 +280,20 @@ namespace TransCarga
                             if (row["param"].ToString() == "grSimple") impriLogi = row["valor"].ToString().Trim();         // SI= imprime logo | NO=no imprime logo
                         }
                     }
-                    if (row["formulario"].ToString() == "clients" && row["campo"].ToString() == "documento")
+                    if (row["formulario"].ToString() == "guiati_e")
                     {
-                        if (row["param"].ToString() == "dni") vtc_dni = row["valor"].ToString().Trim();
-                        if (row["param"].ToString() == "ruc") vtc_ruc = row["valor"].ToString().Trim();
-                        if (row["param"].ToString() == "ext") vtc_ext = row["valor"].ToString().Trim();
+                        if (row["campo"].ToString() == "glosas")
+                        {
+                            if (row["param"].ToString() == "") glosa1 = row["valor"].ToString();          // glosa final del ticket 1
+                            if (row["param"].ToString() == "") glosa2 = row["valor"].ToString();
+                        }
+                        if (row["campo"].ToString() == "despedida")
+                        {
+                            if (row["param"].ToString() == "desped1") despedid1 = row["valor"].ToString();          // glosa despedida del ticket 1
+                            if (row["param"].ToString() == "desped2") despedid2 = row["valor"].ToString();
+
+                        }
+                        if (row["campo"].ToString() == "impTK") v_impTK = row["valor"].ToString();
                     }
                 }
                 da.Dispose();
@@ -569,8 +589,8 @@ namespace TransCarga
                     btnAct.UseColumnTextForButtonValue = true;
                     btnAct.DefaultCellStyle.Padding = padding;
 
-                    // EMISION,GUIA_ELEC,ORIGEN,DESTINO,ESTADO,SUNAT,CDR_GEN,.......,ad.cdr,ad.textoQR,ad.nticket
-                    //     0        1       2      3       4     5      6     7 8 9     10      11         12
+                    // EMISION,GUIA_ELEC,ORIGEN,DESTINO,ESTADO,SUNAT,CDR_GEN,.......,ad.cdr,ad.textoQR,ad.nticket,g.cantfilas
+                    //     0        1       2      3       4     5      6     7 8 9     10      11         12        13
                     //dgv_GRE_est.CellPainting += grid_CellPainting;        // no funciona bien, no se adecua
                     dgv_GRE_est.CellClick += DataGridView1_CellClick;
                     dgv_GRE_est.Columns.Insert(7, btnPDF);   // .Add(btnPDF);
@@ -579,16 +599,17 @@ namespace TransCarga
                     dgv_GRE_est.Columns[10].Visible = false;
                     dgv_GRE_est.Columns[11].Visible = false;
                     dgv_GRE_est.Columns[12].Visible = false;
+                    dgv_GRE_est.Columns[13].Visible = false;
                     if (dgv_GRE_est.Rows.Count > 0)
                     {
-                        for (int i = 0; i < dgv_GRE_est.Columns.Count - 6; i++)
+                        for (int i = 0; i < dgv_GRE_est.Columns.Count - 7; i++)
                         {
                             dgv_GRE_est.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
                             _ = decimal.TryParse(dgv_GRE_est.Rows[0].Cells[i].Value.ToString(), out decimal vd);
                             if (vd != 0) dgv_GRE_est.Columns[i].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
                         }
                         b = 0;
-                        for (int i = 0; i < dgv_GRE_est.Columns.Count - 6; i++)
+                        for (int i = 0; i < dgv_GRE_est.Columns.Count - 7; i++)
                         {
                             int a = dgv_GRE_est.Columns[i].Width;
                             b += a;
@@ -1309,7 +1330,7 @@ namespace TransCarga
             dtsunatE.Rows.Clear();
             dtsunatE.Columns.Clear();
             string consulta = "SELECT g.fechopegr AS EMISION,concat(g.sergui,'-',g.numgui) AS GUIA_ELEC,lo.descrizionerid AS ORIGEN,ld.DescrizioneRid AS DESTINO," +
-                "es.DescrizioneRid AS ESTADO,ad.estadoS AS SUNAT,ad.cdrgener AS CDR_GEN,ad.cdr,ad.textoQR,ad.nticket " +
+                "es.DescrizioneRid AS ESTADO,ad.estadoS AS SUNAT,ad.cdrgener AS CDR_GEN,ad.cdr,ad.textoQR,ad.nticket,g.cantfilas " +
                 "FROM cabguiai g LEFT JOIN adiguias ad ON ad.idg = g.id " +
                 "LEFT JOIN desc_loc lo ON lo.IDCodice = g.locorigen " +
                 "LEFT JOIN desc_loc ld ON ld.IDCodice = g.locdestin " +
@@ -2518,7 +2539,13 @@ namespace TransCarga
             // hacemos un ciclo recorriendo fila x fila y jalamos los datos de la guia
             for (int i=0; i < dgv_GRE_est.Rows.Count; i++)
             {
-                if (dgv_GRE_est.Rows[i].Cells[0].Value.ToString() == "True")
+                string[] vs = {"","","","","","","","","","","","","", "", "", "", "", "", "", "",   // 20
+                               "", "", "", "", "", "", "", "", ""};    // 9
+                string[] vc = { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" };   // 16
+                string[] va = { "", "" , "", "", "", ""};       // 6
+                string[,] dt = new string[3, 5] { { "", "", "", "", "" }, { "", "", "", "", "" }, { "", "", "", "", "" } }; // 5 columnas
+
+                if (dgv_GRE_est.Rows[i].Cells[0].Value != null && dgv_GRE_est.Rows[i].Cells[0].Value.ToString() == "True")
                 {
                     // Jalamos los datos que nos falta y los ponemos en sus arreglos
                     using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
@@ -2526,12 +2553,17 @@ namespace TransCarga
                         conn.Open();
                         if (conn.State == ConnectionState.Open)
                         {
-                            string consulta = "SELECT X.*,ur1.nombre AS 'Dpto_Rem',ur2.nombre AS 'Prov_Rem',ur3.nombre AS 'Dist_Rem' FROM (" +
-                                "SELECT a.sergui,a.numgui,a.fechopegr,a.dirorigen," +
+                            string consdeta = "select a.cantprodi,a.unimedpro,a.descprodi,a.pesoprodi "+
+                                "from detguiai a where a.sergui = @ser AND a.numgui = @num";
+
+                            string consulta = "SELECT X.*,ur1.nombre AS 'Dpto_Rem',ur2.nombre AS 'Prov_Rem',ur3.nombre AS 'Dist_Rem'," +
+                                "ud1.nombre as 'Dpto_Des',ud2.nombre as 'Prov_Des', ud3.nombre as 'Dist_Des' FROM (" +
+                                "SELECT a.sergui,a.numgui,a.fechopegr,a.dirorigen,a.userc,loc.DescrizioneRid as 'locorigen'," +
                                 "a.tidocor,dd1.DescrizioneRid AS 'NomTidor1',a.docsremit,a.rucDorig,ifnull(a.tidocor2, '') AS 'tidocor2',ifnull(dd2.DescrizioneRid, '') AS 'NomTidor2',ifnull(a.docsremit2, '') AS 'docsremit2',ifnull(a.rucDorig2, '') AS 'rucDorig2'," +
                                 "a.tidoregri,dr1.DescrizioneRid AS 'NomDocRem',a.nudoregri,a.nombregri,a.direregri,a.ubigregri," +
                                 "LEFT(a.ubigregri, 2) AS 'dept_ure',concat(SUBSTRING(a.ubigregri, 1, 4), '00') AS 'prov_ure',a.ubigregri AS 'dist_ure'," +
                                 "a.tidodegri,dr2.DescrizioneRid AS 'NomDocDes',a.nudodegri,a.nombdegri,a.diredegri,a.ubigdegri," +
+                                "LEFT(a.ubigdegri, 2) AS 'dept_ude',concat(SUBSTRING(a.ubigdegri, 1, 4), '00') AS 'prov_ude',a.ubigdegri AS 'dist_ude'," +
                                 "a.fechplani,a.pestotgri,a.pesoKT," +
                                 "a.serplagri,a.numplagri,a.plaplagri,a.carplagri,a.autplagri,a.confvegri,a.breplagri,a.proplagri," +
                                 "ifnull(c.razonsocial,'') as razonsocial,ifnull(d.marca, '') as marca, ifnull(d.modelo, '') as modelo,ifnull(r.marca, '') as marCarret," +
@@ -2541,6 +2573,7 @@ namespace TransCarga
                                 "LEFT JOIN desc_dtm dd2 ON dd2.IDCodice = a.tidocor2 " +
                                 "LEFT JOIN desc_doc dr1 ON dr1.IDCodice = a.tidoregri " +
                                 "LEFT JOIN desc_doc dr2 ON dr2.IDCodice = a.tidodegri " +
+                                "LEFT JOIN desc_loc loc ON loc.IDCodice = a.locorigen " +
                                 "left join anag_for c on c.ruc=a.proplagri and c.tipdoc=@tdep " +
                                 "left join vehiculos d on d.placa=a.plaplagri " +
                                 "left join vehiculos r on r.placa=a.carplagri " +
@@ -2548,7 +2581,11 @@ namespace TransCarga
                                 "where a.sergui = @ser AND a.numgui = @num)X " +
                                 "LEFT JOIN ubigeos ur1 ON ur1.depart = dept_ure " +
                                 "LEFT JOIN ubigeos ur2 ON CONCAT(ur2.depart, ur2.provin,'00')= prov_ure " +
-                                "LEFT JOIN ubigeos ur3 ON CONCAT(ur3.depart, ur3.provin, ur3.distri)= dist_ure LIMIT 1";
+                                "LEFT JOIN ubigeos ur3 ON CONCAT(ur3.depart, ur3.provin, ur3.distri)= dist_ure " +
+                                "LEFT JOIN ubigeos ud1 ON ud1.depart = dept_ude " +
+                                "LEFT JOIN ubigeos ud2 ON CONCAT(ud2.depart, ud2.provin,'00')= prov_ude " +
+                                "LEFT JOIN ubigeos ud3 ON CONCAT(ud3.depart, ud3.provin, ud3.distri)= dist_ude " +
+                                "LIMIT 1";
                             using (MySqlCommand micon = new MySqlCommand(consulta, conn))
                             {
                                 micon.Parameters.AddWithValue("@ser", dgv_GRE_est.Rows[i].Cells[2].Value.ToString().Substring(0, 4));
@@ -2556,9 +2593,6 @@ namespace TransCarga
                                 micon.Parameters.AddWithValue("@tdep", vtc_ruc);
                                 using (MySqlDataReader dr = micon.ExecuteReader())
                                 {
-                                    string[] vs = {"","","","","","","","","","","","","", "", "", "", "", "", "", "",   // 20
-                                                    "", "", "", "", ""};    // 5
-                                    string[] vc = { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" };   // 16
                                     if (dr != null)
                                     {
                                         if (dr.Read())
@@ -2586,8 +2620,12 @@ namespace TransCarga
                                             vs[20] = dr.GetString("Dpto_Rem");                      // 20
                                             vs[21] = dr.GetString("Prov_Rem");                      // 21
                                             vs[22] = dr.GetString("Dist_Rem");                      // 22
-                                            vs[23] = dr.GetString("diredegri");                  // 23
-                                            //vs[24] = dr.GetString("");                  // 24
+                                            vs[23] = dr.GetString("diredegri");                     // 23
+                                            vs[24] = dr.GetString("Dpto_Des");                      // 24
+                                            vs[25] = dr.GetString("Prov_Des");                      // 25
+                                            vs[26] = dr.GetString("Dist_Des");                      // 26
+                                            vs[27] = dr.GetString("userc");                         // 27
+                                            vs[28] = dr.GetString("locorigen");                     // 28
                                             //
                                             vc[0] = dr.GetString("plaplagri");                   // Placa veh principal
                                             vc[1] = dr.GetString("autplagri");                   // Autoriz. vehicular
@@ -2620,17 +2658,38 @@ namespace TransCarga
                                             MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                                         return;
                                     }
-                                    // detalle
-                                    string[] dt = { "1", "servicio" };
                                     // varios
-                                    string[] va = { "", "" };
-
-                                    // llamamos a la clase que imprime
-                                    impGRE_T imprime = new impGRE_T(1, "TKFE", vs, dt, va, vc);
-
+                                    va[0] = "";
+                                    va[1] = "";
+                                    va[2] = despedid1;
+                                    va[3] = despedid2;
+                                    va[4] = glosa1;
+                                    va[5] = glosa2;
                                 }
                             }
-                            
+                            // detalle de la guía
+                            int y = 0;
+                            using (MySqlCommand micomd = new MySqlCommand(consdeta, conn))
+                            {
+                                micomd.Parameters.AddWithValue("@ser", dgv_GRE_est.Rows[i].Cells[2].Value.ToString().Substring(0, 4));
+                                micomd.Parameters.AddWithValue("@num", dgv_GRE_est.Rows[i].Cells[2].Value.ToString().Substring(5, 8));
+                                using (MySqlDataReader drg = micomd.ExecuteReader())
+                                {
+                                    while (drg.Read())  // #fila,a.cantprodi,a.unimedpro,a.descprodi,a.pesoprodi
+                                    {
+                                        dt[y,0] = (y + 1).ToString();
+                                        dt[y,1] = drg.GetString(0);
+                                        dt[y,2] = drg.GetString(1);
+                                        dt[y,3] = drg.GetString(2);
+                                        dt[y,4] = drg.GetString(3);
+                                        y += 1;
+                                    }
+
+                                }
+
+                            }
+                            // llamamos a la clase que imprime
+                            impGRE_T imprime = new impGRE_T(1, v_impTK, vs, dt, va, vc);
                         }
                     }
                 }

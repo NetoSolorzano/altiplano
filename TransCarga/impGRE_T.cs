@@ -15,14 +15,14 @@ namespace TransCarga
     class impGRE_T
     {
         libreria lib = new libreria();
-        string[] cab = { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",    // 20
-                         "", "", "", "", "" };  // 5
-        string[] det = { "", ""};
-        string[] var = { "", ""};
-        string[] vch = { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" };  // 16
+        string[] cab = { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",        // 20
+                         "", "", "", "", "", "", "", "", "" };      // 9
+        string[,] det = new string[3,5] { { "", "", "", "", "" }, { "", "", "", "", "" }, { "", "", "", "", "" } };
+        string[] var = { "", "", "", "", "", ""};       // 6
+        string[] vch = { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" };      // 16
         short copias = 0;
         string otro = "";               // ruta y nombre del png código QR
-        public impGRE_T(int nCopias, string nomImp, string[] cabecera, string[] detalle, string[] varios, string[] vehChof)
+        public impGRE_T(int nCopias, string nomImp, string[] cabecera, string[,] detalle, string[] varios, string[] vehChof)
         {
             copias = (short)nCopias;
             cab[0] = cabecera[0];   // serie de la GRE
@@ -52,12 +52,37 @@ namespace TransCarga
             cab[24] = cabecera[24];   // Direccion de llegada - departamento
             cab[25] = cabecera[25];   // Direccion de llegada - provincia
             cab[26] = cabecera[26];   // Direccion de llegada - distrito
+            cab[27] = cabecera[27];     // usuario creador
+            cab[28] = cabecera[28];     // local de emisión
 
-            det[0] = detalle[0];
-            det[1] = detalle[1];
+            det[0, 0] = detalle[0, 0];  // detalle fila 1
+            det[0, 1] = detalle[0, 1];
+            det[0, 2] = detalle[0, 2];
+            det[0, 3] = detalle[0, 3];
+            det[0, 4] = detalle[0, 4];
+            if (det[1, 0] != "")
+            {
+                det[1, 0] = detalle[1, 0];  // detalle fila 2
+                det[1, 1] = detalle[1, 1];
+                det[1, 2] = detalle[1, 2];
+                det[1, 3] = detalle[1, 3];
+                det[1, 4] = detalle[1, 4];
+            }
+            if (det[2, 0] != "")
+            {
+                det[2, 0] = detalle[2, 0];  // detalle fila 3
+                det[2, 1] = detalle[2, 1];
+                det[2, 2] = detalle[2, 2];
+                det[2, 3] = detalle[2, 3];
+                det[2, 4] = detalle[2, 4];
+            }
 
             var[0] = varios[0];         // Varios: texto del código QR ->tx_dat_textoqr.Text
             var[1] = varios[1];         // 
+            var[2] = varios[2];         // despedid1
+            var[3] = varios[3];         // despedid2
+            var[4] = varios[4];         // Glosa final comprobante 1 -> "Representación impresa sin valor legal de la"
+            var[5] = varios[5];         // Glosa final comprobante 2 -> "Guía de Remisión Electrónica de Transportista"
 
             vch[0] = vehChof[0];        // Vehiculos - Placa veh principal -> tx_pla_placa.Text
             vch[1] = vehChof[1];        // Vehiculos - Autoriz. vehicular -> tx_pla_autor.Text
@@ -94,14 +119,14 @@ namespace TransCarga
                 // TIPOS DE LETRA PARA EL DOCUMENTO FORMATO TICKET
                 Font lt_gra = new Font("Arial", 11);                // grande
                 Font lt_tit = new Font("Lucida Console", 10);       // mediano
-                Font lt_med = new Font("Arial", 9);                // normal textos
+                Font lt_med = new Font("Arial", 9);                 // normal textos
                 Font lt_peq = new Font("Arial", 8);                 // pequeño
                                                                     //
                 float anchTik = 7.8F;                               // ancho del TK en centimetros
-                int coli = 5;                                      // columna inicial
+                int coli = 5;                                       // columna inicial
                 float posi = 20;                                    // posicion x,y inicial
                 int alfi = 15;                                      // alto de cada fila
-                float ancho = 360.0F;                                // ancho de la impresion
+                float ancho = 360.0F;                               // ancho de la impresion
                 //int copias = 1;                                     // cantidad de copias del ticket
                 //
                 for (int i = 1; i <= copias; i++)
@@ -279,7 +304,7 @@ namespace TransCarga
                     puntoF = new PointF(coli + 135, posi);
                     e.Graphics.DrawString(":", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                     puntoF = new PointF(coli + 140, posi);
-                    if (cab[17].Trim() != "" && cab[17].Trim().Trim() != "0") e.Graphics.DrawString(cab[17] + " " + ((cab[17] == "K") ? "KGM" : "TNM"),
+                    if (cab[17].Trim() != "" && cab[17].Trim().Trim() != "0") e.Graphics.DrawString(cab[17] + " " + ((cab[18] == "K") ? "KGM" : "TNM"), 
                         lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                     posi = posi + alfi;
                     puntoF = new PointF(coli + 20, posi);
@@ -337,38 +362,44 @@ namespace TransCarga
                     puntoF = new PointF(coli + 20, posi);
                     if (vch[10].Trim() + vch[11].Trim() != "") e.Graphics.DrawString(vch[10].Trim() + vch[11].Trim(), lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                     // row["numdcho"] = tx_pla_dniChof.Text;                                       // Numero de documento de identidad 
-                    /*
+
                     // imprimimos los bienes a transportar
                     posi = posi + alfi * 2;
                     puntoF = new PointF(coli, posi);
                     e.Graphics.DrawString("Bienes a transportar", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                     posi = posi + alfi;
-                    puntoF = new PointF(coli + 20, posi);
-                    e.Graphics.DrawString(tx_det_peso.Text + " " + ((rb_kg.Checked == true) ? rb_kg.Text : rb_tn.Text),
-                        lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
-                    string gDetalle = lb_glodeta.Text + " " + tx_det_desc.Text;
-                    double xxx = (e.Graphics.MeasureString(gDetalle, lt_peq).Width / lib.CentimeterToPixel(anchTik)) + 1;
-                    cuad = new SizeF(lib.CentimeterToPixel(anchTik) - (coli + 10), alfi * (int)xxx);
-                    posi = posi + alfi;
-                    puntoF = new PointF(coli, posi);
-                    recdom = new RectangleF(puntoF, cuad);
-                    e.Graphics.DrawString(gDetalle, lt_med, Brushes.Black, recdom, StringFormat.GenericTypographic);
-                    posi = posi + alfi;
+                    for (int z=0; z < 3; z++)   // // #fila,a.cantprodi,a.unimedpro,a.descprodi,a.pesoprodi
+                    {
+                        if (det[z, 4] != "")
+                        {
+                            puntoF = new PointF(coli + 20, posi);
+                            e.Graphics.DrawString(det[z, 4] + " " + ((cab[18] == "K") ? "KGM" : "TNM"),
+                                lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                            string gDetalle = det[z, 3];
+                            double xxx = (e.Graphics.MeasureString(gDetalle, lt_peq).Width / lib.CentimeterToPixel(anchTik)) + 1;
+                            cuad = new SizeF(lib.CentimeterToPixel(anchTik) - (coli + 10), alfi * (int)xxx);
+                            posi = posi + alfi;
+                            puntoF = new PointF(coli, posi);
+                            recdom = new RectangleF(puntoF, cuad);
+                            e.Graphics.DrawString(gDetalle, lt_med, Brushes.Black, recdom, StringFormat.GenericTypographic);
+                            posi = posi + alfi;
+                        }
+                    }
 
                     // final del comprobante
-                    string repre = "Representación impresa sin valor legal de la";
+                    string repre = var[4];      //  "Representación impresa sin valor legal de la";
                     lt = (ancho - e.Graphics.MeasureString(repre, lt_med).Width) / 2;
-                    posi = posi + alfi * 2;
+                    posi = posi + alfi;
                     puntoF = new PointF(lt, posi);
                     e.Graphics.DrawString(repre, lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                     posi = posi + alfi;
                     puntoF = new PointF(coli, posi);
-                    string previo = "Guía de Remisión Electrónica de Transportista";
+                    string previo = var[5];     // "Guía de Remisión Electrónica de Transportista";
                     lt = (ancho - e.Graphics.MeasureString(previo, lt_med).Width) / 2;
                     puntoF = new PointF(lt, posi);
                     e.Graphics.DrawString(previo, lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                     posi = posi + alfi * 2;
-                    string locyus = tx_locuser.Text + " - " + tx_user.Text;
+                    string locyus = cab[28] + " - " + cab[27];
                     puntoF = new PointF(coli, posi);
                     e.Graphics.DrawString(locyus, lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                     posi = posi + alfi;
@@ -376,19 +407,15 @@ namespace TransCarga
                     e.Graphics.DrawString("Imp. " + DateTime.Now, lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                     posi = posi + alfi + alfi;
                     //puntoF = new PointF((lib.CentimeterToPixel(anchTik) - e.Graphics.MeasureString(despedida, lt_med).Width) / 2, posi);
-                    puntoF = new PointF((ancho - e.Graphics.MeasureString(despedida, lt_med).Width) / 2, posi);
-                    e.Graphics.DrawString(despedida, lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                    puntoF = new PointF((ancho - e.Graphics.MeasureString(var[2], lt_med).Width) / 2, posi);
+                    e.Graphics.DrawString(var[2], lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                     posi = posi + alfi + alfi;
                     //puntoF = new PointF(coli, posi);
                     //e.Graphics.DrawString(".", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
-                    */
                 }
                 
             }
         }
-        //printDocument1.PrinterSettings.PrinterName = v_impTK;
-        //printDocument1.PrinterSettings.Copies = 2;      // esto debería estar en una variable
-        //printDocument1.Print();
     }
     
 }
