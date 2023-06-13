@@ -284,8 +284,8 @@ namespace TransCarga
                     {
                         if (row["campo"].ToString() == "glosas")
                         {
-                            if (row["param"].ToString() == "") glosa1 = row["valor"].ToString();          // glosa final del ticket 1
-                            if (row["param"].ToString() == "") glosa2 = row["valor"].ToString();
+                            if (row["param"].ToString() == "glosa1") glosa1 = row["valor"].ToString();          // glosa final del ticket 1
+                            if (row["param"].ToString() == "glosa2") glosa2 = row["valor"].ToString();
                         }
                         if (row["campo"].ToString() == "despedida")
                         {
@@ -293,7 +293,7 @@ namespace TransCarga
                             if (row["param"].ToString() == "desped2") despedid2 = row["valor"].ToString();
 
                         }
-                        if (row["campo"].ToString() == "impTK") v_impTK = row["valor"].ToString();
+                        //if (row["campo"].ToString() == "impTK") v_impTK = row["valor"].ToString();
                     }
                 }
                 da.Dispose();

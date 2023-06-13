@@ -2709,7 +2709,7 @@
             // 
             this.chk_man.AutoSize = true;
             this.chk_man.ForeColor = System.Drawing.Color.Black;
-            this.chk_man.Location = new System.Drawing.Point(5, 480);
+            this.chk_man.Location = new System.Drawing.Point(4, 472);
             this.chk_man.Name = "chk_man";
             this.chk_man.Size = new System.Drawing.Size(15, 14);
             this.chk_man.TabIndex = 364;

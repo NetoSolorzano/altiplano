@@ -101,6 +101,9 @@ namespace TransCarga
         string firmDocElec = "";        // Firma xml, true=firma, false=no firma
         string rutaCertifc = "";        // Ruta y nombre del certificado .pfx
         string claveCertif = "";        // Clave del certificado
+        string despedid2 = "";          // despedida del ticket 2
+        string glosa1 = "";             // glosa comprobante final 1
+        string glosa2 = "";             // 
 
         double tiempoT = 0;             // Sunat Webservice - contador EN SEGUNDOS de vigencia del token
         string TokenAct = "";           // Sunat Webservice - Token actual vigente
@@ -422,6 +425,16 @@ namespace TransCarga
                                     if (lite.GetString(1).ToString() == "moneda" && lite.GetString(2).ToString() == "default") MonDeft = lite.GetString(3).ToString().Trim();             // moneda por defecto
                                     if (lite.GetString(1).ToString() == "detalle" && lite.GetString(2).ToString() == "glosa") gloDeta = lite.GetString(3).ToString().Trim();             // glosa del detalle
                                     if (lite.GetString(1).ToString() == "electronico" && lite.GetString(2).ToString() == "proveedor") ipeeg = lite.GetString(3).ToString().Trim();      // identificador del emisor electrónico
+                                    if (lite.GetString(1).ToString() == "glosas")
+                                    {
+                                        if (lite.GetString(2).ToString() == "glosa1") glosa1 = lite.GetString(3).ToString();          // glosa final del ticket 1
+                                        if (lite.GetString(2).ToString() == "glosa2") glosa2 = lite.GetString(3).ToString();
+                                    }
+                                    if (lite.GetString(1).ToString() == "despedida")
+                                    {
+                                        if (lite.GetString(2).ToString() == "desped1") despedida = lite.GetString(3).ToString();          // glosa despedida del ticket 1
+                                        if (lite.GetString(2).ToString() == "desped2") despedid2 = lite.GetString(3).ToString();
+                                    }
                                 }
                                 if (lite.GetString(0).ToString() == "interno")              // codigo enlace interno de anulacion del cliente con en BD A0
                                 {
@@ -4354,50 +4367,52 @@ namespace TransCarga
                 vs[13] = cmb_docDes.Text;                     // dr.GetString("NomDocDes")
                 vs[14] = tx_numDocDes.Text;                     // dr.GetString("nudodegri")
                 vs[15] = tx_nomDrio.Text;                     // dr.GetString("nombdegri")
-                vs[16] = tx_pla_fech.Text.Substring(6, 4) + "-" + 
-                    tx_pla_fech.Text.Substring(3, 2) + "-" + tx_pla_fech.Text.Substring(0, 2);      // dr.GetString("fechplani")
+                vs[16] = tx_pla_fech.Text.Substring(8, 2) + "/" + tx_pla_fech.Text.Substring(5, 2) + "/" + tx_pla_fech.Text.Substring(0, 4);      // dr.GetString("fechplani")
+                //vs[16] = tx_pla_fech.Text;
                 vs[17] = tx_totpes.Text;                     // dr.GetString("pestotgri")
-                vs[18] = (rb_kg.Checked == true) ? rb_kg.Text : rb_tn.Text;                        // dr.GetString("pesoKT")
+                vs[18] = (rb_kg.Checked == true) ? "K" : "T";                        // dr.GetString("pesoKT")
                 vs[19] = tx_dirRem.Text;                     //  dr.GetString("direregri")
                 vs[20] = tx_dptoRtt.Text;                      // dr.GetString("Dpto_Rem")
                 vs[21] = tx_provRtt.Text;                      // dr.GetString("Prov_Rem")
                 vs[22] = tx_distRtt.Text;                      // dr.GetString("Dist_Rem")
-                vs[23] = dr.GetString("diredegri");                     // 23
-                vs[24] = dr.GetString("Dpto_Des");                      // 24
-                vs[25] = dr.GetString("Prov_Des");                      // 25
-                vs[26] = dr.GetString("Dist_Des");                      // 26
-                vs[27] = dr.GetString("userc");                         // 27
-                vs[28] = dr.GetString("locorigen");                     // 28
-                                                                        //
-                vc[0] = dr.GetString("plaplagri");                   // Placa veh principal
-                vc[1] = dr.GetString("autplagri");                   // Autoriz. vehicular
-                                                                     //vc[2] = dr.GetString("");                   // Num Registro MTC 
-                vc[3] = dr.GetString("confvegri");                   // Conf. vehicular
-                                                                     //vc[4] = dr.GetString("");                   // Placa carreta
-                                                                     //vc[5] = dr.GetString("");                   // Autoriz. vehicular
-                                                                     //vc[6] = dr.GetString("");                   // Num Registro MTC
-                                                                     //vc[7] = dr.GetString("");                   // Conf. vehicular 
-                                                                     //vc[8] = dr.GetString("");                   // Choferes - Dni chofer principal
-                vc[9] = dr.GetString("breplagri");                   // Choferes - Brevete chofer principal
-                vc[10] = dr.GetString("chocamcar");                  // Choferes - Nombres 
-                                                                     //vc[11] = dr.GetString("");                   // Choferes - Apellidos
-                                                                     //vc[12] = dr.GetString("");                   // Choferes - Dni chofer secundario
-                                                                     //vc[13] = dr.GetString("");                   // Choferes - Brevete chofer secundario
-                                                                     //vc[14] = dr.GetString("");                   // Choferes - Nombres
-                                                                     //vc[15] = dr.GetString("");                   // Choferes - Apellidos
-                                                                     // varios
-                va[0] = "";
+                vs[23] = tx_dirDrio.Text;                     // dr.GetString("diredegri")
+                vs[24] = tx_dptoDrio.Text;                      // dr.GetString("Dpto_Des")
+                vs[25] = tx_proDrio.Text;                      // dr.GetString("Prov_Des")
+                vs[26] = tx_disDrio.Text;                      // dr.GetString("Dist_Des")
+                vs[27] = (Tx_modo.Text == "NUEVO") ? asd : tx_digit.Text;   // dr.GetString("userc")
+                vs[28] = cmb_origen.Text;                     // dr.GetString("locorigen")
+                                               
+                vc[0] = tx_pla_placa.Text;                   // dr.GetString("plaplagri")
+                vc[1] = tx_pla_autor.Text;                   // dr.GetString("autplagri")
+                vc[2] = (Tx_modo.Text == "NUEVO" && tx_pla_ruc.Text == Program.ruc) ? Program.regmtc : "";      // Num Registro MTC del transportista
+                vc[3] = tx_pla_confv.Text;                   // dr.GetString("confvegri")
+                vc[4] = tx_pla_carret.Text;                   // Placa carreta
+                vc[5] = tx_aut_carret.Text;                   // Autoriz. vehicular
+                vc[6] = (Tx_modo.Text == "NUEVO" && tx_pla_ruc.Text == Program.ruc) ? Program.regmtc : "";      // Num Registro MTC de la carreta
+                vc[7] = "";                                   // Conf. vehicular de la carreta, ya esta incluido en  tx_pla_confv.Text
+                
+                vc[8] = tx_pla_dniChof.Text;                   // Choferes - Dni chofer principal
+                vc[9] = tx_pla_brevet.Text;                   // Choferes - dr.GetString("breplagri")
+                vc[10] = tx_pla_nomcho.Text;                  // Choferes - dr.GetString("chocamcar")
+                vc[11] = "";                                  // Choferes - Apellidos (ya esta incluido en tx_pla_nomcho.Text)
+                vc[12] = tx_dat_dniC2.Text;                   // Choferes - Dni chofer secundario
+                vc[13] = tx_pla_brev2.Text;                   // Choferes - Brevete chofer secundario
+                vc[14] = tx_pla_chofer2.Text;                 // Choferes - Nombres
+                vc[15] = "";                                  // Choferes - Apellidos (ya esta incluido en el nombre)
+                                                              
+                va[0] = tx_dat_textoqr.Text;                 // Varios: texto del código QR ->tx_dat_textoqr.Text
                 va[1] = "";
-                va[2] = despedid1;
-                va[3] = despedid2;
+                va[2] = despedida;
+                va[3] = "";                                  // Varios: segunda linea de despedida
                 va[4] = glosa1;
                 va[5] = glosa2;
+
                 int y = 0;
-                dt[y, 0] = (y + 1).ToString();
-                dt[y, 1] = drg.GetString(0);
-                dt[y, 2] = drg.GetString(1);
-                dt[y, 3] = drg.GetString(2);
-                dt[y, 4] = drg.GetString(3);
+                dt[y, 0] = (y + 1).ToString();              // detalle: Num de fila
+                dt[y, 1] = tx_det_cant.Text;                // detalle: Cant.
+                dt[y, 2] = tx_det_umed.Text;                // detalle: Unidad de medida
+                dt[y, 3] = tx_det_desc.Text;                // detalle: Descripción
+                dt[y, 4] = tx_det_peso.Text;                // detalle: peso
 
                 if (Tx_modo.Text == "NUEVO")
                 {   // si es nuevo, se imprimen 2 copias
