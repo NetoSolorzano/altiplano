@@ -16,7 +16,7 @@ namespace TransCarga
     {
         libreria lib = new libreria();
         string[] cab = { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",        // 20
-                         "", "", "", "", "", "", "", "", "" };      // 9
+                         "", "", "", "", "", "", "", "", "", "" };      // 10
         string[,] det = new string[3,5] { { "", "", "", "", "" }, { "", "", "", "", "" }, { "", "", "", "", "" } };
         string[] var = { "", "", "", "", "", ""};       // 6
         string[] vch = { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" };      // 16
@@ -54,6 +54,7 @@ namespace TransCarga
             cab[26] = cabecera[26];   // Direccion de llegada - distrito
             cab[27] = cabecera[27];     // usuario creador
             cab[28] = cabecera[28];     // local de emisión
+            cab[29] = cabecera[29];     // hora de emsión
 
             det[0, 0] = detalle[0, 0];  // detalle fila 1
             det[0, 1] = detalle[0, 1];
@@ -215,7 +216,8 @@ namespace TransCarga
                     puntoF = new PointF(coli + 135, posi);
                     e.Graphics.DrawString(":", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                     puntoF = new PointF(coli + 140, posi);
-                    e.Graphics.DrawString(DateTime.Now.Hour.ToString() + ":" + DateTime.Now.Minute.ToString(), lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                    //e.Graphics.DrawString(DateTime.Now.Hour.ToString() + ":" + DateTime.Now.Minute.ToString(), lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                    e.Graphics.DrawString(cab[29], lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
 
                     // imprimimos los documentos relacionados
                     posi = posi + alfi * 2;
@@ -389,7 +391,7 @@ namespace TransCarga
                     // final del comprobante
                     string repre = var[4];      //  "Representación impresa sin valor legal de la";
                     lt = (ancho - e.Graphics.MeasureString(repre, lt_med).Width) / 2;
-                    posi = posi + alfi;
+                    posi = posi + alfi + 10.0F;
                     puntoF = new PointF(lt, posi);
                     e.Graphics.DrawString(repre, lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                     posi = posi + alfi;
