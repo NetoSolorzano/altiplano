@@ -414,3 +414,4 @@ form impGRE_T, clase para imprimir los TK de guias electronicas ................
 form guiati_e, modificar la impresion de los TK para usar la clase impGRE_T ........................ ok 13/06/2023
 form repsoper, crear boton para impresión individual de una GRE .................................... ok 13/06/2023
 form repsoper, arreglar la demora en la generación del ticket, copias esta trajando doble .......... OK 14/06/2023
+form impGRE_T, mejora en el formato para poner algo en lugar del QR si no esta aceptado aún ........ ok 14/06/2023

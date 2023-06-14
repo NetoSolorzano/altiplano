@@ -181,7 +181,24 @@ namespace TransCarga
                         e.Graphics.DrawImage(png, rec);
                         png.Dispose();
                     }
+                    else
+                    {
+                        StringFormat sf = new StringFormat();
+                        sf.Alignment = StringAlignment.Center;
+                        sf.LineAlignment = StringAlignment.Center;
+                        Pen pen = new Pen(Color.Black, 1);
+                        pen.Alignment = System.Drawing.Drawing2D.PenAlignment.Inset;
 
+                        posi = posi + alfi + 7;
+                        lt = (lib.CentimeterToPixel(anchTik) - lib.CentimeterToPixel(3)) / 2 + 20;
+                        puntoF = new PointF(lt, posi);
+                        Point point = new Point((int)lt, (int)posi);
+                        SizeF cuadro = new SizeF(lib.CentimeterToPixel(3), lib.CentimeterToPixel(3));    // 5x5 cm
+                        RectangleF rec = new RectangleF(puntoF, cuadro);
+                        Rectangle recM = new Rectangle(point, new Size(lib.CentimeterToPixel(3), lib.CentimeterToPixel(3)));
+                        e.Graphics.DrawRectangle(pen, recM);
+                        e.Graphics.DrawString("X", lt_gra, Brushes.Black, rec, sf);
+                    }
                     posi = posi + alfi * 7;
                     puntoF = new PointF(coli, posi);
                     e.Graphics.DrawString("Dom.Fiscal", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
