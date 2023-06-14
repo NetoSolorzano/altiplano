@@ -2591,40 +2591,37 @@ namespace TransCarga
                     string consdeta = "select a.cantprodi,a.unimedpro,a.descprodi,a.pesoprodi " +
                         "from detguiai a where a.sergui = @ser AND a.numgui = @num";
 
-                    string consulta = "SELECT X.*,ur1.nombre AS 'Dpto_Rem',ur2.nombre AS 'Prov_Rem',ur3.nombre AS 'Dist_Rem'," +
-                        "ud1.nombre as 'Dpto_Des',ud2.nombre as 'Prov_Des', ud3.nombre as 'Dist_Des' FROM (" +
-                        "SELECT a.sergui,a.numgui,a.fechopegr,a.dirorigen,a.userc,substring(a.fechc,12,5) as 'fechc',loc.DescrizioneRid as 'locorigen'," +
+                    string consulta = "SELECT a.sergui,a.numgui,a.fechopegr,a.dirorigen,a.userc,substring(a.fechc,12,5) as 'fechc',loc.DescrizioneRid as 'locorigen'," +
                         "a.tidocor,dd1.DescrizioneRid AS 'NomTidor1',a.docsremit,a.rucDorig,ifnull(a.tidocor2, '') AS 'tidocor2',ifnull(dd2.DescrizioneRid, '') AS 'NomTidor2',ifnull(a.docsremit2, '') AS 'docsremit2',ifnull(a.rucDorig2, '') AS 'rucDorig2'," +
                         "a.tidoregri,dr1.DescrizioneRid AS 'NomDocRem',a.nudoregri,a.nombregri,a.direregri,a.ubigregri," +
-                        "LEFT(a.ubigregri, 2) AS 'dept_ure',concat(SUBSTRING(a.ubigregri, 1, 4), '00') AS 'prov_ure',a.ubigregri AS 'dist_ure'," +
+                        "ud1.nombre AS 'dept_ure',up1.nombre AS 'prov_ure',ub1.nombre AS 'dist_ure'," +
                         "a.tidodegri,dr2.DescrizioneRid AS 'NomDocDes',a.nudodegri,a.nombdegri,a.diredegri,a.ubigdegri," +
-                        "LEFT(a.ubigdegri, 2) AS 'dept_ude',concat(SUBSTRING(a.ubigdegri, 1, 4), '00') AS 'prov_ude',a.ubigdegri AS 'dist_ude'," +
+                        "ud2.nombre AS 'dept_ude',up2.nombre AS 'prov_ude',ub2.nombre AS 'dist_ude'," +
                         "a.fechplani,a.pestotgri,a.pesoKT," +
                         "a.serplagri,a.numplagri,a.plaplagri,a.carplagri,a.autplagri,a.confvegri,a.breplagri,a.proplagri," +
-                        "ifnull(c.razonsocial,'') as razonsocial,ifnull(d.marca, '') as marca, ifnull(d.modelo, '') as modelo,ifnull(r.marca, '') as marCarret," +
-                        "ifnull(r.confve, '') as confvCarret,ifnull(r.autor1, '') as autCarret,ifnull(p.nomchofe,'') as chocamcar " +
+                        "ifnull(c.razonsocial, '') as razonsocial,ifnull(d.marca, '') as marca, ifnull(d.modelo, '') as modelo,ifnull(r.marca, '') as marCarret," +
+                        "ifnull(r.confve, '') as confvCarret,ifnull(r.autor1, '') as autCarret,ifnull(p.nomchofe, '') as chocamcar " +
                         "FROM cabguiai a " +
                         "LEFT JOIN desc_dtm dd1 ON dd1.IDCodice = a.tidocor " +
                         "LEFT JOIN desc_dtm dd2 ON dd2.IDCodice = a.tidocor2 " +
                         "LEFT JOIN desc_doc dr1 ON dr1.IDCodice = a.tidoregri " +
                         "LEFT JOIN desc_doc dr2 ON dr2.IDCodice = a.tidodegri " +
                         "LEFT JOIN desc_loc loc ON loc.IDCodice = a.locorigen " +
-                        "left join anag_for c on c.ruc=a.proplagri and c.tipdoc=@tdep " +
-                        "left join vehiculos d on d.placa=a.plaplagri " +
-                        "left join vehiculos r on r.placa=a.carplagri " +
-                        "left join cabplacar p on p.id=a.idplani " +
-                        "where a.sergui = @ser AND a.numgui = @num)X " +
-                        "LEFT JOIN ubigeos ur1 ON ur1.depart = dept_ure " +
-                        "LEFT JOIN ubigeos ur2 ON CONCAT(ur2.depart, ur2.provin,'00')= prov_ure " +
-                        "LEFT JOIN ubigeos ur3 ON CONCAT(ur3.depart, ur3.provin, ur3.distri)= dist_ure " +
-                        "LEFT JOIN ubigeos ud1 ON ud1.depart = dept_ude " +
-                        "LEFT JOIN ubigeos ud2 ON CONCAT(ud2.depart, ud2.provin,'00')= prov_ude " +
-                        "LEFT JOIN ubigeos ud3 ON CONCAT(ud3.depart, ud3.provin, ud3.distri)= dist_ude " +
-                        "LIMIT 1";
+                        "left join anag_for c on c.ruc = a.proplagri and c.tipdoc = @tdep " +
+                        "left join vehiculos d on d.placa = a.plaplagri " +
+                        "left join vehiculos r on r.placa = a.carplagri " +
+                        "left join cabplacar p on p.id = a.idplani " +
+                        "LEFT JOIN ubi_dep ud1 ON ud1.depart = LEFT(a.ubigregri, 2) " +
+                        "LEFT join ubi_pro up1 ON concat(up1.depart, up1.provin)= SUBSTRING(a.ubigregri, 1, 4) " +
+                        "LEFT JOIN ubigeos ub1 ON concat(ub1.depart, ub1.provin, ub1.distri)= a.ubigregri " +
+                        "LEFT JOIN ubi_dep ud2 ON ud2.depart = LEFT(a.ubigdegri, 2) " +
+                        "LEFT join ubi_pro up2 ON concat(up2.depart, up2.provin)= SUBSTRING(a.ubigdegri, 1, 4) " +
+                        "LEFT JOIN ubigeos ub2 ON concat(ub2.depart, ub2.provin, ub2.distri)= a.ubigdegri " +
+                        "where a.sergui = @ser AND a.numgui = @num";
                     using (MySqlCommand micon = new MySqlCommand(consulta, conn))
                     {
-                        micon.Parameters.AddWithValue("@ser", serie);    // 
-                        micon.Parameters.AddWithValue("@num", numero);    // 
+                        micon.Parameters.AddWithValue("@ser", serie);
+                        micon.Parameters.AddWithValue("@num", numero);
                         micon.Parameters.AddWithValue("@tdep", vtc_ruc);
                         using (MySqlDataReader dr = micon.ExecuteReader())
                         {
@@ -2652,34 +2649,33 @@ namespace TransCarga
                                     vs[17] = dr.GetString("pestotgri");                     // 17
                                     vs[18] = dr.GetString("pesoKT");                        // 18
                                     vs[19] = dr.GetString("direregri");                     // 19
-                                    vs[20] = dr.GetString("Dpto_Rem");                      // 20
-                                    vs[21] = dr.GetString("Prov_Rem");                      // 21
-                                    vs[22] = dr.GetString("Dist_Rem");                      // 22
+                                    vs[20] = dr.GetString("dept_ure");                      // 20
+                                    vs[21] = dr.GetString("prov_ure");                      // 21
+                                    vs[22] = dr.GetString("dist_ure");                      // 22
                                     vs[23] = dr.GetString("diredegri");                     // 23
-                                    vs[24] = dr.GetString("Dpto_Des");                      // 24
-                                    vs[25] = dr.GetString("Prov_Des");                      // 25
-                                    vs[26] = dr.GetString("Dist_Des");                      // 26
+                                    vs[24] = dr.GetString("dept_ude");                      // 24
+                                    vs[25] = dr.GetString("prov_ude");                      // 25
+                                    vs[26] = dr.GetString("dist_ude");                      // 26
                                     vs[27] = dr.GetString("userc");                         // 27
                                     vs[28] = dr.GetString("locorigen");                     // 28
                                     vs[29] = dr.GetString("fechc");                         // 29
 
                                     vc[0] = dr.GetString("plaplagri");                   // Placa veh principal
                                     vc[1] = dr.GetString("autplagri");                   // Autoriz. vehicular
-                                                                                         //vc[2] = dr.GetString("");                   // Num Registro MTC 
+                                    vc[2] = "";                                          // Num Registro MTC 
                                     vc[3] = dr.GetString("confvegri");                   // Conf. vehicular
-                                                                                         //vc[4] = dr.GetString("");                   // Placa carreta
-                                                                                         //vc[5] = dr.GetString("");                   // Autoriz. vehicular
-                                                                                         //vc[6] = dr.GetString("");                   // Num Registro MTC
-                                                                                         //vc[7] = dr.GetString("");                   // Conf. vehicular 
-                                                                                         //vc[8] = dr.GetString("");                   // Choferes - Dni chofer principal
+                                    vc[4] = dr.GetString("carplagri");                   // Placa carreta
+                                    vc[5] = dr.GetString("autCarret");                   // Autoriz. vehicular
+                                    vc[6] = "";                                          // Num Registro MTC
+                                    vc[7] = dr.GetString("confvCarret");                 // Conf. vehicular 
+                                    vc[8] = "";                                          // Choferes - Dni chofer principal
                                     vc[9] = dr.GetString("breplagri");                   // Choferes - Brevete chofer principal
                                     vc[10] = dr.GetString("chocamcar");                  // Choferes - Nombres 
-                                                                                         //vc[11] = dr.GetString("");                   // Choferes - Apellidos
-                                                                                         //vc[12] = dr.GetString("");                   // Choferes - Dni chofer secundario
-                                                                                         //vc[13] = dr.GetString("");                   // Choferes - Brevete chofer secundario
-                                                                                         //vc[14] = dr.GetString("");                   // Choferes - Nombres
-                                                                                         //vc[15] = dr.GetString("");                   // Choferes - Apellidos
-
+                                    vc[11] = "";                                         // Choferes - Apellidos
+                                    vc[12] = "";                                         // Choferes - Dni chofer secundario
+                                    vc[13] = "";                                        // Choferes - Brevete chofer secundario
+                                    vc[14] = "";                                        // Choferes - Nombres
+                                    vc[15] = "";                                        // Choferes - Apellidos
                                 }
                                 else
                                 {
