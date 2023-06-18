@@ -386,17 +386,6 @@ form repsoper, arreglar problemas de columnas en las grillas ...................
 form repsventas, arreglar problemas de columnas en las grillas ..................................... ok 03/05/2023
 form facelect, problema al generar el txt cuando las guias es 9 .................................... ok 04/05/2023
 form planicarga, problema con agregar guias en edición de manifiestos .............................. ok 05/05/2023
-form facelect, agregar opcion factSunat a los metodos de gestión:
-	- F y B normales, sin detracción en soles al contado ........................................... ok 23/04/2023
-	- Fact. con detracción en soles al contado ..................................................... ok 25/04/2023	No puede haber boletas con detracción, solo las Fact
-	- Fact. sin detracción en soles al crédito 1 cuota ............................................. ok 25/04/2023	al crédito y detracciones solo se acepta Fact NO boletas
-	- Fact. con detracción en soles al crédito 1 cuota ............................................. ok 25/04/2023	al crédito y detracciones solo se acepta Fact NO boletas
-	- Fact. con detracción en dólares al contado ...................................................	las detracciones solo afectan a las Facturas
-	- Fact. con detracción en dólares al crédito 1 cuota ...........................................	las detracciones solo afectan a las Facturas
-Formatos jrxml de fcturas y boletas estándares multimoneda y con/sin detracción, contado/credito ... 
-form facelect, agregar opciones de cargas únicas tipo soya:
-	- Facturas cargas únicas "tipo soya" en soles al crédito 1 cuota ............................... 
-	- Facturas cargas únicas "tipo soya" en dólares al crédito 1 cuota ............................. 
 Tabla cabplacar, agregar campos dnichofer,dniayudante .............................................. OK 22/05/2023 
 form guiati_e, se agrego check Carga única, falta agregar en tabla y Grabar(),jalaoc() ............. ok 22/05/2023 (cabguiai.marca1) -> carga unica = 1, normal = 0
 form guiati_e, agregar opción SFS V.1.9 de sunat ................................................... ok 22/05/2023 
@@ -415,3 +404,16 @@ form guiati_e, modificar la impresion de los TK para usar la clase impGRE_T ....
 form repsoper, crear boton para impresión individual de una GRE .................................... ok 13/06/2023
 form repsoper, arreglar la demora en la generación del ticket, copias esta trajando doble .......... OK 14/06/2023
 form impGRE_T, mejora en el formato para poner algo en lugar del QR si no esta aceptado aún ........ ok 14/06/2023
+form facelect, agregar opcion factSunat a los metodos de gestión:
+	- F y B normales, sin detracción en soles al contado ........................................... ok 23/04/2023
+	- Fact. con detracción en soles al contado ..................................................... ok 25/04/2023	No puede haber boletas con detracción, solo las Fact
+	- Fact. sin detracción en soles al crédito 1 cuota ............................................. ok 25/04/2023	al crédito y detracciones solo se acepta Fact NO boletas
+	- Fact. con detracción en soles al crédito 1 cuota ............................................. ok 25/04/2023	al crédito y detracciones solo se acepta Fact NO boletas
+	- Fact. con detracción en dólares al contado ...................................................	las detracciones solo afectan a las Facturas
+	- Fact. con detracción en dólares al crédito 1 cuota ...........................................	las detracciones solo afectan a las Facturas
+Formatos jrxml de fcturas y boletas estándares multimoneda y con/sin detracción, contado/credito ... 
+form facelect, agregar opciones de cargas únicas tipo soya:
+	- Facturas cargas únicas "tipo soya" en soles al crédito 1 cuota ............................... 
+	- Facturas cargas únicas "tipo soya" en dólares al crédito 1 cuota ............................. 
+form facelect, opción FACT.DIRECTA desde sistema del contribuyente a los metodos de gestión:
+	- F y B normales, sin detracción en soles al contado ........................................... 
