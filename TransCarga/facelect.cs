@@ -13,6 +13,7 @@ using Newtonsoft.Json;
 using Gma.QrCodeNet.Encoding;
 using Gma.QrCodeNet.Encoding.Windows.Render;
 using System.Drawing.Imaging;
+using System.Diagnostics;
 
 namespace TransCarga
 {
@@ -109,7 +110,7 @@ namespace TransCarga
         string rucsEmcoper = "";        // rucs separados por comas para el modelo especial de pdf de Emcoper coordinado con PSnet 07/12/2022 
         string webdni = "";             // ruta web del buscador de DNI
         string NoRetGl = "";            // glosa de retorno cuando umasapa no encuentra el dni o ruc
-
+        string rutaxml = "";            // ruta para los XML de las guias de remision
         string client_id_sunat = "";    // id del cliente api sunat para guias electrónicas 
         string scope_sunat = "";        // scope sunat del api
         string client_pass_sunat = "";  // clave api sunat para guias electrónicas
@@ -389,6 +390,7 @@ namespace TransCarga
                         }
                         if (row["campo"].ToString() == "rutas")
                         {
+                            if (row["param"].ToString() == "grt_xml") rutaxml = row["valor"].ToString().Trim();         // 
                             if (row["param"].ToString() == "fe_txt") rutatxt = row["valor"].ToString().Trim();         // ruta de los txt para la fact. electronica
                             if (row["param"].ToString() == "web_dni") webdni = row["valor"].ToString().Trim();         // web para busqueda de dni 
                         }
@@ -1631,7 +1633,7 @@ namespace TransCarga
             }
             if (provee == "factDirecta")
             {
-
+                sunat_api(tipdo, tipoMoneda, tipoDocEmi);
             }
             return retorna;
         }
@@ -2853,7 +2855,7 @@ namespace TransCarga
         #endregion
 
         #region factDirecta sistema del contribuyente
-        private bool sunat_api()                                // SI VAMOS A USAR 26/05/2023 este metodo directo
+        private bool sunat_api(string tipdo, string tipoMoneda, string tipoDocEmi)                                // SI VAMOS A USAR 26/05/2023 este metodo directo
         {
             bool retorna = false;
             guiati_e guiati_E = new guiati_e();
@@ -2862,7 +2864,7 @@ namespace TransCarga
             {
                 string aZip;
                 string aXml = "";
-                if (llenaTablaLiteDV() != true)
+                if (llenaTablaLiteDV(tipdo, tipoMoneda, tipoDocEmi) != true)
                 {
                     MessageBox.Show("No se pudo llenar las tablas sqlite", "Error interno", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
@@ -2972,7 +2974,7 @@ namespace TransCarga
                     "NumDVta varchar(12), " +           // serie+numero
                     "FecEmis varchar(10), " +
                     "HorEmis varchar(8), " +
-                    "CodGuia varchar(2), " +            // código sunat de la guía de remisión
+                    "CodComp varchar(2), " +            // código sunat del comprobante
                     "FecVcto varchar(10), " +           // Fecha de vencimiento del comprobante
                     "TipDocu varchar(2), " +            // SUNAT:Identificador de Tipo de Documento
                     "CodLey1 varchar(4) " +             // codigo sunat de leyenda MONTO EN LETRAS
@@ -3017,16 +3019,25 @@ namespace TransCarga
                 // ********************* DETALLE ************************ //
                 sqlTabla = "create table dt_detdv (" +
                     "id integer primary key autoincrement, " +
-                    "NumGuia varchar(12), " +
-                    "clinea integer, " +            // Número de orden del Ítem                             - 35
-                    "cant integer, " +              // Cantidad y Unidad de medida por ítem                 - 36
-                    "CodMon varchar(3), " +         // Codigo internacional de moneda                       - 37
-                    "Valvta decimal(12,2), " +      // Valor de venta del ítem                              - 37
-                    // me quede acá 17/06/2023
-                    "peso real, " +               // peso de la carga, va unido a la unidad de medida 
-                    "umed varchar(3), " +         // codigo unidad de medida de sunat
-                    "deta1 varchar(100), " +
-                    "deta2 varchar(100)" +
+                    "NumDVta varchar(12), " +
+                    "Numline integer, " +            // Número de orden del Ítem                             - 35
+                    "Cantprd integer, " +            // Cantidad y Unidad de medida por ítem                 - 36
+                    "CodMone varchar(3), " +         // Codigo internacional de moneda                       - 37
+                    "ValVtaI decimal(12,2), " +      // Valor de venta del ítem                              - 37
+                    "PreVtaU decimal(12,2), " +     // Precio de venta unitario por item y código           - 38
+                                                    // Valor referencial unitario por ítem en operaciones no onerosas   - 39
+                                                    // Descuentos por Ítem                                  - 40
+                                                    // Cargos por item                                      - 41
+                    "ValIgvI decimal(12,2) " +      // Afectación al IGV por ítem                           - 42
+                                                    // Afectación al ISC por ítem                           - 43
+                    "DesDet1 varchar(100), " +      // Descripción detallada                                - 44
+                    "DesDet2 varchar(100), " +
+                    "CodIntr varchar(50), " +       // Código de producto                                   - 45
+                                                    // Código de producto SUNAT                             - 46
+                                                    // Propiedades Adicionales del Ítem                     - 47
+                    "ValUnit decimal(12,2), " +     // Valor unitario del ítem                              - 48
+                    "ValPeso real, " +              // peso de la carga, va unido a la unidad de medida 
+                    "UniMedS varchar(3)" +          // codigo unidad de medida de sunat
                     ")";
                 using (SqliteCommand cmd = new SqliteCommand(sqlTabla, cnx))
                 {
@@ -3044,6 +3055,117 @@ namespace TransCarga
                     cmd.ExecuteNonQuery();
                 }
             }
+        }
+        private bool llenaTablaLiteDV(string tipdo, string tipoMoneda, string tipoDocEmi)                        // llena tabla con los datos del comprobante y llama al app que crea el xml
+        {
+            bool retorna = false;
+            using (SqliteConnection cnx = new SqliteConnection(CadenaConexion))
+            {
+                string fecemi = tx_fechope.Text.Substring(6, 4) + "-" + tx_fechope.Text.Substring(3, 2) + "-" + tx_fechope.Text.Substring(0, 2);
+                string fansi = DateTime.Parse(fecemi).AddDays(double.Parse(tx_dat_dpla.Text)).Date.ToString("yyyy-MM-dd");        // fecha de emision + dias plazo credito
+                
+                
+                cnx.Open();
+                // CABECERA
+                string metela = "insert into dt_cabdv (" +
+                    "EmisRuc,EmisNom,EmisCom,CodLocA,EmisUbi,EmisDir,EmisDep,EmisPro,EmisDis,EmisUrb,EmisPai,EmisCor,NumDVta,FecEmis,HorEmis,CodComp,FecVcto," +
+                    "TipDocu,CodLey1,MonLetr,CodMonS,DstTipdoc,DstNumdoc,DstNomTdo,DstNombre,DstDirecc,DstDepart,DstProvin,DstDistri,DstUrbani,DstUbigeo,ImpTotImp," +
+                    "ImpOpeGra,ImpIgvTot,ImpOtrosT,IgvCodSun,IgvConInt,IgvNomSun,IgvCodInt,TotValVta,TotPreVta,TotDestos,TotOtrCar,TotaVenta) " +
+                    "values (" +
+                    "@EmisRuc,@EmisNom,@EmisCom,@CodLocA,@EmisUbi,@EmisDir,@EmisDep,@EmisPro,@EmisDis,@EmisUrb,@EmisPai,@EmisCor,@NumDVta,@FecEmis,@HorEmis,@CodComp,@FecVcto," +
+                    "@TipDocu,@CodLey1,@MonLetr,@CodMonS,@DstTipd,@DstNumd,@DstNomT,@DstNomb,@DstDire,@DstDepa,@DstProv,@DstDist,@DstUrba,@DstUbig,@ImpTotI," +
+                    "@ImpOpeG,@ImpIgvT,@ImpOtro,@IgvCodS,@IgvConI,@IgvNomS,@IgvCodI,@TotValV,@TotPreV,@TotDest,@TotOtrC,@TotaVen)";
+                using (SqliteCommand cmd = new SqliteCommand(metela, cnx))
+                {
+                    // cabecera
+                    cmd.Parameters.AddWithValue("@EmisRuc", Program.ruc);                 // "20430100344"
+                    cmd.Parameters.AddWithValue("@EmisNom", Program.cliente);             // "J&L Technology SAC"
+                    cmd.Parameters.AddWithValue("@EmisCom", "");                          // nombre comercial
+                    cmd.Parameters.AddWithValue("@CodLocA", Program.codlocsunat);         // codigo sunat local anexo emisor
+                    cmd.Parameters.AddWithValue("@EmisUbi", Program.ubidirfis);           // "070101"
+                    cmd.Parameters.AddWithValue("@EmisDir", Program.dirfisc);             // "Calle Sigma Mz.A19 Lt.16 Sector I"
+                    cmd.Parameters.AddWithValue("@EmisDep", Program.depfisc);             // "Callao"
+                    cmd.Parameters.AddWithValue("@EmisPro", Program.provfis);             // "Callao"
+                    cmd.Parameters.AddWithValue("@EmisDis", Program.distfis);             // "Callao"
+                    cmd.Parameters.AddWithValue("@EmisUrb", "-");                         // "Bocanegra"
+                    cmd.Parameters.AddWithValue("@EmisPai", "PE");                        // país del emisor
+                    cmd.Parameters.AddWithValue("@EmisCor", Program.mailclte);            // "neto.solorzano@solorsoft.com"
+                    cmd.Parameters.AddWithValue("@NumDVta", tx_serie.Text + "-" + tx_numero.Text);         // "V001-98000006"
+                    cmd.Parameters.AddWithValue("@FecEmis", fecemi);              // "2023-05-19"
+                    cmd.Parameters.AddWithValue("@HorEmis", DateTime.Now.Hour + ":" + DateTime.Now.Minute + ":" + DateTime.Now.Second);  // "12:21:13"
+                    cmd.Parameters.AddWithValue("@CodComp", "");                      // codigo del comprobante
+                    cmd.Parameters.AddWithValue("@FecVcto", fansi);
+
+                    cmd.Parameters.AddWithValue("@TipDocu", tipdo);             // SUNAT:Identificador de Tipo de Documento
+                    cmd.Parameters.AddWithValue("@CodLey1", "1000");
+                    cmd.Parameters.AddWithValue("@MonLetr", "SON: " + tx_fletLetras.Text);
+                    cmd.Parameters.AddWithValue("@CodMonS", tipoMoneda);
+                    cmd.Parameters.AddWithValue("@DstTipd", tipoDocEmi);
+                    cmd.Parameters.AddWithValue("@DstNumd", tx_numDocRem.Text);
+                    cmd.Parameters.AddWithValue("@DstNomT", "");                // glosa, texto o nombre sunat del doc del destinatario
+                    cmd.Parameters.AddWithValue("@DstNomb", tx_nomRem.Text);
+                    cmd.Parameters.AddWithValue("@DstDire", tx_dirRem.Text);
+                    cmd.Parameters.AddWithValue("@DstDepa", tx_dptoRtt.Text);
+                    cmd.Parameters.AddWithValue("@DstProv", tx_provRtt.Text);
+                    cmd.Parameters.AddWithValue("@DstDist", tx_distRtt.Text);
+                    cmd.Parameters.AddWithValue("@DstUrba", "");
+                    cmd.Parameters.AddWithValue("@DstUbig", tx_ubigRtt.Text);
+                    cmd.Parameters.AddWithValue("@ImpTotI", tx_igv.Text);       // Monto total de impuestos
+
+                    cmd.Parameters.AddWithValue("@ImpOpeG", tx_subt.Text);      // Monto las operaciones gravadas
+                    cmd.Parameters.AddWithValue("@ImpIgvT", tx_igv.Text);       // Sumatoria de IGV
+                    cmd.Parameters.AddWithValue("@ImpOtro", "0");               // Sumatoria de Otros Tributos
+                    cmd.Parameters.AddWithValue("@IgvCodS", "6");               // schemeAgencyID="6"
+                    cmd.Parameters.AddWithValue("@IgvConI", "1000");            // 1000
+                    cmd.Parameters.AddWithValue("@IgvNomS", "IGV");             // IGV
+                    cmd.Parameters.AddWithValue("@IgvCodI", "VAT");             // VAT
+                    cmd.Parameters.AddWithValue("@TotValV", tx_subt.Text);      // Total valor de venta
+                    cmd.Parameters.AddWithValue("@TotPreV", tx_flete.Text);     // Total precio de venta (incluye impuestos)
+                    cmd.Parameters.AddWithValue("@TotDest", "0");
+                    cmd.Parameters.AddWithValue("@TotOtrC", "0");
+                    cmd.Parameters.AddWithValue("@TotaVen", tx_flete.Text);
+                    cmd.ExecuteNonQuery();
+                }
+                // DETALLE
+                for (int i=0; i< dataGridView1.Rows.Count - 1; i++)
+                {
+                    string descrip = dataGridView1.Rows[i].Cells[1].Value.ToString();
+                    double preunit = double.Parse(dataGridView1.Rows[i].Cells[4].Value.ToString());
+                    double valunit = double.Parse(dataGridView1.Rows[i].Cells[4].Value.ToString()) / (1 + (double.Parse(v_igv) / 100));
+                    double sumimpl = double.Parse(dataGridView1.Rows[i].Cells[4].Value.ToString()) - valunit;
+
+                    metela = "insert into dt_detdv (" +
+                        "NumDVta,Numline,Cantprd,CodMone,ValVtaI,PreVtaU,ValIgvI,DesDet1,DesDet2,CodIntr,ValUnit,ValPeso,UniMedS) values (" +
+                        "@NumGu,@Numli,@Cantp,@CodMo,@ValVt,@PreVt,@ValIg,@DesD1,@DesD2,@CodIn,@ValUn,@ValPe,@UniMe)";
+                    using (SqliteCommand cmd = new SqliteCommand(metela, cnx))
+                    {
+                        cmd.Parameters.AddWithValue("@NumGu", tx_serie.Text + "-" + tx_numero.Text);      // "V001-98000006"
+                        cmd.Parameters.AddWithValue("@Numli", i+1.ToString());
+                        cmd.Parameters.AddWithValue("@Cantp", dataGridView1.Rows[i].Cells[2].Value.ToString());
+                        cmd.Parameters.AddWithValue("@CodMo", tipoMoneda);
+                        cmd.Parameters.AddWithValue("@ValVt", valunit.ToString());  // valor venta  s/igv
+                        cmd.Parameters.AddWithValue("@PreVt", preunit.ToString());  // precio venta c/igv
+                        cmd.Parameters.AddWithValue("@ValIg", sumimpl.ToString());  // Afectación al IGV por ítem
+                        cmd.Parameters.AddWithValue("@DesD1", descrip);             // "Servicio de Transporte de carga terrestre "
+                        cmd.Parameters.AddWithValue("@DesD2", "");                  //"Dice contener Enseres domésticos"
+                        cmd.Parameters.AddWithValue("@CodIn", "");                  // código del item
+                        cmd.Parameters.AddWithValue("@ValUn", valunit.ToString());  // Valor unitario del ítem
+                        cmd.Parameters.AddWithValue("@ValPe", "");
+                        cmd.Parameters.AddWithValue("@UniMe", dataGridView1.Rows[i].Cells[13].Value.ToString());    // valunit
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+                // llamada al programa de generación del xml de la guía
+                string rutalocal = System.IO.Path.GetDirectoryName(Application.ExecutablePath);
+                string[] parametros = new string[] { rutaxml, Program.ruc, tx_serie.Text + "-" + tx_numero.Text };
+                ProcessStartInfo p = new ProcessStartInfo();
+                p.Arguments = rutaxml + " " + Program.ruc + " " + tx_serie.Text + "-" + tx_numero.Text + " " + firmDocElec + " " + rutaCertifc + " " + claveCertif;
+                p.FileName = @rutalocal + "/xmlGRE/xmlGRE.exe";
+                Process.Start(p);
+                retorna = true;
+            }
+
+            return retorna;
         }
         #endregion
 
