@@ -411,6 +411,8 @@ form facelect, agregar opcion factSunat a los metodos de gestión:
 	- Fact. con detracción en soles al crédito 1 cuota ............................................. ok 25/04/2023	al crédito y detracciones solo se acepta Fact NO boletas
 	- Fact. con detracción en dólares al contado ...................................................	las detracciones solo afectan a las Facturas
 	- Fact. con detracción en dólares al crédito 1 cuota ...........................................	las detracciones solo afectan a las Facturas
+form repsoper, arreglar boton CDR y PDF, no estan en su columna correcta ........................... ok 21/06/2023
+
 Formatos jrxml de fcturas y boletas estándares multimoneda y con/sin detracción, contado/credito ... 
 form facelect, agregar opciones de cargas únicas tipo soya:
 	- Facturas cargas únicas "tipo soya" en soles al crédito 1 cuota ............................... 

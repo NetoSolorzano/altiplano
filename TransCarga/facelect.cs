@@ -14,6 +14,11 @@ using Gma.QrCodeNet.Encoding;
 using Gma.QrCodeNet.Encoding.Windows.Render;
 using System.Drawing.Imaging;
 using System.Diagnostics;
+using System.IO.Compression;
+using System.Security.Cryptography;
+using System.Linq;
+using System.Net;
+using RestSharp;
 
 namespace TransCarga
 {
@@ -117,6 +122,7 @@ namespace TransCarga
         string u_sol_sunat = "";        // usuario sol sunat del cliente
         string c_sol_sunat = "";        // clave sol sunat del cliente
         string rutaCertifc = "";        // Ruta y nombre del certificado .pfx
+        string wsPostS = "";          // Ruta post webservice Sunat
         string claveCertif = "";        // Clave del certificado
         string[] c_t = new string[6] { "", "", "", "", "", "" }; // parametros para generar el token sunat
         //
@@ -407,6 +413,7 @@ namespace TransCarga
                             if (row["param"].ToString() == "scope") scope_sunat = row["valor"].ToString().Trim();                 // scope del api sunat
                             if (row["param"].ToString() == "rutaCertifc") rutaCertifc = row["valor"].ToString().Trim();           // Ruta y nombre del certificado .pfx
                             if (row["param"].ToString() == "claveCertif") claveCertif = row["valor"].ToString().Trim();           // Clave del certificado
+                            if (row["param"].ToString() == "wsPostSunat") wsPostS = row["valor"].ToString().Trim();             // 
                         }
                     }
                     if (row["formulario"].ToString() == "clients" && row["campo"].ToString() == "documento")
@@ -2868,7 +2875,7 @@ namespace TransCarga
                 {
                     MessageBox.Show("No se pudo llenar las tablas sqlite", "Error interno", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
-                else aXml = Program.ruc + "-" + "31" + "-" + tx_serie.Text + "-" + tx_numero.Text + ".xml";
+                else aXml = Program.ruc + "-" + tipdo + "-" + tx_serie.Text + "-" + tx_numero.Text + ".xml";
                 if (aXml != "")
                 {
                     // - zipear el xml, 
@@ -2880,11 +2887,10 @@ namespace TransCarga
                     using (ZipArchive zip = ZipFile.Open(rutaxml + aZip, ZipArchiveMode.Create))
                     {
                         string source = rutaxml + aXml;
-                        //MessageBox.Show(source,"source");
                         zip.CreateEntryFromFile(source, aXml);
                     }
                     // - byte[]ar el zip, 
-                    var bytexml = File.ReadAllBytes(rutaxml + aZip); // aXml.Replace(".xml", ""
+                    var bytexml = File.ReadAllBytes(rutaxml + aZip);
                     var base64 = Convert.ToBase64String(bytexml);
                     // - hashear 
                     string hash = "";
@@ -2892,9 +2898,8 @@ namespace TransCarga
                     {
                         hash = string.Concat(sha256.ComputeHash(bytexml).Select(x => x.ToString("x2")));
                     }
-                    //MessageBox.Show("Posteando ... ");
-                    // Postear 
-                    string url = "https://api-cpe.sunat.gob.pe/v1/contribuyente/gem/comprobantes/" + aXml.Replace(".xml", "");
+                    // Postear "https://api-cpe.sunat.gob.pe/v1/contribuyente/gem/comprobantes/" + aXml.Replace(".xml", "");
+                    string url = @wsPostS + aXml.Replace(".xml", "");
                     var oData = new
                     {
                         archivo = new
@@ -2915,7 +2920,7 @@ namespace TransCarga
                     request.AddParameter("application/json", json, ParameterType.RequestBody);
                     //
                     IRestResponse response = poste.Execute(request);
-                    var result = JsonConvert.DeserializeObject<Ticket_Rpta>(response.Content);
+                    var result = JsonConvert.DeserializeObject<Cdr_Rpta>(response.Content);
                     if (response.ResponseStatus.ToString() != "200")
                     {
                         MessageBox.Show(response.Content.ToString(), "Error " + response.ResponseStatus.ToString());
@@ -2923,19 +2928,18 @@ namespace TransCarga
                     else
                     {
                         // actualizamos los campos de la tabla cabguiai
-                        string actua = "insert into adiguias (idg,serie,numero,nticket,fticket,estadoS,cdr) values (@idg,@seg,@nug,@nti,@fti,@est,@cdr)";
+                        string actua = "insert into adifactu (idc,nticket,fticket,estadoS,cdr,cdrgener) values (@idc,@nti,@fti,@est,@cdrt,@cdrg)";
                         using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
                         {
                             conn.Open();
                             using (MySqlCommand micon = new MySqlCommand(actua, conn))
                             {
-                                micon.Parameters.AddWithValue("@idg", tx_idr.Text);
-                                micon.Parameters.AddWithValue("@seg", tx_serie.Text);
-                                micon.Parameters.AddWithValue("@nug", tx_numero.Text);
+                                micon.Parameters.AddWithValue("@idc", tx_idr.Text);
                                 micon.Parameters.AddWithValue("@nti", result.numTicket);
                                 micon.Parameters.AddWithValue("@fti", result.fecRecepcion);
                                 micon.Parameters.AddWithValue("@est", "Enviado");
-                                micon.Parameters.AddWithValue("@cdr", "0");
+                                micon.Parameters.AddWithValue("@cdrt", result.estado);
+                                micon.Parameters.AddWithValue("@cdrg", result.estado);
                                 micon.ExecuteNonQuery();
                             }
                         }
@@ -2977,9 +2981,9 @@ namespace TransCarga
                     "CodComp varchar(2), " +            // código sunat del comprobante
                     "FecVcto varchar(10), " +           // Fecha de vencimiento del comprobante
                     "TipDocu varchar(2), " +            // SUNAT:Identificador de Tipo de Documento
-                    "CodLey1 varchar(4) " +             // codigo sunat de leyenda MONTO EN LETRAS
-                    "MonLetr varchar(150) " +           // monto en letras
-                    "CodMonS varchar(3)" +              // código internacional de moneda 
+                    "CodLey1 varchar(4), " +             // codigo sunat de leyenda MONTO EN LETRAS
+                    "MonLetr varchar(150), " +           // monto en letras
+                    "CodMonS varchar(3)," +              // código internacional de moneda 
                     // datos del destinatario
                     "DstTipdoc varchar(2), " +          // código sunat del tipo de documento del destinatario  - 18
                     "DstNumdoc varchar(11), " +         // número del documento del destinatario                - 18
@@ -3028,7 +3032,7 @@ namespace TransCarga
                                                     // Valor referencial unitario por ítem en operaciones no onerosas   - 39
                                                     // Descuentos por Ítem                                  - 40
                                                     // Cargos por item                                      - 41
-                    "ValIgvI decimal(12,2) " +      // Afectación al IGV por ítem                           - 42
+                    "ValIgvI decimal(12,2), " +      // Afectación al IGV por ítem                           - 42
                                                     // Afectación al ISC por ítem                           - 43
                     "DesDet1 varchar(100), " +      // Descripción detallada                                - 44
                     "DesDet2 varchar(100), " +
@@ -3043,7 +3047,7 @@ namespace TransCarga
                 {
                     cmd.ExecuteNonQuery();
                 }
-                // ********************* GUIAS RELACIONADAS ************************ //
+                /* / ********************* GUIAS RELACIONADAS ************************ //
                 sqlTabla = "create table dt_docrel (" +
                     "id integer primary key autoincrement, " +
                     "NumGuia varchar(12), " +
@@ -3054,6 +3058,7 @@ namespace TransCarga
                 {
                     cmd.ExecuteNonQuery();
                 }
+                */
             }
         }
         private bool llenaTablaLiteDV(string tipdo, string tipoMoneda, string tipoDocEmi)                        // llena tabla con los datos del comprobante y llama al app que crea el xml
@@ -3158,9 +3163,9 @@ namespace TransCarga
                 // llamada al programa de generación del xml de la guía
                 string rutalocal = System.IO.Path.GetDirectoryName(Application.ExecutablePath);
                 string[] parametros = new string[] { rutaxml, Program.ruc, tx_serie.Text + "-" + tx_numero.Text };
-                ProcessStartInfo p = new ProcessStartInfo();
-                p.Arguments = rutaxml + " " + Program.ruc + " " + tx_serie.Text + "-" + tx_numero.Text + " " + firmDocElec + " " + rutaCertifc + " " + claveCertif;
-                p.FileName = @rutalocal + "/xmlGRE/xmlGRE.exe";
+                ProcessStartInfo p = new ProcessStartInfo();                                                // true = firma comprobante
+                p.Arguments = rutaxml + " " + Program.ruc + " " + tx_serie.Text + "-" + tx_numero.Text + " " + true + " " + rutaCertifc + " " + claveCertif;
+                p.FileName = @rutalocal + "/xmlGRE/xmlDV.exe";
                 Process.Start(p);
                 retorna = true;
             }
@@ -5782,5 +5787,11 @@ namespace TransCarga
         }
         #endregion
 
+    }
+    public class Cdr_Rpta                            // respuesta del post envio comprobante
+    {
+        public string numTicket { get; set; }           // código ticket respuesta
+        public DateTime fecRecepcion { get; set; }      // fecha hora de la respuesta
+        public string estado { get; set; }              // estado
     }
 }

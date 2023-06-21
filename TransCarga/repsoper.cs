@@ -616,7 +616,7 @@ namespace TransCarga
                     dgv_GRE_est.Columns[12].Visible = false;
                     dgv_GRE_est.Columns[13].Visible = false;
                     dgv_GRE_est.Columns[14].Visible = false;
-                    if (dgv_GRE_est.Rows.Count > 0)
+                    if (dgv_GRE_est.Rows.Count > 0)         // autosize filas
                     {
                         for (int i = 0; i < dgv_GRE_est.Columns.Count - 8; i++)
                         {
@@ -645,21 +645,19 @@ namespace TransCarga
                                 if (dgv_GRE_est.Rows[i].Cells[6].Value.ToString() == "1")
                                 {
                                     dgv_GRE_est.Rows[i].Cells[8].ReadOnly = false;
-                                    dgv_GRE_est.Rows[i].Cells[8].Value = "CDR";
+                                    dgv_GRE_est.Rows[i].Cells[8].Value = "PDF";
+                                    dgv_GRE_est.Rows[i].Cells[9].ReadOnly = false;
+                                    dgv_GRE_est.Rows[i].Cells[9].Value = "CDR";
+                                    dgv_GRE_est.Rows[i].Cells[10].ReadOnly = true;
                                 }
                                 else
                                 {
                                     dgv_GRE_est.Rows[i].Cells[8].ReadOnly = true;
                                     dgv_GRE_est.Rows[i].Cells[8].Value = "";
+                                    dgv_GRE_est.Rows[i].Cells[9].ReadOnly = true;
+                                    dgv_GRE_est.Rows[i].Cells[9].Value = "";
+                                    dgv_GRE_est.Rows[i].Cells[10].ReadOnly = false;
                                 }
-                                if (dgv_GRE_est.Rows[i].Cells[6].Value.ToString() == "1") dgv_GRE_est.Rows[i].Cells[9].ReadOnly = false;
-                                else dgv_GRE_est.Rows[i].Cells[9].ReadOnly = true;
-                                if (dgv_GRE_est.Rows[i].Cells[6].Value.ToString() == "1")
-                                {
-                                    dgv_GRE_est.Rows[i].Cells[10].ReadOnly = true;
-                                    //dgv_GRE_est.Rows[i].Cells[9];
-                                }
-                                else dgv_GRE_est.Rows[i].Cells[10].ReadOnly = false;
                             }
                         }
                     }
@@ -667,70 +665,7 @@ namespace TransCarga
                     break;
             }
         }
-        private void DataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)        // Click en las columnas boton
-        {
-            if (dgv_GRE_est.Columns[e.ColumnIndex].Name.ToString() == "consulta")
-            {
-                if (true)   // dgv_GRE_est.Rows[e.RowIndex].Cells[e.ColumnIndex].ReadOnly == false 
-                {
-                    if (dgv_GRE_est.Rows[e.RowIndex].Cells[6].Value.ToString() == "0" ||
-                        dgv_GRE_est.Rows[e.RowIndex].Cells[6].Value.ToString().Trim() == "")
-                    {
-                        dgv_GRE_est.Rows[e.RowIndex].Cells[8].ReadOnly = true;
-                        dgv_GRE_est.Rows[e.RowIndex].Cells[9].ReadOnly = true;
-                        consultaE(dgv_GRE_est.Rows[e.RowIndex].Cells[13].Value.ToString(), e.RowIndex);
-                    }
-                }
-            }
-            if (dgv_GRE_est.Columns[e.ColumnIndex].Name.ToString() == "pdf")                    // columna PDF
-            {
-                if (dgv_GRE_est.Rows[e.RowIndex].Cells[6].Value.ToString() == "1")
-                {
-                    string urlPdf = dgv_GRE_est.Rows[e.RowIndex].Cells[12].Value.ToString(); 
-                    System.Diagnostics.Process.Start(urlPdf);
-                }
-            }
-            if (dgv_GRE_est.Columns[e.ColumnIndex].Name.ToString() == "cdr")                    // columna CDR
-            {
-                if (dgv_GRE_est.Rows[e.RowIndex].Cells[6].Value.ToString() == "1")
-                {
-                    string cdrbyte = dgv_GRE_est.Rows[e.RowIndex].Cells[11].Value.ToString();
-                    string serie = dgv_GRE_est.Rows[e.RowIndex].Cells[1].Value.ToString().Substring(0, 4);
-                    string corre = dgv_GRE_est.Rows[e.RowIndex].Cells[1].Value.ToString().Substring(5, 8);
-                    _E.convierteCDR(cdrbyte, serie, corre, rutatxt);
-                }
-            }
-            if (dgv_GRE_est.Columns[e.ColumnIndex].Name.ToString() == "iTK")
-            {
-                imprime(dgv_GRE_est.Rows[e.RowIndex].Cells[1].Value.ToString().Substring(0, 4),
-                        dgv_GRE_est.Rows[e.RowIndex].Cells[1].Value.ToString().Substring(5, 8));
-            }
-        }
-        private void grid_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)      // no estamos usando porque no sirve
-        {
-            if (e.RowIndex < 0)
-                return;
-            if (e.ColumnIndex < 0)
-                return;
-
-            // pintar una imagen en alguna celda, acá pondremos el icono el pdf y cdr en los respectivos botones
-            if (dgv_GRE_est.Columns[e.ColumnIndex].Name == "pdf")
-            {
-                if (dgv_GRE_est.CurrentRow.Cells[6].Value.ToString() == "1")
-                {
-                    e.Paint(e.CellBounds, DataGridViewPaintParts.All);
-
-                    var w = Properties.Resources.pdf_logo_24x11.Width;
-                    var h = Properties.Resources.pdf_logo_24x11.Height;
-                    var x = e.CellBounds.Left + (e.CellBounds.Width - w) / 2;
-                    var y = e.CellBounds.Top + (e.CellBounds.Height - h) / 2;
-
-                    e.Graphics.DrawImage(Properties.Resources.pdf_logo_24x11, new Rectangle(x, y, w, h));
-                    e.Handled = true;
-                }
-            }
-        }
-        private string consultaE(string ticket, int rowIndex)                                   // consulta estado en Sunat
+        private string consultaE(string ticket, int rowIndex)       // consulta estado en Sunat
         {
             string retorna = "";
 
@@ -2444,6 +2379,69 @@ namespace TransCarga
                     e.Cancel = true;
                 }
             }*/
+        }
+        private void DataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)        // Click en las columnas boton
+        {
+            if (dgv_GRE_est.Columns[e.ColumnIndex].Name.ToString() == "consulta")
+            {
+                if (true)   // dgv_GRE_est.Rows[e.RowIndex].Cells[e.ColumnIndex].ReadOnly == false 
+                {
+                    if (dgv_GRE_est.Rows[e.RowIndex].Cells[6].Value.ToString() == "0" ||
+                        dgv_GRE_est.Rows[e.RowIndex].Cells[6].Value.ToString().Trim() == "")
+                    {
+                        dgv_GRE_est.Rows[e.RowIndex].Cells[8].ReadOnly = true;
+                        dgv_GRE_est.Rows[e.RowIndex].Cells[9].ReadOnly = true;
+                        consultaE(dgv_GRE_est.Rows[e.RowIndex].Cells[13].Value.ToString(), e.RowIndex);
+                    }
+                }
+            }
+            if (dgv_GRE_est.Columns[e.ColumnIndex].Name.ToString() == "pdf")                    // columna PDF
+            {
+                if (dgv_GRE_est.Rows[e.RowIndex].Cells[6].Value.ToString() == "1")
+                {
+                    string urlPdf = dgv_GRE_est.Rows[e.RowIndex].Cells[12].Value.ToString();
+                    System.Diagnostics.Process.Start(urlPdf);
+                }
+            }
+            if (dgv_GRE_est.Columns[e.ColumnIndex].Name.ToString() == "cdr")                    // columna CDR
+            {
+                if (dgv_GRE_est.Rows[e.RowIndex].Cells[6].Value.ToString() == "1")
+                {
+                    string cdrbyte = dgv_GRE_est.Rows[e.RowIndex].Cells[11].Value.ToString();
+                    string serie = dgv_GRE_est.Rows[e.RowIndex].Cells[1].Value.ToString().Substring(0, 4);
+                    string corre = dgv_GRE_est.Rows[e.RowIndex].Cells[1].Value.ToString().Substring(5, 8);
+                    _E.convierteCDR(cdrbyte, serie, corre, rutatxt);
+                }
+            }
+            if (dgv_GRE_est.Columns[e.ColumnIndex].Name.ToString() == "iTK")
+            {
+                imprime(dgv_GRE_est.Rows[e.RowIndex].Cells[1].Value.ToString().Substring(0, 4),
+                        dgv_GRE_est.Rows[e.RowIndex].Cells[1].Value.ToString().Substring(5, 8));
+            }
+        }
+        private void grid_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)      // no estamos usando porque no sirve
+        {
+            if (e.RowIndex < 0)
+                return;
+            if (e.ColumnIndex < 0)
+                return;
+
+            // pintar una imagen en alguna celda, acá pondremos el icono el pdf y cdr en los respectivos botones
+            if (dgv_GRE_est.Columns[e.ColumnIndex].Name == "pdf")
+            {
+                if (dgv_GRE_est.CurrentRow.Cells[6].Value.ToString() == "1")
+                {
+                    e.Paint(e.CellBounds, DataGridViewPaintParts.All);
+
+                    var w = Properties.Resources.pdf_logo_24x11.Width;
+                    var h = Properties.Resources.pdf_logo_24x11.Height;
+                    var x = e.CellBounds.Left + (e.CellBounds.Width - w) / 2;
+                    var y = e.CellBounds.Top + (e.CellBounds.Height - h) / 2;
+
+                    e.Graphics.DrawImage(Properties.Resources.pdf_logo_24x11, new Rectangle(x, y, w, h));
+                    e.Handled = true;
+                }
+            }
         }
         #endregion
 
