@@ -234,7 +234,7 @@ form egresosdep, registros en dolares salen con 0 en total soles ...............
 form ingresosv, registros en dolares salen con 0 en total soles .................................... ok 07/06/2021 - 22:22
 form planicarga, permitir re-abrir un manifiesto si es del local y es de la fecha .................. ok 08/06/2021
 form guiati_a, agregar check para retirar datos de manifiesto a una guía nueva ..................... ok 09/06/2021
-Trigger update cabguiai, al anular GR debe "desmanifestar" automaticamente si planlla esta abierta . ok 09/06/2021
+Trigger update cabguiar, al anular GR debe "desmanifestar" automaticamente si planlla esta abierta . ok 09/06/2021
 form egresosdep, validar que se graben los campos codtegr y tipdoco ................................ ok 10/06/2021
 form guiati_a, arreglar anulacion de guias, que se borre automaticamente de la planilla............. ok 10/06/2021
 form egresosdep, no se debe permitir medios de pago distintos a efectivo ........................... ok 11/06/2021    El cuadre de caja es EFECTIVO
@@ -248,7 +248,7 @@ form guiati_a, validar en modo NUEVO el numero de guía (corrección en libreria
 form repsoper, agregar impresion completa y simple en seguimiento de guias ......................... ok 16/06/2021
 form repsoper, pestaña "servicio por cliente" agregar busqueda por nombre .......................... ok 17/06/2021
 form egresosdep, no deja grabar operaciones en dolares ............................................. ok 23/06/2021
-form planicarga, retira una guia de manifiesto, pero no ingresa manualmente en otra ................ ok 23/06/2021 - se agrego codigo para borrar campos en cabguiai y controlg
+form planicarga, retira una guia de manifiesto, pero no ingresa manualmente en otra ................ ok 23/06/2021 - se agrego codigo para borrar campos en cabguiar y controlg
 form planicarga, habilitar que se pueda re abrir hasta el día anterior ............................. ok 24/06/2021
 formato CR planilla de carga 4, remit, destin, flete y saldo ....................................... ok 25/06/2021 - plancarga4
 form cobranzas, autoseleccionar medio pago efectivo en modo NUEVO .................................. ok 25/06/2021
@@ -387,7 +387,7 @@ form repsventas, arreglar problemas de columnas en las grillas .................
 form facelect, problema al generar el txt cuando las guias es 9 .................................... ok 04/05/2023
 form planicarga, problema con agregar guias en edición de manifiestos .............................. ok 05/05/2023
 Tabla cabplacar, agregar campos dnichofer,dniayudante .............................................. OK 22/05/2023 
-form guiati_e, se agrego check Carga única, falta agregar en tabla y Grabar(),jalaoc() ............. ok 22/05/2023 (cabguiai.marca1) -> carga unica = 1, normal = 0
+form guiati_e, se agrego check Carga única, falta agregar en tabla y Grabar(),jalaoc() ............. ok 22/05/2023 (cabguiar.marca1) -> carga unica = 1, normal = 0
 form guiati_e, agregar opción SFS V.1.9 de sunat ................................................... ok 22/05/2023 
 form planicarga, agregar campos para dni del chofer y ayudante ..................................... ok 24/05/2023
 form ayuda3, busqueda de dni en el caso de planicarga, dnis de choferes en cabrrhh ................. ok 24/05/2023
@@ -412,10 +412,11 @@ form facelect, agregar opcion factSunat a los metodos de gestión:
 	- Fact. con detracción en dólares al contado ...................................................	las detracciones solo afectan a las Facturas
 	- Fact. con detracción en dólares al crédito 1 cuota ...........................................	las detracciones solo afectan a las Facturas
 form repsoper, arreglar boton CDR y PDF, no estan en su columna correcta ........................... ok 21/06/2023
-
+form guiari_e, desarrollo del form, guía de remisión REMITENTE ..................................... 
 Formatos jrxml de fcturas y boletas estándares multimoneda y con/sin detracción, contado/credito ... 
 form facelect, agregar opciones de cargas únicas tipo soya:
 	- Facturas cargas únicas "tipo soya" en soles al crédito 1 cuota ............................... 
 	- Facturas cargas únicas "tipo soya" en dólares al crédito 1 cuota ............................. 
+
 form facelect, opción FACT.DIRECTA desde sistema del contribuyente a los metodos de gestión:
 	- F y B normales, sin detracción en soles al contado ........................................... 

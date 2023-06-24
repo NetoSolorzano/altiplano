@@ -2927,7 +2927,7 @@ namespace TransCarga
                     }
                     else
                     {
-                        // actualizamos los campos de la tabla cabguiai
+                        // actualizamos los campos de la tabla 
                         string actua = "insert into adifactu (idc,nticket,fticket,estadoS,cdr,cdrgener) values (@idc,@nti,@fti,@est,@cdrt,@cdrg)";
                         using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
                         {

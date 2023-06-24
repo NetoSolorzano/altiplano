@@ -521,7 +521,15 @@ namespace TransCarga
         }      
         private void vic_registro_Click(object sender, EventArgs e)         // Guías Remisión Remitente
         {
-            MessageBox.Show("Form Guía de Remisión de Remitente", "Otoño 2021", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            //MessageBox.Show("Form Guía de Remisión de Remitente", "Otoño 2021", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            guiari_e fvc = new guiari_e();
+            fvc.TopLevel = false;
+            fvc.Parent = this;
+            pn_centro.Controls.Add(fvc);
+            fvc.Location = new Point((pn_centro.Width - fvc.Width) / 2, (pn_centro.Height - fvc.Height) / 2);
+            fvc.Anchor = AnchorStyles.None;
+            fvc.Show();
+            fvc.BringToFront();
         }
         private void vsc_registro_Click(object sender, EventArgs e)         // Planilla de carga
         {

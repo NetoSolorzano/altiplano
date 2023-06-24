@@ -225,6 +225,12 @@
       <DependentUpon>gr_ind_trans_2.rpt</DependentUpon>
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="guiari_e.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="guiari_e.designer.cs">
+      <DependentUpon>guiari_e.cs</DependentUpon>
+    </Compile>
     <Compile Include="guiati.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -492,6 +498,9 @@
     <EmbeddedResource Include="gr_ind_trans_2.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>gr_ind_trans_2.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="guiari_e.resx">
+      <DependentUpon>guiari_e.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="guiati.resx">
       <DependentUpon>guiati.cs</DependentUpon>
