@@ -1772,7 +1772,7 @@ namespace TransCarga
                 string rutalocal = System.IO.Path.GetDirectoryName(Application.ExecutablePath);
                 string[] parametros = new string[] { rutaxml, Program.ruc, tx_serie.Text + "-" + tx_numero.Text };
                 ProcessStartInfo p = new ProcessStartInfo();
-                p.Arguments = rutaxml + " " + Program.ruc + " " + tx_serie.Text + "-" + tx_numero.Text + " " + firmDocElec + " " + rutaCertifc + " " + claveCertif;
+                p.Arguments = rutaxml + " " + Program.ruc + " " + tx_serie.Text + "-" + tx_numero.Text + " " + firmDocElec + " " + rutaCertifc + " " + claveCertif + " " + "31";
                 p.FileName = @rutalocal + "/xmlGRE/xmlGRE.exe";
                 var proc = Process.Start(p) ;
                 proc.WaitForExit();

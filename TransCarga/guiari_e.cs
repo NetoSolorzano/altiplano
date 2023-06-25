@@ -655,7 +655,7 @@ namespace TransCarga
             //    return;
             //}
         }
-        private void jalapg(string numpre)      // jala datos de la pre guia
+        private void jalapg(string numpre)          // jala datos de la pre guia
         {
             using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
             {
@@ -734,7 +734,7 @@ namespace TransCarga
                 cmb_mon.SelectedValue = tx_dat_mone.Text;
             }
         }
-        private void jaladet(string idr)        // jala el detalle
+        private void jaladet(string idr)            // jala el detalle
         {
             string jalad = "select id,serguir,numguir,cantprodi,unimedpro,codiprodi,REPLACE(descprodi,@glodet,'') AS descprodi,round(pesoprodi,1),precprodi,totaprodi " +
                 "from detguiar where idc=@idr";
@@ -850,7 +850,7 @@ namespace TransCarga
             dacu.Dispose();
             conn.Close();
         }
-        private bool valiGri()                  // valida filas completas en la grilla
+        private bool valiGri()                      // valida filas completas en la grilla
         {
             bool retorna = true;
             /*
@@ -882,7 +882,7 @@ namespace TransCarga
             */
             return retorna;
         }
-        private bool valiVars()                 // valida existencia de datos en variables del form
+        private bool valiVars()                         // valida existencia de datos en variables del form
         {
             bool retorna = true;
             if (usa_gre != "S")
@@ -987,7 +987,7 @@ namespace TransCarga
             }
             return retorna;
         }
-        private bool correlativo()              // coje y aumenta en 1 el correlativo
+        private bool correlativo()                          // coje y aumenta en 1 el correlativo
         {
             bool retorna = false;
             string todo = "corre_serie";
@@ -1021,7 +1021,7 @@ namespace TransCarga
             }
             return retorna;
         }
-        private void valiruc(object sender)     // valida los ruc del documento origen
+        private void valiruc(object sender)                     // valida los ruc del documento origen
         {
             TextBox campo = (TextBox)sender;
 
@@ -1737,7 +1737,7 @@ namespace TransCarga
                 string rutalocal = System.IO.Path.GetDirectoryName(Application.ExecutablePath);
                 string[] parametros = new string[] { rutaxml, Program.ruc, tx_serie.Text + "-" + tx_numero.Text };
                 ProcessStartInfo p = new ProcessStartInfo();
-                p.Arguments = rutaxml + " " + Program.ruc + " " + tx_serie.Text + "-" + tx_numero.Text + " " + firmDocElec + " " + rutaCertifc + " " + claveCertif;
+                p.Arguments = rutaxml + " " + Program.ruc + " " + tx_serie.Text + "-" + tx_numero.Text + " " + firmDocElec + " " + rutaCertifc + " " + claveCertif + " " + "09";
                 p.FileName = @rutalocal + "/xmlGRE/xmlGRE.exe";
                 var proc = Process.Start(p) ;
                 proc.WaitForExit();
