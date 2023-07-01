@@ -104,7 +104,8 @@ namespace TransCarga
         string despedid2 = "";          // despedida del ticket 2
         string glosa1 = "";             // glosa comprobante final 1
         string glosa2 = "";             // 
-
+        string codtrasli = "";          // codigo de traslado interno entre establacimientos de la misma empresa
+        string codtrasit = "";          // codigo de traslado interno ITINERANTE
         double tiempoT = 0;             // Sunat Webservice - contador EN SEGUNDOS de vigencia del token
         string TokenAct = "";           // Sunat Webservice - Token actual vigente
         TimeSpan horaT;                 // Sunat Webservice - Hora de emisión del token
@@ -141,6 +142,7 @@ namespace TransCarga
         DataTable dttdv = new DataTable();          // tipo documentos guias
         DataTable dtdor = new DataTable();          // tipos de documentos origen 1 de un transporte de mercancia ..segun sunat
         DataTable dtdor2 = new DataTable();         // tipos de documentos origen 2 de un transporte de mercancia ..segun sunat
+        DataTable dtmt = new DataTable();           // motivos de traslado 
         DataTable tcfe = new DataTable();           // GRT electronica - cabecera
         DataTable tdfe = new DataTable();           // GRT electronica -detalle
         string[] datosR = { "" };                   // datos del remitente si existe en la B.D.
@@ -318,6 +320,14 @@ namespace TransCarga
             chk_man.Checked = false;        // checked=false ==> si se manifiesta, checked=true NO se manifiesta
             chk_man.Enabled = false;        // solo se habilita en modo NUEVO y cuando el destino de la GR tiene manifiesto
             rb_kg.Checked = true;
+            tx_dat_tdRem.Text = vtc_ruc;
+            cmb_docRem.SelectedValue = vtc_ruc;
+            cmb_docRem_SelectionChangeCommitted(null, null);
+            tx_numDocRem.Text = Program.ruc;
+            cmb_docRem.Enabled = false;
+            tx_numDocRem.Enabled = false;
+            tx_nomRem.Text = Program.cliente;
+            tx_nomRem.Enabled = false;
         }
         private void jalainfo()                 // obtiene datos de imagenes y variables
         {
@@ -435,6 +445,11 @@ namespace TransCarga
                                         if (lite.GetString(2).ToString() == "desped1") despedida = lite.GetString(3).ToString();          // glosa despedida del ticket 1
                                         if (lite.GetString(2).ToString() == "desped2") despedid2 = lite.GetString(3).ToString();
                                     }
+                                    if (lite.GetString(1).ToString() == "traslado")
+                                    {
+                                        if (lite.GetString(2).ToString() == "codTraInt") codtrasli = lite.GetString(3).ToString();          // codigo interno de traslado entre establecimientos de una misma empresa
+                                        if (lite.GetString(2).ToString() == "codTraIti") codtrasit = lite.GetString(3).ToString();          // codigo interno de traslado ITINERANTE
+                                    }
                                 }
                                 if (lite.GetString(0).ToString() == "interno")              // codigo enlace interno de anulacion del cliente con en BD A0
                                 {
@@ -487,13 +502,13 @@ namespace TransCarga
                         "a.tipmongri,a.tipcamgri,a.subtotgri,a.igvgri,a.totgri,a.totpag,a.salgri,a.estadoser,a.impreso," +
                         "a.frase1,a.frase2,a.fleteimp,a.tipintrem,a.tipintdes,a.tippagpre,a.seguroE,a.userc,a.userm,a.usera," +
                         "a.serplagri,a.numplagri,a.plaplagri,a.carplagri,a.autplagri,a.confvegri,a.breplagri,a.proplagri," +
-                        "ifnull(p.nomchofe,'') as chocamcar,'' as fecplacar,'' as fecdocvta,'' as tipdocvta," +    // ifnull(b.fecplacar,'') as fecplacar,ifnull(b.fecdocvta,'') as fecdocvta,ifnull(f.descrizionerid,'') as tipdocvta,
+                        "ifnull(p.nomchofe,'') as chocamcar,a.fechplani as fecplacar,'' as fecdocvta,'' as tipdocvta," +    // ifnull(b.fecplacar,'') as fecplacar,ifnull(b.fecdocvta,'') as fecdocvta,ifnull(f.descrizionerid,'') as tipdocvta,
                         "'' as serdocvta,'' as numdocvta,'' as codmonvta," +    // ifnull(b.serdocvta,'') as serdocvta,ifnull(b.numdocvta,'') as numdocvta,ifnull(b.codmonvta,'') as codmonvta,
                         "0 as totdocvta,'' as codmonpag,0 as totpagado,0 as saldofina," +       //ifnull(b.totdocvta,0) as totdocvta,ifnull(b.codmonpag,'') as codmonpag,ifnull(b.totpagado,0) as totpagado,ifnull(b.saldofina,0) as saldofina,
-                        "ifnull(b.feculpago,'') as feculpago,ifnull(b.estadoser,'') as estadoser,ifnull(c.razonsocial,'') as razonsocial,a.grinumaut," +
+                        "'' as feculpago,ifnull(a.estadoser,'') as estadoser,ifnull(c.razonsocial,'') as razonsocial,a.grinumaut," +        // ifnull(b.feculpago,'') as feculpago,ifnull(b.estadoser,'') as estadoser,
                         "ifnull(d.marca,'') as marca,ifnull(d.modelo,'') as modelo,ifnull(r.marca,'') as marCarret,ifnull(r.confve,'') as confvCarret,ifnull(r.autor1,'') as autCarret," +
                         "ifnull(er.numerotel1,'') as telrem,ifnull(ed.numerotel1,'') as teldes,ifnull(t.nombclt,'') as clifact," +
-                        "a.marca_gre,a.tidocor,a.rucDorig,a.lpagop,a.pesoKT,a.tidocor2,a.rucDorig2,a.docsremit2,a.marca1," +
+                        "a.marca_gre,a.tidocor,a.rucDorig,a.lpagop,a.pesoKT,a.tidocor2,a.rucDorig2,a.docsremit2,a.marca1,a.codMTras,a.desMTras," +
                         "ifnull(ad.nticket,'') as nticket,ifnull(ad.estadoS,'') as estadoS, ifnull(ad.cdr,'') as cdr,ifnull(ad.cdrgener,'') as cdrgener,ifnull(ad.textoQR,'') as textoQR " +
                         "from cabguiar a " +
                         "left join adiguiar ad on ad.idg=a.id " +
@@ -585,6 +600,8 @@ namespace TransCarga
                             tx_dat_docOr2.Text = dr.GetString("tidocor2");
                             tx_rucEorig2.Text = dr.GetString("rucDorig2");
                             if (dr.GetString("marca1") == "1") chk_cunica.Checked = true;
+                            tx_dat_motras.Text = dr.GetString("codMTras");
+                            tx_motras.Text = dr.GetString("desMTras");
                             //
                             if (dr.GetString("pesoKT") == "K") rb_kg.Checked = true;
                             else rb_tn.Checked = true;
@@ -605,11 +622,13 @@ namespace TransCarga
                             cmb_destino.SelectedValue = tx_dat_locdes.Text;
                             cmb_destino_SelectionChangeCommitted(null, null);
                             cmb_docRem.SelectedValue = tx_dat_tdRem.Text;
+                            cmb_docRem_SelectionChangeCommitted(null, null);
                             string[] du_remit = lib.retDPDubigeo(tx_ubigRtt.Text);
                             tx_dptoRtt.Text = du_remit[0];
                             tx_provRtt.Text = du_remit[1];
                             tx_distRtt.Text = du_remit[2];
                             cmb_docDes.SelectedValue = tx_dat_tDdest.Text;
+                            cmb_docDes_SelectionChangeCommitted(null, null);
                             string[] du_desti = lib.retDPDubigeo(tx_ubigDtt.Text);
                             tx_dptoDrio.Text = du_desti[0];
                             tx_proDrio.Text = du_desti[1];
@@ -617,6 +636,8 @@ namespace TransCarga
                             tx_dirDrio.Text = dr.GetString("diredegri");
                             cmb_mon.SelectedValue = tx_dat_mone.Text;
                             tx_tipcam.Text = dr.GetString("tipcamgri");
+                            cmb_motras.SelectedValue = tx_dat_motras.Text;
+                            cmb_motras_SelectionChangeCommitted(null, null);
                         }
                         else
                         {
@@ -844,6 +865,17 @@ namespace TransCarga
                     cmb_docorig2.ValueMember = "idcodice";
                 }
             }
+            // datos para el combo de motivo de traslado
+            cmb_motras.Items.Clear();
+            MySqlCommand cmotras = new MySqlCommand("select idcodice,descrizionerid,codigo,codsunat from desc_mtr where numero=@bloq", conn);
+            cmotras.Parameters.AddWithValue("@bloq", 1);
+            dacu = new MySqlDataAdapter(cmotras);
+            dtmt.Clear();
+            dacu.Fill(dtmt);
+            cmb_motras.DataSource = dtmt;
+            cmb_motras.DisplayMember = "descrizionerid";
+            cmb_motras.ValueMember = "idcodice";
+            //
             cmo.Dispose();
             ccl.Dispose();
             cdu.Dispose();
@@ -1465,12 +1497,12 @@ namespace TransCarga
             using (SqliteConnection cnx = new SqliteConnection(CadenaConexion))
             {
                 cnx.Open();
-                string sqlborra = "DROP TABLE IF EXISTS dt_cabgre; DROP TABLE IF EXISTS dt_detgre";
+                string sqlborra = "DROP TABLE IF EXISTS dt_cabgrer; DROP TABLE IF EXISTS dt_detgrer";
                 using (SqliteCommand cmdB = new SqliteCommand(sqlborra, cnx))
                 {
                     cmdB.ExecuteNonQuery();
                 }
-                string sqlTabla = "create table dt_cabgre (" +
+                string sqlTabla = "create table dt_cabgrer (" +
                     // cabecera
                     "id integer primary key autoincrement, " +
                     "EmisRuc varchar(11), " +           // ruc del emisor de la guía
@@ -1556,14 +1588,17 @@ namespace TransCarga
                     "DirParUbi varchar(6), " +
                     "DirParDir varchar(200), " +
                     "DirLLeUbi varchar(6), " +
-                    "DirLLeDir varchar(200) " +
+                    "DirLLeDir varchar(200), " +
+                    "MotTrasCo varchar(2), " +          // codigo sunat motivo del traslado
+                    "MotTrasDe varchar(200), " +          // detalle del motivo del traslado
+                    "CodModTra varchar(2)" +            // código sunat modalidad de transporte
                     ")";
                 using (SqliteCommand cmd = new SqliteCommand(sqlTabla, cnx))
                 {
                     cmd.ExecuteNonQuery();
                 }
                 // ********************* DETALLE ************************ //
-                sqlTabla = "create table dt_detgre (" +
+                sqlTabla = "create table dt_detgrer (" +
                     "id integer primary key autoincrement, " +
                     "NumGuia varchar(12), " +
                     "clinea integer, " +
@@ -1586,140 +1621,146 @@ namespace TransCarga
             {
                 cnx.Open();
                 // CABECERA
-                string metela = "insert into dt_cabgre (" +
-                    "EmisRuc,EmisNom,EmisUbi,EmisDir,EmisDep,EmisPro,EmisDis,EmisUrb,EmisPai,EmisCor,NumGuia,FecEmis,HorEmis,CodGuia,NomGuia,CantBul,PesoTot,CodUnid,FecIniT,CargaUn," +
-                    "DocRelnu1,DocRelti1,DocRelnr1,DocRelcs1,DocRelnm1,DocRelnu2,DocRelti2,DocRelnr2,DocRelcs2,DocRelnm2," +
-                    "DstTipdoc,DstNomTdo,DstNumdoc,DstNombre,DstDirecc,DstUbigeo," +
-                    "RemTipdoc,RemNomTdo,RemNumdoc,RemNombre,RemDirecc,RemUbigeo," +
-                    "PagTipdoc,PagNomTip,PagNumdoc,PagNombre," +
-                    "SConTipdo,SConNomTi,SConNumdo,SconNombr," +
-                    "EnvPlaca1,EnvAutor1,EnvRegis1,EnvCodEn1,EnvNomEn1,EnvPlaca2,EnvAutor2,EnvRegis2,EnvCodEn2,EnvNomEn2," +
-                    "ChoTipDi1,ChoNumDi1,ChoNomTi1,ChoNombr1,ChoApell1,ChoLicen1,ChoTipDi2,ChoNumDi2,ChoNomTi2,ChoNombr2,ChoApell2,ChoLicen2," +
-                    "DirParUbi,DirParDir,DirLLeUbi,DirLLeDir) " +
-                    "values (" +
-                    "@EmisRuc,@EmisNom,@EmisUbi,@EmisDir,@EmisDep,@EmisPro,@EmisDis,@EmisUrb,@EmisPai,@EmisCor,@NumGuia,@FecEmis,@HorEmis,@CodGuia,@NomGuia,@CantBul,@PesoTot,@CodUnid,@FecIniT,@CargaUn," +
-                    "@DocRelnu1,@DocRelti1,@DocRelnr1,@DocRelcs1,@DocRelnm1,@DocRelnu2,@DocRelti2,@DocRelnr2,@DocRelcs2,@DocRelnm2," +
-                    "@DstTipdoc,@DstNomTdo,@DstNumdoc,@DstNombre,@DstDirecc,@DstUbigeo," +
-                    "@RemTipdoc,@RemNomTdo,@RemNumdoc,@RemNombre,@RemDirecc,@RemUbigeo," +
-                    "@PagTipdoc,@PagNomTip,@PagNumdoc,@PagNombre," +
-                    "@SConTipdo,@SConNomTi,@SConNumdo,@SconNombr," +
-                    "@EnvPlaca1,@EnvAutor1,@EnvRegis1,@EnvCodEn1,@EnvNomEn1,@EnvPlaca2,@EnvAutor2,@EnvRegis2,@EnvCodEn2,@EnvNomEn2," +
-                    "@ChoTipDi1,@ChoNumDi1,@ChoNomTi1,@ChoNombr1,@ChoApell1,@ChoLicen1,@ChoTipDi2,@ChoNumDi2,@ChoNomTi2,@ChoNombr2,@ChoApell2,@ChoLicen2," +
-                    "@DirParUbi,@DirParDir,@DirLLeUbi,@DirLLeDir)";
+                    string metela = "insert into dt_cabgrer (" +
+                        "EmisRuc,EmisNom,EmisUbi,EmisDir,EmisDep,EmisPro,EmisDis,EmisUrb,EmisPai,EmisCor,NumGuia,FecEmis,HorEmis,CodGuia,NomGuia,CantBul,PesoTot,CodUnid,FecIniT,CargaUn," +
+                        "DocRelnu1,DocRelti1,DocRelnr1,DocRelcs1,DocRelnm1,DocRelnu2,DocRelti2,DocRelnr2,DocRelcs2,DocRelnm2," +
+                        "DstTipdoc,DstNomTdo,DstNumdoc,DstNombre,DstDirecc,DstUbigeo," +
+                        "RemTipdoc,RemNomTdo,RemNumdoc,RemNombre,RemDirecc,RemUbigeo," +
+                        "SConTipdo,SConNomTi,SConNumdo,SconNombr," +
+                        "EnvPlaca1,EnvAutor1,EnvRegis1,EnvCodEn1,EnvNomEn1,EnvPlaca2,EnvAutor2,EnvRegis2,EnvCodEn2,EnvNomEn2," +
+                        "ChoTipDi1,ChoNumDi1,ChoNomTi1,ChoNombr1,ChoApell1,ChoLicen1,ChoTipDi2,ChoNumDi2,ChoNomTi2,ChoNombr2,ChoApell2,ChoLicen2," +
+                        "DirParUbi,DirParDir,DirLLeUbi,DirLLeDir,MotTrasCo,MotTrasDe,CodModTra) " +
+                        "values (" +
+                        "@EmisRuc,@EmisNom,@EmisUbi,@EmisDir,@EmisDep,@EmisPro,@EmisDis,@EmisUrb,@EmisPai,@EmisCor,@NumGuia,@FecEmis,@HorEmis,@CodGuia,@NomGuia,@CantBul,@PesoTot,@CodUnid,@FecIniT,@CargaUn," +
+                        "@DocRelnu1,@DocRelti1,@DocRelnr1,@DocRelcs1,@DocRelnm1,@DocRelnu2,@DocRelti2,@DocRelnr2,@DocRelcs2,@DocRelnm2," +
+                        "@DstTipdoc,@DstNomTdo,@DstNumdoc,@DstNombre,@DstDirecc,@DstUbigeo," +
+                        "@RemTipdoc,@RemNomTdo,@RemNumdoc,@RemNombre,@RemDirecc,@RemUbigeo," +
+                        "@SConTipdo,@SConNomTi,@SConNumdo,@SconNombr," +
+                        "@EnvPlaca1,@EnvAutor1,@EnvRegis1,@EnvCodEn1,@EnvNomEn1,@EnvPlaca2,@EnvAutor2,@EnvRegis2,@EnvCodEn2,@EnvNomEn2," +
+                        "@ChoTipDi1,@ChoNumDi1,@ChoNomTi1,@ChoNombr1,@ChoApell1,@ChoLicen1,@ChoTipDi2,@ChoNumDi2,@ChoNomTi2,@ChoNombr2,@ChoApell2,@ChoLicen2," +
+                        "@DirParUbi,@DirParDir,@DirLLeUbi,@DirLLeDir,@MotTrasCo,@MotTrasDe,@CodModTra)";
+                //                        "PagTipdoc,PagNomTip,PagNumdoc,PagNombre," +
+                //                        "@PagTipdoc,@PagNomTip,@PagNumdoc,@PagNombre," +
                 using (SqliteCommand cmd = new SqliteCommand(metela, cnx))
-                {
-                    // cabecera
-                    cmd.Parameters.AddWithValue("@EmisRuc", Program.ruc);                 // "20430100344"
-                    cmd.Parameters.AddWithValue("@EmisNom", Program.cliente);             // "J&L Technology SAC"
-                    cmd.Parameters.AddWithValue("@EmisUbi", Program.ubidirfis);           // "070101"
-                    cmd.Parameters.AddWithValue("@EmisDir", Program.dirfisc);             // "Calle Sigma Mz.A19 Lt.16 Sector I"
-                    cmd.Parameters.AddWithValue("@EmisDep", Program.depfisc);             // "Callao"
-                    cmd.Parameters.AddWithValue("@EmisPro", Program.provfis);             // "Callao"
-                    cmd.Parameters.AddWithValue("@EmisDis", Program.distfis);             // "Callao"
-                    cmd.Parameters.AddWithValue("@EmisUrb", "-");                         // "Bocanegra"
-                    cmd.Parameters.AddWithValue("@EmisPai", "PE");                        // país del emisor
-                    cmd.Parameters.AddWithValue("@EmisCor", Program.mailclte);            // "neto.solorzano@solorsoft.com"
-                    cmd.Parameters.AddWithValue("@NumGuia", tx_serie.Text + "-" + tx_numero.Text);         // "V001-98000006"
-                    cmd.Parameters.AddWithValue("@FecEmis", tx_fechope.Text.Substring(6, 4) + "-" + tx_fechope.Text.Substring(3, 2) + "-" + tx_fechope.Text.Substring(0, 2));              // "2023-05-19"
-                    cmd.Parameters.AddWithValue("@HorEmis", DateTime.Now.Hour + ":" + DateTime.Now.Minute + ":" + DateTime.Now.Second);  // "12:21:13"
-                    cmd.Parameters.AddWithValue("@CodGuia", "09");
-                    cmd.Parameters.AddWithValue("@NomGuia", "GUIA REMITENTE");
-                    cmd.Parameters.AddWithValue("@CantBul", 1);
-                    cmd.Parameters.AddWithValue("@PesoTot", tx_totpes.Text);              // 30
-                    cmd.Parameters.AddWithValue("@CodUnid", (rb_tn.Checked == true) ? "KGM" : "TNE");           // "KGM"
-                    cmd.Parameters.AddWithValue("@FecIniT", tx_pla_fech.Text);          // "2023-05-19"
-                    cmd.Parameters.AddWithValue("@CargaUn", (chk_cunica.Checked == true) ? "true" : "false");   // "true"
-                    // documentos relacionados
-                    cmd.Parameters.AddWithValue("@DocRelnu1", tx_docsOr.Text);            // "001-00054323" OJO, me esta validando 12 caracteres = SSS-NNNNNNNN | debería ser 13, ver en producción
-                    cmd.Parameters.AddWithValue("@DocRelti1", tx_dat_dorigS.Text);        // "09"
-                    cmd.Parameters.AddWithValue("@DocRelnr1", tx_rucEorig.Text);          // "20430100344"
-                    cmd.Parameters.AddWithValue("@DocRelcs1", "6");                       // sunat 6 = tipo documento ruc
-                    cmd.Parameters.AddWithValue("@DocRelnm1", cmb_docorig.Text.ToUpper());    // "GUIA DE REMISION REMITENTE"
-                    cmd.Parameters.AddWithValue("@DocRelnu2", tx_docsOr2.Text);
-                    cmd.Parameters.AddWithValue("@DocRelti2", tx_dat_dorigS2.Text);
-                    cmd.Parameters.AddWithValue("@DocRelnr2", tx_rucEorig2.Text);
-                    cmd.Parameters.AddWithValue("@DocRelcs2", "6");                      // como se pide el ruc del emisor  entonces el tipo es 6
-                    cmd.Parameters.AddWithValue("@DocRelnm2", cmb_docorig2.Text);
-                    // datos del destinatario
-                    cmd.Parameters.AddWithValue("@DstTipdoc", tx_dat_codsu.Text);       // "1"
-                    cmd.Parameters.AddWithValue("@DstNomTdo", tx_dat_nomcsd.Text);      // "Documento Nacional de Identidad"
-                    cmd.Parameters.AddWithValue("@DstNumdoc", tx_numDocDes.Text);       // "09314486"
-                    cmd.Parameters.AddWithValue("@DstNombre", tx_nomDrio.Text);
-                    cmd.Parameters.AddWithValue("@DstDirecc", tx_dirDrio.Text);
-                    cmd.Parameters.AddWithValue("@DstUbigeo", tx_ubigDtt.Text);         // "070101"
-                    // datos del remitente
-                    cmd.Parameters.AddWithValue("@RemTipdoc", tx_dat_csrem.Text);
-                    cmd.Parameters.AddWithValue("@RemNomTdo", tx_dat_nomcsr.Text);        // "Documento Nacional de Identidad"
-                    cmd.Parameters.AddWithValue("@RemNumdoc", tx_numDocRem.Text);        // "10401018"
-                    cmd.Parameters.AddWithValue("@RemNombre", tx_nomRem.Text);
-                    cmd.Parameters.AddWithValue("@RemDirecc", tx_dirRem.Text);         // "Bocanegra sector 1"
-                    cmd.Parameters.AddWithValue("@RemUbigeo", tx_ubigRtt.Text);        // "070101"
-                    // datos de quien paga el servicio
-                    if (rb_pOri.Checked == true)        // paga remitente
                     {
-                        cmd.Parameters.AddWithValue("@PagTipdoc", tx_dat_csrem.Text);
-                        cmd.Parameters.AddWithValue("@PagNomTip", tx_dat_nomcsr.Text);
-                        cmd.Parameters.AddWithValue("@PagNumdoc", tx_numDocRem.Text);
-                        cmd.Parameters.AddWithValue("@PagNombre", tx_nomRem.Text);
-                    }
-                    if (rb_pDes.Checked == true)        // paga destinatario
-                    {
-                        cmd.Parameters.AddWithValue("@PagTipdoc", tx_dat_codsu.Text);
-                        cmd.Parameters.AddWithValue("@PagNomTip", tx_dat_nomcsd.Text);
-                        cmd.Parameters.AddWithValue("@PagNumdoc", tx_numDocDes.Text);
-                        cmd.Parameters.AddWithValue("@PagNombre", tx_nomDrio.Text);
-                    }
-                    // datos de transportista 
-                    if (tx_pla_ruc.Text != Program.ruc)     // valida si es carro contratado
-                    {
-                        cmd.Parameters.AddWithValue("@SConTipdo", "6");     // por defecto el tipo es 6 = Ruc
-                        cmd.Parameters.AddWithValue("@SConNomTi", "Registro Unico de Contributentes");
-                        cmd.Parameters.AddWithValue("@SConNumdo", tx_pla_ruc.Text);
-                        cmd.Parameters.AddWithValue("@SconNombr", tx_pla_propiet.Text);
-                    }
-                    else
-                    {
-                        cmd.Parameters.AddWithValue("@SConTipdo", "");
-                        cmd.Parameters.AddWithValue("@SConNomTi", "");
-                        cmd.Parameters.AddWithValue("@SConNumdo", "");
-                        cmd.Parameters.AddWithValue("@SconNombr", "");
-                    }
-                    // datos del envío del (los) camiones, autorizaciones de trackto y carreta
-                    cmd.Parameters.AddWithValue("@EnvPlaca1", tx_pla_placa.Text);        // "F2N714"
-                    cmd.Parameters.AddWithValue("@EnvAutor1", tx_pla_autor.Text);        // Certificado de habilitación
-                    cmd.Parameters.AddWithValue("@EnvRegis1", tx_dat_plaNreg.Text);        // "1550877CNG"
-                    cmd.Parameters.AddWithValue("@EnvCodEn1", "06");
-                    cmd.Parameters.AddWithValue("@EnvNomEn1", "Ministerio de Transportes y Comunicaciones");
-                    cmd.Parameters.AddWithValue("@EnvPlaca2", tx_pla_carret.Text);        // "AYS991"
-                    cmd.Parameters.AddWithValue("@EnvAutor2", tx_aut_carret.Text);        // "15M21028161E"
-                    cmd.Parameters.AddWithValue("@EnvRegis2", tx_dat_carrNreg.Text);      // número de registro/autorización
-                    cmd.Parameters.AddWithValue("@EnvCodEn2", "06");
-                    cmd.Parameters.AddWithValue("@EnvNomEn2", "Ministerio de Transportes y Comunicaciones");
-                    // datos de los choferes
-
-                    cmd.Parameters.AddWithValue("@ChoTipDi1", "1");
-                    cmd.Parameters.AddWithValue("@ChoNumDi1", tx_pla_dniChof.Text);
-                    cmd.Parameters.AddWithValue("@ChoNomTi1", "Documento Nacional de Identidad");
-                    cmd.Parameters.AddWithValue("@ChoNombr1", partidor(tx_pla_nomcho.Text, " ")[0]);        // tx_pla_nomcho.Text
-                    cmd.Parameters.AddWithValue("@ChoApell1", partidor(tx_pla_nomcho.Text, " ")[1]);
-                    cmd.Parameters.AddWithValue("@ChoLicen1", tx_pla_brevet.Text);        // "U46785663"
-                    cmd.Parameters.AddWithValue("@ChoTipDi2", "1");
-                    cmd.Parameters.AddWithValue("@ChoNumDi2", tx_dat_dniC2.Text);
-                    cmd.Parameters.AddWithValue("@ChoNomTi2", "Documento Nacional de Identidad");
-                    cmd.Parameters.AddWithValue("@ChoNombr2", partidor(tx_pla_chofer2.Text, " ")[0]);     // tx_pla_chofer2.Text
-                    cmd.Parameters.AddWithValue("@ChoApell2", partidor(tx_pla_chofer2.Text, " ")[1]);
-                    cmd.Parameters.AddWithValue("@ChoLicen2", tx_pla_brev2.Text);
-                    // datos de direcciones partida y llegada
-                    cmd.Parameters.AddWithValue("@DirParUbi", tx_ubigRtt.Text);         //  "150115"
-                    cmd.Parameters.AddWithValue("@DirParDir", tx_dirRem.Text);
-                    cmd.Parameters.AddWithValue("@DirLLeUbi", tx_ubigDtt.Text);
-                    cmd.Parameters.AddWithValue("@DirLLeDir", tx_dirDrio.Text);
+                        // cabecera
+                        cmd.Parameters.AddWithValue("@EmisRuc", Program.ruc);                 // "20430100344"
+                        cmd.Parameters.AddWithValue("@EmisNom", Program.cliente);             // "J&L Technology SAC"
+                        cmd.Parameters.AddWithValue("@EmisUbi", Program.ubidirfis);           // "070101"
+                        cmd.Parameters.AddWithValue("@EmisDir", Program.dirfisc);             // "Calle Sigma Mz.A19 Lt.16 Sector I"
+                        cmd.Parameters.AddWithValue("@EmisDep", Program.depfisc);             // "Callao"
+                        cmd.Parameters.AddWithValue("@EmisPro", Program.provfis);             // "Callao"
+                        cmd.Parameters.AddWithValue("@EmisDis", Program.distfis);             // "Callao"
+                        cmd.Parameters.AddWithValue("@EmisUrb", "-");                         // "Bocanegra"
+                        cmd.Parameters.AddWithValue("@EmisPai", "PE");                        // país del emisor
+                        cmd.Parameters.AddWithValue("@EmisCor", Program.mailclte);            // "neto.solorzano@solorsoft.com"
+                        cmd.Parameters.AddWithValue("@NumGuia", tx_serie.Text + "-" + tx_numero.Text);         // "V001-98000006"
+                        cmd.Parameters.AddWithValue("@FecEmis", tx_fechope.Text.Substring(6, 4) + "-" + tx_fechope.Text.Substring(3, 2) + "-" + tx_fechope.Text.Substring(0, 2));              // "2023-05-19"
+                        cmd.Parameters.AddWithValue("@HorEmis", lib.Right("0" + DateTime.Now.Hour,2) + ":" + lib.Right("0" + DateTime.Now.Minute,2) + ":" + lib.Right("0" + DateTime.Now.Second,2));  // DateTime.Now.Hour + ":" + DateTime.Now.Minute + ":" + DateTime.Now.Second
+                        cmd.Parameters.AddWithValue("@CodGuia", "09");
+                        cmd.Parameters.AddWithValue("@NomGuia", "GUIA REMISION REMITENTE");
+                        cmd.Parameters.AddWithValue("@CantBul", 1);
+                        cmd.Parameters.AddWithValue("@PesoTot", tx_totpes.Text);              // 30
+                        cmd.Parameters.AddWithValue("@CodUnid", (rb_tn.Checked == true) ? "TNE" : "KGM");           // "KGM"
+                        cmd.Parameters.AddWithValue("@FecIniT", tx_pla_fech.Text);          // "2023-05-19"
+                        cmd.Parameters.AddWithValue("@CargaUn", (chk_cunica.Checked == true) ? "true" : "false");   // "true"
+                        // documentos relacionados
+                        cmd.Parameters.AddWithValue("@DocRelnu1", tx_docsOr.Text);            // "001-00054323" OJO, me esta validando 12 caracteres = SSS-NNNNNNNN | debería ser 13, ver en producción
+                        cmd.Parameters.AddWithValue("@DocRelti1", tx_dat_dorigS.Text);        // "09"
+                        cmd.Parameters.AddWithValue("@DocRelnr1", tx_rucEorig.Text);          // "20430100344"
+                        cmd.Parameters.AddWithValue("@DocRelcs1", "6");                       // sunat 6 = tipo documento ruc
+                        cmd.Parameters.AddWithValue("@DocRelnm1", cmb_docorig.Text.ToUpper());    // "GUIA DE REMISION REMITENTE"
+                        cmd.Parameters.AddWithValue("@DocRelnu2", tx_docsOr2.Text);
+                        cmd.Parameters.AddWithValue("@DocRelti2", tx_dat_dorigS2.Text);
+                        cmd.Parameters.AddWithValue("@DocRelnr2", tx_rucEorig2.Text);
+                        cmd.Parameters.AddWithValue("@DocRelcs2", "6");                      // como se pide el ruc del emisor  entonces el tipo es 6
+                        cmd.Parameters.AddWithValue("@DocRelnm2", cmb_docorig2.Text);
+                        // datos del destinatario
+                        cmd.Parameters.AddWithValue("@DstTipdoc", tx_dat_codsu.Text);       // "1"
+                        cmd.Parameters.AddWithValue("@DstNomTdo", tx_dat_nomcsd.Text);      // "Documento Nacional de Identidad"
+                        cmd.Parameters.AddWithValue("@DstNumdoc", tx_numDocDes.Text);       // "09314486"
+                        cmd.Parameters.AddWithValue("@DstNombre", tx_nomDrio.Text);
+                        cmd.Parameters.AddWithValue("@DstDirecc", tx_dirDrio.Text);
+                        cmd.Parameters.AddWithValue("@DstUbigeo", tx_ubigDtt.Text);         // "070101"
+                        // datos del remitente
+                        cmd.Parameters.AddWithValue("@RemTipdoc", tx_dat_csrem.Text);
+                        cmd.Parameters.AddWithValue("@RemNomTdo", tx_dat_nomcsr.Text);        // "Documento Nacional de Identidad"
+                        cmd.Parameters.AddWithValue("@RemNumdoc", tx_numDocRem.Text);        // "10401018"
+                        cmd.Parameters.AddWithValue("@RemNombre", tx_nomRem.Text);
+                        cmd.Parameters.AddWithValue("@RemDirecc", tx_dirRem.Text);         // "Bocanegra sector 1"
+                        cmd.Parameters.AddWithValue("@RemUbigeo", tx_ubigRtt.Text);        // "070101"
+                        /* datos de quien paga el servicio
+                        if (rb_pOri.Checked == true)        // paga remitente
+                        {
+                            cmd.Parameters.AddWithValue("@PagTipdoc", tx_dat_csrem.Text);
+                            cmd.Parameters.AddWithValue("@PagNomTip", tx_dat_nomcsr.Text);
+                            cmd.Parameters.AddWithValue("@PagNumdoc", tx_numDocRem.Text);
+                            cmd.Parameters.AddWithValue("@PagNombre", tx_nomRem.Text);
+                        }
+                        if (rb_pDes.Checked == true)        // paga destinatario
+                        {
+                            cmd.Parameters.AddWithValue("@PagTipdoc", tx_dat_codsu.Text);
+                            cmd.Parameters.AddWithValue("@PagNomTip", tx_dat_nomcsd.Text);
+                            cmd.Parameters.AddWithValue("@PagNumdoc", tx_numDocDes.Text);
+                            cmd.Parameters.AddWithValue("@PagNombre", tx_nomDrio.Text);
+                        }
+                        */
+                        // datos de transportista 
+                        if (tx_pla_ruc.Text != Program.ruc)     // valida si es carro contratado
+                        {
+                            cmd.Parameters.AddWithValue("@SConTipdo", "6");     // por defecto el tipo es 6 = Ruc
+                            cmd.Parameters.AddWithValue("@SConNomTi", "Registro Unico de Contributentes");
+                            cmd.Parameters.AddWithValue("@SConNumdo", tx_pla_ruc.Text);
+                            cmd.Parameters.AddWithValue("@SconNombr", tx_pla_propiet.Text);
+                        }
+                        else
+                        {
+                            cmd.Parameters.AddWithValue("@SConTipdo", "");
+                            cmd.Parameters.AddWithValue("@SConNomTi", "");
+                            cmd.Parameters.AddWithValue("@SConNumdo", "");
+                            cmd.Parameters.AddWithValue("@SconNombr", "");
+                        }
+                        // datos del envío del (los) camiones, autorizaciones de trackto y carreta
+                        cmd.Parameters.AddWithValue("@EnvPlaca1", tx_pla_placa.Text);        // "F2N714"
+                        cmd.Parameters.AddWithValue("@EnvAutor1", tx_pla_autor.Text);        // Certificado de habilitación
+                        cmd.Parameters.AddWithValue("@EnvRegis1", tx_dat_plaNreg.Text);        // "1550877CNG"
+                        cmd.Parameters.AddWithValue("@EnvCodEn1", "06");
+                        cmd.Parameters.AddWithValue("@EnvNomEn1", "Ministerio de Transportes y Comunicaciones");
+                        cmd.Parameters.AddWithValue("@EnvPlaca2", tx_pla_carret.Text);        // "AYS991"
+                        cmd.Parameters.AddWithValue("@EnvAutor2", tx_aut_carret.Text);        // "15M21028161E"
+                        cmd.Parameters.AddWithValue("@EnvRegis2", tx_dat_carrNreg.Text);      // número de registro/autorización
+                        cmd.Parameters.AddWithValue("@EnvCodEn2", "06");
+                        cmd.Parameters.AddWithValue("@EnvNomEn2", "Ministerio de Transportes y Comunicaciones");
+                        // datos de los choferes
+                        cmd.Parameters.AddWithValue("@ChoTipDi1", "1");
+                        cmd.Parameters.AddWithValue("@ChoNumDi1", tx_pla_dniChof.Text);
+                        cmd.Parameters.AddWithValue("@ChoNomTi1", "Documento Nacional de Identidad");
+                        cmd.Parameters.AddWithValue("@ChoNombr1", partidor(tx_pla_nomcho.Text, " ")[0]);        // tx_pla_nomcho.Text
+                        cmd.Parameters.AddWithValue("@ChoApell1", partidor(tx_pla_nomcho.Text, " ")[1]);
+                        cmd.Parameters.AddWithValue("@ChoLicen1", tx_pla_brevet.Text);        // "U46785663"
+                        cmd.Parameters.AddWithValue("@ChoTipDi2", (tx_dat_dniC2.Text != "") ? "1" : "");
+                        cmd.Parameters.AddWithValue("@ChoNumDi2", tx_dat_dniC2.Text);
+                        cmd.Parameters.AddWithValue("@ChoNomTi2", (tx_dat_dniC2.Text != "") ? "Documento Nacional de Identidad" : "");
+                        cmd.Parameters.AddWithValue("@ChoNombr2", partidor(tx_pla_chofer2.Text, " ")[0]);     // tx_pla_chofer2.Text
+                        cmd.Parameters.AddWithValue("@ChoApell2", partidor(tx_pla_chofer2.Text, " ")[1]);
+                        cmd.Parameters.AddWithValue("@ChoLicen2", tx_pla_brev2.Text);
+                        // datos de direcciones partida y llegada
+                        cmd.Parameters.AddWithValue("@DirParUbi", tx_ubigRtt.Text);         //  "150115"
+                        cmd.Parameters.AddWithValue("@DirParDir", tx_dirRem.Text);
+                        cmd.Parameters.AddWithValue("@DirLLeUbi", tx_ubigDtt.Text);
+                        cmd.Parameters.AddWithValue("@DirLLeDir", tx_dirDrio.Text);
+                        // motivo de traslado
+                        cmd.Parameters.AddWithValue("@MotTrasCo", tx_dat_motrasS.Text);
+                        cmd.Parameters.AddWithValue("@MotTrasDe", tx_motras.Text);
+                    // modalidad de transporte 
+                    cmd.Parameters.AddWithValue("@CodModTra", (Program.ruc == tx_pla_ruc.Text) ? "02" : "01");  // 01->Transp. público, 02->Transp.privado (propio)
                     cmd.ExecuteNonQuery();
-                }
-                // DETALLE
-                metela = "insert into dt_detgre (" +
-                    "NumGuia,clinea,cant,codigo,peso,umed,deta1,deta2) values (" +
-                    "@NumGuia,@clinea,@cant,@codigo,@peso,@umed,@deta1,@deta2)";
+                    }
+                    
+                    // DETALLE
+                    metela = "insert into dt_detgrer (" +
+                        "NumGuia,clinea,cant,codigo,peso,umed,deta1,deta2) values (" +
+                        "@NumGuia,@clinea,@cant,@codigo,@peso,@umed,@deta1,@deta2)";
                 using (SqliteCommand cmd = new SqliteCommand(metela, cnx))
                 {
                     cmd.Parameters.AddWithValue("@NumGuia", tx_serie.Text + "-" + tx_numero.Text);      // "V001-98000006"
@@ -1731,7 +1772,7 @@ namespace TransCarga
                     cmd.Parameters.AddWithValue("@deta1", lb_glodeta.Text);    // "Servicio de Transporte de carga terrestre "
                     cmd.Parameters.AddWithValue("@deta2", tx_det_desc.Text);    //"Dice contener Enseres domésticos"
 
-                    cmd.ExecuteNonQuery();
+                    cmd.ExecuteNonQuery();                      
                 }
                 // llamada al programa de generación del xml de la guía
                 string rutalocal = System.IO.Path.GetDirectoryName(Application.ExecutablePath);
@@ -1993,6 +2034,43 @@ namespace TransCarga
             {
                 MessageBox.Show("No existe DNI del chofer!", "Faltan datos", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
+            }
+            // validaciones de traslado
+            if (tx_dat_motras.Text == "")
+            {
+                MessageBox.Show("Debe seleccionar un motivo de traslado","Atención",MessageBoxButtons.OK,MessageBoxIcon.Information);
+                cmb_motras.Focus();
+                return;
+            }
+            if (tx_motras.Text.Trim() == "")
+            {
+                MessageBox.Show("Debe ingresar un detalle del traslado", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                tx_motras.Focus();
+                return;
+            }
+            if (tx_dat_tdRem.Text == tx_dat_tDdest.Text && tx_numDocDes.Text == tx_numDocRem.Text)
+            {
+                // mismo remitente y destinatario, osea es traslado entre establecimientos de la misma empresa
+                if (tx_dat_motras.Text != codtrasli)     // codigo mot.traslado establecimientos de la misma empresa 
+                {
+                    MessageBox.Show("El Remitente y el Destinatario son LOS MISMOS!" + Environment.NewLine +
+                        "Este caso solo es válido si el motivo de traslado es:" + Environment.NewLine +
+                        "Traslado entre establecimientos de una misma empresa", "Atención, corrija", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    cmb_motras.Focus();
+                    return;
+                }
+            }
+            if (tx_dat_tDdest.Text == vtc_dni)
+            {
+                // destinatario dni, el motivo de traslado debe ser ITINIRANTE -> porque el punto de llegada no tiene anexo local y ruc
+                if (tx_dat_motras.Text != codtrasit)     // codigo traslado itinerante
+                {
+                    MessageBox.Show("El Destinatario tiene DNI" + Environment.NewLine +
+                        "En este caso solo es válido el motivo de traslado:" + Environment.NewLine +
+                        "     Traslado emisor itinerante     ", "Atención, corrija", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    cmb_motras.Focus();
+                    return;
+                }
             }
             #endregion
             // grabamos, actualizamos, etc
@@ -2289,7 +2367,7 @@ namespace TransCarga
                     "frase1,frase2,fleteimp,tipintrem,tipintdes,tippagpre,seguroE,m1cliente,m2cliente," +
                     "subtotMN,igvMN,totgrMN,codMN,grinumaut,teleregri,teledegri,igvporc," +
                     "idplani,fechplani,serplagri,numplagri,plaplagri,carplagri,autplagri,confvegri,breplagri,proplagri," +
-                    "marca_gre,tidocor,rucDorig,lpagop,pesoKT,tidocor2,rucDorig2,docsremit2,marca1," +
+                    "marca_gre,tidocor,rucDorig,lpagop,pesoKT,tidocor2,rucDorig2,docsremit2,marca1,codMTras,desMTras," +
                     "verApp,userc,fechc,diriplan4,diripwan4,netbname) " +
                     "values (@fechop,@sergr,@numgr,@npregr,@tdcdes,@ndcdes,@nomdes,@dircde,@ubicde," +
                     "@tdcrem,@ndcrem,@nomrem,@dircre,@ubicre,@locpgr,@dirpgr,@ubopgr," +
@@ -2298,7 +2376,7 @@ namespace TransCarga
                     "@frase1,@frase2,@fleimp,@ticlre,@ticlde,@tipacc,@clavse,@m1clte,@m2clte," +
                     "@stMN,@igMN,@tgMN,@codmn,@grinau,@telrem,@teldes,@igvpor," +
                     "@idplan,@fecpla,@serpla,@numpla,@plapla,@carpla,@autpla,@confve,@brepla,@propla," +
-                    "@margre,@tdocor,@rucDor,@lpagop,@pesoKT,@tidoc2,@rucDo2,@docsr2,@marCU," +
+                    "@margre,@tdocor,@rucDor,@lpagop,@pesoKT,@tidoc2,@rucDo2,@docsr2,@marCU,@codMTr,@desMTr," +
                     "@verApp,@asd,now(),@iplan,@ipwan,@nbnam)";
                 using (MySqlCommand micon = new MySqlCommand(inserta, conn))
                 {
@@ -2375,6 +2453,8 @@ namespace TransCarga
                     micon.Parameters.AddWithValue("@rucDo2", tx_rucEorig2.Text);
                     micon.Parameters.AddWithValue("@docsr2", tx_docsOr2.Text);
                     micon.Parameters.AddWithValue("@marCU", (chk_cunica.Checked == true) ? 1 : 0);          // 0=carga consolidada normal, 1=carga única en el camión
+                    micon.Parameters.AddWithValue("@codMTr", tx_dat_motras.Text);
+                    micon.Parameters.AddWithValue("@desMTr", tx_motras.Text);
                     //
                     micon.Parameters.AddWithValue("@verApp", verapp);
                     micon.Parameters.AddWithValue("@asd", asd);
@@ -3239,7 +3319,7 @@ namespace TransCarga
         {
             if (chk_man.Checked == true && Tx_modo.Text == "NUEVO" && tx_pla_plani.Text.Trim() != "")
             {
-                //
+                // si va sin manifiesto significa que el transporte se hara con vehículos L1 o 
                 tx_pla_fech.Text = "";
                 tx_pla_plani.Text = "";
                 tx_pla_placa.Text = "";
@@ -3357,44 +3437,6 @@ namespace TransCarga
                 initIngreso();  // limpiamos/preparamos todo para el ingreso
                 tx_n_auto.Text = "A";   // numeracion automatica
 
-                /* local usa o no: pre-guias, numeracion automatica de GR
-                DataRow[] fila = dtu.Select("idcodice='" + v_clu + "'");
-                if (fila.Length > 0)
-                {
-                    if (fila[0][3].ToString() == "1")   // usa pre guias y consecuentemente la num de las guias automaticas
-                    {
-                        sololee();
-                        gbox_serie.Enabled = true;
-                        tx_pregr_num.Enabled = true;
-                        tx_pregr_num.ReadOnly = false;
-                        tx_serie.ReadOnly = true;
-                        tx_numero.ReadOnly = true;
-                        initIngreso();  // limpiamos/preparamos todo para el ingreso
-                        tx_pregr_num.Focus();
-                    }
-                    if (fila[0][3].ToString() == "0")   // no usa pre guias
-                    {
-                        escribe();
-                        tx_serie.Text = "";
-                        initIngreso();
-                        gbox_flete.Enabled = true;
-                        if (fila[0][4].ToString() == "1")   // usa numeracion de guias automáticas
-                        {
-                            tx_numero.Text = "";
-                            tx_n_auto.Text = "A";   // numeracion automatica
-                            cmb_destino.Focus();
-                        }
-                        else
-                        {                                   // usamos numeracion de guias manual
-                            tx_n_auto.Text = "M";   // numeracion manual
-                            tx_numero.Enabled = true;
-                            tx_numero.ReadOnly = false;
-                            tx_numero.Text = "";
-                            tx_numero.Focus();
-                        }
-                    }
-                }
-                */
                 Bt_ini.Enabled = false;
                 Bt_sig.Enabled = false;
                 Bt_ret.Enabled = false;
@@ -3693,7 +3735,7 @@ namespace TransCarga
                         // validamos que exista planilla abierta hacia el mismo destino
                         consul = "SELECT a.id,a.fechope,a.serplacar,a.numplacar,a.platracto,a.placarret,a.autorizac,a.confvehic,a.brevchofe,a.nomchofe,a.brevayuda," +
                             "a.nomayuda,a.rucpropie,b.razonsocial,a.marcaTrac as marca,a.modeloTrac as modelo,a.marcaCarret,a.modelCarret,a.autorCarret,a.confvCarret," +
-                            "a.dnichofer,a.dniayudante " +
+                            "a.dnichofer,a.dniayudante,a.nregtrackto,a.nregcarreta " +
                             "from cabplacar a left join anag_for b on b.ruc=a.rucpropie and b.tipdoc=@tdruc " +
                             "WHERE a.estadoser = @estab AND a.locorigen = @locor AND a.locdestin = @locde";
                         //                             "left join vehiculos c on c.placa=a.platracto " +
@@ -3731,7 +3773,7 @@ namespace TransCarga
                                     tx_pla_placa.Text = row["platracto"].ToString();
                                     tx_pla_carret.Text = row["placarret"].ToString();
                                     tx_pla_autor.Text = row["autorizac"].ToString();
-                                    tx_dat_plaNreg.Text = row["autorizac"].ToString();      // aca debería ir el nuevo campo cuando se haga
+                                    tx_dat_plaNreg.Text = row["nregtrackto"].ToString();    // numero reg mtc
                                     tx_pla_confv.Text = row["confvehic"].ToString();
                                     tx_pla_brevet.Text = row["brevchofe"].ToString();
                                     tx_pla_nomcho.Text = row["nomchofe"].ToString();
@@ -3744,7 +3786,7 @@ namespace TransCarga
                                     tx_pla_propiet.Text = row["razonsocial"].ToString();
                                     tx_marcamion.Text = row["marca"].ToString();
                                     tx_aut_carret.Text = row["autorCarret"].ToString();
-                                    tx_dat_carrNreg.Text = row["autorCarret"].ToString();   // aca debería ir el nuevo campo cuando se haga
+                                    tx_dat_carrNreg.Text = row["nregcarreta"].ToString();   // num reg. mtc
                                     tx_marCarret.Text = row["marcaCarret"].ToString();
                                     tx_pla_dniChof.Text = (row["dnichofer"].ToString().Trim() == "") ? lib.Right(row["brevchofe"].ToString(), 8) : row["dnichofer"].ToString();
                                     tx_dat_dniC2.Text = (row["dniayudante"].ToString().Trim() == "") ? (row["brevayuda"].ToString().Trim() == "") ? "" : lib.Right(row["brevayuda"].ToString(), 8) : row["dniayudante"].ToString();
@@ -3784,8 +3826,8 @@ namespace TransCarga
                             }
                         }
                     }
-                    cmb_docRem.Focus();
-                    cmb_docRem.DroppedDown = true;
+                    //cmb_docRem.Focus();
+                    //cmb_docRem.DroppedDown = true;
                 }
                 /*
                 if (lib.valientabla("cabguiar", "concat(sergui,numgui)", tx_serie.Text + tx_numero.Text) == "1")
@@ -3854,6 +3896,20 @@ namespace TransCarga
                     tx_rucEorig2.Text = "";
                     tx_rucEorig2.ReadOnly = true;
                 }
+            }
+        }
+        private void cmb_motras_SelectionChangeCommitted(object sender, EventArgs e)
+        {
+            if (cmb_motras.SelectedIndex > -1)
+            {
+                tx_dat_motras.Text = cmb_motras.SelectedValue.ToString();
+                DataRow[] fila = dtmt.Select("idcodice='" + tx_dat_motras.Text + "'");
+                tx_dat_motrasS.Text = fila[0][3].ToString();
+            }
+            else
+            {
+                tx_dat_motras.Text = "";
+                tx_dat_motrasS.Text = "";
             }
         }
 

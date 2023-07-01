@@ -2046,7 +2046,8 @@ namespace TransCarga
                     {
                         row["_msigv"] = Math.Round((double)row["_msigv"] * double.Parse(tx_tipcam.Text), 2);
                         row["Ipreuni"] = Math.Round(double.Parse(dataGridView1.Rows[s].Cells["valor"].Value.ToString()) * double.Parse(tx_tipcam.Text), 2).ToString("#0.0000000000");
-                        row["Ivaluni"] = ((double)row["Ivaluni"] * double.Parse(tx_tipcam.Text)).ToString("#0.0000000000");
+                        //row["Ivaluni"] = ((double)row["Ivaluni"] * double.Parse(tx_tipcam.Text)).ToString("#0.0000000000"); // 30/06/2023
+                        row["Ivaluni"] = (double.Parse(row["Ivaluni"].ToString()) * double.Parse(tx_tipcam.Text)).ToString("#0.0000000000");
                     }
                 }
                 else

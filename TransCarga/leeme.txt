@@ -412,6 +412,7 @@ form facelect, agregar opcion factSunat a los metodos de gestión:
 	- Fact. con detracción en dólares al contado ...................................................	las detracciones solo afectan a las Facturas
 	- Fact. con detracción en dólares al crédito 1 cuota ...........................................	las detracciones solo afectan a las Facturas
 form repsoper, arreglar boton CDR y PDF, no estan en su columna correcta ........................... ok 21/06/2023
+form facelect, arreglo en fact. soles de guia en dolares no soya, no carga unica ................... ok 30/06/2023
 form guiari_e, desarrollo del form, guía de remisión REMITENTE :
 	- Nuevo, grabar en tablas ...................................................................... ok 24/06/2023
 	- Edicion, anulación, impresión ................................................................ 
