@@ -19,7 +19,7 @@ namespace TransCarga
                          "", "", "", "", "", "", "", "", "", "" };      // 10
         string[,] det = new string[3,5] { { "", "", "", "", "" }, { "", "", "", "", "" }, { "", "", "", "", "" } };
         string[] var = { "", "", "", "", "", ""};       // 6
-        string[] vch = { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" };      // 16
+        string[] vch = { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" };      // 17
         short copias = 0;
         string otro = "";               // ruta y nombre del png código QR
         public impGRE_T(int nCopias, string nomImp, string[] cabecera, string[,] detalle, string[] varios, string[] vehChof)

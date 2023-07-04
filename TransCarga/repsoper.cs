@@ -1354,7 +1354,6 @@ namespace TransCarga
                     micon.Parameters.AddWithValue("@fecini", dtp_GRE_fini.Value.ToString("yyyy-MM-dd"));
                     micon.Parameters.AddWithValue("@fecfin", dtp_GRE_fter.Value.ToString("yyyy-MM-dd"));
                     micon.Parameters.AddWithValue("@esta", (tx_dat_GRE_est.Text != "") ? tx_dat_GRE_est.Text : "");
-                    //micon.Parameters.AddWithValue("@excl", (chk_GRE.Checked == true) ? "1" : "0");
                     using (MySqlDataAdapter da = new MySqlDataAdapter(micon))
                     {
                         dgv_GRE_est.DataSource = null;
@@ -1530,13 +1529,18 @@ namespace TransCarga
         }
         private void cmb_GRE_est_SelectionChangeCommitted(object sender, EventArgs e)
         {
-            if (cmb_GRE_est.SelectedValue != null) tx_dat_GRE_est.Text = cmb_GRE_est.SelectedValue.ToString();
+            if (cmb_GRE_est.SelectedValue != null)
+            {
+                //tx_dat_GRE_est.Text = cmb_GRE_est.SelectedValue.ToString(); 
+                tx_dat_GRE_est.Text = cmb_GRE_est.Text;
+            }
             else tx_dat_GRE_est.Text = "";
         }
         private void cmb_GRE_est_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Delete)
             {
+                tx_dat_GRE_est.Text = "";
                 cmb_GRE_est.SelectedIndex = -1;
             }
         }
@@ -1665,6 +1669,9 @@ namespace TransCarga
             chk_GRE_iEnpr.Visible = false;
             chk_GRE_iEnvia.Visible = false;
             bt_GRE_impri.Visible = false;
+            //
+            cmb_GRE_est.SelectedIndex = -1;
+            cmb_GRE_sede.SelectedIndex = -1;
         }
         private void Bt_anul_Click(object sender, EventArgs e)
         {
@@ -2643,7 +2650,7 @@ namespace TransCarga
             // Jalamos los datos que nos falta y los ponemos en sus arreglos
             string[] vs = {"","","","","","","","","","","","","", "", "", "", "", "", "", "",   // 20
                                "", "", "", "", "", "", "", "", "", ""};    // 10
-            string[] vc = { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" };   // 16
+            string[] vc = { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" };   // 17
             string[] va = { "", "", "", "", "", "" };       // 6
             string[,] dt = new string[3, 5] { { "", "", "", "", "" }, { "", "", "", "", "" }, { "", "", "", "", "" } }; // 5 columnas
 
@@ -2656,12 +2663,14 @@ namespace TransCarga
                     string pedaso2 = "";
                     string pedaso3 = "";
                     string pedaso4 = "";
+                    string pedaso5 = "";
                     if (rt == "T")
                     {
                         pedaso1 = "a.sergui = @ser AND a.numgui = @num";
                         pedaso2 = "a.sergui,a.numgui";
                         pedaso3 = "cabguiai a ";
                         pedaso4 = "detguiai a ";
+                        pedaso5 = "adiguias ad on ad.idg=a.id";
                     }
                     if (rt == "R")
                     {
@@ -2669,9 +2678,10 @@ namespace TransCarga
                         pedaso2 = "a.serguir,a.numguir";
                         pedaso3 = "cabguiar a ";
                         pedaso4 = "detguiar a ";
+                        pedaso5 = "adiguiar ad on ad.idg=a.id";
                     }
 
-                    string consdeta = "select a.cantprodi,a.unimedpro,a.descprodi,a.pesoprodi " +
+                    string consdeta = "select a.cantprodi,a.unimedpro,a.descprodi,round(a.pesoprodi,1) as pesoprodi " +
                         "from " + pedaso4 + "where " + pedaso1;
 
                     string consulta = "SELECT " + pedaso2 + ",a.fechopegr,a.dirorigen,a.userc,substring(a.fechc,12,5) as 'fechc',loc.DescrizioneRid as 'locorigen'," +
@@ -2680,10 +2690,10 @@ namespace TransCarga
                         "ifnull(ud1.nombre,'') AS 'dept_ure',ifnull(up1.nombre,'') AS 'prov_ure',ifnull(ub1.nombre,'') AS 'dist_ure'," +
                         "a.tidodegri,dr2.DescrizioneRid AS 'NomDocDes',a.nudodegri,a.nombdegri,a.diredegri,a.ubigdegri," +
                         "ifnull(ud2.nombre,'') AS 'dept_ude',ifnull(up2.nombre,'') AS 'prov_ude',ifnull(ub2.nombre,'') AS 'dist_ude'," +
-                        "a.fechplani,a.pestotgri,a.pesoKT," +
+                        "ifnull(a.fechplani,'') as 'fechplani',a.pestotgri,a.pesoKT," +
                         "a.serplagri,a.numplagri,a.plaplagri,a.carplagri,a.autplagri,a.confvegri,a.breplagri,a.proplagri," +
                         "ifnull(c.razonsocial, '') as razonsocial,ifnull(d.marca, '') as marca, ifnull(d.modelo, '') as modelo,ifnull(r.marca, '') as marCarret," +
-                        "ifnull(r.confve, '') as confvCarret,ifnull(r.autor1, '') as autCarret,ifnull(p.nomchofe, '') as chocamcar " +
+                        "ifnull(r.confve, '') as confvCarret,ifnull(r.autor1, '') as autCarret,ifnull(p.nomchofe, '') as chocamcar,ad.textoQR " +
                         "FROM " + pedaso3 +
                         "LEFT JOIN desc_dtm dd1 ON dd1.IDCodice = a.tidocor " +
                         "LEFT JOIN desc_dtm dd2 ON dd2.IDCodice = a.tidocor2 " +
@@ -2700,6 +2710,7 @@ namespace TransCarga
                         "LEFT JOIN ubi_dep ud2 ON ud2.depart = LEFT(a.ubigdegri, 2) " +
                         "LEFT join ubi_pro up2 ON concat(up2.depart, up2.provin)= SUBSTRING(a.ubigdegri, 1, 4) " +
                         "LEFT JOIN ubigeos ub2 ON concat(ub2.depart, ub2.provin, ub2.distri)= a.ubigdegri " +
+                        "left join " + pedaso5 + " " +
                         "where " + pedaso1; // a.sergui = @ser AND a.numgui = @num
                     using (MySqlCommand micon = new MySqlCommand(consulta, conn))
                     {
@@ -2759,6 +2770,7 @@ namespace TransCarga
                                     vc[13] = "";                                        // Choferes - Brevete chofer secundario
                                     vc[14] = "";                                        // Choferes - Nombres
                                     vc[15] = "";                                        // Choferes - Apellidos
+                                    vc[16] = "";                                        // Texto del QR
                                 }
                                 else
                                 {
@@ -2774,7 +2786,7 @@ namespace TransCarga
                                 return;
                             }
                             // varios
-                            va[0] = "";
+                            va[0] = dr.GetString("textoQR");                            // Varios: texto del código QR
                             va[1] = "";
                             va[2] = despedid1;
                             va[3] = despedid2;

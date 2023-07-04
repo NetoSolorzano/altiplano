@@ -509,7 +509,8 @@ namespace TransCarga
                         "ifnull(d.marca,'') as marca,ifnull(d.modelo,'') as modelo,ifnull(r.marca,'') as marCarret,ifnull(r.confve,'') as confvCarret,ifnull(r.autor1,'') as autCarret," +
                         "ifnull(er.numerotel1,'') as telrem,ifnull(ed.numerotel1,'') as teldes,ifnull(t.nombclt,'') as clifact," +
                         "a.marca_gre,a.tidocor,a.rucDorig,a.lpagop,a.pesoKT,a.tidocor2,a.rucDorig2,a.docsremit2,a.marca1,a.codMTras,a.desMTras," +
-                        "ifnull(ad.nticket,'') as nticket,ifnull(ad.estadoS,'') as estadoS, ifnull(ad.cdr,'') as cdr,ifnull(ad.cdrgener,'') as cdrgener,ifnull(ad.textoQR,'') as textoQR " +
+                        "ifnull(ad.nticket,'') as nticket,ifnull(ad.estadoS,'') as estadoS,ifnull(ad.cdr,'') as cdr,ifnull(ad.cdrgener,'') as cdrgener," +
+                        "ifnull(ad.textoQR,'') as textoQR,ifnull(ad.fticket,'') as fticket " +
                         "from cabguiar a " +
                         "left join adiguiar ad on ad.idg=a.id " +
                         "left join cabfactu t on t.tipdvta=a.tipdocvta and t.serdvta=a.serdocvta and t.numdvta=a.numdocvta " +
@@ -616,6 +617,7 @@ namespace TransCarga
                             tx_dat_tickSunat.Text = dr.GetString("nticket");
                             tx_estaSunat.Text = dr.GetString("estadoS");
                             tx_dat_textoqr.Text = dr.GetString("textoQR");
+                            tx_fticket.Text = dr.GetString("fticket");
 
                             cmb_origen.SelectedValue = tx_dat_locori.Text;
                             cmb_origen_SelectionChangeCommitted(null, null);
@@ -1418,13 +1420,14 @@ namespace TransCarga
                             using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
                             {
                                 conn.Open();
-                                string actua = "update adiguiar set estadoS=@est,cdr=@cdr,cdrgener=@gen,textoQR=@tqr where idg=@idg";  // (serie, numero, , @seg, @nug, @nti, @fti)";
+                                string actua = "update adiguiar set estadoS=@est,cdr=@cdr,cdrgener=@gen,textoQR=@tqr where idg=@idg";  // ,fticket=@ftk
                                 using (MySqlCommand micon = new MySqlCommand(actua, conn))
                                 {
                                     micon.Parameters.AddWithValue("@est", "Aceptado");
                                     micon.Parameters.AddWithValue("@cdr", Rpta.arcCdr.ToString());
                                     micon.Parameters.AddWithValue("@gen", Rpta.indCdrGenerado.ToString());
                                     micon.Parameters.AddWithValue("@tqr", cuidado);
+                                    //micon.Parameters.AddWithValue("", );
                                     micon.Parameters.AddWithValue("@idg", tx_idr.Text);
                                     micon.ExecuteNonQuery();
                                 }
@@ -3954,8 +3957,8 @@ namespace TransCarga
             try
             {
                 string[] vs = {"","","","","","","","","","","","","", "", "", "", "", "", "", "",   // 20
-                               "", "", "", "", "", "", "", "", ""};    // 9
-                string[] vc = { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" };   // 16
+                               "", "", "", "", "", "", "", "", "", ""};    // 10
+                string[] vc = { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" };   // 17
                 string[] va = { "", "", "", "", "", "" };       // 6
                 string[,] dt = new string[3, 5] { { "", "", "", "", "" }, { "", "", "", "", "" }, { "", "", "", "", "" } }; // 5 columnas
 
@@ -3975,7 +3978,7 @@ namespace TransCarga
                 vs[13] = cmb_docDes.Text;                     // dr.GetString("NomDocDes")
                 vs[14] = tx_numDocDes.Text;                     // dr.GetString("nudodegri")
                 vs[15] = tx_nomDrio.Text;                     // dr.GetString("nombdegri")
-                vs[16] = tx_pla_fech.Text.Substring(8, 2) + "/" + tx_pla_fech.Text.Substring(5, 2) + "/" + tx_pla_fech.Text.Substring(0, 4);      // dr.GetString("fechplani")
+                vs[16] = (tx_pla_fech.Text == "") ? "" : tx_pla_fech.Text.Substring(8, 2) + "/" + tx_pla_fech.Text.Substring(5, 2) + "/" + tx_pla_fech.Text.Substring(0, 4);      // dr.GetString("fechplani")
                 //vs[16] = tx_pla_fech.Text;
                 vs[17] = tx_totpes.Text;                     // dr.GetString("pestotgri")
                 vs[18] = (rb_kg.Checked == true) ? "K" : "T";                        // dr.GetString("pesoKT")
@@ -3989,7 +3992,8 @@ namespace TransCarga
                 vs[26] = tx_disDrio.Text;                      // dr.GetString("Dist_Des")
                 vs[27] = (Tx_modo.Text == "NUEVO") ? asd : tx_digit.Text;   // dr.GetString("userc")
                 vs[28] = cmb_origen.Text;                     // dr.GetString("locorigen")
-                                               
+                vs[29] = tx_fticket.Text;
+                
                 vc[0] = tx_pla_placa.Text;                   // dr.GetString("plaplagri")
                 vc[1] = tx_pla_autor.Text;                   // dr.GetString("autplagri")
                 vc[2] = (Tx_modo.Text == "NUEVO" && tx_pla_ruc.Text == Program.ruc) ? Program.regmtc : "";      // Num Registro MTC del transportista
@@ -4019,7 +4023,7 @@ namespace TransCarga
                 dt[y, 0] = (y + 1).ToString();              // detalle: Num de fila
                 dt[y, 1] = tx_det_cant.Text;                // detalle: Cant.
                 dt[y, 2] = tx_det_umed.Text;                // detalle: Unidad de medida
-                dt[y, 3] = tx_det_desc.Text;                // detalle: Descripción
+                dt[y, 3] = lb_glodeta.Text.Trim() + " " + tx_det_desc.Text;                // detalle: Descripción
                 dt[y, 4] = tx_det_peso.Text;                // detalle: peso
 
                 if (Tx_modo.Text == "NUEVO")
