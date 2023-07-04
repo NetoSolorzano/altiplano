@@ -348,8 +348,12 @@ namespace TransCarga
                 cmb_sede_guias.ValueMember = "idcodice";
                 // PANEL PLANILLA CARGA
                 cmb_sede_plan.DataSource = dttaller;
-                cmb_sede_plan.DisplayMember = "descrizionerid"; ;
+                cmb_sede_plan.DisplayMember = "descrizionerid";
                 cmb_sede_plan.ValueMember = "idcodice";
+                // PANEL ESTADOS SUNAT GUIAS ELECTRONICAS
+                cmb_GRE_sede.DataSource = dttaller;
+                cmb_GRE_sede.DisplayMember = "descrizionerid";
+                cmb_GRE_sede.ValueMember = "idcodice";
                 // ***************** seleccion de estado de servicios
                 string conestad = "select descrizionerid,idcodice,codigo from desc_est " +
                                        "where numero=1 order by idcodice";
@@ -389,6 +393,16 @@ namespace TransCarga
                 cmb_placa.DisplayMember = "placa";
                 cmb_placa.ValueMember = "placa";
                 datpla.Dispose();
+                // panel estados sunat de las guias electrónicas
+                string conesu = "select descrizionerid,idcodice from desc_esu where numero=1 order by idcodice";
+                cmd = new MySqlCommand(conesu, conn);
+                MySqlDataAdapter datesu = new MySqlDataAdapter(cmd);
+                DataTable dtesu = new DataTable();
+                datesu.Fill(dtesu);
+                cmb_GRE_est.DataSource = dtesu;
+                cmb_GRE_est.DisplayMember = "descrizionerid";
+                cmb_GRE_est.ValueMember = "idcodice";
+                datesu.Dispose();
             }
             conn.Close();
         }
@@ -1292,18 +1306,46 @@ namespace TransCarga
             chk_GRE_imp.Checked = false;
             dtsunatE.Rows.Clear();
             dtsunatE.Columns.Clear();
-            string consulta = "SELECT g.fechopegr AS EMISION,concat(g.sergui,'-',g.numgui) AS GUIA_ELEC,lo.descrizionerid AS ORIGEN,ld.DescrizioneRid AS DESTINO," +
-                "es.DescrizioneRid AS ESTADO,ad.estadoS AS SUNAT,ad.cdrgener AS CDR_GEN,ad.cdr,ad.textoQR,ad.nticket,g.cantfilas " +
-                "FROM cabguiai g LEFT JOIN adiguias ad ON ad.idg = g.id " +
-                "LEFT JOIN desc_loc lo ON lo.IDCodice = g.locorigen " +
-                "LEFT JOIN desc_loc ld ON ld.IDCodice = g.locdestin " +
-                "LEFT JOIN desc_est es ON es.IDCodice = g.estadoser " +
-                "WHERE marca_gre<>'' AND g.fechopegr between @fecini and @fecfin";
+            // validaciones
+            if (rb_GRE_R.Checked == false && rb_GRE_T.Checked == false)
+            {
+                MessageBox.Show("Seleccione el tipo de GRE","Atención",MessageBoxButtons.OK,MessageBoxIcon.Information);
+                rb_GRE_R.Focus();
+                return;
+            }
+            if (rb_GRE_orig.Checked == false && rb_GRE_dest.Checked == false)
+            {
+                MessageBox.Show("Seleccione si es local Origen o Destino", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                rb_GRE_orig.Focus();
+                return;
+            }
+            //
+            string consulta = "";
+            if (rb_GRE_R.Checked == true) 
+            {
+                consulta = "SELECT g.fechopegr AS EMISION,concat(g.serguir,'-',g.numguir) AS GUIA_ELEC,lo.descrizionerid AS ORIGEN,ld.DescrizioneRid AS DESTINO," +
+                    "es.DescrizioneRid AS ESTADO,ad.estadoS AS SUNAT,ad.cdrgener AS CDR_GEN,ad.cdr,ad.textoQR,ad.nticket,g.cantfilas " +
+                    "FROM cabguiar g LEFT JOIN adiguiar ad ON ad.idg = g.id " +
+                    "LEFT JOIN desc_loc lo ON lo.IDCodice = g.locorigen " +
+                    "LEFT JOIN desc_loc ld ON ld.IDCodice = g.locdestin " +
+                    "LEFT JOIN desc_est es ON es.IDCodice = g.estadoser " +
+                    "WHERE marca_gre<>'' AND g.fechopegr between @fecini and @fecfin";
+            }
+            if (rb_GRE_T.Checked == true)
+            {
+                consulta = "SELECT g.fechopegr AS EMISION,concat(g.sergui,'-',g.numgui) AS GUIA_ELEC,lo.descrizionerid AS ORIGEN,ld.DescrizioneRid AS DESTINO," +
+                    "es.DescrizioneRid AS ESTADO,ad.estadoS AS SUNAT,ad.cdrgener AS CDR_GEN,ad.cdr,ad.textoQR,ad.nticket,g.cantfilas " +
+                    "FROM cabguiai g LEFT JOIN adiguias ad ON ad.idg = g.id " +
+                    "LEFT JOIN desc_loc lo ON lo.IDCodice = g.locorigen " +
+                    "LEFT JOIN desc_loc ld ON ld.IDCodice = g.locdestin " +
+                    "LEFT JOIN desc_est es ON es.IDCodice = g.estadoser " +
+                    "WHERE marca_gre<>'' AND g.fechopegr between @fecini and @fecfin";
+            }
             string parte = "";
             if (tx_dat_GRE_sede.Text != "" && rb_GRE_orig.Checked == true) parte = parte + " and g.locorigen=@loca";
             if (tx_dat_GRE_sede.Text != "" && rb_GRE_dest.Checked == true) parte = parte + " and g.locdestin=@loca";
             if (tx_dat_GRE_est.Text != "") parte = parte + " and ad.estadoS=@esta";
-            using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR)                )
+            using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
             {
                 conn.Open();
                 using (MySqlCommand micon = new MySqlCommand(consulta + parte, conn))
@@ -1375,7 +1417,7 @@ namespace TransCarga
 
         }
 
-        #region combos
+        #region combosbox
         private void cmb_estad_ing_SelectionChangeCommitted(object sender, EventArgs e)
         {
             if (cmb_estad.SelectedValue != null) tx_dat_estad.Text = cmb_estad.SelectedValue.ToString();
@@ -1472,6 +1514,30 @@ namespace TransCarga
             if (e.KeyCode == Keys.Delete)
             {
                 cmb_placa.SelectedIndex = -1;
+            }
+        }
+        private void cmb_GRE_sede_SelectionChangeCommitted(object sender, EventArgs e)
+        {
+            if (cmb_GRE_sede.SelectedValue != null) tx_dat_GRE_sede.Text = cmb_GRE_sede.SelectedValue.ToString();
+            else tx_dat_GRE_sede.Text = "";
+        }
+        private void cmb_GRE_sede_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Delete)
+            {
+                cmb_GRE_sede.SelectedIndex = -1;
+            }
+        }
+        private void cmb_GRE_est_SelectionChangeCommitted(object sender, EventArgs e)
+        {
+            if (cmb_GRE_est.SelectedValue != null) tx_dat_GRE_est.Text = cmb_GRE_est.SelectedValue.ToString();
+            else tx_dat_GRE_est.Text = "";
+        }
+        private void cmb_GRE_est_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Delete)
+            {
+                cmb_GRE_est.SelectedIndex = -1;
             }
         }
         #endregion
@@ -2416,7 +2482,7 @@ namespace TransCarga
             if (dgv_GRE_est.Columns[e.ColumnIndex].Name.ToString() == "iTK")
             {
                 imprime(dgv_GRE_est.Rows[e.RowIndex].Cells[1].Value.ToString().Substring(0, 4),
-                        dgv_GRE_est.Rows[e.RowIndex].Cells[1].Value.ToString().Substring(5, 8));
+                        dgv_GRE_est.Rows[e.RowIndex].Cells[1].Value.ToString().Substring(5, 8),(rb_GRE_R.Checked == true) ? "R" : "T");
             }
         }
         private void grid_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)      // no estamos usando porque no sirve
@@ -2568,11 +2634,11 @@ namespace TransCarga
                 if (dgv_GRE_est.Rows[i].Cells[0].Value != null && dgv_GRE_est.Rows[i].Cells[0].Value.ToString() == "True")
                 {
                     imprime(dgv_GRE_est.Rows[i].Cells[2].Value.ToString().Substring(0, 4),
-                        dgv_GRE_est.Rows[i].Cells[2].Value.ToString().Substring(5, 8));
+                        dgv_GRE_est.Rows[i].Cells[2].Value.ToString().Substring(5, 8),(rb_GRE_R.Checked == true)? "R" : "T");
                 }
             }
         }
-        private void imprime(string serie, string numero)
+        private void imprime(string serie, string numero, string rt)
         {
             // Jalamos los datos que nos falta y los ponemos en sus arreglos
             string[] vs = {"","","","","","","","","","","","","", "", "", "", "", "", "", "",   // 20
@@ -2586,20 +2652,39 @@ namespace TransCarga
                 conn.Open();
                 if (conn.State == ConnectionState.Open)
                 {
-                    string consdeta = "select a.cantprodi,a.unimedpro,a.descprodi,a.pesoprodi " +
-                        "from detguiai a where a.sergui = @ser AND a.numgui = @num";
+                    string pedaso1 = "";
+                    string pedaso2 = "";
+                    string pedaso3 = "";
+                    string pedaso4 = "";
+                    if (rt == "T")
+                    {
+                        pedaso1 = "a.sergui = @ser AND a.numgui = @num";
+                        pedaso2 = "a.sergui,a.numgui";
+                        pedaso3 = "cabguiai a ";
+                        pedaso4 = "detguiai a ";
+                    }
+                    if (rt == "R")
+                    {
+                        pedaso1 = "a.serguir = @ser AND a.numguir = @num";
+                        pedaso2 = "a.serguir,a.numguir";
+                        pedaso3 = "cabguiar a ";
+                        pedaso4 = "detguiar a ";
+                    }
 
-                    string consulta = "SELECT a.sergui,a.numgui,a.fechopegr,a.dirorigen,a.userc,substring(a.fechc,12,5) as 'fechc',loc.DescrizioneRid as 'locorigen'," +
+                    string consdeta = "select a.cantprodi,a.unimedpro,a.descprodi,a.pesoprodi " +
+                        "from " + pedaso4 + "where " + pedaso1;
+
+                    string consulta = "SELECT " + pedaso2 + ",a.fechopegr,a.dirorigen,a.userc,substring(a.fechc,12,5) as 'fechc',loc.DescrizioneRid as 'locorigen'," +
                         "a.tidocor,dd1.DescrizioneRid AS 'NomTidor1',a.docsremit,a.rucDorig,ifnull(a.tidocor2, '') AS 'tidocor2',ifnull(dd2.DescrizioneRid, '') AS 'NomTidor2',ifnull(a.docsremit2, '') AS 'docsremit2',ifnull(a.rucDorig2, '') AS 'rucDorig2'," +
                         "a.tidoregri,dr1.DescrizioneRid AS 'NomDocRem',a.nudoregri,a.nombregri,a.direregri,a.ubigregri," +
-                        "ud1.nombre AS 'dept_ure',up1.nombre AS 'prov_ure',ub1.nombre AS 'dist_ure'," +
+                        "ifnull(ud1.nombre,'') AS 'dept_ure',ifnull(up1.nombre,'') AS 'prov_ure',ifnull(ub1.nombre,'') AS 'dist_ure'," +
                         "a.tidodegri,dr2.DescrizioneRid AS 'NomDocDes',a.nudodegri,a.nombdegri,a.diredegri,a.ubigdegri," +
-                        "ud2.nombre AS 'dept_ude',up2.nombre AS 'prov_ude',ub2.nombre AS 'dist_ude'," +
+                        "ifnull(ud2.nombre,'') AS 'dept_ude',ifnull(up2.nombre,'') AS 'prov_ude',ifnull(ub2.nombre,'') AS 'dist_ude'," +
                         "a.fechplani,a.pestotgri,a.pesoKT," +
                         "a.serplagri,a.numplagri,a.plaplagri,a.carplagri,a.autplagri,a.confvegri,a.breplagri,a.proplagri," +
                         "ifnull(c.razonsocial, '') as razonsocial,ifnull(d.marca, '') as marca, ifnull(d.modelo, '') as modelo,ifnull(r.marca, '') as marCarret," +
                         "ifnull(r.confve, '') as confvCarret,ifnull(r.autor1, '') as autCarret,ifnull(p.nomchofe, '') as chocamcar " +
-                        "FROM cabguiai a " +
+                        "FROM " + pedaso3 +
                         "LEFT JOIN desc_dtm dd1 ON dd1.IDCodice = a.tidocor " +
                         "LEFT JOIN desc_dtm dd2 ON dd2.IDCodice = a.tidocor2 " +
                         "LEFT JOIN desc_doc dr1 ON dr1.IDCodice = a.tidoregri " +
@@ -2615,7 +2700,7 @@ namespace TransCarga
                         "LEFT JOIN ubi_dep ud2 ON ud2.depart = LEFT(a.ubigdegri, 2) " +
                         "LEFT join ubi_pro up2 ON concat(up2.depart, up2.provin)= SUBSTRING(a.ubigdegri, 1, 4) " +
                         "LEFT JOIN ubigeos ub2 ON concat(ub2.depart, ub2.provin, ub2.distri)= a.ubigdegri " +
-                        "where a.sergui = @ser AND a.numgui = @num";
+                        "where " + pedaso1; // a.sergui = @ser AND a.numgui = @num
                     using (MySqlCommand micon = new MySqlCommand(consulta, conn))
                     {
                         micon.Parameters.AddWithValue("@ser", serie);
@@ -2627,8 +2712,8 @@ namespace TransCarga
                             {
                                 if (dr.Read())
                                 {
-                                    vs[0] = dr.GetString("sergui");                         // 0
-                                    vs[1] = dr.GetString("numgui");                         // 1
+                                    vs[0] = (rt == "T") ? dr.GetString("sergui") : dr.GetString("serguir");                         // 0
+                                    vs[1] = (rt == "T") ? dr.GetString("numgui") : dr.GetString("numguir");                         // 1
                                     vs[2] = dr.GetString("fechopegr").Substring(0, 10);     // 2
                                     vs[3] = dr.GetString("dirorigen");                      // 3
                                     vs[4] = dr.GetString("NomTidor1");                      // 4
@@ -2723,6 +2808,7 @@ namespace TransCarga
                 }
             }
         }
+
         int CentimeterToPixel(double Centimeter)
         {
             double pixel = -1;

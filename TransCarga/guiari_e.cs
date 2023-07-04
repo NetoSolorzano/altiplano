@@ -502,7 +502,7 @@ namespace TransCarga
                         "a.tipmongri,a.tipcamgri,a.subtotgri,a.igvgri,a.totgri,a.totpag,a.salgri,a.estadoser,a.impreso," +
                         "a.frase1,a.frase2,a.fleteimp,a.tipintrem,a.tipintdes,a.tippagpre,a.seguroE,a.userc,a.userm,a.usera," +
                         "a.serplagri,a.numplagri,a.plaplagri,a.carplagri,a.autplagri,a.confvegri,a.breplagri,a.proplagri," +
-                        "ifnull(p.nomchofe,'') as chocamcar,a.fechplani as fecplacar,'' as fecdocvta,'' as tipdocvta," +    // ifnull(b.fecplacar,'') as fecplacar,ifnull(b.fecdocvta,'') as fecdocvta,ifnull(f.descrizionerid,'') as tipdocvta,
+                        "ifnull(p.nomchofe,'') as chocamcar,ifnull(a.fechplani,'') as fecplacar,'' as fecdocvta,'' as tipdocvta," +    // ifnull(b.fecplacar,'') as fecplacar,ifnull(b.fecdocvta,'') as fecdocvta,ifnull(f.descrizionerid,'') as tipdocvta,
                         "'' as serdocvta,'' as numdocvta,'' as codmonvta," +    // ifnull(b.serdocvta,'') as serdocvta,ifnull(b.numdocvta,'') as numdocvta,ifnull(b.codmonvta,'') as codmonvta,
                         "0 as totdocvta,'' as codmonpag,0 as totpagado,0 as saldofina," +       //ifnull(b.totdocvta,0) as totdocvta,ifnull(b.codmonpag,'') as codmonpag,ifnull(b.totpagado,0) as totpagado,ifnull(b.saldofina,0) as saldofina,
                         "'' as feculpago,ifnull(a.estadoser,'') as estadoser,ifnull(c.razonsocial,'') as razonsocial,a.grinumaut," +        // ifnull(b.feculpago,'') as feculpago,ifnull(b.estadoser,'') as estadoser,
@@ -2030,15 +2030,10 @@ namespace TransCarga
                 tx_rucEorig2.Focus();
                 return;
             }
-            if (tx_pla_dniChof.Text.Trim() == "")
-            {
-                MessageBox.Show("No existe DNI del chofer!", "Faltan datos", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
             // validaciones de traslado
             if (tx_dat_motras.Text == "")
             {
-                MessageBox.Show("Debe seleccionar un motivo de traslado","Atención",MessageBoxButtons.OK,MessageBoxIcon.Information);
+                MessageBox.Show("Debe seleccionar un motivo de traslado", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 cmb_motras.Focus();
                 return;
             }
@@ -2071,6 +2066,15 @@ namespace TransCarga
                     cmb_motras.Focus();
                     return;
                 }
+            }
+            if (chk_man.Checked == true)        // datos de planilla de carga, si no hay datos el traslado se hará en un vehículo menor
+            {
+                if (tx_pla_dniChof.Text.Trim() == "")
+                {
+                    MessageBox.Show("No existe DNI del chofer!", "Faltan datos", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
             }
             #endregion
             // grabamos, actualizamos, etc
@@ -3319,6 +3323,8 @@ namespace TransCarga
         {
             if (chk_man.Checked == true && Tx_modo.Text == "NUEVO" && tx_pla_plani.Text.Trim() != "")
             {
+                MessageBox.Show("La guía de remisión remitente se transportará en" + Environment.NewLine + 
+                    "un vehículo menor L o M1 sin datos de placa y chofer","Atención",MessageBoxButtons.OK,MessageBoxIcon.Information);
                 // si va sin manifiesto significa que el transporte se hara con vehículos L1 o 
                 tx_pla_fech.Text = "";
                 tx_pla_plani.Text = "";
