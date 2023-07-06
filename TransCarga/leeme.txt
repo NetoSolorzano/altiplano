@@ -416,9 +416,10 @@ form facelect, arreglo en fact. soles de guia en dolares no soya, no carga unica
 form repsoper, adecuación en Estados Sunat de guías electrónicas para GRE-Remitente ................ ok 03/07/2023
 form guiari_e, desarrollo del form, guía de remisión REMITENTE :
 	- Nuevo, grabar en tablas ...................................................................... ok 24/06/2023
-	- impresión .................................................................................... ok 
-	- Edicion, anulación ........................................................................... 
-OJO: form guiari_e, la planilla de carg es la misma que las guías transportista ?? .. triggers DB 
+	- impresión .................................................................................... ok 04/07/2023
+	- Edicion, anulación ........................................................................... ok 05/07/2023
+OJO: form guiari_e, la planilla de carg es la misma que las guías transportista ?? .. SI ...........   triggers DB 
+form guiati_e, adecuaciones, arreglos y mejoras del modelo guías remitente ......................... 
 
 Formatos jrxml de fcturas y boletas estándares multimoneda y con/sin detracción, contado/credito ... 
 form facelect, agregar opciones de cargas únicas tipo soya:

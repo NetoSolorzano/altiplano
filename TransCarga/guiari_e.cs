@@ -113,7 +113,6 @@ namespace TransCarga
         string[] c_t = new string[6] { "", "", "", "", "", ""}; // parametros para generar el token
         //
         static libreria lib = new libreria();   // libreria de procedimientos
-        publico lp = new publico();             // libreria de clases
         string verapp = System.Diagnostics.FileVersionInfo.GetVersionInfo(Application.ExecutablePath).FileVersion;
         string claveSeg = "";                       // clave de seguridad del envío
         string nomclie = Program.cliente;           // cliente usuario del sistema
@@ -122,6 +121,9 @@ namespace TransCarga
         string asd = Program.vg_user;               // usuario conectado al sistema
         string nRegMTC = Program.regmtc;            // numero registro del MTC
         #endregion
+
+        publico lp = new publico();             // libreria de clases
+        acGRE_sunat _Sunat = new acGRE_sunat();
 
         AutoCompleteStringCollection departamentos = new AutoCompleteStringCollection();// autocompletado departamentos
         AutoCompleteStringCollection provincias = new AutoCompleteStringCollection();   // autocompletado provincias
@@ -658,7 +660,7 @@ namespace TransCarga
                     if (Tx_modo.Text != "NUEVO" && (tx_estaSunat.Text != "Aceptado" && tx_estaSunat.Text != "Rechazado"))
                     {
                         // llamada al metodo que consultará el estado del comprobante y actualizara 
-                        if (tx_dat_tickSunat.Text != "") consultaC(tx_dat_tickSunat.Text, conex_token(c_t));
+                        if (tx_dat_tickSunat.Text != "") _Sunat.consultaC("cabguiar", tx_idr.Text, tx_dat_tickSunat.Text, _Sunat.conex_token_(c_t), tx_serie.Text, tx_numero.Text, rutaxml);
                     }
                     else
                     {
@@ -1238,6 +1240,8 @@ namespace TransCarga
             gbox_docvta.Enabled = false;
             //
             cmb_origen.Enabled = false;
+            tx_docsOr.Enabled = false;
+            tx_docsOr2.Enabled = false;
         }
         private void limpiar()
         {
@@ -1266,6 +1270,9 @@ namespace TransCarga
             tx_det_umed.Text = "";
             tx_det_desc.Text = "";
             tx_det_peso.Text = "";
+            //
+            tx_dat_motras.Text = "";
+            tx_dat_motrasS.Text = "";
         }
         private void limpia_chk()    
         {
@@ -1278,13 +1285,14 @@ namespace TransCarga
         private void limpia_combos()
         {
             lp.limpia_cmb(this);
+            cmb_motras.SelectedIndex = -1;
         }
         #endregion limpiadores_modos;
 
         #region  guia electronica en sunat y psnet
 
         #region Sunat metodo directo
-        private bool sunat_api()                                // SI VAMOS A USAR 26/05/2023 este metodo directo
+        /*private bool sunat_api()                                // SI VAMOS A USAR 26/05/2023 este metodo directo
         {
             bool retorna = false;
             string token = conex_token(c_t);           // este metodo funciona bien .. 26/05/2023
@@ -1375,8 +1383,8 @@ namespace TransCarga
                 }
             }
             return retorna;
-        }
-        public string consultaC(string ticket, string token)     // consulta comprobante
+        } */
+        /* public string consultaC(string ticket, string token)     // consulta comprobante
         {
             string retorna = "";
             //ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
@@ -1455,8 +1463,8 @@ namespace TransCarga
                 }
             }
             return retorna;
-        }
-        public string conex_token(string[] c_t)                            // obtenemos el token de conexión
+        } */
+        /* public string conex_token(string[] c_t)                 // obtenemos el token de conexión
         {
             string retorna = "";
             tiempoT = (DateTime.Now.TimeOfDay.Subtract(horaT).TotalSeconds);
@@ -1494,7 +1502,7 @@ namespace TransCarga
                 retorna = TokenAct;     // retorna el token actual
             }
             return retorna;
-        }
+        } */
         static private void CreaTablaLiteGRE()                  // llamado en el load del form, crea las tablas al iniciar
         {
             using (SqliteConnection cnx = new SqliteConnection(CadenaConexion))
@@ -1792,7 +1800,7 @@ namespace TransCarga
 
             return retorna;
         }
-        public string convierteCDR(string arCdr, string serie, string corre, string ruta)               // genera el cdr a partir de la respuesta de sunat arcCDR del json
+        /* public string convierteCDR(string arCdr, string serie, string corre, string ruta)               // genera el cdr a partir de la respuesta de sunat arcCDR del json
         {
             string retorna = "";
 
@@ -1822,7 +1830,7 @@ namespace TransCarga
             retorna = fqr.InnerText;
 
             return retorna;
-        }
+        } */
         #endregion Sunat metodo directo
 
         #region psnet
@@ -2096,7 +2104,7 @@ namespace TransCarga
                             return;
                         }
 
-                        if (true)                       // sunat_api() -> genera GRE-Transportista en sunat
+                        if (true)                       // 
                         {
                             if (graba() == true)        // graba en las tablas de la BD
                             {
@@ -2116,52 +2124,58 @@ namespace TransCarga
                                 }
                                 if (ipeeg == "API_SUNAT")                   // Emisión directa consumiendo los servicios web de sunat api-rest
                                 {
-                                    if (sunat_api() == false)               // 27/05/2023
+                                    if (llenaTablaLiteGRE() != true)
                                     {
-                                        MessageBox.Show("Documento Guía inválida, debe anularse internamente", "Error: No se pudo generar GRE", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                                        using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
-                                        {
-                                            conn.Open();
-                                            if (lib.procConn(conn) == true)
-                                            {
-                                                using (MySqlCommand micon = new MySqlCommand("update adiguiar set estadoS='Invalido' where id=@idr"))
-                                                {
-                                                    micon.Parameters.AddWithValue("@idr", tx_idr.Text);
-                                                    micon.ExecuteNonQuery();
-                                                }
-                                            }
-                                        }
+                                        MessageBox.Show("No se pudo llenar las tablas sqlite", "Error interno", MessageBoxButtons.OK, MessageBoxIcon.Error);
                                     }
                                     else
                                     {
-                                        var bb = MessageBox.Show("Desea imprimir la Guía?" + Environment.NewLine +
-                                            "El formato actual es " + vi_formato, "Confirme por favor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                                        if (bb == DialogResult.Yes)
+                                        if (_Sunat.sunat_api("09", "adiguiar", c_t, tx_idr.Text, tx_serie.Text, tx_numero.Text, rutaxml) == false)               // sunat_api() == false
                                         {
-                                            try
+                                            MessageBox.Show("Documento Guía inválida, debe anularse internamente", "Error: No se pudo generar GRE", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                            using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
                                             {
-                                                using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
+                                                conn.Open();
+                                                if (lib.procConn(conn) == true)
                                                 {
-                                                    conn.Open();
-                                                    if (lib.procConn(conn) == true)
+                                                    using (MySqlCommand micon = new MySqlCommand("update adiguiar set estadoS='Invalido' where id=@idr"))
                                                     {
-                                                        using (MySqlCommand micon = new MySqlCommand("update cabguiar set impreso='S' where id=@idr"))
-                                                        {
-                                                            micon.Parameters.AddWithValue("@idr", tx_idr.Text);
-                                                            micon.ExecuteNonQuery();
-                                                        }
+                                                        micon.Parameters.AddWithValue("@idr", tx_idr.Text);
+                                                        micon.ExecuteNonQuery();
                                                     }
                                                 }
-                                                Bt_print.PerformClick();
                                             }
-                                            catch (Exception ex)
+                                        }
+                                        else
+                                        {
+                                            var bb = MessageBox.Show("Desea imprimir la Guía?" + Environment.NewLine +
+                                                "El formato actual es " + vi_formato, "Confirme por favor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                                            if (bb == DialogResult.Yes)
                                             {
-                                                MessageBox.Show(ex.Message, "Error en proceso de impresión", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                                try
+                                                {
+                                                    using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
+                                                    {
+                                                        conn.Open();
+                                                        if (lib.procConn(conn) == true)
+                                                        {
+                                                            using (MySqlCommand micon = new MySqlCommand("update cabguiar set impreso='S' where id=@idr"))
+                                                            {
+                                                                micon.Parameters.AddWithValue("@idr", tx_idr.Text);
+                                                                micon.ExecuteNonQuery();
+                                                            }
+                                                        }
+                                                    }
+                                                    Bt_print.PerformClick();
+                                                }
+                                                catch (Exception ex)
+                                                {
+                                                    MessageBox.Show(ex.Message, "Error en proceso de impresión", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                                }
                                             }
                                         }
                                     }
                                 }
-
                             }
                         }
                         else
@@ -2189,12 +2203,12 @@ namespace TransCarga
                     MessageBox.Show("Ingrese el número de la guía", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                     return;
                 }
-                if (tx_dat_estad.Text == codAnul)
+                /* if (tx_dat_estad.Text == codAnul)
                 {
                     MessageBox.Show("La guía esta ANULADA", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                     tx_numero.Focus();
                     return;
-                }
+                } */
                 if ((tx_pregr_num.Text.Trim() == "") && tx_impreso.Text == "S")
                 {
                     // no tiene guía y SI esta impreso => NO se puede modificar y SI anular
@@ -2254,18 +2268,25 @@ namespace TransCarga
                                     }
                                     if (ipeeg == "API_SUNAT")                   // Emisión directa consumiendo los servicios web de sunat api-rest
                                     {
-                                        if (sunat_api() == false)               // 27/05/2023
+                                        if (llenaTablaLiteGRE() != true)
                                         {
-                                            MessageBox.Show("Documento Guía inválida, debe anularse internamente", "Error: No se pudo generar GRE", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                                            using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
+                                            MessageBox.Show("No se pudo llenar las tablas sqlite", "Error interno", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                        }
+                                        else
+                                        {
+                                            if (_Sunat.sunat_api("09", "adiguiar", c_t, tx_idr.Text, tx_serie.Text, tx_numero.Text, rutaxml) == false)               // sunat_api() == false
                                             {
-                                                conn.Open();
-                                                if (lib.procConn(conn) == true)
+                                                MessageBox.Show("Documento Guía inválida, debe anularse internamente", "Error: No se pudo generar GRE", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                                using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
                                                 {
-                                                    using (MySqlCommand micon = new MySqlCommand("update adiguiar set estadoS='Invalido' where id=@idr"))
+                                                    conn.Open();
+                                                    if (lib.procConn(conn) == true)
                                                     {
-                                                        micon.Parameters.AddWithValue("@idr", tx_idr.Text);
-                                                        micon.ExecuteNonQuery();
+                                                        using (MySqlCommand micon = new MySqlCommand("update adiguiar set estadoS='Invalido' where id=@idr"))
+                                                        {
+                                                            micon.Parameters.AddWithValue("@idr", tx_idr.Text);
+                                                            micon.ExecuteNonQuery();
+                                                        }
                                                     }
                                                 }
                                             }
@@ -3061,28 +3082,28 @@ namespace TransCarga
                         // no tiene guía y no esta impreso => se puede modificar todo y SI anular
                         tx_obser1.Enabled = true;
                         tx_consig.Enabled = true;
-                        tx_docsOr.Enabled = true;
+                        //tx_docsOr.Enabled = true;
                     }
                     if ((tx_pregr_num.Text.Trim() == "") && tx_impreso.Text == "S")
                     {
                         // no tiene pre guía y SI esta impreso => NO se puede modificar y SI anular
                         tx_obser1.Enabled = true;
                         tx_consig.Enabled = true;
-                        if (v_uedo.ToUpper().Contains(asd.ToUpper()) == true) tx_docsOr.Enabled = true;
+                        //if (v_uedo.ToUpper().Contains(asd.ToUpper()) == true) tx_docsOr.Enabled = true;
                     }
                     if ((tx_pregr_num.Text.Trim() != "") && tx_impreso.Text == "N")
                     {
                         // si tiene pre guía y no esta impreso => NO se puede modificar NO anular
                         tx_obser1.Enabled = true;
                         tx_consig.Enabled = true;
-                        if (v_uedo.ToUpper().Contains(asd.ToUpper()) == true) tx_docsOr.Enabled = true;
+                        //if (v_uedo.ToUpper().Contains(asd.ToUpper()) == true) tx_docsOr.Enabled = true;
                     }
                     if ((tx_pregr_num.Text.Trim() != "") && tx_impreso.Text == "S")
                     {
                         // si tiene pre guía y si esta impreso => NO se puede modificar NO anular
                         tx_obser1.Enabled = true;
                         tx_consig.Enabled = true;
-                        if (v_uedo.ToUpper().Contains(asd.ToUpper()) == true) tx_docsOr.Enabled = true;
+                        //if (v_uedo.ToUpper().Contains(asd.ToUpper()) == true) tx_docsOr.Enabled = true;
                     }
                 }
                 if (Tx_modo.Text == "ANULAR") tx_obser1.Enabled = true;
@@ -3451,6 +3472,8 @@ namespace TransCarga
                 Bt_ret.Enabled = false;
                 Bt_fin.Enabled = false;
                 tx_numero.Focus();              //cmb_destino.Focus();
+                tx_docsOr.Enabled = true;
+                tx_docsOr2.Enabled = true;
             }
         }
         private void Bt_edit_Click(object sender, EventArgs e)

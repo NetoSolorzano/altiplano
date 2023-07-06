@@ -1415,9 +1415,9 @@
             this.gbox_flete.Controls.Add(this.tx_flete);
             this.gbox_flete.Controls.Add(this.label15);
             this.gbox_flete.Controls.Add(this.chk_seguridad);
-            this.gbox_flete.Location = new System.Drawing.Point(708, 0);
+            this.gbox_flete.Location = new System.Drawing.Point(679, 288);
             this.gbox_flete.Name = "gbox_flete";
-            this.gbox_flete.Size = new System.Drawing.Size(40, 111);
+            this.gbox_flete.Size = new System.Drawing.Size(108, 111);
             this.gbox_flete.TabIndex = 26;
             this.gbox_flete.TabStop = false;
             this.gbox_flete.Visible = false;
@@ -1688,7 +1688,6 @@
             // 
             this.groupBox27.BackColor = System.Drawing.Color.White;
             this.groupBox27.Controls.Add(this.groupBox28);
-            this.groupBox27.Controls.Add(this.gbox_flete);
             this.groupBox27.Location = new System.Drawing.Point(12, 280);
             this.groupBox27.Name = "groupBox27";
             this.groupBox27.Size = new System.Drawing.Size(740, 1);
@@ -2764,6 +2763,7 @@
             this.chk_cunica.TabIndex = 256;
             this.chk_cunica.Text = "Carga única\r\nen camión";
             this.chk_cunica.UseVisualStyleBackColor = true;
+            this.chk_cunica.Visible = false;
             // 
             // chk_man
             // 
@@ -3048,7 +3048,7 @@
             // button1
             // 
             this.button1.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.button1.Location = new System.Drawing.Point(659, 343);
+            this.button1.Location = new System.Drawing.Point(659, 334);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(62, 58);
             this.button1.TabIndex = 411;
@@ -3180,6 +3180,7 @@
             this.BackColor = System.Drawing.Color.DarkSeaGreen;
             this.ClientSize = new System.Drawing.Size(766, 614);
             this.Controls.Add(this.groupBox63);
+            this.Controls.Add(this.gbox_flete);
             this.Controls.Add(this.label49);
             this.Controls.Add(this.tx_fticket);
             this.Controls.Add(this.tx_dat_codsu);

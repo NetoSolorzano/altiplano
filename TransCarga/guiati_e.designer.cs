@@ -291,6 +291,10 @@
             this.groupBox60 = new System.Windows.Forms.GroupBox();
             this.tx_dat_tickSunat = new System.Windows.Forms.TextBox();
             this.tx_dat_textoqr = new System.Windows.Forms.TextBox();
+            this.groupBox63 = new System.Windows.Forms.GroupBox();
+            this.groupBox64 = new System.Windows.Forms.GroupBox();
+            this.label49 = new System.Windows.Forms.Label();
+            this.tx_fticket = new System.Windows.Forms.TextBox();
             this.toolStrip1.SuspendLayout();
             this.groupBox11.SuspendLayout();
             this.groupBox7.SuspendLayout();
@@ -330,6 +334,7 @@
             this.groupBox2.SuspendLayout();
             this.groupBox57.SuspendLayout();
             this.groupBox59.SuspendLayout();
+            this.groupBox63.SuspendLayout();
             this.SuspendLayout();
             // 
             // toolStrip1
@@ -608,7 +613,7 @@
             // 
             this.tx_ubigO.BackColor = System.Drawing.SystemColors.Window;
             this.tx_ubigO.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_ubigO.Location = new System.Drawing.Point(733, 48);
+            this.tx_ubigO.Location = new System.Drawing.Point(689, 71);
             this.tx_ubigO.MaxLength = 6;
             this.tx_ubigO.Name = "tx_ubigO";
             this.tx_ubigO.Size = new System.Drawing.Size(33, 18);
@@ -1153,7 +1158,7 @@
             // 
             this.tx_ubigD.BackColor = System.Drawing.SystemColors.Window;
             this.tx_ubigD.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_ubigD.Location = new System.Drawing.Point(734, 62);
+            this.tx_ubigD.Location = new System.Drawing.Point(728, 71);
             this.tx_ubigD.MaxLength = 6;
             this.tx_ubigD.Name = "tx_ubigD";
             this.tx_ubigD.Size = new System.Drawing.Size(33, 18);
@@ -2486,6 +2491,7 @@
             this.gb_detalle.Controls.Add(this.tx_det_umed);
             this.gb_detalle.Controls.Add(this.tx_det_peso);
             this.gb_detalle.Controls.Add(this.groupBox46);
+            this.gb_detalle.Controls.Add(this.chk_cunica);
             this.gb_detalle.Controls.Add(this.tx_det_cant);
             this.gb_detalle.Controls.Add(this.label40);
             this.gb_detalle.Controls.Add(this.label39);
@@ -2698,7 +2704,7 @@
             // 
             this.chk_cunica.AutoSize = true;
             this.chk_cunica.ForeColor = System.Drawing.Color.Black;
-            this.chk_cunica.Location = new System.Drawing.Point(643, 48);
+            this.chk_cunica.Location = new System.Drawing.Point(285, 80);
             this.chk_cunica.Name = "chk_cunica";
             this.chk_cunica.Size = new System.Drawing.Size(83, 30);
             this.chk_cunica.TabIndex = 256;
@@ -2964,7 +2970,7 @@
             this.label47.AutoSize = true;
             this.label47.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label47.ForeColor = System.Drawing.Color.Black;
-            this.label47.Location = new System.Drawing.Point(609, 28);
+            this.label47.Location = new System.Drawing.Point(609, 30);
             this.label47.Name = "label47";
             this.label47.Size = new System.Drawing.Size(49, 13);
             this.label47.TabIndex = 387;
@@ -2974,7 +2980,7 @@
             // 
             this.tx_estaSunat.BackColor = System.Drawing.SystemColors.Window;
             this.tx_estaSunat.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_estaSunat.Location = new System.Drawing.Point(660, 26);
+            this.tx_estaSunat.Location = new System.Drawing.Point(660, 28);
             this.tx_estaSunat.MaxLength = 0;
             this.tx_estaSunat.Name = "tx_estaSunat";
             this.tx_estaSunat.ReadOnly = true;
@@ -3004,7 +3010,7 @@
             // 
             this.groupBox59.BackColor = System.Drawing.Color.White;
             this.groupBox59.Controls.Add(this.groupBox60);
-            this.groupBox59.Location = new System.Drawing.Point(608, 43);
+            this.groupBox59.Location = new System.Drawing.Point(608, 45);
             this.groupBox59.Name = "groupBox59";
             this.groupBox59.Size = new System.Drawing.Size(149, 1);
             this.groupBox59.TabIndex = 408;
@@ -3022,7 +3028,7 @@
             // 
             this.tx_dat_tickSunat.BackColor = System.Drawing.SystemColors.Window;
             this.tx_dat_tickSunat.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_dat_tickSunat.Location = new System.Drawing.Point(606, 38);
+            this.tx_dat_tickSunat.Location = new System.Drawing.Point(630, 71);
             this.tx_dat_tickSunat.Name = "tx_dat_tickSunat";
             this.tx_dat_tickSunat.Size = new System.Drawing.Size(26, 18);
             this.tx_dat_tickSunat.TabIndex = 409;
@@ -3032,11 +3038,54 @@
             // 
             this.tx_dat_textoqr.BackColor = System.Drawing.SystemColors.Window;
             this.tx_dat_textoqr.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_dat_textoqr.Location = new System.Drawing.Point(608, 59);
+            this.tx_dat_textoqr.Location = new System.Drawing.Point(601, 71);
             this.tx_dat_textoqr.Name = "tx_dat_textoqr";
             this.tx_dat_textoqr.Size = new System.Drawing.Size(26, 18);
             this.tx_dat_textoqr.TabIndex = 410;
             this.tx_dat_textoqr.Visible = false;
+            // 
+            // groupBox63
+            // 
+            this.groupBox63.BackColor = System.Drawing.Color.White;
+            this.groupBox63.Controls.Add(this.groupBox64);
+            this.groupBox63.Location = new System.Drawing.Point(608, 68);
+            this.groupBox63.Name = "groupBox63";
+            this.groupBox63.Size = new System.Drawing.Size(149, 1);
+            this.groupBox63.TabIndex = 419;
+            this.groupBox63.TabStop = false;
+            // 
+            // groupBox64
+            // 
+            this.groupBox64.Location = new System.Drawing.Point(0, -26);
+            this.groupBox64.Name = "groupBox64";
+            this.groupBox64.Size = new System.Drawing.Size(164, 1);
+            this.groupBox64.TabIndex = 113;
+            this.groupBox64.TabStop = false;
+            // 
+            // label49
+            // 
+            this.label49.AutoSize = true;
+            this.label49.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label49.ForeColor = System.Drawing.Color.Black;
+            this.label49.Location = new System.Drawing.Point(609, 53);
+            this.label49.Name = "label49";
+            this.label49.Size = new System.Drawing.Size(48, 13);
+            this.label49.TabIndex = 418;
+            this.label49.Text = "FecHor";
+            // 
+            // tx_fticket
+            // 
+            this.tx_fticket.BackColor = System.Drawing.SystemColors.Window;
+            this.tx_fticket.Enabled = false;
+            this.tx_fticket.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_fticket.Location = new System.Drawing.Point(660, 51);
+            this.tx_fticket.MaxLength = 0;
+            this.tx_fticket.Name = "tx_fticket";
+            this.tx_fticket.ReadOnly = true;
+            this.tx_fticket.Size = new System.Drawing.Size(97, 18);
+            this.tx_fticket.TabIndex = 417;
+            this.tx_fticket.Tag = "Fecha hora del ticket de sunat";
+            this.tx_fticket.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // guiati_e
             // 
@@ -3045,6 +3094,9 @@
             this.AutoSize = true;
             this.BackColor = System.Drawing.Color.Peru;
             this.ClientSize = new System.Drawing.Size(766, 614);
+            this.Controls.Add(this.groupBox63);
+            this.Controls.Add(this.label49);
+            this.Controls.Add(this.tx_fticket);
             this.Controls.Add(this.tx_dat_textoqr);
             this.Controls.Add(this.tx_dat_tickSunat);
             this.Controls.Add(this.groupBox59);
@@ -3054,7 +3106,6 @@
             this.Controls.Add(this.label46);
             this.Controls.Add(this.tx_idr);
             this.Controls.Add(this.tx_dat_nomcsr);
-            this.Controls.Add(this.chk_cunica);
             this.Controls.Add(this.tx_dat_csrem);
             this.Controls.Add(this.tx_dat_nomcsd);
             this.Controls.Add(this.groupBox2);
@@ -3219,6 +3270,7 @@
             this.groupBox2.ResumeLayout(false);
             this.groupBox57.ResumeLayout(false);
             this.groupBox59.ResumeLayout(false);
+            this.groupBox63.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -3487,5 +3539,9 @@
         private System.Windows.Forms.GroupBox groupBox60;
         private System.Windows.Forms.TextBox tx_dat_tickSunat;
         private System.Windows.Forms.TextBox tx_dat_textoqr;
+        private System.Windows.Forms.GroupBox groupBox63;
+        private System.Windows.Forms.GroupBox groupBox64;
+        private System.Windows.Forms.Label label49;
+        private System.Windows.Forms.TextBox tx_fticket;
     }
 }

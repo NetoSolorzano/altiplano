@@ -22,7 +22,7 @@ namespace TransCarga
         public static string ctl = ConfigurationManager.AppSettings["ConnectionLifeTime"].ToString();
         string DB_CONN_STR = "server=" + serv + ";uid=" + usua + ";pwd=" + cont + ";database=" + data + ";";
         public DataTable dt_enlaces = new DataTable();
-        public static string CadenaConexion = "Data Source=TransCarga.db";   // Data Source=TransCarga;Mode=Memory;Cache=Shared
+        public static string CadenaConexion = "Data Source=TransCarga.db";
 
         public login()
         {
@@ -382,7 +382,7 @@ namespace TransCarga
                         using (SqliteConnection cnx = new SqliteConnection(CadenaConexion))
                         {
                             cnx.Open();
-                            string sqlborra = "DROP TABLE IF EXISTS dt_enlaces";
+                            string sqlborra = "DROP TABLE IF EXISTS dt_enlaces; DROP TABLE IF EXISTS sunat_webservices";
                             using (SqliteCommand cmdB = new SqliteCommand(sqlborra, cnx))
                             {
                                 cmdB.ExecuteNonQuery();
@@ -435,7 +435,7 @@ namespace TransCarga
                         using (SqliteConnection cnx = new SqliteConnection(CadenaConexion))
                         {
                             cnx.Open();
-                            string sqlborra = "DROP TABLE IF EXISTS dt_enlaces";
+                            string sqlborra = "DROP TABLE IF EXISTS dt_enlaces"; // ; DROP TABLE IF EXISTS sunat_webservices
                             using (SqliteCommand cmdB = new SqliteCommand(sqlborra, cnx))
                             {
                                 cmdB.ExecuteNonQuery();
@@ -468,9 +468,33 @@ namespace TransCarga
                                 setC.dt_enlaces.Adddt_enlacesRow(nr);
                                 */
                             }
+                            sqlTabla = "create table IF NOT EXISTS sunat_webservices (id integer primary key autoincrement, sunat_plazoT integer default 0, sunat_horaT varchar(8) default '', sunat_TokenAct varchar(500) default '')";
+                            using (SqliteCommand cmd = new SqliteCommand(sqlTabla, cnx))
+                            {
+                                cmd.ExecuteNonQuery();
+                            }
+                            int k = 0;
+                            using (SqliteCommand cmd = new SqliteCommand("select count(id) from sunat_webservices", cnx))
+                            {
+                                using (SqliteDataReader dr = cmd.ExecuteReader())
+                                {
+                                    if (dr.Read())
+                                    {
+                                        k = dr.GetInt16(0);
+                                    }
+                                }
+                            }
+                            if (k == 0)
+                            {
+                                string insta = "insert into sunat_webservices (sunat_plazoT,sunat_horaT,sunat_TokenAct) values (0,'','') where ";
+                                using (SqliteCommand cmd = new SqliteCommand(insta, cnx))
+                                {
+                                    cmd.ExecuteNonQuery();
+                                }
+                            }
+
                             i = i + 1;
                             backgroundWorker1.ReportProgress(i);
-
                         }
                     }
                 }

@@ -78,7 +78,8 @@ namespace TransCarga
         #endregion
 
         libreria lib = new libreria();
-        guiati_e _E = new guiati_e();               // instanciamos el form de guias para usar sus metodos
+        //guiati_e _E = new guiati_e();               // instanciamos el form de guias para usar sus metodos
+        acGRE_sunat _E = new acGRE_sunat();           // instanciamos la clase 
         DataTable dt = new DataTable();
         DataTable dtestad = new DataTable();
         DataTable dttaller = new DataTable();
@@ -618,8 +619,8 @@ namespace TransCarga
                     btnAct.UseColumnTextForButtonValue = true;
                     btnAct.DefaultCellStyle.Padding = padding;
 
-                    // EMISION,GUIA_ELEC,ORIGEN,DESTINO,ESTADO,SUNAT,CDR_GEN,.........,ad.cdr,ad.textoQR,ad.nticket,g.cantfilas
-                    //     0        1       2      3       4     5      6     7 8 9 10    11      12         13        14
+                    // EMISION,GUIA_ELEC,ORIGEN,DESTINO,ESTADO,SUNAT,CDR_GEN,.........,ad.cdr,ad.textoQR,ad.nticket,g.cantfilas,g.id
+                    //     0        1       2      3       4     5      6     7 8 9 10    11      12         13        14        15
                     //dgv_GRE_est.CellPainting += grid_CellPainting;        // no funciona bien, no se adecua
                     dgv_GRE_est.CellClick += DataGridView1_CellClick;
                     dgv_GRE_est.Columns.Insert(7, btnTk);   
@@ -630,6 +631,7 @@ namespace TransCarga
                     dgv_GRE_est.Columns[12].Visible = false;
                     dgv_GRE_est.Columns[13].Visible = false;
                     dgv_GRE_est.Columns[14].Visible = false;
+                    dgv_GRE_est.Columns[15].Visible = false;
                     if (dgv_GRE_est.Rows.Count > 0)         // autosize filas
                     {
                         for (int i = 0; i < dgv_GRE_est.Columns.Count - 8; i++)
@@ -682,19 +684,20 @@ namespace TransCarga
         private string consultaE(string ticket, int rowIndex)       // consulta estado en Sunat
         {
             string retorna = "";
-
+            Tuple<string, string> resCon = null;
             if (ticket == "") return retorna;
 
-            string token = _E.conex_token(c_t);
-            string resCon = _E.consultaC(ticket, token);
-            if (resCon == "Aceptado" || resCon == "Rechazado" || resCon == "Error")
+            string token = _E.conex_token_(c_t);
+            resCon = _E.consultaC((rb_GRE_R.Checked == true) ? "cabguiar" : "cabguiai", dgv_GRE_est.Rows[rowIndex].Cells[15].Value.ToString(), ticket, token,
+                dgv_GRE_est.Rows[rowIndex].Cells[1].Value.ToString().Substring(0,4), dgv_GRE_est.Rows[rowIndex].Cells[1].Value.ToString().Substring(5, 8), rutaxml);
+            if (resCon != null && (resCon.Item1 == "Aceptado" || resCon.Item1 == "Rechazado" || resCon.Item1 == "Error"))
             {
                 // consultamos y actualizamos la grilla
                 using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
                 {
                     conn.Open();
-                    //EMISION,GUIA_ELEC,ORIGEN,DESTINO,ESTADO,SUNAT,CDR_GEN,.........,ad.cdr,ad.textoQR,ad.nticket,g.cantfilas
-                    //    0        1       2      3       4     5      6    7 8 9 10    11      12         13         14
+                    //EMISION,GUIA_ELEC,ORIGEN,DESTINO,ESTADO,SUNAT,CDR_GEN,.........,ad.cdr,ad.textoQR,ad.nticket,g.cantfilas,g.id
+                    //    0        1       2      3       4     5      6    7 8 9 10    11      12         13         14        15
 
                     string xxx = "select * from adiguias where nticket=@ntk";
                     using (MySqlCommand micon = new MySqlCommand(xxx, conn))
@@ -1324,7 +1327,7 @@ namespace TransCarga
             if (rb_GRE_R.Checked == true) 
             {
                 consulta = "SELECT g.fechopegr AS EMISION,concat(g.serguir,'-',g.numguir) AS GUIA_ELEC,lo.descrizionerid AS ORIGEN,ld.DescrizioneRid AS DESTINO," +
-                    "es.DescrizioneRid AS ESTADO,ad.estadoS AS SUNAT,ad.cdrgener AS CDR_GEN,ad.cdr,ad.textoQR,ad.nticket,g.cantfilas " +
+                    "es.DescrizioneRid AS ESTADO,ad.estadoS AS SUNAT,ad.cdrgener AS CDR_GEN,ad.cdr,ad.textoQR,ad.nticket,g.cantfilas,g.id " +
                     "FROM cabguiar g LEFT JOIN adiguiar ad ON ad.idg = g.id " +
                     "LEFT JOIN desc_loc lo ON lo.IDCodice = g.locorigen " +
                     "LEFT JOIN desc_loc ld ON ld.IDCodice = g.locdestin " +
@@ -1334,7 +1337,7 @@ namespace TransCarga
             if (rb_GRE_T.Checked == true)
             {
                 consulta = "SELECT g.fechopegr AS EMISION,concat(g.sergui,'-',g.numgui) AS GUIA_ELEC,lo.descrizionerid AS ORIGEN,ld.DescrizioneRid AS DESTINO," +
-                    "es.DescrizioneRid AS ESTADO,ad.estadoS AS SUNAT,ad.cdrgener AS CDR_GEN,ad.cdr,ad.textoQR,ad.nticket,g.cantfilas " +
+                    "es.DescrizioneRid AS ESTADO,ad.estadoS AS SUNAT,ad.cdrgener AS CDR_GEN,ad.cdr,ad.textoQR,ad.nticket,g.cantfilas,g.id " +
                     "FROM cabguiai g LEFT JOIN adiguias ad ON ad.idg = g.id " +
                     "LEFT JOIN desc_loc lo ON lo.IDCodice = g.locorigen " +
                     "LEFT JOIN desc_loc ld ON ld.IDCodice = g.locdestin " +
@@ -2483,7 +2486,7 @@ namespace TransCarga
                     string cdrbyte = dgv_GRE_est.Rows[e.RowIndex].Cells[11].Value.ToString();
                     string serie = dgv_GRE_est.Rows[e.RowIndex].Cells[1].Value.ToString().Substring(0, 4);
                     string corre = dgv_GRE_est.Rows[e.RowIndex].Cells[1].Value.ToString().Substring(5, 8);
-                    _E.convierteCDR(cdrbyte, serie, corre, rutatxt);
+                    _E.convierteCDR((rb_GRE_R.Checked == true) ? "cabguiar" : "cabguiai", cdrbyte, serie, corre, rutaxml);
                 }
             }
             if (dgv_GRE_est.Columns[e.ColumnIndex].Name.ToString() == "iTK")
