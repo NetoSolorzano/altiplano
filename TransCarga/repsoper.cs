@@ -634,14 +634,14 @@ namespace TransCarga
                     dgv_GRE_est.Columns[15].Visible = false;
                     if (dgv_GRE_est.Rows.Count > 0)         // autosize filas
                     {
-                        for (int i = 0; i < dgv_GRE_est.Columns.Count - 8; i++)
+                        for (int i = 0; i < dgv_GRE_est.Columns.Count - 9; i++)
                         {
                             dgv_GRE_est.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
                             _ = decimal.TryParse(dgv_GRE_est.Rows[0].Cells[i].Value.ToString(), out decimal vd);
                             if (vd != 0) dgv_GRE_est.Columns[i].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
                         }
                         b = 0;
-                        for (int i = 0; i < dgv_GRE_est.Columns.Count - 8; i++)
+                        for (int i = 0; i < dgv_GRE_est.Columns.Count - 9; i++)
                         {
                             int a = dgv_GRE_est.Columns[i].Width;
                             b += a;
@@ -2214,7 +2214,7 @@ namespace TransCarga
                     dgv_GRE_est.Enabled = true;
                     dgv_GRE_est.ReadOnly = false;
                     dgv_GRE_est.Columns[0].ReadOnly = false;
-                    for (int i = 1; i < dgv_GRE_est.Columns.Count - 6; i++)
+                    for (int i = 1; i < dgv_GRE_est.Columns.Count - 9; i++)
                     {
                         dgv_GRE_est.Columns[i].ReadOnly = true;
                     }
@@ -2486,7 +2486,7 @@ namespace TransCarga
                     string cdrbyte = dgv_GRE_est.Rows[e.RowIndex].Cells[11].Value.ToString();
                     string serie = dgv_GRE_est.Rows[e.RowIndex].Cells[1].Value.ToString().Substring(0, 4);
                     string corre = dgv_GRE_est.Rows[e.RowIndex].Cells[1].Value.ToString().Substring(5, 8);
-                    _E.convierteCDR((rb_GRE_R.Checked == true) ? "cabguiar" : "cabguiai", cdrbyte, serie, corre, rutaxml);
+                    _E.convierteCDR((rb_GRE_R.Checked == true) ? "09" : "31", cdrbyte, serie, corre, rutaxml);
                 }
             }
             if (dgv_GRE_est.Columns[e.ColumnIndex].Name.ToString() == "iTK")

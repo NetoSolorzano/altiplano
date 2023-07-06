@@ -419,6 +419,7 @@ form guiari_e, desarrollo del form, guía de remisión REMITENTE :
 	- impresión .................................................................................... ok 04/07/2023
 	- Edicion, anulación ........................................................................... ok 05/07/2023
 OJO: form guiari_e, la planilla de carg es la misma que las guías transportista ?? .. SI ...........   triggers DB 
+form acGRE_sunat, clase con los metodos de web services de sunat ................................... ok 05/07/2023
 form guiati_e, adecuaciones, arreglos y mejoras del modelo guías remitente ......................... 
 
 Formatos jrxml de fcturas y boletas estándares multimoneda y con/sin detracción, contado/credito ... 

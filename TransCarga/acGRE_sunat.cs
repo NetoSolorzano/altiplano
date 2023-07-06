@@ -200,7 +200,7 @@ namespace TransCarga
                         //retorna = tx_estaSunat.Text;
                         retorna = new Tuple<string, string>("Aceptado", "Aceptado");
                         // descompone el arcCDR para obtener los datos del QR
-                        string cuidado = convierteCDR(tx_idr, Rpta.arcCdr, tx_serie, tx_numero, rutaxml);
+                        string cuidado = convierteCDR((nomTabla == "cabguiar") ? "09" : "31", Rpta.arcCdr, tx_serie, tx_numero, rutaxml);
                         if (cuidado != null && cuidado != "")
                         {
                             using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
