@@ -657,10 +657,10 @@ namespace TransCarga
                         MessageBox.Show("No existe el número buscado!", "Atención - dato incorrecto",
                             MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                     }
-                    if (Tx_modo.Text != "NUEVO" && (tx_estaSunat.Text != "Aceptado" && tx_estaSunat.Text != "Rechazado"))
+                    if (Tx_modo.Text != "NUEVO" && (tx_estaSunat.Text == "Enviado" || tx_estaSunat.Text == "En proceso"))
                     {
                         // llamada al metodo que consultará el estado del comprobante y actualizara 
-                        if (tx_dat_tickSunat.Text != "") _Sunat.consultaC("cabguiar", tx_idr.Text, tx_dat_tickSunat.Text, _Sunat.conex_token_(c_t), tx_serie.Text, tx_numero.Text, rutaxml);
+                        if (tx_dat_tickSunat.Text != "") _Sunat.consultaC("adiguiar", tx_idr.Text, tx_dat_tickSunat.Text, _Sunat.conex_token_(c_t), tx_serie.Text, tx_numero.Text, rutaxml);
                     }
                     else
                     {
@@ -4447,12 +4447,19 @@ namespace TransCarga
         public string numTicket { get; set; }           // código ticket respuesta
         public DateTime fecRecepcion { get; set; }      // fecha hora de la respuesta
     }
+    public class Error 
+    {
+        public string numError { get; set; }
+        public string desError { get; set; }
+    }
     public class Rspta_ConsultaR                         // respuesta a la consulta de estado de comprobante
     {
         public string codRespuesta { get; set; }
         public string arcCdr { get; set; }
         public string indCdrGenerado { get; set; }
-        public string error { get; set; }
+        //public string error { get; set; }
+        public Error error { get; set; }
+
     }
     public class TokenR                                  // token de acceso de 3600 segundos
     {

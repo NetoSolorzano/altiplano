@@ -688,17 +688,21 @@ namespace TransCarga
             if (ticket == "") return retorna;
 
             string token = _E.conex_token_(c_t);
-            resCon = _E.consultaC((rb_GRE_R.Checked == true) ? "cabguiar" : "cabguiai", dgv_GRE_est.Rows[rowIndex].Cells[15].Value.ToString(), ticket, token,
+            resCon = _E.consultaC((rb_GRE_R.Checked == true) ? "adiguiar" : "adiguias", dgv_GRE_est.Rows[rowIndex].Cells[15].Value.ToString(), ticket, token,
                 dgv_GRE_est.Rows[rowIndex].Cells[1].Value.ToString().Substring(0,4), dgv_GRE_est.Rows[rowIndex].Cells[1].Value.ToString().Substring(5, 8), rutaxml);
-            if (resCon != null && (resCon.Item1 == "Aceptado" || resCon.Item1 == "Rechazado" || resCon.Item1 == "Error"))
+            if (resCon.Item1 == "Rechazado" || resCon.Item1 == "Error")
             {
-                // consultamos y actualizamos la grilla
+                // resCon != null && (resCon.Item1 == "Aceptado" || resCon.Item1 == "Rechazado" || resCon.Item1 == "Error")
+                // Acá, en lugar de hacer una consulta debería actualizarse la grilla con los valores devueltos en resCon
+
+                MessageBox.Show(resCon.Item2,resCon.Item1,MessageBoxButtons.OK,MessageBoxIcon.Error);
+
+                /* consultamos y actualizamos la grilla
                 using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
                 {
                     conn.Open();
                     //EMISION,GUIA_ELEC,ORIGEN,DESTINO,ESTADO,SUNAT,CDR_GEN,.........,ad.cdr,ad.textoQR,ad.nticket,g.cantfilas,g.id
                     //    0        1       2      3       4     5      6    7 8 9 10    11      12         13         14        15
-
                     string xxx = "select * from adiguias where nticket=@ntk";
                     using (MySqlCommand micon = new MySqlCommand(xxx, conn))
                     {
@@ -722,6 +726,7 @@ namespace TransCarga
                         }
                     }
                 }
+                */
             }
 
             return retorna;
@@ -1381,7 +1386,7 @@ namespace TransCarga
                 conn.Open();
                 for (int i=0; i < dgv_GRE_est.Rows.Count; i++)
                 {
-                    if (dgv_GRE_est.Rows[i].Cells[5].Value.ToString() != "Aceptado" && dgv_GRE_est.Rows[i].Cells[5].Value.ToString() != "Rechazado" &&
+                    if ((dgv_GRE_est.Rows[i].Cells[5].Value.ToString() == "Enviado" || dgv_GRE_est.Rows[i].Cells[5].Value.ToString() == "En proceso") &&
                         (dgv_GRE_est.Rows[i].Cells[6].Value.ToString() == "0" || dgv_GRE_est.Rows[i].Cells[6].Value.ToString().Trim() == ""))
                     {
                         consultaE(dgv_GRE_est.Rows[i].Cells[12].Value.ToString(), i);
@@ -2460,7 +2465,7 @@ namespace TransCarga
         {
             if (dgv_GRE_est.Columns[e.ColumnIndex].Name.ToString() == "consulta")
             {
-                if (true)   // dgv_GRE_est.Rows[e.RowIndex].Cells[e.ColumnIndex].ReadOnly == false 
+                if (dgv_GRE_est.Rows[e.RowIndex].Cells[5].Value.ToString() == "Enviado" || dgv_GRE_est.Rows[e.RowIndex].Cells[5].Value.ToString() == "En proceso")
                 {
                     if (dgv_GRE_est.Rows[e.RowIndex].Cells[6].Value.ToString() == "0" ||
                         dgv_GRE_est.Rows[e.RowIndex].Cells[6].Value.ToString().Trim() == "")

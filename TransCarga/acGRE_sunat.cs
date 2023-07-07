@@ -12,6 +12,7 @@ using System.Security.Cryptography;
 using MySql.Data.MySqlClient;
 using Microsoft.Data.Sqlite;
 using System.Xml;
+using System.Windows.Forms;
 
 namespace TransCarga
 {
@@ -110,14 +111,18 @@ namespace TransCarga
                         if (lite.Read())
                         {
                             if (lite.GetString(2) == "") tiempoT = 0;
-                            else tiempoT = (int)(DateTime.Now.TimeOfDay.Subtract(TimeSpan.Parse(lite.GetString(2))).TotalSeconds);
+                            else 
+                            { 
+                                //tiempoT = (int)(DateTime.Now.TimeOfDay.Subtract(TimeSpan.Parse(lite.GetString(2))).TotalSeconds);
+                                tiempoT = (int)(DateTime.Now - DateTime.Parse(lite.GetString(2))).TotalSeconds;
+                            }
                             plazoT = lite.GetInt16(1);
                             sunat_TokenAct = lite.GetString(3);
                         }
                     }
                 }
             }
-
+            //MessageBox.Show(tiempoT.ToString(),"now - sunat_horaT");
             if (tiempoT >= (plazoT - 60))             // un minuto antes que venza la vigencia del token
             {
                 ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
@@ -135,12 +140,12 @@ namespace TransCarga
                 IRestResponse response = client.Execute(request);
                 if (response.StatusCode.ToString() != "OK")
                 {
-                    //MessageBox.Show("NO se pudo obtener el token" + Environment.NewLine + response.StatusDescription, "Error de conexión a Sunat", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("NO se pudo obtener el token" + Environment.NewLine + response.StatusDescription, "Error obteniendo token", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     retorna = "ERROR - NO se pudo obtener el token";
                 }
                 else
                 {
-                    var result = JsonConvert.DeserializeObject<Token>(response.Content);
+                    var result = JsonConvert.DeserializeObject<TokenR>(response.Content);
                     retorna = result.access_token;
                     using (SqliteConnection cnx = new SqliteConnection(CadenaConexion))
                     {
@@ -148,15 +153,17 @@ namespace TransCarga
                         using (SqliteCommand micon = new SqliteCommand("update sunat_webservices set sunat_plazoT=@sp,sunat_horaT=@sh,sunat_TokenAct=@st", cnx))
                         {
                             micon.Parameters.AddWithValue("@sp", result.expires_in);
-                            micon.Parameters.AddWithValue("@sh", DateTime.Now.TimeOfDay);
+                            micon.Parameters.AddWithValue("@sh", DateTime.Now);   // DateTime.Now.TimeOfDay
                             micon.Parameters.AddWithValue("@st", result.access_token);
                             micon.ExecuteNonQuery();
+                            //MessageBox.Show("Acabo de actualizar en sqlite el token: " + result.access_token);
                         }
                     }
                 }
             }
             else
             {
+                //MessageBox.Show("Estamos dentro del plazo " + tiempoT.ToString());
                 retorna = sunat_TokenAct;     // retorna el token actual
             }
             return retorna;
@@ -170,11 +177,13 @@ namespace TransCarga
             var request = new RestRequest(Method.GET);
             request.AddHeader("Authorization", "Bearer " + token);
             IRestResponse response = client.Execute(request);
-            if (response.ErrorMessage != null) // response.Content.Contains("error")
+            
+            if (response.ResponseStatus.ToString() == "Error") // Rpta == null
             {
-                retorna = new Tuple<string, string>("Error", response.Content.ToString()); //tx_estaSunat.Text = "Error";
+                retorna = new Tuple<string, string>("Error", response.ErrorMessage.ToString()); //tx_estaSunat.Text = "Error";
                 //tx_estaSunat.Tag = response.Content.ToString();
                 //retorna = tx_estaSunat.Text;
+                /*
                 using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
                 {
                     conn.Open();
@@ -182,63 +191,85 @@ namespace TransCarga
                     using (MySqlCommand micon = new MySqlCommand(actua, conn))
                     {
                         micon.Parameters.AddWithValue("@est", "Error");
-                        micon.Parameters.AddWithValue("@cdr", response.Content.ToString());
+                        micon.Parameters.AddWithValue("@cdr", response.ErrorMessage.ToString());
                         micon.Parameters.AddWithValue("@idg", tx_idr);
                         micon.ExecuteNonQuery();
                     }
-                }
+                } */
             }
             else
             {
-                var Rpta = JsonConvert.DeserializeObject<Rspta_ConsultaR>(response.Content);
-                if (Rpta.arcCdr != null)
+                try
                 {
-                    string CodRrpta = Rpta.codRespuesta.ToString();
-                    if (CodRrpta == "0" || CodRrpta == "99")
+                    var Rpta = JsonConvert.DeserializeObject<Rspta_ConsultaR>(response.Content);
+                    if (Rpta.arcCdr != null)
                     {
-                        //tx_estaSunat.Text = "Aceptado";
-                        //retorna = tx_estaSunat.Text;
-                        retorna = new Tuple<string, string>("Aceptado", "Aceptado");
-                        // descompone el arcCDR para obtener los datos del QR
-                        string cuidado = convierteCDR((nomTabla == "cabguiar") ? "09" : "31", Rpta.arcCdr, tx_serie, tx_numero, rutaxml);
-                        if (cuidado != null && cuidado != "")
+                        string CodRrpta = Rpta.codRespuesta.ToString();
+                        if (CodRrpta == "98")
                         {
-                            using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
+                            retorna = new Tuple<string, string>("En proceso", "En proceso");
+                        }
+                        if (CodRrpta == "99" && Rpta.indCdrGenerado == "1") // enviado con error y CDR generado
+                        {
+                            retorna = new Tuple<string, string>("Aceptado", "Error");
+                        }
+                        if (CodRrpta == "99" && Rpta.indCdrGenerado == "0") // enviado con error sin CDR generado
+                        {
+                            retorna = new Tuple<string, string>("Rechazado", "Error");
+                        }
+                        if (CodRrpta == "0")                                // enviado OK con CDR generado
+                        {
+                            retorna = new Tuple<string, string>("Aceptado", "Aceptado");
+                        }
+                        if (CodRrpta != "98" && Rpta.indCdrGenerado == "1")             // CDR generado con y sin error
+                        {
+                            // descompone el arcCDR para obtener los datos del QR
+                            string cuidado = convierteCDR((nomTabla == "adiguiar") ? "09" : "31", Rpta.arcCdr, tx_serie, tx_numero, rutaxml);
+                            if (cuidado != null && cuidado != "")
                             {
-                                conn.Open();
-                                string actua = "update " + nomTabla + " set estadoS=@est,cdr=@cdr,cdrgener=@gen,textoQR=@tqr where idg=@idg";  // ,fticket=@ftk
-                                using (MySqlCommand micon = new MySqlCommand(actua, conn))
+                                using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
                                 {
-                                    micon.Parameters.AddWithValue("@est", "Aceptado");
-                                    micon.Parameters.AddWithValue("@cdr", Rpta.arcCdr.ToString());
-                                    micon.Parameters.AddWithValue("@gen", Rpta.indCdrGenerado.ToString());
-                                    micon.Parameters.AddWithValue("@tqr", cuidado);
-                                    //micon.Parameters.AddWithValue("", );
-                                    micon.Parameters.AddWithValue("@idg", tx_idr);
-                                    micon.ExecuteNonQuery();
+                                    conn.Open();
+                                    string actua = "update " + nomTabla + " set estadoS=@est,cdr=@cdr,cdrgener=@gen,textoQR=@tqr where idg=@idg";  // ,fticket=@ftk
+                                    using (MySqlCommand micon = new MySqlCommand(actua, conn))
+                                    {
+                                        micon.Parameters.AddWithValue("@est", "Aceptado");
+                                        micon.Parameters.AddWithValue("@cdr", Rpta.arcCdr.ToString());
+                                        micon.Parameters.AddWithValue("@gen", Rpta.indCdrGenerado.ToString());
+                                        micon.Parameters.AddWithValue("@tqr", cuidado);
+                                        //micon.Parameters.AddWithValue("", );
+                                        micon.Parameters.AddWithValue("@idg", tx_idr);
+                                        micon.ExecuteNonQuery();
+                                    }
                                 }
                             }
                         }
-                    }
-                    else
-                    {
-                        //tx_estaSunat.Text = (CodRrpta == "98") ? "En Proceso" : "Rechazado";
-                        //retorna = tx_estaSunat.Text;
-                        retorna = new Tuple<string, string>((CodRrpta == "98") ? "En Proceso" : "Rechazado", (CodRrpta == "98") ? "En Proceso" : "Rechazado");
-                        using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
+                        else
                         {
-                            conn.Open();
-                            string actua = "update " + nomTabla + " set estadoS=@est,cdr=@cdr,cdrgener=@gen where idg=@idg";  // (serie, numero, , @seg, @nug, @nti, @fti)";
-                            using (MySqlCommand micon = new MySqlCommand(actua, conn))
+                            //tx_estaSunat.Text = (CodRrpta == "98") ? "En Proceso" : "Rechazado";
+                            //retorna = tx_estaSunat.Text;
+                            //retorna = new Tuple<string, string>((CodRrpta == "98") ? "En Proceso" : "Rechazado", (CodRrpta == "98") ? "En Proceso" : "Rechazado");
+                            /*
+                            using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
                             {
-                                micon.Parameters.AddWithValue("@est", (CodRrpta == "0") ? "Aceptado" : (CodRrpta == "98") ? "En Proceso" : "Rechazado");
-                                micon.Parameters.AddWithValue("@cdr", Rpta.arcCdr.ToString());
-                                micon.Parameters.AddWithValue("@gen", Rpta.indCdrGenerado.ToString());
-                                micon.Parameters.AddWithValue("@idg", tx_idr);
-                                micon.ExecuteNonQuery();
-                            }
+                                conn.Open();
+                                string actua = "update " + nomTabla + " set estadoS=@est,cdr=@cdr,cdrgener=@gen where idg=@idg";  // (serie, numero, , @seg, @nug, @nti, @fti)";
+                                using (MySqlCommand micon = new MySqlCommand(actua, conn))
+                                {
+                                    micon.Parameters.AddWithValue("@est", (CodRrpta == "0") ? "Aceptado" : (CodRrpta == "98") ? "En Proceso" : "Rechazado");
+                                    micon.Parameters.AddWithValue("@cdr", Rpta.arcCdr.ToString());
+                                    micon.Parameters.AddWithValue("@gen", Rpta.indCdrGenerado.ToString());
+                                    micon.Parameters.AddWithValue("@idg", tx_idr);
+                                    micon.ExecuteNonQuery();
+                                }
+                            } */
                         }
                     }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message,"Error en Deserialización");  // Rpta.codRespuesta.ToString(),Rpta.indCdrGenerado
+                    retorna = new Tuple<string, string>("Error", ex.Message);
                 }
             }
             return retorna;

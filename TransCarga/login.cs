@@ -468,7 +468,7 @@ namespace TransCarga
                                 setC.dt_enlaces.Adddt_enlacesRow(nr);
                                 */
                             }
-                            sqlTabla = "create table IF NOT EXISTS sunat_webservices (id integer primary key autoincrement, sunat_plazoT integer default 0, sunat_horaT varchar(8) default '', sunat_TokenAct varchar(500) default '')";
+                            sqlTabla = "create table IF NOT EXISTS sunat_webservices (id integer primary key autoincrement, sunat_plazoT integer default 0, sunat_horaT text default '', sunat_TokenAct varchar(500) default '')";
                             using (SqliteCommand cmd = new SqliteCommand(sqlTabla, cnx))
                             {
                                 cmd.ExecuteNonQuery();
@@ -486,7 +486,7 @@ namespace TransCarga
                             }
                             if (k == 0)
                             {
-                                string insta = "insert into sunat_webservices (sunat_plazoT,sunat_horaT,sunat_TokenAct) values (0,'','') where ";
+                                string insta = "insert into sunat_webservices (sunat_plazoT,sunat_horaT,sunat_TokenAct) values (0,'','')";
                                 using (SqliteCommand cmd = new SqliteCommand(insta, cnx))
                                 {
                                     cmd.ExecuteNonQuery();
