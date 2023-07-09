@@ -89,6 +89,7 @@ namespace TransCarga
         string tipoDocRem = "";         // CODIGO SUNAT tipo de documento RUC/DNI remitente de la GRT
         string tipoDocDes = "";         // CODIGO SUNAT tipo de documento RUC/DNI destinatario de la GRT
         string v_urege = "";            // usuarios que pueden regenerar txt
+        string v_uagin = "";            // usuarios que pueden hacer anulacion interna
         string webdni = "";             // ruta web del buscador de DNI
         string NoRetGl = "";            // glosa de retorno cuando umasapa no encuentra el dni o ruc
         // GRE
@@ -425,6 +426,7 @@ namespace TransCarga
                                         if (lite.GetString(2).ToString() == "marca") v_marGRET = lite.GetString(3).ToString().Trim();             // marca de guía transportista electrónica
                                         if (lite.GetString(2).ToString() == "ini_GRET") v_iniGRET = lite.GetString(3).ToString().Trim();          // inicial (sigla) de las GRE-T
                                         if (lite.GetString(2).ToString() == "UsuRegen") v_urege = lite.GetString(3).ToString().Trim();            // usuarios que pueden regenerar txt
+                                        if (lite.GetString(2).ToString() == "UsuAnuInt") v_uagin = lite.GetString(3).ToString().Trim();           // usuarios que pueden hacer anulaciones internas
                                     }
                                     if (lite.GetString(1).ToString() == "impresion")
                                     {
@@ -2085,7 +2087,11 @@ namespace TransCarga
                     MessageBox.Show("No existe DNI del chofer!", "Faltan datos", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
-
+                if (tx_fechope.Text != tx_pla_fech.Text)
+                {
+                    MessageBox.Show("La fecha de la Guía y la del traslado deben ser iguales", "Atención, corrija", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
             }
             #endregion
             // grabamos, actualizamos, etc
@@ -2660,20 +2666,31 @@ namespace TransCarga
         {
             // En Guías de remisión electrónicas SI HAY ANULACION INTERNA cuando da error al momento de generar el xml
             // anulaciones normales se hacen DESPUES de haberse hecho en sunat en el portal con clave SOL o en el app emprender 08/03/2023
+            string parte = " ";
+            var aa = DialogResult.No;
+            if (v_uagin.Contains(asd))   // usuario con acceso a anulación interna
+            {
+                aa = MessageBox.Show("Anulación interna para recuperar el número?" + Environment.NewLine +
+                    "Se cambia la serie a ANU", "Atención, confirme por favor",
+                    MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (aa == DialogResult.Yes) parte = ",a.serguir=@coad,b.serie=@coad ";
+            }
             using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
             {
                 conn.Open();
                 if (conn.State == ConnectionState.Open)
                 {
-                    string canul = "update cabguiar set obspregri=@obsr1,estadoser=@estser,usera=@asd,fecha=now(),idplani=0,fechplani=NULL," +
-                        "serplagri='',numplagri='',plaplagri='',carplagri='',autplagri='',confvegri='',breplagri='',proplagri=''," +
-                        "verApp=@veap,diriplan4=@dil4,diripwan4=@diw4,netbname=@nbnp,estintreg=@eiar " +
-                        "where id=@idr";
+                    string canul = "update cabguiar a left join adiguiar b on b.idg=a.id " +
+                        "set a.obspregri=@obsr1,a.estadoser=@estser,a.usera=@asd,a.fecha=now(),a.idplani=0,a.fechplani=NULL," +
+                        "a.serplagri='',a.numplagri='',a.plaplagri='',a.carplagri='',a.autplagri='',a.confvegri='',a.breplagri='',a.proplagri=''," +
+                        "a.verApp=@veap,a.diriplan4=@dil4,a.diripwan4=@diw4,a.netbname=@nbnp,a.estintreg=@eiar" + parte + 
+                        "where a.id=@idr";
                     using (MySqlCommand micon = new MySqlCommand(canul, conn))
                     {
                         micon.Parameters.AddWithValue("@idr", tx_idr.Text);
                         micon.Parameters.AddWithValue("@obsr1", tx_obser1.Text);
                         micon.Parameters.AddWithValue("@estser", codAnul);
+                        if (aa == DialogResult.Yes) micon.Parameters.AddWithValue("@coad", v_sanu);
                         micon.Parameters.AddWithValue("@asd", asd);
                         micon.Parameters.AddWithValue("@dil4", lib.iplan());
                         micon.Parameters.AddWithValue("@diw4", TransCarga.Program.vg_ipwan);

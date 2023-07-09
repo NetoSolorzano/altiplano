@@ -302,6 +302,7 @@ namespace TransCarga
             archiXml.Load(archiS);
             XmlNode fqr = archiXml.GetElementsByTagName("DocumentDescription", "urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2").Item(0);
             retorna = fqr.InnerText;
+            archiS.Close();
 
             return retorna;
         }
