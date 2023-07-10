@@ -89,6 +89,7 @@ namespace TransCarga
         string tipoDocRem = "";         // CODIGO SUNAT tipo de documento RUC/DNI remitente de la GRT
         string tipoDocDes = "";         // CODIGO SUNAT tipo de documento RUC/DNI destinatario de la GRT
         string v_urege = "";            // usuarios que pueden regenerar txt
+        string v_uagin = "";            // usuarios que pueden hacer anulaciones internas
         string webdni = "";             // ruta web del buscador de DNI
         string NoRetGl = "";            // glosa de retorno cuando umasapa no encuentra el dni o ruc
         // GRE
@@ -111,8 +112,6 @@ namespace TransCarga
         int plazoT = 0;                 // Sunat Webservice - Cantidad en segundos
         string[] c_t = new string[6] { "", "", "", "", "", ""}; // parametros para generar el token
         //
-        static libreria lib = new libreria();   // libreria de procedimientos
-        publico lp = new publico();             // libreria de clases
         string verapp = System.Diagnostics.FileVersionInfo.GetVersionInfo(Application.ExecutablePath).FileVersion;
         string claveSeg = "";                       // clave de seguridad del envío
         string nomclie = Program.cliente;           // cliente usuario del sistema
@@ -121,6 +120,10 @@ namespace TransCarga
         string asd = Program.vg_user;               // usuario conectado al sistema
         string nRegMTC = Program.regmtc;            // numero registro del MTC
         #endregion
+
+        acGRE_sunat _Sunat = new acGRE_sunat();
+        static libreria lib = new libreria();   // libreria de procedimientos
+        publico lp = new publico();             // libreria de clases
 
         AutoCompleteStringCollection departamentos = new AutoCompleteStringCollection();// autocompletado departamentos
         AutoCompleteStringCollection provincias = new AutoCompleteStringCollection();   // autocompletado provincias
@@ -413,6 +416,7 @@ namespace TransCarga
                                         if (lite.GetString(2).ToString() == "marca") v_marGRET = lite.GetString(3).ToString().Trim();             // marca de guía transportista electrónica
                                         if (lite.GetString(2).ToString() == "ini_GRET") v_iniGRET = lite.GetString(3).ToString().Trim();          // inicial (sigla) de las GRE-T
                                         if (lite.GetString(2).ToString() == "UsuRegen") v_urege = lite.GetString(3).ToString().Trim();            // usuarios que pueden regenerar txt
+                                        if (lite.GetString(2).ToString() == "UsuAnuInt") v_uagin = lite.GetString(3).ToString().Trim();           // usuarios que pueden hacer anulaciones internas
                                     }
                                     if (lite.GetString(1).ToString() == "impresion")
                                     {
@@ -494,7 +498,8 @@ namespace TransCarga
                         "ifnull(d.marca,'') as marca,ifnull(d.modelo,'') as modelo,ifnull(r.marca,'') as marCarret,ifnull(r.confve,'') as confvCarret,ifnull(r.autor1,'') as autCarret," +
                         "ifnull(er.numerotel1,'') as telrem,ifnull(ed.numerotel1,'') as teldes,ifnull(t.nombclt,'') as clifact," +
                         "a.marca_gre,a.tidocor,a.rucDorig,a.lpagop,a.pesoKT,a.tidocor2,a.rucDorig2,a.docsremit2,a.marca1," +
-                        "ifnull(ad.nticket,'') as nticket,ifnull(ad.estadoS,'') as estadoS, ifnull(ad.cdr,'') as cdr,ifnull(ad.cdrgener,'') as cdrgener,ifnull(ad.textoQR,'') as textoQR " +
+                        "ifnull(ad.nticket,'') as nticket,ifnull(ad.estadoS,'') as estadoS, ifnull(ad.cdr,'') as cdr,ifnull(ad.cdrgener,'') as cdrgener," +
+                        "ifnull(ad.textoQR,'') as textoQR,ifnull(ad.fticket,'') as fticket " +
                         "from cabguiai a " +
                         "left join adiguias ad on ad.idg=a.id " +
                         "left join controlg b on b.serguitra=a.sergui and b.numguitra=a.numgui " +
@@ -599,6 +604,7 @@ namespace TransCarga
                             tx_dat_tickSunat.Text = dr.GetString("nticket");
                             tx_estaSunat.Text = dr.GetString("estadoS");
                             tx_dat_textoqr.Text = dr.GetString("textoQR");
+                            tx_fticket.Text = dr.GetString("fticket");
 
                             cmb_origen.SelectedValue = tx_dat_locori.Text;
                             cmb_origen_SelectionChangeCommitted(null, null);
@@ -632,10 +638,11 @@ namespace TransCarga
                         MessageBox.Show("No existe el número buscado!", "Atención - dato incorrecto",
                             MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                     }
-                    if (Tx_modo.Text != "NUEVO" && (tx_estaSunat.Text != "Aceptado" && tx_estaSunat.Text != "Rechazado"))
+                    if (Tx_modo.Text != "NUEVO" && (tx_estaSunat.Text == "Enviado" || tx_estaSunat.Text == "En proceso"))    // (tx_estaSunat.Text != "Aceptado" && tx_estaSunat.Text != "Rechazado")
                     {
                         // llamada al metodo que consultará el estado del comprobante y actualizara 
-                        if (tx_dat_tickSunat.Text != "") consultaC(tx_dat_tickSunat.Text, conex_token(c_t));
+                        //if (tx_dat_tickSunat.Text != "") consultaC(tx_dat_tickSunat.Text, conex_token(c_t));
+                        if (tx_dat_tickSunat.Text != "") _Sunat.consultaC("adiguias", tx_idr.Text, tx_dat_tickSunat.Text, _Sunat.conex_token_(c_t), tx_serie.Text, tx_numero.Text, rutaxml);
                     }
                     else
                     {
@@ -1281,6 +1288,7 @@ namespace TransCarga
         #region  guia electronica en sunat y psnet
 
         #region Sunat metodo directo
+        /*
         private bool sunat_api()                                // SI VAMOS A USAR 26/05/2023 este metodo directo
         {
             bool retorna = false;
@@ -1495,6 +1503,7 @@ namespace TransCarga
             }
             return retorna;
         }
+        */
         static private void CreaTablaLiteGRE()                  // llamado en el load del form, crea las tablas al iniciar
         {
             using (SqliteConnection cnx = new SqliteConnection(CadenaConexion))
@@ -1783,7 +1792,7 @@ namespace TransCarga
 
             return retorna;
         }
-        public string convierteCDR(string arCdr, string serie, string corre, string ruta)               // genera el cdr a partir de la respuesta de sunat arcCDR del json
+        /* public string convierteCDR(string arCdr, string serie, string corre, string ruta)               // genera el cdr a partir de la respuesta de sunat arcCDR del json
         {
             string retorna = "";
 
@@ -1813,7 +1822,7 @@ namespace TransCarga
             retorna = fqr.InnerText;
 
             return retorna;
-        }
+        } */
         #endregion Sunat metodo directo
 
         #region psnet
@@ -2448,7 +2457,11 @@ namespace TransCarga
                                 }
                                 if (ipeeg == "API_SUNAT")                   // Emisión directa consumiendo los servicios web de sunat api-rest
                                 {
-                                    if (sunat_api() == false)               // 27/05/2023
+                                    if (llenaTablaLiteGRE() != true)
+                                    {
+                                        MessageBox.Show("No se pudo llenar las tablas sqlite", "Error interno", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    }
+                                    if (_Sunat.sunat_api("31", "adiguias", c_t, tx_idr.Text, tx_serie.Text, tx_numero.Text, rutaxml) == false)               // sunat_api() == false
                                     {
                                         MessageBox.Show("Documento Guía inválida, debe anularse internamente", "Error: No se pudo generar GRE", MessageBoxButtons.OK, MessageBoxIcon.Error);
                                         using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
@@ -2599,18 +2612,25 @@ namespace TransCarga
                                     }
                                     if (ipeeg == "API_SUNAT")                   // Emisión directa consumiendo los servicios web de sunat api-rest
                                     {
-                                        if (sunat_api() == false)               // 27/05/2023
+                                        if (llenaTablaLiteGRE() != true)
                                         {
-                                            MessageBox.Show("Documento Guía inválida, debe anularse internamente", "Error: No se pudo generar GRE", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                                            using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
+                                            MessageBox.Show("No se pudo llenar las tablas sqlite", "Error interno", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                        }
+                                        else
+                                        {
+                                            if (_Sunat.sunat_api("31", "adiguias", c_t, tx_idr.Text, tx_serie.Text, tx_numero.Text, rutaxml) == false)               // sunat_api() == false
                                             {
-                                                conn.Open();
-                                                if (lib.procConn(conn) == true)
+                                                MessageBox.Show("Documento Guía inválida, debe anularse internamente", "Error: No se pudo generar GRE", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                                using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
                                                 {
-                                                    using (MySqlCommand micon = new MySqlCommand("update adiguias set estadoS='Invalido' where id=@idr"))
+                                                    conn.Open();
+                                                    if (lib.procConn(conn) == true)
                                                     {
-                                                        micon.Parameters.AddWithValue("@idr", tx_idr.Text);
-                                                        micon.ExecuteNonQuery();
+                                                        using (MySqlCommand micon = new MySqlCommand("update adiguias set estadoS='Invalido' where id=@idr"))
+                                                        {
+                                                            micon.Parameters.AddWithValue("@idr", tx_idr.Text);
+                                                            micon.ExecuteNonQuery();
+                                                        }
                                                     }
                                                 }
                                             }
@@ -4513,7 +4533,7 @@ namespace TransCarga
             }
             if (vi_formato == "TK")
             {
-               imprime_TK(sender, e);
+               //imprime_TK(sender, e);     // ahora utilizamos la clase impresor
             }
         }
         private void imprime_A4(float pix, float piy, string cliente, float coli, float alin, float posi, float alfi, float deta, float pie, System.Drawing.Printing.PrintPageEventArgs e)
@@ -4851,7 +4871,7 @@ namespace TransCarga
         }
 
     }
-    public class Ticket_Rpta                            // respuesta del post envio comprobante
+    /* public class Ticket_Rpta                            // respuesta del post envio comprobante
     {
         public string numTicket { get; set; }           // código ticket respuesta
         public DateTime fecRecepcion { get; set; }      // fecha hora de la respuesta
@@ -4890,4 +4910,5 @@ namespace TransCarga
             }
         }
     }
+    */
 }

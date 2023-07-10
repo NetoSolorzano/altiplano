@@ -76,7 +76,7 @@ namespace TransCarga
                     request.AddParameter("application/json", json, ParameterType.RequestBody);
                     //
                     IRestResponse response = poste.Execute(request);
-                    var result = JsonConvert.DeserializeObject<Ticket_Rpta>(response.Content);
+                    var result = JsonConvert.DeserializeObject<Ticket_RptaR>(response.Content);
                     if (response.ResponseStatus.ToString() != "Completed") retorna = false;
                     else retorna = true;
                     // actualizamos los campos de la tabla 

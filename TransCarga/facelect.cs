@@ -126,8 +126,6 @@ namespace TransCarga
         string claveCertif = "";        // Clave del certificado
         string[] c_t = new string[6] { "", "", "", "", "", "" }; // parametros para generar el token sunat
         //
-        static libreria lib = new libreria();   // libreria de procedimientos
-        publico lp = new publico();             // libreria de clases
         string verapp = System.Diagnostics.FileVersionInfo.GetVersionInfo(Application.ExecutablePath).FileVersion;
         string nomclie = Program.cliente;           // cliente usuario del sistema
         string rucclie = Program.ruc;               // ruc del cliente usuario del sistema
@@ -136,7 +134,11 @@ namespace TransCarga
         string dirloc = TransCarga.Program.vg_duse; // direccion completa del local usuario conectado
         string ubiloc = TransCarga.Program.vg_uuse; // ubigeo local del usuario conectado
         #endregion
-        
+
+        static libreria lib = new libreria();   // libreria de procedimientos
+        publico lp = new publico();             // libreria de clases
+        acGRE_sunat _Sunat = new acGRE_sunat();
+
         AutoCompleteStringCollection departamentos = new AutoCompleteStringCollection();// autocompletado departamentos
         AutoCompleteStringCollection provincias = new AutoCompleteStringCollection();   // autocompletado provincias
         AutoCompleteStringCollection distritos = new AutoCompleteStringCollection();    // autocompletado distritos
@@ -2867,7 +2869,7 @@ namespace TransCarga
         {
             bool retorna = false;
             guiati_e guiati_E = new guiati_e();
-            string token = guiati_E.conex_token(c_t);           // este metodo funciona bien .. 26/05/2023
+            string token = _Sunat.conex_token_(c_t);           // guiati_E.conex_token(c_t)
             if (token != null && token != "")
             {
                 string aZip;

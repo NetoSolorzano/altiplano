@@ -1835,10 +1835,6 @@ namespace TransCarga
         } */
         #endregion Sunat metodo directo
 
-        #region psnet
-        // no empleamos PSE/OSE
-        #endregion
-
         #endregion
 
         #region boton_form GRABA EDITA ANULA
