@@ -1803,6 +1803,7 @@
             this.tx_dat_plaNreg.Name = "tx_dat_plaNreg";
             this.tx_dat_plaNreg.Size = new System.Drawing.Size(31, 18);
             this.tx_dat_plaNreg.TabIndex = 374;
+            this.tx_dat_plaNreg.Visible = false;
             // 
             // tx_dat_dniC2
             // 
