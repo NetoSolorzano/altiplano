@@ -252,12 +252,12 @@
             this.tx_det_peso = new TransCarga.NumericTextBox();
             this.groupBox46 = new System.Windows.Forms.GroupBox();
             this.groupBox47 = new System.Windows.Forms.GroupBox();
+            this.chk_cunica = new System.Windows.Forms.CheckBox();
             this.tx_det_cant = new TransCarga.NumericTextBox();
             this.label40 = new System.Windows.Forms.Label();
             this.label39 = new System.Windows.Forms.Label();
             this.label38 = new System.Windows.Forms.Label();
             this.label37 = new System.Windows.Forms.Label();
-            this.chk_cunica = new System.Windows.Forms.CheckBox();
             this.chk_man = new System.Windows.Forms.CheckBox();
             this.tx_marCpropio = new System.Windows.Forms.TextBox();
             this.tx_pla_dniChof = new System.Windows.Forms.TextBox();
@@ -1801,9 +1801,8 @@
             this.tx_dat_plaNreg.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tx_dat_plaNreg.Location = new System.Drawing.Point(221, 7);
             this.tx_dat_plaNreg.Name = "tx_dat_plaNreg";
-            this.tx_dat_plaNreg.Size = new System.Drawing.Size(17, 18);
+            this.tx_dat_plaNreg.Size = new System.Drawing.Size(31, 18);
             this.tx_dat_plaNreg.TabIndex = 374;
-            this.tx_dat_plaNreg.Visible = false;
             // 
             // tx_dat_dniC2
             // 
@@ -2651,6 +2650,17 @@
             this.groupBox47.TabIndex = 113;
             this.groupBox47.TabStop = false;
             // 
+            // chk_cunica
+            // 
+            this.chk_cunica.AutoSize = true;
+            this.chk_cunica.ForeColor = System.Drawing.Color.Black;
+            this.chk_cunica.Location = new System.Drawing.Point(285, 80);
+            this.chk_cunica.Name = "chk_cunica";
+            this.chk_cunica.Size = new System.Drawing.Size(83, 30);
+            this.chk_cunica.TabIndex = 256;
+            this.chk_cunica.Text = "Carga única\r\nen camión";
+            this.chk_cunica.UseVisualStyleBackColor = true;
+            // 
             // tx_det_cant
             // 
             this.tx_det_cant.AllowSpace = false;
@@ -2699,17 +2709,6 @@
             this.label37.Size = new System.Drawing.Size(62, 13);
             this.label37.TabIndex = 335;
             this.label37.Text = "CANTIDAD";
-            // 
-            // chk_cunica
-            // 
-            this.chk_cunica.AutoSize = true;
-            this.chk_cunica.ForeColor = System.Drawing.Color.Black;
-            this.chk_cunica.Location = new System.Drawing.Point(285, 80);
-            this.chk_cunica.Name = "chk_cunica";
-            this.chk_cunica.Size = new System.Drawing.Size(83, 30);
-            this.chk_cunica.TabIndex = 256;
-            this.chk_cunica.Text = "Carga única\r\nen camión";
-            this.chk_cunica.UseVisualStyleBackColor = true;
             // 
             // chk_man
             // 

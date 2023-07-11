@@ -422,7 +422,9 @@ OJO: form guiari_e, la planilla de carg es la misma que las guías transportista
 form acGRE_sunat, clase con los metodos de web services de sunat ................................... ok 05/07/2023
 form guiari_e, adecuaciones para anulaciones internas .............................................. ok 08/07/2023
 form acGRE_sunat, arreglo de metodo convierteCDR, faltaba archiS.close() ........................... ok 09/07/2023
-form guiati_e, adecuaciones, arreglos y mejoras del modelo guías remitente ......................... 
+form guiati_e, adecuaciones, arreglos y mejoras del modelo guías remitente ......................... ok 11/07/2023
+form planicarga, agregar validación de registro mtc para trackto y carreta ......................... ok 11/07/2023
+form vehiculos, agregar campo numero de registro sunat ............................................. ok 11/07/2023
 
 Formatos jrxml de fcturas y boletas estándares multimoneda y con/sin detracción, contado/credito ... 
 form facelect, agregar opciones de cargas únicas tipo soya:

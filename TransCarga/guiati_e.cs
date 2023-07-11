@@ -491,7 +491,8 @@ namespace TransCarga
                         "a.tipmongri,a.tipcamgri,a.subtotgri,a.igvgri,a.totgri,a.totpag,a.salgri,a.estadoser,a.impreso," +
                         "a.frase1,a.frase2,a.fleteimp,a.tipintrem,a.tipintdes,a.tippagpre,a.seguroE,a.userc,a.userm,a.usera," +
                         "a.serplagri,a.numplagri,a.plaplagri,a.carplagri,a.autplagri,a.confvegri,a.breplagri,a.proplagri," +
-                        "ifnull(p.nomchofe,'') as chocamcar,ifnull(b.fecplacar,'') as fecplacar,ifnull(b.fecdocvta,'') as fecdocvta,ifnull(f.descrizionerid,'') as tipdocvta," +
+                        "ifnull(p.nomchofe,'') as chocamcar,ifnull(p.nregtrackto,'') as nregtrackto,ifnull(p.nregcarreta,'') as nregcarreta," +
+                        "ifnull(b.fecplacar,'') as fecplacar,ifnull(b.fecdocvta,'') as fecdocvta,ifnull(f.descrizionerid,'') as tipdocvta," +
                         "ifnull(b.serdocvta,'') as serdocvta,ifnull(b.numdocvta,'') as numdocvta,ifnull(b.codmonvta,'') as codmonvta," +
                         "ifnull(b.totdocvta,0) as totdocvta,ifnull(b.codmonpag,'') as codmonpag,ifnull(b.totpagado,0) as totpagado,ifnull(b.saldofina,0) as saldofina," +
                         "ifnull(b.feculpago,'') as feculpago,ifnull(b.estadoser,'') as estadoser,ifnull(c.razonsocial,'') as razonsocial,a.grinumaut," +
@@ -609,13 +610,17 @@ namespace TransCarga
                             cmb_origen.SelectedValue = tx_dat_locori.Text;
                             cmb_origen_SelectionChangeCommitted(null, null);
                             cmb_destino.SelectedValue = tx_dat_locdes.Text;
-                            cmb_destino_SelectionChangeCommitted(null, null);
+                            //cmb_destino_SelectionChangeCommitted(null, null);
+                            tx_dat_plaNreg.Text = dr.GetString("nregtrackto");
+                            tx_dat_carrNreg.Text = dr.GetString("nregcarreta");
                             cmb_docRem.SelectedValue = tx_dat_tdRem.Text;
+                            cmb_docRem_SelectionChangeCommitted(null, null);
                             string[] du_remit = lib.retDPDubigeo(tx_ubigRtt.Text);
                             tx_dptoRtt.Text = du_remit[0];
                             tx_provRtt.Text = du_remit[1];
                             tx_distRtt.Text = du_remit[2];
                             cmb_docDes.SelectedValue = tx_dat_tDdest.Text;
+                            cmb_docDes_SelectionChangeCommitted(null, null);
                             string[] du_desti = lib.retDPDubigeo(tx_ubigDtt.Text);
                             tx_dptoDrio.Text = du_desti[0];
                             tx_proDrio.Text = du_desti[1];
@@ -1670,7 +1675,7 @@ namespace TransCarga
                     cmd.Parameters.AddWithValue("@NomGuia", "GUIA TRANSPORTISTA");
                     cmd.Parameters.AddWithValue("@CantBul", 1);
                     cmd.Parameters.AddWithValue("@PesoTot", tx_totpes.Text);              // 30
-                    cmd.Parameters.AddWithValue("@CodUnid", (rb_tn.Checked == true) ? "KGM" : "TNE");           // "KGM"
+                    cmd.Parameters.AddWithValue("@CodUnid", (rb_tn.Checked != true) ? "KGM" : "TNE");           // "KGM"
                     cmd.Parameters.AddWithValue("@FecIniT", tx_pla_fech.Text);          // "2023-05-19"
                     cmd.Parameters.AddWithValue("@CargaUn", (chk_cunica.Checked == true) ? "true" : "false");   // "true"
                     // documentos relacionados
@@ -2419,6 +2424,14 @@ namespace TransCarga
             string iserror = "no";
             if (modo == "NUEVO")
             {
+                #region validaciones para nuevo
+                if ((tx_pla_carret.Text != "" && tx_dat_carrNreg.Text == "") || tx_dat_plaNreg.Text == "")
+                {
+                    MessageBox.Show("El número de registro MTC del transportista está" + Environment.NewLine +
+                        "faltando en los datos del tracko o de la carreta","Atención, complete los datos del vehículo",MessageBoxButtons.OK,MessageBoxIcon.Warning);
+                    return;
+                }
+                #endregion
                 if (tx_idr.Text.Trim() == "")
                 {
                     var aa = MessageBox.Show("Confirma que desea crear la guía?", "Confirme por favor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
@@ -4211,7 +4224,7 @@ namespace TransCarga
                         // validamos que exista planilla abierta hacia el mismo destino
                         consul = "SELECT a.id,a.fechope,a.serplacar,a.numplacar,a.platracto,a.placarret,a.autorizac,a.confvehic,a.brevchofe,a.nomchofe,a.brevayuda," +
                             "a.nomayuda,a.rucpropie,b.razonsocial,a.marcaTrac as marca,a.modeloTrac as modelo,a.marcaCarret,a.modelCarret,a.autorCarret,a.confvCarret," +
-                            "a.dnichofer,a.dniayudante " +
+                            "a.dnichofer,a.dniayudante,a.nregtrackto,a.nregcarreta " +
                             "from cabplacar a left join anag_for b on b.ruc=a.rucpropie and b.tipdoc=@tdruc " +
                             "WHERE a.estadoser = @estab AND a.locorigen = @locor AND a.locdestin = @locde";
                         //                             "left join vehiculos c on c.placa=a.platracto " +
@@ -4249,7 +4262,7 @@ namespace TransCarga
                                     tx_pla_placa.Text = row["platracto"].ToString();
                                     tx_pla_carret.Text = row["placarret"].ToString();
                                     tx_pla_autor.Text = row["autorizac"].ToString();
-                                    tx_dat_plaNreg.Text = row["autorizac"].ToString();      // aca debería ir el nuevo campo cuando se haga
+                                    tx_dat_plaNreg.Text = row["nregtrackto"].ToString();      // num reg mtc del transportista
                                     tx_pla_confv.Text = row["confvehic"].ToString();
                                     tx_pla_brevet.Text = row["brevchofe"].ToString();
                                     tx_pla_nomcho.Text = row["nomchofe"].ToString();
@@ -4262,7 +4275,7 @@ namespace TransCarga
                                     tx_pla_propiet.Text = row["razonsocial"].ToString();
                                     tx_marcamion.Text = row["marca"].ToString();
                                     tx_aut_carret.Text = row["autorCarret"].ToString();
-                                    tx_dat_carrNreg.Text = row["autorCarret"].ToString();   // aca debería ir el nuevo campo cuando se haga
+                                    tx_dat_carrNreg.Text = row["nregcarreta"].ToString();   // num reg MTC  a.nregtrackto,a.nregcarreta
                                     tx_marCarret.Text = row["marcaCarret"].ToString();
                                     tx_pla_dniChof.Text = (row["dnichofer"].ToString().Trim() == "") ? lib.Right(row["brevchofe"].ToString(), 8) : row["dnichofer"].ToString();
                                     tx_dat_dniC2.Text = (row["dniayudante"].ToString().Trim() == "") ? (row["brevayuda"].ToString().Trim() == "") ? "" : lib.Right(row["brevayuda"].ToString(), 8) : row["dniayudante"].ToString();

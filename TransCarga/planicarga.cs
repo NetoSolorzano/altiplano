@@ -464,7 +464,7 @@ namespace TransCarga
                     string consulta = "select a.id,a.fechope,a.serplacar,a.numplacar,a.locorigen,a.locdestin,a.obsplacar,a.cantfilas,a.cantotpla,a.pestotpla,a.tipmonpla," +
                         "a.tipcampla,a.subtotpla,a.igvplacar,a.totplacar,a.totpagado,a.salxpagar,a.estadoser,a.impreso,a.fleteimp,a.platracto,a.placarret,a.autorizac," +
                         "a.confvehic,a.brevchofe,a.nomchofe,a.brevayuda,a.nomayuda,a.rucpropie,a.tipoplani,a.userc,a.userm,a.usera,ifnull(b.razonsocial,'') as razonsocial," +
-                        "a.marcaTrac,a.modeloTrac,a.marcaCarret,a.modelCarret,a.autorCarret,a.confvCarret " +
+                        "a.marcaTrac,a.modeloTrac,a.marcaCarret,a.modelCarret,a.autorCarret,a.confvCarret,a.nregtrackto,a.nregcarreta " +
                         "FROM cabplacar a left join anag_for b on a.rucpropie=b.ruc and b.estado=0 " + parte;
                     MySqlCommand micon = new MySqlCommand(consulta, conn);
                     if (campo == "tx_idr") micon.Parameters.AddWithValue("@ida", tx_idr.Text);
@@ -534,6 +534,8 @@ namespace TransCarga
                             tx_carret_modelo.Text = dr.GetString("modelCarret");
                             tx_carret_conf.Text = dr.GetString("confvCarret");
                             tx_carret_autoriz.Text = dr.GetString("autorCarret");
+                            tx_nregP.Text = dr.GetString("nregtrackto");
+                            tx_nregC.Text = dr.GetString("nregcarreta");
                             //
                             tx_car3ro_ruc.Text = dr.GetString("rucpropie");
                             tx_car_3ro_nombre.Text = dr.GetString("razonsocial");  // falta en consulta
@@ -1091,6 +1093,18 @@ namespace TransCarga
                     tx_pla_placa.Focus();
                     return;
                 }
+            }
+            if (tx_nregP.Text.Trim() == "")
+            {
+                MessageBox.Show("Debe ingresar el registro MTC","Falta información",MessageBoxButtons.OK,MessageBoxIcon.Information);
+                tx_nregP.Focus();
+                return;
+            }
+            if (tx_nregC.Text.Trim() == "")
+            {
+                MessageBox.Show("Debe ingresar el registro MTC", "Falta información", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                tx_nregC.Focus();
+                return;
             }
             #endregion
             // recalculamos totales 

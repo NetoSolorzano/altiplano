@@ -105,6 +105,7 @@ namespace TransCarga
             tx_modelo.CharacterCasing = CharacterCasing.Upper;
             tx_motor.MaxLength = 45;
             tx_autor1.MaxLength = 45;
+            tx_regMTC.MaxLength = 45;
             tx_soat.MaxLength = 45;
             tx_confv.MaxLength = 10;
             tx_confv.CharacterCasing = CharacterCasing.Upper;
@@ -113,7 +114,7 @@ namespace TransCarga
         private void grilla()                   // arma la grilla
         {
             // a.id,a.rucpro,c.razonsocial,a.coment,a.tipo,b.descrizionerid,a.status,a.placa,a.marca,
-            // a.modelo,a.confve,a.chasis,a.motor,a.autor1,a.soat
+            // a.modelo,a.confve,a.chasis,a.motor,a.autor1,a.soat,a.numreg1
             Font tiplg = new Font("Arial",7, FontStyle.Bold);
             advancedDataGridView1.Font = tiplg;
             advancedDataGridView1.DefaultCellStyle.Font = tiplg;
@@ -213,6 +214,15 @@ namespace TransCarga
             advancedDataGridView1.Columns[14].ReadOnly = true;
             advancedDataGridView1.Columns[14].Tag = "validaNO";
             advancedDataGridView1.Columns[14].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            // placa asociada
+            advancedDataGridView1.Columns[15].Visible = false;
+            // numero de registro mtc
+            advancedDataGridView1.Columns[16].Visible = true;
+            advancedDataGridView1.Columns[16].HeaderText = "#Reg.MTC";
+            advancedDataGridView1.Columns[16].Width = 100;
+            advancedDataGridView1.Columns[16].ReadOnly = true;
+            advancedDataGridView1.Columns[16].Tag = "validaNO";
+            advancedDataGridView1.Columns[16].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
         }
         private void jalainfo()                 // obtiene datos de imagenes
         {
@@ -284,6 +294,7 @@ namespace TransCarga
                 tx_confv.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[10].Value.ToString();     // conf.vehicular
                 tx_chasis.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[11].Value.ToString();     // chasis
                 tx_trackAsoc.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[15].Value.ToString();     // placa asociada trackto-carreta
+                tx_regMTC.Text = advancedDataGridView1.Rows[int.Parse(tx_rind.Text)].Cells[16].Value.ToString();     // numero registro mtc
             }
             if (campo == "tx_idr")
             {
@@ -314,7 +325,7 @@ namespace TransCarga
             cmb_tipo.ValueMember = "idcodice";
             // datos vehiculos
             string datgri = "select a.id,a.rucpro,c.razonsocial,a.coment,a.tipo,b.descrizionerid,a.status,a.placa,a.marca," +
-                "a.modelo,a.confve,a.chasis,a.motor,a.autor1,a.soat,a.placAsoc " +
+                "a.modelo,a.confve,a.chasis,a.motor,a.autor1,a.soat,a.placAsoc,a.numreg1 " +
                 "from vehiculos a " +
                 "left join desc_tve b on b.idcodice=a.tipo " +
                 "left join anag_for c on c.ruc=a.rucpro " +
@@ -408,6 +419,7 @@ namespace TransCarga
                         tx_soat.Text = row[14].ToString();
                         tx_confv.Text = row[10].ToString();
                         tx_chasis.Text = row[11].ToString();
+                        tx_regMTC.Text = row[16].ToString();
                     }
                 }
             }
@@ -508,46 +520,52 @@ namespace TransCarga
         private void button1_Click(object sender, EventArgs e)
         {
             // validamos que los campos no esten vacíos
-            if (tx_placa.Text == "")
+            if (tx_placa.Text.Trim() == "")
             {
                 MessageBox.Show("Ingrese la Placa", " Error! ");
                 tx_placa.Focus();
                 return;
             }
-            if (tx_marca.Text == "")
+            if (tx_marca.Text.Trim() == "")
             {
                 MessageBox.Show("Ingrese la marca", " Error! ");
                 tx_marca.Focus();
                 return;
             }
-            if (tx_ruc.Text == "")
+            if (tx_ruc.Text.Trim() == "")
             {
                 MessageBox.Show("Seleccione el propietario", " Atención ");
                 tx_ruc.Focus();
                 return;
             }
-            if(tx_tipo.Text == "")
+            if(tx_tipo.Text.Trim() == "")
             {
                 MessageBox.Show("Seleccione el tipo de Veh.", " Atención ");
                 cmb_tipo.Focus();
                 return;
             }
-            if(tx_modelo.Text == "")
+            if(tx_modelo.Text.Trim() == "")
             {
                 MessageBox.Show("Seleccione el modelo", " Atención ");
                 tx_modelo.Focus();
                 return;
             }
-            if (tx_confv.Text == "")
+            if (tx_confv.Text.Trim() == "")
             {
                 MessageBox.Show("Ingrese la configuración vehicular", " Atención ");
                 tx_confv.Focus();
                 return;
             }
-            if (tx_autor1.Text == "")
+            if (tx_autor1.Text.Trim() == "")
             {
                 MessageBox.Show("Ingrese la autorización de circulación", " Atención ");
                 tx_autor1.Focus();
+                return;
+            }
+            if (tx_regMTC.Text.Trim() == "")
+            {
+                MessageBox.Show("Ingrese el número de registro MTC", " Atención ");
+                tx_regMTC.Focus();
                 return;
             }
             // grabamos, actualizamos, etc
@@ -559,9 +577,9 @@ namespace TransCarga
                 if (aa == DialogResult.Yes)
                 {
                     iserror = "no";
-                    string consulta = "insert into vehiculos (rucpro,coment,tipo,status,placa,marca,modelo,confve,chasis,motor,autor1,soat,placAsoc," +
+                    string consulta = "insert into vehiculos (rucpro,coment,tipo,status,placa,marca,modelo,confve,chasis,motor,autor1,soat,placAsoc,numreg1," +
                         "verApp,userc,fechc,diriplan4,diripwan4,nbname)" +
-                        " values (@ruc,@com,@tip,@est,@pla,@mar,@mod,@cov,@cha,@mot,@aut,@soa,@pas," +
+                        " values (@ruc,@com,@tip,@est,@pla,@mar,@mod,@cov,@cha,@mot,@aut,@soa,@pas,@nre," +
                         "@vapp,@asd,now(),@dil4,@diw4,@nbna)";
                     MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
                     conn.Open();
@@ -581,6 +599,7 @@ namespace TransCarga
                         mycomand.Parameters.AddWithValue("@aut", tx_autor1.Text);
                         mycomand.Parameters.AddWithValue("@soa", tx_soat.Text);
                         mycomand.Parameters.AddWithValue("@pas", tx_trackAsoc.Text);
+                        mycomand.Parameters.AddWithValue("@nre", tx_regMTC.Text);
                         //
                         mycomand.Parameters.AddWithValue("@asd", asd);
                         mycomand.Parameters.AddWithValue("@vapp", verapp);
@@ -599,7 +618,7 @@ namespace TransCarga
                             // insertamos en el datatable
                             DataRow drs = dtg.NewRow();
                             // a.id,a.rucpro,c.razonsocial,a.coment,a.tipo,b.descrizionerid,a.status,a.placa,a.marca,
-                            // a.modelo,a.confve,a.chasis,a.motor,a.autor1,a.soat
+                            // a.modelo,a.confve,a.chasis,a.motor,a.autor1,a.soat,a.numreg1
                             drs[0] = idtu;
                             drs[1] = tx_ruc.Text;
                             drs[2] = tx_propiet.Text;
@@ -616,6 +635,7 @@ namespace TransCarga
                             drs[13] = tx_autor1.Text;
                             drs[14] = tx_soat.Text;
                             drs[15] = tx_trackAsoc.Text;
+                            drs[16] = tx_regMTC.Text;
                             dtg.Rows.Add(drs);
                             //
                             string resulta = lib.ult_mov(nomform, nomtab, asd);
@@ -658,7 +678,8 @@ namespace TransCarga
                 {
                     iserror = "no";
                     string consulta = "update vehiculos set " +
-                        "rucpro=@ruc,coment=@com,tipo=@tip,status=@est,marca=@mar,modelo=@mod,confve=@cov,chasis=@cha,motor=@mot,autor1=@aut,soat=@soa,placAsoc=@pas," +
+                        "rucpro=@ruc,coment=@com,tipo=@tip,status=@est,marca=@mar,modelo=@mod,confve=@cov,chasis=@cha,motor=@mot,autor1=@aut," +
+                        "soat=@soa,placAsoc=@pas,numreg1=@nre," +
                         "verApp=@vapp,userm=@asd,fechm=now(),diriplan4=@dil4,diripwan4=@diw4,nbname=@nbna " +
                         "where id=@idc";
                     MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
@@ -679,6 +700,7 @@ namespace TransCarga
                         mycom.Parameters.AddWithValue("@aut", tx_autor1.Text);
                         mycom.Parameters.AddWithValue("@soa", tx_soat.Text);
                         mycom.Parameters.AddWithValue("@pas", tx_trackAsoc.Text);
+                        mycom.Parameters.AddWithValue("@nre", tx_regMTC.Text);
                         //
                         mycom.Parameters.AddWithValue("@asd", asd);
                         mycom.Parameters.AddWithValue("@vapp", verapp);
@@ -715,6 +737,7 @@ namespace TransCarga
                                     dtg.Rows[i][13] = tx_autor1.Text;
                                     dtg.Rows[i][14] = tx_soat.Text;
                                     dtg.Rows[i][15] = tx_trackAsoc.Text;
+                                    dtg.Rows[i][16] = tx_regMTC.Text;
                                 }
                             }
                             string resulta = lib.ult_mov(nomform, nomtab, asd);
