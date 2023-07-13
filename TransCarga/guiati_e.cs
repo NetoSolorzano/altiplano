@@ -1670,7 +1670,7 @@ namespace TransCarga
                     cmd.Parameters.AddWithValue("@EmisCor", Program.mailclte);            // "neto.solorzano@solorsoft.com"
                     cmd.Parameters.AddWithValue("@NumGuia", tx_serie.Text + "-" + tx_numero.Text);         // "V001-98000006"
                     cmd.Parameters.AddWithValue("@FecEmis", tx_fechope.Text.Substring(6, 4) + "-" + tx_fechope.Text.Substring(3, 2) + "-" + tx_fechope.Text.Substring(0, 2));              // "2023-05-19"
-                    cmd.Parameters.AddWithValue("@HorEmis", DateTime.Now.Hour + ":" + DateTime.Now.Minute + ":" + DateTime.Now.Second);  // "12:21:13"
+                    cmd.Parameters.AddWithValue("@HorEmis", lib.Right("0" + DateTime.Now.Hour, 2) + ":" + lib.Right("0" + DateTime.Now.Minute, 2) + ":" + lib.Right("0" + DateTime.Now.Second, 2));  // "12:21:13"
                     cmd.Parameters.AddWithValue("@CodGuia", "31");
                     cmd.Parameters.AddWithValue("@NomGuia", "GUIA TRANSPORTISTA");
                     cmd.Parameters.AddWithValue("@CantBul", 1);
@@ -3063,6 +3063,7 @@ namespace TransCarga
                         micon.ExecuteNonQuery();
                         micon.Dispose();
                     }
+
                     conn.Close();
                 }
                 catch (MySqlException ex)
@@ -3083,20 +3084,37 @@ namespace TransCarga
         {
             // En Guías de remisión electrónicas NO HAY ANULACION INTERNA, todas las anulaciones (bajas de comprobante)
             // se hacen DESPUES de haberse hecho en sunat en el portal con clave SOL o en el app emprender 08/03/2023
+            // En el caso de que no se haya generado el xml o el comprobante no haya sido enviada a Sunat por cualquier
+            // motivo entonces mejor habilitamos la anulación interna 12/07/2023
+            string parte = " ";
+            var aa = DialogResult.No;
+            if (v_uagin.Contains(asd))   // usuario con acceso a anulación interna
+            {
+                aa = MessageBox.Show("Anulación interna para recuperar el número?" + Environment.NewLine +
+                    "Se cambia la serie a ANU", "Atención, confirme por favor",
+                    MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (aa == DialogResult.Yes) parte = ",a.sergui=@coad,b.serie=@coad ";
+            }
             using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
             {
                 conn.Open();
                 if (conn.State == ConnectionState.Open)
                 {
-                    string canul = "update cabguiai set obspregri=@obsr1,estadoser=@estser,usera=@asd,fecha=now(),idplani=0,fechplani=NULL," +
+                    /*string canul = "update cabguiai set obspregri=@obsr1,estadoser=@estser,usera=@asd,fecha=now(),idplani=0,fechplani=NULL," +
                         "serplagri='',numplagri='',plaplagri='',carplagri='',autplagri='',confvegri='',breplagri='',proplagri=''," +
                         "verApp=@veap,diriplan4=@dil4,diripwan4=@diw4,netbname=@nbnp,estintreg=@eiar " +
-                        "where id=@idr";
+                        "where id=@idr"; */
+                    string canul = "update cabguiai a left join adiguias b on b.idg=a.id " +
+                        "set a.obspregri=@obsr1,a.estadoser=@estser,a.usera=@asd,a.fecha=now(),a.idplani=0,a.fechplani=NULL," +
+                        "a.serplagri='',a.numplagri='',a.plaplagri='',a.carplagri='',a.autplagri='',a.confvegri='',a.breplagri='',a.proplagri=''," +
+                        "a.verApp=@veap,a.diriplan4=@dil4,a.diripwan4=@diw4,a.netbname=@nbnp,a.estintreg=@eiar" + parte +
+                        "where a.id=@idr";
                     using (MySqlCommand micon = new MySqlCommand(canul, conn))
                     {
                         micon.Parameters.AddWithValue("@idr", tx_idr.Text);
                         micon.Parameters.AddWithValue("@obsr1", tx_obser1.Text);
                         micon.Parameters.AddWithValue("@estser", codAnul);
+                        if (aa == DialogResult.Yes) micon.Parameters.AddWithValue("@coad", v_sanu);
                         micon.Parameters.AddWithValue("@asd", asd);
                         micon.Parameters.AddWithValue("@dil4", lib.iplan());
                         micon.Parameters.AddWithValue("@diw4", TransCarga.Program.vg_ipwan);

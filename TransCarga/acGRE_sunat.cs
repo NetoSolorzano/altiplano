@@ -171,7 +171,7 @@ namespace TransCarga
         public Tuple<string, string> consultaC(string nomTabla, string tx_idr, string ticket, string token, string tx_serie, string tx_numero, string rutaxml)     // consulta comprobante
         {
             Tuple<string, string> retorna = null;  // = new Tuple <string, string> ("","");
-            //ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             var client = new RestClient("https://api-cpe.sunat.gob.pe/v1/contribuyente/gem/comprobantes/envios/" + ticket);
             client.Timeout = -1;
             var request = new RestRequest(Method.GET);
@@ -180,26 +180,11 @@ namespace TransCarga
             
             if (response.ResponseStatus.ToString() == "Error") // Rpta == null
             {
-                retorna = new Tuple<string, string>("Error", response.ErrorMessage.ToString()); //tx_estaSunat.Text = "Error";
-                //tx_estaSunat.Tag = response.Content.ToString();
-                //retorna = tx_estaSunat.Text;
-                /*
-                using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
-                {
-                    conn.Open();
-                    string actua = "update " + nomTabla + " set estadoS=@est,cdr=@cdr where idg=@idg";
-                    using (MySqlCommand micon = new MySqlCommand(actua, conn))
-                    {
-                        micon.Parameters.AddWithValue("@est", "Error");
-                        micon.Parameters.AddWithValue("@cdr", response.ErrorMessage.ToString());
-                        micon.Parameters.AddWithValue("@idg", tx_idr);
-                        micon.ExecuteNonQuery();
-                    }
-                } */
+                retorna = Tuple.Create("Error", response.ErrorMessage.ToString());
             }
             else
             {
-                try
+                //try
                 {
                     var Rpta = JsonConvert.DeserializeObject<Rspta_ConsultaR>(response.Content);
                     if (Rpta.arcCdr != null)
@@ -207,19 +192,23 @@ namespace TransCarga
                         string CodRrpta = Rpta.codRespuesta.ToString();
                         if (CodRrpta == "98")
                         {
-                            retorna = new Tuple<string, string>("En proceso", "En proceso");
+                            //retorna = new Tuple<string, string>("En proceso", "En proceso");
+                            retorna = Tuple.Create("En proceso", "En proceso");
                         }
                         if (CodRrpta == "99" && Rpta.indCdrGenerado == "1") // enviado con error y CDR generado
                         {
-                            retorna = new Tuple<string, string>("Aceptado", "Error");
+                            //retorna = new Tuple<string, string>("Aceptado", "Error");
+                            retorna = Tuple.Create("Rechazado", "Error");
                         }
                         if (CodRrpta == "99" && Rpta.indCdrGenerado == "0") // enviado con error sin CDR generado
                         {
-                            retorna = new Tuple<string, string>("Rechazado", "Error");
+                            //retorna = new Tuple<string, string>("Rechazado", "Error");
+                            retorna = Tuple.Create("Rechazado", "Error");
                         }
                         if (CodRrpta == "0")                                // enviado OK con CDR generado
                         {
-                            retorna = new Tuple<string, string>("Aceptado", "Aceptado");
+                            //retorna = new Tuple<string, string>("Aceptado", "Aceptado");
+                            retorna = Tuple.Create("Aceptado", "Aceptado");
                         }
                         if (CodRrpta != "98" && Rpta.indCdrGenerado == "1")             // CDR generado con y sin error
                         {
@@ -233,9 +222,9 @@ namespace TransCarga
                                     string actua = "update " + nomTabla + " set estadoS=@est,cdr=@cdr,cdrgener=@gen,textoQR=@tqr where idg=@idg";  // ,fticket=@ftk
                                     using (MySqlCommand micon = new MySqlCommand(actua, conn))
                                     {
-                                        micon.Parameters.AddWithValue("@est", "Aceptado");
+                                        micon.Parameters.AddWithValue("@est", (CodRrpta == "0") ? "Aceptado" : "Rechazado");
                                         micon.Parameters.AddWithValue("@cdr", Rpta.arcCdr.ToString());
-                                        micon.Parameters.AddWithValue("@gen", Rpta.indCdrGenerado.ToString());
+                                        micon.Parameters.AddWithValue("@gen", (CodRrpta == "0") ? Rpta.indCdrGenerado.ToString() : "0");
                                         micon.Parameters.AddWithValue("@tqr", cuidado);
                                         //micon.Parameters.AddWithValue("", );
                                         micon.Parameters.AddWithValue("@idg", tx_idr);
@@ -265,12 +254,13 @@ namespace TransCarga
                             } */
                         }
                     }
-                }
+                }/*
                 catch (Exception ex)
                 {
                     MessageBox.Show(ex.Message,"Error en Deserialización");  // Rpta.codRespuesta.ToString(),Rpta.indCdrGenerado
-                    retorna = new Tuple<string, string>("Error", ex.Message);
-                }
+                    //retorna = new Tuple<string, string>("Error", ex.Message);
+                    retorna = Tuple.Create("Error", ex.Message);
+                } */
             }
             return retorna;
         }
@@ -301,7 +291,12 @@ namespace TransCarga
             XmlDocument archiXml = new XmlDocument();
             archiXml.Load(archiS);
             XmlNode fqr = archiXml.GetElementsByTagName("DocumentDescription", "urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2").Item(0);
-            retorna = fqr.InnerText;
+            if (fqr == null)
+            {
+                XmlNode fer = archiXml.GetElementsByTagName("Description", "urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2").Item(0);
+                retorna = fer.InnerText;
+            }
+            else retorna = fqr.InnerText;
             archiS.Close();
 
             return retorna;

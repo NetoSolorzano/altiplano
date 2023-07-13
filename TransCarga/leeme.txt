@@ -425,6 +425,8 @@ form acGRE_sunat, arreglo de metodo convierteCDR, faltaba archiS.close() .......
 form guiati_e, adecuaciones, arreglos y mejoras del modelo guías remitente ......................... ok 11/07/2023
 form planicarga, agregar validación de registro mtc para trackto y carreta ......................... ok 11/07/2023
 form vehiculos, agregar campo numero de registro sunat ............................................. ok 11/07/2023
+form guiati_e, agregar opcion de anulacion interna para usuarios selectos .......................... ok 12/07/2023
+form repsoper, agregar opcion de reportar guias remitente .......................................... ok 12/07/2023
 
 Formatos jrxml de fcturas y boletas estándares multimoneda y con/sin detracción, contado/credito ... 
 form facelect, agregar opciones de cargas únicas tipo soya:

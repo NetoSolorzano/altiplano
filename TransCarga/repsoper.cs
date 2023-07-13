@@ -684,49 +684,26 @@ namespace TransCarga
         private string consultaE(string ticket, int rowIndex)       // consulta estado en Sunat
         {
             string retorna = "";
-            Tuple<string, string> resCon = null;
+            //Tuple<string, string> resCon = null;
+            
             if (ticket == "") return retorna;
 
             string token = _E.conex_token_(c_t);
-            resCon = _E.consultaC((rb_GRE_R.Checked == true) ? "adiguiar" : "adiguias", dgv_GRE_est.Rows[rowIndex].Cells[15].Value.ToString(), ticket, token,
+            var resCon = _E.consultaC((rb_GRE_R.Checked == true) ? "adiguiar" : "adiguias", dgv_GRE_est.Rows[rowIndex].Cells[15].Value.ToString(), ticket, token,
                 dgv_GRE_est.Rows[rowIndex].Cells[1].Value.ToString().Substring(0,4), dgv_GRE_est.Rows[rowIndex].Cells[1].Value.ToString().Substring(5, 8), rutaxml);
-            if (resCon.Item1 == "Rechazado" || resCon.Item1 == "Error")
+            if (resCon == null)
             {
-                // resCon != null && (resCon.Item1 == "Aceptado" || resCon.Item1 == "Rechazado" || resCon.Item1 == "Error")
-                // Acá, en lugar de hacer una consulta debería actualizarse la grilla con los valores devueltos en resCon
-
-                MessageBox.Show(resCon.Item2,resCon.Item1,MessageBoxButtons.OK,MessageBoxIcon.Error);
-
-                /* consultamos y actualizamos la grilla
-                using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
+                MessageBox.Show("La respuesta del ticket fue nulo", "Error en consultar ticket", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            else
+            {
+                if (resCon.Item1 == "Rechazado" || resCon.Item1 == "Error")
                 {
-                    conn.Open();
-                    //EMISION,GUIA_ELEC,ORIGEN,DESTINO,ESTADO,SUNAT,CDR_GEN,.........,ad.cdr,ad.textoQR,ad.nticket,g.cantfilas,g.id
-                    //    0        1       2      3       4     5      6    7 8 9 10    11      12         13         14        15
-                    string xxx = "select * from adiguias where nticket=@ntk";
-                    using (MySqlCommand micon = new MySqlCommand(xxx, conn))
-                    {
-                        micon.Parameters.AddWithValue("@ntk", ticket);
-                        using (MySqlDataReader dr = micon.ExecuteReader())
-                        {
-                            if (dr.Read())
-                            {
-                                if (dr[8] != null)
-                                {
-                                    dgv_GRE_est.Rows[rowIndex].Cells[6].Value = dr.GetString(8);
-                                    dgv_GRE_est.Rows[rowIndex].Cells[5].Value = dr.GetString(6);
-                                    dgv_GRE_est.Rows[rowIndex].Cells[11].Value = dr.GetString(7);
-                                    dgv_GRE_est.Rows[rowIndex].Cells[12].Value = dr.GetString(9);
-                                }
-                                else
-                                {
-                                    // nada, hubo un error interno o no responde sunat
-                                }
-                            }
-                        }
-                    }
+                    // resCon != null && (resCon.Item1 == "Aceptado" || resCon.Item1 == "Rechazado" || resCon.Item1 == "Error")
+                    // Acá, en lugar de hacer una consulta debería actualizarse la grilla con los valores devueltos en resCon
+
+                    MessageBox.Show(resCon.Item2, resCon.Item1, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
-                */
             }
 
             return retorna;
@@ -1027,18 +1004,40 @@ namespace TransCarga
             using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
             {
                 conn.Open();
-                string consulta = "rep_oper_guiai1";
+                string consulta = "";
+                if (rb_GRE_trans.Checked == true)
+                {
+                    consulta = "rep_oper_guiai1";   // guias electronicas TRANSPORTISTA
+                }
+                else
+                {
+                    consulta = "rep_oper_guiai2";   // guias electronicas REMITENTE
+                }
                 using (MySqlCommand micon = new MySqlCommand(consulta,conn))
                 {
                     micon.CommandType = CommandType.StoredProcedure;
-                    micon.Parameters.AddWithValue("@loca", (tx_sede_guias.Text != "") ? tx_sede_guias.Text : "");
-                    micon.Parameters.AddWithValue("@fecini", dtp_ini_guias.Value.ToString("yyyy-MM-dd"));
-                    micon.Parameters.AddWithValue("@fecfin", dtp_fin_guias.Value.ToString("yyyy-MM-dd"));
-                    micon.Parameters.AddWithValue("@esta", (tx_estad_guias.Text != "") ? tx_estad_guias.Text : "");
-                    micon.Parameters.AddWithValue("@excl", (chk_excl_guias.Checked == true) ? "1" : "0");
-                    micon.Parameters.AddWithValue("@orides", (rb_GR_origen.Checked == true) ? "O" : "D");   // local -> O=origen || D=destino
-                    micon.Parameters.AddWithValue("@placa", cmb_placa.Text.Trim());
-                    micon.Parameters.AddWithValue("@orden", (rb_remGR.Checked == true) ? "R" : (rb_desGR.Checked == true)? "D" : "G");
+                    if (rb_GRE_trans.Checked == true)
+                    {
+                        micon.Parameters.AddWithValue("@loca", (tx_sede_guias.Text != "") ? tx_sede_guias.Text : "");
+                        micon.Parameters.AddWithValue("@fecini", dtp_ini_guias.Value.ToString("yyyy-MM-dd"));
+                        micon.Parameters.AddWithValue("@fecfin", dtp_fin_guias.Value.ToString("yyyy-MM-dd"));
+                        micon.Parameters.AddWithValue("@esta", (tx_estad_guias.Text != "") ? tx_estad_guias.Text : "");
+                        micon.Parameters.AddWithValue("@excl", (chk_excl_guias.Checked == true) ? "1" : "0");
+                        micon.Parameters.AddWithValue("@orides", (rb_GR_origen.Checked == true) ? "O" : "D");   // local -> O=origen || D=destino
+                        micon.Parameters.AddWithValue("@placa", cmb_placa.Text.Trim());
+                        micon.Parameters.AddWithValue("@orden", (rb_remGR.Checked == true) ? "R" : (rb_desGR.Checked == true) ? "D" : "G");
+                    }
+                    else
+                    {
+                        micon.Parameters.AddWithValue("@loca", (tx_sede_guias.Text != "") ? tx_sede_guias.Text : "");
+                        micon.Parameters.AddWithValue("@fecini", dtp_ini_guias.Value.ToString("yyyy-MM-dd"));
+                        micon.Parameters.AddWithValue("@fecfin", dtp_fin_guias.Value.ToString("yyyy-MM-dd"));
+                        micon.Parameters.AddWithValue("@esta", (tx_estad_guias.Text != "") ? tx_estad_guias.Text : "");
+                        micon.Parameters.AddWithValue("@excl", (chk_excl_guias.Checked == true) ? "1" : "0");
+                        micon.Parameters.AddWithValue("@orides", (rb_GR_origen.Checked == true) ? "O" : "D");   // local -> O=origen || D=destino
+                        //micon.Parameters.AddWithValue("@placa", cmb_placa.Text.Trim());
+                        //micon.Parameters.AddWithValue("@orden", (rb_remGR.Checked == true) ? "R" : (rb_desGR.Checked == true) ? "D" : "G");
+                    }
                     using (MySqlDataAdapter da = new MySqlDataAdapter(micon))
                     {
                         //dgv_guias.Columns.Remove("chkc");
@@ -1677,6 +1676,8 @@ namespace TransCarga
             chk_GRE_iEnpr.Visible = false;
             chk_GRE_iEnvia.Visible = false;
             bt_GRE_impri.Visible = false;
+            rb_GRE_T.Checked = true;            // por defecto estados de guias transportista
+            rb_GRE_trans.Checked = true;        // por defecto reporte de guias transportista
             //
             cmb_GRE_est.SelectedIndex = -1;
             cmb_GRE_sede.SelectedIndex = -1;
@@ -2701,7 +2702,7 @@ namespace TransCarga
                         "ifnull(a.fechplani,'') as 'fechplani',a.pestotgri,a.pesoKT," +
                         "a.serplagri,a.numplagri,a.plaplagri,a.carplagri,a.autplagri,a.confvegri,a.breplagri,a.proplagri," +
                         "ifnull(c.razonsocial, '') as razonsocial,ifnull(d.marca, '') as marca, ifnull(d.modelo, '') as modelo,ifnull(r.marca, '') as marCarret," +
-                        "ifnull(r.confve, '') as confvCarret,ifnull(r.autor1, '') as autCarret,ifnull(p.nomchofe, '') as chocamcar,ad.textoQR " +
+                        "ifnull(r.confve, '') as confvCarret,ifnull(r.autor1, '') as autCarret,ifnull(p.nomchofe, '') as chocamcar,ad.textoQR,ad.cdrgener " +
                         "FROM " + pedaso3 +
                         "LEFT JOIN desc_dtm dd1 ON dd1.IDCodice = a.tidocor " +
                         "LEFT JOIN desc_dtm dd2 ON dd2.IDCodice = a.tidocor2 " +
@@ -2794,7 +2795,7 @@ namespace TransCarga
                                 return;
                             }
                             // varios
-                            va[0] = dr.GetString("textoQR");                            // Varios: texto del código QR
+                            va[0] = (dr.GetString("cdrgener") == "1") ? dr.GetString("textoQR") : "";                            // Varios: texto del código QR
                             va[1] = "";
                             va[2] = despedid1;
                             va[3] = despedid2;
@@ -2825,6 +2826,23 @@ namespace TransCarga
                     }
                     // llamamos a la clase que imprime
                     impGRE_T imprime = new impGRE_T(1, v_impTK, vs, dt, va, vc);
+                }
+            }
+        }
+
+        private void rb_GRE_rem_CheckedChanged(object sender, EventArgs e)
+        {
+            if (Tx_modo.Text == "IMPRIMIR")
+            {
+                if (rb_GRE_rem.Checked == true)
+                {
+                    panel6.Visible = false;
+                    cmb_placa.Enabled = false;
+                }
+                else
+                {
+                    panel6.Visible = true;
+                    cmb_placa.Enabled = true;
                 }
             }
         }
