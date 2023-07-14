@@ -488,8 +488,8 @@ namespace TransCarga
             pic_icon_menu.Image = TransCarga.Properties.Resources.etiq_venta32;
             menuStrip1.Items.Clear();
             menuStrip1.Items.Add("GRE Transp.",img_v_c, vc_registro_Click);
-            menuStrip1.Items.Add("GR Transp.",img_v_pc, vpc_registro_Click);
-            menuStrip1.Items.Add("GR Remitente",img_v_i, vic_registro_Click);
+            menuStrip1.Items.Add("GR-T Mecánica",img_v_pc, vpc_registro_Click);
+            menuStrip1.Items.Add("GRE Remitente",img_v_i, vic_registro_Click);
             menuStrip1.Items.Add("Plan.Carga",img_v_s, vsc_registro_Click);
             menuStrip1.Items.Add("Transbordo", img_v_t, vtc_registro_Click);
             menuStrip1.Items.Add("Reportes",img_v_r, vc_reportes_Click);

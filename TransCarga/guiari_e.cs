@@ -107,6 +107,8 @@ namespace TransCarga
         string glosa2 = "";             // 
         string codtrasli = "";          // codigo de traslado interno entre establacimientos de la misma empresa
         string codtrasit = "";          // codigo de traslado interno ITINERANTE
+        string det3dtm = "";            // palabra nombre descriptivo de las guias de remision electronicas de transportista
+
         double tiempoT = 0;             // Sunat Webservice - contador EN SEGUNDOS de vigencia del token
         string TokenAct = "";           // Sunat Webservice - Token actual vigente
         TimeSpan horaT;                 // Sunat Webservice - Hora de emisión del token
@@ -443,6 +445,7 @@ namespace TransCarga
                                     {
                                         if (lite.GetString(2).ToString() == "glosa1") glosa1 = lite.GetString(3).ToString();          // glosa final del ticket 1
                                         if (lite.GetString(2).ToString() == "glosa2") glosa2 = lite.GetString(3).ToString();
+                                        if (lite.GetString(2).ToString() == "nomGRER") det3dtm = lite.GetString(3).ToString();         // nombre detalle DTM de las GRE-Transportista
                                     }
                                     if (lite.GetString(1).ToString() == "despedida")
                                     {
@@ -853,21 +856,22 @@ namespace TransCarga
             cmb_mon.DisplayMember = "descrizionerid";
             cmb_mon.ValueMember = "idcodice";
             // documento origen - documentos relacionados con transporte de mercancias
-            using (MySqlCommand mydorig = new MySqlCommand("select * from desc_dtm where numero=@bloq", conn))
+            using (MySqlCommand mydorig = new MySqlCommand("select * from desc_dtm where numero=@bloq AND deta3=@det3 OR deta4=@det3", conn))
             {
                 mydorig.Parameters.AddWithValue("@bloq", 1);
+                mydorig.Parameters.AddWithValue("@det3", det3dtm);
                 using (MySqlDataAdapter da = new MySqlDataAdapter(mydorig))
                 {
                     dtdor.Clear();
                     da.Fill(dtdor);
                     cmb_docorig.DataSource = dtdor;
-                    cmb_docorig.DisplayMember = "descrizionerid";
+                    cmb_docorig.DisplayMember = "descrizione";
                     cmb_docorig.ValueMember = "idcodice";
                     //
                     dtdor2.Clear();
                     da.Fill(dtdor2);
                     cmb_docorig2.DataSource = dtdor2;
-                    cmb_docorig2.DisplayMember = "descrizionerid";
+                    cmb_docorig2.DisplayMember = "descrizione";
                     cmb_docorig2.ValueMember = "idcodice";
                 }
             }

@@ -2492,7 +2492,9 @@ namespace TransCarga
                     string cdrbyte = dgv_GRE_est.Rows[e.RowIndex].Cells[11].Value.ToString();
                     string serie = dgv_GRE_est.Rows[e.RowIndex].Cells[1].Value.ToString().Substring(0, 4);
                     string corre = dgv_GRE_est.Rows[e.RowIndex].Cells[1].Value.ToString().Substring(5, 8);
-                    _E.convierteCDR((rb_GRE_R.Checked == true) ? "09" : "31", cdrbyte, serie, corre, rutaxml);
+                    var aa = _E.convierteCDR((rb_GRE_R.Checked == true) ? "09" : "31", cdrbyte, serie, corre, rutaxml);
+                    if (aa != "") MessageBox.Show("CDR de sunat creado en la ruta:" + Environment.NewLine +
+                        rutaxml, "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
             if (dgv_GRE_est.Columns[e.ColumnIndex].Name.ToString() == "iTK")

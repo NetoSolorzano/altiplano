@@ -427,6 +427,12 @@ form planicarga, agregar validación de registro mtc para trackto y carreta ....
 form vehiculos, agregar campo numero de registro sunat ............................................. ok 11/07/2023
 form guiati_e, agregar opcion de anulacion interna para usuarios selectos .......................... ok 12/07/2023
 form repsoper, agregar opcion de reportar guias remitente .......................................... ok 12/07/2023
+form guiati_e, validaciones para evitar rechazos de sunat .......................................... ok 13/07/2023
+form transmain, adecuaciones de nuevos iconos y nombres ............................................ ok 13/07/2023
+form repsoper, reporte de estados sunat, arreglar mal funcionamiento de botones CDR,PDF,iTK ........ no encontré el problema 13/07/2023
+form defs, adecuar plantilla de vista DTM (doc origen de traslado) ................................. ok 14/07/2023
+form guiati_e, filtrar los tipos de docs origen, solo tipos para GRE Transportista ................. ok 14/07/2023
+form guiari_e, filtrar los tipos de docs origen, solo tipos para GRE Remitente ..................... ok 14/07/2023
 
 Formatos jrxml de fcturas y boletas estándares multimoneda y con/sin detracción, contado/credito ... 
 form facelect, agregar opciones de cargas únicas tipo soya:

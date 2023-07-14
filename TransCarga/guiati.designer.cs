@@ -171,7 +171,6 @@
             this.chk_flete = new System.Windows.Forms.CheckBox();
             this.label28 = new System.Windows.Forms.Label();
             this.gbox_planilla = new System.Windows.Forms.GroupBox();
-            this.tx_marcamion = new System.Windows.Forms.TextBox();
             this.tx_idplan = new System.Windows.Forms.TextBox();
             this.groupBox33 = new System.Windows.Forms.GroupBox();
             this.groupBox34 = new System.Windows.Forms.GroupBox();
@@ -199,6 +198,7 @@
             this.label25 = new System.Windows.Forms.Label();
             this.label27 = new System.Windows.Forms.Label();
             this.label26 = new System.Windows.Forms.Label();
+            this.tx_marcamion = new System.Windows.Forms.TextBox();
             this.gbox_docvta = new System.Windows.Forms.GroupBox();
             this.groupBox41 = new System.Windows.Forms.GroupBox();
             this.groupBox42 = new System.Windows.Forms.GroupBox();
@@ -1720,15 +1720,6 @@
             this.gbox_planilla.TabIndex = 345;
             this.gbox_planilla.TabStop = false;
             // 
-            // tx_marcamion
-            // 
-            this.tx_marcamion.BackColor = System.Drawing.SystemColors.Window;
-            this.tx_marcamion.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_marcamion.Location = new System.Drawing.Point(518, 441);
-            this.tx_marcamion.Name = "tx_marcamion";
-            this.tx_marcamion.Size = new System.Drawing.Size(60, 18);
-            this.tx_marcamion.TabIndex = 364;
-            // 
             // tx_idplan
             // 
             this.tx_idplan.BackColor = System.Drawing.SystemColors.Window;
@@ -1990,6 +1981,15 @@
             this.label26.TabIndex = 352;
             this.label26.Text = "Propietario";
             this.label26.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // tx_marcamion
+            // 
+            this.tx_marcamion.BackColor = System.Drawing.SystemColors.Window;
+            this.tx_marcamion.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_marcamion.Location = new System.Drawing.Point(518, 441);
+            this.tx_marcamion.Name = "tx_marcamion";
+            this.tx_marcamion.Size = new System.Drawing.Size(60, 18);
+            this.tx_marcamion.TabIndex = 364;
             // 
             // gbox_docvta
             // 
@@ -2420,7 +2420,7 @@
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "guiati";
-            this.Text = "Gestión de Guías Transportista - Individual";
+            this.Text = "Guías Transportista - Mecanizadas";
             this.TransparencyKey = System.Drawing.Color.Fuchsia;
             this.Load += new System.EventHandler(this.guiati_Load);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.guiati_KeyDown);

@@ -358,6 +358,10 @@ namespace TransCarga
                     lb_descrizrid.Text = "Descrip. Corta";
                     lb_enla1.Text = "Días plazo";
                     break;
+                case "DTM":
+                    lb_det3.Text = "GRE Aplicable";
+                    lb_det4.Text = "GRE Aplicable";
+                    break;
             }
         }
 
