@@ -1844,7 +1844,7 @@ namespace TransCarga
         #region boton_form GRABA EDITA ANULA
         private void button1_Click(object sender, EventArgs e)
         {
-            #region validaciones
+            #region validaciones generales del form
             if (tx_serie.Text.Trim() == "")
             {
                 tx_serie.Focus();
@@ -1878,12 +1878,6 @@ namespace TransCarga
                 tx_ubigD.Focus();
                 return;
             }
-            /*if (tx_flete.Text.Trim() == "" || tx_flete.Text.Trim() == "0")        // en guias remitente no hay flete
-            {
-                MessageBox.Show("Ingrese el valor del flete", " Atención ");
-                tx_flete.Focus();
-                return;
-            } */
             if (tx_totcant.Text.Trim() == "")
             {
                 MessageBox.Show("Ingrese el detalle del envío", " Falta cantidad ");
@@ -1963,12 +1957,6 @@ namespace TransCarga
                 tx_dirDrio.Focus();
                 return;
             }
-            if (tx_docsOr.Text.Trim() == "")
-            {
-                MessageBox.Show("Registre los documentos origen", " Faltan datos ");
-                tx_docsOr.Focus();
-                return;
-            }
             if (tx_dptoDrio.Text.Trim() == "" || tx_proDrio.Text.Trim() == "" || tx_disDrio.Text.Trim() == "")
             {
                 MessageBox.Show("Complete la dirección, departamento, provincia y distrito", "Error en destinatario", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -1989,24 +1977,12 @@ namespace TransCarga
             }
             if (tx_dat_mone.Text.Trim() == "")
             {
-                //MessageBox.Show("Seleccione el tipo de moneda", " Atención ");
-                //cmb_mon.Focus();
-                //return;
+                // por compatibilidad con la B.D. ponemos moneda local por defecto
                 tx_dat_mone.Text = MonDeft;
             }
-            else
-            {
-                // acá nunca va a entrar
-                if (tx_dat_mone.Text.Trim() != MonDeft)
-                {
-                    tx_fletMN.Text = (decimal.Parse(tx_flete.Text) * decimal.Parse(tx_tipcam.Text)).ToString("#0.00");
-                }
-                else
-                {
-                    tx_fletMN.Text = tx_flete.Text;
-                }
-            }
-
+            #endregion
+            #region validaciones GR electrónicas Sunat
+            // documentos relacionados
             if (tx_dat_docOr.Text.Trim() == "")
             {
                 MessageBox.Show("Seleccione un documento origen","Faltan datos",MessageBoxButtons.OK,MessageBoxIcon.Information);
@@ -2056,6 +2032,67 @@ namespace TransCarga
                 tx_motras.Focus();
                 return;
             }
+            // validaciones SUNAT - motivos de traslado importacion 08 / exportacion 09 y sus tipos de documentos relacionados
+            if ("'08','09'".Contains(tx_dat_motrasS.Text))
+            {
+                if (!("'50','52'").Contains(tx_dat_dorigS.Text))
+                {
+                    MessageBox.Show("No se ha ingresado el tipo Declaracion Aduanera de Mercancias (DAM) o la " + Environment.NewLine +
+                        "Declaracion Simplificada (DS) para el motivo de traslado selecionado", "Validación Sunat", MessageBoxButtons.OK,MessageBoxIcon.Information);
+                    cmb_docorig.Focus();
+                    return;
+                }
+                if (!"'09','49','80',''".Contains(tx_dat_dorigS2.Text))
+                {
+                    MessageBox.Show("El tipo de documento relacionado no corresponde para el motivo de traslado seleccionado", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    cmb_docorig2.Focus();
+                    return;
+                }
+            }
+            if (!"'08','09','13'".Contains(tx_dat_motrasS.Text))
+            {
+                if (("'50','52'").Contains(tx_dat_dorigS.Text))
+                {
+                    MessageBox.Show("El tipo de documento relacionado no corresponde con el motivo de traslado seleccionado", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    cmb_docorig.Focus();
+                    return;
+                }
+                if (tx_dat_dorigS2.Text != "" && ("'50','52'").Contains(tx_dat_dorigS2.Text))
+                {
+                    MessageBox.Show("El tipo de documento relacionado no corresponde con el motivo de traslado seleccionado", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    cmb_docorig2.Focus();
+                    return;
+                }
+            }
+            // validaciones SUNAT - partida arancelaria en detalle cuando hay documentos relacionados 49 u 80
+            if (("'49','80'").Contains(tx_dat_dorigS.Text) || (tx_dat_dorigS2.Text != "" && ("'49','80'").Contains(tx_dat_dorigS2.Text))) 
+            {
+                var aa = MessageBox.Show("Asegurese de tener en el detalle un item con Partida Arancelaria" + Environment.NewLine +
+                    "Confirma que lo tiene?", "Validación Sunat", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (aa == DialogResult.No) return;
+            }
+            // validaciones SUNAT - formatos del número de documento origen
+            if ("'01','03','04','09'".Contains(tx_dat_dorigS.Text))    // facturas,boletas,liq.de compras, guias de remision
+            {
+                if (tx_docsOr.Text.Length != 13 || !tx_docsOr.Text.Contains("-"))
+                {
+                    MessageBox.Show("El formato del comprobante no es correcto, debe ser:" + Environment.NewLine +
+                        "<serie(4 caracteres)>-<número(8 números)", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    tx_docsOr.Focus();
+                    return;
+                }
+            }
+            if (tx_dat_dorigS2.Text != "" && "'01','03','04','09'".Contains(tx_dat_dorigS2.Text))    // facturas,boletas,liq.de compras, guias de remision
+            {
+                if (tx_docsOr2.Text.Length != 13 || !tx_docsOr2.Text.Contains("-"))
+                {
+                    MessageBox.Show("El formato del comprobante no es correcto, debe ser:" + Environment.NewLine +
+                        "<serie(4 caracteres)>-<número(8 números)", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    tx_docsOr2.Focus();
+                    return;
+                }
+            }
+
             if (tx_dat_tdRem.Text == tx_dat_tDdest.Text && tx_numDocDes.Text == tx_numDocRem.Text)
             {
                 // mismo remitente y destinatario, osea es traslado entre establecimientos de la misma empresa
@@ -2080,7 +2117,8 @@ namespace TransCarga
                     return;
                 }
             }
-            if (chk_man.Checked == true)        // datos de planilla de carga, si no hay datos el traslado se hará en un vehículo menor
+            // datos de planilla de carga, si no hay datos el traslado se hará en un vehículo menor
+            if (chk_man.Checked == true)
             {
                 if (tx_pla_dniChof.Text.Trim() == "")
                 {
@@ -3940,6 +3978,7 @@ namespace TransCarga
                 {
                     cmb_docorig2.SelectedIndex = -1;
                     tx_dat_docOr2.Text = "";
+                    tx_dat_dorigS2.Text = "";
                     tx_docsOr2.Text = "";
                     tx_docsOr2.ReadOnly = true;
                     tx_rucEorig2.Text = "";
