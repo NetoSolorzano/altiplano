@@ -3155,6 +3155,29 @@ namespace TransCarga
                 return false;
             }
         }
+        public bool IsAllDigits(string s)                                   // retorna true si todos los caracteres del parametro son numeros
+        {
+            foreach (char c in s)
+            {
+                if (!char.IsDigit(c))
+                    return false;
+            }
+            return true;
+        }
+        public string separador(string cadena, char delimit, int OrdRer)  // retorna cadena subdividada 
+        {
+            // cadena = parametro de entrada
+            // delimit = caracter delimitador
+            // OrdRer = numero de grupo separado que debe retornar
+            string retorna = "";
+            int cr = OrdRer - 1;
+            string[] words = cadena.Split(delimit);
+            if (words.Length > 0)
+            {
+                retorna = words[cr];
+            }
+            return retorna;
+        } 
     }
 
     public class ComboItem

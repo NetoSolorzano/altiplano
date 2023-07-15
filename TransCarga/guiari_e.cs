@@ -9,7 +9,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Security.Cryptography;
 using MySql.Data.MySqlClient;
-using System.Text;
+using System.Text.RegularExpressions;
 using System.IO;
 using System.IO.Compression;
 using System.Xml;
@@ -265,8 +265,8 @@ namespace TransCarga
             tx_obser1.MaxLength = 150;
             tx_telD.MaxLength = 19;
             tx_telR.MaxLength = 19;
-            tx_docsOr.MaxLength = 20;           // documento origen de la GRT
-            tx_docsOr2.MaxLength = 20;
+            tx_docsOr.MaxLength = 45;           // documento origen de la GRT
+            tx_docsOr2.MaxLength = 45;
             tx_rucEorig.MaxLength = 11;         // ruc del emisor del documento origen
             tx_rucEorig2.MaxLength = 11;
             // 
@@ -2072,7 +2072,7 @@ namespace TransCarga
                 if (aa == DialogResult.No) return;
             }
             // validaciones SUNAT - formatos del número de documento origen
-            if ("'01','03','04','09'".Contains(tx_dat_dorigS.Text))    // facturas,boletas,liq.de compras, guias de remision
+            if ("'01','03','04','09'".Contains(tx_dat_dorigS.Text))
             {
                 if (tx_docsOr.Text.Length != 13 || !tx_docsOr.Text.Contains("-"))
                 {
@@ -2081,8 +2081,8 @@ namespace TransCarga
                     tx_docsOr.Focus();
                     return;
                 }
-            }
-            if (tx_dat_dorigS2.Text != "" && "'01','03','04','09'".Contains(tx_dat_dorigS2.Text))    // facturas,boletas,liq.de compras, guias de remision
+            }                                   // facturas,boletas,liq.de compras, guias de remision
+            if (tx_dat_dorigS2.Text != "" && "'01','03','04','09'".Contains(tx_dat_dorigS2.Text)) 
             {
                 if (tx_docsOr2.Text.Length != 13 || !tx_docsOr2.Text.Contains("-"))
                 {
@@ -2091,7 +2091,69 @@ namespace TransCarga
                     tx_docsOr2.Focus();
                     return;
                 }
-            }
+            }   // facturas,boletas,liq.de compras, guias de remision
+            if ("12".Contains(tx_dat_dorigS.Text))
+            {
+                if (tx_docsOr.Text.Length != 41 || !tx_docsOr.Text.Contains("-"))
+                {
+                    MessageBox.Show("El formato del ticket/cinta no es correcto, debe ser:" + Environment.NewLine +
+                            "<serie(20 caracteres)>-<número(20 números)", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    tx_docsOr.Focus();
+                    return;
+                }
+            }                                                   // Ticket, cintas de maquinas registradoras
+            if (tx_dat_dorigS2.Text != "" && "12".Contains(tx_dat_dorigS2.Text))
+            {
+                if (tx_docsOr2.Text.Length != 41 || !tx_docsOr2.Text.Contains("-"))
+                {
+                    MessageBox.Show("El formato del ticket/cinta no es correcto, debe ser:" + Environment.NewLine +
+                            "<serie(20 caracteres)>-<número(20 números)", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    tx_docsOr2.Focus();
+                    return;
+                }
+            }                   // Ticket, cintas de maquinas registradoras
+            if ("48".Contains(tx_dat_dorigS.Text))
+            {
+                if (tx_docsOr.Text.Trim().Length < 5 || tx_docsOr.Text.Length > 12 || !tx_docsOr.Text.Contains("-") || lib.repeticiones(tx_docsOr.Text,'-') > 1 ||
+                    lib.IsAllDigits(lib.separador(tx_docsOr.Text, '-', 2)) == false ||
+                    int.Parse(lib.separador(tx_docsOr.Text, '-', 2)) <= 0)
+                {
+                    MessageBox.Show("El formato del comprobante no es correcto, debe ser:" + Environment.NewLine +
+                            "<serie(<= 4 digitos)>-<número(<= 7 digitos)", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    tx_docsOr.Focus();
+                    return;
+                }
+            }                                                   // Comprobante de operaciones
+            if (tx_dat_dorigS2.Text != "" && "48".Contains(tx_dat_dorigS2.Text))
+            {
+                if (tx_docsOr2.Text.Length != 12 || !tx_docsOr2.Text.Contains("-"))
+                {
+                    MessageBox.Show("El formato del comprobante no es correcto, debe ser:" + Environment.NewLine +
+                            "<serie(4 caracteres)>-<número(7 números)", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    tx_docsOr2.Focus();
+                    return;
+                }
+            }                   // Comprobante de operaciones
+            if ("49".Contains(tx_dat_dorigS.Text))
+            {
+                if (tx_docsOr.Text.Length > 15  || lib.IsAllDigits(tx_docsOr.Text) == false)
+                {
+                    MessageBox.Show("El formato del comprobante no es correcto, debe ser:" + Environment.NewLine +
+                            "Solo números no mayor a 15 dígitos > a cero", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    tx_docsOr.Focus();
+                    return;
+                }
+            }                                                   // Constancia de deposito
+            if (tx_dat_dorigS2.Text != "" && "49".Contains(tx_dat_dorigS2.Text))
+            {
+                if (tx_docsOr2.Text.Length > 15 || lib.IsAllDigits(tx_docsOr2.Text) == false)
+                {
+                    MessageBox.Show("El formato del comprobante no es correcto, debe ser:" + Environment.NewLine +
+                            "Solo números no mayor a 15 dígitos > a cero", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    tx_docsOr2.Focus();
+                    return;
+                }
+            }                       // Constancia de deposito
 
             if (tx_dat_tdRem.Text == tx_dat_tDdest.Text && tx_numDocDes.Text == tx_numDocRem.Text)
             {
