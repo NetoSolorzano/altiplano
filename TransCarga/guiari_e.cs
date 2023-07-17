@@ -2074,81 +2074,101 @@ namespace TransCarga
             // validaciones SUNAT - formatos del número de documento origen
             if ("'01','03','04','09'".Contains(tx_dat_dorigS.Text))
             {
-                if (tx_docsOr.Text.Length != 13 || !tx_docsOr.Text.Contains("-"))
+                if (tx_docsOr.Text.Length > 13 || tx_docsOr.Text.Length < 3 || !tx_docsOr.Text.Contains("-") || lib.repeticiones(tx_docsOr.Text, "-") > 1 ||
+                    lib.separador(tx_docsOr.Text, '-', 1).Length > 4 || lib.separador(tx_docsOr.Text, '-', 1).Length < 1 ||
+                    lib.separador(tx_docsOr.Text, '-', 2).Length > 8 || lib.separador(tx_docsOr.Text, '-', 2).Length < 1 ||
+                    lib.IsAllDigits(lib.separador(tx_docsOr.Text, '-', 2)) == false || int.Parse(lib.separador(tx_docsOr.Text, '-', 2)) <= 0)
                 {
                     MessageBox.Show("El formato del comprobante no es correcto, debe ser:" + Environment.NewLine +
-                        "<serie(4 caracteres)>-<número(8 números)", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        "<serie(4 caracteres)>-<número(8 números)" + Environment.NewLine +
+                        "El campo <Numero> debe ser mayor a cero", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     tx_docsOr.Focus();
                     return;
                 }
             }                                   // facturas,boletas,liq.de compras, guias de remision
             if (tx_dat_dorigS2.Text != "" && "'01','03','04','09'".Contains(tx_dat_dorigS2.Text)) 
             {
-                if (tx_docsOr2.Text.Length != 13 || !tx_docsOr2.Text.Contains("-"))
+                if (tx_docsOr2.Text.Length > 13 || tx_docsOr2.Text.Length < 3 || !tx_docsOr2.Text.Contains("-") || lib.repeticiones(tx_docsOr2.Text, "-") > 1 ||
+                    lib.separador(tx_docsOr2.Text, '-', 1).Length > 4 || lib.separador(tx_docsOr2.Text, '-', 1).Length < 1 ||
+                    lib.separador(tx_docsOr2.Text, '-', 2).Length > 8 || lib.separador(tx_docsOr2.Text, '-', 2).Length < 1 ||
+                    lib.IsAllDigits(lib.separador(tx_docsOr2.Text, '-', 2)) == false || int.Parse(lib.separador(tx_docsOr2.Text, '-', 2)) <= 0)
                 {
                     MessageBox.Show("El formato del comprobante no es correcto, debe ser:" + Environment.NewLine +
-                        "<serie(4 caracteres)>-<número(8 números)", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        "<serie(4 caracteres)>-<número(8 números)" + Environment.NewLine +
+                        "El campo <Numero> debe ser mayor a cero", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     tx_docsOr2.Focus();
                     return;
                 }
-            }   // facturas,boletas,liq.de compras, guias de remision
+            }     // facturas,boletas,liq.de compras, guias de remision
             if ("12".Contains(tx_dat_dorigS.Text))
             {
-                if (tx_docsOr.Text.Length != 41 || !tx_docsOr.Text.Contains("-"))
+                if (tx_docsOr.Text.Length < 3 || tx_docsOr.Text.Length > 41 || !tx_docsOr.Text.Contains("-") || lib.repeticiones(tx_docsOr.Text, "-") > 1 ||
+                    lib.separador(tx_docsOr.Text, '-', 1).Length > 20 || lib.separador(tx_docsOr.Text, '-', 1).Length < 1 || 
+                    lib.separador(tx_docsOr.Text, '-', 2).Length > 20 || lib.separador(tx_docsOr.Text, '-', 2).Length < 1)
                 {
                     MessageBox.Show("El formato del ticket/cinta no es correcto, debe ser:" + Environment.NewLine +
-                            "<serie(20 caracteres)>-<número(20 números)", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            "<serie>-<número> con la siguiente estructura:" + Environment.NewLine +
+                            "[a-zA-Z0-9]{1,20}-[a-zA-Z0-9]{1,20}", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     tx_docsOr.Focus();
                     return;
                 }
             }                                                   // Ticket, cintas de maquinas registradoras
             if (tx_dat_dorigS2.Text != "" && "12".Contains(tx_dat_dorigS2.Text))
             {
-                if (tx_docsOr2.Text.Length != 41 || !tx_docsOr2.Text.Contains("-"))
+                if (tx_docsOr2.Text.Length < 3 || tx_docsOr2.Text.Length > 41 || !tx_docsOr2.Text.Contains("-") || lib.repeticiones(tx_docsOr2.Text, "-") > 1 ||
+                    lib.separador(tx_docsOr2.Text, '-', 1).Length > 20 || lib.separador(tx_docsOr2.Text, '-', 1).Length < 1 ||
+                    lib.separador(tx_docsOr2.Text, '-', 2).Length > 20 || lib.separador(tx_docsOr2.Text, '-', 2).Length < 1)
                 {
                     MessageBox.Show("El formato del ticket/cinta no es correcto, debe ser:" + Environment.NewLine +
-                            "<serie(20 caracteres)>-<número(20 números)", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            "<serie>-<número> con la siguiente estructura:" + Environment.NewLine +
+                            "[a-zA-Z0-9]{1,20}-[a-zA-Z0-9]{1,20}", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     tx_docsOr2.Focus();
                     return;
                 }
             }                   // Ticket, cintas de maquinas registradoras
             if ("48".Contains(tx_dat_dorigS.Text))
             {
-                if (tx_docsOr.Text.Trim().Length < 5 || tx_docsOr.Text.Length > 12 || !tx_docsOr.Text.Contains("-") || lib.repeticiones(tx_docsOr.Text,'-') > 1 ||
-                    lib.IsAllDigits(lib.separador(tx_docsOr.Text, '-', 2)) == false ||
+                if (tx_docsOr.Text.Trim().Length < 3 || tx_docsOr.Text.Length > 12 || !tx_docsOr.Text.Contains("-") || lib.repeticiones(tx_docsOr.Text,"-") > 1 ||
+                    lib.IsAllDigits(lib.separador(tx_docsOr.Text, '-', 2)) == false || lib.separador(tx_docsOr.Text, '-', 2).Length > 7 ||
                     int.Parse(lib.separador(tx_docsOr.Text, '-', 2)) <= 0)
                 {
                     MessageBox.Show("El formato del comprobante no es correcto, debe ser:" + Environment.NewLine +
-                            "<serie(<= 4 digitos)>-<número(<= 7 digitos)", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            "<serie>-<número> con esta estructura [0-9]{1,4}-[0-9]{1,7}" + Environment.NewLine +
+                            "El campo <número> debe ser mayor a cero", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     tx_docsOr.Focus();
                     return;
                 }
             }                                                   // Comprobante de operaciones
             if (tx_dat_dorigS2.Text != "" && "48".Contains(tx_dat_dorigS2.Text))
             {
-                if (tx_docsOr2.Text.Length != 12 || !tx_docsOr2.Text.Contains("-"))
+                if (tx_docsOr2.Text.Trim().Length < 3 || tx_docsOr2.Text.Length > 12 || !tx_docsOr2.Text.Contains("-") || lib.repeticiones(tx_docsOr2.Text, "-") > 1 ||
+                    lib.IsAllDigits(lib.separador(tx_docsOr2.Text, '-', 2)) == false || lib.separador(tx_docsOr2.Text, '-', 2).Length > 7 || 
+                    int.Parse(lib.separador(tx_docsOr2.Text, '-', 2)) <= 0)
                 {
                     MessageBox.Show("El formato del comprobante no es correcto, debe ser:" + Environment.NewLine +
-                            "<serie(4 caracteres)>-<número(7 números)", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            "<serie>-<número> con esta estructura [0-9]{1,4}-[0-9]{1,7}" + Environment.NewLine +
+                            "El campo <número> debe ser mayor a cero", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     tx_docsOr2.Focus();
                     return;
                 }
             }                   // Comprobante de operaciones
-            if ("49".Contains(tx_dat_dorigS.Text))
+            if ("'49','80'".Contains(tx_dat_dorigS.Text))
             {
-                if (tx_docsOr.Text.Length > 15  || lib.IsAllDigits(tx_docsOr.Text) == false)
+                if (tx_docsOr.Text.Length > 15 || tx_docsOr.Text.Length < 3 || lib.IsAllDigits(tx_docsOr.Text) == false || 
+                    int.Parse(tx_docsOr.Text) <= 0)
                 {
-                    MessageBox.Show("El formato del comprobante no es correcto, debe ser:" + Environment.NewLine +
+                    MessageBox.Show("El formato de la constancia no es correcto, debe ser:" + Environment.NewLine +
                             "Solo números no mayor a 15 dígitos > a cero", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     tx_docsOr.Focus();
                     return;
                 }
             }                                                   // Constancia de deposito
-            if (tx_dat_dorigS2.Text != "" && "49".Contains(tx_dat_dorigS2.Text))
+            if (tx_dat_dorigS2.Text != "" && "'49','80'".Contains(tx_dat_dorigS2.Text))
             {
-                if (tx_docsOr2.Text.Length > 15 || lib.IsAllDigits(tx_docsOr2.Text) == false)
+                if (tx_docsOr2.Text.Length > 15 || tx_docsOr2.Text.Length < 3 || lib.IsAllDigits(tx_docsOr2.Text) == false ||
+                    int.Parse(tx_docsOr2.Text) <= 0)
                 {
-                    MessageBox.Show("El formato del comprobante no es correcto, debe ser:" + Environment.NewLine +
+                    MessageBox.Show("El formato de la constancia no es correcto, debe ser:" + Environment.NewLine +
                             "Solo números no mayor a 15 dígitos > a cero", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     tx_docsOr2.Focus();
                     return;

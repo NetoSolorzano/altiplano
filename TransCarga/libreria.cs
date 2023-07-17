@@ -3178,6 +3178,15 @@ namespace TransCarga
             }
             return retorna;
         } 
+        public int repeticiones(string cadena, string troso)             // contador de repeticiones de un caracter en una cadena
+        {
+            // cadena = parametro de entrada
+            // troso = caracter o caracteres buscados a contar
+            int retorna = 0;
+            retorna = Regex.Matches(cadena, troso).Count;
+
+            return retorna;
+        }
     }
 
     public class ComboItem
