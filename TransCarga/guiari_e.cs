@@ -2162,7 +2162,7 @@ namespace TransCarga
                     tx_docsOr.Focus();
                     return;
                 }
-            }                                                   // Constancia de deposito
+            }                                             // Constancia de deposito
             if (tx_dat_dorigS2.Text != "" && "'49','80'".Contains(tx_dat_dorigS2.Text))
             {
                 if (tx_docsOr2.Text.Length > 15 || tx_docsOr2.Text.Length < 3 || lib.IsAllDigits(tx_docsOr2.Text) == false ||
@@ -2173,7 +2173,313 @@ namespace TransCarga
                     tx_docsOr2.Focus();
                     return;
                 }
-            }                       // Constancia de deposito
+            }               // Constancia de deposito
+            if ("81".Contains(tx_dat_dorigS.Text))
+            {
+                if (tx_docsOr.Text.Length > 20 || tx_docsOr.Text.Length < 3)
+                {
+                    MessageBox.Show("El formato de la autorización SCOP no es correcto, debe ser:" + Environment.NewLine +
+                            "Solo letras y números no mayor a 20 caracteres y > a 2", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    tx_docsOr.Focus();
+                    return;
+                }
+            }                                                    // Código de autorización SCOP
+            if (tx_dat_dorigS2.Text != "" && "81".Contains(tx_dat_dorigS2.Text))
+            {
+                if (tx_docsOr2.Text.Length > 20 || tx_docsOr2.Text.Length < 3)
+                {
+                    MessageBox.Show("El formato de la autorización SCOP no es correcto, debe ser:" + Environment.NewLine +
+                            "Solo letras y números no mayor a 20 caracteres y > a 2", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    tx_docsOr2.Focus();
+                    return;
+                }
+            }                      // Código de autorización SCOP
+            if ("50".Contains(tx_dat_dorigS.Text))
+            {
+                if (!"'08','09'".Contains(tx_dat_motrasS.Text))
+                {
+                    // el motivo de traslado NO es 08 ó 09
+                    if (tx_docsOr.Text.Length > 18 || tx_docsOr.Text.Length < 13 || lib.repeticiones(tx_docsOr.Text, "-") != 3 ||
+                        lib.separador(tx_docsOr.Text, '-', 1).Length != 3 || lib.separador(tx_docsOr.Text, '-', 2).Length != 4 ||
+                        lib.separador(tx_docsOr.Text, '-', 3).Length != 2)
+                    {
+                        MessageBox.Show("El formato de la declaración no es correcto, debe ser:" + Environment.NewLine +
+                                " {3}-{4}-{2}-{6}, Ejemplo: 123-2023-99-1234" + Environment.NewLine +
+                                " [0-9]{3}: Código de la Aduana, [0-9]{4}: Año, [0-9]{2} Régimen aduanero, [0-9]{1,6} Correlativo" + Environment.NewLine +
+                                "El campo Correlativo debe ser > 0", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        tx_docsOr.Focus();
+                        return;
+                    }
+                }
+                else
+                {
+                    if (tx_dat_motrasS.Text == "08")        // si es motivos de traslado 08 ó 09
+                    {
+                        if (tx_docsOr.Text.Length > 26 || tx_docsOr.Text.Length < 12 || lib.repeticiones(tx_docsOr.Text, "-") != 3 ||
+                        lib.separador(tx_docsOr.Text, '-', 1).Length != 3 || lib.separador(tx_docsOr.Text, '-', 2).Length != 4 ||
+                        lib.separador(tx_docsOr.Text, '-', 3).Length != 2 || lib.separador(tx_docsOr.Text, '-', 4).Length < 1 || int.Parse(lib.separador(tx_docsOr.Text, '-', 4)) == 0)
+                        {
+                            MessageBox.Show("El formato de la declaración no es correcto, debe ser:" + Environment.NewLine +
+                                " {3}-{4}-10-{6}, Ejemplo: 123-2023-10-1234" + Environment.NewLine +
+                                " [0-9]{3}: Código de la Aduana, [0-9]{4}: Año, 10, [0-9]{1,6} Correlativo" + Environment.NewLine +
+                                "El campo Correlativo debe ser > 0", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            tx_docsOr.Focus();
+                            return;
+                        }
+                    }
+                    if (tx_dat_motrasS.Text == "09")        // tx_dat_motrasS.Text == "09"
+                    {
+                        if (tx_docsOr.Text.Length > 26 || tx_docsOr.Text.Length < 12 || lib.repeticiones(tx_docsOr.Text, "-") != 3 ||
+                        lib.separador(tx_docsOr.Text, '-', 1).Length != 3 || lib.separador(tx_docsOr.Text, '-', 2).Length != 4 ||
+                        lib.separador(tx_docsOr.Text, '-', 3).Length != 2 || lib.separador(tx_docsOr.Text, '-', 4).Length < 1 || int.Parse(lib.separador(tx_docsOr.Text, '-', 4)) == 0)
+                        {
+                            MessageBox.Show("El formato de la declaración no es correcto, debe ser:" + Environment.NewLine +
+                                " {3}-{4}-40-{6}, Ejemplo: 123-2023-10-1234" + Environment.NewLine +
+                                " [0-9]{3}: Código de la Aduana, [0-9]{4}: Año, 40, [0-9]{1,6} Correlativo" + Environment.NewLine +
+                                "El campo Correlativo debe ser > 0", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            tx_docsOr.Focus();
+                            return;
+                        }
+                    }
+                }
+            }                                                   // Declaración de aduana DAM
+            if (tx_dat_dorigS2.Text != "" && "50".Contains(tx_dat_dorigS2.Text))
+            {
+                if (!"'08','09'".Contains(tx_dat_motrasS.Text))
+                {
+                    // el motivo de traslado NO es 08 ó 09
+                    if (tx_docsOr2.Text.Length > 18 || tx_docsOr2.Text.Length < 13 || lib.repeticiones(tx_docsOr2.Text, "-") != 3 ||
+                        lib.separador(tx_docsOr2.Text, '-', 1).Length != 3 || lib.separador(tx_docsOr2.Text, '-', 2).Length != 4 ||
+                        lib.separador(tx_docsOr2.Text, '-', 3).Length != 2)
+                    {
+                        MessageBox.Show("El formato de la declaración no es correcto, debe ser:" + Environment.NewLine +
+                                " {3}-{4}-{2}-{6}, Ejemplo: 123-2023-99-1234" + Environment.NewLine +
+                                " [0-9]{3}: Código de la Aduana, [0-9]{4}: Año, [0-9]{2} Régimen aduanero, [0-9]{1,6} Correlativo" + Environment.NewLine +
+                                "El campo Correlativo debe ser > 0", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        tx_docsOr2.Focus();
+                        return;
+                    }
+                }
+                else
+                {
+
+                    if (tx_dat_motrasS.Text == "08")        // si es motivos de traslado 08 ó 09
+                    {
+                        if (tx_docsOr2.Text.Length > 26 || tx_docsOr2.Text.Length < 12 || lib.repeticiones(tx_docsOr2.Text, "-") != 3 ||
+                        lib.separador(tx_docsOr2.Text, '-', 1).Length != 3 || lib.separador(tx_docsOr2.Text, '-', 2).Length != 4 ||
+                        lib.separador(tx_docsOr2.Text, '-', 3).Length != 2 || lib.separador(tx_docsOr2.Text, '-', 4).Length < 1 || int.Parse(lib.separador(tx_docsOr2.Text, '-', 4)) == 0)
+                        {
+                            MessageBox.Show("El formato de la declaración no es correcto, debe ser:" + Environment.NewLine +
+                                " {3}-{4}-10-{6}, Ejemplo: 123-2023-10-1234" + Environment.NewLine +
+                                " [0-9]{3}: Código de la Aduana, [0-9]{4}: Año, 10, [0-9]{1,6} Correlativo" + Environment.NewLine +
+                                "El campo Correlativo debe ser > 0", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            tx_docsOr2.Focus();
+                            return;
+                        }
+                    }
+                    if (tx_dat_motrasS.Text == "09")        // tx_dat_motrasS.Text == "09"
+                    {
+                        if (tx_docsOr2.Text.Length > 26 || tx_docsOr2.Text.Length < 12 || lib.repeticiones(tx_docsOr2.Text, "-") != 3 ||
+                        lib.separador(tx_docsOr2.Text, '-', 1).Length != 3 || lib.separador(tx_docsOr2.Text, '-', 2).Length != 4 ||
+                        lib.separador(tx_docsOr2.Text, '-', 3).Length != 2 || lib.separador(tx_docsOr2.Text, '-', 4).Length < 1 || int.Parse(lib.separador(tx_docsOr2.Text, '-', 4)) == 0)
+                        {
+                            MessageBox.Show("El formato de la declaración no es correcto, debe ser:" + Environment.NewLine +
+                                " {3}-{4}-40-{6}, Ejemplo: 123-2023-10-1234" + Environment.NewLine +
+                                " [0-9]{3}: Código de la Aduana, [0-9]{4}: Año, 40, [0-9]{1,6} Correlativo" + Environment.NewLine +
+                                "El campo Correlativo debe ser > 0", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            tx_docsOr2.Focus();
+                            return;
+                        }
+                    }
+                }
+            }                       // Declaración de aduana DAM
+            if ("52".Contains(tx_dat_dorigS.Text))
+            {
+                if (!"'08','09'".Contains(tx_dat_motrasS.Text))
+                {
+                    // el motivo de traslado NO es 08 ó 09
+                    if (tx_docsOr.Text.Length > 18 || tx_docsOr.Text.Length < 13 || lib.repeticiones(tx_docsOr.Text, "-") != 3 ||
+                        lib.separador(tx_docsOr.Text, '-', 1).Length != 3 || lib.separador(tx_docsOr.Text, '-', 2).Length != 4 ||
+                        lib.separador(tx_docsOr.Text, '-', 3).Length != 2)
+                    {
+                        MessageBox.Show("El formato de la declaración no es correcto, debe ser:" + Environment.NewLine +
+                                " {3}-{4}-{2}-{6}, Ejemplo: 123-2023-99-1234" + Environment.NewLine +
+                                " [0-9]{3}: Código de la Aduana, [0-9]{4}: Año, [0-9]{2} Régimen aduanero, [0-9]{1,6} Correlativo" + Environment.NewLine +
+                                "El campo Correlativo debe ser > 0", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        tx_docsOr.Focus();
+                        return;
+                    }
+                }
+                else
+                {
+                    if (tx_dat_motrasS.Text == "08")        // si es motivos de traslado 08 ó 09
+                    {
+                        if (tx_docsOr.Text.Length > 26 || tx_docsOr.Text.Length < 12 || lib.repeticiones(tx_docsOr.Text, "-") != 3 ||
+                        lib.separador(tx_docsOr.Text, '-', 1).Length != 3 || lib.separador(tx_docsOr.Text, '-', 2).Length != 4 ||
+                        lib.separador(tx_docsOr.Text, '-', 3).Length != 2 || lib.separador(tx_docsOr.Text, '-', 4).Length < 1 || int.Parse(lib.separador(tx_docsOr.Text, '-', 4)) == 0)
+                        {
+                            MessageBox.Show("El formato de la declaración no es correcto, debe ser:" + Environment.NewLine +
+                                " {3}-{4}-18-{6}, Ejemplo: 123-2023-18-1234" + Environment.NewLine +
+                                " [0-9]{3}: Código de la Aduana, [0-9]{4}: Año, 18, [0-9]{1,6} Correlativo" + Environment.NewLine +
+                                "El campo Correlativo debe ser > 0", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            tx_docsOr.Focus();
+                            return;
+                        }
+                    }
+                    if (tx_dat_motrasS.Text == "09")        // tx_dat_motrasS.Text == "09"
+                    {
+                        if (tx_docsOr.Text.Length > 26 || tx_docsOr.Text.Length < 12 || lib.repeticiones(tx_docsOr.Text, "-") != 3 ||
+                        lib.separador(tx_docsOr.Text, '-', 1).Length != 3 || lib.separador(tx_docsOr.Text, '-', 2).Length != 4 ||
+                        lib.separador(tx_docsOr.Text, '-', 3).Length != 2 || lib.separador(tx_docsOr.Text, '-', 4).Length < 1 || int.Parse(lib.separador(tx_docsOr.Text, '-', 4)) == 0)
+                        {
+                            MessageBox.Show("El formato de la declaración no es correcto, debe ser:" + Environment.NewLine +
+                                " {3}-{4}-48-{6}, Ejemplo: 123-2023-48-1234" + Environment.NewLine +
+                                " [0-9]{3}: Código de la Aduana, [0-9]{4}: Año, 48, [0-9]{1,6} Correlativo" + Environment.NewLine +
+                                "El campo Correlativo debe ser > 0", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            tx_docsOr.Focus();
+                            return;
+                        }
+                    }
+                }
+            }                                                   // Declaración jurada de Mudanza
+            if (tx_dat_dorigS2.Text != "" && "52".Contains(tx_dat_dorigS2.Text))
+            {
+                if (!"'08','09'".Contains(tx_dat_motrasS.Text))
+                {
+                    // el motivo de traslado NO es 08 ó 09
+                    if (tx_docsOr2.Text.Length > 18 || tx_docsOr2.Text.Length < 13 || lib.repeticiones(tx_docsOr2.Text, "-") != 3 ||
+                        lib.separador(tx_docsOr2.Text, '-', 1).Length != 3 || lib.separador(tx_docsOr2.Text, '-', 2).Length != 4 ||
+                        lib.separador(tx_docsOr2.Text, '-', 3).Length != 2)
+                    {
+                        MessageBox.Show("El formato de la declaración no es correcto, debe ser:" + Environment.NewLine +
+                                " {3}-{4}-{2}-{6}, Ejemplo: 123-2023-99-1234" + Environment.NewLine +
+                                " [0-9]{3}: Código de la Aduana, [0-9]{4}: Año, [0-9]{2} Régimen aduanero, [0-9]{1,6} Correlativo" + Environment.NewLine +
+                                "El campo Correlativo debe ser > 0", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        tx_docsOr2.Focus();
+                        return;
+                    }
+                }
+                else
+                {
+                    if (tx_dat_motrasS.Text == "08")        // si es motivos de traslado 08 ó 09
+                    {
+                        if (tx_docsOr2.Text.Length > 26 || tx_docsOr2.Text.Length < 12 || lib.repeticiones(tx_docsOr2.Text, "-") != 3 ||
+                        lib.separador(tx_docsOr2.Text, '-', 1).Length != 3 || lib.separador(tx_docsOr2.Text, '-', 2).Length != 4 ||
+                        lib.separador(tx_docsOr2.Text, '-', 3).Length != 2 || lib.separador(tx_docsOr2.Text, '-', 4).Length < 1 || int.Parse(lib.separador(tx_docsOr2.Text, '-', 4)) == 0)
+                        {
+                            MessageBox.Show("El formato de la declaración no es correcto, debe ser:" + Environment.NewLine +
+                                " {3}-{4}-18-{6}, Ejemplo: 123-2023-18-1234" + Environment.NewLine +
+                                " [0-9]{3}: Código de la Aduana, [0-9]{4}: Año, 18, [0-9]{1,6} Correlativo" + Environment.NewLine +
+                                "El campo Correlativo debe ser > 0", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            tx_docsOr2.Focus();
+                            return;
+                        }
+                    }
+                    if (tx_dat_motrasS.Text == "09")        // tx_dat_motrasS.Text == "09"
+                    {
+                        if (tx_docsOr2.Text.Length > 26 || tx_docsOr2.Text.Length < 12 || lib.repeticiones(tx_docsOr2.Text, "-") != 3 ||
+                        lib.separador(tx_docsOr2.Text, '-', 1).Length != 3 || lib.separador(tx_docsOr2.Text, '-', 2).Length != 4 ||
+                        lib.separador(tx_docsOr2.Text, '-', 3).Length != 2 || lib.separador(tx_docsOr2.Text, '-', 4).Length < 1 || int.Parse(lib.separador(tx_docsOr2.Text, '-', 4)) == 0)
+                        {
+                            MessageBox.Show("El formato de la declaración no es correcto, debe ser:" + Environment.NewLine +
+                                " {3}-{4}-48-{6}, Ejemplo: 123-2023-48-1234" + Environment.NewLine +
+                                " [0-9]{3}: Código de la Aduana, [0-9]{4}: Año, 48, [0-9]{1,6} Correlativo" + Environment.NewLine +
+                                "El campo Correlativo debe ser > 0", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            tx_docsOr2.Focus();
+                            return;
+                        }
+                    }
+                }
+            }                     // Declaración jurada de Mudanza
+            if ("'71','72','73','74','75','76','77','78'".Contains(tx_dat_dorigS.Text))
+            {
+                // acá se permite todo menos espacios en blanco, saltos de linea y demas comunes
+            }
+            if (tx_dat_dorigS2.Text != "" && "'71','72','73','74','75','76','77','78'".Contains(tx_dat_dorigS2.Text))
+            {
+                // acá se permite todo menos espacios en blanco, saltos de linea y demas comunes
+            }
+            // Validaciones SUNAT - ruc del emisor del documento origen
+            if ("'01','03','12'".Contains(tx_dat_dorigS.Text))
+            {
+                if ("'01','03'".Contains(tx_dat_motrasS.Text) && tx_rucEorig.Text != tx_numDocRem.Text)
+                {
+                    MessageBox.Show("El número del documento del remitente debe " + Environment.NewLine +
+                            "ser igual al del emisor del documento origen", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    tx_docsOr.Focus();
+                    return;
+                }
+            }                                       // RUC emisor doc. relacionado no corresponde por traslado x ventas
+            if (tx_dat_dorigS2.Text != "" && "'01','03','12'".Contains(tx_dat_dorigS2.Text))
+            {
+                if ("'01','03'".Contains(tx_dat_motrasS.Text) && tx_rucEorig2.Text != tx_numDocRem.Text)
+                {
+                    MessageBox.Show("El número del documento del remitente debe " + Environment.NewLine +
+                            "ser igual al del emisor del documento origen", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    tx_docsOr2.Focus();
+                    return;
+                }
+            }         // RUC emisor doc. relacionado no corresponde por traslado x ventas
+            if ("09".Contains(tx_dat_dorigS.Text))
+            {
+                if (tx_numDocRem.Text != tx_rucEorig.Text)
+                {
+                    MessageBox.Show("El número del documento del remitente debe " + Environment.NewLine +
+                            "ser igual al del emisor del documento origen", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    tx_docsOr.Focus();
+                    return;
+                }
+            }                                           // RUC emisor doc. relacionado GUIA debe ser igual al ruc del remitente
+            if (tx_dat_dorigS2.Text != "" && "09".Contains(tx_dat_dorigS.Text))
+            {
+                if (tx_numDocRem.Text != tx_rucEorig2.Text)
+                {
+                    MessageBox.Show("El número del documento del remitente debe " + Environment.NewLine +
+                            "ser igual al del emisor del documento origen", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    tx_docsOr2.Focus();
+                    return;
+                }
+            }              // RUC emisor doc. relacionado GUIA debe ser igual al ruc del remitente
+            if ("'04','48'".Contains(tx_dat_dorigS.Text))
+            {
+                if ("02".Contains(tx_dat_motrasS.Text) && tx_numDocRem.Text != tx_rucEorig.Text)
+                {
+                    MessageBox.Show("El número del documento del remitente debe " + Environment.NewLine +
+                            "ser igual al del emisor del documento origen", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    tx_docsOr.Focus();
+                    return;
+                }
+            }                                   // RUC emisor doc. relacionado GUIA debe ser igual al ruc del remitente, motivo compra 
+            if ("'04','48'".Contains(tx_dat_dorigS2.Text))
+            {
+                if ("02".Contains(tx_dat_motrasS.Text) && tx_numDocRem.Text != tx_rucEorig2.Text)
+                {
+                    MessageBox.Show("El número del documento del remitente debe " + Environment.NewLine +
+                            "ser igual al del emisor del documento origen", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    tx_docsOr2.Focus();
+                    return;
+                }
+            }                                   // RUC emisor doc. relacionado GUIA debe ser igual al ruc del remitente, motivo compra 
+            if ("'01','03','12'".Contains(tx_dat_dorigS.Text))
+            {
+                if ("06".Contains(tx_dat_motrasS.Text) && tx_numDocDes.Text != tx_rucEorig.Text)
+                {
+                    MessageBox.Show("El número del documento del destinatario debe " + Environment.NewLine +
+                           "ser igual al del emisor del documento origen", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    tx_docsOr.Focus();
+                    return;
+                }
+            }                            // RUC emisor doc. relacionado x DEVOLUcION debe ser igual al DESTINATARIO 
+            if ("'01','03','12'".Contains(tx_dat_dorigS2.Text))
+            {
+                if ("06".Contains(tx_dat_motrasS.Text) && tx_numDocDes.Text != tx_rucEorig2.Text)
+                {
+                    MessageBox.Show("El número del documento del destinatario debe " + Environment.NewLine +
+                           "ser igual al del emisor del documento origen", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    tx_docsOr2.Focus();
+                    return;
+                }
+            }                           // RUC emisor doc. relacionado x DEVOLUcION debe ser igual al DESTINATARIO 
 
             if (tx_dat_tdRem.Text == tx_dat_tDdest.Text && tx_numDocDes.Text == tx_numDocRem.Text)
             {
