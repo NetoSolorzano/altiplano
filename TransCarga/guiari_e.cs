@@ -269,6 +269,7 @@ namespace TransCarga
             tx_docsOr2.MaxLength = 45;
             tx_rucEorig.MaxLength = 11;         // ruc del emisor del documento origen
             tx_rucEorig2.MaxLength = 11;
+            tx_motras.MaxLength = 100;          // motivo de traslado, limite de sunat es 100 caracteres 18/07/2023
             // 
             tx_nomRem.CharacterCasing = CharacterCasing.Upper;
             tx_dirRem.CharacterCasing = CharacterCasing.Upper;
@@ -333,6 +334,7 @@ namespace TransCarga
             tx_numDocRem.Enabled = false;
             tx_nomRem.Text = Program.cliente;
             tx_nomRem.Enabled = false;
+            rb_tn.Enabled = false;          // sunat solo admite KGM 18/07/2023
         }
         private void jalainfo()                 // obtiene datos de imagenes y variables
         {
@@ -2026,7 +2028,7 @@ namespace TransCarga
                 cmb_motras.Focus();
                 return;
             }
-            if (tx_motras.Text.Trim() == "")
+            if (tx_motras.Text.Trim() == "" || tx_motras.Text.Trim().Length < 5)
             {
                 MessageBox.Show("Debe ingresar un detalle del traslado", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 tx_motras.Focus();
@@ -2480,6 +2482,53 @@ namespace TransCarga
                     return;
                 }
             }                           // RUC emisor doc. relacionado x DEVOLUcION debe ser igual al DESTINATARIO 
+            // Validaciones SUNAT - Datos del Destinatario
+            if ("'06','17'".Contains(tx_dat_motrasS.Text) && tx_dat_codsu.Text.Trim() != "6")
+            {
+                MessageBox.Show("Para el motivo de traslado: 06 y 17 " + Environment.NewLine +
+                    "Devolución y Traslado de bienes para transformación" + Environment.NewLine +
+                    "el tipo de documento del destinatario debe ser 6-RUC",
+                    "Validación Sunat", MessageBoxButtons.OK,MessageBoxIcon.Information);
+                cmb_docDes.Focus();
+                return;
+            }      // Documento de Destinatario debe ser RUC para traslados 06 y 17
+            if ("'01','03','05','06','09','14','17'".Contains(tx_dat_motrasS.Text) && 
+                tx_numDocDes.Text == tx_numDocRem.Text)
+            {
+                MessageBox.Show("Para el motivo de traslado seleccionado, el número de " + Environment.NewLine +
+                    "documento del destinatario no debe ser igual al del remitente",
+                    "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                tx_numDocDes.Focus();
+                return;
+            }                                           // Destinatario no debe ser igual al remitente.
+            if ("'02','04','07'".Contains(tx_dat_motrasS.Text) && 
+                tx_numDocDes.Text != tx_numDocRem.Text)
+            {
+                MessageBox.Show("Para el motivo de traslado seleccionado, el número de " + Environment.NewLine +
+                    "documento del destinatario DEBE ser igual al del remitente",
+                    "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                tx_numDocDes.Focus();
+                return;
+            }                                           // Para el motivo de traslado ingresado el Destinatario debe ser igual al remitente.
+            // Validaciones SUNAT - Datos del Remitente ... todo ok
+            // Validaciones SUNAT - Datos de Envío
+            if ("'08','09'".Contains(tx_dat_motrasS.Text) && chk_cunica.Checked == false)
+            {
+                MessageBox.Show("Para el motivo de traslado importación/exportación, debe" + Environment.NewLine +
+                    "estar marcado el check de carga única",
+                    "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                cmb_motras.Focus();
+                return;
+            }        // Si el motivo de traslado es Importacion o Exportacion y no se trata de un traslado total de la DAM o DS, debe indicar el Peso bruto total de los items seleccionados
+            if (!"'08','09'".Contains(tx_dat_motrasS.Text) && chk_cunica.Checked == true)
+            {
+                MessageBox.Show("Si el motivo de traslado no es importación/exportación," + Environment.NewLine +
+                    "NO debe estar marcado el check de carga única",
+                    "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                cmb_motras.Focus();
+                return;
+            }        // Si no es traslado Importacion o Exportacion no debe estar marcado como carga única 
+
 
             if (tx_dat_tdRem.Text == tx_dat_tDdest.Text && tx_numDocDes.Text == tx_numDocRem.Text)
             {

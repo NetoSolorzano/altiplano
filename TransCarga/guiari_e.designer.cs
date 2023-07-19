@@ -2759,9 +2759,9 @@
             this.chk_cunica.ForeColor = System.Drawing.Color.Black;
             this.chk_cunica.Location = new System.Drawing.Point(650, 289);
             this.chk_cunica.Name = "chk_cunica";
-            this.chk_cunica.Size = new System.Drawing.Size(83, 30);
+            this.chk_cunica.Size = new System.Drawing.Size(135, 17);
             this.chk_cunica.TabIndex = 256;
-            this.chk_cunica.Text = "Carga única\r\nen camión";
+            this.chk_cunica.Text = "Carga única en camión";
             this.chk_cunica.UseVisualStyleBackColor = true;
             this.chk_cunica.Visible = false;
             // 
