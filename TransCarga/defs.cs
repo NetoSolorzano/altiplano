@@ -361,6 +361,7 @@ namespace TransCarga
                 case "DTM":
                     lb_det3.Text = "GRE Aplicable";
                     lb_det4.Text = "GRE Aplicable";
+                    chk_marc1.Text = "Mas de 1";
                     break;
             }
         }

@@ -191,7 +191,6 @@ namespace TransCarga
             //dataGridView1.DefaultCellStyle.SelectionBackColor = Color.FromName(colsfon);
             //dataGridView1.DefaultCellStyle.SelectionForeColor = Color.FromName(colsfgr);
             //gbox_planilla.BackColor = Color.FromName(colpage);
-            gbox_docvta.BackColor = Color.FromName(colsfon);
             //
             init();
             dataload();
@@ -270,6 +269,10 @@ namespace TransCarga
             tx_rucEorig.MaxLength = 11;         // ruc del emisor del documento origen
             tx_rucEorig2.MaxLength = 11;
             tx_motras.MaxLength = 100;          // motivo de traslado, limite de sunat es 100 caracteres 18/07/2023
+            tx_dat_plaNreg.MaxLength = 20;
+            tx_dat_carrNreg.MaxLength = 20;
+            tx_pla_autor.MaxLength = 15;
+            tx_aut_carret.MaxLength = 15;
             // 
             tx_nomRem.CharacterCasing = CharacterCasing.Upper;
             tx_dirRem.CharacterCasing = CharacterCasing.Upper;
@@ -304,9 +307,6 @@ namespace TransCarga
             //if (Tx_modo.Text == "NUEVO") dataGridView1.ReadOnly = false;
             //else dataGridView1.ReadOnly = true;
             lb_glodeta.Text = gloDeta;
-            tx_flete.Text = "";
-            tx_pagado.Text = "";
-            tx_salxcob.Text = "";
             tx_numero.Text = "";
             tx_totcant.Text = "";
             tx_totpes.Text = "";
@@ -318,7 +318,6 @@ namespace TransCarga
             cmb_origen.SelectedValue = tx_dat_locori.Text;
             cmb_origen_SelectionChangeCommitted(null, null);
             tx_dat_mone.Text = MonDeft;
-            cmb_mon.SelectedValue = tx_dat_mone.Text;
             tx_fechope.Text = DateTime.Today.ToString("dd/MM/yyyy");
             tx_digit.Text = v_nbu;
             tx_dat_estad.Text = codGene;
@@ -572,15 +571,11 @@ namespace TransCarga
                             tx_obser1.Text = dr.GetString("obspregri");
                             tx_consig.Text = dr.GetString("clifingri");
                             tx_dat_mone.Text = dr.GetString("tipmongri");
-                            tx_flete.Text = dr.GetDecimal("totgri").ToString("#.##");
-                            tx_pagado.Text = dr.GetDecimal("totpag").ToString("#.##");
-                            tx_salxcob.Text = dr.GetDecimal("salgri").ToString("#.##");
                             tx_totcant.Text = dr.GetString("cantotgri");
                             tx_totpes.Text = dr.GetDecimal("pestotgri").ToString("#.#");
                             tx_impreso.Text = dr.GetString("impreso");
                             tx_pregr_num.Text = dr.GetString("numpregui");
                             claveSeg = dr.GetString("seguroE");
-                            chk_flete.Checked = (dr.GetString("fleteimp") == "S") ? true : false;
                             tx_n_auto.Text = dr.GetString("grinumaut");     // numeracion de GR autom o manual
                             //
                             tx_marcamion.Text = dr.GetString("marca");
@@ -598,13 +593,6 @@ namespace TransCarga
                             tx_pla_propiet.Text = dr.GetString("razonsocial");
                             tx_pla_dniChof.Text = lib.Right(dr.GetString("breplagri").ToString(), 8);         // aca debería ser un campo separado 07/03/2023
                             tx_marCpropio.Text = (tx_pla_ruc.Text.Trim() != "" && tx_pla_ruc.Text != Program.ruc) ? "1" : "0";   // Indicador de transporte subcontratado = true
-                            tx_fecDV.Text = dr.GetString("fecdocvta");  //.Substring(0,10);
-                            tx_DV.Text = dr.GetString("tipdocvta") + "-" + dr.GetString("serdocvta") + "-" + dr.GetString("numdocvta");
-                            tx_clteDV.Text = dr.GetString("clifact");
-                            DataRow[] row = dtm.Select("idcodice='" + dr.GetString("codmonvta") + "'");
-                            lb_impDV.Text = lb_impDV.Text + ((row.Length > 0)? row[0][1].ToString() : "");
-                            tx_impDV.Text = dr.GetDecimal("totdocvta").ToString("#.##");
-                            // "a.marca_gre,a.tidocor,a.rucDorig,a.lpagop,a.pesoKT " +
                             tx_dat_docOr.Text = dr.GetString("tidocor");
                             tx_rucEorig.Text = dr.GetString("rucDorig");
                             tx_dat_docOr2.Text = dr.GetString("tidocor2");
@@ -615,8 +603,6 @@ namespace TransCarga
                             //
                             if (dr.GetString("pesoKT") == "K") rb_kg.Checked = true;
                             else rb_tn.Checked = true;
-                            if (dr.GetString("lpagop") == "O") rb_pOri.Checked = true;
-                            else rb_pDes.Checked = true;
                             cmb_docorig.SelectedValue = tx_dat_docOr.Text;
                             cmb_docorig_SelectionChangeCommitted(null, null);
                             cmb_docorig2.SelectedValue = tx_dat_docOr2.Text;
@@ -645,7 +631,6 @@ namespace TransCarga
                             tx_proDrio.Text = du_desti[1];
                             tx_disDrio.Text = du_desti[2];
                             tx_dirDrio.Text = dr.GetString("diredegri");
-                            cmb_mon.SelectedValue = tx_dat_mone.Text;
                             tx_tipcam.Text = dr.GetString("tipcamgri");
                             cmb_motras.SelectedValue = tx_dat_motras.Text;
                             cmb_motras_SelectionChangeCommitted(null, null);
@@ -722,7 +707,6 @@ namespace TransCarga
                         tx_obser1.Text = dr.GetString("obspregui");
                         tx_consig.Text = dr.GetString("clifinpre");
                         tx_dat_mone.Text = dr.GetString("tipmonpre");
-                        tx_flete.Text = dr.GetDecimal("totpregui").ToString("#.##");
                         claveSeg = dr.GetString("seguroE");
                     }
                     dr.Dispose();
@@ -763,7 +747,6 @@ namespace TransCarga
                 tx_dptoDrio.Text = du_desti[0];
                 tx_proDrio.Text = du_desti[1];
                 tx_disDrio.Text = du_desti[2];
-                cmb_mon.SelectedValue = tx_dat_mone.Text;
             }
         }
         private void jaladet(string idr)            // jala el detalle
@@ -847,16 +830,6 @@ namespace TransCarga
                     datv.Fill(dttdv);
                 }
             }
-            // datos para el combo de moneda
-            cmb_mon.Items.Clear();
-            MySqlCommand cmo = new MySqlCommand("select idcodice,descrizionerid from desc_mon where numero=@bloq", conn);
-            cmo.Parameters.AddWithValue("@bloq", 1);
-            dacu = new MySqlDataAdapter(cmo);
-            dtm.Clear();
-            dacu.Fill(dtm);
-            cmb_mon.DataSource = dtm;
-            cmb_mon.DisplayMember = "descrizionerid";
-            cmb_mon.ValueMember = "idcodice";
             // documento origen - documentos relacionados con transporte de mercancias
             using (MySqlCommand mydorig = new MySqlCommand("select * from desc_dtm where numero=@bloq AND deta3=@det3 OR deta4=@det3", conn))
             {
@@ -888,7 +861,6 @@ namespace TransCarga
             cmb_motras.DisplayMember = "descrizionerid";
             cmb_motras.ValueMember = "idcodice";
             //
-            cmo.Dispose();
             ccl.Dispose();
             cdu.Dispose();
             dacu.Dispose();
@@ -1245,7 +1217,6 @@ namespace TransCarga
             tx_proDrio.ReadOnly = true;
             tx_disDrio.ReadOnly = true;
             gbox_planilla.Enabled = false;
-            gbox_docvta.Enabled = false;
             //
             cmb_origen.Enabled = false;
             tx_docsOr.Enabled = false;
@@ -1254,11 +1225,6 @@ namespace TransCarga
         private void limpiar()
         {
             lp.limpiar(this);
-            tx_pagado.Text = "";
-            tx_fecDV.Text = "";
-            tx_DV.Text = "";
-            tx_clteDV.Text = "";
-            tx_impDV.Text = "";
             //
             tx_pla_fech.Text = "";
             tx_pla_plani.Text = "";
@@ -1281,6 +1247,7 @@ namespace TransCarga
             //
             tx_dat_motras.Text = "";
             tx_dat_motrasS.Text = "";
+            tx_motras.Text = "";
         }
         private void limpia_chk()    
         {
@@ -2528,7 +2495,7 @@ namespace TransCarga
                 cmb_motras.Focus();
                 return;
             }        // Si no es traslado Importacion o Exportacion no debe estar marcado como carga única 
-
+            // Validaciones SUNAT - Si es modalidad de traslado privado ==> NO VAN DATOS DEL TRANSPORTISTA, xmlGRE maneja este hilo 19/07/2023
 
             if (tx_dat_tdRem.Text == tx_dat_tDdest.Text && tx_numDocDes.Text == tx_numDocRem.Text)
             {
@@ -2797,7 +2764,7 @@ namespace TransCarga
                     MessageBox.Show("Ingrese el número de la guía", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                     return;
                 }
-                if (tx_DV.Text.Trim().Length < 6)   // Las Guías remitente no deberían tener facturación, las guias que se facturan son las de transportista
+                if (true)
                 {
                     if (tx_idr.Text.Trim() != "")
                     {
@@ -2818,14 +2785,6 @@ namespace TransCarga
                             return;
                         }
                     }
-                }
-                else
-                {
-                    sololee();
-                    MessageBox.Show("No se puede Anular" + Environment.NewLine +
-                        "Tiene Doc.Venta","Atención " + tx_DV.Text.Trim()+"|", MessageBoxButtons.OK, MessageBoxIcon.Hand);
-                    tx_dat_tdRem.Focus();
-                    return;
                 }
             }
             if (iserror == "no")
@@ -2853,7 +2812,7 @@ namespace TransCarga
                 if (tx_tipcam.Text.Trim() == "") tx_tipcam.Text = "0";
                 decimal subtgr = 0; // Math.Round(decimal.Parse(tx_flete.Text) / (decimal.Parse(v_igv) / 100 + 1), 3);
                 decimal igvtgr = 0; // Math.Round(decimal.Parse(tx_flete.Text) - subtgr, 3);
-                if (tx_dat_mone.Text == MonDeft) tx_fletMN.Text = tx_flete.Text;
+                if (tx_dat_mone.Text == MonDeft) tx_fletMN.Text = "0";
                 else
                 {
                     if (tx_tipcam.Text.Trim() == "" || tx_tipcam.Text == "0")   // tx_fletMN.Text.Trim() == "" || tx_fletMN.Text.Trim() == "0"
@@ -2920,12 +2879,12 @@ namespace TransCarga
                     micon.Parameters.AddWithValue("@tcprgr", tx_tipcam.Text);           // tipo de cambio ... falta leer de la tabla de cambios
                     micon.Parameters.AddWithValue("@subpgr", subtgr.ToString());        // sub total
                     micon.Parameters.AddWithValue("@igvpgr", igvtgr.ToString());        // igv
-                    micon.Parameters.AddWithValue("@totpgr", tx_flete.Text);            // total inc. igv
+                    micon.Parameters.AddWithValue("@totpgr", "0");            // total inc. igv
                     micon.Parameters.AddWithValue("@pagpgr", "0");
                     micon.Parameters.AddWithValue("@estpgr", tx_dat_estad.Text);        // estado de la guía
                     micon.Parameters.AddWithValue("@frase1", (claveSeg == "") ? "" : v_fra1);
-                    micon.Parameters.AddWithValue("@frase2", (chk_seguridad.Checked == true)? v_fra2 : "");
-                    micon.Parameters.AddWithValue("@fleimp", (chk_flete.Checked == true) ? "S" : "N");
+                    micon.Parameters.AddWithValue("@frase2", "");
+                    micon.Parameters.AddWithValue("@fleimp", "N");
                     micon.Parameters.AddWithValue("@ticlre", tx_dat_tcr.Text);   // tipo de cliente remitente, credito o contado
                     micon.Parameters.AddWithValue("@ticlde", tx_dat_tcd.Text);   // tipo de cliente destinatario, credito o contado
                     micon.Parameters.AddWithValue("@tipacc", "");               // guía a credito o contra entrega
@@ -2956,7 +2915,7 @@ namespace TransCarga
                     micon.Parameters.AddWithValue("@margre", v_marGRET);                                    // marca de Guía de Remisión Electrónica
                     micon.Parameters.AddWithValue("@tdocor", tx_dat_docOr.Text);                            // tipo del documento origen
                     micon.Parameters.AddWithValue("@rucDor", tx_rucEorig.Text);                             // ruc del emisor del doc origen
-                    micon.Parameters.AddWithValue("@lpagop", (rb_pOri.Checked == true)? "O" : "D");         // mara de pago en origen o destino
+                    micon.Parameters.AddWithValue("@lpagop", "D");                                          // mara de pago en origen o destino
                     micon.Parameters.AddWithValue("@pesoKT", (rb_kg.Checked == true) ? "K" : "T");          // peso en: Kilos o Toneladas
                     micon.Parameters.AddWithValue("@tidoc2", tx_dat_docOr2.Text);
                     micon.Parameters.AddWithValue("@rucDo2", tx_rucEorig2.Text);
@@ -3565,7 +3524,6 @@ namespace TransCarga
                 jalaoc("sernum");
                 //dataGridView1.Rows.Clear();
                 jaladet(tx_idr.Text);
-                chk_seguridad_CheckStateChanged(null, null);
                 sololee();
                 if (Tx_modo.Text == "EDITAR")
                 {
@@ -3639,62 +3597,9 @@ namespace TransCarga
                         tx_disDrio.Enabled = true;
                         tx_ubigDtt.Enabled = true;
                     }
-                    if (claveSeg == "") chk_seguridad.Enabled = true;
-                    else
-                    {
-                        chk_seguridad.Checked = true;
-                    }
                     tx_docsOr.Enabled = true;
                     tx_consig.Enabled = true;
                     tx_obser1.Enabled = true;
-                    //dataGridView1_RowLeave(null, null);
-                    //dataGridView1.ReadOnly = true;
-                }
-            }
-        }
-        private void tx_flete_Leave(object sender, EventArgs e)
-        {
-            if ((Tx_modo.Text == "NUEVO" && tx_flete.Text.Trim() != "") || (Tx_modo.Text == "EDITAR" && tx_flete.Enabled == true && tx_flete.ReadOnly == false))
-            {
-                if (tx_dat_mone.Text == MonDeft)
-                {
-                    tx_fletMN.Text = tx_flete.Text;
-                }
-                else
-                {
-                    if (tx_tipcam.Text.Trim() != "" && tx_tipcam.Text.Trim() != "0")
-                    {
-                        tx_fletMN.Text = Math.Round(decimal.Parse(tx_flete.Text) * decimal.Parse(tx_tipcam.Text), 2).ToString();
-                    }
-                    else
-                    {
-                        MessageBox.Show("Se requiere tipo de cambio","Atención",MessageBoxButtons.OK,MessageBoxIcon.Warning);
-                        tx_flete.Text = "";
-                        cmb_mon.Focus();
-                        return;
-                    }
-                }
-            }
-            button1.Focus();
-        }
-        private void chk_seguridad_CheckStateChanged(object sender, EventArgs e)
-        {
-            if (chk_seguridad.Checked == false)
-            {
-                if (claveSeg != "") chk_seguridad.Checked = true;
-            }
-        }
-        private void chk_seguridad_Click(object sender, EventArgs e)
-        {
-            if (chk_seguridad.Checked == true)
-            {
-                string para1 = claveSeg;
-                vclave ayu1 = new vclave(para1);
-                var result = ayu1.ShowDialog();
-                if (result == DialogResult.Cancel)
-                {
-                    claveSeg = ayu1.ReturnValue1;
-                    if (claveSeg == "") chk_seguridad.Checked = false;
                 }
             }
         }
@@ -4171,35 +4076,6 @@ namespace TransCarga
                 }
             }
         }
-        private void cmb_mon_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (Tx_modo.Text == "NUEVO")   // ("NUEVO,EDITAR").Contains(Tx_modo.Text.Trim())
-            {
-                if (cmb_mon.SelectedIndex > -1)
-                {
-                    tx_dat_mone.Text = cmb_mon.SelectedValue.ToString();
-                    if (tx_dat_mone.Text != MonDeft)
-                    {
-                        vtipcam vtipcam = new vtipcam(tx_flete.Text,tx_dat_mone.Text,tx_fechope.Text);
-                        var result = vtipcam.ShowDialog();
-                        if (vtipcam.ReturnValue1 != "" || vtipcam.ReturnValue1 != "0")
-                        {
-                            //cmb_mon.SelectedValue = MonDeft;
-                            tx_flete.Text = vtipcam.ReturnValue1;
-                            tx_fletMN.Text = vtipcam.ReturnValue2;
-                            tx_tipcam.Text = vtipcam.ReturnValue3;
-                        }
-                        else
-                        {
-                            tx_flete.Text = "";
-                            tx_fletMN.Text = "";
-                            tx_tipcam.Text = "";
-                        }
-                    }
-                    tx_flete.Focus();
-                }
-            }
-        }
         private void cmb_origen_SelectionChangeCommitted(object sender, EventArgs e)
         {
             if (cmb_origen.SelectedIndex > -1)
@@ -4437,7 +4313,6 @@ namespace TransCarga
                 tx_dat_motrasS.Text = "";
             }
         }
-
         #endregion comboboxes
 
         #region datagridview
