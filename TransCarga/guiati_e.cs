@@ -2435,6 +2435,12 @@ namespace TransCarga
                     return;
                 }
             }
+            if (tx_pla_placa.Text == "")
+            {
+                MessageBox.Show("Las guías electrónicas de transportista" + Environment.NewLine + 
+                    "necesitan los datos del vehículo obligatoriamente","Faltan datos",MessageBoxButtons.OK,MessageBoxIcon.Warning);
+                return;
+            }
             #endregion
             #region validaciones GR electrónicas Sunat
             // documentos relacionados
@@ -2646,7 +2652,21 @@ namespace TransCarga
                 return;
             }
             // Validaciones SUNAT - Datos del Destinatario
-            // todo ok con las validaciones generales
+            //          todo ok con las validaciones generales
+            // Validaciones SUNAT - Vehículos
+            if (tx_pla_autor.Text.Trim().Length > 9 && tx_pla_autor.Text.Trim().Length < 16)
+            {
+                MessageBox.Show("Las autorizaciones de circulación deben" + Environment.NewLine + 
+                    "tener entre 10 y 15 caracteres alfanuméricos", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }                   // Aut. Circulación trackto, alfanumérico de 10 a 15 caracteres
+            if (tx_aut_carret.Text.Trim() != "" && 
+                (tx_aut_carret.Text.Trim().Length > 9 && tx_aut_carret.Text.Trim().Length < 16))
+            {
+                MessageBox.Show("Las autorizaciones de circulación deben" + Environment.NewLine +
+                    "tener entre 10 y 15 caracteres alfanuméricos", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }               // Aut. Circulación carreta, alfanumérico de 10 a 15 caracteres
 
             // Validaciones SUNAT - Datos de Envío
             if (chk_cunica.Checked == true)
