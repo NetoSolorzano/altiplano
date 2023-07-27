@@ -242,7 +242,7 @@ namespace TransCarga
             tx_det_desc.AutoCompleteCustomSource = desdet; //;
             // longitudes maximas de campos
             tx_det_umed.MaxLength = 14;
-            tx_det_desc.MaxLength = 100;
+            tx_det_desc.MaxLength = 95;     // no ampliar porque la descripcion a grabar en la tabla = glosa + tx_det_desc.text
             //
             tx_pregr_num.MaxLength = 8;
             tx_serie.MaxLength = 4;         // serie pre guia
@@ -1681,7 +1681,7 @@ namespace TransCarga
                     cmd.Parameters.AddWithValue("@HorEmis", lib.Right("0" + DateTime.Now.Hour, 2) + ":" + lib.Right("0" + DateTime.Now.Minute, 2) + ":" + lib.Right("0" + DateTime.Now.Second, 2));  // "12:21:13"
                     cmd.Parameters.AddWithValue("@CodGuia", "31");
                     cmd.Parameters.AddWithValue("@NomGuia", "GUIA TRANSPORTISTA");
-                    cmd.Parameters.AddWithValue("@CantBul", 1);
+                    cmd.Parameters.AddWithValue("@CantBul", 1);                           // ??? cantidad de bultos = 1 ????? seguro ????????????
                     cmd.Parameters.AddWithValue("@PesoTot", tx_totpes.Text);              // 30
                     cmd.Parameters.AddWithValue("@CodUnid", (rb_tn.Checked != true) ? "KGM" : "TNE");           // "KGM"
                     cmd.Parameters.AddWithValue("@FecIniT", tx_pla_fech.Text);          // "2023-05-19"
@@ -1753,16 +1753,15 @@ namespace TransCarga
                     cmd.Parameters.AddWithValue("@EnvCodEn2", "06");
                     cmd.Parameters.AddWithValue("@EnvNomEn2", "Ministerio de Transportes y Comunicaciones");
                     // datos de los choferes
-
-                    cmd.Parameters.AddWithValue("@ChoTipDi1", "1");
-                    cmd.Parameters.AddWithValue("@ChoNumDi1", tx_pla_dniChof.Text);
-                    cmd.Parameters.AddWithValue("@ChoNomTi1", "Documento Nacional de Identidad");
-                    cmd.Parameters.AddWithValue("@ChoNombr1", partidor(tx_pla_nomcho.Text, " ")[0]);        // tx_pla_nomcho.Text
+                    cmd.Parameters.AddWithValue("@ChoTipDi1", tx_pla_chofS.Text);                       // codigo sunat del tipo de doc del chofer principal
+                    cmd.Parameters.AddWithValue("@ChoNumDi1", tx_pla_dniChof.Text);                     // Num doc del chofer principal
+                    cmd.Parameters.AddWithValue("@ChoNomTi1", "Documento de Identidad");                // 
+                    cmd.Parameters.AddWithValue("@ChoNombr1", partidor(tx_pla_nomcho.Text, " ")[0]);    // tx_pla_nomcho.Text
                     cmd.Parameters.AddWithValue("@ChoApell1", partidor(tx_pla_nomcho.Text, " ")[1]);
-                    cmd.Parameters.AddWithValue("@ChoLicen1", tx_pla_brevet.Text);        // "U46785663"
-                    cmd.Parameters.AddWithValue("@ChoTipDi2", "1");
-                    cmd.Parameters.AddWithValue("@ChoNumDi2", tx_dat_dniC2.Text);
-                    cmd.Parameters.AddWithValue("@ChoNomTi2", "Documento Nacional de Identidad");
+                    cmd.Parameters.AddWithValue("@ChoLicen1", tx_pla_brevet.Text);                      // "U46785663"
+                    cmd.Parameters.AddWithValue("@ChoTipDi2", tx_dat_dniC2s.Text);                      // codigo sunat del tipo de doc del chofer
+                    cmd.Parameters.AddWithValue("@ChoNumDi2", tx_dat_dniC2.Text);                       // Num doc del chofer secundario
+                    cmd.Parameters.AddWithValue("@ChoNomTi2", "Documento de Identidad");                // 
                     cmd.Parameters.AddWithValue("@ChoNombr2", partidor(tx_pla_chofer2.Text, " ")[0]);     // tx_pla_chofer2.Text
                     cmd.Parameters.AddWithValue("@ChoApell2", partidor(tx_pla_chofer2.Text, " ")[1]);
                     cmd.Parameters.AddWithValue("@ChoLicen2", tx_pla_brev2.Text);
@@ -2667,7 +2666,25 @@ namespace TransCarga
                     "tener entre 10 y 15 caracteres alfanuméricos", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }               // Aut. Circulación carreta, alfanumérico de 10 a 15 caracteres
-
+            // Validaciones SUNAT - Choferes
+            if (tx_pla_chofS.Text == "" || tx_pla_chofS.Text.Trim() == "6")
+            {
+                MessageBox.Show("El tipo de documento del chofer principal" + Environment.NewLine +
+                    "está en vacío o no corresponde", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }                                    // Tipo de documento chofer principal
+            if (tx_pla_brev2.Text != "" && (tx_dat_dniC2s.Text == "" || tx_dat_dniC2s.Text == "6"))
+            {
+                MessageBox.Show("El tipo de documento del chofer secundario" + Environment.NewLine +
+                    "está en vacío o no corresponde", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }            // Tipo de documento chofer secundario
+            if (tx_pla_dniChof.Text == "" || tx_dat_dniC2.Text == "")
+            {
+                MessageBox.Show("El número de documento del chofer principal" + Environment.NewLine +
+                    "o secundario está en vacío", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }                                          // Número de documento de identidad chofer principal y secundario
             // Validaciones SUNAT - Datos de Envío
             if (chk_cunica.Checked == true)
             {
