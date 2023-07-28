@@ -73,6 +73,9 @@ namespace TransCarga
         DataTable dtd = new DataTable();
         DataTable dtm = new DataTable();
         DataTable dtf = new DataTable();    // formatos de impresion CR
+        DataTable dtdoc = new DataTable();
+        DataTable dtdoca = new DataTable();
+
         public planicarga()
         {
             InitializeComponent();
@@ -464,7 +467,7 @@ namespace TransCarga
                     string consulta = "select a.id,a.fechope,a.serplacar,a.numplacar,a.locorigen,a.locdestin,a.obsplacar,a.cantfilas,a.cantotpla,a.pestotpla,a.tipmonpla," +
                         "a.tipcampla,a.subtotpla,a.igvplacar,a.totplacar,a.totpagado,a.salxpagar,a.estadoser,a.impreso,a.fleteimp,a.platracto,a.placarret,a.autorizac," +
                         "a.confvehic,a.brevchofe,a.nomchofe,a.brevayuda,a.nomayuda,a.rucpropie,a.tipoplani,a.userc,a.userm,a.usera,ifnull(b.razonsocial,'') as razonsocial," +
-                        "a.marcaTrac,a.modeloTrac,a.marcaCarret,a.modelCarret,a.autorCarret,a.confvCarret,a.nregtrackto,a.nregcarreta " +
+                        "a.marcaTrac,a.modeloTrac,a.marcaCarret,a.modelCarret,a.autorCarret,a.confvCarret,a.nregtrackto,a.nregcarreta,a.tipdocpri,a.tipdocayu " +
                         "FROM cabplacar a left join anag_for b on a.rucpropie=b.ruc and b.estado=0 " + parte;
                     MySqlCommand micon = new MySqlCommand(consulta, conn);
                     if (campo == "tx_idr") micon.Parameters.AddWithValue("@ida", tx_idr.Text);
@@ -536,6 +539,8 @@ namespace TransCarga
                             tx_carret_autoriz.Text = dr.GetString("autorCarret");
                             tx_nregP.Text = dr.GetString("nregtrackto");
                             tx_nregC.Text = dr.GetString("nregcarreta");
+                            tx_dat_tdchof.Text = dr.GetString("tipdocpri");
+                            tx_dat_tdayu.Text = dr.GetString("tipdocayu");
                             //
                             tx_car3ro_ruc.Text = dr.GetString("rucpropie");
                             tx_car_3ro_nombre.Text = dr.GetString("razonsocial");  // falta en consulta
@@ -544,6 +549,8 @@ namespace TransCarga
                         cmb_destino.SelectedValue = tx_dat_locdes.Text;
                         cmb_origen.SelectedValue = tx_dat_locori.Text;
                         cmb_mon.SelectedValue = tx_dat_mone.Text;
+                        cmb_doc.SelectedValue = tx_dat_tdchof.Text;
+                        cmb_doca.SelectedValue = tx_dat_tdayu.Text;
                         // si el documento esta ANULADO o un estado que no permite EDICION, se pone todo en sololee (ANULADO O RECIBIDO)
                         if (tx_dat_estad.Text != codGene)
                         {
@@ -721,6 +728,23 @@ namespace TransCarga
             cmb_forimp.DataSource = dtf;
             cmb_forimp.DisplayMember = "valor";
             cmb_forimp.ValueMember = "valor";
+            // datos de tipo de documento del chofer
+            cmb_doc.Items.Clear();
+            const string condoc = "select idcodice,descrizionerid,descrizione,codigo,codsunat,deta1 from desc_doc " +
+                "order by idcodice";
+            MySqlCommand cmbtpu = new MySqlCommand(condoc, conn);
+            MySqlDataAdapter datpu = new MySqlDataAdapter(cmbtpu);
+            datpu.Fill(dtdoc);
+            cmb_doc.DataSource = dtdoc;
+            cmb_doc.DisplayMember = "descrizionerid";
+            cmb_doc.ValueMember = "idcodice";
+            // datos de tipo de documento del ayudante
+            cmb_doca.Items.Clear();
+            datpu.Fill(dtdoca);
+            cmb_doca.DataSource = dtdoca;
+            cmb_doca.DisplayMember = "descrizionerid";
+            cmb_doca.ValueMember = "idcodice";
+
             conn.Close();
         }
         private bool valiGri()                  // valida filas completas en la grilla - 8 columnas
@@ -1288,12 +1312,12 @@ namespace TransCarga
                     "fechope,serplacar,locorigen,locdestin,obsplacar,cantfilas,cantotpla,pestotpla,tipmonpla,tipcampla,subtotpla," +
                     "igvplacar,totplacar,totpagado,salxpagar,estadoser,fleteimp,platracto,placarret,autorizac,confvehic,brevchofe," +
                     "brevayuda,rucpropie,tipoplani,nomchofe,nomayuda,marcaTrac,modeloTrac,marcaCarret,modelCarret,autorCarret,confvCarret," +
-                    "dnichofer,dniayudante,nregtrackto,nregcarreta," +
+                    "dnichofer,dniayudante,nregtrackto,nregcarreta,tipdocpri,tipdocayu," +
                     "verApp,userc,fechc,diriplan4,diripwan4,netbname) " +
                     "values (@fecho,@serpl,@locor,@locde,@obspl,@cantf,@canto,@pesto,@tipmo,@tipca,@subto," +
                     "@igvpl,@totpl,@totpa,@salxp,@estad,@fleim,@platr,@placa,@autor,@confv,@brevc," +
                     "@breva,@rucpr,@tipop,@nocho,@noayu,@marca,@model,@marCarr,@modCarr,@autCarr,@conCarr," +
-                    "@dnicho,@dniayu,@nregtr,@nregcar," +
+                    "@dnicho,@dniayu,@nregtr,@nregcar,@tdpri,@tdayu," +
                     "@verApp,@asd,now(),@iplan,@ipwan,@nbnam)"; // 
                 using (MySqlCommand micon = new MySqlCommand(inserta, conn))
                 {
@@ -1334,6 +1358,8 @@ namespace TransCarga
                     micon.Parameters.AddWithValue("@dniayu", tx_dniA.Text);
                     micon.Parameters.AddWithValue("@nregtr", tx_nregP.Text);
                     micon.Parameters.AddWithValue("@nregcar", tx_nregC.Text);
+                    micon.Parameters.AddWithValue("@tdpri", tx_dat_tdchof.Text);
+                    micon.Parameters.AddWithValue("@tdayu", tx_dat_tdayu.Text);
                     micon.Parameters.AddWithValue("@verApp", verapp);
                     micon.Parameters.AddWithValue("@asd", asd);
                     micon.Parameters.AddWithValue("@iplan", lib.iplan());
@@ -1373,9 +1399,9 @@ namespace TransCarga
                             if (dataGridView1.Rows[i].Cells[0].Value.ToString().Trim() != "")
                             {
                                 string inserd2 = "insert into detplacar (idc,serplacar,numplacar,fila,numpreg,serguia,numguia,totcant,totpeso,totflet,codmone,estadoser,origreg," +
-                                    "verApp,userc,fechc,diriplan4,diripwan4,netbname,platracto,placarret,autorizac,confvehic,brevchofe,brevayuda,rucpropiet,fechope,pagado,salxcob) " +
+                                    "verApp,userc,fechc,diriplan4,diripwan4,netbname,platracto,placarret,autorizac,confvehic,brevchofe,brevayuda,rucpropiet,fechope,pagado,salxcob,tipdocpri,tipdocayu) " +
                                     "values (@idr,@serpl,@numpl,@fila,@numpr,@sergu,@numgu,@totca,@totpe,@totfl,@codmo,@estad,@orireg," +
-                                    "@verApp,@asd,now(),@iplan,@ipwan,@nbnam,@platr,@placa,@autor,@confv,@brevc,@breva,@rucpr,@fecho,@paga,@xcob)";
+                                    "@verApp,@asd,now(),@iplan,@ipwan,@nbnam,@platr,@placa,@autor,@confv,@brevc,@breva,@rucpr,@fecho,@paga,@xcob,@tdpri,@tdayu)";
                                 using (MySqlCommand micon = new MySqlCommand(inserd2, conn))
                                 {
                                     micon.Parameters.AddWithValue("@idr", tx_idr.Text);
@@ -1408,6 +1434,8 @@ namespace TransCarga
                                     micon.Parameters.AddWithValue("@rucpr", (tx_pla_ruc.Text.Trim() == "") ? tx_car3ro_ruc.Text : tx_pla_ruc.Text);
                                     micon.Parameters.AddWithValue("@paga", dataGridView1.Rows[i].Cells[8].Value.ToString());    // 
                                     micon.Parameters.AddWithValue("@xcob", dataGridView1.Rows[i].Cells[9].Value.ToString());    // 
+                                    micon.Parameters.AddWithValue("@tdpri", tx_dat_tdchof.Text);
+                                    micon.Parameters.AddWithValue("@tdayu", tx_dat_tdayu.Text);
                                     //a.fila,a.numpreg,a.serguia,a.numguia,a.totcant,a.totpeso,b.descrizionerid as MON,a.totflet,a.totpag,a.salgri,a.codmon
                                     micon.ExecuteNonQuery();
                                     fila += 1;
@@ -1447,7 +1475,8 @@ namespace TransCarga
                             "tipcampla=@tipca,subtotpla=@subto,igvplacar=@igvpl,totplacar=@totpl,totpagado=@totpa,salxpagar=@salxp,fleteimp=@fleim," +
                             "platracto=@platr,placarret=@placa,autorizac=@autor,confvehic=@confv,brevchofe=@brevc,brevayuda=@breva,rucpropie=@rucpr,tipoplani=@tipop," +
                             "verApp=@verApp,userm=@asd,fechm=now(),diriplan4=@iplan,diripwan4=@ipwan,netbname=@nbnam,nomchofe=@nocho,nomayuda=@noayu,estadoser=@estad," +
-                            "marcaCarret=@marCarr,modelCarret=@modCarr,autorCarret=@autCarr,confvCarret=@conCarr,dnichofer=@dnicho,dniayudante=@dniayu,nregtrackto=@nregtr,nregcarreta=@nregcar " +
+                            "marcaCarret=@marCarr,modelCarret=@modCarr,autorCarret=@autCarr,confvCarret=@conCarr,dnichofer=@dnicho,dniayudante=@dniayu,nregtrackto=@nregtr," +
+                            "nregcarreta=@nregcar,tipdocpri=@tdpri,tipdocayu=@tdayu " +
                             "where serplacar=@serpl and numplacar=@numpl";
                         MySqlCommand micon = new MySqlCommand(actua, conn);
                         micon.Parameters.AddWithValue("@fecho", tx_fechope.Text.Substring(6, 4) + "-" + tx_fechope.Text.Substring(3, 2) + "-" + tx_fechope.Text.Substring(0, 2));
@@ -1502,6 +1531,8 @@ namespace TransCarga
                         micon.Parameters.AddWithValue("@dniayu", tx_dniA.Text);
                         micon.Parameters.AddWithValue("@nregtr", tx_nregP.Text);
                         micon.Parameters.AddWithValue("@nregcar", tx_nregC.Text);
+                        micon.Parameters.AddWithValue("@tdpri", tx_dat_tdchof.Text);
+                        micon.Parameters.AddWithValue("@tdayu", tx_dat_tdayu.Text);
                         micon.Parameters.AddWithValue("@verApp", verapp);
                         micon.Parameters.AddWithValue("@asd", asd);
                         micon.Parameters.AddWithValue("@iplan", lib.iplan());
@@ -1574,10 +1605,10 @@ namespace TransCarga
                             if (dataGridView1.Rows[i].Cells[11].Value == null)   // fila nueva, se inserta  || .ToString() != "X"
                             {
                                 string inserd2 = "insert into detplacar (idc,serplacar,numplacar,fila,numpreg,serguia,numguia,totcant,totpeso,totflet,codmone,estadoser,origreg," +
-                                "verApp,userc,fechc,diriplan4,diripwan4,netbname,nombult," +
+                                "verApp,userc,fechc,diriplan4,diripwan4,netbname,nombult,tipdocpri,tipdocayu," +
                                 "platracto,placarret,autorizac,confvehic,brevchofe,brevayuda,rucpropiet,fechope,pagado,salxcob) " +
                                 "values (@idr,@serpl,@numpl,@fila,@numpr,@sergu,@numgu,@totca,@totpe,@totfl,@codmo,@estad,@orireg," +
-                                "@verApp,@asd,now(),@iplan,@ipwan,@nbnam,@nombu," +
+                                "@verApp,@asd,now(),@iplan,@ipwan,@nbnam,@nombu,@tdpri,@tdayu," +
                                 "@platr,@placa,@autor,@confv,@brevc,@breva,@rucpr,@fecho,@paga,@xcob)";
                                 micon = new MySqlCommand(inserd2, conn);
                                 micon.Parameters.AddWithValue("@idr", tx_idr.Text);
@@ -1611,6 +1642,8 @@ namespace TransCarga
                                 micon.Parameters.AddWithValue("@fecho", tx_fechope.Text.Substring(6, 4) + "-" + tx_fechope.Text.Substring(3, 2) + "-" + tx_fechope.Text.Substring(0, 2));
                                 micon.Parameters.AddWithValue("@paga", dataGridView1.Rows[i].Cells[8].Value.ToString());    // 
                                 micon.Parameters.AddWithValue("@xcob", dataGridView1.Rows[i].Cells[9].Value.ToString());    // 
+                                micon.Parameters.AddWithValue("@tdpri", tx_dat_tdchof.Text);
+                                micon.Parameters.AddWithValue("@tdayu", tx_dat_tdayu.Text);
                                 micon.ExecuteNonQuery();
                             }
                         }
@@ -1873,6 +1906,14 @@ namespace TransCarga
                     tx_nregC.Text = datos[5].Trim();
                 }
             }
+        }
+        private void tx_dniC_Leave(object sender, EventArgs e)
+        {
+
+        }
+        private void tx_dniA_Leave(object sender, EventArgs e)
+        {
+
         }
         //...
         #endregion
@@ -2202,6 +2243,43 @@ namespace TransCarga
             {
                 DataRow[] fila = dtd.Select("idcodice='" + tx_dat_locdes.Text + "'");
                 //tx_ubigD.Text = fila[0][2].ToString();
+            }
+        }
+        private void cmb_doc_SelectionChangeCommitted(object sender, EventArgs e)
+        {
+            if (cmb_doc.SelectedIndex > -1)
+            {
+                if (Tx_modo.Text == "NUEVO")
+                {
+                    tx_dat_tdchof.Text = cmb_doc.SelectedValue.ToString();
+                    DataRow[] fila = (dtdoc.Select("idcodice='" + tx_dat_tdchof.Text + "'"));
+                    cmb_doc.Tag = fila[0][3].ToString();
+                }
+            }
+        }
+        private void cmb_doca_SelectionChangeCommitted(object sender, EventArgs e)
+        {
+            if (cmb_doca.SelectedIndex > -1)
+            {
+                if (Tx_modo.Text == "NUEVO")
+                {
+                    tx_dat_tdayu.Text = cmb_doca.SelectedValue.ToString();
+                    DataRow[] fila = (dtdoca.Select("idcodice='" + tx_dat_tdayu.Text + "'"));
+                    cmb_doca.Tag = fila[0][3].ToString();
+                    MessageBox.Show(cmb_doca.Tag.ToString());
+                }
+            }
+        }
+        private void cmb_doca_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (Tx_modo.Text == "NUEVO" || Tx_modo.Text == "EDITAR")
+            {
+                if (e.KeyCode == Keys.Delete)
+                {
+                    cmb_doca.SelectedIndex = -1;
+                    tx_dat_tdayu.Text = "";
+                    cmb_doca.Tag = "";
+                }
             }
         }
         #endregion comboboxes

@@ -4521,7 +4521,7 @@ namespace TransCarga
                         // validamos que exista planilla abierta hacia el mismo destino
                         consul = "SELECT a.id,a.fechope,a.serplacar,a.numplacar,a.platracto,a.placarret,a.autorizac,a.confvehic,a.brevchofe,a.nomchofe,a.brevayuda," +
                             "a.nomayuda,a.rucpropie,b.razonsocial,a.marcaTrac as marca,a.modeloTrac as modelo,a.marcaCarret,a.modelCarret,a.autorCarret,a.confvCarret," +
-                            "a.dnichofer,a.dniayudante,a.nregtrackto,a.nregcarreta " +
+                            "a.dnichofer,a.dniayudante,a.nregtrackto,a.nregcarreta,a.tipdocpri,a.tipdocayu " +
                             "from cabplacar a left join anag_for b on b.ruc=a.rucpropie and b.tipdoc=@tdruc " +
                             "WHERE a.estadoser = @estab AND a.locorigen = @locor AND a.locdestin = @locde";
                         //                             "left join vehiculos c on c.placa=a.platracto " +
@@ -4576,6 +4576,8 @@ namespace TransCarga
                                     tx_marCarret.Text = row["marcaCarret"].ToString();
                                     tx_pla_dniChof.Text = (row["dnichofer"].ToString().Trim() == "") ? lib.Right(row["brevchofe"].ToString(), 8) : row["dnichofer"].ToString();
                                     tx_dat_dniC2.Text = (row["dniayudante"].ToString().Trim() == "") ? (row["brevayuda"].ToString().Trim() == "") ? "" : lib.Right(row["brevayuda"].ToString(), 8) : row["dniayudante"].ToString();
+                                    tx_dat_dniC2s.Text = row["tipdocayu"].ToString();
+                                    tx_pla_chofS.Text = row["tipdocpri"].ToString();
                                     //
                                     chk_man.Checked = false;
                                     chk_man.Enabled = true;
@@ -4605,6 +4607,8 @@ namespace TransCarga
                                     tx_dat_carrNreg.Text = "";
                                     tx_pla_dniChof.Text = "";
                                     tx_dat_dniC2.Text = "";
+                                    tx_dat_dniC2s.Text = "";
+                                    tx_pla_chofS.Text = "";
                                     //
                                     chk_man.Checked = false;
                                     chk_man.Enabled = false;
