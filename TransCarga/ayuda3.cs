@@ -83,7 +83,8 @@ namespace TransCarga
                 {
                     parte = parte + " and a.tipo=@para3";
                 }
-                consulta = "SELECT a.id as ID,a.placa as PLACA,a.marca as MARCA,a.modelo as MODELO,a.confve as CONFIG,a.autor1 as AUTORIZ,b.DescrizioneRid as TIPO,a.tipo as CODTIPO " +
+                consulta = "SELECT a.id as ID,a.placa as PLACA,a.marca as MARCA,a.modelo as MODELO,a.confve as CONFIG," +
+                    "a.autor1 as AUTORIZ,b.DescrizioneRid as TIPO,a.tipo as CODTIPO,a.numreg1 as REGMTC " +
                     "FROM vehiculos a LEFT JOIN desc_tve b ON b.idcodice = a.tipo " +
                     "WHERE a.rucpro = @rucp" +  parte;
                 using (MySqlCommand micon = new MySqlCommand(consulta, conn))
@@ -96,7 +97,7 @@ namespace TransCarga
                         dataGridView1.DataSource = dtDatos;
                         dataGridView1.ReadOnly = true;
                     }
-                    ReturnValueA = new string[5] { "", "", "", "", "" };
+                    ReturnValueA = new string[6] { "", "", "", "", "", "" };
                 }
             }
             if (para1 == "Brevete")
@@ -133,7 +134,7 @@ namespace TransCarga
             {
                 string filtro1 = "";
                 if (para2 == "choferes") filtro1 = "and a.brevete <> ''";
-                consulta = "SELECT a.id,ifnull(b.descrizionerid,'DNI') as DOC,a.numdoc as NUMERO,a.nombre as NOMBRE,a.brevete as LICENCIA " +
+                consulta = "SELECT a.id,ifnull(b.descrizionerid,'DNI') as DOC,a.numdoc as NUMERO,a.nombre as NOMBRE,a.brevete as LICENCIA,a.tipdoc " +
                     "from cabrrhh a LEFT JOIN desc_doc b ON b.idcodice = a.tipdoc " +
                     "where a.bloqueado = 0 " + filtro1 + " order by a.nombre";
                 using (MySqlCommand micon = new MySqlCommand(consulta, conn))
@@ -208,6 +209,7 @@ namespace TransCarga
                 ReturnValueA[2] = dataGridView1.CurrentRow.Cells[3].Value.ToString();   // modelo
                 ReturnValueA[3] = dataGridView1.CurrentRow.Cells[4].Value.ToString();   // conf. vehicular
                 ReturnValueA[4] = dataGridView1.CurrentRow.Cells[5].Value.ToString();   // autoriz.
+                ReturnValueA[5] = dataGridView1.CurrentRow.Cells[8].Value.ToString();   // reg MTC
             }
             if (para1 == "Brevete")
             {
@@ -243,7 +245,7 @@ namespace TransCarga
                 tx_codigo.Text = cellva;
                 //
                 ReturnValueA[0] = dataGridView1.CurrentRow.Cells[0].Value.ToString();   // id
-                ReturnValueA[1] = dataGridView1.CurrentRow.Cells[1].Value.ToString();   // tipo doc
+                ReturnValueA[1] = dataGridView1.CurrentRow.Cells[5].Value.ToString();   // tipo doc
                 ReturnValueA[2] = dataGridView1.CurrentRow.Cells[2].Value.ToString();   // num doc
                 ReturnValueA[3] = dataGridView1.CurrentRow.Cells[3].Value.ToString();   // nombre
                 ReturnValueA[4] = dataGridView1.CurrentRow.Cells[4].Value.ToString();   // brevete
@@ -267,6 +269,7 @@ namespace TransCarga
                     ReturnValueA[2] = dataGridView1.CurrentRow.Cells[3].Value.ToString();   // modelo
                     ReturnValueA[3] = dataGridView1.CurrentRow.Cells[4].Value.ToString();   // conf. vehicular
                     ReturnValueA[4] = dataGridView1.CurrentRow.Cells[5].Value.ToString();   // autoriz.
+                    ReturnValueA[5] = dataGridView1.CurrentRow.Cells[8].Value.ToString();   // reg MTC
                 }
                 if (para1 == "rrhh" && para2 == "choferes")
                 {

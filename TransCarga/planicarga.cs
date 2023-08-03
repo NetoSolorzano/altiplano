@@ -181,9 +181,11 @@ namespace TransCarga
                 var result = ayu3.ShowDialog();
                 if (result == DialogResult.Cancel)  // deberia ser OK, pero que chuuu
                 {
+                    tx_dat_tdchof.Text = ayu3.ReturnValueA[1];
                     tx_dniC.Text = ayu3.ReturnValueA[2];   // ayu3.ReturnValue0;
                     tx_pla_brevet.Text = ayu3.ReturnValueA[4];
                     tx_pla_nomcho.Text = ayu3.ReturnValueA[3];
+                    cmb_doc.SelectedValue = tx_dat_tdchof.Text;
                 }
                 return true;
             }
@@ -196,9 +198,11 @@ namespace TransCarga
                 var result = ayu3.ShowDialog();
                 if (result == DialogResult.Cancel)  // deberia ser OK, pero que chuuu
                 {
+                    tx_dat_tdayu.Text = ayu3.ReturnValueA[1];
                     tx_dniA.Text = ayu3.ReturnValueA[2];
                     tx_pla_ayud.Text = ayu3.ReturnValueA[4]; ;
                     tx_pla_nomayu.Text = ayu3.ReturnValueA[3];
+                    cmb_doca.SelectedValue = tx_dat_tdayu.Text;
                 }
                 return true;
             }
@@ -467,7 +471,7 @@ namespace TransCarga
                     string consulta = "select a.id,a.fechope,a.serplacar,a.numplacar,a.locorigen,a.locdestin,a.obsplacar,a.cantfilas,a.cantotpla,a.pestotpla,a.tipmonpla," +
                         "a.tipcampla,a.subtotpla,a.igvplacar,a.totplacar,a.totpagado,a.salxpagar,a.estadoser,a.impreso,a.fleteimp,a.platracto,a.placarret,a.autorizac," +
                         "a.confvehic,a.brevchofe,a.nomchofe,a.brevayuda,a.nomayuda,a.rucpropie,a.tipoplani,a.userc,a.userm,a.usera,ifnull(b.razonsocial,'') as razonsocial," +
-                        "a.marcaTrac,a.modeloTrac,a.marcaCarret,a.modelCarret,a.autorCarret,a.confvCarret,a.nregtrackto,a.nregcarreta,a.tipdocpri,a.tipdocayu " +
+                        "a.marcaTrac,a.modeloTrac,a.marcaCarret,a.modelCarret,a.autorCarret,a.confvCarret,a.nregtrackto,a.nregcarreta,a.tipdocpri,a.tipdocayu,a.dnichofer,a.dniayudante " +
                         "FROM cabplacar a left join anag_for b on a.rucpropie=b.ruc and b.estado=0 " + parte;
                     MySqlCommand micon = new MySqlCommand(consulta, conn);
                     if (campo == "tx_idr") micon.Parameters.AddWithValue("@ida", tx_idr.Text);
@@ -541,6 +545,8 @@ namespace TransCarga
                             tx_nregC.Text = dr.GetString("nregcarreta");
                             tx_dat_tdchof.Text = dr.GetString("tipdocpri");
                             tx_dat_tdayu.Text = dr.GetString("tipdocayu");
+                            tx_dniC.Text = dr.GetString("dnichofer");
+                            tx_dniA.Text = dr.GetString("dniayudante");
                             //
                             tx_car3ro_ruc.Text = dr.GetString("rucpropie");
                             tx_car_3ro_nombre.Text = dr.GetString("razonsocial");  // falta en consulta
@@ -1021,12 +1027,14 @@ namespace TransCarga
             tx_pla_modelo.ReadOnly = true;
             tx_pla_confv.ReadOnly = true;
             tx_pla_autor.ReadOnly = true;
+            tx_nregP.ReadOnly = true;
             tx_pla_propiet.ReadOnly = true;
             tx_car_3ro_nombre.ReadOnly = true;
             tx_carret_marca.ReadOnly = true;
             tx_carret_modelo.ReadOnly = true;
             tx_carret_conf.ReadOnly = true;
             tx_carret_autoriz.ReadOnly = true;
+            tx_nregC.ReadOnly = true;
         }
         private void limpiar()
         {
@@ -1118,6 +1126,24 @@ namespace TransCarga
                     return;
                 }
             }
+            if (tx_dniA.Text.Trim() == "" && tx_pla_nomayu.Text.Trim() != "")
+            {
+                MessageBox.Show("Debe completar los datos de la fila", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                tx_pla_nomayu.Focus();
+                return;
+            }
+            if (tx_pla_brevet.Text == "")
+            {
+                MessageBox.Show("Debe completar los datos de la fila", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                tx_pla_brevet.Focus();
+                return;
+            }
+            if (tx_dniA.Text.Trim() != "" && tx_pla_ayud.Text == "")
+            {
+                MessageBox.Show("Debe completar los datos de la fila", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                tx_pla_ayud.Focus();
+                return;
+            }
             if (tx_nregP.Text.Trim() == "")
             {
                 MessageBox.Show("Debe ingresar el registro MTC","Falta información",MessageBoxButtons.OK,MessageBoxIcon.Information);
@@ -1136,9 +1162,57 @@ namespace TransCarga
             // grabamos, actualizamos, etc
             string modo = Tx_modo.Text;
             string iserror = "no";
-            //MessageBox.Show(tx_pla_confv.Text + "-" + tx_carret_conf.Text);
             if (modo == "NUEVO")
             {
+                #region Validaciones Sunat
+                // autorizaciones de circulacion - longitud
+                if (tx_pla_autor.Text.Trim().Length < 9 || tx_pla_autor.Text.Trim().Length > 16)
+                {
+                    MessageBox.Show("Las autorizaciones de circulación deben" + Environment.NewLine +
+                    "tener entre 10 y 15 caracteres alfanuméricos", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    tx_pla_autor.Focus();
+                    return;
+                }
+                if (tx_carret_autoriz.Text.Trim().Length < 9 || tx_carret_autoriz.Text.Trim().Length > 16)
+                {
+                    MessageBox.Show("Las autorizaciones de circulación deben" + Environment.NewLine +
+                    "tener entre 10 y 15 caracteres alfanuméricos", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    tx_carret_autoriz.Focus();
+                    return;
+                }
+                // registro MTC - longitud
+                if (tx_nregP.Text.Trim().Length < 11 || tx_nregP.Text.Trim().Length > 11)
+                {
+                    MessageBox.Show("El registro MTC del vehículo debe" + Environment.NewLine +
+                    "tener 11 caracteres alfanuméricos", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    tx_nregP.Focus();
+                    return;
+                }
+                if (tx_nregC.Text.Trim().Length < 11 || tx_nregC.Text.Trim().Length > 11)
+                {
+                    MessageBox.Show("El registro MTC del vehículo debe" + Environment.NewLine +
+                    "tener 11 caracteres alfanuméricos", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    tx_nregC.Focus();
+                    return;
+                }
+                // dni y brevete - longitud
+                // el tip doc y su longitud estan validadas en el combobox (dni)
+                if (tx_pla_brevet.Text.Trim().Length < 9 || tx_pla_brevet.Text.Trim().Length > 10)
+                {
+                    MessageBox.Show("La licencia de conducir debe" + Environment.NewLine +
+                    "tener 9 caracteres alfanuméricos", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    tx_pla_brevet.Focus();
+                    return;
+                }
+                if (tx_dniA.Text.Trim() != "" && (
+                    tx_pla_ayud.Text.Trim().Length < 9 || tx_pla_ayud.Text.Trim().Length > 10))
+                {
+                    MessageBox.Show("La licencia de conducir debe" + Environment.NewLine +
+                    "tener 9 caracteres alfanuméricos", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    tx_pla_ayud.Focus();
+                    return;
+                }
+                #endregion
                 // valida que las filas de la grilla esten completas
                 if (valiGri() != true)
                 {
@@ -1153,12 +1227,12 @@ namespace TransCarga
                     {
                         if (graba() == true)
                         {
-                            var bb = MessageBox.Show("Desea imprimir la planilla?" + Environment.NewLine +
+                            /* var bb = MessageBox.Show("Desea imprimir la planilla?" + Environment.NewLine +
                                 "El formato actual es " + vi_formato, "Confirme por favor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                             if (bb == DialogResult.Yes)
                             {
                                 Bt_print.PerformClick();
-                            }
+                            } */
                         }
                         else
                         {
@@ -1909,11 +1983,35 @@ namespace TransCarga
         }
         private void tx_dniC_Leave(object sender, EventArgs e)
         {
-
+            if (tx_dniC.Text.Trim() != "" && (Tx_modo.Text == "NUEVO" || Tx_modo.Text == "EDITAR"))
+            {
+                if (tx_dat_tdchof.Text != "")
+                {
+                    DataRow[] fila = dtdoc.Select("idcodice='" + tx_dat_tdchof.Text + "'");
+                    if (tx_dniC.Text.Trim().Length != int.Parse(fila[0][3].ToString()))
+                    {
+                        MessageBox.Show("Longitud del número erróneo","Atención",MessageBoxButtons.OK,MessageBoxIcon.Information);
+                        tx_dniC.Text = "";
+                        return;
+                    }
+                }
+            }
         }
         private void tx_dniA_Leave(object sender, EventArgs e)
         {
-
+            if (tx_dniA.Text.Trim() != "" && (Tx_modo.Text == "NUEVO" || Tx_modo.Text == "EDITAR"))
+            {
+                if (tx_dat_tdayu.Text != "")
+                {
+                    DataRow[] fila = dtdoc.Select("idcodice='" + tx_dat_tdayu.Text + "'");
+                    if (tx_dniA.Text.Trim().Length != int.Parse(fila[0][3].ToString()))
+                    {
+                        MessageBox.Show("Longitud del número erróneo", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        tx_dniA.Text = "";
+                        return;
+                    }
+                }
+            }
         }
         //...
         #endregion
@@ -2266,7 +2364,7 @@ namespace TransCarga
                     tx_dat_tdayu.Text = cmb_doca.SelectedValue.ToString();
                     DataRow[] fila = (dtdoca.Select("idcodice='" + tx_dat_tdayu.Text + "'"));
                     cmb_doca.Tag = fila[0][3].ToString();
-                    MessageBox.Show(cmb_doca.Tag.ToString());
+                    //MessageBox.Show(cmb_doca.Tag.ToString());
                 }
             }
         }
@@ -2279,6 +2377,7 @@ namespace TransCarga
                     cmb_doca.SelectedIndex = -1;
                     tx_dat_tdayu.Text = "";
                     cmb_doca.Tag = "";
+                    tx_dniA.Text = "";
                 }
             }
         }
@@ -2567,6 +2666,5 @@ namespace TransCarga
         }
         // evento click en el checkbox de la coumna 14
         #endregion
-
     }
 }
