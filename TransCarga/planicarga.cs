@@ -2347,7 +2347,7 @@ namespace TransCarga
         {
             if (cmb_doc.SelectedIndex > -1)
             {
-                if (Tx_modo.Text == "NUEVO")
+                if (Tx_modo.Text == "NUEVO" || Tx_modo.Text == "EDITAR")
                 {
                     tx_dat_tdchof.Text = cmb_doc.SelectedValue.ToString();
                     DataRow[] fila = (dtdoc.Select("idcodice='" + tx_dat_tdchof.Text + "'"));
@@ -2359,7 +2359,7 @@ namespace TransCarga
         {
             if (cmb_doca.SelectedIndex > -1)
             {
-                if (Tx_modo.Text == "NUEVO")
+                if (Tx_modo.Text == "NUEVO" || Tx_modo.Text == "EDITAR")
                 {
                     tx_dat_tdayu.Text = cmb_doca.SelectedValue.ToString();
                     DataRow[] fila = (dtdoca.Select("idcodice='" + tx_dat_tdayu.Text + "'"));

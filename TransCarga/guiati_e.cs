@@ -139,8 +139,9 @@ namespace TransCarga
 
         DataTable dtu = new DataTable();            // local origen
         DataTable dtd = new DataTable();            // local destino 
-        DataTable dttd0 = new DataTable();
-        DataTable dttd1 = new DataTable();
+        DataTable dttd0 = new DataTable();          // tipo documento del remitente
+        DataTable dttd1 = new DataTable();          // tipo documento del destinatario
+        DataTable dttd2 = new DataTable();          // tipo documento del chofer y ayudante
         DataTable dtm = new DataTable();
         DataTable dttdv = new DataTable();          // tipo documentos guias
         DataTable dtdor = new DataTable();          // tipos de documentos origen 1 de un transporte de mercancia ..segun sunat
@@ -498,6 +499,8 @@ namespace TransCarga
                         "a.frase1,a.frase2,a.fleteimp,a.tipintrem,a.tipintdes,a.tippagpre,a.seguroE,a.userc,a.userm,a.usera," +
                         "a.serplagri,a.numplagri,a.plaplagri,a.carplagri,a.autplagri,a.confvegri,a.breplagri,a.proplagri," +
                         "ifnull(p.nomchofe,'') as chocamcar,ifnull(p.nregtrackto,'') as nregtrackto,ifnull(p.nregcarreta,'') as nregcarreta," +
+                        "ifnull(p.brevayuda,'') as brevayuda,ifnull(p.nomayuda,'') as nomayuda,ifnull(p.dnichofer,'') as dnichofer,ifnull(p.dniayudante,'') as dniayudante," +
+                        "ifnull(p.tipdocpri,'') as tipdocpri,ifnull(p.tipdocayu,'') as tipdocayu," +
                         "ifnull(b.fecplacar,'') as fecplacar,ifnull(b.fecdocvta,'') as fecdocvta,ifnull(f.descrizionerid,'') as tipdocvta," +
                         "ifnull(b.serdocvta,'') as serdocvta,ifnull(b.numdocvta,'') as numdocvta,ifnull(b.codmonvta,'') as codmonvta," +
                         "ifnull(b.totdocvta,0) as totdocvta,ifnull(b.codmonpag,'') as codmonpag,ifnull(b.totpagado,0) as totpagado,ifnull(b.saldofina,0) as saldofina," +
@@ -579,12 +582,18 @@ namespace TransCarga
                             tx_aut_carret.Text = dr.GetString("autCarret");
                             tx_marCarret.Text = dr.GetString("marCarret");
                             tx_pla_confv.Text = dr.GetString("confvegri");
-                            tx_pla_brevet.Text = dr.GetString("breplagri");
-                            tx_pla_nomcho.Text = dr.GetString("chocamcar");
                             tx_pla_ruc.Text = dr.GetString("proplagri");
                             tx_pla_propiet.Text = dr.GetString("razonsocial");
-                            tx_pla_dniChof.Text = lib.Right(dr.GetString("breplagri").ToString(), 8);         // aca debería ser un campo separado 07/03/2023
                             tx_marCpropio.Text = (tx_pla_ruc.Text.Trim() != "" && tx_pla_ruc.Text != Program.ruc) ? "1" : "0";   // Indicador de transporte subcontratado = true
+                            //
+                            tx_pla_brevet.Text = dr.GetString("breplagri");     // brevete del chofer principal
+                            tx_pla_nomcho.Text = dr.GetString("chocamcar");     // nombre chofer principal
+                            tx_pla_dniChof.Text = dr.GetString("dnichofer");    // num doc chofer principal
+                            tx_pla_chofS.Text = dr.GetString("tipdocpri");      // tipo de doc chofer principal
+                            tx_pla_brev2.Text = dr.GetString("brevayuda");      // brevete del ayudante
+                            tx_pla_chofer2.Text = dr.GetString("nomayuda");     // nombre del ayudante
+                            tx_dat_dniC2s.Text = dr.GetString("dniayudante");   // num doc ayudante
+                            tx_dat_dniC2.Text = dr.GetString("tipdocayu");      // tipo de doc ayudante
                             tx_fecDV.Text = dr.GetString("fecdocvta");  //.Substring(0,10);
                             tx_DV.Text = dr.GetString("tipdocvta") + "-" + dr.GetString("serdocvta") + "-" + dr.GetString("numdocvta");
                             tx_clteDV.Text = dr.GetString("clifact");
@@ -829,6 +838,9 @@ namespace TransCarga
             cmb_docDes.DataSource = dttd1;
             cmb_docDes.DisplayMember = "descrizionerid";
             cmb_docDes.ValueMember = "idcodice";
+            // chofer y ayudante
+            dttd2.Clear();
+            datd.Fill(dttd2);
             // datos para tipo de documento 
             string consu = "select idcodice,descrizione,descrizionerid,codsunat,deta1 from desc_tdv where codigo=''";
             using (MySqlCommand cdv = new MySqlCommand(consu, conn))
@@ -1301,222 +1313,6 @@ namespace TransCarga
         #region  guia electronica en sunat y psnet
 
         #region Sunat metodo directo
-        /*
-        private bool sunat_api()                                // SI VAMOS A USAR 26/05/2023 este metodo directo
-        {
-            bool retorna = false;
-            string token = conex_token(c_t);           // este metodo funciona bien .. 26/05/2023
-            if (token != null && token != "")
-            {
-                string aZip = "";
-                //string aXml = arma_guiaE();     // "20430100344-09-T001-1.xml";         
-                string aXml = "";
-                if (llenaTablaLiteGRE() != true)
-                {
-                    MessageBox.Show("No se pudo llenar las tablas sqlite", "Error interno", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-                else
-                {
-                    aXml = Program.ruc + "-" + "31" + "-" + tx_serie.Text + "-" + tx_numero.Text + ".xml";
-                    aZip = Program.ruc + "-" + "31" + "-" + tx_serie.Text + "-" + tx_numero.Text + ".zip";
-                }
-                if (aXml != "")
-                {
-                    // - zipear el xml, 
-                    // aZip = aXml.Replace(".xml", ".zip");
-                    if (File.Exists(rutaxml + aZip) == true)
-                    {
-                        File.Delete(rutaxml + aZip);
-                    } 
-                    using (ZipArchive zip = ZipFile.Open(rutaxml + aZip, ZipArchiveMode.Create))
-                    {
-                        string source = rutaxml + aXml;
-                        //MessageBox.Show(source,"source");
-                        zip.CreateEntryFromFile(source, aXml);
-                    }
-                    // - byte[]ar el zip, 
-                    var bytexml = File.ReadAllBytes(rutaxml + aZip);
-                    var base64 = Convert.ToBase64String(bytexml);
-                    // - hashear 
-                    string hash = "";
-                    using (SHA256 sha256 = SHA256.Create())
-                    {
-                        hash = string.Concat(sha256.ComputeHash(bytexml).Select(x => x.ToString("x2")));
-                    }
-                    //MessageBox.Show("Posteando ... ");
-                    // Postear 
-                    string url = "https://api-cpe.sunat.gob.pe/v1/contribuyente/gem/comprobantes/" + aXml.Replace(".xml", "");
-                    var oData = new
-                    {
-                        archivo = new
-                        {
-                            nomArchivo = aZip,
-                            arcGreZip = base64,
-                            hashZip = hash
-                        }
-                    };
-                    var json = JsonConvert.SerializeObject(oData);
-                    //var Body = new StringContent(json, Encoding.UTF8, "application/json");
-                    ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-                    var poste = new RestClient(url);
-                    poste.Timeout = -1;
-                    var request = new RestRequest(Method.POST);
-                    request.AddHeader("Authorization", "Bearer " + token);
-                    request.AddHeader("Content-Type", "application/json");
-                    request.AddParameter("application/json", json, ParameterType.RequestBody);
-                    //
-                    IRestResponse response = poste.Execute(request);
-                    var result = JsonConvert.DeserializeObject<Ticket_Rpta>(response.Content);
-                    if (response.ResponseStatus.ToString() != "200") 
-                    {
-                        MessageBox.Show(response.Content.ToString(),"Error " + response.ResponseStatus.ToString());
-                        retorna = false;
-                    }
-                    else
-                    {
-                        retorna = true;
-                    }
-                    // actualizamos los campos de la tabla adiguias
-                    //string actua = "insert into adiguias (idg,serie,numero,nticket,fticket,estadoS,cdr) values (@idg,@seg,@nug,@nti,@fti,@est,@cdr)";
-                    string actua = "update adiguias set nticket=@nti,fticket=@fti,estadoS=@est,cdr=@cdr where idg=@idg";
-                    using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
-                    {
-                        conn.Open();
-                        using (MySqlCommand micon = new MySqlCommand(actua, conn))
-                        {
-                            micon.Parameters.AddWithValue("@idg", tx_idr.Text);
-                            //micon.Parameters.AddWithValue("@seg", tx_serie.Text);
-                            //micon.Parameters.AddWithValue("@nug", tx_numero.Text);
-                            micon.Parameters.AddWithValue("@nti", result.numTicket);
-                            micon.Parameters.AddWithValue("@fti", result.fecRecepcion);
-                            micon.Parameters.AddWithValue("@est", "Enviado");
-                            micon.Parameters.AddWithValue("@cdr", "0");
-                            micon.ExecuteNonQuery();
-                        }
-                    }
-                }
-            }
-            return retorna;
-        }
-        public string consultaC(string ticket, string token)     // consulta comprobante
-        {
-            string retorna = "";
-            //ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-            var client = new RestClient("https://api-cpe.sunat.gob.pe/v1/contribuyente/gem/comprobantes/envios/" + ticket);
-            client.Timeout = -1;
-            var request = new RestRequest(Method.GET);
-            request.AddHeader("Authorization", "Bearer " + token);
-            IRestResponse response = client.Execute(request);
-            if (response.Content.Contains("error"))
-            {
-                tx_estaSunat.Text = "Error";
-                tx_estaSunat.Tag = response.Content.ToString();
-                retorna = tx_estaSunat.Text;
-                using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
-                {
-                    conn.Open();
-                    string actua = "update adiguias set estadoS=@est,cdr=@cdr where idg=@idg";
-                    using (MySqlCommand micon = new MySqlCommand(actua, conn))
-                    {
-                        micon.Parameters.AddWithValue("@est", "Error");
-                        micon.Parameters.AddWithValue("@cdr", response.Content.ToString());
-                        micon.Parameters.AddWithValue("@idg", tx_idr.Text);
-                        micon.ExecuteNonQuery();
-                    }
-                }
-            }
-            else
-            {
-                var Rpta = JsonConvert.DeserializeObject<Rspta_Consulta>(response.Content);
-                if (Rpta.arcCdr != null)
-                {
-                    string CodRrpta = Rpta.codRespuesta.ToString();
-                    if (CodRrpta == "0" || CodRrpta == "99")
-                    {
-                        tx_estaSunat.Text = "Aceptado";
-                        retorna = tx_estaSunat.Text;
-                        // descompone el arcCDR para obtener los datos del QR
-                        string cuidado = convierteCDR(Rpta.arcCdr, tx_serie.Text, tx_numero.Text, rutatxt);
-                        if (cuidado != null && cuidado != "")
-                        {
-                            using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
-                            {
-                                conn.Open();
-                                string actua = "update adiguias set estadoS=@est,cdr=@cdr,cdrgener=@gen,textoQR=@tqr where idg=@idg";  // (serie, numero, , @seg, @nug, @nti, @fti)";
-                                using (MySqlCommand micon = new MySqlCommand(actua, conn))
-                                {
-                                    micon.Parameters.AddWithValue("@est", "Aceptado");
-                                    micon.Parameters.AddWithValue("@cdr", Rpta.arcCdr.ToString());
-                                    micon.Parameters.AddWithValue("@gen", Rpta.indCdrGenerado.ToString());
-                                    micon.Parameters.AddWithValue("@tqr", cuidado);
-                                    micon.Parameters.AddWithValue("@idg", tx_idr.Text);
-                                    micon.ExecuteNonQuery();
-                                }
-                            }
-                        }
-                    }
-                    else
-                    {
-                        tx_estaSunat.Text = (CodRrpta == "98") ? "En Proceso" : "Rechazado";
-                        retorna = tx_estaSunat.Text;
-                        using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
-                        {
-                            conn.Open();
-                            string actua = "update adiguias set estadoS=@est,cdr=@cdr,cdrgener=@gen where idg=@idg";  // (serie, numero, , @seg, @nug, @nti, @fti)";
-                            using (MySqlCommand micon = new MySqlCommand(actua, conn))
-                            {
-                                micon.Parameters.AddWithValue("@est", (CodRrpta == "0") ? "Aceptado" : (CodRrpta == "98") ? "En Proceso" : "Rechazado");
-                                micon.Parameters.AddWithValue("@cdr", Rpta.arcCdr.ToString());
-                                micon.Parameters.AddWithValue("@gen", Rpta.indCdrGenerado.ToString());
-                                micon.Parameters.AddWithValue("@idg", tx_idr.Text);
-                                micon.ExecuteNonQuery();
-                            }
-                        }
-                    }
-                }
-            }
-            return retorna;
-        }
-        public string conex_token(string[] c_t)                            // obtenemos el token de conexión
-        {
-            string retorna = "";
-            tiempoT = (DateTime.Now.TimeOfDay.Subtract(horaT).TotalSeconds);
-            if (tiempoT >= (plazoT-60))             // un minuto antes que venza la vigencia del token
-            {
-                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-                var client = new RestClient("https://api-seguridad.sunat.gob.pe/v1/clientessol/" + c_t[0] + "/oauth2/token/"); // client_id_sunat + "/oauth2/token/"
-                client.Timeout = -1;
-                var request = new RestRequest(Method.POST);
-                request.AddHeader("Content-Type", "application/x-www-form-urlencoded");
-                request.AddHeader("Cookie", "TS019e7fc2=014dc399cb268cb3d074c3b37bb5b735ab83b63307dfe5263ff5802065fe226640c58236dcd71073fbe01e3206d01bfa3c513e69c4");
-                request.AddParameter("grant_type", "password");
-                request.AddParameter("scope", c_t[1]);                          // scope_sunat         "https://api-cpe.sunat.gob.pe"
-                request.AddParameter("client_id", c_t[2]);                      // client_id_sunat     "9613540b-a94d-45c6-b201-7521413ed391"
-                request.AddParameter("client_secret", c_t[3]);                  // client_pass_sunat   "gmlqIVugA1+Fgd1wUN6Kyg=="
-                request.AddParameter("username", c_t[4]);                       // u_sol_sunat         "20430100344PTIONVAL"
-                request.AddParameter("password", c_t[5]);                       // c_sol_sunat         "patocralr"
-                IRestResponse response = client.Execute(request);
-                if (response.StatusCode.ToString() != "OK")
-                {
-                    MessageBox.Show("NO se pudo obtener el token" + Environment.NewLine +
-                        response.StatusDescription, "Error de conexión a Sunat", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-                else
-                {
-                    var result = JsonConvert.DeserializeObject<Token>(response.Content);
-                    retorna = result.access_token;
-                    plazoT = result.expires_in;
-                    horaT = DateTime.Now.TimeOfDay;
-                    TokenAct = result.access_token;
-                }
-            }
-            else
-            {
-                retorna = TokenAct;     // retorna el token actual
-            }
-            return retorna;
-        }
-        */
         static private void CreaTablaLiteGRE()                  // llamado en el load del form, crea las tablas al iniciar
         {
             using (SqliteConnection cnx = new SqliteConnection(CadenaConexion))
@@ -1804,37 +1600,6 @@ namespace TransCarga
 
             return retorna;
         }
-        /* public string convierteCDR(string arCdr, string serie, string corre, string ruta)               // genera el cdr a partir de la respuesta de sunat arcCDR del json
-        {
-            string retorna = "";
-
-            if (File.Exists(ruta + "temporal.zip"))   // @"c:/temp/temporal.zip"
-            {
-                File.Delete(ruta + "temporal.zip");   // @"c:/temp/temporal.zip"
-            }
-            string archi = "R-" + Program.ruc + "-" + "31" + "-" + serie + "-" + corre + ".xml";
-            if (File.Exists(ruta + archi))           // @"c:/temp/" + archi
-            {
-                File.Delete(ruta + archi);           // @"c:/temp/" + archi
-            }
-            // grabamos en memoria el xml y obtenemos el dato del tag <cbc:DocumentDescription> ahí esta el texto a convertir en código QR
-            //byte[] xmlbytes = Base64DecodeString(arCdr);
-            byte[] xmlbytes = Convert.FromBase64CharArray(arCdr.ToCharArray(), 0, arCdr.Length);
-            FileStream fstrm = new FileStream(ruta + "temporal.zip", FileMode.CreateNew, FileAccess.Write);   // @"c:/temp/temporal.zip"
-            BinaryWriter writer = new BinaryWriter(fstrm);
-            writer.Write(xmlbytes);
-            writer.Close();
-            fstrm.Close();
-
-            System.IO.Compression.ZipFile.ExtractToDirectory(ruta + "temporal.zip", ruta);        // @"c:/temp/temporal.zip", @"c:/temp/"
-            FileStream archiS = new FileStream(ruta + archi, FileMode.Open, FileAccess.Read);        // @"c:/temp/" + archi, FileMode.Open, FileAccess.Read
-            XmlDocument archiXml = new XmlDocument();
-            archiXml.Load(archiS);
-            XmlNode fqr = archiXml.GetElementsByTagName("DocumentDescription", "urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2").Item(0);
-            retorna = fqr.InnerText;
-
-            return retorna;
-        } */
         #endregion Sunat metodo directo
 
         #region psnet
@@ -4576,11 +4341,16 @@ namespace TransCarga
                                     tx_marCarret.Text = row["marcaCarret"].ToString();
                                     tx_pla_dniChof.Text = (row["dnichofer"].ToString().Trim() == "") ? lib.Right(row["brevchofe"].ToString(), 8) : row["dnichofer"].ToString();
                                     tx_dat_dniC2.Text = (row["dniayudante"].ToString().Trim() == "") ? (row["brevayuda"].ToString().Trim() == "") ? "" : lib.Right(row["brevayuda"].ToString(), 8) : row["dniayudante"].ToString();
-                                    tx_dat_dniC2s.Text = row["tipdocayu"].ToString();
-                                    tx_pla_chofS.Text = row["tipdocpri"].ToString();
                                     //
                                     chk_man.Checked = false;
                                     chk_man.Enabled = true;
+                                    DataRow[] fla = dttd2.Select("idcodice='" + row["tipdocpri"].ToString() + "'");
+                                    tx_pla_chofS.Text = fla[0][3].ToString();
+                                    if (row["tipdocayu"] != null && row["tipdocayu"].ToString() != "")
+                                    {
+                                        fla = dttd2.Select("idcodice='" + row["tipdocayu"].ToString() + "'");
+                                        tx_dat_dniC2s.Text = fla[0][3].ToString();
+                                    }
                                 }
                                 else
                                 {
@@ -5206,44 +4976,4 @@ namespace TransCarga
         }
 
     }
-    /* public class Ticket_Rpta                            // respuesta del post envio comprobante
-    {
-        public string numTicket { get; set; }           // código ticket respuesta
-        public DateTime fecRecepcion { get; set; }      // fecha hora de la respuesta
-    }
-    public class Rspta_Consulta                         // respuesta a la consulta de estado de comprobante
-    {
-        public string codRespuesta { get; set; }
-        public string arcCdr { get; set; }
-        public string indCdrGenerado { get; set; }
-        public string error { get; set; }
-    }
-    public class Token                                  // token de acceso de 3600 segundos
-    {
-        public string access_token { get; set; }
-        public string token_type { get; set; }
-        public int expires_in { get; set; }
-    }
-    public static class DocumentExtensions
-    {
-        public static XmlDocument ToXmlDocument(this XDocument xDocument)
-        {
-            var xmlDocument = new XmlDocument();
-            using (var xmlReader = xDocument.CreateReader())
-            {
-                xmlDocument.Load(xmlReader);
-            }
-            return xmlDocument;
-        }
-
-        public static XDocument ToXDocument(this XmlDocument xmlDocument)
-        {
-            using (var nodeReader = new XmlNodeReader(xmlDocument))
-            {
-                nodeReader.MoveToContent();
-                return XDocument.Load(nodeReader);
-            }
-        }
-    }
-    */
 }

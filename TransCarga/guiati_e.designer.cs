@@ -167,6 +167,7 @@
             this.chk_flete = new System.Windows.Forms.CheckBox();
             this.label28 = new System.Windows.Forms.Label();
             this.gbox_planilla = new System.Windows.Forms.GroupBox();
+            this.tx_dat_dniC2s = new System.Windows.Forms.TextBox();
             this.tx_dat_carrNreg = new System.Windows.Forms.TextBox();
             this.tx_dat_plaNreg = new System.Windows.Forms.TextBox();
             this.tx_dat_dniC2 = new System.Windows.Forms.TextBox();
@@ -296,7 +297,6 @@
             this.tx_totpes = new TransCarga.NumericTextBox();
             this.tx_totcant = new TransCarga.NumericTextBox();
             this.tx_pla_chofS = new System.Windows.Forms.TextBox();
-            this.tx_dat_dniC2s = new System.Windows.Forms.TextBox();
             this.toolStrip1.SuspendLayout();
             this.groupBox11.SuspendLayout();
             this.groupBox7.SuspendLayout();
@@ -1787,6 +1787,17 @@
             this.gbox_planilla.TabIndex = 345;
             this.gbox_planilla.TabStop = false;
             // 
+            // tx_dat_dniC2s
+            // 
+            this.tx_dat_dniC2s.BackColor = System.Drawing.SystemColors.Window;
+            this.tx_dat_dniC2s.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_dat_dniC2s.Location = new System.Drawing.Point(360, 28);
+            this.tx_dat_dniC2s.Name = "tx_dat_dniC2s";
+            this.tx_dat_dniC2s.Size = new System.Drawing.Size(17, 18);
+            this.tx_dat_dniC2s.TabIndex = 376;
+            this.tx_dat_dniC2s.Tag = "cod sunat del chofer 2";
+            this.tx_dat_dniC2s.Visible = false;
+            // 
             // tx_dat_carrNreg
             // 
             this.tx_dat_carrNreg.BackColor = System.Drawing.SystemColors.Window;
@@ -2745,7 +2756,6 @@
             this.tx_pla_dniChof.Size = new System.Drawing.Size(27, 18);
             this.tx_pla_dniChof.TabIndex = 368;
             this.tx_pla_dniChof.Tag = "doc identidad del chofer";
-            this.tx_pla_dniChof.Visible = false;
             // 
             // cmb_docorig
             // 
@@ -3101,18 +3111,6 @@
             this.tx_pla_chofS.Size = new System.Drawing.Size(27, 18);
             this.tx_pla_chofS.TabIndex = 420;
             this.tx_pla_chofS.Tag = "cod sunat doc chofer";
-            this.tx_pla_chofS.Visible = false;
-            // 
-            // tx_dat_dniC2s
-            // 
-            this.tx_dat_dniC2s.BackColor = System.Drawing.SystemColors.Window;
-            this.tx_dat_dniC2s.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_dat_dniC2s.Location = new System.Drawing.Point(360, 28);
-            this.tx_dat_dniC2s.Name = "tx_dat_dniC2s";
-            this.tx_dat_dniC2s.Size = new System.Drawing.Size(17, 18);
-            this.tx_dat_dniC2s.TabIndex = 376;
-            this.tx_dat_dniC2s.Tag = "cod sunat del chofer 2";
-            this.tx_dat_dniC2s.Visible = false;
             // 
             // guiati_e
             // 
