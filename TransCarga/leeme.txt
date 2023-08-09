@@ -437,6 +437,9 @@ form libreria, agregar funciones de texto IsAllDigits,separador y repeticiones .
 tabla detguiai, ampliar campo descprodi de 80 a 120 caracteres ..................................... ok 26/07/2023 19:40:15 
 form planicarga, agregar tipo de doc del chofer y ayudante ......................................... ok 03/08/2023
 form guiati_e, adecuaciones con modelo de guias remitente .......................................... ok 04/08/2023
+form planicarga, modo NUEVO, seleccionar por defecto el local de origen del usuario ................ ok 08/08/2023
+form guiati_e, corregir para que solo sea obligatorio un solo chofer ............................... ok 08/08/2023
+form repsoper, reporte de estados sunat, agregar columna de motivo de error o rechazo .............. ok 08/08/2023
 
 Formatos jrxml de fcturas y boletas estándares multimoneda y con/sin detracción, contado/credito ... 
 form facelect, agregar opciones de cargas únicas tipo soya:

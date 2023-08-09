@@ -619,8 +619,8 @@ namespace TransCarga
                     btnAct.UseColumnTextForButtonValue = true;
                     btnAct.DefaultCellStyle.Padding = padding;
 
-                    // EMISION,GUIA_ELEC,ORIGEN,DESTINO,ESTADO,SUNAT,CDR_GEN,.........,ad.cdr,ad.textoQR,ad.nticket,g.cantfilas,g.id
-                    //     0        1       2      3       4     5      6     7 8 9 10    11      12         13        14        15
+                    // EMISION,GUIA_ELEC,ORIGEN,DESTINO,ESTADO,SUNAT,CDR_GEN,.........,ad.cdr,ad.textoQR,ad.nticket,g.cantfilas,g.id,ad.ulterror
+                    //     0        1       2      3       4     5      6     7 8 9 10    11      12         13        14        15        16
                     //dgv_GRE_est.CellPainting += grid_CellPainting;        // no funciona bien, no se adecua
                     dgv_GRE_est.CellClick += DataGridView1_CellClick;
                     dgv_GRE_est.Columns.Insert(7, btnTk);   
@@ -632,16 +632,17 @@ namespace TransCarga
                     dgv_GRE_est.Columns[13].Visible = false;
                     dgv_GRE_est.Columns[14].Visible = false;
                     dgv_GRE_est.Columns[15].Visible = false;
+                    dgv_GRE_est.Columns[16].Visible = true;
                     if (dgv_GRE_est.Rows.Count > 0)         // autosize filas
                     {
-                        for (int i = 0; i < dgv_GRE_est.Columns.Count - 9; i++)
+                        for (int i = 0; i < dgv_GRE_est.Columns.Count - 10; i++)
                         {
                             dgv_GRE_est.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
                             _ = decimal.TryParse(dgv_GRE_est.Rows[0].Cells[i].Value.ToString(), out decimal vd);
                             if (vd != 0) dgv_GRE_est.Columns[i].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
                         }
                         b = 0;
-                        for (int i = 0; i < dgv_GRE_est.Columns.Count - 9; i++)
+                        for (int i = 0; i < dgv_GRE_est.Columns.Count - 10; i++)
                         {
                             int a = dgv_GRE_est.Columns[i].Width;
                             b += a;
@@ -1331,7 +1332,7 @@ namespace TransCarga
             if (rb_GRE_R.Checked == true) 
             {
                 consulta = "SELECT g.fechopegr AS EMISION,concat(g.serguir,'-',g.numguir) AS GUIA_ELEC,lo.descrizionerid AS ORIGEN,ld.DescrizioneRid AS DESTINO," +
-                    "es.DescrizioneRid AS ESTADO,ad.estadoS AS SUNAT,ad.cdrgener AS CDR_GEN,ad.cdr,ad.textoQR,ad.nticket,g.cantfilas,g.id " +
+                    "es.DescrizioneRid AS ESTADO,ad.estadoS AS SUNAT,ad.cdrgener AS CDR_GEN,ad.cdr,ad.textoQR,ad.nticket,g.cantfilas,g.id,ad.ulterror as ULT_ERROR " +
                     "FROM cabguiar g LEFT JOIN adiguiar ad ON ad.idg = g.id " +
                     "LEFT JOIN desc_loc lo ON lo.IDCodice = g.locorigen " +
                     "LEFT JOIN desc_loc ld ON ld.IDCodice = g.locdestin " +
@@ -1341,7 +1342,7 @@ namespace TransCarga
             if (rb_GRE_T.Checked == true)
             {
                 consulta = "SELECT g.fechopegr AS EMISION,concat(g.sergui,'-',g.numgui) AS GUIA_ELEC,lo.descrizionerid AS ORIGEN,ld.DescrizioneRid AS DESTINO," +
-                    "es.DescrizioneRid AS ESTADO,ad.estadoS AS SUNAT,ad.cdrgener AS CDR_GEN,ad.cdr,ad.textoQR,ad.nticket,g.cantfilas,g.id " +
+                    "es.DescrizioneRid AS ESTADO,ad.estadoS AS SUNAT,ad.cdrgener AS CDR_GEN,ad.cdr,ad.textoQR,ad.nticket,g.cantfilas,g.id,ad.ulterror as ULT_ERROR " +
                     "FROM cabguiai g LEFT JOIN adiguias ad ON ad.idg = g.id " +
                     "LEFT JOIN desc_loc lo ON lo.IDCodice = g.locorigen " +
                     "LEFT JOIN desc_loc ld ON ld.IDCodice = g.locdestin " +
@@ -1691,7 +1692,7 @@ namespace TransCarga
             // segun la pestanha activa debe exportar
             string nombre = "";
             if (tabControl1.Enabled == false) return;
-            if (tabControl1.SelectedTab == tabres && dgv_resumen.Rows.Count > 0)        // resumen de cliente
+            if (tabControl1.SelectedTab == tabres && dgv_resumen.Rows.Count > 0)
             {
                 nombre = "resumen_cliente_" + tx_codped.Text.Trim() +"_" + DateTime.Now.Date.ToString("yyyy-MM-dd") + ".xlsx";
                 var aa = MessageBox.Show("Confirma que desea generar la hoja de calculo?",
@@ -1705,8 +1706,8 @@ namespace TransCarga
                     MessageBox.Show("Archivo generado con exito!");
                     this.Close();
                 }
-            }
-            if (tabControl1.SelectedTab == tabvtas && dgv_vtas.Rows.Count > 0)          // pre guias
+            }        // resumen de cliente
+            if (tabControl1.SelectedTab == tabvtas && dgv_vtas.Rows.Count > 0)
             {
                 nombre = "Reportes_PreGuias_" + DateTime.Now.Date.ToString("yyyy-MM-dd") + ".xlsx";
                 var aa = MessageBox.Show("Confirma que desea generar la hoja de calculo?",
@@ -1720,8 +1721,8 @@ namespace TransCarga
                     MessageBox.Show("Archivo generado con exito!");
                     this.Close();
                 }
-            }
-            if (tabControl1.SelectedTab == tabgrti && dgv_guias.Rows.Count > 0)         // guias remision transportista
+            }          // pre guias
+            if (tabControl1.SelectedTab == tabgrti && dgv_guias.Rows.Count > 0)
             {
                 nombre = "Reportes_GuiasTransportista_" + DateTime.Now.Date.ToString("yyyy-MM-dd") + ".xlsx";
                 var aa = MessageBox.Show("Confirma que desea generar la hoja de calculo?",
@@ -1735,8 +1736,8 @@ namespace TransCarga
                     MessageBox.Show("Archivo generado con exito!");
                     this.Close();
                 }
-            }
-            if (tabControl1.SelectedTab == tabplacar && dgv_plan.Rows.Count > 0)        // planilla de carga
+            }         // guias remision transportista
+            if (tabControl1.SelectedTab == tabplacar && dgv_plan.Rows.Count > 0)
             {
                 nombre = "Reportes_PlanillasCarga_" + DateTime.Now.Date.ToString("yyyy-MM-dd") + ".xlsx";
                 var aa = MessageBox.Show("Confirma que desea generar la hoja de calculo?",
@@ -1750,8 +1751,8 @@ namespace TransCarga
                     MessageBox.Show("Archivo generado con exito!");
                     this.Close();
                 }
-            }
-            if (tabControl1.SelectedTab == tabreval && dgv_reval.Rows.Count > 0)        // revalorizaciones
+            }         // planilla de carga
+            if (tabControl1.SelectedTab == tabreval && dgv_reval.Rows.Count > 0)
             {
                 nombre = "Reportes_Revalorizaciones_" + DateTime.Now.Date.ToString("yyyy-MM-dd") + ".xlsx";
                 var aa = MessageBox.Show("Confirma que desea generar la hoja de calculo?",
@@ -1765,8 +1766,8 @@ namespace TransCarga
                     MessageBox.Show("Archivo generado con exito!");
                     this.Close();
                 }
-            }
-            if (tabControl1.SelectedTab == tabgrhist && dgv_histGR.Rows.Count > 0)      // seguimiento por guía
+            }         // revalorizaciones
+            if (tabControl1.SelectedTab == tabgrhist && dgv_histGR.Rows.Count > 0)
             {
                 nombre = "Seguimiento_GuiasTransp_" + DateTime.Now.Date.ToString("yyyy-MM-dd") + ".xlsx";
                 var aa = MessageBox.Show("Confirma que desea generar la hoja de calculo?",
@@ -1780,7 +1781,22 @@ namespace TransCarga
                     MessageBox.Show("Archivo generado con exito!");
                     this.Close();
                 }
-            }
+            }      // seguimiento por guía
+            if (tabControl1.SelectedTab == tabGREstad && dgv_GRE_est.Rows.Count > 0)
+            {
+                nombre = "Estados_Sunat_GRE_" + DateTime.Now.Date.ToString("yyyy-MM-dd") + ".xlsx";
+                var aa = MessageBox.Show("Confirma que desea generar la hoja de calculo?",
+                    "Archivo: " + nombre, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (aa == DialogResult.Yes)
+                {
+                    var wb = new XLWorkbook();
+                    DataTable dt = (DataTable)dgv_GRE_est.DataSource;
+                    wb.Worksheets.Add(dt, "Est_sunat");
+                    wb.SaveAs(nombre);
+                    MessageBox.Show("Archivo generado con exito!");
+                    this.Close();
+                }
+            }       // Estados sunat de guías de remisión electrónicas
         }
         #endregion
 
@@ -2220,7 +2236,7 @@ namespace TransCarga
                     dgv_GRE_est.Enabled = true;
                     dgv_GRE_est.ReadOnly = false;
                     dgv_GRE_est.Columns[0].ReadOnly = false;
-                    for (int i = 1; i < dgv_GRE_est.Columns.Count - 9; i++)
+                    for (int i = 1; i < dgv_GRE_est.Columns.Count - 10; i++)
                     {
                         dgv_GRE_est.Columns[i].ReadOnly = true;
                     }
@@ -2265,7 +2281,6 @@ namespace TransCarga
         {
             marca_check("", chk_GRE_iEnvia);    
         }
-
         #endregion
 
         #region advancedatagridview
@@ -2527,6 +2542,13 @@ namespace TransCarga
                 }
             }
         }
+        private void dgv_GRE_est_CellDoubleClick(object sender, DataGridViewCellEventArgs e)    // MUESTRA EL MENSAJE DE ERROR
+        {
+            if (dgv_GRE_est.Columns[e.ColumnIndex].Name.ToString() == "ULT_ERROR")
+            {
+                MessageBox.Show(dgv_GRE_est.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString(),"ULTIMO ERROR",MessageBoxButtons.OK);
+            }
+        }
         #endregion
 
         private void printDocument1_PrintPage(object sender, System.Drawing.Printing.PrintPageEventArgs e)
@@ -2643,7 +2665,6 @@ namespace TransCarga
                 e.Graphics.DrawString(".", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
             }
         }
-
         private void bt_GRE_impri_Click(object sender, EventArgs e)
         {
             // hacemos un ciclo recorriendo fila x fila y jalamos los datos de la guia
@@ -2831,7 +2852,6 @@ namespace TransCarga
                 }
             }
         }
-
         private void rb_GRE_rem_CheckedChanged(object sender, EventArgs e)
         {
             if (Tx_modo.Text == "IMPRIMIR")
@@ -2848,7 +2868,6 @@ namespace TransCarga
                 }
             }
         }
-
         int CentimeterToPixel(double Centimeter)
         {
             double pixel = -1;

@@ -926,7 +926,28 @@ namespace TransCarga
                 {
                     if (dataGridView1.Rows.Count > 0 && dataGridView1.Rows[i].Cells[13].Value != null)
                     {
-                        if (dataGridView1.Rows[i].Cells[19].Value.ToString() == "False")
+                        if (dataGridView1.Columns.Count > 19)
+                        {
+                            if (dataGridView1.Rows[i].Cells[19].Value.ToString() == "False")
+                            {
+                                if (dataGridView1.Rows[i].Cells[4].Value != null)
+                                {
+                                    totcant = totcant + int.Parse(dataGridView1.Rows[i].Cells[4].Value.ToString());
+                                    totfil += 1;
+                                }
+                                if (dataGridView1.Rows[i].Cells[5].Value != null)
+                                {
+                                    totpes = totpes + decimal.Parse(dataGridView1.Rows[i].Cells[5].Value.ToString());
+                                }
+                                if (dataGridView1.Rows[i].Cells[7].Value != null)
+                                {
+                                    totfle = totfle + decimal.Parse(dataGridView1.Rows[i].Cells[7].Value.ToString());
+                                    totpag = totpag + decimal.Parse(dataGridView1.Rows[i].Cells[8].Value.ToString());
+                                    totsal = totsal + decimal.Parse(dataGridView1.Rows[i].Cells[9].Value.ToString());
+                                }
+                            }
+                        }
+                        else
                         {
                             if (dataGridView1.Rows[i].Cells[4].Value != null)
                             {
@@ -2109,8 +2130,11 @@ namespace TransCarga
             tx_totpes.Text = "0";
             tx_dat_mone.Text = v_mondef;
             cmb_mon.SelectedValue = v_mondef;
+            tx_dat_locori.Text = Program.vg_luse;
+            cmb_origen.SelectedValue = tx_dat_locori.Text;
             rb_propio.PerformClick();
-            cmb_origen.Focus();
+            cmb_destino.Focus();
+            cmb_destino.DroppedDown = true;
         }
         private void Bt_edit_Click(object sender, EventArgs e)
         {
@@ -2554,32 +2578,39 @@ namespace TransCarga
         #region datagridview
         private void dataGridView1_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)     // jala datos de cabecera guias
         {
-            if (e.ColumnIndex == 1 && e.FormattedValue.ToString().Trim() != "") // pre guia
+            if (e.ColumnIndex == 1 && e.FormattedValue.ToString().Trim() != "")
             {
                 // las planillas de carga solo se llenan con guias individuales
-            }
-            if (e.ColumnIndex == 2 && e.FormattedValue.ToString().Trim() != "") // serie guia
+            }   // pre guia
+            if (e.ColumnIndex == 2 && e.FormattedValue.ToString().Trim() != "")
             {
                 // validamos que la serie de la guia corresponda al local de la planilla, serie de la planilla
                 if (e.FormattedValue.ToString() != tx_serie.Text)
                 {
                     if (dataGridView1.EditingControl != null) dataGridView1.EditingControl.Text = tx_serie.Text;
                 }
-            }
-            if (e.ColumnIndex == 3 && e.FormattedValue.ToString().Trim() != "") // numero gúia
+            }   // serie guia
+            if (e.ColumnIndex == 3 && e.FormattedValue.ToString().Trim() != "")
             {
                 string completo = "";
                 if (e.FormattedValue.ToString().Trim().Length > 0)
                 {
                     completo = lib.Right("0000000" + e.FormattedValue, 8);
-                    if (dataGridView1.EditingControl != null) dataGridView1.EditingControl.Text = completo;
+                    if (dataGridView1.EditingControl != null)
+                    {
+                        dataGridView1.EditingControl.Text = completo;
+                        dataGridView1.Rows[e.RowIndex].Cells[3].Tag = "1";      // valor editado
+                    }
                 }
-                if (valrepetidas(dataGridView1.Rows[e.RowIndex].Cells[2].Value.ToString(), completo) == true)   // validamos que no estemos repitiendo la guía
+                if (dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Tag != null && dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Tag.ToString() == "1" && 
+                    valrepetidas(dataGridView1.Rows[e.RowIndex].Cells[2].Value.ToString(), completo) == true)   // validamos que no estemos repitiendo la guía
                 {
-                    MessageBox.Show("Esta repitiendo la guía!","Atención",MessageBoxButtons.OK,MessageBoxIcon.Exclamation);
+                    MessageBox.Show("    Esta repitiendo la guía   " + Environment.NewLine + 
+                        "Escape para devolver al valor anterior", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                     e.Cancel = true;
                     completo = "";
-                    dataGridView1.Rows[e.RowIndex].Cells[3].Value = "";
+                    //dataGridView1.Rows[e.RowIndex].Cells[3].Value = "";
+                    dataGridView1.Rows[e.RowIndex].Cells[3].Tag = null;
                     return;
                 }
                 if (completo.Length == 8 && dataGridView1.Rows[e.RowIndex].Cells[2].Value.ToString().Trim().Length == 4 && 
@@ -2636,7 +2667,7 @@ namespace TransCarga
                         }
                     }
                 }
-            }
+            }   // numero gúia
         }
         private void dataGridView1_KeyDown(object sender, KeyEventArgs e)       // cursor a la derecha o siguiente fila ... NO FUNCA
         {

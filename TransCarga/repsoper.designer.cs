@@ -120,6 +120,9 @@
             this.label24 = new System.Windows.Forms.Label();
             this.label25 = new System.Windows.Forms.Label();
             this.tabgrti = new System.Windows.Forms.TabPage();
+            this.panel12 = new System.Windows.Forms.Panel();
+            this.rb_GRE_trans = new System.Windows.Forms.RadioButton();
+            this.rb_GRE_rem = new System.Windows.Forms.RadioButton();
             this.panel6 = new System.Windows.Forms.Panel();
             this.label35 = new System.Windows.Forms.Label();
             this.rb_desGR = new System.Windows.Forms.RadioButton();
@@ -277,9 +280,6 @@
             this.tx_GRE_fa = new TransCarga.NumericTextBox();
             this.tx_GRE_fv = new TransCarga.NumericTextBox();
             this.printDocument1 = new System.Drawing.Printing.PrintDocument();
-            this.panel12 = new System.Windows.Forms.Panel();
-            this.rb_GRE_trans = new System.Windows.Forms.RadioButton();
-            this.rb_GRE_rem = new System.Windows.Forms.RadioButton();
             this.toolStrip1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabres.SuspendLayout();
@@ -296,6 +296,7 @@
             this.groupBox17.SuspendLayout();
             this.panel1.SuspendLayout();
             this.tabgrti.SuspendLayout();
+            this.panel12.SuspendLayout();
             this.panel6.SuspendLayout();
             this.groupBox47.SuspendLayout();
             this.panel4.SuspendLayout();
@@ -332,7 +333,6 @@
             this.groupBox49.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgv_GRE_est)).BeginInit();
             this.groupBox51.SuspendLayout();
-            this.panel12.SuspendLayout();
             this.SuspendLayout();
             // 
             // toolStrip1
@@ -1360,6 +1360,38 @@
             this.tabgrti.TabIndex = 7;
             this.tabgrti.Text = "GR M y E";
             this.tabgrti.UseVisualStyleBackColor = true;
+            // 
+            // panel12
+            // 
+            this.panel12.Controls.Add(this.rb_GRE_trans);
+            this.panel12.Controls.Add(this.rb_GRE_rem);
+            this.panel12.Location = new System.Drawing.Point(11, 4);
+            this.panel12.Name = "panel12";
+            this.panel12.Size = new System.Drawing.Size(126, 45);
+            this.panel12.TabIndex = 431;
+            // 
+            // rb_GRE_trans
+            // 
+            this.rb_GRE_trans.AutoSize = true;
+            this.rb_GRE_trans.Location = new System.Drawing.Point(6, 25);
+            this.rb_GRE_trans.Name = "rb_GRE_trans";
+            this.rb_GRE_trans.Size = new System.Drawing.Size(112, 17);
+            this.rb_GRE_trans.TabIndex = 359;
+            this.rb_GRE_trans.TabStop = true;
+            this.rb_GRE_trans.Text = "GRE Transportista";
+            this.rb_GRE_trans.UseVisualStyleBackColor = true;
+            // 
+            // rb_GRE_rem
+            // 
+            this.rb_GRE_rem.AutoSize = true;
+            this.rb_GRE_rem.Location = new System.Drawing.Point(6, 3);
+            this.rb_GRE_rem.Name = "rb_GRE_rem";
+            this.rb_GRE_rem.Size = new System.Drawing.Size(99, 17);
+            this.rb_GRE_rem.TabIndex = 358;
+            this.rb_GRE_rem.TabStop = true;
+            this.rb_GRE_rem.Text = "GRE Remitente";
+            this.rb_GRE_rem.UseVisualStyleBackColor = true;
+            this.rb_GRE_rem.CheckedChanged += new System.EventHandler(this.rb_GRE_rem_CheckedChanged);
             // 
             // panel6
             // 
@@ -2996,6 +3028,7 @@
             this.dgv_GRE_est.Size = new System.Drawing.Size(1020, 299);
             this.dgv_GRE_est.TabIndex = 398;
             this.dgv_GRE_est.TimeFilter = false;
+            this.dgv_GRE_est.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgv_GRE_est_CellDoubleClick);
             // 
             // label36
             // 
@@ -3084,38 +3117,6 @@
             // 
             this.printDocument1.PrintPage += new System.Drawing.Printing.PrintPageEventHandler(this.printDocument1_PrintPage);
             // 
-            // panel12
-            // 
-            this.panel12.Controls.Add(this.rb_GRE_trans);
-            this.panel12.Controls.Add(this.rb_GRE_rem);
-            this.panel12.Location = new System.Drawing.Point(11, 4);
-            this.panel12.Name = "panel12";
-            this.panel12.Size = new System.Drawing.Size(126, 45);
-            this.panel12.TabIndex = 431;
-            // 
-            // rb_GRE_trans
-            // 
-            this.rb_GRE_trans.AutoSize = true;
-            this.rb_GRE_trans.Location = new System.Drawing.Point(6, 25);
-            this.rb_GRE_trans.Name = "rb_GRE_trans";
-            this.rb_GRE_trans.Size = new System.Drawing.Size(112, 17);
-            this.rb_GRE_trans.TabIndex = 359;
-            this.rb_GRE_trans.TabStop = true;
-            this.rb_GRE_trans.Text = "GRE Transportista";
-            this.rb_GRE_trans.UseVisualStyleBackColor = true;
-            // 
-            // rb_GRE_rem
-            // 
-            this.rb_GRE_rem.AutoSize = true;
-            this.rb_GRE_rem.Location = new System.Drawing.Point(6, 3);
-            this.rb_GRE_rem.Name = "rb_GRE_rem";
-            this.rb_GRE_rem.Size = new System.Drawing.Size(99, 17);
-            this.rb_GRE_rem.TabIndex = 358;
-            this.rb_GRE_rem.TabStop = true;
-            this.rb_GRE_rem.Text = "GRE Remitente";
-            this.rb_GRE_rem.UseVisualStyleBackColor = true;
-            this.rb_GRE_rem.CheckedChanged += new System.EventHandler(this.rb_GRE_rem_CheckedChanged);
-            // 
             // repsoper
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -3155,6 +3156,8 @@
             this.panel1.PerformLayout();
             this.tabgrti.ResumeLayout(false);
             this.tabgrti.PerformLayout();
+            this.panel12.ResumeLayout(false);
+            this.panel12.PerformLayout();
             this.panel6.ResumeLayout(false);
             this.panel6.PerformLayout();
             this.groupBox47.ResumeLayout(false);
@@ -3203,8 +3206,6 @@
             this.groupBox49.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgv_GRE_est)).EndInit();
             this.groupBox51.ResumeLayout(false);
-            this.panel12.ResumeLayout(false);
-            this.panel12.PerformLayout();
             this.ResumeLayout(false);
 
         }

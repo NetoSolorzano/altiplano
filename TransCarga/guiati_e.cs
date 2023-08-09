@@ -589,11 +589,11 @@ namespace TransCarga
                             tx_pla_brevet.Text = dr.GetString("breplagri");     // brevete del chofer principal
                             tx_pla_nomcho.Text = dr.GetString("chocamcar");     // nombre chofer principal
                             tx_pla_dniChof.Text = dr.GetString("dnichofer");    // num doc chofer principal
-                            tx_pla_chofS.Text = dr.GetString("tipdocpri");      // tipo de doc chofer principal
+                            //tx_pla_chofS.Text = dr.GetString("tipdocpri");      // tipo de doc chofer principal 
                             tx_pla_brev2.Text = dr.GetString("brevayuda");      // brevete del ayudante
                             tx_pla_chofer2.Text = dr.GetString("nomayuda");     // nombre del ayudante
-                            tx_dat_dniC2s.Text = dr.GetString("dniayudante");   // num doc ayudante
-                            tx_dat_dniC2.Text = dr.GetString("tipdocayu");      // tipo de doc ayudante
+                            tx_dat_dniC2.Text = dr.GetString("dniayudante");   // num doc ayudante
+                            //tx_dat_dniC2s.Text = dr.GetString("tipdocayu");      // tipo de doc ayudante 
                             tx_fecDV.Text = dr.GetString("fecdocvta");  //.Substring(0,10);
                             tx_DV.Text = dr.GetString("tipdocvta") + "-" + dr.GetString("serdocvta") + "-" + dr.GetString("numdocvta");
                             tx_clteDV.Text = dr.GetString("clifact");
@@ -643,6 +643,14 @@ namespace TransCarga
                             tx_dirDrio.Text = dr.GetString("diredegri");
                             cmb_mon.SelectedValue = tx_dat_mone.Text;
                             tx_tipcam.Text = dr.GetString("tipcamgri");
+                            //
+                            DataRow[] rows = dttd2.Select("idcodice='" + dr.GetString("tipdocpri") + "'");
+                            tx_pla_chofS.Text = rows[0][3].ToString();           // tipo de doc chofer principal 
+                            if (dr.GetString("tipdocayu").Trim() != "")
+                            {
+                                rows = dttd2.Select("idcodice='" + dr.GetString("tipdocayu") + "'");
+                                tx_dat_dniC2s.Text = rows[0][3].ToString();      // tipo de doc ayudante 
+                            }
                         }
                         else
                         {
@@ -2432,24 +2440,28 @@ namespace TransCarga
                 return;
             }               // Aut. Circulación carreta, alfanumérico de 10 a 15 caracteres
             // Validaciones SUNAT - Choferes
+            if (tx_pla_dniChof.Text == "")
+            {
+                MessageBox.Show("El número de documento del" + Environment.NewLine +
+                    "chofer principal está en vacío", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }                                                                     // Núm doc identidad chofer principal
             if (tx_pla_chofS.Text == "" || tx_pla_chofS.Text.Trim() == "6")
             {
                 MessageBox.Show("El tipo de documento del chofer principal" + Environment.NewLine +
                     "está en vacío o no corresponde", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }                                    // Tipo de documento chofer principal
-            if (tx_pla_brev2.Text != "" && (tx_dat_dniC2s.Text == "" || tx_dat_dniC2s.Text == "6"))
+            if (tx_pla_brev2.Text == "" && tx_dat_dniC2.Text == "" && tx_pla_chofer2.Text == "")
             {
-                MessageBox.Show("El tipo de documento del chofer secundario" + Environment.NewLine +
-                    "está en vacío o no corresponde", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }            // Tipo de documento chofer secundario
-            if (tx_pla_dniChof.Text == "" || tx_dat_dniC2.Text == "")
+                // todo ok, pasa nada
+            }
+            else
             {
-                MessageBox.Show("El número de documento del chofer principal" + Environment.NewLine +
-                    "o secundario está en vacío", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Los datos del chofer secundario" + Environment.NewLine +
+                    "no están completos", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
-            }                                          // Número de documento de identidad chofer principal y secundario
+            }            // Tipo de documento chofer secundario                                          // Número de documento de identidad chofer principal y secundario
             // Validaciones SUNAT - Datos de Envío
             if (chk_cunica.Checked == true)
             {
@@ -3179,7 +3191,7 @@ namespace TransCarga
             {
                 jalaoc("tx_idr");
                 jaladet(tx_idr.Text);
-                tx_numero_Leave(null,null);
+                //tx_numero_Leave(null,null);   // comentado el 08/08/2023
                 tx_obser1.Enabled = true;
             }
         }
@@ -3560,38 +3572,6 @@ namespace TransCarga
                 jaladet(tx_idr.Text);
                 chk_seguridad_CheckStateChanged(null, null);
                 sololee();
-                if (Tx_modo.Text == "EDITAR")
-                {
-                    if ((tx_pregr_num.Text.Trim() == "") && tx_impreso.Text == "N")
-                    {
-                        // no tiene guía y no esta impreso => se puede modificar todo y SI anular
-                        tx_obser1.Enabled = true;
-                        tx_consig.Enabled = true;
-                        tx_docsOr.Enabled = true;
-                    }
-                    if ((tx_pregr_num.Text.Trim() == "") && tx_impreso.Text == "S")
-                    {
-                        // no tiene pre guía y SI esta impreso => NO se puede modificar y SI anular
-                        tx_obser1.Enabled = true;
-                        tx_consig.Enabled = true;
-                        if (v_uedo.ToUpper().Contains(asd.ToUpper()) == true) tx_docsOr.Enabled = true;
-                    }
-                    if ((tx_pregr_num.Text.Trim() != "") && tx_impreso.Text == "N")
-                    {
-                        // si tiene pre guía y no esta impreso => NO se puede modificar NO anular
-                        tx_obser1.Enabled = true;
-                        tx_consig.Enabled = true;
-                        if (v_uedo.ToUpper().Contains(asd.ToUpper()) == true) tx_docsOr.Enabled = true;
-                    }
-                    if ((tx_pregr_num.Text.Trim() != "") && tx_impreso.Text == "S")
-                    {
-                        // si tiene pre guía y si esta impreso => NO se puede modificar NO anular
-                        tx_obser1.Enabled = true;
-                        tx_consig.Enabled = true;
-                        if (v_uedo.ToUpper().Contains(asd.ToUpper()) == true) tx_docsOr.Enabled = true;
-                    }
-                }
-                if (Tx_modo.Text == "ANULAR") tx_obser1.Enabled = true;
             }
         }
         private void tx_serie_Leave(object sender, EventArgs e)

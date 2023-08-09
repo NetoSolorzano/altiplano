@@ -219,14 +219,14 @@ namespace TransCarga
                                 using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
                                 {
                                     conn.Open();
-                                    string actua = "update " + nomTabla + " set estadoS=@est,cdr=@cdr,cdrgener=@gen,textoQR=@tqr where idg=@idg";  // ,fticket=@ftk
+                                    string actua = "update " + nomTabla + " set estadoS=@est,cdr=@cdr,cdrgener=@gen,textoQR=@tqr,ulterror=@uer where idg=@idg";  // ,fticket=@ftk
                                     using (MySqlCommand micon = new MySqlCommand(actua, conn))
                                     {
                                         micon.Parameters.AddWithValue("@est", (CodRrpta == "0") ? "Aceptado" : "Rechazado");
                                         micon.Parameters.AddWithValue("@cdr", Rpta.arcCdr.ToString());
                                         micon.Parameters.AddWithValue("@gen", (CodRrpta == "0") ? Rpta.indCdrGenerado.ToString() : "0");
-                                        micon.Parameters.AddWithValue("@tqr", cuidado);
-                                        //micon.Parameters.AddWithValue("", );
+                                        micon.Parameters.AddWithValue("@tqr", (CodRrpta == "0") ? cuidado : "");
+                                        micon.Parameters.AddWithValue("@uer", (CodRrpta != "0") ? cuidado : "");
                                         micon.Parameters.AddWithValue("@idg", tx_idr);
                                         micon.ExecuteNonQuery();
                                     }
