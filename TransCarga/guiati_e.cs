@@ -2978,14 +2978,17 @@ namespace TransCarga
                         }
                     }
                 }
-                // adicionales
-                string actag = "insert into adiguias (idg,serie,numero) values (@idg,@seg,@nug)";
-                using (MySqlCommand micon = new MySqlCommand(actag, conn))
+                if (ipeeg == "API_SUNAT")       // en otro metodo no usamos la tabla adiguias
                 {
-                    micon.Parameters.AddWithValue("@idg", tx_idr.Text);
-                    micon.Parameters.AddWithValue("@seg", tx_serie.Text);
-                    micon.Parameters.AddWithValue("@nug", tx_numero.Text);
-                    micon.ExecuteNonQuery();
+                    // adicionales
+                    string actag = "insert into adiguias (idg,serie,numero) values (@idg,@seg,@nug)";
+                    using (MySqlCommand micon = new MySqlCommand(actag, conn))
+                    {
+                        micon.Parameters.AddWithValue("@idg", tx_idr.Text);
+                        micon.Parameters.AddWithValue("@seg", tx_serie.Text);
+                        micon.Parameters.AddWithValue("@nug", tx_numero.Text);
+                        micon.ExecuteNonQuery();
+                    }
                 }
                 // detalle
                 int fila = 1;
