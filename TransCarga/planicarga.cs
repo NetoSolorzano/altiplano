@@ -1202,17 +1202,17 @@ namespace TransCarga
                     return;
                 }
                 // registro MTC - longitud
-                if (tx_nregP.Text.Trim().Length < 11 || tx_nregP.Text.Trim().Length > 11)
+                if (tx_nregP.Text.Trim().Length < 9 || tx_nregP.Text.Trim().Length > 12)  // V015
                 {
                     MessageBox.Show("El registro MTC del vehículo debe" + Environment.NewLine +
-                    "tener 11 caracteres alfanuméricos", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    "tener entre 9 y 12 caracteres alfanuméricos", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     tx_nregP.Focus();
                     return;
                 }
-                if (tx_nregC.Text.Trim().Length < 11 || tx_nregC.Text.Trim().Length > 11)
+                if (tx_nregC.Text.Trim().Length < 9 || tx_nregC.Text.Trim().Length > 12)
                 {
                     MessageBox.Show("El registro MTC del vehículo debe" + Environment.NewLine +
-                    "tener 11 caracteres alfanuméricos", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    "tener entre 9 y 12 caracteres alfanuméricos", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     tx_nregC.Focus();
                     return;
                 }
@@ -1494,9 +1494,11 @@ namespace TransCarga
                             if (dataGridView1.Rows[i].Cells[0].Value.ToString().Trim() != "")
                             {
                                 string inserd2 = "insert into detplacar (idc,serplacar,numplacar,fila,numpreg,serguia,numguia,totcant,totpeso,totflet,codmone,estadoser,origreg," +
-                                    "verApp,userc,fechc,diriplan4,diripwan4,netbname,platracto,placarret,autorizac,confvehic,brevchofe,brevayuda,rucpropiet,fechope,pagado,salxcob,tipdocpri,tipdocayu) " +
+                                    "verApp,userc,fechc,diriplan4,diripwan4,netbname,platracto,placarret,autorizac,confvehic,brevchofe,brevayuda,rucpropiet,fechope,pagado,salxcob," +
+                                    "tipdocpri,tipdocayu,dnichofer,dniayudante) " +
                                     "values (@idr,@serpl,@numpl,@fila,@numpr,@sergu,@numgu,@totca,@totpe,@totfl,@codmo,@estad,@orireg," +
-                                    "@verApp,@asd,now(),@iplan,@ipwan,@nbnam,@platr,@placa,@autor,@confv,@brevc,@breva,@rucpr,@fecho,@paga,@xcob,@tdpri,@tdayu)";
+                                    "@verApp,@asd,now(),@iplan,@ipwan,@nbnam,@platr,@placa,@autor,@confv,@brevc,@breva,@rucpr,@fecho,@paga,@xcob," +
+                                    "@tdpri,@tdayu,@ndch,@nday)";
                                 using (MySqlCommand micon = new MySqlCommand(inserd2, conn))
                                 {
                                     micon.Parameters.AddWithValue("@idr", tx_idr.Text);
@@ -1529,9 +1531,10 @@ namespace TransCarga
                                     micon.Parameters.AddWithValue("@rucpr", (tx_pla_ruc.Text.Trim() == "") ? tx_car3ro_ruc.Text : tx_pla_ruc.Text);
                                     micon.Parameters.AddWithValue("@paga", dataGridView1.Rows[i].Cells[8].Value.ToString());    // 
                                     micon.Parameters.AddWithValue("@xcob", dataGridView1.Rows[i].Cells[9].Value.ToString());    // 
-                                    micon.Parameters.AddWithValue("@tdpri", tx_dat_tdchof.Text);
-                                    micon.Parameters.AddWithValue("@tdayu", tx_dat_tdayu.Text);
-                                    //a.fila,a.numpreg,a.serguia,a.numguia,a.totcant,a.totpeso,b.descrizionerid as MON,a.totflet,a.totpag,a.salgri,a.codmon
+                                    micon.Parameters.AddWithValue("@tdpri", tx_dat_tdchof.Text);    // tipo doc chofer
+                                    micon.Parameters.AddWithValue("@tdayu", tx_dat_tdayu.Text);     // tipo doc ayudante
+                                    micon.Parameters.AddWithValue("@ndch", tx_dniC.Text);           // num doc chofer
+                                    micon.Parameters.AddWithValue("@nday", tx_dniA.Text);           // num doc ayudante
                                     micon.ExecuteNonQuery();
                                     fila += 1;
                                     retorna = true;         // no hubo errores!
@@ -1700,10 +1703,10 @@ namespace TransCarga
                             if (dataGridView1.Rows[i].Cells[11].Value == null)   // fila nueva, se inserta  || .ToString() != "X"
                             {
                                 string inserd2 = "insert into detplacar (idc,serplacar,numplacar,fila,numpreg,serguia,numguia,totcant,totpeso,totflet,codmone,estadoser,origreg," +
-                                "verApp,userc,fechc,diriplan4,diripwan4,netbname,nombult,tipdocpri,tipdocayu," +
+                                "verApp,userc,fechc,diriplan4,diripwan4,netbname,nombult,tipdocpri,tipdocayu,dnichofer,dniayudante," +
                                 "platracto,placarret,autorizac,confvehic,brevchofe,brevayuda,rucpropiet,fechope,pagado,salxcob) " +
                                 "values (@idr,@serpl,@numpl,@fila,@numpr,@sergu,@numgu,@totca,@totpe,@totfl,@codmo,@estad,@orireg," +
-                                "@verApp,@asd,now(),@iplan,@ipwan,@nbnam,@nombu,@tdpri,@tdayu," +
+                                "@verApp,@asd,now(),@iplan,@ipwan,@nbnam,@nombu,@tdpri,@tdayu,@ndch,@nday," +
                                 "@platr,@placa,@autor,@confv,@brevc,@breva,@rucpr,@fecho,@paga,@xcob)";
                                 micon = new MySqlCommand(inserd2, conn);
                                 micon.Parameters.AddWithValue("@idr", tx_idr.Text);
@@ -1737,8 +1740,10 @@ namespace TransCarga
                                 micon.Parameters.AddWithValue("@fecho", tx_fechope.Text.Substring(6, 4) + "-" + tx_fechope.Text.Substring(3, 2) + "-" + tx_fechope.Text.Substring(0, 2));
                                 micon.Parameters.AddWithValue("@paga", dataGridView1.Rows[i].Cells[8].Value.ToString());    // 
                                 micon.Parameters.AddWithValue("@xcob", dataGridView1.Rows[i].Cells[9].Value.ToString());    // 
-                                micon.Parameters.AddWithValue("@tdpri", tx_dat_tdchof.Text);
-                                micon.Parameters.AddWithValue("@tdayu", tx_dat_tdayu.Text);
+                                micon.Parameters.AddWithValue("@tdpri", tx_dat_tdchof.Text);    // tipo doc chofer
+                                micon.Parameters.AddWithValue("@tdayu", tx_dat_tdayu.Text);     // tipo doc ayudante
+                                micon.Parameters.AddWithValue("@ndch", tx_dniC.Text);           // num doc chofer
+                                micon.Parameters.AddWithValue("@nday", tx_dniA.Text);           // num doc ayudante
                                 micon.ExecuteNonQuery();
                             }
                         }

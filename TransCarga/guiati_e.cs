@@ -2197,7 +2197,7 @@ namespace TransCarga
                 MessageBox.Show("No existe DNI del chofer!", "Faltan datos", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
-            if (tx_dat_tdRem.Text == tx_dat_tDdest.Text && tx_numDocDes.Text == tx_numDocRem.Text)
+            /* if (tx_dat_tdRem.Text == tx_dat_tDdest.Text && tx_numDocDes.Text == tx_numDocRem.Text)
             {
                 {
                     MessageBox.Show("El Remitente y el Destinatario son LOS MISMOS!" + Environment.NewLine +
@@ -2206,7 +2206,7 @@ namespace TransCarga
                     tx_numDocDes.Focus();
                     return;
                 }
-            }
+            } */
             if (tx_pla_placa.Text == "")
             {
                 MessageBox.Show("Las guías electrónicas de transportista" + Environment.NewLine + 
@@ -4324,12 +4324,15 @@ namespace TransCarga
                                     //
                                     chk_man.Checked = false;
                                     chk_man.Enabled = true;
-                                    DataRow[] fla = dttd2.Select("idcodice='" + row["tipdocpri"].ToString() + "'");
-                                    tx_pla_chofS.Text = fla[0][3].ToString();
-                                    if (row["tipdocayu"] != null && row["tipdocayu"].ToString() != "")
+                                    if (row["tipdocpri"].ToString() != "")
                                     {
-                                        fla = dttd2.Select("idcodice='" + row["tipdocayu"].ToString() + "'");
-                                        tx_dat_dniC2s.Text = fla[0][3].ToString();
+                                        DataRow[] fla = dttd2.Select("idcodice='" + row["tipdocpri"].ToString() + "'");
+                                        tx_pla_chofS.Text = fla[0][3].ToString();
+                                        if (row["tipdocayu"] != null && row["tipdocayu"].ToString() != "")
+                                        {
+                                            fla = dttd2.Select("idcodice='" + row["tipdocayu"].ToString() + "'");
+                                            tx_dat_dniC2s.Text = fla[0][3].ToString();
+                                        }
                                     }
                                 }
                                 else
