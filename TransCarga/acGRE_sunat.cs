@@ -25,7 +25,7 @@ namespace TransCarga
         string DB_CONN_STR = "server=" + login.serv + ";uid=" + login.usua + ";pwd=" + login.cont + ";database=" + login.data + ";";
         public static string CadenaConexion = "Data Source=TransCarga.db";
 
-        public bool sunat_api(string cg, string nomTabla, string[] c_t, string tx_idr, string tx_serie, string tx_numero, string rutaxml)         // uso de api sunat
+        public bool sunat_api(string cg, string nomTabla, string[] c_t, string tx_idr, string tx_serie, string tx_numero, string rutaxml, string wsPostS)         // uso de api sunat
         {
             bool retorna = false;
             string tokenSql = conex_token_(c_t);           // este metodo funciona bien .. 26/05/2023
@@ -55,7 +55,8 @@ namespace TransCarga
                         hash = string.Concat(sha256.ComputeHash(bytexml).Select(x => x.ToString("x2")));
                     }
                     // Postear 
-                    string url = "https://api-cpe.sunat.gob.pe/v1/contribuyente/gem/comprobantes/" + aXml.Replace(".xml", "");
+                    //string url = "https://api-cpe.sunat.gob.pe/v1/contribuyente/gem/comprobantes/" + aXml.Replace(".xml", "");
+                    string url = @wsPostS + aXml.Replace(".xml", "");
                     var oData = new
                     {
                         archivo = new

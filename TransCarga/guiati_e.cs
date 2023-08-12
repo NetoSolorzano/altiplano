@@ -92,6 +92,7 @@ namespace TransCarga
         string v_uagin = "";            // usuarios que pueden hacer anulaciones internas
         string webdni = "";             // ruta web del buscador de DNI
         string NoRetGl = "";            // glosa de retorno cuando umasapa no encuentra el dni o ruc
+        string wsPostS = "";            // ruta del webswervice de sunat para postear el xml/zip
         // GRE
         string v_marGRET = "";          // marca de guía de remisión electrónica
         string v_iniGRET = "";          // sigla, inicicla, marca de las GRE-T
@@ -382,9 +383,10 @@ namespace TransCarga
                                         if (lite.GetString(2).ToString() == "scope") scope_sunat = lite.GetString(3).ToString().Trim();                 // scope del api sunat
                                         if (lite.GetString(2).ToString() == "codgre") cGR_sunat = lite.GetString(3).ToString().Trim();                 // codigo sunat para GR transportista
                                         //  "true" + " " + "certificado.pfx" + " " + "190969Sorol"
-                                        if (lite.GetString(2).ToString() == "firmDocElec") firmDocElec = lite.GetString(3).ToString().Trim();                 // Firma xml, true=firma, false=no firma
-                                        if (lite.GetString(2).ToString() == "rutaCertifc") rutaCertifc = lite.GetString(3).ToString().Trim();                 // Ruta y nombre del certificado .pfx
-                                        if (lite.GetString(2).ToString() == "claveCertif") claveCertif = lite.GetString(3).ToString().Trim();                 // Clave del certificado
+                                        if (lite.GetString(2).ToString() == "firmDocElec") firmDocElec = lite.GetString(3).ToString().Trim();            // Firma xml, true=firma, false=no firma
+                                        if (lite.GetString(2).ToString() == "rutaCertifc") rutaCertifc = lite.GetString(3).ToString().Trim();            // Ruta y nombre del certificado .pfx
+                                        if (lite.GetString(2).ToString() == "claveCertif") claveCertif = lite.GetString(3).ToString().Trim();            // Clave del certificado
+                                        if (lite.GetString(2).ToString() == "wsPostSunatG") wsPostS = lite.GetString(3).ToString().Trim();               // ruta api sunat para postear
                                     }
                                     if (lite.GetString(1).ToString() == "rutas")
                                     {
@@ -2530,7 +2532,7 @@ namespace TransCarga
                                     {
                                         MessageBox.Show("No se pudo llenar las tablas sqlite", "Error interno", MessageBoxButtons.OK, MessageBoxIcon.Error);
                                     }
-                                    if (_Sunat.sunat_api("31", "adiguias", c_t, tx_idr.Text, tx_serie.Text, tx_numero.Text, rutaxml) == false)               // sunat_api() == false
+                                    if (_Sunat.sunat_api("31", "adiguias", c_t, tx_idr.Text, tx_serie.Text, tx_numero.Text, rutaxml, wsPostS) == false)               // sunat_api() == false
                                     {
                                         MessageBox.Show("Documento Guía inválida, debe anularse internamente", "Error: No se pudo generar GRE", MessageBoxButtons.OK, MessageBoxIcon.Error);
                                         using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
@@ -2687,7 +2689,7 @@ namespace TransCarga
                                         }
                                         else
                                         {
-                                            if (_Sunat.sunat_api("31", "adiguias", c_t, tx_idr.Text, tx_serie.Text, tx_numero.Text, rutaxml) == false)               // sunat_api() == false
+                                            if (_Sunat.sunat_api("31", "adiguias", c_t, tx_idr.Text, tx_serie.Text, tx_numero.Text, rutaxml, wsPostS) == false)               // sunat_api() == false
                                             {
                                                 MessageBox.Show("Documento Guía inválida, debe anularse internamente", "Error: No se pudo generar GRE", MessageBoxButtons.OK, MessageBoxIcon.Error);
                                                 using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))

@@ -415,7 +415,7 @@ namespace TransCarga
                             if (row["param"].ToString() == "scope") scope_sunat = row["valor"].ToString().Trim();                 // scope del api sunat
                             if (row["param"].ToString() == "rutaCertifc") rutaCertifc = row["valor"].ToString().Trim();           // Ruta y nombre del certificado .pfx
                             if (row["param"].ToString() == "claveCertif") claveCertif = row["valor"].ToString().Trim();           // Clave del certificado
-                            if (row["param"].ToString() == "wsPostSunat") wsPostS = row["valor"].ToString().Trim();             // 
+                            if (row["param"].ToString() == "wsPostSunatF") wsPostS = row["valor"].ToString().Trim();               // ruta api sunat para postear
                         }
                     }
                     if (row["formulario"].ToString() == "clients" && row["campo"].ToString() == "documento")
@@ -2865,7 +2865,7 @@ namespace TransCarga
         #endregion
 
         #region factDirecta sistema del contribuyente
-        private bool sunat_api(string tipdo, string tipoMoneda, string tipoDocEmi)                                // SI VAMOS A USAR 26/05/2023 este metodo directo
+        private bool sunat_api(string tipdo, string tipoMoneda, string tipoDocEmi)                 // SI VAMOS A USAR 26/05/2023 este metodo directo
         {
             bool retorna = false;
             guiati_e guiati_E = new guiati_e();
@@ -3064,7 +3064,7 @@ namespace TransCarga
                 */
             }
         }
-        private bool llenaTablaLiteDV(string tipdo, string tipoMoneda, string tipoDocEmi)                        // llena tabla con los datos del comprobante y llama al app que crea el xml
+        private bool llenaTablaLiteDV(string tipdo, string tipoMoneda, string tipoDocEmi)          // llena tabla con los datos del comprobante y llama al app que crea el xml
         {
             bool retorna = false;
             using (SqliteConnection cnx = new SqliteConnection(CadenaConexion))
@@ -4981,6 +4981,12 @@ namespace TransCarga
         #region botones_de_comando
         public void toolboton()
         {
+            Bt_add.Visible = false;
+            Bt_anul.Visible = false;
+            Bt_close.Visible = true;
+            Bt_edit.Visible = false;
+            Bt_print.Visible = false;
+            Bt_ver.Visible = false;
             DataTable mdtb = new DataTable();
             const string consbot = "select * from permisos where formulario=@nomform and usuario=@use";
             MySqlConnection conn = new MySqlConnection(DB_CONN_STR);

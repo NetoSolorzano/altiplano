@@ -2671,6 +2671,12 @@ namespace TransCarga
         #region botones_de_comando
         public void toolboton()
         {
+            Bt_add.Visible = false;
+            Bt_anul.Visible = false;
+            Bt_close.Visible = true;
+            Bt_edit.Visible = false;
+            Bt_print.Visible = false;
+            Bt_ver.Visible = false;
             DataTable mdtb = new DataTable();
             const string consbot = "select * from permisos where formulario=@nomform and usuario=@use";
             MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
