@@ -1642,7 +1642,8 @@ namespace TransCarga
             }
             if (provee == "factDirecta")
             {
-                sunat_api(tipdo, tipoMoneda, tipoDocEmi);
+                if (sunat_api(tipdo, tipoMoneda, tipoDocEmi) == true) retorna = true;
+                else retorna = false;
             }
             return retorna;
         }
@@ -2872,17 +2873,21 @@ namespace TransCarga
             string token = _Sunat.conex_token_(c_t);           // guiati_E.conex_token(c_t)
             if (token != null && token != "")
             {
-                string aZip;
+                string aZip = "";
                 string aXml = "";
                 if (llenaTablaLiteDV(tipdo, tipoMoneda, tipoDocEmi) != true)
                 {
                     MessageBox.Show("No se pudo llenar las tablas sqlite", "Error interno", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
-                else aXml = Program.ruc + "-" + tipdo + "-" + tx_serie.Text + "-" + tx_numero.Text + ".xml";
+                else
+                {
+                    aXml = Program.ruc + "-" + tipdo + "-" + cmb_tdv.Text.Substring(0, 1) + lib.Right(tx_serie.Text, 3) + "-" + tx_numero.Text + ".xml";
+                    aZip = Program.ruc + "-" + tipdo + "-" + cmb_tdv.Text.Substring(0, 1) + lib.Right(tx_serie.Text, 3) + "-" + tx_numero.Text + ".zip";
+                }
                 if (aXml != "")
                 {
                     // - zipear el xml, 
-                    aZip = aXml.Replace(".xml", ".zip");
+                    //aZip = aXml.Replace(".xml", ".zip");
                     if (File.Exists(rutaxml + aZip) == true)
                     {
                         File.Delete(rutaxml + aZip);
@@ -2892,6 +2897,7 @@ namespace TransCarga
                         string source = rutaxml + aXml;
                         zip.CreateEntryFromFile(source, aXml);
                     }
+                    /* cortamos un rato esto para estar seguros que estamos creando bien el xml y el zip 16/08/2023
                     // - byte[]ar el zip, 
                     var bytexml = File.ReadAllBytes(rutaxml + aZip);
                     var base64 = Convert.ToBase64String(bytexml);
@@ -2901,7 +2907,6 @@ namespace TransCarga
                     {
                         hash = string.Concat(sha256.ComputeHash(bytexml).Select(x => x.ToString("x2")));
                     }
-                    // Postear "https://api-cpe.sunat.gob.pe/v1/contribuyente/gem/comprobantes/" + aXml.Replace(".xml", "");
                     string url = @wsPostS + aXml.Replace(".xml", "");
                     var oData = new
                     {
@@ -2947,6 +2952,7 @@ namespace TransCarga
                             }
                         }
                     }
+                    */
                 }
 
                 retorna = true;
@@ -3017,7 +3023,14 @@ namespace TransCarga
                     "TotPreVta decimal(12,2), " +       // Total precio de venta (incluye impuestos)            - 31
                     "TotDestos decimal(12,2), " +       // Monto total de descuentos del comprobante            - 32
                     "TotOtrCar decimal(12,2), " +       // Monto total de otros cargos del comprobante          - 33
-                    "TotaVenta decimal(12,2)" +       // Importe total de la venta, cesión en uso o del servicio prestado - 34
+                    "TotaVenta decimal(12,2), " +         // Importe total de la venta, cesión en uso o del servicio prestado - 34
+                    "CanFilDet integer, " +              // Cantidad filas de detalle
+                    "CtaDetra varchar(20), " +           // Cta detracción banco de la nación
+                    "PorDetra decimal(5,1), " +          // % de la detracción
+                    "ImpDetra decimal(12,2), " +         // Importe de la detracción EN SOLES, la cuenta del BN es el soles
+                    "GloDetra varchar(200), " +          // Glosa general de la detracción
+                    "CodTipDet varchar(3), " +           // Código sunat tipo de detraccion (027 transporte de carga)
+                    "CondPago varchar(10) " +           // Condicion de pago
                     ")";
                 using (SqliteCommand cmd = new SqliteCommand(sqlTabla, cnx))
                 {
@@ -3044,7 +3057,14 @@ namespace TransCarga
                                                     // Propiedades Adicionales del Ítem                     - 47
                     "ValUnit decimal(12,2), " +     // Valor unitario del ítem                              - 48
                     "ValPeso real, " +              // peso de la carga, va unido a la unidad de medida 
-                    "UniMedS varchar(3)" +          // codigo unidad de medida de sunat
+                    "UniMedS varchar(3), " +        // codigo unidad de medida de sunat
+                    "GuiaTra varchar(13), " +       // numero guía relacionada
+                    "CodTipG varchar(2), " +        // codigo sunat tipo de guía relacionada
+                    "PorcIgv varchar(2), " +        // % del igv en números (18)
+                    "CodSunI varchar(2), " +        // codigo sunat del igv, (10)
+                    "CodSunT varchar(4), " +        // codigo sunat del tributo, (1000)
+                    "NomSunI varchar(10), " +       // nombre sunat del impuesto, (IGV)
+                    "NomIntI varchar(10)" +         // nombre internacional del impuesto, (VAT)
                     ")";
                 using (SqliteCommand cmd = new SqliteCommand(sqlTabla, cnx))
                 {
@@ -3070,19 +3090,21 @@ namespace TransCarga
             using (SqliteConnection cnx = new SqliteConnection(CadenaConexion))
             {
                 string fecemi = tx_fechope.Text.Substring(6, 4) + "-" + tx_fechope.Text.Substring(3, 2) + "-" + tx_fechope.Text.Substring(0, 2);
-                string fansi = DateTime.Parse(fecemi).AddDays(double.Parse(tx_dat_dpla.Text)).Date.ToString("yyyy-MM-dd");        // fecha de emision + dias plazo credito
-                
+                string fansi = DateTime.Parse(fecemi).AddDays(double.Parse((tx_dat_dpla.Text == "") ? "0" : tx_dat_dpla.Text)).Date.ToString("yyyy-MM-dd");        // fecha de emision + dias plazo credito
+                string cdvta = cmb_tdv.Text.Substring(0, 1) + lib.Right(tx_serie.Text, 3) + "-" + tx_numero.Text;
                 
                 cnx.Open();
                 // CABECERA
                 string metela = "insert into dt_cabdv (" +
                     "EmisRuc,EmisNom,EmisCom,CodLocA,EmisUbi,EmisDir,EmisDep,EmisPro,EmisDis,EmisUrb,EmisPai,EmisCor,NumDVta,FecEmis,HorEmis,CodComp,FecVcto," +
                     "TipDocu,CodLey1,MonLetr,CodMonS,DstTipdoc,DstNumdoc,DstNomTdo,DstNombre,DstDirecc,DstDepart,DstProvin,DstDistri,DstUrbani,DstUbigeo,ImpTotImp," +
-                    "ImpOpeGra,ImpIgvTot,ImpOtrosT,IgvCodSun,IgvConInt,IgvNomSun,IgvCodInt,TotValVta,TotPreVta,TotDestos,TotOtrCar,TotaVenta) " +
+                    "ImpOpeGra,ImpIgvTot,ImpOtrosT,IgvCodSun,IgvConInt,IgvNomSun,IgvCodInt,TotValVta,TotPreVta,TotDestos,TotOtrCar,TotaVenta," +
+                    "CanFilDet,CtaDetra,PorDetra,ImpDetra,GloDetra,CodTipDet,CondPago) " +
                     "values (" +
                     "@EmisRuc,@EmisNom,@EmisCom,@CodLocA,@EmisUbi,@EmisDir,@EmisDep,@EmisPro,@EmisDis,@EmisUrb,@EmisPai,@EmisCor,@NumDVta,@FecEmis,@HorEmis,@CodComp,@FecVcto," +
                     "@TipDocu,@CodLey1,@MonLetr,@CodMonS,@DstTipd,@DstNumd,@DstNomT,@DstNomb,@DstDire,@DstDepa,@DstProv,@DstDist,@DstUrba,@DstUbig,@ImpTotI," +
-                    "@ImpOpeG,@ImpIgvT,@ImpOtro,@IgvCodS,@IgvConI,@IgvNomS,@IgvCodI,@TotValV,@TotPreV,@TotDest,@TotOtrC,@TotaVen)";
+                    "@ImpOpeG,@ImpIgvT,@ImpOtro,@IgvCodS,@IgvConI,@IgvNomS,@IgvCodI,@TotValV,@TotPreV,@TotDest,@TotOtrC,@TotaVen," +
+                    "@CanFilD,@CtaDetr,@PorDetr,@ImpDetr,@GloDetr,@CodTipD,@CondPag)";
                 using (SqliteCommand cmd = new SqliteCommand(metela, cnx))
                 {
                     // cabecera
@@ -3098,7 +3120,7 @@ namespace TransCarga
                     cmd.Parameters.AddWithValue("@EmisUrb", "-");                         // "Bocanegra"
                     cmd.Parameters.AddWithValue("@EmisPai", "PE");                        // país del emisor
                     cmd.Parameters.AddWithValue("@EmisCor", Program.mailclte);            // "neto.solorzano@solorsoft.com"
-                    cmd.Parameters.AddWithValue("@NumDVta", tx_serie.Text + "-" + tx_numero.Text);         // "V001-98000006"
+                    cmd.Parameters.AddWithValue("@NumDVta", cdvta);         // "V001-98000006"
                     cmd.Parameters.AddWithValue("@FecEmis", fecemi);              // "2023-05-19"
                     cmd.Parameters.AddWithValue("@HorEmis", DateTime.Now.Hour + ":" + DateTime.Now.Minute + ":" + DateTime.Now.Second);  // "12:21:13"
                     cmd.Parameters.AddWithValue("@CodComp", "");                      // codigo del comprobante
@@ -3132,6 +3154,20 @@ namespace TransCarga
                     cmd.Parameters.AddWithValue("@TotDest", "0");
                     cmd.Parameters.AddWithValue("@TotOtrC", "0");
                     cmd.Parameters.AddWithValue("@TotaVen", tx_flete.Text);
+                    string detrac = "no";
+                    double vtotdet = 0;
+                    if (decimal.Parse(tx_fletMN.Text) > decimal.Parse(Program.valdetra)) 
+                    {
+                        detrac = "si";
+                        vtotdet = Math.Round(double.Parse(tx_flete.Text) * double.Parse(Program.pordetra) / 100, 2);    // totalDetraccion
+                    }
+                    cmd.Parameters.AddWithValue("@CanFilD", tx_tfil.Text);
+                    cmd.Parameters.AddWithValue("@CtaDetr", (detrac == "si") ? Program.ctadetra : "");
+                    cmd.Parameters.AddWithValue("@PorDetr", (detrac == "si") ? Program.pordetra : "");
+                    cmd.Parameters.AddWithValue("@ImpDetr", (detrac == "si") ? vtotdet : 0);
+                    cmd.Parameters.AddWithValue("@GloDetr", (detrac == "si") ? glosdetra + " " + Program.ctadetra : "");
+                    cmd.Parameters.AddWithValue("@CodTipD", (detrac == "si") ? Program.coddetra : "");
+                    cmd.Parameters.AddWithValue("@CondPag", (rb_contado.Checked == true) ? "Contado" : "Credito");
                     cmd.ExecuteNonQuery();
                 }
                 // DETALLE
@@ -3143,11 +3179,13 @@ namespace TransCarga
                     double sumimpl = double.Parse(dataGridView1.Rows[i].Cells[4].Value.ToString()) - valunit;
 
                     metela = "insert into dt_detdv (" +
-                        "NumDVta,Numline,Cantprd,CodMone,ValVtaI,PreVtaU,ValIgvI,DesDet1,DesDet2,CodIntr,ValUnit,ValPeso,UniMedS) values (" +
-                        "@NumGu,@Numli,@Cantp,@CodMo,@ValVt,@PreVt,@ValIg,@DesD1,@DesD2,@CodIn,@ValUn,@ValPe,@UniMe)";
+                        "NumDVta,Numline,Cantprd,CodMone,ValVtaI,PreVtaU,ValIgvI,DesDet1,DesDet2,CodIntr,ValUnit,ValPeso,UniMedS," +
+                        "GuiaTra,CodTipG,PorcIgv,CodSunI,CodSunT,NomSunI,NomIntI) values (" +
+                        "@NumGu,@Numli,@Cantp,@CodMo,@ValVt,@PreVt,@ValIg,@DesD1,@DesD2,@CodIn,@ValUn,@ValPe,@UniMe," +
+                        "@GuiaT,@CodTG,@PIgvn,@CodSI,@CodST,@NomSI,@NomII)";
                     using (SqliteCommand cmd = new SqliteCommand(metela, cnx))
                     {
-                        cmd.Parameters.AddWithValue("@NumGu", tx_serie.Text + "-" + tx_numero.Text);      // "V001-98000006"
+                        cmd.Parameters.AddWithValue("@NumGu", cdvta);      // "V001-98000006"
                         cmd.Parameters.AddWithValue("@Numli", i+1.ToString());
                         cmd.Parameters.AddWithValue("@Cantp", dataGridView1.Rows[i].Cells[2].Value.ToString());
                         cmd.Parameters.AddWithValue("@CodMo", tipoMoneda);
@@ -3160,16 +3198,29 @@ namespace TransCarga
                         cmd.Parameters.AddWithValue("@ValUn", valunit.ToString());  // Valor unitario del ítem
                         cmd.Parameters.AddWithValue("@ValPe", "");
                         cmd.Parameters.AddWithValue("@UniMe", dataGridView1.Rows[i].Cells[13].Value.ToString());    // valunit
+                        cmd.Parameters.AddWithValue("@GuiaT", dataGridView1.Rows[i].Cells[0].Value.ToString());     // serie(4)-numero(8)
+                        cmd.Parameters.AddWithValue("@CodTG", "31");
+                        cmd.Parameters.AddWithValue("@PIgvn", v_igv);
+                        cmd.Parameters.AddWithValue("@CodSI", "10");                // Código de tipo de afectación del IGV
+                        cmd.Parameters.AddWithValue("@CodST", "1000");              // codigo sunat del tributo, (1000)
+                        cmd.Parameters.AddWithValue("@NomSI", "IGV");               // nombre sunat del impuesto
+                        cmd.Parameters.AddWithValue("@NomII", "VAT");               // nombre internacional del impuesto
                         cmd.ExecuteNonQuery();
                     }
                 }
                 // llamada al programa de generación del xml de la guía
                 string rutalocal = System.IO.Path.GetDirectoryName(Application.ExecutablePath);
-                string[] parametros = new string[] { rutaxml, Program.ruc, tx_serie.Text + "-" + tx_numero.Text };
+                //string[] parametros = new string[] { rutaxml, Program.ruc, tx_serie.Text + "-" + tx_numero.Text };
                 ProcessStartInfo p = new ProcessStartInfo();                                                // true = firma comprobante
-                p.Arguments = rutaxml + " " + Program.ruc + " " + tx_serie.Text + "-" + tx_numero.Text + " " + true + " " + rutaCertifc + " " + claveCertif;
-                p.FileName = @rutalocal + "/xmlGRE/xmlDV.exe";
-                Process.Start(p);
+                p.Arguments = rutaxml + " " + Program.ruc + " " +
+                     cdvta + " " + 
+                    true + " " + rutaCertifc + " " + claveCertif + " " + tipdo;
+                p.FileName = @rutalocal + "/xmlDocVta/xmlDocVta.exe";
+                var proc = Process.Start(p);
+                proc.WaitForExit();
+                if (proc.ExitCode == 1) retorna = true;
+                else retorna = false;
+
                 retorna = true;
             }
 
