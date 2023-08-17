@@ -3173,6 +3173,7 @@ namespace TransCarga
                 // DETALLE
                 for (int i=0; i< dataGridView1.Rows.Count - 1; i++)
                 {
+                    glosser2 = dataGridView1.Rows[i].Cells["OriDest"].Value.ToString() + " - " + tx_totcant.Text.Trim() + " " + tx_dat_nombd.Text; // " Bultos"; 
                     string descrip = dataGridView1.Rows[i].Cells[1].Value.ToString();
                     double preunit = double.Parse(dataGridView1.Rows[i].Cells[4].Value.ToString());
                     double valunit = double.Parse(dataGridView1.Rows[i].Cells[4].Value.ToString()) / (1 + (double.Parse(v_igv) / 100));
@@ -3187,17 +3188,17 @@ namespace TransCarga
                     {
                         cmd.Parameters.AddWithValue("@NumGu", cdvta);      // "V001-98000006"
                         cmd.Parameters.AddWithValue("@Numli", i+1.ToString());
-                        cmd.Parameters.AddWithValue("@Cantp", dataGridView1.Rows[i].Cells[2].Value.ToString());
+                        cmd.Parameters.AddWithValue("@Cantp", "1");    // dataGridView1.Rows[i].Cells[2].Value.ToString()
                         cmd.Parameters.AddWithValue("@CodMo", tipoMoneda);
                         cmd.Parameters.AddWithValue("@ValVt", valunit.ToString());  // valor venta  s/igv
                         cmd.Parameters.AddWithValue("@PreVt", preunit.ToString());  // precio venta c/igv
                         cmd.Parameters.AddWithValue("@ValIg", sumimpl.ToString());  // Afectación al IGV por ítem
-                        cmd.Parameters.AddWithValue("@DesD1", descrip);             // "Servicio de Transporte de carga terrestre "
+                        cmd.Parameters.AddWithValue("@DesD1", glosser + " " + glosser2 + " " + descrip);             // "Servicio de Transporte de carga terrestre "
                         cmd.Parameters.AddWithValue("@DesD2", "");                  //"Dice contener Enseres domésticos"
                         cmd.Parameters.AddWithValue("@CodIn", "");                  // código del item
                         cmd.Parameters.AddWithValue("@ValUn", valunit.ToString());  // Valor unitario del ítem
-                        cmd.Parameters.AddWithValue("@ValPe", "");
-                        cmd.Parameters.AddWithValue("@UniMe", dataGridView1.Rows[i].Cells[13].Value.ToString());    // valunit
+                        cmd.Parameters.AddWithValue("@ValPe", "");                  // peso
+                        cmd.Parameters.AddWithValue("@UniMe", "ZZ");    // dataGridView1.Rows[i].Cells[13].Value.ToString()
                         cmd.Parameters.AddWithValue("@GuiaT", dataGridView1.Rows[i].Cells[0].Value.ToString());     // serie(4)-numero(8)
                         cmd.Parameters.AddWithValue("@CodTG", "31");
                         cmd.Parameters.AddWithValue("@PIgvn", v_igv);
