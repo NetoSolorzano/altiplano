@@ -2875,11 +2875,11 @@ namespace TransCarga
             {
                 string aZip = "";
                 string aXml = "";
-                if (llenaTablaLiteDV(tipdo, tipoMoneda, tipoDocEmi) != true)
+                /* if (llenaTablaLiteDV(tipdo, tipoMoneda, tipoDocEmi) != true)
                 {
                     MessageBox.Show("No se pudo llenar las tablas sqlite", "Error interno", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
-                else
+                else    */
                 {
                     aXml = Program.ruc + "-" + tipdo + "-" + cmb_tdv.Text.Substring(0, 1) + lib.Right(tx_serie.Text, 3) + "-" + tx_numero.Text + ".xml";
                     aZip = Program.ruc + "-" + tipdo + "-" + cmb_tdv.Text.Substring(0, 1) + lib.Right(tx_serie.Text, 3) + "-" + tx_numero.Text + ".zip";
@@ -2897,7 +2897,6 @@ namespace TransCarga
                         string source = rutaxml + aXml;
                         zip.CreateEntryFromFile(source, aXml);
                     }
-                    /* cortamos un rato esto para estar seguros que estamos creando bien el xml y el zip 16/08/2023
                     // - byte[]ar el zip, 
                     var bytexml = File.ReadAllBytes(rutaxml + aZip);
                     var base64 = Convert.ToBase64String(bytexml);
@@ -2918,7 +2917,14 @@ namespace TransCarga
                         }
                     };
                     var json = JsonConvert.SerializeObject(oData);
-                    //var Body = new StringContent(json, Encoding.UTF8, "application/json");
+                    /////
+                    ServiceRefSunat.billServiceClient ws = new ServiceRefSunat.billServiceClient();
+                    ws.Open();
+                    ws.sendBill(aZip, bytexml, "");
+                    ws.Close();
+                    
+
+                    /*  ******************************* envío a sunat ********************************** esta parte esta en desarrollo 17/08/2023
                     ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
                     var poste = new RestClient(url);
                     poste.Timeout = -1;
