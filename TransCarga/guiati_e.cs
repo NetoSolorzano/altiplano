@@ -2406,7 +2406,7 @@ namespace TransCarga
                     return;
                 }
             }   // RUC emisor doc. relacionado GUIA Transportista debe ser igual al ruc del dueño del camion que hará el traslado
-            if (tx_dat_dorigS2.Text != "" && "09".Contains(tx_dat_dorigS2.Text) &&
+            /* if (tx_dat_dorigS2.Text != "" && "09".Contains(tx_dat_dorigS2.Text) &&
                 lib.IsAllDigits(tx_docsOr2.Text.Substring(0, 1)) == false)
             {
                 if (tx_pla_ruc.Text != tx_rucEorig2.Text)
@@ -2416,7 +2416,7 @@ namespace TransCarga
                     tx_pla_ruc.Focus();
                     return;
                 }
-            }                                       // RUC emisor doc. relacionado GUIA Transportista debe ser igual al ruc del dueño del camion que hará el traslado
+            }                                       */ //RUC emisor doc. relacionado GUIA Transportista debe ser igual al ruc del dueño del camion que hará el traslado
             // Validaciones SUNAT - Datos del remitente
             if (tx_pla_ruc.Text == tx_numDocRem.Text)
             {
