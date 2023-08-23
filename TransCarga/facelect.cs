@@ -2870,7 +2870,7 @@ namespace TransCarga
         {
             bool retorna = false;
             guiati_e guiati_E = new guiati_e();
-            string token = _Sunat.conex_token_(c_t);           // guiati_E.conex_token(c_t)
+            string token = "noPideToken";  // _Sunat.conex_token_(c_t);           // no pide token para el envío del comprobante en soap
             if (token != null && token != "")
             {
                 string aZip = "";
@@ -2917,12 +2917,17 @@ namespace TransCarga
                         }
                     };
                     var json = JsonConvert.SerializeObject(oData);
-                    /////
+                    ////
+                    //System.ServiceModel.Description.ClientCredentials credentials = new System.ServiceModel.Description.ClientCredentials();
+                    //credentials.UserName.UserName = "";
+                    //credentials.
+
                     ServiceRefSunat.billServiceClient ws = new ServiceRefSunat.billServiceClient();
+                    //ws.ClientCredentials =
                     ws.Open();
                     ws.sendBill(aZip, bytexml, "");
                     ws.Close();
-                    
+                    //
 
                     /*  ******************************* envío a sunat ********************************** esta parte esta en desarrollo 17/08/2023
                     ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
