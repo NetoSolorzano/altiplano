@@ -2869,7 +2869,7 @@ namespace TransCarga
         private bool sunat_api(string tipdo, string tipoMoneda, string tipoDocEmi)                 // SI VAMOS A USAR 26/05/2023 este metodo directo
         {
             bool retorna = false;
-            guiati_e guiati_E = new guiati_e();
+            //guiati_e guiati_E = new guiati_e();
             string token = "noPideToken";  // _Sunat.conex_token_(c_t);           // no pide token para el envío del comprobante en soap
             if (token != null && token != "")
             {
@@ -2879,7 +2879,7 @@ namespace TransCarga
                 {
                     MessageBox.Show("No se pudo llenar las tablas sqlite", "Error interno", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
-                else    */
+                else */
                 {
                     aXml = Program.ruc + "-" + tipdo + "-" + cmb_tdv.Text.Substring(0, 1) + lib.Right(tx_serie.Text, 3) + "-" + tx_numero.Text + ".xml";
                     aZip = Program.ruc + "-" + tipdo + "-" + cmb_tdv.Text.Substring(0, 1) + lib.Right(tx_serie.Text, 3) + "-" + tx_numero.Text + ".zip";
@@ -2925,8 +2925,12 @@ namespace TransCarga
                     ServiceRefSunat.billServiceClient ws = new ServiceRefSunat.billServiceClient();
                     //ws.ClientCredentials =
                     ws.Open();
-                    ws.sendBill(aZip, bytexml, "");
+                    //ws.sendBill(aZip, bytexml, "");
+                    Byte[] respuesta = ws.sendBill(aZip, bytexml, "");
                     ws.Close();
+                    FileStream fstrm = new FileStream("Respuesta.zip", FileMode.CreateNew, FileAccess.Write);
+                    fstrm.Write(respuesta, 0, respuesta.Length);
+                    fstrm.Close();
                     //
 
                     /*  ******************************* envío a sunat ********************************** esta parte esta en desarrollo 17/08/2023
@@ -3041,7 +3045,9 @@ namespace TransCarga
                     "ImpDetra decimal(12,2), " +         // Importe de la detracción EN SOLES, la cuenta del BN es el soles
                     "GloDetra varchar(200), " +          // Glosa general de la detracción
                     "CodTipDet varchar(3), " +           // Código sunat tipo de detraccion (027 transporte de carga)
-                    "CondPago varchar(10) " +           // Condicion de pago
+                    "CondPago varchar(10), " +           // Condicion de pago
+                    "CodTipDoc varchar(2), " +          // Código sunat para el tipo de documento, FT=01, BV=03, etc
+                    "CodTipOpe varchar(4) " +           // Código sunat para el tipo de operación, 0101=Vta, interna facturas y boletas
                     ")";
                 using (SqliteCommand cmd = new SqliteCommand(sqlTabla, cnx))
                 {
@@ -3110,12 +3116,12 @@ namespace TransCarga
                     "EmisRuc,EmisNom,EmisCom,CodLocA,EmisUbi,EmisDir,EmisDep,EmisPro,EmisDis,EmisUrb,EmisPai,EmisCor,NumDVta,FecEmis,HorEmis,CodComp,FecVcto," +
                     "TipDocu,CodLey1,MonLetr,CodMonS,DstTipdoc,DstNumdoc,DstNomTdo,DstNombre,DstDirecc,DstDepart,DstProvin,DstDistri,DstUrbani,DstUbigeo,ImpTotImp," +
                     "ImpOpeGra,ImpIgvTot,ImpOtrosT,IgvCodSun,IgvConInt,IgvNomSun,IgvCodInt,TotValVta,TotPreVta,TotDestos,TotOtrCar,TotaVenta," +
-                    "CanFilDet,CtaDetra,PorDetra,ImpDetra,GloDetra,CodTipDet,CondPago) " +
+                    "CanFilDet,CtaDetra,PorDetra,ImpDetra,GloDetra,CodTipDet,CondPago,CodTipOpe) " +
                     "values (" +
                     "@EmisRuc,@EmisNom,@EmisCom,@CodLocA,@EmisUbi,@EmisDir,@EmisDep,@EmisPro,@EmisDis,@EmisUrb,@EmisPai,@EmisCor,@NumDVta,@FecEmis,@HorEmis,@CodComp,@FecVcto," +
                     "@TipDocu,@CodLey1,@MonLetr,@CodMonS,@DstTipd,@DstNumd,@DstNomT,@DstNomb,@DstDire,@DstDepa,@DstProv,@DstDist,@DstUrba,@DstUbig,@ImpTotI," +
                     "@ImpOpeG,@ImpIgvT,@ImpOtro,@IgvCodS,@IgvConI,@IgvNomS,@IgvCodI,@TotValV,@TotPreV,@TotDest,@TotOtrC,@TotaVen," +
-                    "@CanFilD,@CtaDetr,@PorDetr,@ImpDetr,@GloDetr,@CodTipD,@CondPag)";
+                    "@CanFilD,@CtaDetr,@PorDetr,@ImpDetr,@GloDetr,@CodTipD,@CondPag,@CodTipO)";
                 using (SqliteCommand cmd = new SqliteCommand(metela, cnx))
                 {
                     // cabecera
@@ -3179,6 +3185,7 @@ namespace TransCarga
                     cmd.Parameters.AddWithValue("@GloDetr", (detrac == "si") ? glosdetra + " " + Program.ctadetra : "");
                     cmd.Parameters.AddWithValue("@CodTipD", (detrac == "si") ? Program.coddetra : "");
                     cmd.Parameters.AddWithValue("@CondPag", (rb_contado.Checked == true) ? "Contado" : "Credito");
+                    cmd.Parameters.AddWithValue("@CodTipO", (detrac == "si") ? "1001" : "0101");    // 0101=venta interna, 1001=vta interna sujeta a detracción
                     cmd.ExecuteNonQuery();
                 }
                 // DETALLE
