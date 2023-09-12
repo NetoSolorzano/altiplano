@@ -52,6 +52,7 @@ namespace TransCarga
         //DataTable dt = new DataTable();
         DataTable dtestad = new DataTable();
         DataTable dttaller = new DataTable();
+        DataTable dtsunatE = new DataTable();       // comprobantes elec - estados sunat
         // string de conexion
         string DB_CONN_STR = "server=" + login.serv + ";uid=" + login.usua + ";pwd=" + login.cont + ";database=" + login.data + ";";
 
@@ -95,6 +96,7 @@ namespace TransCarga
             //
             dgv_facts.DefaultCellStyle.BackColor = Color.FromName(colgrid);
             dgv_notcre.DefaultCellStyle.BackColor = Color.FromName(colgrid);
+            dgv_sunat_est.DefaultCellStyle.BackColor = Color.FromName(colgrid);
             //
             Bt_add.Image = Image.FromFile(img_btN);
             Bt_edit.Image = Image.FromFile(img_btE);
@@ -206,6 +208,10 @@ namespace TransCarga
                 cmb_sede_plan.DataSource = dttaller;
                 cmb_sede_plan.DisplayMember = "descrizionerid"; ;
                 cmb_sede_plan.ValueMember = "idcodice";
+                // panel de estatos sunat
+                cmb_sunat_sede.DataSource = dttaller;
+                cmb_sunat_sede.DisplayMember = "descrizionerid";
+                cmb_sunat_sede.ValueMember = "idcodice";
                 // ***************** seleccion de estado de servicios
                 string conestad = "select descrizionerid,idcodice,codigo from desc_est " +
                                        "where numero=1 order by idcodice";
@@ -220,7 +226,17 @@ namespace TransCarga
                 cmb_estad_plan.DataSource = dtestad;
                 cmb_estad_plan.DisplayMember = "descrizionerid";
                 cmb_estad_plan.ValueMember = "idcodice";
-                //
+
+                // ----------------- panel de estatos sunat
+                string conesu = "select descrizionerid,idcodice from desc_esu where numero=1 order by idcodice";
+                cmd = new MySqlCommand(conesu, conn);
+                MySqlDataAdapter datesu = new MySqlDataAdapter(cmd);
+                DataTable dtesu = new DataTable();
+                datesu.Fill(dtesu);
+                cmb_sunat_est.DataSource = dtesu;
+                cmb_sunat_est.DisplayMember = "descrizionerid";
+                cmb_sunat_est.ValueMember = "idcodice";
+                datesu.Dispose();
             }
             conn.Close();
         }
@@ -290,6 +306,120 @@ namespace TransCarga
                     */
                     suma_grilla("dgv_notcre");
                     break;
+                case "dgv_sunat_est":
+                    dgv_sunat_est.Font = tiplg;
+                    dgv_sunat_est.DefaultCellStyle.Font = tiplg;
+                    dgv_sunat_est.RowTemplate.Height = 15;
+                    dgv_sunat_est.AllowUserToAddRows = false;
+                    suma_grilla("dgv_sunat_est");
+
+                    Padding padding = new Padding();
+                    padding.Left = 16;
+                    padding.Right = 16;
+                    padding.Top = 0;
+                    padding.Bottom = 0;
+
+                    Font chiq = new Font("Arial", 6, FontStyle.Bold);
+
+                    DataGridViewButtonColumn btnTk = new DataGridViewButtonColumn();
+                    btnTk.HeaderText = "iTK";
+                    //btnTk.UseColumnTextForButtonValue = true;
+                    btnTk.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                    btnTk.Name = "iTK";
+                    btnTk.Width = 60;
+                    btnTk.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                    btnTk.DefaultCellStyle.Padding = padding;
+                    btnTk.DefaultCellStyle.Font = chiq;
+                    btnTk.DefaultCellStyle.SelectionBackColor = Color.White;
+
+                    DataGridViewButtonColumn btnCDR = new DataGridViewButtonColumn();
+                    btnCDR.HeaderText = "CDR";
+                    btnCDR.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                    btnCDR.Name = "cdr";
+                    btnCDR.Width = 60;
+                    btnCDR.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                    btnCDR.DefaultCellStyle.Padding = padding;
+                    btnCDR.DefaultCellStyle.Font = chiq;
+                    btnCDR.DefaultCellStyle.SelectionBackColor = Color.White;
+                    /*
+                    DataGridViewButtonColumn btnPDF = new DataGridViewButtonColumn();
+                    btnPDF.HeaderText = "PDF";
+                    btnPDF.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                    btnPDF.Name = "pdf";
+                    btnPDF.Width = 60;
+                    btnPDF.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                    btnPDF.DefaultCellStyle.Padding = padding;
+                    btnPDF.DefaultCellStyle.Font = chiq;
+                    btnPDF.DefaultCellStyle.SelectionBackColor = Color.White;
+                    */
+                    DataGridViewButtonColumn btnAct = new DataGridViewButtonColumn();
+                    btnAct.HeaderText = "Sunat"; // ACTUALIZA
+                    btnAct.Text = "...Consulta...";
+                    btnAct.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                    btnAct.Name = "consulta";
+                    btnAct.Width = 140;
+                    btnAct.UseColumnTextForButtonValue = true;
+                    btnAct.DefaultCellStyle.Padding = padding;
+                    // EMISION,TIPO,COMPROBANTE,ORIGEN,ESTADO,SUNAT,CDR_GEN,btnTK,btnCDR,btnACT,ad.cdr,ad.textoQR,ad.nticket,f.canfidt,f.id
+                    //     0  ,  1 ,      2    ,   3  ,  4   ,  5  ,   6   ,  7  ,  8   ,  9   ,  10   ,    11    ,   12     ,   13   , 14
+                    dgv_sunat_est.CellClick += DataGridView1_CellClick;
+                    dgv_sunat_est.Columns.Insert(7, btnTk);
+                    //dgv_sunat_est.Columns.Insert(8, btnPDF);   // .Add(btnPDF);
+                    dgv_sunat_est.Columns.Insert(8, btnCDR);   // .Add(btnCDR);
+                    dgv_sunat_est.Columns.Insert(9, btnAct);   // .Add(btnAct);
+                    dgv_sunat_est.Columns[10].Visible = false;
+                    dgv_sunat_est.Columns[11].Visible = false;
+                    dgv_sunat_est.Columns[12].Visible = false;
+                    dgv_sunat_est.Columns[13].Visible = false;
+                    dgv_sunat_est.Columns[14].Visible = false;
+                    if (dgv_sunat_est.Rows.Count > 0)         // autosize filas
+                    {
+                        for (int i = 0; i < dgv_sunat_est.Columns.Count - 10; i++)
+                        {
+                            dgv_sunat_est.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                            _ = decimal.TryParse(dgv_sunat_est.Rows[0].Cells[i].Value.ToString(), out decimal vd);
+                            if (vd != 0) dgv_sunat_est.Columns[i].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+                        }
+                        b = 0;
+                        for (int i = 0; i < dgv_sunat_est.Columns.Count - 10; i++)
+                        {
+                            int a = dgv_sunat_est.Columns[i].Width;
+                            b += a;
+                            dgv_sunat_est.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+                            dgv_sunat_est.Columns[i].Width = a;
+                        }
+                        if (b < dgv_sunat_est.Width) dgv_sunat_est.Width = dgv_sunat_est.Width - 10;
+                        dgv_sunat_est.ReadOnly = true;
+                    }
+                    if (dgv_sunat_est.Rows.Count > 0)
+                    {
+                        for (int i = 0; i < dgv_sunat_est.Rows.Count; i++)
+                        {
+                            dgv_sunat_est.Rows[i].Cells["iTK"].Value = "TK";
+                            if (dgv_sunat_est.Rows[i].Cells["iTK"].Value != null)
+                            {
+                                if (dgv_sunat_est.Rows[i].Cells["CDR_GEN"].Value.ToString() == "0")
+                                {
+                                    //dgv_sunat_est.Rows[i].Cells[8].ReadOnly = false;
+                                    //dgv_sunat_est.Rows[i].Cells[8].Value = "PDF";
+                                    dgv_sunat_est.Rows[i].Cells["cdr"].ReadOnly = false;
+                                    dgv_sunat_est.Rows[i].Cells["cdr"].Value = "CDR";
+                                    dgv_sunat_est.Rows[i].Cells["cdr"].ReadOnly = true;
+                                    dgv_sunat_est.Rows[i].Cells["consulta"].ReadOnly = true;
+                                    dgv_sunat_est.Rows[i].Cells["consulta"].Value = "";
+                                }
+                                else
+                                {
+                                    dgv_sunat_est.Rows[i].Cells["cdr"].ReadOnly = true;
+                                    dgv_sunat_est.Rows[i].Cells["cdr"].Value = "";
+                                    dgv_sunat_est.Rows[i].Cells["consulta"].ReadOnly = false;
+                                    dgv_sunat_est.Rows[i].Cells["consulta"].Value = "...Consulta...";
+                                    //dgv_sunat_est.Rows[i].Cells[10].ReadOnly = false;
+                                }
+                            }
+                        }
+                    }
+                    break;
             }
         }
         private void bt_guias_Click(object sender, EventArgs e)         // genera reporte guias
@@ -352,7 +482,7 @@ namespace TransCarga
                 }
             }
         }
-        private void bt_regvtas_Click(object sender, EventArgs e)
+        private void bt_regvtas_Click(object sender, EventArgs e)       // Registro de ventas
         {
             string consulta = "rep_vtas_regvtas1";
             using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
@@ -433,7 +563,74 @@ namespace TransCarga
                     tx_tfi_n.Text = cr.ToString();
                     tx_totval_n.Text = tvv.ToString("#0.00");
                     break;
+                case "dgv_sunat_est":
+                    for (int i = 0; i < dgv_sunat_est.Rows.Count; i++)
+                    {
+                        if (dgv_sunat_est.Rows[i].Cells["ESTADO"].Value.ToString() != etiq_anulado)
+                        {
+                            cr = cr + 1;
+                        }
+                        else
+                        {
+                            dgv_sunat_est.Rows[i].DefaultCellStyle.BackColor = Color.Red;
+                            ca = ca + 1;
+                        }
+                    }
+                    tx_sunat_fa.Text = ca.ToString("#0");
+                    tx_sunat_fv.Text = cr.ToString("#0");
+                    break;
             }
+        }
+        private void bt_sunatEst_Click(object sender, EventArgs e)      // estados sunat de comprobantes
+        {
+            dtsunatE.Rows.Clear();
+            dtsunatE.Columns.Clear();
+            // validaciones
+            if (tx_dat_sunat_sede.Text == "")
+            {
+                MessageBox.Show("Seleccione el local Origen", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                cmb_sunat_sede.Focus();
+                return;
+            }
+            string consulta = "";
+            string parte = "";
+            if (rb_dVtas.Checked == true)   // facturas y boletas
+            {
+                consulta = "SELECT f.fechope AS EMISION,f.martdve as TIPO,CONCAT(f.serdvta,'-',f.numdvta) AS COMPROBANTE,lo.descrizionerid AS ORIGEN," +
+                    "es.DescrizioneRid AS ESTADO,ad.estadoS AS SUNAT,ad.cdrgener AS CDR_GEN,ad.cdr,ad.textoQR,ad.nticket,f.canfidt,f.id " + // ,ad.ulterror as ULT_ERROR
+                    "FROM cabfactu f LEFT JOIN adifactu ad ON ad.idc = f.id " +
+                    "LEFT JOIN desc_loc lo ON lo.IDCodice = f.locorig " +
+                    "LEFT JOIN desc_est es ON es.IDCodice = f.estdvta  " +
+                    "WHERE f.fechope between @fecini and @fecfin";  // marca_gre<>'' AND 
+            }
+            if (rb_notaC.Checked == true)   // notas de crédito
+            {
+
+            }
+            if (tx_dat_sunat_sede.Text != "") parte = parte + " and f.locorig=@loca";
+            if (tx_dat_sunat_est.Text != "") parte = parte + " and ad.estadoS=@esta";
+            using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
+            {
+                conn.Open();
+                using (MySqlCommand micon = new MySqlCommand(consulta + parte, conn))
+                {
+                    micon.Parameters.AddWithValue("@loca", tx_dat_sunat_sede.Text);
+                    micon.Parameters.AddWithValue("@fecini", dtp_sunat_fini.Value.ToString("yyyy-MM-dd"));
+                    micon.Parameters.AddWithValue("@fecfin", dtp_sunat_fter.Value.ToString("yyyy-MM-dd"));
+                    micon.Parameters.AddWithValue("@esta", (tx_dat_sunat_est.Text != "") ? tx_dat_sunat_est.Text : "");
+                    using (MySqlDataAdapter da = new MySqlDataAdapter(micon))
+                    {
+                        dgv_sunat_est.DataSource = null;
+                        dgv_sunat_est.Columns.Clear();
+                        dgv_sunat_est.Rows.Clear();
+                        //
+                        da.Fill(dtsunatE);
+                        dgv_sunat_est.DataSource = dtsunatE;
+                        grilla("dgv_sunat_est");
+                    }
+                }
+            }
+
         }
 
         #region combos
@@ -487,6 +684,32 @@ namespace TransCarga
             {
                 cmb_estad_guias.SelectedIndex = -1;
                 tx_estad_guias.Text = "";
+            }
+        }
+        private void cmb_sunat_sede_SelectionChangeCommitted(object sender, EventArgs e)
+        {
+            if (cmb_sunat_sede.SelectedValue != null) tx_dat_sunat_sede.Text = cmb_sunat_sede.SelectedValue.ToString();
+            else tx_dat_sunat_sede.Text = "";
+        }
+        private void cmb_sunat_sede_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Delete)
+            {
+                cmb_sunat_sede.SelectedIndex = -1;
+                tx_dat_sunat_sede.Text = "";
+            }
+        }
+        private void cmb_sunat_est_SelectionChangeCommitted(object sender, EventArgs e)
+        {
+            if (cmb_sunat_est.SelectedValue != null) tx_dat_sunat_est.Text = cmb_sunat_est.SelectedValue.ToString();
+            else tx_dat_sunat_est.Text = "";
+        }
+        private void cmb_sunat_est_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Delete)
+            {
+                cmb_sunat_est.SelectedIndex = -1;
+                tx_dat_sunat_est.Text = "";
             }
         }
         #endregion
@@ -595,6 +818,12 @@ namespace TransCarga
             //
             cmb_sede_guias.SelectedIndex = -1;
             cmb_estad_guias.SelectedIndex = -1;
+            cmb_estad_plan.SelectedIndex = -1;
+            cmb_sede_plan.SelectedIndex = -1;
+            cmb_sunat_est.SelectedIndex = -1;
+            cmb_sunat_sede.SelectedIndex = -1;
+            //
+            rb_dVtas.Checked = true;
         }
         private void Bt_anul_Click(object sender, EventArgs e)
         {
@@ -649,6 +878,10 @@ namespace TransCarga
                     MessageBox.Show("Archivo generado con exito!");
                     this.Close();
                 }
+            }
+            if (tabControl1.SelectedTab == tabSunat && dgv_sunat_est.Rows.Count > 0)
+            {
+                // veremos si conviene exportar o no? 11/09/2023
             }
         }
         #endregion
@@ -766,6 +999,11 @@ namespace TransCarga
                 DataTable dtg = (DataTable)dgv_regvtas.DataSource;
                 dtg.DefaultView.Sort = dgv_regvtas.SortString;
             }
+            if (tabControl1.SelectedTab.Name == "tabSunat")
+            {
+                DataTable dtg = (DataTable)dgv_sunat_est.DataSource;
+                dtg.DefaultView.Sort = dgv_sunat_est.SortString;
+            }
         }
         private void advancedDataGridView1_FilterStringChanged(object sender, EventArgs e)                  // filtro de las columnas
         {
@@ -785,6 +1023,12 @@ namespace TransCarga
             {
                 DataTable dtg = (DataTable)dgv_regvtas.DataSource;
                 dtg.DefaultView.RowFilter = dgv_regvtas.FilterString;
+            }
+            if (tabControl1.SelectedTab.Name == "tabfacts")
+            {
+                DataTable dtg = (DataTable)dgv_sunat_est.DataSource;
+                dtg.DefaultView.RowFilter = dgv_sunat_est.FilterString;
+                suma_grilla("dgv_sunat_est");
             }
         }
         private void advancedDataGridView1_CellEnter(object sender, DataGridViewCellEventArgs e)            // no usamos
@@ -846,7 +1090,209 @@ namespace TransCarga
                 }
             }*/
         }
+        private void DataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)        // Click en las columnas boton
+        {
+            if (dgv_sunat_est.Columns[e.ColumnIndex].Name.ToString() == "consulta")
+            {
+                if (true)
+                {
+                    if (dgv_sunat_est.Rows[e.RowIndex].Cells[6].Value.ToString() == "0" ||
+                        dgv_sunat_est.Rows[e.RowIndex].Cells[6].Value.ToString().Trim() == "")
+                    {
+                        dgv_sunat_est.Rows[e.RowIndex].Cells[8].ReadOnly = true;
+                        dgv_sunat_est.Rows[e.RowIndex].Cells[9].ReadOnly = true;
+                        consultaE(dgv_sunat_est.Rows[e.RowIndex].Cells[13].Value.ToString(), e.RowIndex);
+                    }
+                }
+            }
+            /* if (dgv_sunat_est.Columns[e.ColumnIndex].Name.ToString() == "pdf")                    // columna PDF
+            {
+                if (dgv_sunat_est.Rows[e.RowIndex].Cells[6].Value.ToString() == "1")
+                {
+                    string urlPdf = dgv_sunat_est.Rows[e.RowIndex].Cells[12].Value.ToString();
+                    System.Diagnostics.Process.Start(urlPdf);
+                }
+            } */
+            if (dgv_sunat_est.Columns[e.ColumnIndex].Name.ToString() == "cdr")                    // columna CDR
+            {
+                if (dgv_sunat_est.Rows[e.RowIndex].Cells[6].Value.ToString() == "1")
+                {
+                    string cdrbyte = dgv_sunat_est.Rows[e.RowIndex].Cells[11].Value.ToString();
+                    string serie = dgv_sunat_est.Rows[e.RowIndex].Cells[1].Value.ToString().Substring(0, 4);
+                    string corre = dgv_sunat_est.Rows[e.RowIndex].Cells[1].Value.ToString().Substring(5, 8);
+                    /*
+                    var aa = _E.convierteCDR((rb_GRE_R.Checked == true) ? "09" : "31", cdrbyte, serie, corre, rutaxml);
+                    if (aa != "") MessageBox.Show("CDR de sunat creado en la ruta:" + Environment.NewLine +
+                        rutaxml, "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information); */
+                }
+            }
+            if (dgv_sunat_est.Columns[e.ColumnIndex].Name.ToString() == "iTK")
+            {
+                imprime(dgv_sunat_est.Rows[e.RowIndex].Cells[1].Value.ToString(),
+                    dgv_sunat_est.Rows[e.RowIndex].Cells[2].Value.ToString().Substring(0, 4),
+                    dgv_sunat_est.Rows[e.RowIndex].Cells[2].Value.ToString().Substring(5, 8));
+            }
+        }
         #endregion
+        private void imprime(string tipo,string serie, string numero)
+        {
+            MessageBox.Show("Estamos en la función de impresion");
+            // Jalamos los datos que nos falta y los ponemos en sus arreglos
+            string[] vs = {"","","","","","","","","","","","","", "", "", "", "", "", "", "",   // 20
+                               "", "", "", "", "", "", "", "", "", ""};    // 10
+            string[] vc = { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" };   // 17
+            string[] va = { "", "", "", "", "", "" };       // 6
+            string[,] dt = new string[3, 5] { { "", "", "", "", "" }, { "", "", "", "", "" }, { "", "", "", "", "" } }; // 5 columnas
+
+            using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
+            {
+                conn.Open();
+                if (conn.State == ConnectionState.Open)
+                {
+                    string pedaso1 = "a.sergui = @ser AND a.numgui = @num";
+                    string pedaso2 = "a.sergui,a.numgui";
+                    string pedaso3 = "cabguiai a ";
+                    string pedaso4 = "detguiai a ";
+                    string pedaso5 = "adiguias ad on ad.idg=a.id";
+
+                    string consdeta = "select a.cantprodi,a.unimedpro,a.descprodi,round(a.pesoprodi,1) as pesoprodi " +
+                        "from " + pedaso4 + "where " + pedaso1;
+
+                    string consulta = "" + pedaso3 +
+                        "left join " + pedaso5 + " " +
+                        "where " + pedaso1; // a.sergui = @ser AND a.numgui = @num
+                    using (MySqlCommand micon = new MySqlCommand(consulta, conn))
+                    {
+                        micon.Parameters.AddWithValue("@ser", serie);
+                        micon.Parameters.AddWithValue("@num", numero);
+                        micon.Parameters.AddWithValue("@tip", tipo);
+                        using (MySqlDataReader dr = micon.ExecuteReader())
+                        {
+                            if (dr != null)
+                            {
+                                if (dr.Read())
+                                {
+                                    vs[0] = dr.GetString("sergui");                         // 0
+                                    vs[1] = dr.GetString("numgui");                         // 1
+                                    vs[2] = dr.GetString("fechopegr").Substring(0, 10);     // 2
+                                    vs[3] = dr.GetString("dirorigen");                      // 3
+                                    vs[4] = dr.GetString("NomTidor1");                      // 4
+                                    vs[5] = dr.GetString("docsremit");                      // 5
+                                    vs[6] = dr.GetString("rucDorig");                       // 6
+                                    vs[7] = dr.GetString("NomTidor2");                      // 7
+                                    vs[8] = dr.GetString("docsremit2");                     // 8
+                                    vs[9] = dr.GetString("rucDorig2");                      // 9
+                                    vs[10] = dr.GetString("NomDocRem");                     // 10
+                                    vs[11] = dr.GetString("nudoregri");                     // 11
+                                    vs[12] = dr.GetString("nombregri");                     // 12
+                                    vs[13] = dr.GetString("NomDocDes");                     // 13
+                                    vs[14] = dr.GetString("nudodegri");                     // 14
+                                    vs[15] = dr.GetString("nombdegri");                     // 15
+                                    vs[16] = dr.GetString("fechplani");                     // 16
+                                    vs[17] = dr.GetString("pestotgri");                     // 17
+                                    vs[18] = dr.GetString("pesoKT");                        // 18
+                                    vs[19] = dr.GetString("direregri");                     // 19
+                                    vs[20] = dr.GetString("dept_ure");                      // 20
+                                    vs[21] = dr.GetString("prov_ure");                      // 21
+                                    vs[22] = dr.GetString("dist_ure");                      // 22
+                                    vs[23] = dr.GetString("diredegri");                     // 23
+                                    vs[24] = dr.GetString("dept_ude");                      // 24
+                                    vs[25] = dr.GetString("prov_ude");                      // 25
+                                    vs[26] = dr.GetString("dist_ude");                      // 26
+                                    vs[27] = dr.GetString("userc");                         // 27
+                                    vs[28] = dr.GetString("locorigen");                     // 28
+                                    vs[29] = dr.GetString("fechc");                         // 29
+
+                                    vc[0] = dr.GetString("plaplagri");                   // Placa veh principal
+                                    vc[1] = dr.GetString("autplagri");                   // Autoriz. vehicular
+                                    vc[2] = "";                                          // Num Registro MTC 
+                                    vc[3] = dr.GetString("confvegri");                   // Conf. vehicular
+                                    vc[4] = dr.GetString("carplagri");                   // Placa carreta
+                                    vc[5] = dr.GetString("autCarret");                   // Autoriz. vehicular
+                                    vc[6] = "";                                          // Num Registro MTC
+                                    vc[7] = dr.GetString("confvCarret");                 // Conf. vehicular 
+                                    vc[8] = "";                                          // Choferes - Dni chofer principal
+                                    vc[9] = dr.GetString("breplagri");                   // Choferes - Brevete chofer principal
+                                    vc[10] = dr.GetString("chocamcar");                  // Choferes - Nombres 
+                                    vc[11] = "";                                         // Choferes - Apellidos
+                                    vc[12] = "";                                         // Choferes - Dni chofer secundario
+                                    vc[13] = "";                                        // Choferes - Brevete chofer secundario
+                                    vc[14] = "";                                        // Choferes - Nombres
+                                    vc[15] = "";                                        // Choferes - Apellidos
+                                    vc[16] = "";                                        // Texto del QR
+                                }
+                                else
+                                {
+                                    MessageBox.Show("No existe el número de guía!", "Atención - Error interno",
+                                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    return;
+                                }
+                            }
+                            else
+                            {
+                                MessageBox.Show("No existen datos!", "Atención - Error interno2",
+                                    MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                                return;
+                            }
+                            // varios
+                            va[0] = (dr.GetString("cdrgener") == "1") ? dr.GetString("textoQR") : "";                            // Varios: texto del código QR
+                            va[1] = "";
+                            va[2] = "despedid1";
+                            va[3] = "despedid2";
+                            va[4] = "glosa1";
+                            va[5] = "glosa2";
+                        }
+                    }
+                    // detalle del comprobante
+                    int y = 0;
+                    using (MySqlCommand micomd = new MySqlCommand(consdeta, conn))
+                    {
+                        micomd.Parameters.AddWithValue("@ser", serie);   // dgv_GRE_est.Rows[i].Cells[2].Value.ToString().Substring(0, 4)
+                        micomd.Parameters.AddWithValue("@num", numero);   // dgv_GRE_est.Rows[i].Cells[2].Value.ToString().Substring(5, 8)
+                        using (MySqlDataReader drg = micomd.ExecuteReader())
+                        {
+                            while (drg.Read())  // #fila,a.cantprodi,a.unimedpro,a.descprodi,a.pesoprodi
+                            {
+                                dt[y, 0] = (y + 1).ToString();
+                                dt[y, 1] = drg.GetString(0);
+                                dt[y, 2] = drg.GetString(1);
+                                dt[y, 3] = drg.GetString(2);
+                                dt[y, 4] = drg.GetString(3);
+                                y += 1;
+                            }
+
+                        }
+
+                    }
+                    // llamamos a la clase que imprime
+                    //impGRE_T imprime = new impGRE_T(1, v_impTK, vs, dt, va, vc);
+
+                }
+            }
+        }
+        private string consultaE(string ticket, int rowIndex)       // consulta estado en Sunat
+        {
+            string retorna = "";
+            MessageBox.Show("Estamos consultando el comprobante");
+
+            if (ticket == "") return retorna;
+
+            /*string token = _E.conex_token_(c_t);
+            var resCon = _E.consultaC((rb_GRE_R.Checked == true) ? "adiguiar" : "adiguias", dgv_GRE_est.Rows[rowIndex].Cells[15].Value.ToString(), ticket, token,
+                dgv_GRE_est.Rows[rowIndex].Cells[1].Value.ToString().Substring(0, 4), dgv_GRE_est.Rows[rowIndex].Cells[1].Value.ToString().Substring(5, 8), rutaxml);
+            */
+            var resCon = "";
+            if (resCon == null)
+            {
+                MessageBox.Show("La respuesta del ticket fue nulo", "Error en consultar ticket", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            else
+            {
+
+            }
+
+            return retorna;
+        }
 
     }
 }

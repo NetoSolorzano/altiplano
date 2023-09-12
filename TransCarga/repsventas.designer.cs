@@ -55,15 +55,11 @@
             this.toolStripSeparator11 = new System.Windows.Forms.ToolStripSeparator();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabfacts = new System.Windows.Forms.TabPage();
-            this.tx_totv_a = new TransCarga.NumericTextBox();
-            this.tx_tfi_a = new TransCarga.NumericTextBox();
             this.label13 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
             this.groupBox8 = new System.Windows.Forms.GroupBox();
-            this.tx_tfi_f = new TransCarga.NumericTextBox();
             this.label28 = new System.Windows.Forms.Label();
-            this.tx_totval = new TransCarga.NumericTextBox();
             this.label12 = new System.Windows.Forms.Label();
             this.chk_excl_guias = new System.Windows.Forms.CheckBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
@@ -90,9 +86,7 @@
             this.tabnotas = new System.Windows.Forms.TabPage();
             this.groupBox9 = new System.Windows.Forms.GroupBox();
             this.groupBox10 = new System.Windows.Forms.GroupBox();
-            this.tx_tfi_n = new TransCarga.NumericTextBox();
             this.label16 = new System.Windows.Forms.Label();
-            this.tx_totval_n = new TransCarga.NumericTextBox();
             this.label17 = new System.Windows.Forms.Label();
             this.chk_exclu_plan = new System.Windows.Forms.CheckBox();
             this.groupBox23 = new System.Windows.Forms.GroupBox();
@@ -125,6 +119,41 @@
             this.dtp_mes = new System.Windows.Forms.DateTimePicker();
             this.dtp_yea = new System.Windows.Forms.DateTimePicker();
             this.dgv_regvtas = new ADGV.AdvancedDataGridView();
+            this.tabSunat = new System.Windows.Forms.TabPage();
+            this.pan_estSunat = new System.Windows.Forms.Panel();
+            this.rb_dVtas = new System.Windows.Forms.RadioButton();
+            this.rb_notaC = new System.Windows.Forms.RadioButton();
+            this.groupBox53 = new System.Windows.Forms.GroupBox();
+            this.groupBox54 = new System.Windows.Forms.GroupBox();
+            this.groupBox55 = new System.Windows.Forms.GroupBox();
+            this.groupBox56 = new System.Windows.Forms.GroupBox();
+            this.dtp_sunat_fter = new System.Windows.Forms.DateTimePicker();
+            this.dtp_sunat_fini = new System.Windows.Forms.DateTimePicker();
+            this.bt_sunatEst = new System.Windows.Forms.Button();
+            this.label38 = new System.Windows.Forms.Label();
+            this.label39 = new System.Windows.Forms.Label();
+            this.chk_sunat_exc = new System.Windows.Forms.CheckBox();
+            this.groupBox49 = new System.Windows.Forms.GroupBox();
+            this.groupBox50 = new System.Windows.Forms.GroupBox();
+            this.tx_dat_sunat_est = new System.Windows.Forms.TextBox();
+            this.cmb_sunat_est = new System.Windows.Forms.ComboBox();
+            this.dgv_sunat_est = new ADGV.AdvancedDataGridView();
+            this.label36 = new System.Windows.Forms.Label();
+            this.groupBox51 = new System.Windows.Forms.GroupBox();
+            this.groupBox52 = new System.Windows.Forms.GroupBox();
+            this.label37 = new System.Windows.Forms.Label();
+            this.tx_dat_sunat_sede = new System.Windows.Forms.TextBox();
+            this.cmb_sunat_sede = new System.Windows.Forms.ComboBox();
+            this.label41 = new System.Windows.Forms.Label();
+            this.label42 = new System.Windows.Forms.Label();
+            this.tx_totv_a = new TransCarga.NumericTextBox();
+            this.tx_tfi_a = new TransCarga.NumericTextBox();
+            this.tx_tfi_f = new TransCarga.NumericTextBox();
+            this.tx_totval = new TransCarga.NumericTextBox();
+            this.tx_tfi_n = new TransCarga.NumericTextBox();
+            this.tx_totval_n = new TransCarga.NumericTextBox();
+            this.tx_sunat_fa = new TransCarga.NumericTextBox();
+            this.tx_sunat_fv = new TransCarga.NumericTextBox();
             this.toolStrip1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabfacts.SuspendLayout();
@@ -144,6 +173,13 @@
             this.tabregvtas.SuspendLayout();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgv_regvtas)).BeginInit();
+            this.tabSunat.SuspendLayout();
+            this.pan_estSunat.SuspendLayout();
+            this.groupBox53.SuspendLayout();
+            this.groupBox55.SuspendLayout();
+            this.groupBox49.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgv_sunat_est)).BeginInit();
+            this.groupBox51.SuspendLayout();
             this.SuspendLayout();
             // 
             // toolStrip1
@@ -407,6 +443,7 @@
             this.tabControl1.Controls.Add(this.tabfacts);
             this.tabControl1.Controls.Add(this.tabnotas);
             this.tabControl1.Controls.Add(this.tabregvtas);
+            this.tabControl1.Controls.Add(this.tabSunat);
             this.tabControl1.Location = new System.Drawing.Point(3, 3);
             this.tabControl1.Multiline = true;
             this.tabControl1.Name = "tabControl1";
@@ -449,30 +486,6 @@
             this.tabfacts.TabIndex = 7;
             this.tabfacts.Text = "Facturación";
             this.tabfacts.UseVisualStyleBackColor = true;
-            // 
-            // tx_totv_a
-            // 
-            this.tx_totv_a.AllowSpace = false;
-            this.tx_totv_a.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.tx_totv_a.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_totv_a.Location = new System.Drawing.Point(278, 352);
-            this.tx_totv_a.Name = "tx_totv_a";
-            this.tx_totv_a.ReadOnly = true;
-            this.tx_totv_a.Size = new System.Drawing.Size(76, 20);
-            this.tx_totv_a.TabIndex = 408;
-            this.tx_totv_a.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // tx_tfi_a
-            // 
-            this.tx_tfi_a.AllowSpace = false;
-            this.tx_tfi_a.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.tx_tfi_a.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_tfi_a.Location = new System.Drawing.Point(86, 352);
-            this.tx_tfi_a.Name = "tx_tfi_a";
-            this.tx_tfi_a.ReadOnly = true;
-            this.tx_tfi_a.Size = new System.Drawing.Size(41, 20);
-            this.tx_tfi_a.TabIndex = 407;
-            this.tx_tfi_a.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // label13
             // 
@@ -518,18 +531,6 @@
             this.groupBox8.TabIndex = 113;
             this.groupBox8.TabStop = false;
             // 
-            // tx_tfi_f
-            // 
-            this.tx_tfi_f.AllowSpace = false;
-            this.tx_tfi_f.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.tx_tfi_f.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_tfi_f.Location = new System.Drawing.Point(468, 352);
-            this.tx_tfi_f.Name = "tx_tfi_f";
-            this.tx_tfi_f.ReadOnly = true;
-            this.tx_tfi_f.Size = new System.Drawing.Size(41, 20);
-            this.tx_tfi_f.TabIndex = 403;
-            this.tx_tfi_f.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
             // label28
             // 
             this.label28.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
@@ -541,18 +542,6 @@
             this.label28.TabIndex = 402;
             this.label28.Text = "Filas vigentes";
             this.label28.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // tx_totval
-            // 
-            this.tx_totval.AllowSpace = false;
-            this.tx_totval.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.tx_totval.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_totval.Location = new System.Drawing.Point(633, 352);
-            this.tx_totval.Name = "tx_totval";
-            this.tx_totval.ReadOnly = true;
-            this.tx_totval.Size = new System.Drawing.Size(76, 20);
-            this.tx_totval.TabIndex = 398;
-            this.tx_totval.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // label12
             // 
@@ -790,9 +779,7 @@
             // tabnotas
             // 
             this.tabnotas.Controls.Add(this.groupBox9);
-            this.tabnotas.Controls.Add(this.tx_tfi_n);
             this.tabnotas.Controls.Add(this.label16);
-            this.tabnotas.Controls.Add(this.tx_totval_n);
             this.tabnotas.Controls.Add(this.label17);
             this.tabnotas.Controls.Add(this.chk_exclu_plan);
             this.tabnotas.Controls.Add(this.groupBox23);
@@ -812,6 +799,8 @@
             this.tabnotas.Controls.Add(this.bt_filtra_plan);
             this.tabnotas.Controls.Add(this.label5);
             this.tabnotas.Controls.Add(this.label6);
+            this.tabnotas.Controls.Add(this.tx_tfi_n);
+            this.tabnotas.Controls.Add(this.tx_totval_n);
             this.tabnotas.Location = new System.Drawing.Point(4, 22);
             this.tabnotas.Name = "tabnotas";
             this.tabnotas.Size = new System.Drawing.Size(1026, 377);
@@ -839,18 +828,6 @@
             this.groupBox10.TabIndex = 113;
             this.groupBox10.TabStop = false;
             // 
-            // tx_tfi_n
-            // 
-            this.tx_tfi_n.AllowSpace = false;
-            this.tx_tfi_n.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.tx_tfi_n.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_tfi_n.Location = new System.Drawing.Point(430, 351);
-            this.tx_tfi_n.Name = "tx_tfi_n";
-            this.tx_tfi_n.ReadOnly = true;
-            this.tx_tfi_n.Size = new System.Drawing.Size(41, 20);
-            this.tx_tfi_n.TabIndex = 412;
-            this.tx_tfi_n.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
             // label16
             // 
             this.label16.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
@@ -862,18 +839,6 @@
             this.label16.TabIndex = 411;
             this.label16.Text = "Filas vigentes";
             this.label16.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // tx_totval_n
-            // 
-            this.tx_totval_n.AllowSpace = false;
-            this.tx_totval_n.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.tx_totval_n.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_totval_n.Location = new System.Drawing.Point(595, 351);
-            this.tx_totval_n.Name = "tx_totval_n";
-            this.tx_totval_n.ReadOnly = true;
-            this.tx_totval_n.Size = new System.Drawing.Size(76, 20);
-            this.tx_totval_n.TabIndex = 409;
-            this.tx_totval_n.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // label17
             // 
@@ -1208,6 +1173,404 @@
             this.dgv_regvtas.SortStringChanged += new System.EventHandler(this.advancedDataGridView1_SortStringChanged);
             this.dgv_regvtas.FilterStringChanged += new System.EventHandler(this.advancedDataGridView1_FilterStringChanged);
             // 
+            // tabSunat
+            // 
+            this.tabSunat.Controls.Add(this.label41);
+            this.tabSunat.Controls.Add(this.label42);
+            this.tabSunat.Controls.Add(this.tx_sunat_fa);
+            this.tabSunat.Controls.Add(this.tx_sunat_fv);
+            this.tabSunat.Controls.Add(this.pan_estSunat);
+            this.tabSunat.Controls.Add(this.groupBox53);
+            this.tabSunat.Controls.Add(this.groupBox55);
+            this.tabSunat.Controls.Add(this.dtp_sunat_fter);
+            this.tabSunat.Controls.Add(this.dtp_sunat_fini);
+            this.tabSunat.Controls.Add(this.bt_sunatEst);
+            this.tabSunat.Controls.Add(this.label38);
+            this.tabSunat.Controls.Add(this.label39);
+            this.tabSunat.Controls.Add(this.chk_sunat_exc);
+            this.tabSunat.Controls.Add(this.groupBox49);
+            this.tabSunat.Controls.Add(this.tx_dat_sunat_est);
+            this.tabSunat.Controls.Add(this.cmb_sunat_est);
+            this.tabSunat.Controls.Add(this.dgv_sunat_est);
+            this.tabSunat.Controls.Add(this.label36);
+            this.tabSunat.Controls.Add(this.groupBox51);
+            this.tabSunat.Controls.Add(this.label37);
+            this.tabSunat.Controls.Add(this.tx_dat_sunat_sede);
+            this.tabSunat.Controls.Add(this.cmb_sunat_sede);
+            this.tabSunat.Location = new System.Drawing.Point(4, 22);
+            this.tabSunat.Name = "tabSunat";
+            this.tabSunat.Size = new System.Drawing.Size(1026, 377);
+            this.tabSunat.TabIndex = 10;
+            this.tabSunat.Text = "Estados Sunat";
+            this.tabSunat.UseVisualStyleBackColor = true;
+            // 
+            // pan_estSunat
+            // 
+            this.pan_estSunat.Controls.Add(this.rb_dVtas);
+            this.pan_estSunat.Controls.Add(this.rb_notaC);
+            this.pan_estSunat.Location = new System.Drawing.Point(6, 3);
+            this.pan_estSunat.Name = "pan_estSunat";
+            this.pan_estSunat.Size = new System.Drawing.Size(126, 45);
+            this.pan_estSunat.TabIndex = 449;
+            // 
+            // rb_dVtas
+            // 
+            this.rb_dVtas.AutoSize = true;
+            this.rb_dVtas.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.rb_dVtas.Location = new System.Drawing.Point(6, 24);
+            this.rb_dVtas.Name = "rb_dVtas";
+            this.rb_dVtas.Size = new System.Drawing.Size(87, 19);
+            this.rb_dVtas.TabIndex = 359;
+            this.rb_dVtas.TabStop = true;
+            this.rb_dVtas.Text = "Fact y Bolet";
+            this.rb_dVtas.UseVisualStyleBackColor = true;
+            // 
+            // rb_notaC
+            // 
+            this.rb_notaC.AutoSize = true;
+            this.rb_notaC.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.rb_notaC.Location = new System.Drawing.Point(6, 3);
+            this.rb_notaC.Name = "rb_notaC";
+            this.rb_notaC.Size = new System.Drawing.Size(116, 19);
+            this.rb_notaC.TabIndex = 358;
+            this.rb_notaC.TabStop = true;
+            this.rb_notaC.Text = "Notas de Crédito";
+            this.rb_notaC.UseVisualStyleBackColor = true;
+            // 
+            // groupBox53
+            // 
+            this.groupBox53.BackColor = System.Drawing.Color.DimGray;
+            this.groupBox53.Controls.Add(this.groupBox54);
+            this.groupBox53.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.groupBox53.Location = new System.Drawing.Point(567, 48);
+            this.groupBox53.Name = "groupBox53";
+            this.groupBox53.Size = new System.Drawing.Size(161, 1);
+            this.groupBox53.TabIndex = 448;
+            this.groupBox53.TabStop = false;
+            // 
+            // groupBox54
+            // 
+            this.groupBox54.Location = new System.Drawing.Point(0, -26);
+            this.groupBox54.Name = "groupBox54";
+            this.groupBox54.Size = new System.Drawing.Size(164, 1);
+            this.groupBox54.TabIndex = 113;
+            this.groupBox54.TabStop = false;
+            // 
+            // groupBox55
+            // 
+            this.groupBox55.BackColor = System.Drawing.Color.DimGray;
+            this.groupBox55.Controls.Add(this.groupBox56);
+            this.groupBox55.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.groupBox55.Location = new System.Drawing.Point(567, 24);
+            this.groupBox55.Name = "groupBox55";
+            this.groupBox55.Size = new System.Drawing.Size(161, 1);
+            this.groupBox55.TabIndex = 447;
+            this.groupBox55.TabStop = false;
+            // 
+            // groupBox56
+            // 
+            this.groupBox56.Location = new System.Drawing.Point(0, -26);
+            this.groupBox56.Name = "groupBox56";
+            this.groupBox56.Size = new System.Drawing.Size(164, 1);
+            this.groupBox56.TabIndex = 113;
+            this.groupBox56.TabStop = false;
+            // 
+            // dtp_sunat_fter
+            // 
+            this.dtp_sunat_fter.Checked = false;
+            this.dtp_sunat_fter.Format = System.Windows.Forms.DateTimePickerFormat.Short;
+            this.dtp_sunat_fter.Location = new System.Drawing.Point(633, 29);
+            this.dtp_sunat_fter.Name = "dtp_sunat_fter";
+            this.dtp_sunat_fter.Size = new System.Drawing.Size(95, 20);
+            this.dtp_sunat_fter.TabIndex = 443;
+            // 
+            // dtp_sunat_fini
+            // 
+            this.dtp_sunat_fini.Checked = false;
+            this.dtp_sunat_fini.Format = System.Windows.Forms.DateTimePickerFormat.Short;
+            this.dtp_sunat_fini.Location = new System.Drawing.Point(633, 5);
+            this.dtp_sunat_fini.Name = "dtp_sunat_fini";
+            this.dtp_sunat_fini.Size = new System.Drawing.Size(95, 20);
+            this.dtp_sunat_fini.TabIndex = 442;
+            // 
+            // bt_sunatEst
+            // 
+            this.bt_sunatEst.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.bt_sunatEst.Image = global::TransCarga.Properties.Resources.process24;
+            this.bt_sunatEst.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.bt_sunatEst.Location = new System.Drawing.Point(823, 4);
+            this.bt_sunatEst.Name = "bt_sunatEst";
+            this.bt_sunatEst.Size = new System.Drawing.Size(65, 42);
+            this.bt_sunatEst.TabIndex = 444;
+            this.bt_sunatEst.Text = " Filtra";
+            this.bt_sunatEst.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.bt_sunatEst.UseVisualStyleBackColor = true;
+            this.bt_sunatEst.Click += new System.EventHandler(this.bt_sunatEst_Click);
+            // 
+            // label38
+            // 
+            this.label38.AutoSize = true;
+            this.label38.Location = new System.Drawing.Point(577, 34);
+            this.label38.Name = "label38";
+            this.label38.Size = new System.Drawing.Size(53, 13);
+            this.label38.TabIndex = 446;
+            this.label38.Text = "Fech final";
+            // 
+            // label39
+            // 
+            this.label39.AutoSize = true;
+            this.label39.Location = new System.Drawing.Point(569, 9);
+            this.label39.Name = "label39";
+            this.label39.Size = new System.Drawing.Size(61, 13);
+            this.label39.TabIndex = 445;
+            this.label39.Text = "Fech Inicial";
+            // 
+            // chk_sunat_exc
+            // 
+            this.chk_sunat_exc.AutoSize = true;
+            this.chk_sunat_exc.Location = new System.Drawing.Point(409, 31);
+            this.chk_sunat_exc.Name = "chk_sunat_exc";
+            this.chk_sunat_exc.Size = new System.Drawing.Size(63, 17);
+            this.chk_sunat_exc.TabIndex = 440;
+            this.chk_sunat_exc.Text = "Excluye";
+            this.chk_sunat_exc.UseVisualStyleBackColor = true;
+            this.chk_sunat_exc.Visible = false;
+            // 
+            // groupBox49
+            // 
+            this.groupBox49.BackColor = System.Drawing.Color.DimGray;
+            this.groupBox49.Controls.Add(this.groupBox50);
+            this.groupBox49.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.groupBox49.Location = new System.Drawing.Point(231, 48);
+            this.groupBox49.Name = "groupBox49";
+            this.groupBox49.Size = new System.Drawing.Size(171, 1);
+            this.groupBox49.TabIndex = 436;
+            this.groupBox49.TabStop = false;
+            // 
+            // groupBox50
+            // 
+            this.groupBox50.Location = new System.Drawing.Point(0, -26);
+            this.groupBox50.Name = "groupBox50";
+            this.groupBox50.Size = new System.Drawing.Size(164, 1);
+            this.groupBox50.TabIndex = 113;
+            this.groupBox50.TabStop = false;
+            // 
+            // tx_dat_sunat_est
+            // 
+            this.tx_dat_sunat_est.Location = new System.Drawing.Point(211, 31);
+            this.tx_dat_sunat_est.Name = "tx_dat_sunat_est";
+            this.tx_dat_sunat_est.Size = new System.Drawing.Size(17, 20);
+            this.tx_dat_sunat_est.TabIndex = 439;
+            this.tx_dat_sunat_est.Tag = "Estado de sunat para servicios web";
+            this.tx_dat_sunat_est.Visible = false;
+            // 
+            // cmb_sunat_est
+            // 
+            this.cmb_sunat_est.BackColor = System.Drawing.SystemColors.ScrollBar;
+            this.cmb_sunat_est.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmb_sunat_est.DropDownWidth = 100;
+            this.cmb_sunat_est.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.cmb_sunat_est.FormattingEnabled = true;
+            this.cmb_sunat_est.Location = new System.Drawing.Point(318, 28);
+            this.cmb_sunat_est.Name = "cmb_sunat_est";
+            this.cmb_sunat_est.Size = new System.Drawing.Size(85, 21);
+            this.cmb_sunat_est.TabIndex = 438;
+            this.cmb_sunat_est.SelectionChangeCommitted += new System.EventHandler(this.cmb_sunat_est_SelectionChangeCommitted);
+            this.cmb_sunat_est.KeyDown += new System.Windows.Forms.KeyEventHandler(this.cmb_sunat_est_KeyDown);
+            // 
+            // dgv_sunat_est
+            // 
+            this.dgv_sunat_est.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.dgv_sunat_est.AutoGenerateContextFilters = true;
+            this.dgv_sunat_est.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgv_sunat_est.DateWithTime = false;
+            this.dgv_sunat_est.Location = new System.Drawing.Point(3, 53);
+            this.dgv_sunat_est.Name = "dgv_sunat_est";
+            this.dgv_sunat_est.Size = new System.Drawing.Size(1020, 299);
+            this.dgv_sunat_est.TabIndex = 437;
+            this.dgv_sunat_est.TimeFilter = false;
+            // 
+            // label36
+            // 
+            this.label36.AutoSize = true;
+            this.label36.Location = new System.Drawing.Point(233, 33);
+            this.label36.Name = "label36";
+            this.label36.Size = new System.Drawing.Size(71, 13);
+            this.label36.TabIndex = 435;
+            this.label36.Text = "Estado Sunat";
+            // 
+            // groupBox51
+            // 
+            this.groupBox51.BackColor = System.Drawing.Color.DimGray;
+            this.groupBox51.Controls.Add(this.groupBox52);
+            this.groupBox51.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.groupBox51.Location = new System.Drawing.Point(231, 24);
+            this.groupBox51.Name = "groupBox51";
+            this.groupBox51.Size = new System.Drawing.Size(137, 1);
+            this.groupBox51.TabIndex = 434;
+            this.groupBox51.TabStop = false;
+            // 
+            // groupBox52
+            // 
+            this.groupBox52.Location = new System.Drawing.Point(0, -26);
+            this.groupBox52.Name = "groupBox52";
+            this.groupBox52.Size = new System.Drawing.Size(164, 1);
+            this.groupBox52.TabIndex = 113;
+            this.groupBox52.TabStop = false;
+            // 
+            // label37
+            // 
+            this.label37.AutoSize = true;
+            this.label37.Location = new System.Drawing.Point(233, 9);
+            this.label37.Name = "label37";
+            this.label37.Size = new System.Drawing.Size(61, 13);
+            this.label37.TabIndex = 432;
+            this.label37.Text = "Local Sede";
+            // 
+            // tx_dat_sunat_sede
+            // 
+            this.tx_dat_sunat_sede.Location = new System.Drawing.Point(211, 5);
+            this.tx_dat_sunat_sede.Name = "tx_dat_sunat_sede";
+            this.tx_dat_sunat_sede.Size = new System.Drawing.Size(20, 20);
+            this.tx_dat_sunat_sede.TabIndex = 433;
+            this.tx_dat_sunat_sede.Visible = false;
+            // 
+            // cmb_sunat_sede
+            // 
+            this.cmb_sunat_sede.BackColor = System.Drawing.SystemColors.ScrollBar;
+            this.cmb_sunat_sede.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmb_sunat_sede.DropDownWidth = 100;
+            this.cmb_sunat_sede.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.cmb_sunat_sede.FormattingEnabled = true;
+            this.cmb_sunat_sede.Location = new System.Drawing.Point(301, 4);
+            this.cmb_sunat_sede.Name = "cmb_sunat_sede";
+            this.cmb_sunat_sede.Size = new System.Drawing.Size(85, 21);
+            this.cmb_sunat_sede.TabIndex = 431;
+            this.cmb_sunat_sede.SelectionChangeCommitted += new System.EventHandler(this.cmb_sunat_sede_SelectionChangeCommitted);
+            this.cmb_sunat_sede.KeyDown += new System.Windows.Forms.KeyEventHandler(this.cmb_sunat_sede_KeyDown);
+            // 
+            // label41
+            // 
+            this.label41.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.label41.AutoSize = true;
+            this.label41.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.label41.Location = new System.Drawing.Point(5, 359);
+            this.label41.Name = "label41";
+            this.label41.Size = new System.Drawing.Size(75, 13);
+            this.label41.TabIndex = 452;
+            this.label41.Text = "Filas Anuladas";
+            this.label41.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // label42
+            // 
+            this.label42.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.label42.AutoSize = true;
+            this.label42.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.label42.Location = new System.Drawing.Point(192, 359);
+            this.label42.Name = "label42";
+            this.label42.Size = new System.Drawing.Size(71, 13);
+            this.label42.TabIndex = 450;
+            this.label42.Text = "Filas vigentes";
+            this.label42.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // tx_totv_a
+            // 
+            this.tx_totv_a.AllowSpace = false;
+            this.tx_totv_a.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.tx_totv_a.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_totv_a.Location = new System.Drawing.Point(278, 352);
+            this.tx_totv_a.Name = "tx_totv_a";
+            this.tx_totv_a.ReadOnly = true;
+            this.tx_totv_a.Size = new System.Drawing.Size(76, 20);
+            this.tx_totv_a.TabIndex = 408;
+            this.tx_totv_a.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // tx_tfi_a
+            // 
+            this.tx_tfi_a.AllowSpace = false;
+            this.tx_tfi_a.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.tx_tfi_a.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_tfi_a.Location = new System.Drawing.Point(86, 352);
+            this.tx_tfi_a.Name = "tx_tfi_a";
+            this.tx_tfi_a.ReadOnly = true;
+            this.tx_tfi_a.Size = new System.Drawing.Size(41, 20);
+            this.tx_tfi_a.TabIndex = 407;
+            this.tx_tfi_a.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // tx_tfi_f
+            // 
+            this.tx_tfi_f.AllowSpace = false;
+            this.tx_tfi_f.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.tx_tfi_f.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_tfi_f.Location = new System.Drawing.Point(468, 352);
+            this.tx_tfi_f.Name = "tx_tfi_f";
+            this.tx_tfi_f.ReadOnly = true;
+            this.tx_tfi_f.Size = new System.Drawing.Size(41, 20);
+            this.tx_tfi_f.TabIndex = 403;
+            this.tx_tfi_f.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // tx_totval
+            // 
+            this.tx_totval.AllowSpace = false;
+            this.tx_totval.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.tx_totval.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_totval.Location = new System.Drawing.Point(633, 352);
+            this.tx_totval.Name = "tx_totval";
+            this.tx_totval.ReadOnly = true;
+            this.tx_totval.Size = new System.Drawing.Size(76, 20);
+            this.tx_totval.TabIndex = 398;
+            this.tx_totval.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // tx_tfi_n
+            // 
+            this.tx_tfi_n.AllowSpace = false;
+            this.tx_tfi_n.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.tx_tfi_n.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_tfi_n.Location = new System.Drawing.Point(430, 351);
+            this.tx_tfi_n.Name = "tx_tfi_n";
+            this.tx_tfi_n.ReadOnly = true;
+            this.tx_tfi_n.Size = new System.Drawing.Size(41, 20);
+            this.tx_tfi_n.TabIndex = 412;
+            this.tx_tfi_n.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // tx_totval_n
+            // 
+            this.tx_totval_n.AllowSpace = false;
+            this.tx_totval_n.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.tx_totval_n.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_totval_n.Location = new System.Drawing.Point(595, 351);
+            this.tx_totval_n.Name = "tx_totval_n";
+            this.tx_totval_n.ReadOnly = true;
+            this.tx_totval_n.Size = new System.Drawing.Size(76, 20);
+            this.tx_totval_n.TabIndex = 409;
+            this.tx_totval_n.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // tx_sunat_fa
+            // 
+            this.tx_sunat_fa.AllowSpace = false;
+            this.tx_sunat_fa.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.tx_sunat_fa.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_sunat_fa.Location = new System.Drawing.Point(82, 355);
+            this.tx_sunat_fa.Name = "tx_sunat_fa";
+            this.tx_sunat_fa.ReadOnly = true;
+            this.tx_sunat_fa.Size = new System.Drawing.Size(41, 20);
+            this.tx_sunat_fa.TabIndex = 453;
+            this.tx_sunat_fa.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // tx_sunat_fv
+            // 
+            this.tx_sunat_fv.AllowSpace = false;
+            this.tx_sunat_fv.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.tx_sunat_fv.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_sunat_fv.Location = new System.Drawing.Point(265, 355);
+            this.tx_sunat_fv.Name = "tx_sunat_fv";
+            this.tx_sunat_fv.ReadOnly = true;
+            this.tx_sunat_fv.Size = new System.Drawing.Size(41, 20);
+            this.tx_sunat_fv.TabIndex = 451;
+            this.tx_sunat_fv.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
             // repsventas
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1247,6 +1610,15 @@
             this.tabregvtas.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgv_regvtas)).EndInit();
+            this.tabSunat.ResumeLayout(false);
+            this.tabSunat.PerformLayout();
+            this.pan_estSunat.ResumeLayout(false);
+            this.pan_estSunat.PerformLayout();
+            this.groupBox53.ResumeLayout(false);
+            this.groupBox55.ResumeLayout(false);
+            this.groupBox49.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dgv_sunat_est)).EndInit();
+            this.groupBox51.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -1350,5 +1722,34 @@
         private System.Windows.Forms.Label label16;
         private NumericTextBox tx_totval_n;
         private System.Windows.Forms.Label label17;
+        private System.Windows.Forms.TabPage tabSunat;
+        private System.Windows.Forms.Panel pan_estSunat;
+        private System.Windows.Forms.RadioButton rb_dVtas;
+        private System.Windows.Forms.RadioButton rb_notaC;
+        private System.Windows.Forms.GroupBox groupBox53;
+        private System.Windows.Forms.GroupBox groupBox54;
+        private System.Windows.Forms.GroupBox groupBox55;
+        private System.Windows.Forms.GroupBox groupBox56;
+        private System.Windows.Forms.DateTimePicker dtp_sunat_fter;
+        private System.Windows.Forms.DateTimePicker dtp_sunat_fini;
+        private System.Windows.Forms.Button bt_sunatEst;
+        private System.Windows.Forms.Label label38;
+        private System.Windows.Forms.Label label39;
+        private System.Windows.Forms.CheckBox chk_sunat_exc;
+        private System.Windows.Forms.GroupBox groupBox49;
+        private System.Windows.Forms.GroupBox groupBox50;
+        private System.Windows.Forms.TextBox tx_dat_sunat_est;
+        private System.Windows.Forms.ComboBox cmb_sunat_est;
+        private ADGV.AdvancedDataGridView dgv_sunat_est;
+        private System.Windows.Forms.Label label36;
+        private System.Windows.Forms.GroupBox groupBox51;
+        private System.Windows.Forms.GroupBox groupBox52;
+        private System.Windows.Forms.Label label37;
+        private System.Windows.Forms.TextBox tx_dat_sunat_sede;
+        private System.Windows.Forms.ComboBox cmb_sunat_sede;
+        private System.Windows.Forms.Label label41;
+        private System.Windows.Forms.Label label42;
+        private NumericTextBox tx_sunat_fa;
+        private NumericTextBox tx_sunat_fv;
     }
 }

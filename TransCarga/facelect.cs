@@ -19,6 +19,8 @@ using System.Security.Cryptography;
 using System.Linq;
 using System.Net;
 using RestSharp;
+using System.Xml;
+using System.Xml.Serialization;
 
 namespace TransCarga
 {
@@ -2875,11 +2877,11 @@ namespace TransCarga
             {
                 string aZip = "";
                 string aXml = "";
-                /* if (llenaTablaLiteDV(tipdo, tipoMoneda, tipoDocEmi) != true)
+                if (llenaTablaLiteDV(tipdo, tipoMoneda, tipoDocEmi) != true)
                 {
                     MessageBox.Show("No se pudo llenar las tablas sqlite", "Error interno", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
-                else */
+                else
                 {
                     aXml = Program.ruc + "-" + tipdo + "-" + cmb_tdv.Text.Substring(0, 1) + lib.Right(tx_serie.Text, 3) + "-" + tx_numero.Text + ".xml";
                     aZip = Program.ruc + "-" + tipdo + "-" + cmb_tdv.Text.Substring(0, 1) + lib.Right(tx_serie.Text, 3) + "-" + tx_numero.Text + ".zip";
@@ -2887,7 +2889,6 @@ namespace TransCarga
                 if (aXml != "")
                 {
                     // - zipear el xml, 
-                    //aZip = aXml.Replace(".xml", ".zip");
                     if (File.Exists(rutaxml + aZip) == true)
                     {
                         File.Delete(rutaxml + aZip);
@@ -2899,75 +2900,85 @@ namespace TransCarga
                     }
                     // - byte[]ar el zip, 
                     var bytexml = File.ReadAllBytes(rutaxml + aZip);
-                    var base64 = Convert.ToBase64String(bytexml);
-                    // - hashear 
-                    string hash = "";
-                    using (SHA256 sha256 = SHA256.Create())
+                    Byte[] respuesta = null;
+                    try
                     {
-                        hash = string.Concat(sha256.ComputeHash(bytexml).Select(x => x.ToString("x2")));
+                        ServiceRefSunat.billServiceClient ws = new ServiceRefSunat.billServiceClient();
+                        ws.Open();
+                        respuesta = ws.sendBill(aZip, bytexml, "");
+                        ws.Close();
                     }
-                    string url = @wsPostS + aXml.Replace(".xml", "");
-                    var oData = new
+                    catch (Exception ex)
                     {
-                        archivo = new
-                        {
-                            nomArchivo = aZip,
-                            arcGreZip = base64,
-                            hashZip = hash
-                        }
-                    };
-                    var json = JsonConvert.SerializeObject(oData);
-                    ////
-                    //System.ServiceModel.Description.ClientCredentials credentials = new System.ServiceModel.Description.ClientCredentials();
-                    //credentials.UserName.UserName = "";
-                    //credentials.
-
-                    ServiceRefSunat.billServiceClient ws = new ServiceRefSunat.billServiceClient();
-                    //ws.ClientCredentials =
-                    ws.Open();
-                    //ws.sendBill(aZip, bytexml, "");
-                    Byte[] respuesta = ws.sendBill(aZip, bytexml, "");
-                    ws.Close();
-                    FileStream fstrm = new FileStream("Respuesta.zip", FileMode.CreateNew, FileAccess.Write);
+                        MessageBox.Show(ex.Message,"Error al enviar a Sunat",MessageBoxButtons.OK,MessageBoxIcon.Error);
+                        return retorna;
+                    }
+                    if (File.Exists(rutaxml + "R-" + aZip) == true)
+                    {
+                        File.Delete(rutaxml + "R-" + aZip);
+                    }
+                    FileStream fstrm = new FileStream(rutaxml + "R-" + aZip, FileMode.CreateNew, FileAccess.Write);
                     fstrm.Write(respuesta, 0, respuesta.Length);
                     fstrm.Close();
-                    //
+                    // 1) tenemos que abrir el zip, 
+                    // 2) leer el xml y obtener:
+                    //      <cbc:ID></cbc:ID>
+                    //      <cac:DocumentResponse><cac:Response>
+                    //          <cbc:ReferenceID>F002-00009074</cbc:ReferenceID>
+                    //          <cbc:ResponseCode>0</cbc:ResponseCode>
+                    //          <cbc:Description>La Factura numero F002-00009074, ha sido aceptada</cbc:Description>
+                    // 3) grabar los valores obtenidos en la tabla de estados
 
-                    /*  ******************************* envío a sunat ********************************** esta parte esta en desarrollo 17/08/2023
-                    ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-                    var poste = new RestClient(url);
-                    poste.Timeout = -1;
-                    var request = new RestRequest(Method.POST);
-                    request.AddHeader("Authorization", "Bearer " + token);
-                    request.AddHeader("Content-Type", "application/json");
-                    request.AddParameter("application/json", json, ParameterType.RequestBody);
-                    //
-                    IRestResponse response = poste.Execute(request);
-                    var result = JsonConvert.DeserializeObject<Cdr_Rpta>(response.Content);
-                    if (response.ResponseStatus.ToString() != "200")
+                    if (!Directory.Exists(@"c:/temp/"))
                     {
-                        MessageBox.Show(response.Content.ToString(), "Error " + response.ResponseStatus.ToString());
+                        Directory.CreateDirectory(@"c:/temp/");
+                    }
+
+                    System.IO.Compression.ZipFile.ExtractToDirectory(rutaxml + "R-" + aZip, @"c:/temp/");        // @"c:/temp/temporal.zip", @"c:/temp/"
+                    FileStream archiS = new FileStream(@"c:/temp/" + "R-" + aXml, FileMode.Open, FileAccess.Read);        // @"c:/temp/" + archi, FileMode.Open, FileAccess.Read
+                    XmlDocument archiXml = new XmlDocument();
+                    archiXml.Load(archiS);
+                    XmlNode idx = archiXml.GetElementsByTagName("ID", "urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2").Item(0);
+                    XmlNode fex = archiXml.GetElementsByTagName("ResponseDate", "urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2").Item(0);
+                    XmlNode hex = archiXml.GetElementsByTagName("ResponseTime", "urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2").Item(0);
+                    string fhx = fex.InnerText.ToString() + " " + hex.InnerText.ToString();
+                    XmlNode fqr = archiXml.GetElementsByTagName("DocumentResponse", "urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2").Item(0);
+                    archiS.Close();
+                    File.Delete(@"c:/temp/" + "R-" + aXml);     // borramos el xml del temporal
+                    string res2 = "", res3 = "";
+                    if (fqr == null)
+                    {
+                        XmlNode fer = archiXml.GetElementsByTagName("Description", "urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2").Item(0);
+                        // esta parte falta .. cuando el comprobante es rechazado 07/09/23
+                        // ...........
+                        // acá me quede 11/09/2023
+                        // .............
                     }
                     else
                     {
+                        //res1 = fqr.FirstChild.ChildNodes.Item(0).InnerText; // <cbc:ReferenceID>F002-00009074</cbc:ReferenceID>
+                        res2 = fqr.FirstChild.ChildNodes.Item(1).InnerText; // <cbc:ResponseCode>0</cbc:ResponseCode>
+                        res3 = fqr.FirstChild.ChildNodes.Item(2).InnerText; // <cbc:Description>La Factura numero F002-00009074, ha sido aceptada</cbc:Description>
+                    }
+                    {
                         // actualizamos los campos de la tabla 
-                        string actua = "insert into adifactu (idc,nticket,fticket,estadoS,cdr,cdrgener) values (@idc,@nti,@fti,@est,@cdrt,@cdrg)";
+                        string actua = "insert into adifactu (idc,nticket,fticket,estadoS,cdr,cdrgener,textoQR) values (@idc,@nti,@fti,@est,@cdrt,@cdrg,@tqr)";
                         using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
                         {
                             conn.Open();
                             using (MySqlCommand micon = new MySqlCommand(actua, conn))
                             {
                                 micon.Parameters.AddWithValue("@idc", tx_idr.Text);
-                                micon.Parameters.AddWithValue("@nti", result.numTicket);
-                                micon.Parameters.AddWithValue("@fti", result.fecRecepcion);
-                                micon.Parameters.AddWithValue("@est", "Enviado");
-                                micon.Parameters.AddWithValue("@cdrt", result.estado);
-                                micon.Parameters.AddWithValue("@cdrg", result.estado);
+                                micon.Parameters.AddWithValue("@nti", idx.InnerText.ToString());
+                                micon.Parameters.AddWithValue("@fti", fhx);
+                                micon.Parameters.AddWithValue("@est", (res2 == "0") ? "Aceptado" : "Rechazado");
+                                micon.Parameters.AddWithValue("@cdrt", respuesta);
+                                micon.Parameters.AddWithValue("@cdrg", res2);
+                                micon.Parameters.AddWithValue("@tqr", res3);
                                 micon.ExecuteNonQuery();
                             }
                         }
                     }
-                    */
                 }
 
                 retorna = true;
@@ -3227,7 +3238,7 @@ namespace TransCarga
                         cmd.ExecuteNonQuery();
                     }
                 }
-                // llamada al programa de generación del xml de la guía
+                // llamada al programa de generación del xml del comprobante
                 string rutalocal = System.IO.Path.GetDirectoryName(Application.ExecutablePath);
                 //string[] parametros = new string[] { rutaxml, Program.ruc, tx_serie.Text + "-" + tx_numero.Text };
                 ProcessStartInfo p = new ProcessStartInfo();                                                // true = firma comprobante
@@ -3657,6 +3668,14 @@ namespace TransCarga
                 {
                     MessageBox.Show("Seleccione si se cancela la factura o no","Atención - Confirme",MessageBoxButtons.OK,MessageBoxIcon.Warning);
                     rb_si.Focus();
+                    return;
+                }
+                // valida que no se pueda hacer BOLETAS al crédito
+                if (rb_credito.Checked == true && tx_dat_tdv.Text == codBole)
+                {
+                    MessageBox.Show("No esta permitido hacer BOLETAS" + Environment.NewLine +
+                        "al Crédito!", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    rb_contado.Focus();
                     return;
                 }
                 if (tx_pagado.Text.Trim() == "" && tx_salxcob.Text.Trim() == "")
@@ -5097,21 +5116,21 @@ namespace TransCarga
                     this.Bt_edit.Visible = true;
                 }
                 else { this.Bt_edit.Visible = false; }
-                //if (Convert.ToString(row["btn5"]) == "S")
-                //{
-                //    this.Bt_print.Visible = true;
-                //}
-                //else { this.Bt_print.Visible = false; }
                 if (Convert.ToString(row["btn3"]) == "S")
                 {
                     this.Bt_anul.Visible = true;
                 }
                 else { this.Bt_anul.Visible = false; }
-                //if (Convert.ToString(row["btn4"]) == "S")
-                //{
-                //    this.Bt_ver.Visible = true;
-                //}
-                //else { this.Bt_ver.Visible = false; }
+                if (Convert.ToString(row["btn4"]) == "S")
+                {
+                    this.Bt_ver.Visible = true;
+                }
+                else { this.Bt_ver.Visible = false; }
+                if (Convert.ToString(row["btn5"]) == "S")
+                {
+                    this.Bt_print.Visible = true;
+                }
+                else { this.Bt_print.Visible = false; }
                 if (Convert.ToString(row["btn6"]) == "S")
                 {
                     this.Bt_close.Visible = true;
@@ -5867,10 +5886,10 @@ namespace TransCarga
         #endregion
 
     }
-    public class Cdr_Rpta                            // respuesta del post envio comprobante
+    /* public class Cdr_Rpta                            // respuesta del post envio comprobante
     {
-        public string numTicket { get; set; }           // código ticket respuesta
-        public DateTime fecRecepcion { get; set; }      // fecha hora de la respuesta
-        public string estado { get; set; }              // estado
-    }
+        public string ReferenceID { get; set; }         // código ticket respuesta
+        public string ResponseCode { get; set; }        // fecha hora de la respuesta
+        public string Description { get; set; }         // estado
+    } */
 }
