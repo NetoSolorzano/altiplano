@@ -1813,12 +1813,13 @@ namespace TransCarga
                             "a.nombdegri=@nomdes,a.diredegri=@dircde,a.ubigdegri=@ubicde,a.tidoregri=@tdcrem,a.nudoregri=@ndcrem," + 
                             "a.nombregri=@nomrem,a.direregri=@dircre,a.ubigregri=@ubicre,a.locorigen=@locpgr,a.dirorigen=@dirpgr," +
                             "a.ubiorigen=@ubopgr,a.locdestin=@ldcpgr,a.dirdestin=@didegr,a.ubidestin=@ubdegr,a.docsremit=@dooprg," +
-                            "a.obspregri=@obsprg,a.clifingri=@conprg,a.cantotgri=@totcpr,a.pestotgri=@totppr,a.tipmongri=@monppr," +
-                            "a.tipcamgri=@tcprgr,a.subtotgri=@subpgr,a.igvgri=@igvpgr,a.totgri=@totpgr,a.totpag=@pagpgr," +
-                            "a.salgri=@totpgr,a.estadoser=@estpgr,a.seguroE=@clavse,a.cantfilas=@canfil,m1cliente=@m1clte,m2cliente=@m2clte," +
+                            "a.obspregri=@obsprg,a.clifingri=@conprg,a.seguroE=@clavse,a.cantfilas=@canfil,m1cliente=@m1clte,m2cliente=@m2clte," +
                             "a.teleregri=@telrem,a.teledegri=@teldes,a.igvporc=@igvpor," +
                             "a.verApp=@verApp,a.userm=@asd,a.fechm=now(),a.diriplan4=@iplan,a.diripwan4=@ipwan,a.netbname=@nbnam " +
                             "where a.id=@idr";
+                        // a.cantotgri=@totcpr,a.pestotgri=@totppr,a.tipmongri=@monppr," +
+                        // "a.tipcamgri=@tcprgr,a.subtotgri=@subpgr,a.igvgri=@igvpgr,a.totgri=@totpgr,a.totpag=@pagpgr," +
+                        // "a.salgri=@totpgr,a.estadoser=@estpgr, // -> 24/09/2023 esto estaba malogrando el saldo y pagos de la guía. 
                         MySqlCommand micon = new MySqlCommand(actua, conn);
                         micon.Parameters.AddWithValue("@idr", tx_idr.Text);
                         micon.Parameters.AddWithValue("@fechop", tx_fechope.Text.Substring(6, 4) + "-" + tx_fechope.Text.Substring(3, 2) + "-" + tx_fechope.Text.Substring(0, 2));
@@ -1841,23 +1842,23 @@ namespace TransCarga
                         micon.Parameters.AddWithValue("@dooprg", tx_docsOr.Text);
                         micon.Parameters.AddWithValue("@obsprg", tx_obser1.Text);
                         micon.Parameters.AddWithValue("@conprg", tx_consig.Text);
-                        micon.Parameters.AddWithValue("@totcpr", tx_totcant.Text);
-                        micon.Parameters.AddWithValue("@totppr", tx_totpes.Text);
-                        micon.Parameters.AddWithValue("@monppr", tx_dat_mone.Text);
+                        //micon.Parameters.AddWithValue("@totcpr", tx_totcant.Text);
+                        //micon.Parameters.AddWithValue("@totppr", tx_totpes.Text);
+                        //micon.Parameters.AddWithValue("@monppr", tx_dat_mone.Text);
                         micon.Parameters.AddWithValue("@igvpor", v_igv);                    // igv en porcentaje
-                        micon.Parameters.AddWithValue("@tcprgr", tx_tipcam.Text);  // tipo de cambio
-                        micon.Parameters.AddWithValue("@subpgr", subtgr.ToString()); // sub total de la pre guía
-                        micon.Parameters.AddWithValue("@igvpgr", igvtgr.ToString()); // igv
-                        micon.Parameters.AddWithValue("@pagpgr", "0");
-                        micon.Parameters.AddWithValue("@totpgr", tx_flete.Text);        // saldo de la pre guia = total pre guia
-                        micon.Parameters.AddWithValue("@estpgr", tx_dat_estad.Text);    // estado de la pre guía
+                        //micon.Parameters.AddWithValue("@tcprgr", tx_tipcam.Text);  // tipo de cambio
+                        //micon.Parameters.AddWithValue("@subpgr", subtgr.ToString()); // sub total de la pre guía
+                        //micon.Parameters.AddWithValue("@igvpgr", igvtgr.ToString()); // igv
+                        //micon.Parameters.AddWithValue("@pagpgr", "0");
+                        //micon.Parameters.AddWithValue("@totpgr", tx_flete.Text);        // saldo de la pre guia = total pre guia
+                        //micon.Parameters.AddWithValue("@estpgr", tx_dat_estad.Text);    // estado de la pre guía
                         micon.Parameters.AddWithValue("@clavse", claveSeg);
                         micon.Parameters.AddWithValue("@m1clte", v_clte_rem);
                         micon.Parameters.AddWithValue("@m2clte", v_clte_des);
                         micon.Parameters.AddWithValue("@canfil", (tx_tfil.Text.Trim() == "")? "1" : tx_tfil.Text.Trim());
-                        micon.Parameters.AddWithValue("@stMN", subMN.ToString());
-                        micon.Parameters.AddWithValue("@igMN", igvMN.ToString());
-                        micon.Parameters.AddWithValue("@tgMN", tx_fletMN.Text);
+                        //micon.Parameters.AddWithValue("@stMN", subMN.ToString());
+                        //micon.Parameters.AddWithValue("@igMN", igvMN.ToString());
+                        //micon.Parameters.AddWithValue("@tgMN", tx_fletMN.Text);
                         micon.Parameters.AddWithValue("@telrem", tx_telR.Text);
                         micon.Parameters.AddWithValue("@teldes", tx_telD.Text);
                         micon.Parameters.AddWithValue("@verApp", verapp);
@@ -1866,7 +1867,7 @@ namespace TransCarga
                         micon.Parameters.AddWithValue("@ipwan", TransCarga.Program.vg_ipwan);
                         micon.Parameters.AddWithValue("@nbnam", Environment.MachineName);
                         micon.ExecuteNonQuery();
-                        //
+                        /* ********************************* comentado 24/09/2023 problemas con actualizacion de pagos y saldos. El detalle debe cambiarse por el APP.
                         // EDICION DEL DETALLE 
                         //
                         micon = new MySqlCommand("borraseguro", conn);
@@ -1906,7 +1907,7 @@ namespace TransCarga
                                 micon.ExecuteNonQuery();
                             }
                         }
-                        //
+                        */
                         micon.Dispose();
                     }
                     if (tx_impreso.Text == "S")
@@ -2717,21 +2718,21 @@ namespace TransCarga
                     this.Bt_edit.Visible = true;
                 }
                 else { this.Bt_edit.Visible = false; }
-                //if (Convert.ToString(row["btn5"]) == "S")
-                //{
-                //    this.Bt_print.Visible = true;
-                //}
-                //else { this.Bt_print.Visible = false; }
                 if (Convert.ToString(row["btn3"]) == "S")
                 {
                     this.Bt_anul.Visible = true;
                 }
                 else { this.Bt_anul.Visible = false; }
-                //if (Convert.ToString(row["btn4"]) == "S")
-                //{
-                //    this.Bt_ver.Visible = true;
-                //}
-                //else { this.Bt_ver.Visible = false; }
+                if (Convert.ToString(row["btn4"]) == "S")
+                {
+                    this.Bt_ver.Visible = true;
+                }
+                else { this.Bt_ver.Visible = false; }
+                if (Convert.ToString(row["btn5"]) == "S")
+                {
+                    this.Bt_print.Visible = true;
+                }
+                else { this.Bt_print.Visible = false; }
                 if (Convert.ToString(row["btn6"]) == "S")
                 {
                     this.Bt_close.Visible = true;
