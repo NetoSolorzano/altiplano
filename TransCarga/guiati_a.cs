@@ -1324,26 +1324,26 @@ namespace TransCarga
                     tx_fletMN.Text = tx_flete.Text;
                 }
             }
-            // validacion de tipos de documento con su numero
-            if (int.Parse(tx_mld.Text) != tx_numDocRem.Text.Trim().Length)
-            {
-                MessageBox.Show("No corresponde número con documento", "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                cmb_docRem.Focus();
-                return;
-            }
-            if (int.Parse(tx_mldD.Text) != tx_numDocDes.Text.Trim().Length)
-            {
-                MessageBox.Show("No corresponde número con documento","Error",MessageBoxButtons.OK,MessageBoxIcon.Information);
-                cmb_docDes.Focus();
-                return;
-            }
-
             #endregion
             // grabamos, actualizamos, etc
             string modo = Tx_modo.Text;
             string iserror = "no";
             if (modo == "NUEVO")
             {
+                // validacion de tipos de documento con su numero
+                if (int.Parse(tx_mld.Text) != tx_numDocRem.Text.Trim().Length)
+                {
+                    MessageBox.Show("No corresponde número con documento", "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    cmb_docRem.Focus();
+                    return;
+                }
+                if (int.Parse(tx_mldD.Text) != tx_numDocDes.Text.Trim().Length)
+                {
+                    MessageBox.Show("No corresponde número con documento", "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    cmb_docDes.Focus();
+                    return;
+                }
+
                 if (tx_idr.Text.Trim() == "")
                 {
                     var aa = MessageBox.Show("Confirma que desea crear la guía?", "Confirme por favor", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
