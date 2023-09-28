@@ -4807,12 +4807,21 @@ namespace TransCarga
             tx_distRtt.Text = "";
             if (datcltsR[4].ToString().Trim() != "")
             {
-                DataRow[] row = dataUbig.Select("depart='" + datcltsR[4].Substring(0, 2) + "' and provin='00' and distri='00'");
-                tx_dptoRtt.Text = row[0].ItemArray[4].ToString();
-                row = dataUbig.Select("depart='" + datcltsR[4].Substring(0, 2) + "' and provin ='" + datcltsR[4].Substring(2, 2) + "' and distri='00'");
-                tx_provRtt.Text = row[0].ItemArray[4].ToString();
-                row = dataUbig.Select("depart='" + datcltsR[4].Substring(0, 2) + "' and provin ='" + datcltsR[4].Substring(2, 2) + "' and distri='" + datcltsR[4].Substring(4, 2) + "'");
-                tx_distRtt.Text = row[0].ItemArray[4].ToString();
+                if (datcltsR[4].Trim().Length >= 2)
+                {
+                    DataRow[] row = dataUbig.Select("depart='" + datcltsR[4].Substring(0, 2) + "' and provin='00' and distri='00'");
+                    tx_dptoRtt.Text = row[0].ItemArray[4].ToString();
+                    if (datcltsR[4].Trim().Length >= 4)
+                    {
+                        row = dataUbig.Select("depart='" + datcltsR[4].Substring(0, 2) + "' and provin ='" + datcltsR[4].Substring(2, 2) + "' and distri='00'");
+                        tx_provRtt.Text = row[0].ItemArray[4].ToString();
+                        if (datcltsR[4].Trim().Length >= 5)
+                        {
+                            row = dataUbig.Select("depart='" + datcltsR[4].Substring(0, 2) + "' and provin ='" + datcltsR[4].Substring(2, 2) + "' and distri='" + datcltsR[4].Substring(4, 2) + "'");
+                            tx_distRtt.Text = row[0].ItemArray[4].ToString();
+                        }
+                    }
+                }
                 //
                 tx_email.Text = datcltsR[5];
                 tx_telc1.Text = datcltsR[6];

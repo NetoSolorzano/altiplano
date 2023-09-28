@@ -5,6 +5,8 @@ using System.Drawing;
 using System.Windows.Forms;
 using MySql.Data.MySqlClient;
 using ClosedXML.Excel;
+using System.IO;
+using Microsoft.Data.Sqlite;
 
 namespace TransCarga
 {
@@ -19,6 +21,7 @@ namespace TransCarga
         string colsfgr = TransCarga.Program.colsfc;   // color seleccion grilla
         string colstrp = TransCarga.Program.colstr;   // color del strip
         static string nomtab = "cabfactu";            // 
+        
         #region variables
         string asd = TransCarga.Program.vg_user;      // usuario conectado al sistema
         public int totfilgrid, cta;             // variables para impresion
@@ -46,6 +49,9 @@ namespace TransCarga
         string nomAnul = "";            // texto nombre del estado anulado
         string codGene = "";            // codigo documento nuevo generado
         //int pageCount = 1, cuenta = 0;
+        string rutatxt = "";            // ruta para las guias de remision electronicas
+        string rutaxml = "";            // ruta para los XML de las guias de remision
+
         #endregion
         libreria lib = new libreria();
 
@@ -55,6 +61,7 @@ namespace TransCarga
         DataTable dtsunatE = new DataTable();       // comprobantes elec - estados sunat
         // string de conexion
         string DB_CONN_STR = "server=" + login.serv + ";uid=" + login.usua + ";pwd=" + login.cont + ";database=" + login.data + ";";
+        public static string CadenaConexion = "Data Source=TransCarga.db";  // Data Source=TransCarga;Mode=Memory;Cache=Shared
 
         public repsventas()
         {
@@ -120,54 +127,65 @@ namespace TransCarga
         {
             try
             {
-                MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
-                conn.Open();
-                string consulta = "select formulario,campo,param,valor from enlaces where formulario in(@nofo,@ped,@clie)";
-                MySqlCommand micon = new MySqlCommand(consulta, conn);
-                micon.Parameters.AddWithValue("@nofo", "main");
-                micon.Parameters.AddWithValue("@ped", "facelect");
-                micon.Parameters.AddWithValue("@clie","clients");
-                MySqlDataAdapter da = new MySqlDataAdapter(micon);
-                DataTable dt = new DataTable();
-                da.Fill(dt);
-                for (int t = 0; t < dt.Rows.Count; t++)
+                using (SqliteConnection cnx = new SqliteConnection(CadenaConexion))
                 {
-                    DataRow row = dt.Rows[t];
-                    if (row["campo"].ToString() == "imagenes" && row["formulario"].ToString() == "main")
+                    cnx.Open();
+                    string consulta = "select formulario,campo,param,valor from dt_enlaces where formulario in (@nofo,@ped,@clie)";
+                    using (SqliteCommand micon = new SqliteCommand(consulta, cnx))
                     {
-                        if (row["param"].ToString() == "img_btN") img_btN = row["valor"].ToString().Trim();         // imagen del boton de accion NUEVO
-                        if (row["param"].ToString() == "img_btE") img_btE = row["valor"].ToString().Trim();         // imagen del boton de accion EDITAR
-                        if (row["param"].ToString() == "img_btP") img_btP = row["valor"].ToString().Trim();         // imagen del boton de accion IMPRIMIR
-                        if (row["param"].ToString() == "img_btA") img_btA = row["valor"].ToString().Trim();         // imagen del boton de accion ANULAR/BORRAR
-                        if (row["param"].ToString() == "img_btexc") img_btexc = row["valor"].ToString().Trim();     // imagen del boton exporta a excel
-                        if (row["param"].ToString() == "img_btQ") img_btq = row["valor"].ToString().Trim();         // imagen del boton de accion SALIR
-                        //if (row["param"].ToString() == "img_btP") img_btP = row["valor"].ToString().Trim();        // imagen del boton de accion IMPRIMIR
-                        if (row["param"].ToString() == "img_gra") img_grab = row["valor"].ToString().Trim();         // imagen del boton grabar nuevo
-                        if (row["param"].ToString() == "img_anu") img_anul = row["valor"].ToString().Trim();         // imagen del boton grabar anular
-                        if (row["param"].ToString() == "img_imprime") img_imprime = row["valor"].ToString().Trim();  // imagen del boton IMPRIMIR REPORTE
-                        if (row["param"].ToString() == "img_pre") img_preview = row["valor"].ToString().Trim();  // imagen del boton VISTA PRELIMINAR
-                    }
-                    if (row["campo"].ToString() == "estado" && row["formulario"].ToString() == "main")
-                    {
-                        if (row["param"].ToString() == "anulado") codAnul = row["valor"].ToString().Trim();         // codigo doc anulado
-                        if (row["param"].ToString() == "generado") codGene = row["valor"].ToString().Trim();        // codigo doc generado
-                        DataRow[] fila = dtestad.Select("idcodice='" + codAnul + "'");
-                        nomAnul = fila[0][0].ToString();
-                    }
-                    if (row["formulario"].ToString() == "facelect")
-                    {
-                        if (row["campo"].ToString() == "documento" && row["param"].ToString() == "factura") codfact = row["valor"].ToString().Trim();         // tipo de pedido por defecto en almacen
-                        if (row["campo"].ToString() == "moneda" && row["param"].ToString() == "default") codmon = row["valor"].ToString().Trim();
-                    }
-                    if (row["formulario"].ToString() == "clients")
-                    {
-                        if (row["campo"].ToString() == "documento" && row["param"].ToString() == "dni") coddni = row["valor"].ToString().Trim();
-                        if (row["campo"].ToString() == "documento" && row["param"].ToString() == "ruc") codruc = row["valor"].ToString().Trim();
+                        micon.Parameters.AddWithValue("@nofo", "main");
+                        micon.Parameters.AddWithValue("@ped", "facelect");
+                        micon.Parameters.AddWithValue("@clie", "clients");
+                        SqliteDataReader lite = micon.ExecuteReader();
+                        if (lite.HasRows == true)
+                        {
+                            while (lite.Read())
+                            {
+                                lite.GetString(0).ToString();
+                                if (lite.GetString(0).ToString() == "main")
+                                {
+                                    if (lite.GetString(1).ToString() == "imagenes")
+                                    {
+                                        if (lite.GetString(2).ToString() == "img_btN") img_btN = lite.GetString(3).ToString().Trim();         // imagen del boton de accion NUEVO
+                                        if (lite.GetString(2).ToString() == "img_btE") img_btE = lite.GetString(3).ToString().Trim();         // imagen del boton de accion EDITAR
+                                        if (lite.GetString(2).ToString() == "img_btP") img_btP = lite.GetString(3).ToString().Trim();         // imagen del boton de accion IMPRIMIR
+                                        if (lite.GetString(2).ToString() == "img_btA") img_btA = lite.GetString(3).ToString().Trim();         // imagen del boton de accion ANULAR/BORRAR
+                                        if (lite.GetString(2).ToString() == "img_btexc") img_btexc = lite.GetString(3).ToString().Trim();     // imagen del boton exporta a excel
+                                        if (lite.GetString(2).ToString() == "img_btQ") img_btq = lite.GetString(3).ToString().Trim();         // imagen del boton de accion SALIR
+                                        //if (row["param"].ToString() == "img_btP") img_btP = lite.GetString(3).ToString().Trim();        // imagen del boton de accion IMPRIMIR
+                                        if (lite.GetString(2).ToString() == "img_gra") img_grab = lite.GetString(3).ToString().Trim();         // imagen del boton grabar nuevo
+                                        if (lite.GetString(2).ToString() == "img_anu") img_anul = lite.GetString(3).ToString().Trim();         // imagen del boton grabar anular
+                                        if (lite.GetString(2).ToString() == "img_imprime") img_imprime = lite.GetString(3).ToString().Trim();  // imagen del boton IMPRIMIR REPORTE
+                                        if (lite.GetString(2).ToString() == "img_pre") img_preview = lite.GetString(3).ToString().Trim();  // imagen del boton VISTA PRELIMINAR
+                                    }
+                                    if (lite.GetString(1).ToString() == "estado")
+                                    {
+                                        if (lite.GetString(2).ToString() == "anulado") codAnul = lite.GetString(3).ToString().Trim();         // codigo doc anulado
+                                        if (lite.GetString(2).ToString() == "generado") codGene = lite.GetString(3).ToString().Trim();        // codigo doc generado
+                                        DataRow[] fila = dtestad.Select("idcodice='" + codAnul + "'");
+                                        nomAnul = fila[0][0].ToString();
+                                    }
+                                    if (lite.GetString(1).ToString() == "rutas")
+                                    {
+                                        if (lite.GetString(2).ToString() == "grt_txt") rutatxt = lite.GetString(3).ToString().Trim();         // ruta de los txt para las guías elect
+                                        if (lite.GetString(2).ToString() == "grt_xml") rutaxml = lite.GetString(3).ToString().Trim();         // 
+                                    }
+                                }
+                                if (lite.GetString(0).ToString() == "facelect")
+                                {
+                                    if (lite.GetString(1).ToString() == "documento" && lite.GetString(2).ToString() == "factura") codfact = lite.GetString(3).ToString().Trim();         // tipo de pedido por defecto en almacen
+                                    if (lite.GetString(1).ToString() == "moneda" && lite.GetString(2).ToString() == "default") codmon = lite.GetString(3).ToString().Trim();
+                                }
+                                if (lite.GetString(0).ToString() == "clients")
+                                {
+                                    if (lite.GetString(1).ToString() == "documento" && lite.GetString(2).ToString() == "dni") coddni = lite.GetString(3).ToString().Trim();
+                                    if (lite.GetString(1).ToString() == "documento" && lite.GetString(2).ToString() == "ruc") codruc = lite.GetString(3).ToString().Trim();
+                                }
+
+                            }
+                        }
                     }
                 }
-                da.Dispose();
-                dt.Dispose();
-                conn.Close();
             }
             catch (MySqlException ex)
             {
@@ -1105,25 +1123,22 @@ namespace TransCarga
                     }
                 }
             }
-            /* if (dgv_sunat_est.Columns[e.ColumnIndex].Name.ToString() == "pdf")                    // columna PDF
-            {
-                if (dgv_sunat_est.Rows[e.RowIndex].Cells[6].Value.ToString() == "1")
-                {
-                    string urlPdf = dgv_sunat_est.Rows[e.RowIndex].Cells[12].Value.ToString();
-                    System.Diagnostics.Process.Start(urlPdf);
-                }
-            } */
             if (dgv_sunat_est.Columns[e.ColumnIndex].Name.ToString() == "cdr")                    // columna CDR
             {
-                if (dgv_sunat_est.Rows[e.RowIndex].Cells[6].Value.ToString() == "1")
+                // PRIMERO deberíamos buscar el cdr.xml en el directorio respectivo
+                // Si hay, deberia sacar un mensaje indicando la ruta donde esta el xml respuesta
+                // Si NO hay, DEBERIAMOS CONSULTAR EN SUNAT EL CDR DEL COMPROBANTE
+                string archi = "R-" + Program.ruc + "-" + ((dgv_sunat_est.Rows[e.RowIndex].Cells["tipo"].Value.ToString() == "F") ? "01" : "03") + "-" +
+                    dgv_sunat_est.Rows[e.RowIndex].Cells["tipo"].Value.ToString() + lib.Right(dgv_sunat_est.Rows[e.RowIndex].Cells[2].Value.ToString(),12) + ".zip";
+                if (File.Exists(@rutaxml + archi) == true)     // si hay el xml
                 {
-                    string cdrbyte = dgv_sunat_est.Rows[e.RowIndex].Cells[11].Value.ToString();
-                    string serie = dgv_sunat_est.Rows[e.RowIndex].Cells[1].Value.ToString().Substring(0, 4);
-                    string corre = dgv_sunat_est.Rows[e.RowIndex].Cells[1].Value.ToString().Substring(5, 8);
-                    /*
-                    var aa = _E.convierteCDR((rb_GRE_R.Checked == true) ? "09" : "31", cdrbyte, serie, corre, rutaxml);
-                    if (aa != "") MessageBox.Show("CDR de sunat creado en la ruta:" + Environment.NewLine +
-                        rutaxml, "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information); */
+                    MessageBox.Show("El xml zip de respuesta esta en:" + Environment.NewLine +
+                        rutaxml + archi, "El CDR está descargado");
+                }
+                else
+                {
+                    // no hay el xml ... armarlo desde el dato guardado en la tabla adifactu
+                    // me quede acá 
                 }
             }
             if (dgv_sunat_est.Columns[e.ColumnIndex].Name.ToString() == "iTK")
@@ -1136,7 +1151,7 @@ namespace TransCarga
         #endregion
         private void imprime(string tipo,string serie, string numero)
         {
-            MessageBox.Show("Estamos en la función de impresion");
+            MessageBox.Show("Estamos en la función de impresion","me quede acá");
             // Jalamos los datos que nos falta y los ponemos en sus arreglos
             string[] vs = {"","","","","","","","","","","","","", "", "", "", "", "", "", "",   // 20
                                "", "", "", "", "", "", "", "", "", ""};    // 10
