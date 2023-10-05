@@ -168,6 +168,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>conClie.xsd</DependentUpon>
     </Compile>
+    <Compile Include="Connected Services\ServiceConsultaCDR\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
     <Compile Include="Connected Services\ServiceRefSunat\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -630,6 +635,14 @@
     <None Include="conClie.xss">
       <DependentUpon>conClie.xsd</DependentUpon>
     </None>
+    <None Include="Connected Services\ServiceConsultaCDR\billConsultService1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\ServiceConsultaCDR\billConsultService2.wsdl" />
+    <None Include="Connected Services\ServiceConsultaCDR\billConsultService21.wsdl" />
+    <None Include="Connected Services\ServiceConsultaCDR\TransCarga.ServiceConsultaCDR.statusResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
     <None Include="Connected Services\ServiceRefSunat\billService.wsdl" />
     <None Include="Connected Services\ServiceRefSunat\billService.xsd">
       <SubType>Designer</SubType>
@@ -689,6 +702,12 @@
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
+    <None Include="Connected Services\ServiceConsultaCDR\configuration91.svcinfo" />
+    <None Include="Connected Services\ServiceConsultaCDR\configuration.svcinfo" />
+    <None Include="Connected Services\ServiceConsultaCDR\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
     <Content Include="leeme.txt" />
     <Content Include="Properties\process32.png" />
     <None Include="Resources\logo_solorsoft.png" />
@@ -722,6 +741,7 @@
     <WebReferences Include="Web References\" />
   </ItemGroup>
   <ItemGroup>
+    <WCFMetadataStorage Include="Connected Services\ServiceConsultaCDR\" />
     <WCFMetadataStorage Include="Connected Services\ServiceRefSunat\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

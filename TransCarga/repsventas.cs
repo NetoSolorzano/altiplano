@@ -7,6 +7,7 @@ using MySql.Data.MySqlClient;
 using ClosedXML.Excel;
 using System.IO;
 using Microsoft.Data.Sqlite;
+using System.Text;
 
 namespace TransCarga
 {
@@ -378,7 +379,7 @@ namespace TransCarga
                     btnAct.Width = 140;
                     btnAct.UseColumnTextForButtonValue = true;
                     btnAct.DefaultCellStyle.Padding = padding;
-                    // EMISION,TIPO,COMPROBANTE,ORIGEN,ESTADO,SUNAT,CDR_GEN,btnTK,btnCDR,btnACT,ad.cdr,ad.textoQR,ad.nticket,f.canfidt,f.id
+                    // EMISION,TIPO,COMPROBANTE,ORIGEN,ESTADO,SUNAT,CDR_GEN,btnTK,btnCDR,btnACT,ad.cdr as Rspta,ad.textoQR,ad.nticket,f.canfidt,f.id
                     //     0  ,  1 ,      2    ,   3  ,  4   ,  5  ,   6   ,  7  ,  8   ,  9   ,  10   ,    11    ,   12     ,   13   , 14
                     dgv_sunat_est.CellClick += DataGridView1_CellClick;
                     dgv_sunat_est.Columns.Insert(7, btnTk);
@@ -615,7 +616,7 @@ namespace TransCarga
             if (rb_dVtas.Checked == true)   // facturas y boletas
             {
                 consulta = "SELECT f.fechope AS EMISION,f.martdve as TIPO,CONCAT(f.serdvta,'-',f.numdvta) AS COMPROBANTE,lo.descrizionerid AS ORIGEN," +
-                    "es.DescrizioneRid AS ESTADO,ad.estadoS AS SUNAT,ad.cdrgener AS CDR_GEN,ad.cdr,ad.textoQR,ad.nticket,f.canfidt,f.id " + // ,ad.ulterror as ULT_ERROR
+                    "es.DescrizioneRid AS ESTADO,ad.estadoS AS SUNAT,ad.cdrgener AS CDR_GEN,ad.cdr as Rspta,ad.textoQR,ad.nticket,f.canfidt,f.id " + // ,ad.ulterror as ULT_ERROR
                     "FROM cabfactu f LEFT JOIN adifactu ad ON ad.idc = f.id " +
                     "LEFT JOIN desc_loc lo ON lo.IDCodice = f.locorig " +
                     "LEFT JOIN desc_est es ON es.IDCodice = f.estdvta  " +
@@ -1138,7 +1139,44 @@ namespace TransCarga
                 else
                 {
                     // no hay el xml ... armarlo desde el dato guardado en la tabla adifactu
-                    // me quede acá 
+                    if (true == false)
+                    {
+                        Byte[] arCdr = Encoding.ASCII.GetBytes(dgv_sunat_est.Rows[e.RowIndex].Cells["Rspta"].Value.ToString());
+                        File.WriteAllBytes("nose", arCdr);
+                        FileStream fstrm = new FileStream(@rutaxml + archi, FileMode.CreateNew, FileAccess.Write);
+                        //BinaryWriter writer = new BinaryWriter(fstrm);
+                        fstrm.Write(arCdr, 0, arCdr.Length);
+                        //writer.Write(arCdr);
+                        //writer.Close();
+                        fstrm.Close();
+                        //Esta funcionalidad ... no esta bien 28/09/2023 .... no graba el zip correctamente porque posiblemente el campo de la tabla no tenga el tipo correcto .... no se
+                    }
+                    // alternativa 2, hacemos la consulta del CDR al WS de consultas de sunat
+                    if (true)
+                    {
+                        try
+                        {
+                            /* no me funca esta consulta SOAP, no se como programar la consulta .... 04/10/2023
+                            string pRuc = Program.ruc;
+                            string pTip = ((dgv_sunat_est.Rows[e.RowIndex].Cells["tipo"].Value.ToString() == "F") ? "01" : "03");
+                            string pSer = dgv_sunat_est.Rows[e.RowIndex].Cells["tipo"].Value.ToString() + dgv_sunat_est.Rows[e.RowIndex].Cells[2].Value.ToString().Substring(1, 3);
+                            int pNum = int.Parse(dgv_sunat_est.Rows[e.RowIndex].Cells[2].Value.ToString().Substring(5, 8));
+
+                            ServiceConsultaCDR.billServiceClient aaa = new ServiceConsultaCDR.billServiceClient();
+                            aaa.Endpoint.Name = "BillConsultServicePort";
+                            // 29/09/2023 me quede acá
+                            string x = aaa.getStatusCdr(pRuc, pTip, pSer, pNum).statusMessage;
+                            */
+
+                            // probar con la consulta REST
+
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show(ex.Message, "Error al enviar a Sunat", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            //return retorna;
+                        }
+                    }
                 }
             }
             if (dgv_sunat_est.Columns[e.ColumnIndex].Name.ToString() == "iTK")
