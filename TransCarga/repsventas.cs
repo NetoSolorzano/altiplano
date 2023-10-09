@@ -8,6 +8,7 @@ using ClosedXML.Excel;
 using System.IO;
 using Microsoft.Data.Sqlite;
 using System.Text;
+using RestSharp;                    // para consulta de CDR
 
 namespace TransCarga
 {
@@ -52,10 +53,17 @@ namespace TransCarga
         //int pageCount = 1, cuenta = 0;
         string rutatxt = "";            // ruta para las guias de remision electronicas
         string rutaxml = "";            // ruta para los XML de las guias de remision
+        string[] c_t = new string[6] { "", "", "", "", "", "" }; // parametros para generar el token
+        string client_id_sunat = "";    // id del cliente api sunat para guias electrónicas 
+        string client_pass_sunat = "";  // clave api sunat para guias electrónicas
+        string u_sol_sunat = "";        // usuario sol sunat del cliente
+        string c_sol_sunat = "";        // clave sol sunat del cliente
+        string scope_sunat = "";        // scope sunat del api
 
         #endregion
-        libreria lib = new libreria();
 
+        libreria lib = new libreria();
+        acGRE_sunat _E = new acGRE_sunat();           // instanciamos la clase 
         //DataTable dt = new DataTable();
         DataTable dtestad = new DataTable();
         DataTable dttaller = new DataTable();
@@ -166,6 +174,15 @@ namespace TransCarga
                                         DataRow[] fila = dtestad.Select("idcodice='" + codAnul + "'");
                                         nomAnul = fila[0][0].ToString();
                                     }
+                                    if (lite.GetString(1).ToString() == "sunat")
+                                    {
+                                        if (lite.GetString(2).ToString() == "client_id") client_id_sunat = lite.GetString(3).ToString().Trim();         // id del api sunat
+                                        if (lite.GetString(2).ToString() == "client_pass") client_pass_sunat = lite.GetString(3).ToString().Trim();     // password del api sunat
+                                        if (lite.GetString(2).ToString() == "user_sol") u_sol_sunat = lite.GetString(3).ToString().Trim();              // usuario sol portal sunat del cliente 
+                                        if (lite.GetString(2).ToString() == "clave_sol") c_sol_sunat = lite.GetString(3).ToString().Trim();             // clave sol portal sunat del cliente 
+                                        if (lite.GetString(2).ToString() == "scope") scope_sunat = lite.GetString(3).ToString().Trim();                 // scope del api sunat
+                                    }
+
                                     if (lite.GetString(1).ToString() == "rutas")
                                     {
                                         if (lite.GetString(2).ToString() == "grt_txt") rutatxt = lite.GetString(3).ToString().Trim();         // ruta de los txt para las guías elect
@@ -184,6 +201,13 @@ namespace TransCarga
                                 }
 
                             }
+                            // parametros para token
+                            c_t[0] = client_id_sunat;
+                            c_t[1] = scope_sunat;
+                            c_t[2] = client_id_sunat;
+                            c_t[3] = client_pass_sunat;
+                            c_t[4] = u_sol_sunat;
+                            c_t[5] = c_sol_sunat;
                         }
                     }
                 }
@@ -1139,37 +1163,58 @@ namespace TransCarga
                 else
                 {
                     // no hay el xml ... armarlo desde el dato guardado en la tabla adifactu
-                    if (true == false)
-                    {
-                        Byte[] arCdr = Encoding.ASCII.GetBytes(dgv_sunat_est.Rows[e.RowIndex].Cells["Rspta"].Value.ToString());
-                        File.WriteAllBytes("nose", arCdr);
-                        FileStream fstrm = new FileStream(@rutaxml + archi, FileMode.CreateNew, FileAccess.Write);
-                        //BinaryWriter writer = new BinaryWriter(fstrm);
-                        fstrm.Write(arCdr, 0, arCdr.Length);
-                        //writer.Write(arCdr);
-                        //writer.Close();
-                        fstrm.Close();
-                        //Esta funcionalidad ... no esta bien 28/09/2023 .... no graba el zip correctamente porque posiblemente el campo de la tabla no tenga el tipo correcto .... no se
-                    }
-                    // alternativa 2, hacemos la consulta del CDR al WS de consultas de sunat
                     if (true)
                     {
-                        try
+                        // OPCION 1: leemos el byte[] de la tabla y lo armamos en el directorio 
                         {
-                            /* no me funca esta consulta SOAP, no se como programar la consulta .... 04/10/2023
+                            Byte[] arCdr = Encoding.ASCII.GetBytes(dgv_sunat_est.Rows[e.RowIndex].Cells["Rspta"].Value.ToString());
+                            File.WriteAllBytes("nose", arCdr);
+                            FileStream fstrm = new FileStream(@rutaxml + archi, FileMode.CreateNew, FileAccess.Write);
+                            //BinaryWriter writer = new BinaryWriter(fstrm);
+                            fstrm.Write(arCdr, 0, arCdr.Length);
+                            //writer.Write(arCdr);
+                            //writer.Close();
+                            fstrm.Close();
+                            //Esta funcionalidad ... no esta bien 28/09/2023 .... no graba el zip correctamente porque posiblemente el campo de la tabla no tenga el tipo correcto .... no se
+                        }
+                        {
+                            // OPCION 2: jalamos el cdr del webservice soap de consulta
                             string pRuc = Program.ruc;
                             string pTip = ((dgv_sunat_est.Rows[e.RowIndex].Cells["tipo"].Value.ToString() == "F") ? "01" : "03");
                             string pSer = dgv_sunat_est.Rows[e.RowIndex].Cells["tipo"].Value.ToString() + dgv_sunat_est.Rows[e.RowIndex].Cells[2].Value.ToString().Substring(1, 3);
                             int pNum = int.Parse(dgv_sunat_est.Rows[e.RowIndex].Cells[2].Value.ToString().Substring(5, 8));
 
+                            // no me funca esta consulta SOAP, no se como programar la consulta .... 04/10/2023
                             ServiceConsultaCDR.billServiceClient aaa = new ServiceConsultaCDR.billServiceClient();
                             aaa.Endpoint.Name = "BillConsultServicePort";
                             // 29/09/2023 me quede acá
                             string x = aaa.getStatusCdr(pRuc, pTip, pSer, pNum).statusMessage;
-                            */
 
-                            // probar con la consulta REST
+                        }
+                    }
+                    // alternativa 2, hacemos la consulta del CDR al WS de consultas de sunat .. NO FUNCA, EL SERVICIO WEB REST NO RESPONDE, 06/10/2023
+                    if (false)
+                    {
+                        try
+                        {
+                            string pRuc = Program.ruc;
+                            string pTip = ((dgv_sunat_est.Rows[e.RowIndex].Cells["tipo"].Value.ToString() == "F") ? "01" : "03");
+                            string pSer = dgv_sunat_est.Rows[e.RowIndex].Cells["tipo"].Value.ToString() + dgv_sunat_est.Rows[e.RowIndex].Cells[2].Value.ToString().Substring(1, 3);
+                            string pNum = dgv_sunat_est.Rows[e.RowIndex].Cells[2].Value.ToString().Substring(5, 8);
 
+                            string token = _E.conex_token_(c_t);
+                            var resCon = _E.consCDR(pRuc, token, pTip, pSer, pNum, rutaxml);
+                            if (resCon == null)
+                            {
+                                MessageBox.Show("Tenemos problemas con la respuesta", "Error en comprobante", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
+                            else
+                            {
+                                if (resCon.Item1 == "Rechazado" || resCon.Item1 == "Error")
+                                {
+                                    MessageBox.Show(resCon.Item2, resCon.Item1, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                }
+                            }
                         }
                         catch (Exception ex)
                         {

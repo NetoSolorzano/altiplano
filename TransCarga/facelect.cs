@@ -1930,7 +1930,9 @@ namespace TransCarga
             int tfg = ((dataGridView1.Rows.Count -1) == int.Parse(v_mfildet)) ? int.Parse(v_mfildet) : dataGridView1.Rows.Count - 1;
             for (int s = 0; s < tfg; s++)  // int s = 0; s < dataGridView1.Rows.Count - 1; s++
             {
-                glosser2 = dataGridView1.Rows[s].Cells["OriDest"].Value.ToString() + " - " + tx_totcant.Text.Trim() + " " + tx_dat_nombd.Text; // " Bultos"; 
+                //glosser2 = dataGridView1.Rows[s].Cells["OriDest"].Value.ToString() + " - " + tx_totcant.Text.Trim() + " " + tx_dat_nombd.Text; // " Bultos"; 
+                glosser2 = dataGridView1.Rows[s].Cells["OriDest"].Value.ToString() + " - " +
+                    dataGridView1.Rows[s].Cells["Cant"].Value.ToString() + " " + dataGridView1.Rows[s].Cells["umed"].Value.ToString(); // " Bultos"; 
                 DataRow row = tdfe.NewRow();
                 row["Idatper"] = "";                                                        // datos personalizados del item
                 row["Idescri"] = glosser + " " + dataGridView1.Rows[s].Cells["Descrip"].Value.ToString() + " " + glosser2;   // Descripcion
@@ -3202,7 +3204,9 @@ namespace TransCarga
                 // DETALLE
                 for (int i=0; i< dataGridView1.Rows.Count - 1; i++)
                 {
-                    glosser2 = dataGridView1.Rows[i].Cells["OriDest"].Value.ToString() + " - " + tx_totcant.Text.Trim() + " " + tx_dat_nombd.Text; // " Bultos"; 
+                    //glosser2 = dataGridView1.Rows[i].Cells["OriDest"].Value.ToString() + " - " + tx_totcant.Text.Trim() + " " + tx_dat_nombd.Text; // " Bultos"; 
+                    string glosser2 = dataGridView1.Rows[i].Cells["OriDest"].Value.ToString() + " - " +
+                            dataGridView1.Rows[i].Cells["Cant"].Value.ToString() + " " + dataGridView1.Rows[i].Cells["umed"].Value.ToString();
                     string descrip = dataGridView1.Rows[i].Cells[1].Value.ToString();
                     double preunit = double.Parse(dataGridView1.Rows[i].Cells[4].Value.ToString());
                     double valunit = double.Parse(dataGridView1.Rows[i].Cells[4].Value.ToString()) / (1 + (double.Parse(v_igv) / 100));
@@ -5676,25 +5680,27 @@ namespace TransCarga
                     int tfg = (dataGridView1.Rows.Count == int.Parse(v_mfildet)) ? int.Parse(v_mfildet) : dataGridView1.Rows.Count - 1;
                     for (int l = 0; l < tfg; l++)  // int l = 0; l < dataGridView1.Rows.Count - 1; l++
                     {
+                        string textF2 = dataGridView1.Rows[l].Cells["OriDest"].Value.ToString() + " - " + 
+                            dataGridView1.Rows[l].Cells["Cant"].Value.ToString() + " " + dataGridView1.Rows[l].Cells["umed"].Value.ToString();
                         if (!string.IsNullOrEmpty(dataGridView1.Rows[l].Cells[0].Value.ToString()))
                         {
                             puntoF = new PointF(coli, posi);
                             e.Graphics.DrawString(glosser, lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                             posi = posi + alfi;
                             puntoF = new PointF(coli, posi);
-                            e.Graphics.DrawString(glosser2, lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                            e.Graphics.DrawString(textF2, lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                             posi = posi + alfi;
                             puntoF = new PointF(coli, posi);
-                            string qqq = dataGridView1.Rows[l].Cells[0].Value.ToString() + " " + dataGridView1.Rows[l].Cells[1].Value.ToString();
-                            if (qqq.Length > 40) siz = new SizeF(CentimeterToPixel(anchTik), 30);
+                            string qqq = "GRT-" + dataGridView1.Rows[l].Cells[0].Value.ToString() + " " + dataGridView1.Rows[l].Cells[1].Value.ToString();
+                            if (qqq.Length > 41) siz = new SizeF(CentimeterToPixel(anchTik), 30);
                             else siz = new SizeF(CentimeterToPixel(anchTik), 15);
                             recto = new RectangleF(puntoF, siz);
                             e.Graphics.DrawString(qqq, lt_peq, Brushes.Black, recto, StringFormat.GenericTypographic);
                             posi = posi + alfi;
-                            if (qqq.Length > 40) posi = posi + alfi;
+                            if (qqq.Length > 41) posi = posi + alfi - 4;
                             puntoF = new PointF(coli, posi);
                             e.Graphics.DrawString("Según doc.cliente: " + dataGridView1.Rows[l].Cells[8].Value.ToString(), lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);
-                            posi = posi + alfi;
+                            posi = posi + alfi *2;
                         }
                     }
                     // pie del documento ;
@@ -5801,7 +5807,7 @@ namespace TransCarga
                             siz = new SizeF(CentimeterToPixel(anchTik), 15 * 3);
                             puntoF = new PointF(coli, posi);
                             recto = new RectangleF(puntoF, siz);
-                            e.Graphics.DrawString(glosdet.Trim() + " " + Program.ctadetra.Trim(), lt_peq, Brushes.Black, recto, StringFormat.GenericTypographic);
+                            e.Graphics.DrawString(glosdetra.Trim() + " " + Program.ctadetra.Trim(), lt_peq, Brushes.Black, recto, StringFormat.GenericTypographic);
                             posi = posi + alfi * 3;
                         }
                     }
