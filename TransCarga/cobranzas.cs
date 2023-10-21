@@ -696,13 +696,13 @@ namespace TransCarga
                                                     tx_flete.Text = string.Format("{0:0.00}", dr.GetDecimal("totguitra"));
                                                     tx_salxcob.Text = string.Format("{0:0.00}", dr.GetDecimal("saldofina"));
                                                     tx_pagado.Text = string.Format("{0:0.00}", dr.GetDecimal("totpagado"));
-                                                    // a.codmonpag
-                                                    if (!string.IsNullOrEmpty(dr.GetString("codmonvta").Trim()))    //  != ""
+                                                    /*  ... 20/10/2023
+                                                    if (!string.IsNullOrEmpty(dr.GetString("codmonvta").Trim()))
                                                     {
                                                         tx_dat_mod.Text = dr.GetString("codmonvta");
                                                         lb_moneda.Text = dr.GetString("nctmV");
                                                     }
-                                                    else
+                                                    else */
                                                     {
                                                         tx_dat_mod.Text = dr.GetString("codmongui");
                                                         lb_moneda.Text = dr.GetString("nctmG");
