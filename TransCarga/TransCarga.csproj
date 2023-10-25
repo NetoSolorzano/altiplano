@@ -262,7 +262,14 @@
     <Compile Include="guiati_e.designer.cs">
       <DependentUpon>guiati_e.cs</DependentUpon>
     </Compile>
+    <Compile Include="guiati_eX.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="guiati_eX.designer.cs">
+      <DependentUpon>guiati_eX.cs</DependentUpon>
+    </Compile>
     <Compile Include="impGRE_T.cs" />
+    <Compile Include="impGRE_Tex.cs" />
     <Compile Include="ingcargalm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -523,6 +530,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="guiati_e.resx">
       <DependentUpon>guiati_e.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="guiati_eX.resx">
+      <DependentUpon>guiati_eX.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ingcargalm.resx">
       <DependentUpon>ingcargalm.cs</DependentUpon>

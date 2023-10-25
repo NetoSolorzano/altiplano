@@ -2848,7 +2848,7 @@ namespace TransCarga
 
                     }
                     // llamamos a la clase que imprime
-                    impGRE_T imprime = new impGRE_T(1, v_impTK, vs, dt, va, vc);
+                    impGRE_Tex imprime = new impGRE_Tex(1, v_impTK, vs, dt, va, vc);
                 }
             }
         }

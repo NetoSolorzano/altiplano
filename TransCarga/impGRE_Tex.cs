@@ -1,5 +1,4 @@
-﻿using CrystalDecisions.CrystalReports.Engine;
-using Gma.QrCodeNet.Encoding;
+﻿using Gma.QrCodeNet.Encoding;
 using Gma.QrCodeNet.Encoding.Windows.Render;
 using System;
 using System.Collections.Generic;
@@ -13,17 +12,17 @@ using System.Threading.Tasks;
 
 namespace TransCarga
 {
-    class impGRE_T
+    class impGRE_Tex
     {
         libreria lib = new libreria();
         string[] cab = { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",        // 20
-                         "", "", "", "", "", "", "", "", "", "", "" };      // 11
+                         "", "", "", "", "", "", "", "", "", "" };      // 10
         string[,] det = new string[3,5] { { "", "", "", "", "" }, { "", "", "", "", "" }, { "", "", "", "", "" } };
         string[] var = { "", "", "", "", "", ""};       // 6
         string[] vch = { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" };      // 17
         short copias = 0;
         string otro = "";               // ruta y nombre del png código QR
-        public impGRE_T(int nCopias, string nomImp, string[] cabecera, string[,] detalle, string[] varios, string[] vehChof, string formato, string nomforCR)
+        public impGRE_Tex(int nCopias, string nomImp, string[] cabecera, string[,] detalle, string[] varios, string[] vehChof)
         {
             copias = (short)nCopias;
             cab[0] = cabecera[0];   // serie de la GRE
@@ -55,8 +54,7 @@ namespace TransCarga
             cab[26] = cabecera[26];   // Direccion de llegada - distrito
             cab[27] = cabecera[27];     // usuario creador
             cab[28] = cabecera[28];     // local de emisión
-            cab[29] = cabecera[29];     // numero de pre guía (orden de servicio)
-            cab[30] = cabecera[30];     // flete de la guía
+            cab[29] = cabecera[29];     // hora de emsión
 
             det[0, 0] = detalle[0, 0];  // detalle fila 1
             det[0, 1] = detalle[0, 1];
@@ -81,7 +79,7 @@ namespace TransCarga
             }
 
             var[0] = varios[0];         // Varios: texto del código QR ->tx_dat_textoqr.Text
-            var[1] = varios[1];         // Ruta y nombre de la imagen QR
+            var[1] = varios[1];         // 
             var[2] = varios[2];         // despedid1
             var[3] = varios[3];         // despedid2
             var[4] = varios[4];         // Glosa final comprobante 1 -> "Representación impresa sin valor legal de la"
@@ -104,66 +102,14 @@ namespace TransCarga
             vch[14] = vehChof[14];        // Choferes - Nombres ->
             vch[15] = vehChof[15];        // Choferes - Apellidos ->
 
-            switch (formato)
-            {
-                case "TK":
-                    PrintDocument print = new PrintDocument();
-                    print.PrintPage += new PrintPageEventHandler(imprime_TK);
-                    print.PrinterSettings.PrinterName = nomImp;
-                    print.PrinterSettings.Copies = (short)nCopias;
-                    print.Print();
-                    break;
-                case "A5":
-
-                    if (var[0] != "")
-                    {
-                        string codigo = var[0];                             // tx_dat_textoqr.Text
-                        //var rnd = Path.GetRandomFileName();
-                        //otro = Path.GetFileNameWithoutExtension(rnd);       // 
-                        //if (File.Exists("formatos/imgQR.png")) File.Delete("formatos/imgQR.png");
-                        if (File.Exists(@var[1])) File.Delete(@var[1]);
-                        //otro = @var[1];    // "formatos/imgQR.png";
-                        //
-                        var qrEncoder = new QrEncoder(ErrorCorrectionLevel.H);
-                        var qrCode = qrEncoder.Encode(codigo);
-                        //var[1] = @"C:\temp\"+"imgQR.png";   // qrCode.Matrix.ToString();
-                        var renderer = new GraphicsRenderer(new FixedModuleSize(5, QuietZoneModules.Two), Brushes.Black, Brushes.White);
-                        using (var stream = new FileStream(@var[1], FileMode.Create))
-                        renderer.WriteToStream(qrCode.Matrix, ImageFormat.Png, stream);
-                    }
-                    else
-                    {
-                        //if (File.Exists("formatos/imgQR.png")) File.Delete("formatos/imgQR.png");
-                        if (File.Exists(@var[1])) File.Delete(@var[1]);
-                        var[1] = "";
-                    }
-                    if (nomImp != "" && nomforCR != "")
-                    {
-                        conClie data = generaReporte("nomforCR");
-                        ReportDocument repo = new ReportDocument();
-                        repo.Load(nomforCR);
-                        repo.SetDataSource(data);
-                        repo.PrintOptions.PrinterName = nomImp;
-                        repo.PrintToPrinter((short)nCopias, false, 1, 1);
-                    }
-                    if (nomImp != "" && nomforCR == "")
-                    {
-
-                    }
-                    if (nomImp == "" && nomforCR != "")
-                    {
-                        conClie datos = generaReporte(nomforCR);
-                        frmvizoper visualizador = new frmvizoper(datos);
-                        visualizador.Show();
-                    }
-                    break;
-                case "A4":
-
-                    break;
-            }
+            PrintDocument print = new PrintDocument();
+            print.PrintPage += new PrintPageEventHandler(imprime_TK);
+            print.PrinterSettings.PrinterName = nomImp;
+            print.PrinterSettings.Copies = (short)nCopias;
+            print.Print();
         }
 
-        public void imprime_TK(object sender, PrintPageEventArgs e)     // TK
+        public void imprime_TK(object sender, PrintPageEventArgs e)    // object sender, System.Drawing.Printing.PrintPageEventArgs e
         {
             {
                 // DATOS PARA EL TICKET
@@ -281,22 +227,15 @@ namespace TransCarga
                     e.Graphics.DrawString(":", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                     puntoF = new PointF(coli + 140, posi);
                     e.Graphics.DrawString(cab[2], lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
-                    /*
                     posi = posi + alfi;
                     puntoF = new PointF(coli + 20, posi);
                     e.Graphics.DrawString("Hora Emisión", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                     puntoF = new PointF(coli + 135, posi);
                     e.Graphics.DrawString(":", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                     puntoF = new PointF(coli + 140, posi);
-                    e.Graphics.DrawString("", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
-                    */
-                    posi = posi + alfi;
-                    puntoF = new PointF(coli + 20, posi);
-                    e.Graphics.DrawString("Pre guía (O/S)", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
-                    puntoF = new PointF(coli + 135, posi);
-                    e.Graphics.DrawString(":", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
-                    puntoF = new PointF(coli + 140, posi);
+                    //e.Graphics.DrawString(DateTime.Now.Hour.ToString() + ":" + DateTime.Now.Minute.ToString(), lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                     e.Graphics.DrawString(cab[29], lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+
                     // imprimimos los documentos relacionados
                     posi = posi + alfi * 2;
                     puntoF = new PointF(coli, posi);
@@ -465,24 +404,19 @@ namespace TransCarga
                             posi = posi + alfi;
                         }
                     }
+
                     // final del comprobante
                     string repre = var[4];      //  "Representación impresa sin valor legal de la";
                     lt = (ancho - e.Graphics.MeasureString(repre, lt_med).Width) / 2;
                     posi = posi + alfi + 10.0F;
                     puntoF = new PointF(lt, posi);
-                    e.Graphics.DrawString("", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                    e.Graphics.DrawString(repre, lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                     posi = posi + alfi;
                     puntoF = new PointF(coli, posi);
-                    string previo = " M.N. " + cab[30];     // var[5];
-                    //lt = (ancho - e.Graphics.MeasureString(previo, lt_med).Width) / 2;
-                    puntoF = new PointF(coli, posi);
+                    string previo = var[5];     // "Guía de Remisión Electrónica de Transportista";
+                    lt = (ancho - e.Graphics.MeasureString(previo, lt_med).Width) / 2;
+                    puntoF = new PointF(lt, posi);
                     e.Graphics.DrawString(previo, lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
-                    posi = posi + alfi * 3;
-                    puntoF = new PointF(coli + 20, posi);
-                    e.Graphics.DrawString("-------------------------", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
-                    posi = posi + 10;
-                    puntoF = new PointF(coli + 20, posi);
-                    e.Graphics.DrawString(" Recibi Conforme", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                     posi = posi + alfi * 2;
                     string locyus = cab[28] + " - " + cab[27];
                     puntoF = new PointF(coli, posi);
@@ -500,122 +434,6 @@ namespace TransCarga
                 }
                 
             }
-        }
-
-        private conClie generaReporte(string cristalito)                                 // formato A5
-        {
-            conClie guiaT = new conClie();
-            conClie.gr_ind_cabRow rowcabeza = guiaT.gr_ind_cab.Newgr_ind_cabRow();
-            // CABECERA
-            rowcabeza.formatoRPT = cristalito;
-            rowcabeza.id = "0";         // no tenemos este dato en la clase
-            rowcabeza.estadoser = "";   // no tenemos este dato en la clase
-            rowcabeza.sergui = cab[0];
-            rowcabeza.numgui = cab[1];
-            rowcabeza.numpregui = cab[29];   // numero de la pre-guia, obligatorio en GRE
-            rowcabeza.fechope = cab[2];
-            rowcabeza.fechTraslado = cab[16];
-            // cab[3] = cabecera[3];   // dirección sede de la guía
-            rowcabeza.frase1 = "";  // campo para etiqueta "ANULADO"        // no tenemos este dato en la clase
-            rowcabeza.frase2 = "";  // campo para etiqueta "TIENE CLAVE"    // no tenemos este dato en la clase
-            // origen - destino
-            rowcabeza.nomDestino = "";      // no tenemos este dato en la clase
-            rowcabeza.direDestino = cab[23];
-            rowcabeza.dptoDestino = cab[24];
-            rowcabeza.provDestino = cab[25];
-            rowcabeza.distDestino = cab[26];
-            rowcabeza.nomOrigen = cab[28];      // nombre del local de emisión
-            rowcabeza.direOrigen = cab[19];
-            rowcabeza.dptoOrigen = cab[20];
-            rowcabeza.provOrigen = cab[21];
-            rowcabeza.distOrigen = cab[22];
-            // remitente
-            rowcabeza.docRemit = cab[10];
-            rowcabeza.numRemit = cab[11];
-            rowcabeza.nomRemit = cab[12];
-            rowcabeza.direRemit = cab[19];       // no tenemos este dato en la clase
-            rowcabeza.dptoRemit = cab[20];       // no tenemos este dato en la clase
-            rowcabeza.provRemit = cab[21];       // no tenemos este dato en la clase
-            rowcabeza.distRemit = cab[22];       // no tenemos este dato en la clase
-            rowcabeza.telremit = "";        // no tenemos este dato en la clase
-            // destinatario
-            rowcabeza.docDestinat = cab[13];
-            rowcabeza.numDestinat = cab[14];
-            rowcabeza.nomDestinat = cab[15];
-            rowcabeza.direDestinat = cab[23];       // no tenemos este dato en la clase
-            rowcabeza.distDestinat = cab[26];       // no tenemos este dato en la clase
-            rowcabeza.provDestinat = cab[25];       // no tenemos este dato en la clase
-            rowcabeza.dptoDestinat = cab[24];       // no tenemos este dato en la clase
-            rowcabeza.teldesti = "";           // no tenemos este dato en la clase
-            // importes
-            rowcabeza.pesTotCar = cab[17];
-            rowcabeza.uniMedPes = cab[18];
-            rowcabeza.nomMoneda = "";           // no tenemos este dato en la clase - EN GRE no imprimimos valores 
-            rowcabeza.igv = "";                 // no tenemos este dato en la clase - EN GRE no imprimimos valores 
-            rowcabeza.subtotal = "";            // no tenemos este dato en la clase - EN GRE no imprimimos valores 
-            rowcabeza.total = cab[30];          // Flete del servicio (solo para impresión, no va a sunat)
-            // documentos origen
-            rowcabeza.tipDocRel1 = cab[4];         // Datos relacionados 1: tipo doc origen -> cmb_docorig.Text
-            rowcabeza.docscarga = cab[5];
-            rowcabeza.rucDocRel1 = cab[6];         // Datos relacionados 1: ruc doc origen -> tx_rucEorig.Text
-            rowcabeza.tipDocRel2 = cab[7];         // Datos relacionados 2: tipo doc origen -> tx_dat_docOr2.Text
-            rowcabeza.docscarga2 = cab[8];         // Datos relacionados 2: numero doc origen -> tx_docsOr2.Text
-            rowcabeza.rucDocRel2 = cab[9];         // Datos relacionados 2: ruc doc origen -> tx_rucEorig2.Text
-            //
-            rowcabeza.consignat = "";           // no tenemos este dato en la clase
-            // pie
-            rowcabeza.marcamodelo = "";         // no tenemos este dato en la clase
-            rowcabeza.autoriz = vch[1];
-            rowcabeza.dniChoSec = vch[12];        // Choferes - Dni chofer secundario ->
-            rowcabeza.brevAyuda = vch[13];
-            rowcabeza.nomAyuda = vch[14] + " " + vch[15];
-            rowcabeza.dniChoPrin = vch[8];          // Choferes - Dni chofer principal ->
-            rowcabeza.brevChofer = vch[9];
-            rowcabeza.nomChofer = vch[10] + " " + vch[11];
-            rowcabeza.placa = vch[0];
-            rowcabeza.regMTCve1 = vch[2];        // Vehiculos - Num Registro MTC -> 
-            rowcabeza.camion = vch[4];
-            rowcabeza.confvehi = vch[3] + vch[7];
-            rowcabeza.autoriz2 = vch[5];        // Vehiculos - Autoriz. vehicular -> 
-            rowcabeza.regMTCve2 = vch[6];       // Vehiculos - Num Registro MTC -> 
-
-            rowcabeza.rucPropiet = "";          // no tenemos este dato en la clase
-            rowcabeza.nomPropiet = "";          // no tenemos este dato en la clase
-
-            rowcabeza.fechora_imp = DateTime.Now.ToString();
-            rowcabeza.userc = cab[27];
-            rowcabeza.horEmiCre = "";           // hora de emisión ... para efectos de la impresion en TK y A5 no importa ... 10/10/2023
-            // rowcabeza.fecEmiCre = cab[]      // falta en la clase
-            // varios
-            rowcabeza.varTexoQR = var[0];
-            rowcabeza.varTexLibr = @var[1];      // texto del QR en formato byte[]
-            rowcabeza.varTexDes1 = var[2];
-            rowcabeza.varTexDes2 = var[3];
-            rowcabeza.varGloFin1 = var[4];
-            rowcabeza.varGloFin2 = var[5];
-            //
-            guiaT.gr_ind_cab.Addgr_ind_cabRow(rowcabeza);
-            //
-            // DETALLE  
-            for (int y=0; y<3; y++)
-            {
-                if (det[y, 0] != "")
-                {
-                    conClie.gr_ind_detRow rowdetalle = guiaT.gr_ind_det.Newgr_ind_detRow();
-
-                    rowdetalle.fila = det[y, 0];    // dt[y, 0] Num de fila
-                    rowdetalle.cant = det[y, 1];    // dt[y, 1] Cant.
-                    rowdetalle.codigo = "";         // no estamos usando
-                    rowdetalle.umed = det[y, 2];      // dt[y, 2] Unidad de medida
-                    rowdetalle.descrip = det[y, 3];   // dt[y, 3] Descripción
-                    rowdetalle.precio = "";         // no estamos usando
-                    rowdetalle.total = "";          // no estamos usando
-                    rowdetalle.peso = det[y, 4];  // dt[y, 4] peso
-                    guiaT.gr_ind_det.Addgr_ind_detRow(rowdetalle);
-                }
-            }
-            //
-            return guiaT;
         }
     }
     

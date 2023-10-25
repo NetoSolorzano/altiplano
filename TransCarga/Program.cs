@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.Windows.Forms;
 
 namespace TransCarga
@@ -50,7 +51,10 @@ namespace TransCarga
         public static string tituloF = "SOLORSOFT - TransCarga";      // titulo del sistema
         public static string vg_ipwan = "";     // ip wan del cliente
         public static bool vg_conSol = false;   // usa conector solorsoft para ruc y dni
-
+        //
+        public static DataTable dt_ubigeos = new DataTable();   // 25/10/2023 para los dptos, provin y distritos
+        public static DataTable dt_enlaces = new DataTable();   // 25/10/2023 para todos los enlaces de datos
+        public static DataTable dt_definic = new DataTable();   // 25/10/2023 para todas las definiciones
         [STAThread]
         static void Main()
         {

@@ -21,7 +21,6 @@ namespace TransCarga
         public static string data = ConfigurationManager.AppSettings["data"].ToString();
         public static string ctl = ConfigurationManager.AppSettings["ConnectionLifeTime"].ToString();
         string DB_CONN_STR = "server=" + serv + ";uid=" + usua + ";pwd=" + cont + ";database=" + data + ";";
-        public DataTable dt_enlaces = new DataTable();
         public static string CadenaConexion = "Data Source=TransCarga.db";
 
         public login()
@@ -45,7 +44,6 @@ namespace TransCarga
             init();
             // jala datos de configuracion
             jaladatos();
-            //jaladatper();
             //Tx_user.Focus();
         }
         private void init()
@@ -369,54 +367,6 @@ namespace TransCarga
             if(checkBox1.Checked == true) tx_newcon.Visible = true;
             else tx_newcon.Visible = false;
         }
-        private void jaladatper()
-        {
-            using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
-            {
-                conn.Open();
-                using (MySqlCommand mico = new MySqlCommand("select id,formulario,campo,descrip,valor,param from enlaces", conn))
-                {
-                    using (MySqlDataAdapter da = new MySqlDataAdapter(mico))
-                    {
-                        da.Fill(dt_enlaces);
-                        using (SqliteConnection cnx = new SqliteConnection(CadenaConexion))
-                        {
-                            cnx.Open();
-                            string sqlborra = "DROP TABLE IF EXISTS dt_enlaces; DROP TABLE IF EXISTS sunat_webservices";
-                            using (SqliteCommand cmdB = new SqliteCommand(sqlborra, cnx))
-                            {
-                                cmdB.ExecuteNonQuery();
-                            }
-                            string sqlTabla = "create table dt_enlaces (id integer primary key autoincrement, formulario varchar(20), campo varchar(20), descrip varchar(150), valor varchar(100), param varchar(50))";
-                            using (SqliteCommand cmd = new SqliteCommand(sqlTabla, cnx))
-                            {
-                                cmd.ExecuteNonQuery();
-                            }
-                            foreach (DataRow row in dt_enlaces.Rows)
-                            {
-                                string metela = "insert into dt_enlaces (formulario, campo, descrip, valor, param) " +
-                                    "values ('" + row.ItemArray[1].ToString() + "','" + row.ItemArray[2].ToString() + "','" +
-                                    row.ItemArray[3].ToString() + "','" + row.ItemArray[4].ToString() + "','" + row.ItemArray[5].ToString() + "')";
-                                using (SqliteCommand cmd = new SqliteCommand(metela, cnx))
-                                {
-                                    cmd.ExecuteNonQuery();
-                                }
-                                /*
-                                configuracion.dt_enlacesRow nr = setC.dt_enlaces.Newdt_enlacesRow();
-                                nr.id = int.Parse(row.ItemArray[0].ToString());
-                                nr.formulario = row.ItemArray[1].ToString();
-                                nr.campo = row.ItemArray[2].ToString();
-                                nr.descrip = row.ItemArray[3].ToString();
-                                nr.valor = row.ItemArray[4].ToString();
-                                nr.param = row.ItemArray[5].ToString();
-                                setC.dt_enlaces.Adddt_enlacesRow(nr);
-                                */
-                            }
-                        }
-                    }
-                }
-            }
-        }
         private void backgroundWorker1_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
         {
             int i = 10;
@@ -424,17 +374,37 @@ namespace TransCarga
             using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
             {
                 conn.Open();
+                using (MySqlCommand micon = new MySqlCommand("select * from ubigeos", conn))
+                {
+                    using (MySqlDataAdapter da = new MySqlDataAdapter(micon))
+                    {
+                        da.Fill(Program.dt_ubigeos);
+                    }
+                }
+                //
+                string cdes = "select IDTabella,IDCodice,Descrizione,DescrizioneRid,Numero,cnt,codigo,codsunat,deta1,deta2,deta3,deta4,ubiDir,marca1,marca2,marca3,enlace1 " +
+                    "from descrittive where numero=1 order by IDTabella,IDCodice";
+                using (MySqlCommand micon = new MySqlCommand(cdes, conn))
+                {
+                    using (MySqlDataAdapter da = new MySqlDataAdapter(micon))
+                    {
+                        da.Fill(Program.dt_definic);
+                    }
+                }
+                //
                 using (MySqlCommand mico = new MySqlCommand("select id,formulario,campo,descrip,valor,param from enlaces", conn))
                 {
                     using (MySqlDataAdapter da = new MySqlDataAdapter(mico))
                     {
-                        da.Fill(dt_enlaces);
+                        da.Fill(Program.dt_enlaces);
                         i = i + 40;
                         backgroundWorker1.ReportProgress(i);
 
                         using (SqliteConnection cnx = new SqliteConnection(CadenaConexion))
                         {
                             cnx.Open();
+                            #region ya usamos desde el 25/10/2023
+                            /*
                             string sqlborra = "DROP TABLE IF EXISTS dt_enlaces"; // ; DROP TABLE IF EXISTS sunat_webservices
                             using (SqliteCommand cmdB = new SqliteCommand(sqlborra, cnx))
                             {
@@ -457,7 +427,7 @@ namespace TransCarga
                                 {
                                     cmd.ExecuteNonQuery();
                                 }
-                                /*
+                                //
                                 configuracion.dt_enlacesRow nr = setC.dt_enlaces.Newdt_enlacesRow();
                                 nr.id = int.Parse(row.ItemArray[0].ToString());
                                 nr.formulario = row.ItemArray[1].ToString();
@@ -466,9 +436,11 @@ namespace TransCarga
                                 nr.valor = row.ItemArray[4].ToString();
                                 nr.param = row.ItemArray[5].ToString();
                                 setC.dt_enlaces.Adddt_enlacesRow(nr);
-                                */
+                                //
                             }
-                            sqlTabla = "create table IF NOT EXISTS sunat_webservices (id integer primary key autoincrement, sunat_plazoT integer default 0, sunat_horaT text default '', sunat_TokenAct varchar(500) default '')";
+                            */
+                            #endregion
+                            string sqlTabla = "create table IF NOT EXISTS sunat_webservices (id integer primary key autoincrement, sunat_plazoT integer default 0, sunat_horaT text default '', sunat_TokenAct varchar(500) default '')";
                             using (SqliteCommand cmd = new SqliteCommand(sqlTabla, cnx))
                             {
                                 cmd.ExecuteNonQuery();
@@ -492,7 +464,6 @@ namespace TransCarga
                                     cmd.ExecuteNonQuery();
                                 }
                             }
-
                             i = i + 1;
                             backgroundWorker1.ReportProgress(i);
                         }

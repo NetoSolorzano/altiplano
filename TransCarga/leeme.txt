@@ -450,6 +450,13 @@ form guiati_a, esta permitiendo grabar codigo doc destinatario errado, DOC001 co
 form guiati_a, ARREGLO DE ERROR AL GRABAR EDICION .................................................. ok 26/06/2023
 form facelect, corregir impresión y grabación del detalle, la cantidad y unidad de medida .......... ok 09/10/2023
 form cobranzas, falta mejorar la cobranza de guias con facturacion en otra moneda .................. +- 20/10/2023 falta mejorar
+**************************** Implementacion de GRE emisión directa *********************************
+form transmain, agregar pre-guias, opción de menú e icono .......................................... ok 25/10/2023
+program, agregar datatables publicas ............................................................... ok 25/10/2023
+form login, agregar datatables publicas ............................................................ ok 25/10/2023
+form preguiat, adecuar formulario a base altiplano ................................................. ok 25/10/2023
+form guiati_e, copia y adecuación del formulario de carrión ........................................ 
+
 form repsventas, arreglar el boton de CDR, no esta jalando el cdr .................................. 
 form facelect, considerar que sunat responda con error o cdr rechazo ............................... me quede acá 11/09/2023
 form repsventas, agregar reporte estados comprobantes sunat, metdo impresion desde clase ...........  
