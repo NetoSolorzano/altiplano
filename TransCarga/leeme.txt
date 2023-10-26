@@ -455,7 +455,8 @@ form transmain, agregar pre-guias, opción de menú e icono ....................
 program, agregar datatables publicas ............................................................... ok 25/10/2023
 form login, agregar datatables publicas ............................................................ ok 25/10/2023
 form preguiat, adecuar formulario a base altiplano ................................................. ok 25/10/2023
-form guiati_e, copia y adecuación del formulario de carrión ........................................ 
+form guiati_e, copia y adecuación del formulario de carrión ........................................ ok 25/10/2023
+clase impGRE_T, adecuaciones de campos ............................................................. ok 25/10/2023
 
 form repsventas, arreglar el boton de CDR, no esta jalando el cdr .................................. 
 form facelect, considerar que sunat responda con error o cdr rechazo ............................... me quede acá 11/09/2023
