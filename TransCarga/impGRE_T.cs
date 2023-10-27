@@ -141,7 +141,7 @@ namespace TransCarga
                     {
                         conClie data = generaReporte("nomforCR");
                         ReportDocument repo = new ReportDocument();
-                        repo.Load(nomforCR);
+                        repo.Load("formatos/" + nomforCR);
                         repo.SetDataSource(data);
                         repo.PrintOptions.PrinterName = nomImp;
                         repo.PrintToPrinter((short)nCopias, false, 1, 1);

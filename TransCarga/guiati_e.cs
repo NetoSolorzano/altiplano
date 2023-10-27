@@ -3527,6 +3527,7 @@ namespace TransCarga
         {
             // esta parte lo pase al boton de jalar bt_pre
             //bt_preg_Click(null, null);
+            if (tx_pregr_num.Text != "") tx_pregr_num.Text = lib.Right("0000000" + tx_pregr_num.Text.Trim(), 8);
         }
         private void tx_flete_Leave(object sender, EventArgs e)
         {
