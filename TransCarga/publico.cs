@@ -203,42 +203,57 @@ namespace TransCarga
             }
             return (int)pixel;
         }
-        public void muestra_gr(string ser, string cor, string nomfcr)                 // muestra la grt 
+        public void muestra_gr(string ser, string cor, string nomfcr, string RimgQR, string gloDeta, string v_impTK, string vi_formato, string v_CR_gr_ind)                 // muestra la grt 
         {
             using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
             {
                 if (lib.procConn(conn) == true)
                 {
                     string consulta = "select a.id,a.fechopegr,a.sergui,a.numgui,a.numpregui,a.tidodegri,a.nudodegri,a.nombdegri,a.diredegri," +
-                        "a.ubigdegri,a.tidoregri,a.nudoregri,a.nombregri,a.direregri,a.ubigregri,lo.descrizionerid as ORIGEN,a.dirorigen,a.ubiorigen," +
-                        "ld.descrizionerid as DESTINO,a.dirdestin,a.ubidestin,a.docsremit,a.obspregri,a.clifingri,a.cantotgri,a.pestotgri," +
-                        "a.tipmongri,a.tipcamgri,a.subtotgri,a.igvgri,round(a.totgri,1) as totgri,a.totpag,a.salgri,s.descrizionerid as ESTADO,a.impreso," +
+                        "a.ubigdegri,a.tidoregri,a.nudoregri,a.nombregri,a.direregri,a.ubigregri,a.locorigen,a.dirorigen,a.ubiorigen,lo.descrizionerid as ORIGEN," +
+                        "a.locdestin,a.dirdestin,a.ubidestin,a.docsremit,a.obspregri,a.clifingri,a.cantotgri,a.pestotgri,ld.descrizionerid as DESTINO," +
+                        "a.tipmongri,a.tipcamgri,a.subtotgri,a.igvgri,round(a.totgri,1) as totgri,a.totpag,a.salgri,a.estadoser,a.impreso,s.descrizionerid as ESTADO," +
                         "a.frase1,a.frase2,a.fleteimp,a.tipintrem,a.tipintdes,a.tippagpre,a.seguroE,a.userc,a.userm,a.usera," +
                         "a.serplagri,a.numplagri,a.plaplagri,a.carplagri,a.autplagri,a.confvegri,a.breplagri,a.proplagri," +
-                        "ifnull(b.chocamcar,'') as chocamcar,ifnull(b.fecplacar,'') as fecplacar,ifnull(b.fecdocvta,'') as fecdocvta,ifnull(f.descrizionerid,'') as tipdocvta," +
+                        "ifnull(p.nomchofe,'') as chocamcar,ifnull(p.nregtrackto,'') as nregtrackto,ifnull(p.nregcarreta,'') as nregcarreta," +
+                        "ifnull(p.brevayuda,'') as brevayuda,ifnull(p.nomayuda,'') as nomayuda,ifnull(p.dnichofer,'') as dnichofer,ifnull(p.dniayudante,'') as dniayudante," +
+                        "ifnull(p.tipdocpri,'') as tipdocpri,ifnull(p.tipdocayu,'') as tipdocayu,mo.descrizionerid as MON," +
+                        "ifnull(b.fecplacar,'') as fecplacar,ifnull(b.fecdocvta,'') as fecdocvta,ifnull(f.descrizionerid,'') as tipdocvta," +
                         "ifnull(b.serdocvta,'') as serdocvta,ifnull(b.numdocvta,'') as numdocvta,ifnull(b.codmonvta,'') as codmonvta," +
                         "ifnull(b.totdocvta,0) as totdocvta,ifnull(b.codmonpag,'') as codmonpag,ifnull(b.totpagado,0) as totpagado,ifnull(b.saldofina,0) as saldofina," +
                         "ifnull(b.feculpago,'') as feculpago,ifnull(b.estadoser,'') as estadoser,ifnull(c.razonsocial,'') as razonsocial,a.grinumaut," +
-                        "ifnull(d.marca,'') as marca,ifnull(d.modelo,'') as modelo,a.teleregri as telrem,a.teledegri as teldes,ifnull(t.nombclt,'') as clifact," +
-                        "u1.nombre AS distrem,u2.nombre as provrem,u3.nombre as deptrem,v1.nombre as distdes,v2.nombre as provdes,v3.nombre as deptdes,mo.descrizionerid as MON " +
+                        "ifnull(d.marca,'') as marca,ifnull(d.modelo,'') as modelo,ifnull(r.marca,'') as marCarret,ifnull(r.confve,'') as confvCarret,ifnull(r.autor1,'') as autCarret," +
+                        "ifnull(er.numerotel1,'') as telrem,ifnull(ed.numerotel1,'') as teldes,ifnull(t.nombclt,'') as clifact," +
+                        "a.marca_gre,a.tidocor,a.rucDorig,a.lpagop,a.pesoKT,a.tidocor2,a.rucDorig2,a.docsremit2,a.marca1," +
+                        "ifnull(ad.nticket,'') as nticket,ifnull(ad.estadoS,'') as estadoS, ifnull(ad.cdr,'') as cdr,ifnull(ad.cdrgener,'') as cdrgener," +
+                        "ifnull(ad.textoQR,'') as textoQR,ifnull(ad.fticket,'') as fticket," +
+                        "ifnull(dr1.descrizionerid,'') as NomTidor1,ifnull(dr2.descrizionerid,'') as NomTidor2,dre.descrizionerid as NomDocRem,dde.descrizionerid as NomDocDes," +
+                        "(SELECT nombre FROM ubigeos WHERE depart = LEFT(a.ubigdegri, 2) LIMIT 1) AS Dpto_Des," +
+                        "(SELECT nombre FROM ubigeos WHERE CONCAT(depart, provin) = LEFT(a.ubigdegri, 4) LIMIT 1) AS Prov_Des," +
+                        "(SELECT nombre FROM ubigeos WHERE CONCAT(depart, provin, distri) = a.ubigdegri LIMIT 1) AS Dist_Des," +
+                        "(SELECT nombre FROM ubigeos WHERE depart = LEFT(a.ubigregri, 2) LIMIT 1) AS Dpto_Rem," +
+                        "(SELECT nombre FROM ubigeos WHERE CONCAT(depart, provin) = LEFT(a.ubigregri, 4) LIMIT 1) AS Prov_Rem," +
+                        "(SELECT nombre FROM ubigeos WHERE CONCAT(depart, provin, distri) = a.ubigregri LIMIT 1) AS Dist_Rem," +
+                        "ifnull(a.fechplani,'') as fechplani " +
                         "from cabguiai a " +
+                        "left join adiguias ad on ad.idg=a.id " +
                         "left join controlg b on b.serguitra=a.sergui and b.numguitra=a.numgui " +
                         "left join desc_tdv f on f.idcodice=b.tipdocvta " +
                         "left join cabfactu t on t.tipdvta=a.tipdocvta and t.serdvta=a.serdocvta and t.numdvta=a.numdocvta " +
                         "left join anag_for c on c.ruc=a.proplagri and c.tipdoc=@tdep " +
                         "left join vehiculos d on d.placa=a.plaplagri " +
+                        "left join vehiculos r on r.placa=a.carplagri " +
+                        "left join cabplacar p on p.id=a.idplani " +
+                        "left join desc_est s on s.idcodice=a.estadoser " +
+                        "left join desc_loc ld on ld.idcodice=a.locdestin " +
+                        "left join desc_loc lo on lo.idcodice=a.locorigen " +
+                        "left join desc_mon mo on mo.idcodice=a.tipmongri " +
                         "left join anag_cli er on er.ruc=a.nudoregri and er.tipdoc=a.tidoregri " +
                         "left join anag_cli ed on ed.ruc=a.nudodegri and ed.tipdoc=a.tidodegri " +
-                        "left join desc_est s on s.idcodice=a.estadoser " +
-                        "left join desc_loc lo on lo.idcodice=a.locorigen " +
-                        "left join desc_loc ld on ld.idcodice=a.locdestin " +
-                        "left join desc_mon mo on mo.idcodice=a.tipmongri " +
-                        "LEFT JOIN ubigeos u1 ON CONCAT(u1.depart, u1.provin, u1.distri)= a.ubigregri " +
-                        "LEFT JOIN(SELECT* FROM ubigeos WHERE depart<>'00' AND provin<>'00' AND distri = '00') u2 ON u2.depart = left(a.ubigregri, 2) AND u2.provin = concat(substr(a.ubigregri, 3, 2)) " +
-                        "LEFT JOIN (SELECT* FROM ubigeos WHERE depart<>'00' AND provin='00' AND distri = '00') u3 ON u3.depart = left(a.ubigregri, 2) " +
-                        "LEFT JOIN ubigeos v1 ON CONCAT(v1.depart, v1.provin, v1.distri)= a.ubigdegri " +
-                        "LEFT JOIN (SELECT* FROM ubigeos WHERE depart<>'00' AND provin<>'00' AND distri = '00') v2 ON v2.depart = left(a.ubigdegri, 2) AND v2.provin = concat(substr(a.ubigdegri, 3, 2)) " +
-                        "LEFT JOIN (SELECT* FROM ubigeos WHERE depart<>'00' AND provin='00' AND distri = '00') v3 ON v3.depart = left(a.ubigdegri, 2) " +
+                        "left join desc_dtm dr1 on dr1.idcodice=a.tidocor " +
+                        "left join desc_dtm dr2 on dr2.idcodice=a.tidocor2 " +
+                        "left join desc_doc dre on dre.idcodice=a.tidoregri " +
+                        "left join desc_doc dde on dde.idcodice=a.tidodegri " +
                         "where a.sergui = @ser and a.numgui = @num";
                     using (MySqlCommand micon = new MySqlCommand(consulta, conn))
                     {
@@ -265,7 +280,82 @@ namespace TransCarga
                     }
                 }
                 // llenamos el set
-                setParaCrystal("GRT", nomfcr);
+                if (ser.Substring(0, 1) == "0") setParaCrystal("GRT", nomfcr);      // formato guia mecanizada
+                else
+                {
+                    string[] vs = {"","","","","","","","","","","","","", "", "", "", "", "", "", "",   // 20
+                               "", "", "", "", "", "", "", "", "", "", ""};    // 11
+                    string[] vc = { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" };   // 16
+                    string[] va = { "", "", "", "", "", "" };       // 6
+                    string[,] dt = new string[3, 5] { { "", "", "", "", "" }, { "", "", "", "", "" }, { "", "", "", "", "" } }; // 5 columnas
+
+                    vs[0] = ser;
+                    vs[1] = cor;
+                    vs[2] = dtgrtcab.Rows[0]["fechopegr"].ToString().Substring(0, 10);
+                    vs[3] = dtgrtcab.Rows[0]["dirorigen"].ToString();
+                    vs[4] = dtgrtcab.Rows[0]["NomTidor1"].ToString();    // cmb_docorig.Text;
+                    vs[5] = dtgrtcab.Rows[0]["docsremit"].ToString();    // tx_docsOr.Text;
+                    vs[6] = dtgrtcab.Rows[0]["rucDorig"].ToString();    // tx_rucEorig.Text; 
+                    vs[7] = dtgrtcab.Rows[0]["NomTidor2"].ToString();    // cmb_docorig2.Text; 
+                    vs[8] = dtgrtcab.Rows[0]["docsremit2"].ToString();    //  tx_docsOr2.Text; 
+                    vs[9] = dtgrtcab.Rows[0]["rucDorig2"].ToString();    // tx_rucEorig2.Text; 
+                    vs[10] = dtgrtcab.Rows[0]["NomDocRem"].ToString();    // cmb_docRem.Text;
+                    vs[11] = dtgrtcab.Rows[0]["nudoregri"].ToString();    // tx_numDocRem.Text; 
+                    vs[12] = dtgrtcab.Rows[0]["nombregri"].ToString();    // tx_nomRem.Text;  
+                    vs[13] = dtgrtcab.Rows[0]["NomDocDes"].ToString();    // cmb_docDes.Text; 
+                    vs[14] = dtgrtcab.Rows[0]["nudodegri"].ToString();    // tx_numDocDes.Text;
+                    vs[15] = dtgrtcab.Rows[0]["nombdegri"].ToString();    // tx_nomDrio.Text; 
+                    if (dtgrtcab.Rows[0]["fechplani"].ToString() != "") vs[16] = dtgrtcab.Rows[0]["fechplani"].ToString().Substring(8, 2) + "/" + dtgrtcab.Rows[0]["fechplani"].ToString().Substring(5, 2) + "/" + dtgrtcab.Rows[0]["fechplani"].ToString().Substring(0, 4);
+                    else vs[16] = "";
+                    vs[17] = dtgrtcab.Rows[0]["pestotgri"].ToString();
+                    vs[18] = dtgrtcab.Rows[0]["pesoKT"].ToString();
+                    vs[19] = dtgrtcab.Rows[0]["direregri"].ToString();
+                    vs[20] = dtgrtcab.Rows[0]["Dpto_Rem"].ToString();
+                    vs[21] = dtgrtcab.Rows[0]["Prov_Rem"].ToString();
+                    vs[22] = dtgrtcab.Rows[0]["Dist_Rem"].ToString();
+                    vs[23] = dtgrtcab.Rows[0]["diredegri"].ToString();
+                    vs[24] = dtgrtcab.Rows[0]["Dpto_Des"].ToString();
+                    vs[25] = dtgrtcab.Rows[0]["Prov_Des"].ToString();
+                    vs[26] = dtgrtcab.Rows[0]["Dist_Des"].ToString();
+                    vs[27] = dtgrtcab.Rows[0]["userc"].ToString();
+                    vs[28] = dtgrtcab.Rows[0]["locorigen"].ToString();
+                    vs[29] = dtgrtcab.Rows[0]["numpregui"].ToString();                 // número de pre-guia (orden de servicio)
+                    vs[30] = dtgrtcab.Rows[0]["totgri"].ToString();
+
+                    vc[0] = dtgrtcab.Rows[0]["plaplagri"].ToString();
+                    vc[1] = dtgrtcab.Rows[0]["autplagri"].ToString();
+                    vc[2] = "";      // Num Registro MTC del transportista
+                    vc[3] = dtgrtcab.Rows[0]["confvegri"].ToString();
+                    vc[4] = dtgrtcab.Rows[0]["carplagri"].ToString();                   // Placa carreta
+                    vc[5] = dtgrtcab.Rows[0]["autCarret"].ToString();                   // Autoriz. vehicular
+                    vc[6] = "";      // Num Registro MTC de la carreta
+                    vc[7] = "";                                   // Conf. vehicular de la carreta, ya esta incluido en  tx_pla_confv.Text
+
+                    vc[8] = dtgrtcab.Rows[0]["dnichofer"].ToString();                   // Choferes - Dni chofer principal
+                    vc[9] = dtgrtcab.Rows[0]["breplagri"].ToString();                   // Choferes - dr.GetString()
+                    vc[10] = dtgrtcab.Rows[0]["chocamcar"].ToString();                  // Choferes - dr.GetString()
+                    vc[11] = "";                                  // Choferes - Apellidos (ya esta incluido en tx_pla_nomcho.Text)
+                    vc[12] = dtgrtcab.Rows[0]["dniayudante"].ToString();                   // Choferes - Dni chofer secundario
+                    vc[13] = dtgrtcab.Rows[0]["brevayuda"].ToString();                   // Choferes - Brevete chofer secundario
+                    vc[14] = dtgrtcab.Rows[0]["nomayuda"].ToString();                 // Choferes - Nombres
+                    vc[15] = "";                                  // Choferes - Apellidos (ya esta incluido en el nombre)
+
+                    va[0] = dtgrtcab.Rows[0]["textoQR"].ToString();                 // Varios: texto del código QR ->tx_dat_textoqr.Text
+                    va[1] = RimgQR;                                         // "C:\temp\"+"imgQR.png"
+                    va[2] = "";                                 // despedida;
+                    va[3] = "";                                  // Varios: segunda linea de despedida
+                    va[4] = "";                                 // glosa1;
+                    va[5] = "";                                 // glosa2;
+                    // id,sergui,numgui,cantprodi,unimedpro,codiprodi,descprodi,round(pesoprodi,1),precprodi,totaprodi 
+                    int y = 0;
+                    dt[y, 0] = (y + 1).ToString();                           // detalle: Num de fila
+                    dt[y, 1] = dtgrtdet.Rows[y]["cantprodi"].ToString();     // tx_det_cant.Text;                // detalle: Cant.
+                    dt[y, 2] = dtgrtdet.Rows[y]["unimedpro"].ToString();     // detalle: Unidad de medida
+                    dt[y, 3] = gloDeta + " " + dtgrtdet.Rows[y]["descprodi"].ToString();    // detalle: Descripción
+                    dt[y, 4] = dtgrtdet.Rows[y][7].ToString();               // detalle: peso
+
+                    impGRE_T impGRE = new impGRE_T(1, v_impTK, vs, dt, va, vc, vi_formato, v_CR_gr_ind);
+                }       // formato guía electrónica
             }
         }
         public void muestra_pl(string ser, string cor, string nomfcr)                 // muestra la planilla de carga

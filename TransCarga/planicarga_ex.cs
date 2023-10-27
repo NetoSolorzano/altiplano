@@ -8,7 +8,7 @@ using MySql.Data.MySqlClient;
 
 namespace TransCarga
 {
-    public partial class planicarga : Form
+    public partial class planicarga_ex : Form
     {
         static string nomform = "planicarga";           // nombre del formulario
         string colback = TransCarga.Program.colbac;     // color de fondo
@@ -58,7 +58,6 @@ namespace TransCarga
         string v_mondef = "";           // moneda por defecto del form
         string vint_A0 = "";            // variable INTERNA para amarrar el codigo anulacion cliente con A0
         int v_cdrp = 0;                 // cantidad de días para reabrir una planilla de carga
-        string v_tchof = "";            // codigo tipo de empleado chofer
         //
         static libreria lib = new libreria();   // libreria de procedimientos
         publico lp = new publico();             // libreria de clases
@@ -70,9 +69,14 @@ namespace TransCarga
 
         // string de conexion
         string DB_CONN_STR = "server=" + login.serv + ";uid=" + login.usua + ";pwd=" + login.cont + ";database=" + login.data + ";";
-        public static string CadenaConexion = "Data Source=TransCarga.db";  // Data Source=TransCarga;Mode=Memory;Cache=Shared
+        DataTable dtu = new DataTable();
+        DataTable dtd = new DataTable();
+        DataTable dtm = new DataTable();
+        DataTable dtf = new DataTable();    // formatos de impresion CR
+        DataTable dtdoc = new DataTable();
+        DataTable dtdoca = new DataTable();
 
-        public planicarga()
+        public planicarga_ex()
         {
             InitializeComponent();
         }
@@ -140,7 +144,6 @@ namespace TransCarga
                 }
                 return true;    // indicate that you handled this keystroke
             }
-            /*
             if (keyData == Keys.F1 && tx_pla_brevet.Focused == true)
             {
                 para1 = "Brevete";
@@ -169,7 +172,6 @@ namespace TransCarga
                 }
                 return true;
             }
-            */
             if (keyData == Keys.F1 && tx_dniC.Focused == true)
             {
                 para1 = "rrhh";
@@ -179,15 +181,11 @@ namespace TransCarga
                 var result = ayu3.ShowDialog();
                 if (result == DialogResult.Cancel)  // deberia ser OK, pero que chuuu
                 {
-                    if (ayu3.ReturnValueA != null && ayu3.ReturnValueA[1].ToString() != "")
-                    {
-                        tx_dat_tdchof.Text = ayu3.ReturnValueA[1];
-                        tx_dniC.Text = ayu3.ReturnValueA[2];   // ayu3.ReturnValue0;
-                        tx_pla_brevet.Text = ayu3.ReturnValueA[4];
-                        tx_pla_nomcho.Text = ayu3.ReturnValueA[3];
-                        cmb_doc.SelectedValue = tx_dat_tdchof.Text;
-                        tx_pla_brevet.Focus();
-                    }
+                    tx_dat_tdchof.Text = ayu3.ReturnValueA[1];
+                    tx_dniC.Text = ayu3.ReturnValueA[2];   // ayu3.ReturnValue0;
+                    tx_pla_brevet.Text = ayu3.ReturnValueA[4];
+                    tx_pla_nomcho.Text = ayu3.ReturnValueA[3];
+                    cmb_doc.SelectedValue = tx_dat_tdchof.Text;
                 }
                 return true;
             }
@@ -200,15 +198,11 @@ namespace TransCarga
                 var result = ayu3.ShowDialog();
                 if (result == DialogResult.Cancel)  // deberia ser OK, pero que chuuu
                 {
-                    if (ayu3.ReturnValueA != null && ayu3.ReturnValueA[1].ToString() != "")
-                    {
-                        tx_dat_tdayu.Text = ayu3.ReturnValueA[1];
-                        tx_dniA.Text = ayu3.ReturnValueA[2];
-                        tx_pla_ayud.Text = ayu3.ReturnValueA[4]; ;
-                        tx_pla_nomayu.Text = ayu3.ReturnValueA[3];
-                        cmb_doca.SelectedValue = tx_dat_tdayu.Text;
-                        tx_pla_ayud.Focus();
-                    }
+                    tx_dat_tdayu.Text = ayu3.ReturnValueA[1];
+                    tx_dniA.Text = ayu3.ReturnValueA[2];
+                    tx_pla_ayud.Text = ayu3.ReturnValueA[4]; ;
+                    tx_pla_nomayu.Text = ayu3.ReturnValueA[3];
+                    cmb_doca.SelectedValue = tx_dat_tdayu.Text;
                 }
                 return true;
             }
@@ -371,9 +365,20 @@ namespace TransCarga
         {
             try
             {
-                for (int t = 0; t < Program.dt_enlaces.Rows.Count; t++)
+                MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
+                conn.Open();
+                string consulta = "select formulario,campo,param,valor from enlaces where formulario in (@nofo,@nfin,@nofi,@nofa)";
+                MySqlCommand micon = new MySqlCommand(consulta, conn);
+                micon.Parameters.AddWithValue("@nofo", "main");
+                micon.Parameters.AddWithValue("@nfin", "interno");
+                micon.Parameters.AddWithValue("@nofi", "clients");
+                micon.Parameters.AddWithValue("@nofa", nomform);
+                MySqlDataAdapter da = new MySqlDataAdapter(micon);
+                DataTable dt = new DataTable();
+                da.Fill(dt);
+                for (int t = 0; t < dt.Rows.Count; t++)
                 {
-                    DataRow row = Program.dt_enlaces.Rows[t];
+                    DataRow row = dt.Rows[t];
                     if (row["formulario"].ToString() == "main")
                     {
                         if (row["campo"].ToString() == "imagenes")
@@ -409,7 +414,6 @@ namespace TransCarga
                             if (row["param"].ToString() == "frase2") v_fra2 = row["valor"].ToString().Trim();               // frase otro dato
                             if (row["param"].ToString() == "serieAnu") v_sanu = row["valor"].ToString().Trim();             // serie anulacion interna
                             if (row["param"].ToString() == "reabre") v_cdrp = int.Parse(row["valor"].ToString());           // cantidad de días para re-abrir un manifiesto
-                            if (row["param"].ToString() == "ctchof") v_tchof = row["valor"].ToString().Trim();           // tipo de empleado CHOFER
                         }
                         if (row["campo"].ToString() == "impresion")
                         {
@@ -433,10 +437,13 @@ namespace TransCarga
                         if (row["campo"].ToString() == "anulado" && row["param"].ToString() == "A0") vint_A0 = row["valor"].ToString().Trim();
                     }
                 }
+                da.Dispose();
+                dt.Dispose();
                 // jalamos datos del usuario y local
                 v_clu = lib.codloc(asd);                // codigo local usuario
                 v_slu = lib.serlocs(v_clu);             // serie local usuario
                 v_nbu = lib.nomuser(asd);               // nombre del usuario
+                conn.Close();
             }
             catch (MySqlException ex)
             {
@@ -601,12 +608,10 @@ namespace TransCarga
         }
         private void jaladet(string idr)         // jala el detalle
         {
-            //"concat(d.descrizionerid,'-',if(SUBSTRING(g.serdocvta,1,2)='00',SUBSTRING(g.serdocvta,3,2),g.serdocvta),'-',if(SUBSTRING(g.numdocvta,1,3)='000',SUBSTRING(g.numdocvta,4,5),g.numdocvta))," +
-            // "select a.idc,a.serplacar,a.numplacar,a.fila,a.numpreg,a.serguia,a.numguia,a.totcant,floor(a.totpeso) as totpeso,b.descrizionerid as MON,a.totflet,"
-            string jalad = "select a.idc,a.serplacar,a.numplacar,a.fila,(g.numpregui*1) as numpreg,a.serguia,a.numguia,a.totcant,floor(a.totpeso) as totpeso,b.descrizionerid as MON,a.totflet," +
+            string jalad = "select a.idc,a.serplacar,a.numplacar,a.fila,a.numpreg,a.serguia,a.numguia,a.totcant,floor(a.totpeso) as totpeso,b.descrizionerid as MON,a.totflet," +
                 "a.estadoser,a.codmone,'X' as marca,a.id,a.pagado,a.salxcob,g.nombdegri,g.diredegri,g.teledegri,a.nombult,u1.nombre AS distrit,u2.nombre as provin," +
-                "concat(left(d.descrizionerid,1),SUBSTRING(g.serdocvta,2,3),'-',g.numdocvta)," +
-                "(g.numpregui*1) as numpregui " +
+                "concat(d.descrizionerid,'-',if(SUBSTRING(g.serdocvta,1,2)='00',SUBSTRING(g.serdocvta,3,2),g.serdocvta),'-',if(SUBSTRING(g.numdocvta,1,3)='000',SUBSTRING(g.numdocvta,4,5),g.numdocvta))," +
+                "g.nombregri " +
                 "from detplacar a " +
                 "left join desc_mon b on b.idcodice = a.codmone " +
                 "left join cabguiai g on g.sergui = a.serguia and g.numgui = a.numguia " +
@@ -685,36 +690,68 @@ namespace TransCarga
         }
         private void dataload()                  // jala datos para los combos 
         {
+            MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
+            conn.Open();
+            if (conn.State != ConnectionState.Open)
+            {
+                MessageBox.Show("No se pudo conectar con el servidor", "Error de conexión");
+                Application.Exit();
+                return;
+            }
             //  datos para los combos de locales origen y destino
             cmb_origen.Items.Clear();
-            cmb_origen.DataSource = Program.dt_definic.Select("idtabella='LOC'").CopyToDataTable(); // dtu;
+            MySqlCommand ccl = new MySqlCommand("select idcodice,descrizionerid,ubidir,marca1 from desc_loc where numero=@bloq", conn);
+            ccl.Parameters.AddWithValue("@bloq", 1);
+            MySqlDataAdapter dacu = new MySqlDataAdapter(ccl);
+            dtu.Clear();
+            dacu.Fill(dtu);
+            cmb_origen.DataSource = dtu;
             cmb_origen.DisplayMember = "descrizionerid";
             cmb_origen.ValueMember = "idcodice";
             //
+            dtd.Clear();
+            dacu.Fill(dtd);
             cmb_destino.Items.Clear();
-            cmb_destino.DataSource = Program.dt_definic.Select("idtabella='LOC'").CopyToDataTable();    // dtd;
+            cmb_destino.DataSource = dtd;
             cmb_destino.DisplayMember = "descrizionerid";
             cmb_destino.ValueMember = "idcodice";
             // datos para el combo de moneda
             cmb_mon.Items.Clear();
-            cmb_mon.DataSource = Program.dt_definic.Select("idtabella='MON'").CopyToDataTable(); // dtm;
+            MySqlCommand cmo = new MySqlCommand("select idcodice,descrizionerid from desc_mon where numero=@bloq", conn);
+            cmo.Parameters.AddWithValue("@bloq", 1);
+            dacu = new MySqlDataAdapter(cmo);
+            dtm.Clear();
+            dacu.Fill(dtm);
+            cmb_mon.DataSource = dtm;
             cmb_mon.DisplayMember = "descrizionerid";
             cmb_mon.ValueMember = "idcodice";
             // datos de formatos de impresion
             cmb_forimp.Items.Clear();
-            //MySqlCommand cmf = new MySqlCommand("select valor from enlaces where formulario='planicarga' and campo='impresion' and param like '%_cr%'", conn);
-            cmb_forimp.DataSource = Program.dt_enlaces.Select("formulario='planicarga' and campo='impresion'").CopyToDataTable();    //dtf;
+            MySqlCommand cmf = new MySqlCommand("select valor from enlaces where formulario='planicarga' and campo='impresion' and param like '%_cr%'", conn);
+            dacu = new MySqlDataAdapter(cmf);
+            dtf.Clear();
+            dacu.Fill(dtf);
+            cmb_forimp.DataSource = dtf;
             cmb_forimp.DisplayMember = "valor";
             cmb_forimp.ValueMember = "valor";
             // datos de tipo de documento del chofer
             cmb_doc.Items.Clear();
-            cmb_doc.DataSource = Program.dt_definic.Select("idtabella='DOC'").CopyToDataTable();    // dtdoc;
+            const string condoc = "select idcodice,descrizionerid,descrizione,codigo,codsunat,deta1 from desc_doc " +
+                "order by idcodice";
+            MySqlCommand cmbtpu = new MySqlCommand(condoc, conn);
+            MySqlDataAdapter datpu = new MySqlDataAdapter(cmbtpu);
+            datpu.Fill(dtdoc);
+            cmb_doc.DataSource = dtdoc;
             cmb_doc.DisplayMember = "descrizionerid";
             cmb_doc.ValueMember = "idcodice";
             // datos de tipo de documento del ayudante
-            cmb_doca.DataSource = Program.dt_definic.Select("idtabella='DOC'").CopyToDataTable();   // dtdoca;
+            cmb_doca.Items.Clear();
+            datpu.Fill(dtdoca);
+            cmb_doca.DataSource = dtdoca;
             cmb_doca.DisplayMember = "descrizionerid";
             cmb_doca.ValueMember = "idcodice";
+
+            conn.Close();
         }
         private bool valiGri()                  // valida filas completas en la grilla - 8 columnas
         {
@@ -998,33 +1035,6 @@ namespace TransCarga
 
             return retorna;
         }
-        private string[] buschof(string tipD, string numD)
-        {
-            string[] retorna = { "", ""};
-            using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
-            {
-                conn.Open();
-                string consulta = "select tipdoc,numdoc,nombre,brevete from cabrrhh where bloqueado=0 and codtipo=@tipc and tipdoc=@tipd and numdoc=@ndoc";
-                using (MySqlCommand micon = new MySqlCommand(consulta, conn))
-                {
-                    micon.Parameters.AddWithValue("@tipc", v_tchof);
-                    micon.Parameters.AddWithValue("@tipd", tipD);
-                    micon.Parameters.AddWithValue("@ndoc", numD);
-                    using (MySqlDataReader dr = micon.ExecuteReader())
-                    {
-                        if (dr.Read())
-                        {
-                            if (dr[0] != null && dr.GetString(0) != "" )
-                            {
-                                retorna[0] = dr.GetString("brevete");
-                                retorna[1] = dr.GetString("nombre");
-                            }
-                        }
-                    }
-                }
-            }
-            return retorna;
-        }
 
         #region limpiadores_modos
         private void sololee()
@@ -1046,10 +1056,6 @@ namespace TransCarga
             tx_carret_conf.ReadOnly = true;
             tx_carret_autoriz.ReadOnly = true;
             tx_nregC.ReadOnly = true;
-            tx_pla_brevet.ReadOnly = true;
-            tx_pla_ayud.ReadOnly = true;
-            tx_pla_nomcho.ReadOnly = true;
-            tx_pla_nomayu.ReadOnly = true;
         }
         private void limpiar()
         {
@@ -1107,6 +1113,70 @@ namespace TransCarga
                 if (rb_bus.Checked == true) tx_car3ro_ruc.Focus();
                 return;
             }
+            if (rb_propio.Checked == true)
+            {
+                // validacion se hace desde funcion en B.D.: ayudante 
+                if (tx_pla_autor.Text == "")        // autorizacion circulacion
+                {
+                    MessageBox.Show("Falta la autorización de circulación", "Complete la información", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    tx_pla_autor.Focus();
+                    return;
+                }
+                if (tx_pla_brevet.Text == "")       // brevete chofer
+                {
+                    MessageBox.Show("Falta el brevete del chofer", "Complete la información", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    tx_pla_brevet.Focus();
+                    return;
+                }
+                if (tx_pla_confv.Text == "")        // conf. vehicular
+                {
+                    MessageBox.Show("Falta la configuración vehicular", "Complete la información", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    tx_pla_confv.Focus();
+                    return;
+                }
+                if (tx_pla_nomcho.Text == "")       // nombre chofer
+                {
+                    MessageBox.Show("Falta el nombre del chofer", "Complete la información", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    tx_pla_nomcho.Focus();
+                    return;
+                }
+                if (tx_pla_placa.Text == "")        // placa trompa
+                {
+                    MessageBox.Show("Ingrese la placa del camión", "Complete la información", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    tx_pla_placa.Focus();
+                    return;
+                }
+            }
+            if (tx_dniA.Text.Trim() == "" && tx_pla_nomayu.Text.Trim() != "")
+            {
+                MessageBox.Show("Debe completar los datos de la fila", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                tx_pla_nomayu.Focus();
+                return;
+            }
+            if (tx_pla_brevet.Text == "")
+            {
+                MessageBox.Show("Debe completar los datos de la fila", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                tx_pla_brevet.Focus();
+                return;
+            }
+            if (tx_dniA.Text.Trim() != "" && tx_pla_ayud.Text == "")
+            {
+                MessageBox.Show("Debe completar los datos de la fila", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                tx_pla_ayud.Focus();
+                return;
+            }
+            if (tx_nregP.Text.Trim() == "")
+            {
+                MessageBox.Show("Debe ingresar el registro MTC","Falta información",MessageBoxButtons.OK,MessageBoxIcon.Information);
+                tx_nregP.Focus();
+                return;
+            }
+            if (tx_nregC.Text.Trim() == "")
+            {
+                MessageBox.Show("Debe ingresar el registro MTC", "Falta información", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                tx_nregC.Focus();
+                return;
+            }
             #endregion
             // recalculamos totales 
             operaciones();
@@ -1115,68 +1185,6 @@ namespace TransCarga
             string iserror = "no";
             if (modo == "NUEVO")
             {
-                #region validaciones generales para nuevos registros
-                if (rb_propio.Checked == true)
-                {
-                    // validacion se hace desde funcion en B.D.: ayudante 
-                    if (tx_pla_autor.Text == "")        // autorizacion circulacion
-                    {
-                        MessageBox.Show("Falta la autorización de circulación", "Complete la información", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        tx_pla_autor.Focus();
-                        return;
-                    }
-                    if (tx_pla_brevet.Text == "")       // brevete chofer
-                    {
-                        MessageBox.Show("Falta el brevete del chofer", "Complete la información", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        tx_pla_brevet.Focus();
-                        return;
-                    }
-                    if (tx_pla_confv.Text == "")        // conf. vehicular
-                    {
-                        MessageBox.Show("Falta la configuración vehicular", "Complete la información", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        tx_pla_confv.Focus();
-                        return;
-                    }
-                    if (tx_pla_nomcho.Text == "")       // nombre chofer
-                    {
-                        MessageBox.Show("Falta el nombre del chofer", "Complete la información", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        tx_pla_nomcho.Focus();
-                        return;
-                    }
-                    if (tx_pla_placa.Text == "")        // placa trompa
-                    {
-                        MessageBox.Show("Ingrese la placa del camión", "Complete la información", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        tx_pla_placa.Focus();
-                        return;
-                    }
-                }
-                if (tx_dniA.Text.Trim() == "" && tx_pla_nomayu.Text.Trim() != "")
-                {
-                    MessageBox.Show("Debe completar los datos de la fila" + Environment.NewLine +
-                        "Falta tipo y número de documento de identidad", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    tx_pla_nomayu.Focus();
-                    return;
-                }
-                if (tx_dniA.Text.Trim() != "" && tx_pla_ayud.Text == "")
-                {
-                    MessageBox.Show("Debe completar los datos de la fila" + Environment.NewLine +
-                        "Falta el brevete del ayudante", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    tx_pla_ayud.Focus();
-                    return;
-                }
-                if (tx_nregP.Text.Trim() == "")
-                {
-                    MessageBox.Show("Debe ingresar el registro MTC", "Falta información", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    tx_nregP.Focus();
-                    return;
-                }
-                if (tx_pla_carret.Text != "" && tx_nregC.Text.Trim() == "")
-                {
-                    MessageBox.Show("Debe ingresar el registro MTC", "Falta información", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    tx_nregC.Focus();
-                    return;
-                }
-                #endregion
                 #region Validaciones Sunat
                 // autorizaciones de circulacion - longitud
                 if (tx_pla_autor.Text.Trim().Length < 9 || tx_pla_autor.Text.Trim().Length > 16)
@@ -1186,7 +1194,7 @@ namespace TransCarga
                     tx_pla_autor.Focus();
                     return;
                 }
-                if (tx_pla_carret.Text != "" && (tx_carret_autoriz.Text.Trim().Length < 9 || tx_carret_autoriz.Text.Trim().Length > 16))
+                if (tx_carret_autoriz.Text.Trim().Length < 9 || tx_carret_autoriz.Text.Trim().Length > 16)
                 {
                     MessageBox.Show("Las autorizaciones de circulación deben" + Environment.NewLine +
                     "tener entre 10 y 15 caracteres alfanuméricos", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -1201,7 +1209,7 @@ namespace TransCarga
                     tx_nregP.Focus();
                     return;
                 }
-                if (tx_pla_carret.Text != "" && (tx_nregC.Text.Trim().Length < 9 || tx_nregC.Text.Trim().Length > 12))
+                if (tx_nregC.Text.Trim().Length < 9 || tx_nregC.Text.Trim().Length > 12)
                 {
                     MessageBox.Show("El registro MTC del vehículo debe" + Environment.NewLine +
                     "tener entre 9 y 12 caracteres alfanuméricos", "Validación Sunat", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -1818,39 +1826,6 @@ namespace TransCarga
                 tx_serie.Text = lib.Right("000" + tx_serie.Text.Trim(), 4);
             }
         }
-        private void tx_numero_Leave(object sender, EventArgs e)
-        {
-            if (Tx_modo.Text != "NUEVO" && tx_numero.Text.Trim() != "")
-            {
-                if (true)
-                {
-                    tx_numero.Text = lib.Right("0000000" + tx_numero.Text.Trim(), 8);
-                    jalaoc("sernum");
-                    jaladet(tx_idr.Text);
-                    dataGridView1.ReadOnly = true;
-                    int tfil = 0;
-                    int.TryParse(tx_tfil.Text, out tfil);
-                    if (int.Parse(tx_tfil.Text) > 0 && Tx_modo.Text == "EDITAR")
-                    {
-                        splitContainer1.Panel1.Enabled = false;
-                    }
-                    if (Tx_modo.Text == "EDITAR" && tx_dat_estad.Text == codCier)        // si es del local del usuario y de la fecha actual, permite re-abrir la planilla 08/06/2021
-                    {
-                        // tx_fechope.Text == tx_fechact.Text.Substring(0, 10) && tx_dat_locori.Text == v_clu
-                        if ((DateTime.Parse(tx_fechact.Text) - DateTime.Parse(tx_fechope.Text)).Days <= v_cdrp && tx_dat_locori.Text == v_clu)
-                        {
-                            chk_cierea.Text = "RE ABRE LA PLANILLA";
-                            chk_cierea.Enabled = true;
-                        }
-                    }
-                    if (Tx_modo.Text == "EDITAR" && tx_dat_estad.Text == codGene)
-                    {
-                        dataGridView1.ReadOnly = false;
-                    }
-                }
-            }
-
-        }
         private void tx_numero_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (Tx_modo.Text != "NUEVO" && tx_numero.Text.Trim() != "")
@@ -2038,26 +2013,12 @@ namespace TransCarga
             {
                 if (tx_dat_tdchof.Text != "")
                 {
-                    DataRow[] fila = Program.dt_definic.Select("idcodice='" + tx_dat_tdchof.Text + "'"); // dtdoc.Select("idcodice='" + tx_dat_tdchof.Text + "'");
-                    if (tx_dniC.Text.Trim().Length != int.Parse(fila[0]["codigo"].ToString()))
+                    DataRow[] fila = dtdoc.Select("idcodice='" + tx_dat_tdchof.Text + "'");
+                    if (tx_dniC.Text.Trim().Length != int.Parse(fila[0][3].ToString()))
                     {
                         MessageBox.Show("Longitud del número erróneo","Atención",MessageBoxButtons.OK,MessageBoxIcon.Information);
                         tx_dniC.Text = "";
                         return;
-                    }
-                    else
-                    {
-                        string[] vs = buschof(tx_dat_tdchof.Text, tx_dniC.Text);
-                        if (vs[0] == "" )
-                        {
-                            MessageBox.Show("No se encuentra el conductor en la B.D.","Atención",MessageBoxButtons.OK, MessageBoxIcon.Information);
-                            return;
-                        }
-                        else
-                        {
-                            tx_pla_brevet.Text = vs[0];
-                            tx_pla_nomcho.Text = vs[1];
-                        }
                     }
                 }
             }
@@ -2068,26 +2029,12 @@ namespace TransCarga
             {
                 if (tx_dat_tdayu.Text != "")
                 {
-                    DataRow[] fila = Program.dt_definic.Select("idcodice='" + tx_dat_tdayu.Text + "'"); // dtdoc.Select("idcodice='" + tx_dat_tdayu.Text + "'");
-                    if (tx_dniA.Text.Trim().Length != int.Parse(fila[0]["codigo"].ToString()))
+                    DataRow[] fila = dtdoc.Select("idcodice='" + tx_dat_tdayu.Text + "'");
+                    if (tx_dniA.Text.Trim().Length != int.Parse(fila[0][3].ToString()))
                     {
                         MessageBox.Show("Longitud del número erróneo", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         tx_dniA.Text = "";
                         return;
-                    }
-                    else
-                    {
-                        string[] vs = buschof(tx_dat_tdayu.Text, tx_dniA.Text);
-                        if (vs[0] == "")
-                        {
-                            MessageBox.Show("No se encuentra el ayudante en la B.D.", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                            return;
-                        }
-                        else
-                        {
-                            tx_pla_ayud.Text = vs[0];
-                            tx_pla_nomayu.Text = vs[1];
-                        }
                     }
                 }
             }
@@ -2382,7 +2329,8 @@ namespace TransCarga
             }
             if (tx_dat_locori.Text.Trim() != "")
             {
-                //
+                DataRow[] fila = dtu.Select("idcodice='" + tx_dat_locori.Text + "'");
+                //tx_ubigO.Text = fila[0][2].ToString();
             }
         }
         private void cmb_destino_SelectionChangeCommitted(object sender, EventArgs e)
@@ -2420,7 +2368,7 @@ namespace TransCarga
             }
             if (tx_dat_locdes.Text.Trim() != "")
             {
-                //DataRow[] fila = dtd.Select("idcodice='" + tx_dat_locdes.Text + "'");
+                DataRow[] fila = dtd.Select("idcodice='" + tx_dat_locdes.Text + "'");
                 //tx_ubigD.Text = fila[0][2].ToString();
             }
         }
@@ -2430,8 +2378,8 @@ namespace TransCarga
             {
                 if (Tx_modo.Text == "NUEVO" || Tx_modo.Text == "EDITAR")
                 {
-                    tx_dat_tdchof.Text = cmb_doc.SelectedValue.ToString();  // Program.dt_definic.Select("idtabella='DOC'").CopyToDataTable();    // dtdoc;
-                    DataRow[] fila = Program.dt_definic.Select("idtabella='DOC' and idcodice='" + tx_dat_tdchof.Text + "'");   // (dtdoc.Select("idcodice='" + tx_dat_tdchof.Text + "'"));
+                    tx_dat_tdchof.Text = cmb_doc.SelectedValue.ToString();
+                    DataRow[] fila = (dtdoc.Select("idcodice='" + tx_dat_tdchof.Text + "'"));
                     cmb_doc.Tag = fila[0][3].ToString();
                 }
             }
@@ -2443,8 +2391,9 @@ namespace TransCarga
                 if (Tx_modo.Text == "NUEVO" || Tx_modo.Text == "EDITAR")
                 {
                     tx_dat_tdayu.Text = cmb_doca.SelectedValue.ToString();
-                    DataRow[] fila = Program.dt_definic.Select("idtabella='DOC' and idcodice='" + tx_dat_tdayu.Text + "'"); // (dtdoca.Select("idcodice='" + tx_dat_tdayu.Text + "'"));
+                    DataRow[] fila = (dtdoca.Select("idcodice='" + tx_dat_tdayu.Text + "'"));
                     cmb_doca.Tag = fila[0][3].ToString();
+                    //MessageBox.Show(cmb_doca.Tag.ToString());
                 }
             }
         }
@@ -2595,7 +2544,6 @@ namespace TransCarga
             PlaniC.placar_cab.Addplacar_cabRow(rowcabeza);
             //
             // DETALLE  
-            if (rb_orden_pg.Checked == true) dataGridView1.Sort(dataGridView1.Columns["numpreg"], System.ComponentModel.ListSortDirection.Ascending);
             if (rb_orden_gr.Checked == true) dataGridView1.Sort(dataGridView1.Columns["numguia"], System.ComponentModel.ListSortDirection.Ascending);
             if (rb_orden_dir.Checked == true) dataGridView1.Sort(dataGridView1.Columns[14], System.ComponentModel.ListSortDirection.Ascending);
             if (rb_orden_des.Checked == true) dataGridView1.Sort(dataGridView1.Columns[13], System.ComponentModel.ListSortDirection.Ascending);
@@ -2624,7 +2572,6 @@ namespace TransCarga
                     rowdetalle.nomremi = "";    // row.Cells[].Value.ToString();
                     rowdetalle.docvta = row.Cells[17].Value.ToString();
                     rowdetalle.nomremi = row.Cells[18].Value.ToString();
-                    rowdetalle.numpregr = row.Cells["numpreg"].Value.ToString();
                     PlaniC.placar_det.Addplacar_detRow(rowdetalle);
                 }
             }

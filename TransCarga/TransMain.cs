@@ -533,7 +533,6 @@ namespace TransCarga
         }      
         private void vic_registro_Click(object sender, EventArgs e)         // Guías Remisión Remitente
         {
-            //MessageBox.Show("Form Guía de Remisión de Remitente", "Otoño 2021", MessageBoxButtons.OK, MessageBoxIcon.Information);
             guiari_e fvc = new guiari_e();
             fvc.TopLevel = false;
             fvc.Parent = this;

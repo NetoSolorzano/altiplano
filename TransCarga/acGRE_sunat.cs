@@ -169,32 +169,6 @@ namespace TransCarga
             }
             return retorna;
         }
-        public Tuple<string, string> consCDR(string rucEmi, string token, string tipo, string tx_serie, string tx_numero, string rutaxml)    // jala CDR de comprobantes vta, NO FUNCA
-        {
-            Tuple<string, string> retorna = null;
-            // probar con la consulta REST  .... este servicio NO ESTA FUNCIONANDO 06/10/2023, retorna 403 forbidden, ya no esta en servicio
-            //string compBusq = "20555954884" + "-" + tipo + "-" + tx_serie + "-" + tx_numero;
-            string compBusq = "20430100344" + "-" + "01" + "-" + "E001" + "-" + "100";
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-            RestClient cliente = new RestClient("https://api-cpe.sunat.gob.pe/v1/contribuyente/enviossp/" + compBusq + "/estados");
-            cliente.Timeout = -1;
-            var consulta = new RestRequest(Method.GET);
-            consulta.AddHeader("Authorization", "Bearer " + token);
-            IRestResponse respuesta = cliente.Execute(consulta);
-            if (respuesta.ResponseStatus.ToString() != "Completed")
-            {
-                retorna = Tuple.Create("Error", respuesta.ErrorMessage.ToString());
-            }
-            else
-            {
-                var Rpta = JsonConvert.DeserializeObject<Rspta_ConsCDR>(respuesta.Content);
-                if (Rpta.codRespuesta.ToString() == "200")
-                {
-                    // convertir byte en xml
-                }
-            }
-            return retorna;
-        }
         public Tuple<string, string> consultaC(string nomTabla, string tx_idr, string ticket, string token, string tx_serie, string tx_numero, string rutaxml)     // consulta comprobante
         {
             Tuple<string, string> retorna = null;  // = new Tuple <string, string> ("","");
@@ -294,7 +268,10 @@ namespace TransCarga
         public string convierteCDR(string cg, string arCdr, string serie, string corre, string ruta)                                              // genera el cdr
         {
             string retorna = "";
-
+            if (!Directory.Exists(@ruta))
+            {
+                Directory.CreateDirectory(@ruta);
+            }
             if (File.Exists(ruta + "temporal.zip"))   // @"c:/temp/temporal.zip"
             {
                 File.Delete(ruta + "temporal.zip");   // @"c:/temp/temporal.zip"
@@ -328,10 +305,5 @@ namespace TransCarga
 
             return retorna;
         }
-    }
-    public class Rspta_ConsCDR                         // respuesta a la consulta del CDR
-    {
-        public string codRespuesta { get; set; }
-        public string arcCdr { get; set; }
     }
 }

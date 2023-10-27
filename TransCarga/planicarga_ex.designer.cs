@@ -1,6 +1,6 @@
 ﻿namespace TransCarga
 {
-    partial class planicarga
+    partial class planicarga_ex
     {
         /// <summary>
         /// Required designer variable.
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(planicarga));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(planicarga_ex));
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.Bt_add = new System.Windows.Forms.ToolStripButton();
@@ -182,7 +182,6 @@
             this.groupBox7 = new System.Windows.Forms.GroupBox();
             this.chk_cierea = new System.Windows.Forms.CheckBox();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.rb_orden_pg = new System.Windows.Forms.RadioButton();
             this.rb_orden_des = new System.Windows.Forms.RadioButton();
             this.label31 = new System.Windows.Forms.Label();
             this.rb_orden_dir = new System.Windows.Forms.RadioButton();
@@ -752,7 +751,7 @@
             this.tx_numero.Size = new System.Drawing.Size(73, 20);
             this.tx_numero.TabIndex = 2;
             this.tx_numero.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.tx_numero.Leave += new System.EventHandler(this.tx_numero_Leave);
+            this.tx_numero.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.tx_numero_KeyPress);
             // 
             // tx_serie
             // 
@@ -1816,27 +1815,14 @@
             // 
             // panel1
             // 
-            this.panel1.Controls.Add(this.rb_orden_pg);
             this.panel1.Controls.Add(this.rb_orden_des);
             this.panel1.Controls.Add(this.label31);
             this.panel1.Controls.Add(this.rb_orden_dir);
             this.panel1.Controls.Add(this.rb_orden_gr);
-            this.panel1.Location = new System.Drawing.Point(605, 464);
+            this.panel1.Location = new System.Drawing.Point(605, 488);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(159, 79);
+            this.panel1.Size = new System.Drawing.Size(159, 61);
             this.panel1.TabIndex = 399;
-            // 
-            // rb_orden_pg
-            // 
-            this.rb_orden_pg.AutoSize = true;
-            this.rb_orden_pg.ForeColor = System.Drawing.Color.Black;
-            this.rb_orden_pg.Location = new System.Drawing.Point(85, 59);
-            this.rb_orden_pg.Name = "rb_orden_pg";
-            this.rb_orden_pg.Size = new System.Drawing.Size(68, 17);
-            this.rb_orden_pg.TabIndex = 404;
-            this.rb_orden_pg.TabStop = true;
-            this.rb_orden_pg.Text = "Pre Guía";
-            this.rb_orden_pg.UseVisualStyleBackColor = true;
             // 
             // rb_orden_des
             // 
@@ -1888,7 +1874,7 @@
             // 
             this.groupBox36.BackColor = System.Drawing.Color.White;
             this.groupBox36.Controls.Add(this.groupBox37);
-            this.groupBox36.Location = new System.Drawing.Point(609, 458);
+            this.groupBox36.Location = new System.Drawing.Point(609, 481);
             this.groupBox36.Name = "groupBox36";
             this.groupBox36.Size = new System.Drawing.Size(155, 1);
             this.groupBox36.TabIndex = 402;
@@ -1906,7 +1892,7 @@
             // 
             this.label29.AutoSize = true;
             this.label29.ForeColor = System.Drawing.Color.Black;
-            this.label29.Location = new System.Drawing.Point(614, 443);
+            this.label29.Location = new System.Drawing.Point(614, 466);
             this.label29.Name = "label29";
             this.label29.Size = new System.Drawing.Size(45, 13);
             this.label29.TabIndex = 401;
@@ -1917,7 +1903,7 @@
             this.cmb_forimp.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmb_forimp.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cmb_forimp.FormattingEnabled = true;
-            this.cmb_forimp.Location = new System.Drawing.Point(659, 439);
+            this.cmb_forimp.Location = new System.Drawing.Point(659, 462);
             this.cmb_forimp.Name = "cmb_forimp";
             this.cmb_forimp.Size = new System.Drawing.Size(105, 20);
             this.cmb_forimp.TabIndex = 400;
@@ -2247,6 +2233,5 @@
         private System.Windows.Forms.ComboBox cmb_doc;
         private System.Windows.Forms.TextBox tx_dat_tdchof;
         private System.Windows.Forms.TextBox tx_dat_tdayu;
-        private System.Windows.Forms.RadioButton rb_orden_pg;
     }
 }

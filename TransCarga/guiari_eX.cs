@@ -23,7 +23,7 @@ using System.Drawing.Imaging;
 
 namespace TransCarga
 {
-    public partial class guiari_e : Form
+    public partial class guiari_eX : Form
     {
         static string nomform = "guiari_e";             // nombre del formulario
         string colback = TransCarga.Program.colbac;   // color de fondo
@@ -156,7 +156,7 @@ namespace TransCarga
         string[] rl = { "" };                       // datos del NUEVO remitente
         string[] dl = { "" };                       // datos del NUEVO destinatario
         
-        public guiari_e()
+        public guiari_eX()
         {
             InitializeComponent();
         }
@@ -3827,21 +3827,21 @@ namespace TransCarga
                     this.Bt_edit.Visible = true;
                 }
                 else { this.Bt_edit.Visible = false; }
-                if (Convert.ToString(row["btn5"]) == "S")
-                {
-                    this.Bt_print.Visible = true;
-                }
-                else { this.Bt_print.Visible = false; }
-                if (Convert.ToString(row["btn3"]) == "S")   
+                //if (Convert.ToString(row["btn5"]) == "S")
+                //{
+                //    this.Bt_print.Visible = true;
+                //}
+                //else { this.Bt_print.Visible = false; }
+                if (Convert.ToString(row["btn3"]) == "S")
                 {
                     this.Bt_anul.Visible = true;
                 }
                 else { this.Bt_anul.Visible = false; }
-                if (Convert.ToString(row["btn4"]) == "S") 
-                {
-                    this.Bt_ver.Visible = true;
-                }
-                else { this.Bt_ver.Visible = false; }
+                //if (Convert.ToString(row["btn4"]) == "S")
+                //{
+                //    this.Bt_ver.Visible = true;
+                //}
+                //else { this.Bt_ver.Visible = false; }
                 if (Convert.ToString(row["btn6"]) == "S")
                 {
                     this.Bt_close.Visible = true;
@@ -4174,36 +4174,33 @@ namespace TransCarga
                                             // aca seleccionamos la fila que sea de la placa seleccionada
                                         }
                                     }
-                                    if (nfila > -1)
-                                    {
-                                        DataRow row = data.Rows[nfila];
-                                        tx_idplan.Text = row["id"].ToString();
-                                        tx_pla_fech.Text = row["fechope"].ToString().Substring(0, 10);
-                                        tx_pla_plani.Text = row["serplacar"].ToString() + row["numplacar"].ToString();
-                                        tx_pla_placa.Text = row["platracto"].ToString();
-                                        tx_pla_carret.Text = row["placarret"].ToString();
-                                        tx_pla_autor.Text = row["autorizac"].ToString();
-                                        tx_dat_plaNreg.Text = row["nregtrackto"].ToString();    // numero reg mtc
-                                        tx_pla_confv.Text = row["confvehic"].ToString();
-                                        tx_pla_brevet.Text = row["brevchofe"].ToString();
-                                        tx_pla_nomcho.Text = row["nomchofe"].ToString();
-                                        tx_pla_brev2.Text = row["brevayuda"].ToString();
-                                        tx_pla_chofer2.Text = row["nomayuda"].ToString();
-                                        tx_marCpropio.Text = "";
-                                        if (tx_pla_ruc.Text.Trim() != "" && tx_pla_ruc.Text != Program.ruc) tx_marCpropio.Text = "1";   // Indicador de transporte subcontratado = true
-                                        else tx_marCpropio.Text = "0";      // Indicador de transporte subcontratado = false
-                                        tx_pla_ruc.Text = row["rucpropie"].ToString();
-                                        tx_pla_propiet.Text = row["razonsocial"].ToString();
-                                        tx_marcamion.Text = row["marca"].ToString();
-                                        tx_aut_carret.Text = row["autorCarret"].ToString();
-                                        tx_dat_carrNreg.Text = row["nregcarreta"].ToString();   // num reg. mtc
-                                        tx_marCarret.Text = row["marcaCarret"].ToString();
-                                        tx_pla_dniChof.Text = (row["dnichofer"].ToString().Trim() == "") ? lib.Right(row["brevchofe"].ToString(), 8) : row["dnichofer"].ToString();
-                                        tx_dat_dniC2.Text = (row["dniayudante"].ToString().Trim() == "") ? (row["brevayuda"].ToString().Trim() == "") ? "" : lib.Right(row["brevayuda"].ToString(), 8) : row["dniayudante"].ToString();
-                                        //
-                                        chk_man.Checked = false;
-                                        chk_man.Enabled = true;
-                                    }
+                                    DataRow row = data.Rows[nfila];
+                                    tx_idplan.Text = row["id"].ToString();
+                                    tx_pla_fech.Text = row["fechope"].ToString().Substring(0, 10);
+                                    tx_pla_plani.Text = row["serplacar"].ToString() + row["numplacar"].ToString();
+                                    tx_pla_placa.Text = row["platracto"].ToString();
+                                    tx_pla_carret.Text = row["placarret"].ToString();
+                                    tx_pla_autor.Text = row["autorizac"].ToString();
+                                    tx_dat_plaNreg.Text = row["nregtrackto"].ToString();    // numero reg mtc
+                                    tx_pla_confv.Text = row["confvehic"].ToString();
+                                    tx_pla_brevet.Text = row["brevchofe"].ToString();
+                                    tx_pla_nomcho.Text = row["nomchofe"].ToString();
+                                    tx_pla_brev2.Text = row["brevayuda"].ToString();
+                                    tx_pla_chofer2.Text = row["nomayuda"].ToString();
+                                    tx_marCpropio.Text = "";
+                                    if (tx_pla_ruc.Text.Trim() != "" && tx_pla_ruc.Text != Program.ruc) tx_marCpropio.Text = "1";   // Indicador de transporte subcontratado = true
+                                    else tx_marCpropio.Text = "0";      // Indicador de transporte subcontratado = false
+                                    tx_pla_ruc.Text = row["rucpropie"].ToString();
+                                    tx_pla_propiet.Text = row["razonsocial"].ToString();
+                                    tx_marcamion.Text = row["marca"].ToString();
+                                    tx_aut_carret.Text = row["autorCarret"].ToString();
+                                    tx_dat_carrNreg.Text = row["nregcarreta"].ToString();   // num reg. mtc
+                                    tx_marCarret.Text = row["marcaCarret"].ToString();
+                                    tx_pla_dniChof.Text = (row["dnichofer"].ToString().Trim() == "") ? lib.Right(row["brevchofe"].ToString(), 8) : row["dnichofer"].ToString();
+                                    tx_dat_dniC2.Text = (row["dniayudante"].ToString().Trim() == "") ? (row["brevayuda"].ToString().Trim() == "") ? "" : lib.Right(row["brevayuda"].ToString(), 8) : row["dniayudante"].ToString();
+                                    //
+                                    chk_man.Checked = false;
+                                    chk_man.Enabled = true;
                                 }
                                 else
                                 {
@@ -4430,7 +4427,7 @@ namespace TransCarga
 
                 if (Tx_modo.Text == "NUEVO")
                 {   // si es nuevo, se imprimen 2 copias
-                    impGRE_T impGRE = new impGRE_T(int.Parse(vi_copias), v_impTK, vs, dt, va, vc, vi_formato, "");
+                    impGRE_Tex impGRE = new impGRE_Tex(int.Parse(vi_copias), v_impTK, vs, dt, va, vc);
                     /*
                     for (int i = 1; i <= int.Parse(vi_copias); i++)
                     {
@@ -4442,7 +4439,7 @@ namespace TransCarga
                 {   // si NO es nuevo, se imprime 1 copia
                     //printDocument1.PrinterSettings.PrinterName = v_impTK;
                     //printDocument1.Print();
-                    impGRE_T impGRE = new impGRE_T(1, v_impTK, vs, dt, va, vc, vi_formato, "");
+                    impGRE_Tex impGRE = new impGRE_Tex(1, v_impTK, vs, dt, va, vc);
                 }
                 retorna = true;
             }

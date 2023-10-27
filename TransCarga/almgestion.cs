@@ -1584,7 +1584,7 @@ namespace TransCarga
             {
                 string vser = advancedDataGridView1.Rows[e.RowIndex].Cells["GUIA"].Value.ToString().Substring(0, 4);
                 string vnum = advancedDataGridView1.Rows[e.RowIndex].Cells["GUIA"].Value.ToString().Substring(4, 8);
-                pub.muestra_gr(vser, vnum, nfCRgr);
+                pub.muestra_gr(vser, vnum, nfCRgr, @"C:\temp\imgQR.png", "DICE CONTENER ", "", "A5", "");   // FALTA VARIABILIZAR 27/10/2023
             }
         }
         #endregion

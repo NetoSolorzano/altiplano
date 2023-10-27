@@ -1203,7 +1203,7 @@ namespace TransCarga
                             string pNum = dgv_sunat_est.Rows[e.RowIndex].Cells[2].Value.ToString().Substring(5, 8);
 
                             string token = _E.conex_token_(c_t);
-                            var resCon = _E.consCDR(pRuc, token, pTip, pSer, pNum, rutaxml);
+                            /* var resCon = _E.consCDR(pRuc, token, pTip, pSer, pNum, rutaxml);
                             if (resCon == null)
                             {
                                 MessageBox.Show("Tenemos problemas con la respuesta", "Error en comprobante", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -1215,6 +1215,7 @@ namespace TransCarga
                                     MessageBox.Show(resCon.Item2, resCon.Item1, MessageBoxButtons.OK, MessageBoxIcon.Error);
                                 }
                             }
+                            */
                         }
                         catch (Exception ex)
                         {
