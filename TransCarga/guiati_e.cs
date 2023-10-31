@@ -70,6 +70,7 @@ namespace TransCarga
         string v_fra2 = "";             // frase 
         string v_sanu = "";             // serie anulacion interna ANU
         string v_CR_gr_ind = "";        // nombre del formato GR individual en CR
+        string v_CR_gre_A4 = "";        // nombre del formato CR para las guias electrónicas de carga única
         string vint_A0 = "";            // variable codigo anulacion interna por BD
         string v_clte_rem = "";         // variable para marcar si el remitente es cliente nuevo "N" o para actualizar sus datos "E"
         string v_clte_des = "";         // variable para marcar si el destinatario es cliente nuevo "N" o para actualizar sus datos "E"
@@ -398,6 +399,7 @@ namespace TransCarga
                         if (row["param"].ToString() == "impA5") v_impA5 = row["valor"].ToString().Trim();
                         if (row["param"].ToString() == "impTK") v_impTK = row["valor"].ToString().Trim();
                         if (row["param"].ToString() == "nomGRE_cr") v_CR_gr_ind = row["valor"].ToString().Trim();
+                        if (row["param"].ToString() == "nomGRE_A4") v_CR_gre_A4 = row["valor"].ToString().Trim();
                         if (row["param"].ToString() == "rutaQR") rutaQR = row["valor"].ToString().Trim();      // "C:\temp\"
                         if (row["param"].ToString() == "nomImgQR") nomImgQR = row["valor"].ToString().Trim();    // "imgQR.png"
                     }
@@ -590,7 +592,7 @@ namespace TransCarga
                             tx_estaSunat.Text = dr.GetString("estadoS");
                             tx_dat_textoqr.Text = dr.GetString("textoQR");
                             tx_fticket.Text = dr.GetString("fticket");
-
+                            chk_cunica.Checked = (dr.GetString("marca1") == "True") ? true : false;
                             cmb_origen.SelectedValue = tx_dat_locori.Text;
                             cmb_origen_SelectionChangeCommitted(null, null);
                             cmb_destino.SelectedValue = tx_dat_locdes.Text;
@@ -3880,6 +3882,8 @@ namespace TransCarga
                     MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (aa == DialogResult.Yes)
                 {
+                    if (datosImpresion() == true) updateprint("S");
+                    /*
                     if (vi_formato == "A4")            // Seleccion de formato ... A4
                     {
                         if (imprimeA4() == true) updateprint("S");
@@ -3892,6 +3896,7 @@ namespace TransCarga
                     {
                         if (imprimeTK() == true) updateprint("S");
                     }
+                    */
                 }
             }
             else
@@ -3901,6 +3906,8 @@ namespace TransCarga
                     MessageBox.Show("No se puede imprimir sin grabar!", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
+                if (datosImpresion() == true) updateprint("S");
+                /*
                 if (vi_formato == "A4")     // no existe aún
                 {
                     if (imprimeA4() == true) updateprint("S");
@@ -3913,6 +3920,7 @@ namespace TransCarga
                 {
                     if (imprimeTK() == true) updateprint("S");
                 }
+                */
             }
             // Cantidad de copias
         }
@@ -4510,17 +4518,32 @@ namespace TransCarga
                 dt[y, 2] = tx_det_umed.Text;                // detalle: Unidad de medida
                 dt[y, 3] = gloDeta + " " + tx_det_desc.Text;                // detalle: Descripción
                 dt[y, 4] = tx_det_peso.Text;                // detalle: peso
-                retorna = true;
 
             if (Tx_modo.Text == "NUEVO")
             {   // si es nuevo, se imprimen 2 copias
-                if (vi_formato == "A5") { impGRE_T impGRE = new impGRE_T(int.Parse(vi_copias), v_impA5, vs, dt, va, vc, vi_formato, v_CR_gr_ind); }
-                if (vi_formato == "TK") { impGRE_T impGRE = new impGRE_T(int.Parse(vi_copias), v_impTK, vs, dt, va, vc, vi_formato, v_CR_gr_ind); }
+                if (chk_cunica.Checked == true)
+                {
+                    impGRE_T impGRE = new impGRE_T(1, v_impA5, vs, dt, va, vc, "A4", v_CR_gre_A4);
+                }
+                else
+                {
+                    if (vi_formato == "A5") { impGRE_T impGRE = new impGRE_T(int.Parse(vi_copias), v_impA5, vs, dt, va, vc, vi_formato, v_CR_gr_ind); }
+                    if (vi_formato == "TK") { impGRE_T impGRE = new impGRE_T(int.Parse(vi_copias), v_impTK, vs, dt, va, vc, vi_formato, v_CR_gr_ind); }
+                    retorna = true;
+                }
             }
             else
             {   // si NO es nuevo, se imprime 1 copia
-                if (vi_formato == "TK") { impGRE_T impGRE = new impGRE_T(1, v_impTK, vs, dt, va, vc, vi_formato, v_CR_gr_ind); }
-                if (vi_formato == "A5") { impGRE_T impGRE = new impGRE_T(1, v_impA5, vs, dt, va, vc, vi_formato, v_CR_gr_ind); }
+                if (chk_cunica.Checked == true)
+                {
+                    impGRE_T impGRE = new impGRE_T(1, v_impA5, vs, dt, va, vc, "A4", v_CR_gre_A4);
+                }
+                else
+                {
+                    if (vi_formato == "TK") { impGRE_T impGRE = new impGRE_T(1, v_impTK, vs, dt, va, vc, vi_formato, v_CR_gr_ind); }
+                    if (vi_formato == "A5") { impGRE_T impGRE = new impGRE_T(1, v_impA5, vs, dt, va, vc, vi_formato, v_CR_gr_ind); }
+                }
+                retorna = true;
             }
             return retorna;
         }

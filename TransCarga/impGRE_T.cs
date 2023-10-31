@@ -158,7 +158,40 @@ namespace TransCarga
                     }
                     break;
                 case "A4":
+                    if (var[0] != "")
+                    {
+                        string codigo = var[0];                             // tx_dat_textoqr.Text
+                        if (File.Exists(@var[1])) File.Delete(@var[1]);
+                        var qrEncoder = new QrEncoder(ErrorCorrectionLevel.H);
+                        var qrCode = qrEncoder.Encode(codigo);
+                        var renderer = new GraphicsRenderer(new FixedModuleSize(5, QuietZoneModules.Two), Brushes.Black, Brushes.White);
+                        using (var stream = new FileStream(@var[1], FileMode.Create))
+                            renderer.WriteToStream(qrCode.Matrix, ImageFormat.Png, stream);
+                    }
+                    else
+                    {
+                        if (File.Exists(@var[1])) File.Delete(@var[1]);
+                        var[1] = "";
+                    }
+                    if (nomImp != "" && nomforCR != "")
+                    {
+                        conClie data = generaReporte(nomforCR);
+                        ReportDocument repo = new ReportDocument();
+                        repo.Load("formatos/" + nomforCR);
+                        repo.SetDataSource(data);
+                        repo.PrintOptions.PrinterName = nomImp;
+                        repo.PrintToPrinter((short)nCopias, false, 1, 1);
+                    }
+                    if (nomImp != "" && nomforCR == "")
+                    {
 
+                    }
+                    if (nomImp == "" && nomforCR != "")
+                    {
+                        conClie datos = generaReporte(nomforCR);
+                        frmvizoper visualizador = new frmvizoper(datos);
+                        visualizador.Show();
+                    }
                     break;
             }
         }
@@ -602,7 +635,7 @@ namespace TransCarga
                 if (det[y, 0] != "")
                 {
                     conClie.gr_ind_detRow rowdetalle = guiaT.gr_ind_det.Newgr_ind_detRow();
-
+                    rowdetalle.id = "0";
                     rowdetalle.fila = det[y, 0];    // dt[y, 0] Num de fila
                     rowdetalle.cant = det[y, 1];    // dt[y, 1] Cant.
                     rowdetalle.codigo = "";         // no estamos usando
