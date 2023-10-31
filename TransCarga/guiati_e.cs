@@ -4473,7 +4473,8 @@ namespace TransCarga
                 if (tx_pla_fech.Text != "") vs[16] = tx_pla_fech.Text.Substring(8, 2) + "/" + tx_pla_fech.Text.Substring(5, 2) + "/" + tx_pla_fech.Text.Substring(0, 4);      // dr.GetString("fechplani")
                 else vs[16] = "";
                 vs[17] = tx_totpes.Text;                     // dr.GetString("pestotgri")
-                vs[18] = (rb_kg.Checked == true) ? "K" : "T";                        // dr.GetString("pesoKT")
+            if (chk_cunica.Checked == true) vs[18] = (rb_kg.Checked == true) ? "KILOGRAMO" : "TONELADA";    // dr.GetString("pesoKT")    
+            else vs[18] = (rb_kg.Checked == true) ? "K" : "T";                        // dr.GetString("pesoKT")
                 vs[19] = tx_dirRem.Text;                     //  dr.GetString("direregri")
                 vs[20] = tx_dptoRtt.Text;                      // dr.GetString("Dpto_Rem")
                 vs[21] = tx_provRtt.Text;                      // dr.GetString("Prov_Rem")
