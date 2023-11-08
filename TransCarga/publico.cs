@@ -457,18 +457,19 @@ namespace TransCarga
             rowcabeza.numRemit = row["nudoregri"].ToString();    // tx_numDocRem.Text;
             rowcabeza.nomRemit = row["nombregri"].ToString();    // tx_nomRem.Text;
             rowcabeza.direRemit = row["direregri"].ToString();    // tx_dirRem.Text;
-            rowcabeza.dptoRemit = row["deptrem"].ToString();   // row[""].ToString();    // tx_dptoRtt.Text;
-            rowcabeza.provRemit = row["provrem"].ToString();    // tx_provRtt.Text;
-            rowcabeza.distRemit = row["distrem"].ToString();    // tx_distRtt.Text;
+            //rowcabeza.dptoRemit = row["deptrem"].ToString();   // row[""].ToString();    // tx_dptoRtt.Text;
+            rowcabeza.dptoRemit = row["Dpto_Rem"].ToString();
+            rowcabeza.provRemit = row["Prov_Rem"].ToString();   // row["provrem"].ToString();    // tx_provRtt.Text;
+            rowcabeza.distRemit = row["Dist_Rem"].ToString();   // row["distrem"].ToString();    // tx_distRtt.Text;
             rowcabeza.telremit = row["telrem"].ToString();    // tx_telR.Text;
             // destinatario  
             rowcabeza.docDestinat = ""; // cmb_docDes.Text;
             rowcabeza.numDestinat = row["nudodegri"].ToString(); // tx_numDocDes.Text;
             rowcabeza.nomDestinat = row["nombdegri"].ToString(); // tx_nomDrio.Text;
             rowcabeza.direDestinat = row["diredegri"].ToString(); // tx_dirDrio.Text;
-            rowcabeza.distDestinat = row["distdes"].ToString(); // tx_disDrio.Text;
-            rowcabeza.provDestinat = row["provdes"].ToString(); // tx_proDrio.Text;
-            rowcabeza.dptoDestinat = row["deptdes"].ToString(); // tx_dptoDrio.Text;
+            rowcabeza.distDestinat = row["Dist_Des"].ToString();    // row["distdes"].ToString(); // tx_disDrio.Text;
+            rowcabeza.provDestinat = row["Prov_Des"].ToString();    // row["provdes"].ToString(); // tx_proDrio.Text;
+            rowcabeza.dptoDestinat = row["Dpto_Des"].ToString();    // row["deptdes"].ToString(); // tx_dptoDrio.Text;
             rowcabeza.teldesti = row["teldes"].ToString(); // tx_telD.Text;
             // importes 
             rowcabeza.nomMoneda = row["MON"].ToString(); // cmb_mon.Text;

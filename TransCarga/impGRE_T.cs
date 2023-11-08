@@ -118,22 +118,16 @@ namespace TransCarga
                     if (var[0] != "")
                     {
                         string codigo = var[0];                             // tx_dat_textoqr.Text
-                        //var rnd = Path.GetRandomFileName();
-                        //otro = Path.GetFileNameWithoutExtension(rnd);       // 
-                        //if (File.Exists("formatos/imgQR.png")) File.Delete("formatos/imgQR.png");
                         if (File.Exists(@var[1])) File.Delete(@var[1]);
-                        //otro = @var[1];    // "formatos/imgQR.png";
                         //
                         var qrEncoder = new QrEncoder(ErrorCorrectionLevel.H);
                         var qrCode = qrEncoder.Encode(codigo);
-                        //var[1] = @"C:\temp\"+"imgQR.png";   // qrCode.Matrix.ToString();
                         var renderer = new GraphicsRenderer(new FixedModuleSize(5, QuietZoneModules.Two), Brushes.Black, Brushes.White);
                         using (var stream = new FileStream(@var[1], FileMode.Create))
                         renderer.WriteToStream(qrCode.Matrix, ImageFormat.Png, stream);
                     }
                     else
                     {
-                        //if (File.Exists("formatos/imgQR.png")) File.Delete("formatos/imgQR.png");
                         if (File.Exists(@var[1])) File.Delete(@var[1]);
                         var[1] = "";
                     }
@@ -141,7 +135,7 @@ namespace TransCarga
                     {
                         conClie data = generaReporte("nomforCR");
                         ReportDocument repo = new ReportDocument();
-                        repo.Load("formatos/" + nomforCR);
+                        repo.Load(nomforCR);
                         repo.SetDataSource(data);
                         repo.PrintOptions.PrinterName = nomImp;
                         repo.PrintToPrinter((short)nCopias, false, 1, 1);
@@ -177,7 +171,7 @@ namespace TransCarga
                     {
                         conClie data = generaReporte(nomforCR);
                         ReportDocument repo = new ReportDocument();
-                        repo.Load("formatos/" + nomforCR);
+                        repo.Load(nomforCR);
                         repo.SetDataSource(data);
                         repo.PrintOptions.PrinterName = nomImp;
                         repo.PrintToPrinter((short)nCopias, false, 1, 1);

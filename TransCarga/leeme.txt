@@ -467,6 +467,7 @@ clase publico, copia de carrion ................................................
 CR grt_cu1, desarrollo del formato guía de remisión transportista de carga única ................... ok 30/10/2023 falta algunos detalles
 form guiati_e, adecuación para que cuando sea carga única jale el formato "grt_cu1" ................ ok 30/10/2023 campo "marca1"
 form guiati_e, revisar que el xml de cargas unicas contenga los datos del modelo sunat ............. ok 31/10/2023
+form repsoper, adecuaciones y correcciones en impresión y visualización de guias ................... ok 07/11/2023
 
 form repsventas, arreglar el boton de CDR, no esta jalando el cdr .................................. 
 form facelect, considerar que sunat responda con error o cdr rechazo ............................... me quede acá 11/09/2023

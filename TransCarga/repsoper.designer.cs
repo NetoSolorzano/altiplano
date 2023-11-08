@@ -279,6 +279,7 @@
             this.cmb_GRE_sede = new System.Windows.Forms.ComboBox();
             this.tx_GRE_fa = new TransCarga.NumericTextBox();
             this.tx_GRE_fv = new TransCarga.NumericTextBox();
+            this.dgv_hisDat = new System.Windows.Forms.DataGridView();
             this.toolStrip1.SuspendLayout();
             this.tabgrhist.SuspendLayout();
             this.panel7.SuspendLayout();
@@ -332,6 +333,7 @@
             this.groupBox49.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgv_GRE_est)).BeginInit();
             this.groupBox51.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgv_hisDat)).BeginInit();
             this.SuspendLayout();
             // 
             // toolStrip1
@@ -589,6 +591,7 @@
             // 
             // tabgrhist
             // 
+            this.tabgrhist.Controls.Add(this.dgv_hisDat);
             this.tabgrhist.Controls.Add(this.panel7);
             this.tabgrhist.Controls.Add(this.button7);
             this.tabgrhist.Controls.Add(this.tx_ser);
@@ -3113,6 +3116,18 @@
             this.tx_GRE_fv.TabIndex = 450;
             this.tx_GRE_fv.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
+            // dgv_hisDat
+            // 
+            this.dgv_hisDat.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.dgv_hisDat.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgv_hisDat.Location = new System.Drawing.Point(25, 11);
+            this.dgv_hisDat.Name = "dgv_hisDat";
+            this.dgv_hisDat.Size = new System.Drawing.Size(213, 36);
+            this.dgv_hisDat.TabIndex = 422;
+            this.dgv_hisDat.Visible = false;
+            // 
             // repsoper
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -3202,6 +3217,7 @@
             this.groupBox49.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgv_GRE_est)).EndInit();
             this.groupBox51.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dgv_hisDat)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -3459,5 +3475,6 @@
         private System.Windows.Forms.Panel panel6;
         private System.Windows.Forms.RadioButton rb_a5;
         private System.Windows.Forms.RadioButton rb_tk;
+        private System.Windows.Forms.DataGridView dgv_hisDat;
     }
 }

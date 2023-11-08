@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using MySql.Data.MySqlClient;
 using ClosedXML.Excel;
 using CrystalDecisions.CrystalReports.Engine;
+using System.Drawing.Printing;
 
 namespace TransCarga
 {
@@ -89,22 +90,22 @@ namespace TransCarga
         DataTable dt = new DataTable();
         DataTable dtestad = new DataTable();
         DataTable dttaller = new DataTable();
-        DataTable dtplanCab = new DataTable();      // planilla de carga - cabecera
-        DataTable dtplanDet = new DataTable();      // planilla de carga - detalle
-        DataTable dtgrtcab = new DataTable();       // guia rem transpor - cabecera
-        DataTable dtgrtdet = new DataTable();       // guia rem transpor - detalle
+        //DataTable dtplanCab = new DataTable();      // planilla de carga - cabecera
+        //DataTable dtplanDet = new DataTable();      // planilla de carga - detalle
+        //DataTable dtgrtcab = new DataTable();       // guia rem transpor - cabecera
+        //DataTable dtgrtdet = new DataTable();       // guia rem transpor - detalle
                                                     //
         acGRE_sunat _E = new acGRE_sunat();           // instanciamos la clase 
         int cuenta = -1;     // contador de repeticiones de visualizacion en columnas de estados GRE
-        string[] filaimp = { "", "", "", "", "", "", "", "", "", "", "", "", "" };
-        DataGridViewCheckBoxColumn chkc = new DataGridViewCheckBoxColumn()
+        //string[] filaimp = { "", "", "", "", "", "", "", "", "", "", "", "", "" };
+        /*DataGridViewCheckBoxColumn chkc = new DataGridViewCheckBoxColumn()
         {
             Name = "chck",
             HeaderText = " ",
             Width = 30,
             ReadOnly = false,
             FillWeight = 10
-        };
+        };*/
         DataGridViewCheckBoxColumn chkGRE = new DataGridViewCheckBoxColumn()
         {
             Name = "chkGRE",
@@ -1042,6 +1043,8 @@ namespace TransCarga
                     micon.Parameters.AddWithValue("@esta", (tx_estad_guias.Text != "") ? tx_estad_guias.Text : "");
                     micon.Parameters.AddWithValue("@excl", (chk_excl_guias.Checked == true) ? "1" : "0");
                     micon.Parameters.AddWithValue("@orides", (rb_GR_origen.Checked == true) ? "O" : "D");   // local -> O=origen || D=destino
+                    micon.Parameters.AddWithValue("@placa", cmb_placa.Text.Trim());
+                    micon.Parameters.AddWithValue("@orden", "");
                     using (MySqlDataAdapter da = new MySqlDataAdapter(micon))
                     {
                         dgv_guias.DataSource = null;
@@ -1127,6 +1130,32 @@ namespace TransCarga
             using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
             {
                 conn.Open();
+                string consim = "SELECT a.sergui AS SER,a.numgui AS NUMERO,a.fechopegr AS FECHA,a.numpregui AS PREGUIA,b.DescrizioneRid AS DOC,a.nudodegri AS DESTINAT," +
+                    "a.nombdegri AS NOMBRE,a.diredegri AS DIRDEST,c.DescrizioneRid AS DOC,a.nudoregri AS REMITENTE,a.nombregri AS NOMBRE2,d.Descrizione AS ORIGEN,e.Descrizione AS DESTINO," +
+                    "f.DescrizioneRid AS MON,round(a.totgri, 2) AS FLETE_GR,round(a.totgrMN, 2) as FLETE_MN,g.DescrizioneRid AS ESTADO,a.plaplagri as PLACA," +
+                    "a.cantotgri as CANTIDAD,a.pestotgri as PESO,dg.unimedpro as U_MEDID,dg.descprodi AS DETALLE,a.docsremit as DOCSREMIT " +
+                    "FROM cabguiai a " +
+                    "LEFT JOIN descrittive b ON b.IDTabella = 'DOC' AND b.IDCodice = a.tidodegri " +
+                    "LEFT JOIN descrittive c ON c.idtabella = 'DOC' AND c.IDCodice = a.tidoregri " +
+                    "LEFT JOIN descrittive d ON d.IDTabella = 'LOC' AND d.IDCodice = a.locorigen " +
+                    "LEFT JOIN descrittive e ON e.IDTabella = 'LOC' AND e.IDCodice = a.locdestin " +
+                    "LEFT JOIN descrittive f ON f.IDTabella = 'MON' AND f.IDCodice = a.tipmongri " +
+                    "LEFT JOIN descrittive g ON g.IDTabella = 'EST' AND g.IDCodice = a.estadoser " +
+                    "LEFT JOIN detguiai dg on dg.idc = a.id and dg.fila = 1 " +
+                    "where a.sergui=@ser and a.numgui=@num";
+                using (MySqlCommand micon = new MySqlCommand(consim, conn))
+                {
+                    micon.Parameters.AddWithValue("@ser", tx_ser.Text);
+                    micon.Parameters.AddWithValue("@num", tx_num.Text);
+                    using (MySqlDataAdapter da = new MySqlDataAdapter(micon))
+                    {
+                        dgv_hisDat.DataSource = null;
+                        DataTable dtsimi = new DataTable();
+                        da.Fill(dtsimi);
+                        dgv_hisDat.DataSource = dtsimi;
+                    }
+                }
+                //
                 string consulta = "rep_oper_histGR";
                 using (MySqlCommand micon = new MySqlCommand(consulta, conn))
                 {
@@ -1312,7 +1341,23 @@ namespace TransCarga
                 {
                     if (tx_ser.Text.Trim() != "" && tx_num.Text.Trim() != "")
                     {
-                        if (tx_ser.Text.Substring(0, 1) == "0") pub.muestra_gr(tx_ser.Text, tx_num.Text, rpt_grt, "", gloDeta, "", "", "");
+                        if (tx_ser.Text.Substring(0, 1) == "0") 
+                        {
+                            conClie data = generareporte(0, dgv_hisDat);
+                            ReportDocument fimp = new ReportDocument();
+                            fimp.Load(v_CR_gr_simple);
+                            fimp.SetDataSource(data);
+                            try
+                            {
+                                fimp.PrintOptions.PrinterName = v_impTK;
+                                fimp.PrintToPrinter(int.Parse(vi_copias), false, 1, 1);
+                            }
+                            catch (Exception ex)
+                            {
+                                MessageBox.Show("No se encuentra la impresora de las guías simples" + Environment.NewLine +
+                                    ex.Message, "Error en configuración", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
+                        }
                         else
                         {
                             // para guías electrónicas no hay formato "simple" 21/09/2023
@@ -1728,7 +1773,7 @@ namespace TransCarga
                     {
                         if (row.Cells[0].EditedFormattedValue.ToString() == "True")
                         {
-                            conClie data = generareporte(row.Index);
+                            conClie data = generareporte(row.Index, dgv_guias);
                             ReportDocument fimp = new ReportDocument();
                             fimp.Load(v_CR_gr_simple);
                             fimp.SetDataSource(data);
@@ -1759,8 +1804,7 @@ namespace TransCarga
                 visualizador.Show();
             }
         }
-
-        private conClie generareporte(int rowi)
+        private conClie generareporte(int rowi, DataGridView dgv)
         {
             /*
                 SER,NUMERO,FECHA,PREGUIA,DOC,DESTINAT,NOMBRE,DIRDEST,DOC,REMITENTE,NOMBRE2,ORIGEN,DESTINO,MON,FLETE_GR,FLETE_MN,ESTADO,IMPRESO,
@@ -1769,7 +1813,7 @@ namespace TransCarga
             conClie guiaT = new conClie();
             conClie.gr_ind_cabRow rowcabeza = guiaT.gr_ind_cab.Newgr_ind_cabRow();
             // CABECERA
-            DataGridViewRow row = dgv_guias.Rows[rowi];
+            DataGridViewRow row = dgv.Rows[rowi];     // dgv_guias.Rows[rowi]
             rowcabeza.formatoRPT = v_CR_gr_simple;
             rowcabeza.id = "0"; // tx_idr.Text;
             rowcabeza.estadoser = row.Cells["ESTADO"].Value.ToString(); // tx_estado.Text;
@@ -2328,120 +2372,6 @@ namespace TransCarga
         }
         #endregion
 
-        private void printDocument1_PrintPage(object sender, System.Drawing.Printing.PrintPageEventArgs e)
-        {
-            // TIPOS DE LETRA PARA EL DOCUMENTO FORMATO TICKET
-            Font lt_gra = new Font("Arial", 13);                // grande
-            Font lt_tit = new Font("Lucida Console", 10);       // mediano
-            Font lt_med = new Font("Arial", 9);                // normal textos
-            Font lt_peq = new Font("Arial", 8);                 // pequeño
-            //
-            float anchTik = 7.8F;                               // ancho del TK en centimetros
-            int coli = 5;                                      // columna inicial
-            int colm = 80;
-            float posi = 20;                                    // posicion x,y inicial
-            int alfi = 20;                                      // alto de cada fila
-            float ancho = 360.0F;                                // ancho de la impresion
-            {
-                //lt = (ancho - e.Graphics.MeasureString(rasclie, lt_gra).Width) / 2;
-                PointF puntoF = new PointF();
-                if (impriLogi == "SI")   // va con logo o no?
-                {
-                    puntoF = new PointF(coli, posi);
-                    System.Drawing.Image img = System.Drawing.Image.FromFile(ruta_logo);
-                    //Point loc = new Point(100, 100);
-                    e.Graphics.DrawImage(img, puntoF);
-                    posi = posi + alfi * 5;
-                }
-                puntoF = new PointF(coli, posi);
-                e.Graphics.DrawString("CONTROL", lt_gra, Brushes.Black, puntoF, StringFormat.GenericTypographic);
-                puntoF = new PointF(colm, posi);
-                e.Graphics.DrawString(":", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
-                puntoF = new PointF(colm + 30, posi + 5.0F);
-                e.Graphics.DrawString(filaimp[0] + "-" + filaimp[1], lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
-                posi = posi + alfi;
-                posi = posi + alfi;
-                puntoF = new PointF(coli, posi);
-                e.Graphics.DrawString("FECHA", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
-                puntoF = new PointF(colm, posi);
-                e.Graphics.DrawString(":", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
-                puntoF = new PointF(colm + 10, posi);
-                e.Graphics.DrawString(filaimp[2], lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
-                posi = posi + alfi;
-                puntoF = new PointF(coli, posi);
-                e.Graphics.DrawString("CLIENTE", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
-                puntoF = new PointF(colm, posi);
-                e.Graphics.DrawString(":", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
-                puntoF = new PointF(colm + 10, posi);
-                e.Graphics.DrawString(filaimp[3], lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
-                posi = posi + alfi;
-                puntoF = new PointF(coli, posi);
-                e.Graphics.DrawString("DIRECC", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
-                puntoF = new PointF(colm, posi);
-                e.Graphics.DrawString(":", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
-                puntoF = new PointF(colm + 10, posi);
-                SizeF cuad = new SizeF(CentimeterToPixel(anchTik) - (coli + 70), alfi * 2);
-                RectangleF recdom = new RectangleF(puntoF, cuad);
-                e.Graphics.DrawString(filaimp[4], lt_med, Brushes.Black, recdom, StringFormat.GenericTypographic);
-                posi = posi + alfi + alfi;
-                puntoF = new PointF(coli, posi);
-                e.Graphics.DrawString("DNI/RUC", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
-                puntoF = new PointF(colm, posi);
-                e.Graphics.DrawString(":", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
-                puntoF = new PointF(colm + 10, posi);
-                e.Graphics.DrawString(filaimp[5], lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
-                posi = posi + alfi;
-                puntoF = new PointF(coli, posi);
-                e.Graphics.DrawString("RUTA", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
-                puntoF = new PointF(colm, posi);
-                e.Graphics.DrawString(":", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
-                puntoF = new PointF(colm + 10, posi);
-                e.Graphics.DrawString(filaimp[6], lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
-                posi = posi + alfi;
-                puntoF = new PointF(coli, posi);
-                e.Graphics.DrawString("PLACA", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
-                puntoF = new PointF(colm, posi);
-                e.Graphics.DrawString(":", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
-                puntoF = new PointF(colm + 10, posi);
-                e.Graphics.DrawString(filaimp[7], lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
-                posi = posi + alfi;
-                posi = posi + alfi;
-                puntoF = new PointF(coli, posi);
-                e.Graphics.DrawString("REMITENTE", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
-                puntoF = new PointF(colm, posi);
-                e.Graphics.DrawString(":", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
-                puntoF = new PointF(colm + 10, posi);
-                e.Graphics.DrawString(filaimp[12], lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
-                posi = posi + alfi;
-                posi = posi + alfi;
-                puntoF = new PointF(coli, posi);
-                e.Graphics.DrawString(filaimp[8], lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
-                posi = posi + alfi;
-                puntoF = new PointF(coli, posi);
-                e.Graphics.DrawString(filaimp[9], lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
-                posi = posi + alfi;
-                puntoF = new PointF(coli, posi);
-                e.Graphics.DrawString(filaimp[10], lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
-                posi = posi + alfi;
-                posi = posi + alfi;
-                posi = posi + alfi;
-                puntoF = new PointF(coli, posi);
-                e.Graphics.DrawString("TOTAL", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
-                puntoF = new PointF(colm, posi);
-                e.Graphics.DrawString(":", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
-                puntoF = new PointF(colm + 10, posi);
-                e.Graphics.DrawString(filaimp[11], lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
-                posi = posi + alfi * 9;
-                puntoF = new PointF(coli + 40, posi);
-                e.Graphics.DrawString("---------------------------------", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
-                posi = posi + alfi;
-                puntoF = new PointF(coli + 40, posi);
-                e.Graphics.DrawString("   RECIBI CONFORME", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
-                posi = posi + alfi * 2;
-                puntoF = new PointF(coli, posi);
-                e.Graphics.DrawString(".", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
-            }
-        }
         private void bt_GRE_impri_Click(object sender, EventArgs e)
         {
             if (rb_a5.Checked == false && rb_tk.Checked == false)
@@ -2478,21 +2408,9 @@ namespace TransCarga
         {
 
         }
-
         private void dgv_GRE_est_CellLeave(object sender, DataGridViewCellEventArgs e)
         {
             cuenta = -1;
         }
-
-        int CentimeterToPixel(double Centimeter)
-        {
-            double pixel = -1;
-            using (Graphics g = this.CreateGraphics())
-            {
-                pixel = Centimeter * g.DpiY / 2.54d;
-            }
-            return (int)pixel;
-        }
-
     }
 }
