@@ -141,7 +141,9 @@ namespace TransCarga
                 IRestResponse response = client.Execute(request);
                 if (response.StatusCode.ToString() != "OK")
                 {
-                    MessageBox.Show("NO se pudo obtener el token" + Environment.NewLine + response.StatusDescription, "Error obteniendo token", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("NO se pudo obtener el token" + Environment.NewLine + 
+                        response.StatusDescription + Environment.NewLine + 
+                        response.Content, "Error obteniendo token", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     retorna = "ERROR - NO se pudo obtener el token";
                 }
                 else

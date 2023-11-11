@@ -1500,7 +1500,8 @@ namespace TransCarga
                 }
                 // llamada al programa de generación del xml de la guía
                 string rutalocal = System.IO.Path.GetDirectoryName(Application.ExecutablePath);
-                string[] parametros = new string[] { rutaxml, Program.ruc, tx_serie.Text + "-" + tx_numero.Text };
+                //string[] parametros = new string[] { rutaxml, Program.ruc, tx_serie.Text + "-" + tx_numero.Text };
+                //Console.WriteLine(rutaxml + " " + Program.ruc + " " + tx_serie.Text + "-" + tx_numero.Text + " " + firmDocElec + " " + rutaCertifc + " " + claveCertif + " " + "31");
                 ProcessStartInfo p = new ProcessStartInfo();
                 p.Arguments = rutaxml + " " + Program.ruc + " " + tx_serie.Text + "-" + tx_numero.Text + " " + firmDocElec + " " + rutaCertifc + " " + claveCertif + " " + "31";
                 p.FileName = @rutalocal + "/xmlGRE/xmlGRE.exe";

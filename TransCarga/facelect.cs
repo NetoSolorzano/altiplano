@@ -5851,23 +5851,26 @@ namespace TransCarga
                     e.Graphics.DrawImage(png, rec);
                     png.Dispose();
                     // leyenda 2
-                    posi = posi + lib.CentimeterToPixel(3);
-                    lt = (CentimeterToPixel(anchTik) - e.Graphics.MeasureString(restexto, lt_med).Width) / 2;
-                    puntoF = new PointF(lt, posi);
-                    e.Graphics.DrawString(restexto, lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
-                    posi = posi + alfi;
-                    lt = (CentimeterToPixel(anchTik) - e.Graphics.MeasureString(autoriz_OSE_PSE, lt_med).Width) / 2;
-                    puntoF = new PointF(lt, posi);
-                    e.Graphics.DrawString(autoriz_OSE_PSE, lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
-                    // centrado en rectangulo   *********************
-                    StringFormat sf = new StringFormat();       //  *
-                    sf.Alignment = StringAlignment.Center;      //  *
-                    posi = posi + alfi + 5;
-                    SizeF leyen = new SizeF(CentimeterToPixel(anchTik) - 20, alfi * 3);
-                    puntoF = new PointF(coli, posi);
-                    leyen = new SizeF(CentimeterToPixel(anchTik) - 20, alfi * 2);
-                    RectangleF recley5 = new RectangleF(puntoF, leyen);
-                    e.Graphics.DrawString(webose, lt_med, Brushes.Black, recley5, sf);
+                    if (nipfe == "secure" || nipfe == "Horizont")
+                    {
+                        posi = posi + lib.CentimeterToPixel(3);
+                        lt = (CentimeterToPixel(anchTik) - e.Graphics.MeasureString(restexto, lt_med).Width) / 2;
+                        puntoF = new PointF(lt, posi);
+                        e.Graphics.DrawString(restexto, lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                        posi = posi + alfi;
+                        lt = (CentimeterToPixel(anchTik) - e.Graphics.MeasureString(autoriz_OSE_PSE, lt_med).Width) / 2;
+                        puntoF = new PointF(lt, posi);
+                        e.Graphics.DrawString(autoriz_OSE_PSE, lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                        // centrado en rectangulo   *********************
+                        StringFormat sf = new StringFormat();       //  *
+                        sf.Alignment = StringAlignment.Center;      //  *
+                        posi = posi + alfi + 5;
+                        SizeF leyen = new SizeF(CentimeterToPixel(anchTik) - 20, alfi * 3);
+                        puntoF = new PointF(coli, posi);
+                        leyen = new SizeF(CentimeterToPixel(anchTik) - 20, alfi * 2);
+                        RectangleF recley5 = new RectangleF(puntoF, leyen);
+                        e.Graphics.DrawString(webose, lt_med, Brushes.Black, recley5, sf);
+                    }
                     posi = posi + alfi * 3;
                     string locyus = tx_locuser.Text + " - " + tx_user.Text;
                     puntoF = new PointF(coli, posi);
