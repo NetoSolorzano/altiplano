@@ -1082,6 +1082,17 @@ namespace TransCarga
 
             return retorna;
         }
+        private void analizaEdicion()           // dependiendo de criterios permite la edicion total
+        {
+            if (Tx_modo.Text == "EDITAR" && tx_estaSunat.Text.Trim() == "Rechazado" && v_urege.ToUpper().Contains(asd.ToUpper()))
+            {
+                escribe();
+            }
+            else
+            {
+                sololee();
+            }
+        }
 
         #region autocompletados
         private void autodepa()                             // departamentos
@@ -3027,19 +3038,136 @@ namespace TransCarga
         }
         private void edita()
         {
+            decimal subtgr = Math.Round(decimal.Parse(tx_flete.Text) / (decimal.Parse(v_igv) / 100 + 1), 3);
+            decimal igvtgr = Math.Round(decimal.Parse(tx_flete.Text) - subtgr, 3);
+            if (tx_dat_mone.Text == MonDeft) tx_fletMN.Text = tx_flete.Text;
+            else
+            {
+                if (tx_tipcam.Text.Trim() == "" || tx_tipcam.Text == "0")
+                {
+                    MessageBox.Show("Problema con la moneda o tipo de cambio", "No puede continuar");
+                    return;
+                }
+                else
+                {
+                    tx_fletMN.Text = Math.Round(decimal.Parse(tx_flete.Text) * decimal.Parse(tx_tipcam.Text), 2).ToString();
+                }
+            }
+            decimal subMN = Math.Round(decimal.Parse(tx_fletMN.Text) / (decimal.Parse(v_igv) / 100 + 1), 3);
+            decimal igvMN = Math.Round(decimal.Parse(tx_fletMN.Text) - subMN, 3);
+            //
             MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
             conn.Open();
             if (conn.State == ConnectionState.Open)
             {
                 try
                 {
-                    if (true == true)     
+                    if (Tx_modo.Text == "EDITAR" && tx_estaSunat.Text.Trim() == "Rechazado" && v_urege.Contains(asd.ToLower())) // true == true     
                     {
                         // EDICION DE CABECERA ... Al 06/01/2021 solo se permite editar observ y consignatario
                         // EDICION DE CABECERA ... al 05/05/2022 se permite editar docs.origen si eres usuario autorizado
                         // EN GUIAS ELECTRONICAS NO IMPORTA IMPRESO O NO, NO SE EDITA ESTOS VALORES 16/03/2023
+                        // 15/11/2023, si Sunat rechazo la GRE entonces permite cambiar los datos para corregir y volver a enviar 15/11/2023
+                        string acttotal = "update cabguiai set " +
+                            "tidodegri=@tdcdes,nudodegri=@ndcdes,nombdegri=@nomdes,diredegri=@dircde,ubigdegri=@ubicde," +
+                            "tidoregri=@tdcrem,nudoregri=@ndcrem,nombregri=@nomrem,direregri=@dircre,ubigregri=@ubicre," +
+                            "locorigen=@locpgr,dirorigen=@dirpgr,ubiorigen=@ubopgr," +
+                            "locdestin=@ldcpgr,dirdestin=@didegr,ubidestin=@ubdegr,docsremit=@dooprg," +
+                            "obspregri=@obsprg,clifingri=@conprg,cantotgri=@totcpr,pestotgri=@totppr," +
+                            "tipmongri=@monppr,tipcamgri=@tcprgr,subtotgri=@subpgr,igvgri=@igvpgr,totgri=@totpgr," +
+                            "totpag=@pagpgr,salgri=@totpgr,estadoser=@estpgr,cantfilas=@canfil," +
+                            "frase1=@frase1,frase2=@frase2,fleteimp=@fleimp,tipintrem=@ticlre,tipintdes=@ticlde," +
+                            "tippagpre=@tipacc,seguroE=@clavse,m1cliente=@m1clte,m2cliente=@m2clte," +
+                            "subtotMN=@stMN,igvMN=@igMN,totgrMN=@tgMN,codMN=@codmn,grinumaut=@grinau," +
+                            "teleregri=@telrem,teledegri=@teldes,igvporc=@igvpor," +
+                            "idplani=@idplan,fechplani=@fecpla,serplagri=@serpla,numplagri=@numpla,plaplagri=@plapla," +
+                            "carplagri=@carpla,autplagri=@autpla,confvegri=@confve,breplagri=@brepla,proplagri=@propla," +
+                            "tidocor=@tdocor,rucDorig=@rucDor,lpagop=@lpagop,pesoKT=@pesoKT,tidocor2=@tidoc2," +
+                            "rucDorig2=@rucDo2,docsremit2=@docsr2,marca1=@marCU," +
+                            "verApp=@verApp,userm=@asd,fechm=now(),diriplan4=@iplan,diripwan4=@ipwan,netbname=@nbnam " +
+                            "where id=@idr";
+                        using (MySqlCommand micon = new MySqlCommand(acttotal, conn))
+                        {
+                            micon.Parameters.AddWithValue("@idr", tx_idr.Text);
+                            micon.Parameters.AddWithValue("@tdcdes", tx_dat_tDdest.Text);
+                            micon.Parameters.AddWithValue("@ndcdes", tx_numDocDes.Text);
+                            micon.Parameters.AddWithValue("@nomdes", tx_nomDrio.Text);
+                            micon.Parameters.AddWithValue("@dircde", tx_dirDrio.Text);
+                            micon.Parameters.AddWithValue("@ubicde", tx_ubigDtt.Text);
+                            micon.Parameters.AddWithValue("@tdcrem", tx_dat_tdRem.Text);
+                            micon.Parameters.AddWithValue("@ndcrem", tx_numDocRem.Text);
+                            micon.Parameters.AddWithValue("@nomrem", tx_nomRem.Text);
+                            micon.Parameters.AddWithValue("@dircre", tx_dirRem.Text);
+                            micon.Parameters.AddWithValue("@ubicre", tx_ubigRtt.Text);
+                            micon.Parameters.AddWithValue("@locpgr", tx_dat_locori.Text);
+                            micon.Parameters.AddWithValue("@dirpgr", tx_dirOrigen.Text);
+                            micon.Parameters.AddWithValue("@ubopgr", tx_ubigO.Text);
+                            micon.Parameters.AddWithValue("@ldcpgr", tx_dat_locdes.Text);
+                            micon.Parameters.AddWithValue("@didegr", tx_dirDestino.Text);
+                            micon.Parameters.AddWithValue("@ubdegr", tx_ubigD.Text);
+                            micon.Parameters.AddWithValue("@dooprg", tx_docsOr.Text);
+                            micon.Parameters.AddWithValue("@obsprg", tx_obser1.Text);
+                            micon.Parameters.AddWithValue("@conprg", tx_consig.Text);
+                            micon.Parameters.AddWithValue("@totcpr", tx_totcant.Text);
+                            micon.Parameters.AddWithValue("@totppr", tx_totpes.Text);
+                            micon.Parameters.AddWithValue("@canfil", (tx_tfil.Text.Trim() == "") ? "0" : tx_tfil.Text);             // cantidad de filas de detalle
+                            micon.Parameters.AddWithValue("@monppr", tx_dat_mone.Text);
+                            micon.Parameters.AddWithValue("@igvpor", v_igv);                    // igv en porcentaje
+                            micon.Parameters.AddWithValue("@tcprgr", tx_tipcam.Text);           // tipo de cambio ... falta leer de la tabla de cambios
+                            micon.Parameters.AddWithValue("@subpgr", subtgr.ToString());        // sub total
+                            micon.Parameters.AddWithValue("@igvpgr", igvtgr.ToString());        // igv
+                            micon.Parameters.AddWithValue("@totpgr", tx_flete.Text);            // total inc. igv
+                            micon.Parameters.AddWithValue("@pagpgr", "0");
+                            micon.Parameters.AddWithValue("@estpgr", tx_dat_estad.Text);        // estado de la guía
+                            micon.Parameters.AddWithValue("@frase1", (claveSeg == "") ? "" : v_fra1);
+                            micon.Parameters.AddWithValue("@frase2", (chk_seguridad.Checked == true) ? v_fra2 : "");
+                            micon.Parameters.AddWithValue("@fleimp", (chk_flete.Checked == true) ? "S" : "N");
+                            micon.Parameters.AddWithValue("@ticlre", tx_dat_tcr.Text);   // tipo de cliente remitente, credito o contado
+                            micon.Parameters.AddWithValue("@ticlde", tx_dat_tcd.Text);   // tipo de cliente destinatario, credito o contado
+                            micon.Parameters.AddWithValue("@tipacc", "");               // guía a credito o contra entrega
+                            micon.Parameters.AddWithValue("@clavse", claveSeg);
+                            micon.Parameters.AddWithValue("@m1clte", v_clte_rem);
+                            micon.Parameters.AddWithValue("@m2clte", v_clte_des);
+                            micon.Parameters.AddWithValue("@stMN", subMN.ToString());
+                            micon.Parameters.AddWithValue("@igMN", igvMN.ToString());
+                            micon.Parameters.AddWithValue("@tgMN", tx_fletMN.Text);
+                            micon.Parameters.AddWithValue("@codmn", MonDeft);           // codigo moneda local es la moneda por defecto 08/11/2020
+                            micon.Parameters.AddWithValue("@grinau", tx_n_auto.Text);
+                            micon.Parameters.AddWithValue("@telrem", tx_telR.Text);
+                            micon.Parameters.AddWithValue("@teldes", tx_telD.Text);
+                            micon.Parameters.AddWithValue("@idplan", (tx_idplan.Text.Trim() == "") ? "0" : tx_idplan.Text);
+                            if (tx_idplan.Text.Trim() == "") micon.Parameters.AddWithValue("@fecpla", null);
+                            else micon.Parameters.AddWithValue("@fecpla", tx_pla_fech.Text);    // tx_pla_fech.Text.Substring(6, 4) + "-" + tx_pla_fech.Text.Substring(3, 2) + "-" + tx_pla_fech.Text.Substring(0, 2)
+                            if (tx_idplan.Text.Trim() == "") micon.Parameters.AddWithValue("@serpla", "");
+                            else micon.Parameters.AddWithValue("@serpla", tx_pla_plani.Text.Substring(0, 4));
+                            if (tx_idplan.Text.Trim() == "") micon.Parameters.AddWithValue("@numpla", "");
+                            else micon.Parameters.AddWithValue("@numpla", tx_pla_plani.Text.Substring(4, 8));
+                            micon.Parameters.AddWithValue("@plapla", tx_pla_placa.Text);
+                            micon.Parameters.AddWithValue("@carpla", tx_pla_carret.Text);
+                            micon.Parameters.AddWithValue("@autpla", tx_pla_autor.Text);
+                            micon.Parameters.AddWithValue("@confve", tx_pla_confv.Text);
+                            micon.Parameters.AddWithValue("@brepla", tx_pla_brevet.Text);
+                            micon.Parameters.AddWithValue("@propla", tx_pla_ruc.Text);
+                            // 
+                            micon.Parameters.AddWithValue("@tdocor", tx_dat_docOr.Text);                            // tipo del documento origen
+                            micon.Parameters.AddWithValue("@rucDor", tx_rucEorig.Text);                             // ruc del emisor del doc origen
+                            micon.Parameters.AddWithValue("@lpagop", (rb_pOri.Checked == true) ? "O" : "D");         // mara de pago en origen o destino
+                            micon.Parameters.AddWithValue("@pesoKT", (rb_kg.Checked == true) ? "K" : "T");          // peso en: Kilos o Toneladas
+                            micon.Parameters.AddWithValue("@tidoc2", tx_dat_docOr2.Text);
+                            micon.Parameters.AddWithValue("@rucDo2", tx_rucEorig2.Text);
+                            micon.Parameters.AddWithValue("@docsr2", tx_docsOr2.Text);
+                            micon.Parameters.AddWithValue("@marCU", (chk_cunica.Checked == true) ? 1 : 0);          // 0=carga consolidada normal, 1=carga única en el camión
+                            //                                                                                        //
+                            micon.Parameters.AddWithValue("@verApp", verapp);
+                            micon.Parameters.AddWithValue("@asd", asd);
+                            micon.Parameters.AddWithValue("@iplan", lib.iplan());
+                            micon.Parameters.AddWithValue("@ipwan", TransCarga.Program.vg_ipwan);
+                            micon.Parameters.AddWithValue("@nbnam", Environment.MachineName);
+                            //
+                            micon.ExecuteNonQuery();
+                        }
                     }
-                    if (true)   // tx_impreso.Text == "S"
+                    else    // if (true)   // tx_impreso.Text == "S"
                     {
                         // EDICION DE CABECERA ... Al 06/01/2021 solo se permite editar observ y consignatario
                         // EDICION DE CABECERA ... al 05/05/2022 se permite editar docs.origen si eres usuario autorizado
@@ -3130,6 +3258,7 @@ namespace TransCarga
                 jaladet(tx_idr.Text);
                 //tx_numero_Leave(null,null);   // comentado el 08/08/2023
                 tx_obser1.Enabled = true;
+                analizaEdicion();
             }
         }
         private void textBox7_Leave(object sender, EventArgs e)         // departamento del remitente, jala provincia
@@ -3506,7 +3635,8 @@ namespace TransCarga
                 //dataGridView1.Rows.Clear();
                 jaladet(tx_idr.Text);
                 chk_seguridad_CheckStateChanged(null, null);
-                sololee();
+                analizaEdicion();
+                //sololee();
             }
         }
         private void tx_serie_Leave(object sender, EventArgs e)
@@ -4452,7 +4582,7 @@ namespace TransCarga
                 string[] vs = {"","","","","","","","","","","","","", "", "", "", "", "", "", "",   // 20
                                "", "", "", "", "", "", "", "", "", "", ""};    // 11
                 string[] vc = { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" };   // 16
-                string[] va = { "", "", "", "", "", "" };       // 6
+                string[] va = { "", "", "", "", "", "", "", "", "" };       // 9
                 string[,] dt = new string[3, 5] { { "", "", "", "", "" }, { "", "", "", "", "" }, { "", "", "", "", "" } }; // 5 columnas
 
                 vs[0] = tx_serie.Text;                          // dr.GetString("sergui");
@@ -4513,6 +4643,9 @@ namespace TransCarga
                 va[3] = "";                                  // Varios: segunda linea de despedida
                 va[4] = glosa1;
                 va[5] = glosa2;
+                va[6] = tx_consig.Text.Trim();              // consignatario
+                va[7] = tx_telR.Text.Trim();
+                va[8] = tx_telD.Text.Trim();
 
                 int y = 0;
                 dt[y, 0] = (y + 1).ToString();              // detalle: Num de fila

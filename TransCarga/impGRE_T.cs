@@ -19,7 +19,7 @@ namespace TransCarga
         string[] cab = { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",        // 20
                          "", "", "", "", "", "", "", "", "", "", "" };      // 11
         string[,] det = new string[3,5] { { "", "", "", "", "" }, { "", "", "", "", "" }, { "", "", "", "", "" } };
-        string[] var = { "", "", "", "", "", ""};       // 6
+        string[] var = { "", "", "", "", "", "", "", "", ""};       // 9
         string[] vch = { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" };      // 17
         short copias = 0;
         string otro = "";               // ruta y nombre del png código QR
@@ -86,6 +86,9 @@ namespace TransCarga
             var[3] = varios[3];         // despedid2
             var[4] = varios[4];         // Glosa final comprobante 1 -> "Representación impresa sin valor legal de la"
             var[5] = varios[5];         // Glosa final comprobante 2 -> "Guía de Remisión Electrónica de Transportista"
+            var[6] = varios[6];         // consignatario
+            var[7] = varios[7];         // telefono remitente
+            var[8] = varios[8];         // telefono destinatario
 
             vch[0] = vehChof[0];        // Vehiculos - Placa veh principal -> tx_pla_placa.Text
             vch[1] = vehChof[1];        // Vehiculos - Autoriz. vehicular -> tx_pla_autor.Text
@@ -564,7 +567,6 @@ namespace TransCarga
             rowcabeza.dptoRemit = cab[20];       // no tenemos este dato en la clase
             rowcabeza.provRemit = cab[21];       // no tenemos este dato en la clase
             rowcabeza.distRemit = cab[22];       // no tenemos este dato en la clase
-            rowcabeza.telremit = "";        // no tenemos este dato en la clase
             // destinatario
             rowcabeza.docDestinat = cab[13];
             rowcabeza.numDestinat = cab[14];
@@ -573,7 +575,6 @@ namespace TransCarga
             rowcabeza.distDestinat = cab[26];       // no tenemos este dato en la clase
             rowcabeza.provDestinat = cab[25];       // no tenemos este dato en la clase
             rowcabeza.dptoDestinat = cab[24];       // no tenemos este dato en la clase
-            rowcabeza.teldesti = "";           // no tenemos este dato en la clase
             // importes
             rowcabeza.pesTotCar = cab[17];
             rowcabeza.uniMedPes = cab[18];
@@ -588,8 +589,6 @@ namespace TransCarga
             rowcabeza.tipDocRel2 = cab[7];         // Datos relacionados 2: tipo doc origen -> tx_dat_docOr2.Text
             rowcabeza.docscarga2 = cab[8];         // Datos relacionados 2: numero doc origen -> tx_docsOr2.Text
             rowcabeza.rucDocRel2 = cab[9];         // Datos relacionados 2: ruc doc origen -> tx_rucEorig2.Text
-            //
-            rowcabeza.consignat = "";           // no tenemos este dato en la clase
             // pie
             rowcabeza.marcamodelo = "";         // no tenemos este dato en la clase
             rowcabeza.autoriz = vch[1];
@@ -620,6 +619,9 @@ namespace TransCarga
             rowcabeza.varTexDes2 = var[3];
             rowcabeza.varGloFin1 = var[4];
             rowcabeza.varGloFin2 = var[5];
+            rowcabeza.consignat = var[6];
+            rowcabeza.telremit = var[7];
+            rowcabeza.teldesti = var[8];
             //
             guiaT.gr_ind_cab.Addgr_ind_cabRow(rowcabeza);
             //

@@ -704,6 +704,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Telef_22.png" />
     <None Include="bin\Debug\recursos\fec_elect21.png" />
     <None Include="bin\Debug\recursos\etiq_venta32.png" />
     <None Include="bin\Debug\recursos\process32.png" />
