@@ -469,15 +469,13 @@ form guiati_e, adecuación para que cuando sea carga única jale el formato "grt
 form guiati_e, revisar que el xml de cargas unicas contenga los datos del modelo sunat ............. ok 31/10/2023
 form repsoper, adecuaciones y correcciones en impresión y visualización de guias ................... ok 07/11/2023
 form guiati_e, si el estado sunat es rechazado, el modo es Edicion, y el usuario esta permitido 
-	que permita cambiar todo, grabar y regenerar el xml ............................................ ok falta probar bien
-CR gre_t1, agregar numero de telefono del remitente y destinatario ................................. ok falta probar
-CR gre_t1, agregar consignatario debajo de destinatario o por algun lado ........................... ok falta probar
-clase publico, adecuar los campos de consignatario y telefonos remit y destinat .................... ok falta probar
-clase impGRE_T, adecuar los campos de consignatario y telefonos remit y destinat ................... ok falta probar
-form guiati_e, modo EDICION, VISUALIZACION, no jala dirección sede de destino ...................... 
-xmlGRE, adecuaciones en los select de sqlite para jalar el ultimo registro si hubieran varias 
-	filas de la misma guia ......................................................................... 
-form guiati_e, corregir error en impresion por falta de parametros de telef y consignatario ........
+	que permita cambiar todo, grabar y regenerar el xml ............................................ ok 15/11/2023
+CR gre_t1, agregar numero de telefono del remitente y destinatario ................................. ok 15/11/2023
+CR gre_t1, agregar consignatario debajo de destinatario o por algun lado ........................... ok 15/11/2023
+clase publico, adecuar los campos de consignatario y telefonos remit y destinat .................... ok 15/11/2023
+clase impGRE_T, adecuar los campos de consignatario y telefonos remit y destinat ................... ok 15/11/2023
+form guiati_e, modo EDICION, VISUALIZACION, no jala dirección sede de destino ...................... ok 15/11/2023
+form guiati_e, corregir error en impresion por falta de parametros de telef y consignatario ........ ok 15/11/2023
 
 
 form repsventas, arreglar el boton de CDR, no esta jalando el cdr .................................. ok 10/11/2023

@@ -474,7 +474,7 @@ namespace TransCarga
                         "ifnull(er.numerotel1,'') as telrem,ifnull(ed.numerotel1,'') as teldes,ifnull(t.nombclt,'') as clifact," +
                         "a.marca_gre,a.tidocor,a.rucDorig,a.lpagop,a.pesoKT,a.tidocor2,a.rucDorig2,a.docsremit2,a.marca1," +
                         "ifnull(ad.nticket,'') as nticket,ifnull(ad.estadoS,'') as estadoS, ifnull(ad.cdr,'') as cdr,ifnull(ad.cdrgener,'') as cdrgener," +
-                        "ifnull(ad.textoQR,'') as textoQR,ifnull(ad.fticket,'') as fticket " +
+                        "ifnull(ad.textoQR,'') as textoQR,ifnull(ad.fticket,'') as fticket,a.idplani,concat(l.deta1,'-',l.deta2,'-',l.deta3,'-',l.deta4) as dirlocdes " +
                         "from cabguiai a " +
                         "left join adiguias ad on ad.idg=a.id " +
                         "left join controlg b on b.serguitra=a.sergui and b.numguitra=a.numgui " +
@@ -484,6 +484,7 @@ namespace TransCarga
                         "left join vehiculos d on d.placa=a.plaplagri " +
                         "left join vehiculos r on r.placa=a.carplagri " +
                         "left join cabplacar p on p.id=a.idplani " +
+                        "left join desc_loc l on l.idcodice=a.locdestin " +
                         "left join anag_cli er on er.ruc=a.nudoregri and er.tipdoc=a.tidoregri " +
                         "left join anag_cli ed on ed.ruc=a.nudodegri and ed.tipdoc=a.tidodegri " + parte;
                     MySqlCommand micon = new MySqlCommand(consulta, conn);
@@ -543,6 +544,7 @@ namespace TransCarga
                             chk_flete.Checked = (dr.GetString("fleteimp") == "S") ? true : false;
                             tx_n_auto.Text = dr.GetString("grinumaut");     // numeracion de GR autom o manual
                             //
+                            tx_idplan.Text = dr.GetString("idplani");
                             tx_marcamion.Text = dr.GetString("marca");
                             tx_pla_fech.Text = dr.GetString("fecplacar");   //.Substring(0, 10);
                             tx_pla_plani.Text = dr.GetString("serplagri") + dr.GetString("numplagri");
@@ -596,7 +598,7 @@ namespace TransCarga
                             cmb_origen.SelectedValue = tx_dat_locori.Text;
                             cmb_origen_SelectionChangeCommitted(null, null);
                             cmb_destino.SelectedValue = tx_dat_locdes.Text;
-                            //cmb_destino_SelectionChangeCommitted(null, null);
+                            tx_dirDestino.Text = dr.GetString("dirlocdes");    //cmb_destino_SelectionChangeCommitted(null, null);
                             tx_dat_plaNreg.Text = dr.GetString("nregtrackto");
                             tx_dat_carrNreg.Text = dr.GetString("nregcarreta");
                             cmb_docRem.SelectedValue = tx_dat_tdRem.Text;
@@ -1087,6 +1089,7 @@ namespace TransCarga
             if (Tx_modo.Text == "EDITAR" && tx_estaSunat.Text.Trim() == "Rechazado" && v_urege.ToUpper().Contains(asd.ToUpper()))
             {
                 escribe();
+                gbox_serie.Enabled = false;
             }
             else
             {
@@ -3062,7 +3065,7 @@ namespace TransCarga
             {
                 try
                 {
-                    if (Tx_modo.Text == "EDITAR" && tx_estaSunat.Text.Trim() == "Rechazado" && v_urege.Contains(asd.ToLower())) // true == true     
+                    if (Tx_modo.Text == "EDITAR" && tx_estaSunat.Text.Trim() == "Rechazado" && v_urege.ToLower().Contains(asd.ToLower())) // true == true     
                     {
                         // EDICION DE CABECERA ... Al 06/01/2021 solo se permite editar observ y consignatario
                         // EDICION DE CABECERA ... al 05/05/2022 se permite editar docs.origen si eres usuario autorizado

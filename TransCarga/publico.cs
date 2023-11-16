@@ -346,6 +346,9 @@ namespace TransCarga
                     va[3] = "";                                  // Varios: segunda linea de despedida
                     va[4] = "";                                 // glosa1;
                     va[5] = "";                                 // glosa2;
+                    va[6] = dtgrtcab.Rows[0]["clifingri"].ToString();
+                    va[7] = dtgrtcab.Rows[0]["telrem"].ToString();
+                    va[8] = dtgrtcab.Rows[0]["teldes"].ToString();
                     // id,sergui,numgui,cantprodi,unimedpro,codiprodi,descprodi,round(pesoprodi,1),precprodi,totaprodi 
                     int y = 0;
                     dt[y, 0] = (y + 1).ToString();                           // detalle: Num de fila
