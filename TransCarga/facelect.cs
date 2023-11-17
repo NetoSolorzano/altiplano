@@ -5476,7 +5476,49 @@ namespace TransCarga
             }
             if (vi_formato == "TK")
             {
-                imprime_TK(sender, e);
+                // imprime_TK(sender, e);
+                string[] vs = {"","","","","","","","","","","","","", "", "", "", "", "", "", "",   // 20
+                               "", "", "", "", "", "", "", "", "", ""};    // 10
+                string[] va = { "", "", "", "", "", "", "", "", "" };       // 9
+                string[,] dt = new string[10, 6] {
+                    { "", "", "", "", "", "" }, { "", "", "", "", "", "" }, { "", "", "", "", "", "" }, { "", "", "", "", "", "" }, { "", "", "", "", "", "" },
+                    { "", "", "", "", "", "" }, { "", "", "", "", "", "" }, { "", "", "", "", "", "" }, { "", "", "", "", "", "" }, { "", "", "", "", "", "" }
+                }; // 6 columnas, 10 filas
+                vs[0] = cmb_tdv.Text.Substring(0, 1).ToUpper() + lib.Right(tx_serie.Text, 3);   // serie (F001)
+                vs[1] = tx_numero.Text;                 // numero
+                vs[2] = tx_dat_tdv.Text;                // tx_dat_tdv.Text, siglas del tipo de documento
+                vs[3] = Program.dirfisc;                // direccion emisor
+                if (tx_dat_tdv.Text == codBole) vs[4] = "Boleta de Venta Electrónica";
+                if (tx_dat_tdv.Text == codfact) vs[4] = "Factura Electrónica";
+                vs[5] = tx_fechope.Text;                // fecha de emision formato dd/mm/aaaa
+                vs[6] = tx_nomRem.Text;                 // nombre del cliente del comprobante
+                vs[7] = tx_numDocRem.Text;              // numero documento del cliente
+                vs[8] = tx_dirRem.Text;                 // dirección cliente
+                vs[9] = tx_distRtt.Text;                // distrito de la direccion
+                vs[10] = tx_provRtt.Text;               // provincia de la direccion
+                vs[11] = tx_dptoRtt.Text;               // departamento de la dirección
+                vs[12] = tx_tfil.Text;                  // cantidad de filas de detalle
+                vs[13] = tx_subt.Text;                  // Sub total del comprobante
+                vs[14] = tx_igv.Text;                   // igv del comprobante
+                vs[15] = tx_flete.Text;                 // importe total del comprobante
+                vs[16] = cmb_mon.Text;                  // Simbolo de la moneda
+                vs[17] = tx_fletLetras.Text;            // flete en letras
+                vs[18] = (rb_credito.Checked == true) ? "CREDITO" : "CONTADO";
+                vs[19] = tx_dat_dpla.Text;              // dias de plazo credito
+                vs[20] = glosdetra;                     // Glosa para la detracción
+                vs[21] = tipdo;                         // codigo sunat tipo comprobante
+                vs[22] = tipoDocEmi;                    // CODIGO SUNAT tipo de documento RUC/DNI del cliente
+                vs[23] = nipfe;                         // identificador de ose/pse metodo de envío
+                vs[24] = restexto;                      // texto del resolucion sunat del ose/pse
+                vs[25] = autoriz_OSE_PSE;               // autoriz del ose/pse
+                vs[26] = webose;                        // web del ose/pse
+                vs[27] = tx_digit.Text.Trim();          // usuario creador
+                vs[28] = tx_locuser.Text;               // local de emisión
+                vs[29] = despedida;                     // glosa despedida
+                vs[30] = "";                            // libre 
+
+                impDV impTK = new impDV(1, v_impTK, vs);
+                
                 if (File.Exists(@otro))
                 {
                     //File.Delete(@"C:\test.txt");

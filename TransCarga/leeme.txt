@@ -476,11 +476,10 @@ clase publico, adecuar los campos de consignatario y telefonos remit y destinat 
 clase impGRE_T, adecuar los campos de consignatario y telefonos remit y destinat ................... ok 15/11/2023
 form guiati_e, modo EDICION, VISUALIZACION, no jala dirección sede de destino ...................... ok 15/11/2023
 form guiati_e, corregir error en impresion por falta de parametros de telef y consignatario ........ ok 15/11/2023
-
+form repsventas, agregar reporte estados comprobantes sunat, metdo impresion desde clase ...........  
 
 form repsventas, arreglar el boton de CDR, no esta jalando el cdr .................................. ok 10/11/2023
 form facelect, considerar que sunat responda con error o cdr rechazo ............................... me quede acá 11/09/2023
-form repsventas, agregar reporte estados comprobantes sunat, metdo impresion desde clase ...........  
 form facelect, colocar en una clase el metodo de impresion de boletas y facturas ................... 
 form facelect, opción FACT.DIRECTA desde sistema del contribuyente a los metodos de gestión:
 	- F y B normales, sin detracción en soles al contado ........................................... ok 10/09/2023
