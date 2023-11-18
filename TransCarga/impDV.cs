@@ -60,7 +60,6 @@ namespace TransCarga
             vs[27] = cabecera[27];     // usuario creador
             vs[28] = cabecera[28];     // local de emisión
             vs[29] = cabecera[29];     // glosa despedida
-            vs[30] = cabecera[30];     // 
 
             for (int o=0; o <= int.Parse(vs[12]); o++)
             {
@@ -74,7 +73,7 @@ namespace TransCarga
 
             va[0] = varios[0];         // Ruta y nombre del logo del emisor electrónico
             va[1] = varios[1];         // glosa del servicio en facturacion
-            va[2] = varios[2];         // siglas nombre de tipo de documento Factura 
+            va[2] = varios[2];         // Código Transcarga del tipo de documento Factura 
             va[3] = varios[3];         // 
             va[4] = varios[4];         // 
             va[5] = varios[5];         // 
@@ -424,9 +423,9 @@ namespace TransCarga
                     e.Graphics.DrawImage(png, rec);
                     png.Dispose();
                     // leyenda 2
+                    posi = posi + lib.CentimeterToPixel(3);
                     if (vs[23] != "factDirecta")
                     {
-                        posi = posi + lib.CentimeterToPixel(3);
                         lt = (lib.CentimeterToPixel(anchTik) - e.Graphics.MeasureString(vs[24], lt_med).Width) / 2;
                         puntoF = new PointF(lt, posi);
                         e.Graphics.DrawString(vs[24], lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
@@ -443,8 +442,8 @@ namespace TransCarga
                         leyen = new SizeF(lib.CentimeterToPixel(anchTik) - 20, alfi * 2);
                         RectangleF recley5 = new RectangleF(puntoF, leyen);
                         e.Graphics.DrawString(vs[26], lt_med, Brushes.Black, recley5, sf);
+                        posi = posi + alfi * 3;
                     }
-                    posi = posi + alfi * 3;
                     string locyus = vs[28] + " - " + vs[27];
                     puntoF = new PointF(coli, posi);
                     e.Graphics.DrawString(locyus, lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);                  // tienda y vendedor
@@ -460,9 +459,28 @@ namespace TransCarga
                 }
             }
         }
-        private conClie generaReporte(string cristalito)
+        private conClie generaReporte(string cristalito)            // cambiar a facturas/boletas
         {
+            conClie guiaT = new conClie();
+            conClie.gr_ind_cabRow rowcabeza = guiaT.gr_ind_cab.Newgr_ind_cabRow();
+            // CABECERA
+            rowcabeza.formatoRPT = cristalito;
+            rowcabeza.id = "0";         // no tenemos este dato en la clase
+            // pie
+            rowcabeza.marcamodelo = "";         // no tenemos este dato en la clase
+            rowcabeza.fechora_imp = DateTime.Now.ToString();
+            rowcabeza.horEmiCre = "";           // hora de emisión ... para efectos de la impresion en TK y A5 no importa ... 10/10/2023
+            // varios
+            //
+            guiaT.gr_ind_cab.Addgr_ind_cabRow(rowcabeza);
+            //
+            // DETALLE  
+            for (int y = 0; y < 3; y++)
+            {
 
+            }
+            //
+            return guiaT;
         }
     }
 }

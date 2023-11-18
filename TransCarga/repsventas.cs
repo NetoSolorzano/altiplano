@@ -32,6 +32,7 @@ namespace TransCarga
         public string perAn = "";
         public string perIm = "";
         string codfact = "";
+        string codBole = "";            // codigo de Boleta de venta
         string coddni = "";
         string codruc = "";
         string codmon = "";
@@ -59,12 +60,23 @@ namespace TransCarga
         string u_sol_sunat = "";        // usuario sol sunat del cliente
         string c_sol_sunat = "";        // clave sol sunat del cliente
         string scope_sunat = "";        // scope sunat del api
-
+        string glosdetra = "";          // glosa original para las detracciones en tabla enlaces
+        string nipfe = "";              // nombre identificador del proveedor de fact electronica
+        string restexto = "xxx";        // texto resolucion sunat autorizando prov. fact electronica
+        string autoriz_OSE_PSE = "yyy"; // numero resolucion sunat autorizando prov. fact electronica
+        string despedida = "";          // texto para mensajes al cliente al final de la impresión del doc.vta. 
+        string webose = "";             // direccion web del ose o pse para la descarga del 
+        string logoclt = "";            // ruta y nombre archivo logo
+        string glosser = "";            // glosa que va en el detalle del doc. de venta
+        string vi_formato = "";         // formato de impresion del documento
+        string v_mfildet = "";          // maximo numero de filas en el detalle, coord. con el formato
+        string vi_copias = "";          // cant copias impresion
+        string v_impTK = "";            // nombre de la ticketera
         #endregion
 
         libreria lib = new libreria();
         acGRE_sunat _E = new acGRE_sunat();           // instanciamos la clase 
-        //DataTable dt = new DataTable();
+        NumLetra nlet = new NumLetra();
         DataTable dtestad = new DataTable();
         DataTable dttaller = new DataTable();
         DataTable dtsunatE = new DataTable();       // comprobantes elec - estados sunat
@@ -166,6 +178,7 @@ namespace TransCarga
                                         if (lite.GetString(2).ToString() == "img_anu") img_anul = lite.GetString(3).ToString().Trim();         // imagen del boton grabar anular
                                         if (lite.GetString(2).ToString() == "img_imprime") img_imprime = lite.GetString(3).ToString().Trim();  // imagen del boton IMPRIMIR REPORTE
                                         if (lite.GetString(2).ToString() == "img_pre") img_preview = lite.GetString(3).ToString().Trim();  // imagen del boton VISTA PRELIMINAR
+                                        if (lite.GetString(2).ToString() == "logoPrin") logoclt = lite.GetString(3).ToString().Trim();         // logo emisor
                                     }
                                     if (lite.GetString(1).ToString() == "estado")
                                     {
@@ -191,8 +204,23 @@ namespace TransCarga
                                 }
                                 if (lite.GetString(0).ToString() == "facelect")
                                 {
-                                    if (lite.GetString(1).ToString() == "documento" && lite.GetString(2).ToString() == "factura") codfact = lite.GetString(3).ToString().Trim();         // tipo de pedido por defecto en almacen
+                                    if (lite.GetString(1).ToString() == "documento" && lite.GetString(2).ToString() == "factura") codfact = lite.GetString(3).ToString().Trim();         // 
+                                    if (lite.GetString(1).ToString() == "documento" && lite.GetString(2).ToString() == "boleta") codBole = lite.GetString(3).ToString().Trim();         // 
                                     if (lite.GetString(1).ToString() == "moneda" && lite.GetString(2).ToString() == "default") codmon = lite.GetString(3).ToString().Trim();
+                                    if (lite.GetString(1).ToString() == "detraccion" && lite.GetString(2).ToString() == "glosa") glosdetra = lite.GetString(3).ToString().Trim();    // glosa detraccion
+                                    if (lite.GetString(1).ToString() == "factelect" && lite.GetString(2).ToString() == "ose-pse") nipfe = lite.GetString(3).ToString().Trim();
+                                    if (lite.GetString(1).ToString() == "factelect" && lite.GetString(2).ToString() == "textaut") restexto = lite.GetString(3).ToString().Trim();
+                                    if (lite.GetString(1).ToString() == "factelect" && lite.GetString(2).ToString() == "autoriz") autoriz_OSE_PSE = lite.GetString(3).ToString().Trim();
+                                    if (lite.GetString(1).ToString() == "factelect" && lite.GetString(2).ToString() == "despedi") despedida = lite.GetString(3).ToString().Trim();
+                                    if (lite.GetString(1).ToString() == "factelect" && lite.GetString(2).ToString() == "webose") webose = lite.GetString(3).ToString().Trim();
+                                    if (lite.GetString(1).ToString() == "impresion")
+                                    {
+                                        if (lite.GetString(2).ToString() == "formato") vi_formato = lite.GetString(3).ToString().Trim();
+                                        if (lite.GetString(2).ToString() == "filasDet") v_mfildet = lite.GetString(3).ToString().Trim();       // maxima cant de filas de detalle
+                                        if (lite.GetString(2).ToString() == "copias") vi_copias = lite.GetString(3).ToString().Trim();
+                                        if (lite.GetString(2).ToString() == "impTK") v_impTK = lite.GetString(3).ToString().Trim();
+                                        //if (lite.GetString(2).ToString() == "nomfor_cr") v_CR_gr_ind = lite.GetString(3).ToString().Trim();
+                                    }
                                 }
                                 if (lite.GetString(0).ToString() == "clients")
                                 {
@@ -1150,175 +1178,185 @@ namespace TransCarga
             }
             if (dgv_sunat_est.Columns[e.ColumnIndex].Name.ToString() == "cdr")                    // columna CDR
             {
-                // PRIMERO deberíamos buscar el cdr.xml en el directorio respectivo
-                // Si hay, deberia sacar un mensaje indicando la ruta donde esta el xml respuesta
-                // Si NO hay, DEBERIAMOS CONSULTAR EN SUNAT EL CDR DEL COMPROBANTE
-                string archi = "R-" + Program.ruc + "-" + ((dgv_sunat_est.Rows[e.RowIndex].Cells["tipo"].Value.ToString() == "F") ? "01" : "03") + "-" +
-                    dgv_sunat_est.Rows[e.RowIndex].Cells["tipo"].Value.ToString() + lib.Right(dgv_sunat_est.Rows[e.RowIndex].Cells[2].Value.ToString(),12) + ".zip";
-                if (File.Exists(@rutaxml + archi) == true)     // si hay el xml
+                if (dgv_sunat_est.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString() != "")
                 {
-                    MessageBox.Show("El xml zip de respuesta esta en:" + Environment.NewLine +
-                        rutaxml + archi, "El CDR está descargado");
-                }
-                else
-                {
-                    // no hay el xml ... armarlo desde el dato guardado en la tabla adifactu
-                    if (true)
+                    // PRIMERO deberíamos buscar el cdr.xml en el directorio respectivo
+                    // Si hay, deberia sacar un mensaje indicando la ruta donde esta el xml respuesta
+                    // Si NO hay, DEBERIAMOS CONSULTAR EN SUNAT EL CDR DEL COMPROBANTE
+                    string archi = "R-" + Program.ruc + "-" + ((dgv_sunat_est.Rows[e.RowIndex].Cells["tipo"].Value.ToString() == "F") ? "01" : "03") + "-" +
+                        dgv_sunat_est.Rows[e.RowIndex].Cells["tipo"].Value.ToString() + lib.Right(dgv_sunat_est.Rows[e.RowIndex].Cells[2].Value.ToString(), 12) + ".zip";
+                    if (File.Exists(@rutaxml + archi) == true)     // si hay el xml
                     {
-                        // OPCION 1: leemos el byte[] de la tabla y lo armamos en el directorio 
-                        {
-                            Byte[] arCdr = Encoding.ASCII.GetBytes(dgv_sunat_est.Rows[e.RowIndex].Cells["Rspta"].Value.ToString());
-                            File.WriteAllBytes("nose", arCdr);
-                            FileStream fstrm = new FileStream(@rutaxml + archi, FileMode.CreateNew, FileAccess.Write);
-                            //BinaryWriter writer = new BinaryWriter(fstrm);
-                            fstrm.Write(arCdr, 0, arCdr.Length);
-                            //writer.Write(arCdr);
-                            //writer.Close();
-                            fstrm.Close();
-                            //Esta funcionalidad ... no esta bien 28/09/2023 .... no graba el zip correctamente porque posiblemente el campo de la tabla no tenga el tipo correcto .... no se
-                        }
-                        {
-                            // OPCION 2: jalamos el cdr del webservice soap de consulta
-                            string pRuc = Program.ruc;
-                            string pTip = ((dgv_sunat_est.Rows[e.RowIndex].Cells["tipo"].Value.ToString() == "F") ? "01" : "03");
-                            string pSer = dgv_sunat_est.Rows[e.RowIndex].Cells["tipo"].Value.ToString() + dgv_sunat_est.Rows[e.RowIndex].Cells[2].Value.ToString().Substring(1, 3);
-                            int pNum = int.Parse(dgv_sunat_est.Rows[e.RowIndex].Cells[2].Value.ToString().Substring(5, 8));
-
-                            // no me funca esta consulta SOAP, no se como programar la consulta .... 04/10/2023
-                            ServiceConsultaCDR.billServiceClient aaa = new ServiceConsultaCDR.billServiceClient();
-                            aaa.Endpoint.Name = "BillConsultServicePort";
-                            // 29/09/2023 me quede acá
-                            string x = aaa.getStatusCdr(pRuc, pTip, pSer, pNum).statusMessage;
-
-                        }
+                        MessageBox.Show("El xml zip de respuesta esta en:" + Environment.NewLine +
+                            rutaxml + archi, "El CDR está descargado");
                     }
-                    // alternativa 2, hacemos la consulta del CDR al WS de consultas de sunat .. NO FUNCA, EL SERVICIO WEB REST NO RESPONDE, 06/10/2023
-                    if (false)
+                    else
                     {
-                        try
+                        // no hay el xml ... armarlo desde el dato guardado en la tabla adifactu
+                        if (true)
                         {
-                            string pRuc = Program.ruc;
-                            string pTip = ((dgv_sunat_est.Rows[e.RowIndex].Cells["tipo"].Value.ToString() == "F") ? "01" : "03");
-                            string pSer = dgv_sunat_est.Rows[e.RowIndex].Cells["tipo"].Value.ToString() + dgv_sunat_est.Rows[e.RowIndex].Cells[2].Value.ToString().Substring(1, 3);
-                            string pNum = dgv_sunat_est.Rows[e.RowIndex].Cells[2].Value.ToString().Substring(5, 8);
+                            // OPCION 1: leemos el byte[] de la tabla y lo armamos en el directorio 
+                            {
+                                Byte[] arCdr = Encoding.ASCII.GetBytes(dgv_sunat_est.Rows[e.RowIndex].Cells["Rspta"].Value.ToString());
+                                File.WriteAllBytes("nose", arCdr);
+                                FileStream fstrm = new FileStream(@rutaxml + archi, FileMode.CreateNew, FileAccess.Write);
+                                //BinaryWriter writer = new BinaryWriter(fstrm);
+                                fstrm.Write(arCdr, 0, arCdr.Length);
+                                //writer.Write(arCdr);
+                                //writer.Close();
+                                fstrm.Close();
+                                //Esta funcionalidad ... no esta bien 28/09/2023 .... no graba el zip correctamente porque posiblemente el campo de la tabla no tenga el tipo correcto .... no se
+                            }
+                            {
+                                // OPCION 2: jalamos el cdr del webservice soap de consulta
+                                string pRuc = Program.ruc;
+                                string pTip = ((dgv_sunat_est.Rows[e.RowIndex].Cells["tipo"].Value.ToString() == "F") ? "01" : "03");
+                                string pSer = dgv_sunat_est.Rows[e.RowIndex].Cells["tipo"].Value.ToString() + dgv_sunat_est.Rows[e.RowIndex].Cells[2].Value.ToString().Substring(1, 3);
+                                int pNum = int.Parse(dgv_sunat_est.Rows[e.RowIndex].Cells[2].Value.ToString().Substring(5, 8));
 
-                            string token = _E.conex_token_(c_t);
-                            /* var resCon = _E.consCDR(pRuc, token, pTip, pSer, pNum, rutaxml);
-                            if (resCon == null)
-                            {
-                                MessageBox.Show("Tenemos problemas con la respuesta", "Error en comprobante", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                // no me funca esta consulta SOAP, no se como programar la consulta .... 04/10/2023
+                                ServiceConsultaCDR.billServiceClient aaa = new ServiceConsultaCDR.billServiceClient();
+                                aaa.Endpoint.Name = "BillConsultServicePort";
+                                // 29/09/2023 me quede acá
+                                string x = aaa.getStatusCdr(pRuc, pTip, pSer, pNum).statusMessage;
+
                             }
-                            else
-                            {
-                                if (resCon.Item1 == "Rechazado" || resCon.Item1 == "Error")
-                                {
-                                    MessageBox.Show(resCon.Item2, resCon.Item1, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                                }
-                            }
-                            */
                         }
-                        catch (Exception ex)
+                        // alternativa 2, hacemos la consulta del CDR al WS de consultas de sunat .. NO FUNCA, EL SERVICIO WEB REST NO RESPONDE, 06/10/2023
+                        if (false)
                         {
-                            MessageBox.Show(ex.Message, "Error al enviar a Sunat", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            //return retorna;
+                            try
+                            {
+                                string pRuc = Program.ruc;
+                                string pTip = ((dgv_sunat_est.Rows[e.RowIndex].Cells["tipo"].Value.ToString() == "F") ? "01" : "03");
+                                string pSer = dgv_sunat_est.Rows[e.RowIndex].Cells["tipo"].Value.ToString() + dgv_sunat_est.Rows[e.RowIndex].Cells[2].Value.ToString().Substring(1, 3);
+                                string pNum = dgv_sunat_est.Rows[e.RowIndex].Cells[2].Value.ToString().Substring(5, 8);
+
+                                string token = _E.conex_token_(c_t);
+                                /* var resCon = _E.consCDR(pRuc, token, pTip, pSer, pNum, rutaxml);
+                                if (resCon == null)
+                                {
+                                    MessageBox.Show("Tenemos problemas con la respuesta", "Error en comprobante", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                }
+                                else
+                                {
+                                    if (resCon.Item1 == "Rechazado" || resCon.Item1 == "Error")
+                                    {
+                                        MessageBox.Show(resCon.Item2, resCon.Item1, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    }
+                                }
+                                */
+                            }
+                            catch (Exception ex)
+                            {
+                                MessageBox.Show(ex.Message, "Error al enviar a Sunat", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                //return retorna;
+                            }
                         }
                     }
                 }
             }
             if (dgv_sunat_est.Columns[e.ColumnIndex].Name.ToString() == "iTK")
             {
-                imprime(dgv_sunat_est.Rows[e.RowIndex].Cells[1].Value.ToString(),
+                string cdtip = (dgv_sunat_est.Rows[e.RowIndex].Cells[1].Value.ToString() == "F") ? codfact : codBole;
+                imprime(cdtip,
                     dgv_sunat_est.Rows[e.RowIndex].Cells[2].Value.ToString().Substring(0, 4),
                     dgv_sunat_est.Rows[e.RowIndex].Cells[2].Value.ToString().Substring(5, 8));
             }
         }
         #endregion
+
         private void imprime(string tipo,string serie, string numero)
         {
-            MessageBox.Show("Estamos en la función de impresion","me quede acá");
-            // Jalamos los datos que nos falta y los ponemos en sus arreglos
             string[] vs = {"","","","","","","","","","","","","", "", "", "", "", "", "", "",   // 20
                                "", "", "", "", "", "", "", "", "", ""};    // 10
-            string[] vc = { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" };   // 17
-            string[] va = { "", "", "", "", "", "" };       // 6
-            string[,] dt = new string[3, 5] { { "", "", "", "", "" }, { "", "", "", "", "" }, { "", "", "", "", "" } }; // 5 columnas
-
+            string[] va = { "", "", "", "", "", "", "", "", "" };       // 9
+            string[,] dt = new string[10, 6] {
+                    { "", "", "", "", "", "" }, { "", "", "", "", "", "" }, { "", "", "", "", "", "" }, { "", "", "", "", "", "" }, { "", "", "", "", "", "" },
+                    { "", "", "", "", "", "" }, { "", "", "", "", "", "" }, { "", "", "", "", "", "" }, { "", "", "", "", "", "" }, { "", "", "", "", "", "" }
+            }; // 6 columnas, 10 filas
             using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
             {
                 conn.Open();
                 if (conn.State == ConnectionState.Open)
                 {
-                    string pedaso1 = "a.sergui = @ser AND a.numgui = @num";
-                    string pedaso2 = "a.sergui,a.numgui";
-                    string pedaso3 = "cabguiai a ";
-                    string pedaso4 = "detguiai a ";
-                    string pedaso5 = "adiguias ad on ad.idg=a.id";
+                    string consdeta = "select a.codgror,a.cantbul,a.unimedp,a.descpro,a.pesogro,b.docsremit " +
+                        "from detfactu a left join cabguiai b on concat(b.sergui,'-',b.numgui)=a.codgror " +
+                        "where a.tipdocvta=@tdv and a.serdvta=@ser and a.numdvta=@num";
 
-                    string consdeta = "select a.cantprodi,a.unimedpro,a.descprodi,round(a.pesoprodi,1) as pesoprodi " +
-                        "from " + pedaso4 + "where " + pedaso1;
-
-                    string consulta = "" + pedaso3 +
-                        "left join " + pedaso5 + " " +
-                        "where " + pedaso1; // a.sergui = @ser AND a.numgui = @num
+                    string consulta = "select a.id,DATE_FORMAT(a.fechope,'%d/%m/%Y') AS fechope,a.martdve,a.tipdvta,a.serdvta,a.numdvta,a.ticltgr,a.tidoclt,a.nudoclt,a.nombclt,a.direclt,a.dptoclt,a.provclt,a.distclt,a.ubigclt,a.corrclt,a.teleclt," +
+                        "a.locorig,a.dirorig,a.ubiorig,a.obsdvta,a.canfidt,a.canbudt,a.mondvta,a.tcadvta,a.subtota,a.igvtota,a.porcigv,a.totdvta,a.totpags,a.saldvta,a.estdvta,a.frase01,a.impreso,d.codsunat as ctdcl," +
+                        "a.tipoclt,a.m1clien,a.tippago,a.ferecep,a.userc,a.fechc,a.userm,a.fechm,b.descrizionerid as nomest,ifnull(c.id,'') as cobra,a.idcaja,a.plazocred,a.totdvMN,ifnull(p.marca1,'') as dpc,s.glosaser," +
+                        "a.cargaunica,a.porcendscto,a.valordscto,a.conPago,a.pagauto,ifnull(ad.placa,'') as placa,ifnull(ad.confv,'') as confv,ifnull(ad.autoriz,'') as autoriz,m.descrizionerid as nomon,t.codsunat as cdtdv," +
+                        "ifnull(ad.cargaEf,0) as cargaEf,ifnull(ad.cargaUt,0) as cargaUt,ifnull(ad.rucTrans,'') as rucTrans,ifnull(ad.nomTrans,'') as nomTrans,ifnull(date_format(ad.fecIniTras,'%Y-%m-%d'),'') as fecIniTras," +
+                        "ifnull(ad.dirPartida,'') as dirPartida,ifnull(ad.ubiPartida,'') as ubiPartida,ifnull(ad.dirDestin,'') as dirDestin,ifnull(ad.ubiDestin,'') as ubiDestin,ifnull(ad.dniChof,'') as dniChof," +
+                        "ifnull(ad.brevete,'') as brevete,ifnull(ad.valRefViaje,0) as valRefViaje,ifnull(ad.valRefVehic,0) as valRefVehic,ifnull(ad.valRefTon,0) as valRefTon,l.descrizionerid as nomLocO " +
+                        "from cabfactu a " +
+                        "left join adifactu ad on ad.idc=a.id and ad.tipoAd=1 " +
+                        "left join desc_est b on b.idcodice=a.estdvta " +
+                        "left join desc_mon m on m.idcodice=a.mondvta " +
+                        "left join desc_tpa p on p.idcodice=a.plazocred " +
+                        "left join desc_tdv t on t.idcodice=a.tipdvta " +
+                        "left join desc_doc d on d.idcodice=a.tidoclt " +
+                        "left join desc_loc l on l.idcodice=a.locorig " +
+                        "left join series s on s.tipdoc=a.tipdvta and s.serie=a.serdvta " +
+                        "left join cabcobran c on c.tipdoco=a.tipdvta and c.serdoco=a.serdvta and c.numdoco=a.numdvta and c.estdcob<>@coda " +
+                        "where a.tipdvta=@tdv and a.serdvta=@ser and a.numdvta=@num";
                     using (MySqlCommand micon = new MySqlCommand(consulta, conn))
                     {
                         micon.Parameters.AddWithValue("@ser", serie);
                         micon.Parameters.AddWithValue("@num", numero);
-                        micon.Parameters.AddWithValue("@tip", tipo);
+                        micon.Parameters.AddWithValue("@tdv", tipo);
+                        micon.Parameters.AddWithValue("@coda", codAnul);
                         using (MySqlDataReader dr = micon.ExecuteReader())
                         {
                             if (dr != null)
                             {
                                 if (dr.Read())
                                 {
-                                    vs[0] = dr.GetString("sergui");                         // 0
-                                    vs[1] = dr.GetString("numgui");                         // 1
-                                    vs[2] = dr.GetString("fechopegr").Substring(0, 10);     // 2
-                                    vs[3] = dr.GetString("dirorigen");                      // 3
-                                    vs[4] = dr.GetString("NomTidor1");                      // 4
-                                    vs[5] = dr.GetString("docsremit");                      // 5
-                                    vs[6] = dr.GetString("rucDorig");                       // 6
-                                    vs[7] = dr.GetString("NomTidor2");                      // 7
-                                    vs[8] = dr.GetString("docsremit2");                     // 8
-                                    vs[9] = dr.GetString("rucDorig2");                      // 9
-                                    vs[10] = dr.GetString("NomDocRem");                     // 10
-                                    vs[11] = dr.GetString("nudoregri");                     // 11
-                                    vs[12] = dr.GetString("nombregri");                     // 12
-                                    vs[13] = dr.GetString("NomDocDes");                     // 13
-                                    vs[14] = dr.GetString("nudodegri");                     // 14
-                                    vs[15] = dr.GetString("nombdegri");                     // 15
-                                    vs[16] = dr.GetString("fechplani");                     // 16
-                                    vs[17] = dr.GetString("pestotgri");                     // 17
-                                    vs[18] = dr.GetString("pesoKT");                        // 18
-                                    vs[19] = dr.GetString("direregri");                     // 19
-                                    vs[20] = dr.GetString("dept_ure");                      // 20
-                                    vs[21] = dr.GetString("prov_ure");                      // 21
-                                    vs[22] = dr.GetString("dist_ure");                      // 22
-                                    vs[23] = dr.GetString("diredegri");                     // 23
-                                    vs[24] = dr.GetString("dept_ude");                      // 24
-                                    vs[25] = dr.GetString("prov_ude");                      // 25
-                                    vs[26] = dr.GetString("dist_ude");                      // 26
-                                    vs[27] = dr.GetString("userc");                         // 27
-                                    vs[28] = dr.GetString("locorigen");                     // 28
-                                    vs[29] = dr.GetString("fechc");                         // 29
+                                    vs[0] = serie;                          // serie (F001)
+                                    vs[1] = numero;                         // numero
+                                    vs[2] = tipo;                           // tx_dat_tdv.Text, codigo Transcarga del tipo de documento
+                                    vs[3] = Program.dirfisc;                // direccion emisor
+                                    if (tipo != codfact) vs[4] = "Boleta de Venta Electrónica";
+                                    if (tipo == codfact) vs[4] = "Factura Electrónica";
+                                    vs[5] = dr.GetString("fechope");        // fecha de emision formato dd/mm/aaaa
+                                    vs[6] = dr.GetString("nombclt");        // nombre del cliente del comprobante
+                                    vs[7] = dr.GetString("nudoclt");        // numero documento del cliente
+                                    vs[8] = dr.GetString("direclt");        // dirección cliente
+                                    vs[9] = dr.GetString("distclt");        // distrito de la direccion
+                                    vs[10] = dr.GetString("provclt");       // provincia de la direccion
+                                    vs[11] = dr.GetString("dptoclt");       // departamento de la dirección
+                                    vs[12] = dr.GetString("canfidt");       // cantidad de filas de detalle
+                                    vs[13] = dr.GetString("subtota");       // Sub total del comprobante
+                                    vs[14] = dr.GetString("igvtota");       // igv del comprobante
+                                    vs[15] = dr.GetString("totdvta");       // importe total del comprobante
+                                    vs[16] = dr.GetString("nomon"); ;       // Simbolo de la moneda
+                                    vs[17] = nlet.Convertir(dr.GetString("totdvta"),true);                  // flete en letras
+                                    vs[18] = (dr.GetString("tippago").Trim() != "" && dr.GetString("plazocred").Trim() == "") ? "CONTADO" : "CREDITO";
+                                    vs[19] = (dr.GetString("plazocred") != "") ? dr.GetString("dpc") : "";  // dias de plazo credito
+                                    vs[20] = glosdetra;                     // Glosa para la detracción
+                                    vs[21] = dr.GetString("cdtdv");         // codigo sunat tipo comprobante
+                                    vs[22] = dr.GetString("ctdcl");         // CODIGO SUNAT tipo de documento RUC/DNI del cliente
+                                    vs[23] = nipfe;                         // identificador de ose/pse metodo de envío
+                                    vs[24] = restexto;                      // texto del resolucion sunat del ose/pse
+                                    vs[25] = autoriz_OSE_PSE;               // autoriz del ose/pse
+                                    vs[26] = webose;                        // web del ose/pse
+                                    vs[27] = dr.GetString("userc").Trim();  // usuario creador
+                                    vs[28] = dr.GetString("nomLocO").Trim();    // local de emisión
+                                    vs[29] = despedida;                     // glosa despedida
 
-                                    vc[0] = dr.GetString("plaplagri");                   // Placa veh principal
-                                    vc[1] = dr.GetString("autplagri");                   // Autoriz. vehicular
-                                    vc[2] = "";                                          // Num Registro MTC 
-                                    vc[3] = dr.GetString("confvegri");                   // Conf. vehicular
-                                    vc[4] = dr.GetString("carplagri");                   // Placa carreta
-                                    vc[5] = dr.GetString("autCarret");                   // Autoriz. vehicular
-                                    vc[6] = "";                                          // Num Registro MTC
-                                    vc[7] = dr.GetString("confvCarret");                 // Conf. vehicular 
-                                    vc[8] = "";                                          // Choferes - Dni chofer principal
-                                    vc[9] = dr.GetString("breplagri");                   // Choferes - Brevete chofer principal
-                                    vc[10] = dr.GetString("chocamcar");                  // Choferes - Nombres 
-                                    vc[11] = "";                                         // Choferes - Apellidos
-                                    vc[12] = "";                                         // Choferes - Dni chofer secundario
-                                    vc[13] = "";                                        // Choferes - Brevete chofer secundario
-                                    vc[14] = "";                                        // Choferes - Nombres
-                                    vc[15] = "";                                        // Choferes - Apellidos
-                                    vc[16] = "";                                        // Texto del QR
+                                    // varios
+                                    glosser = dr.GetString("glosaser");
+                                    va[0] = logoclt;         // Ruta y nombre del logo del emisor electrónico
+                                    va[1] = glosser;         // glosa del servicio en facturacion
+                                    va[2] = codfact;         // siglas nombre de tipo de documento Factura 
+                                    va[3] = "";         // 
+                                    va[4] = "";         // 
+                                    va[5] = "";         // 
+                                    va[6] = "";         // 
+                                    va[7] = "";         // 
+                                    va[8] = "";         // 
                                 }
                                 else
                                 {
@@ -1333,39 +1371,32 @@ namespace TransCarga
                                     MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                                 return;
                             }
-                            // varios
-                            va[0] = (dr.GetString("cdrgener") == "1") ? dr.GetString("textoQR") : "";                            // Varios: texto del código QR
-                            va[1] = "";
-                            va[2] = "despedid1";
-                            va[3] = "despedid2";
-                            va[4] = "glosa1";
-                            va[5] = "glosa2";
                         }
                     }
                     // detalle del comprobante
                     int y = 0;
                     using (MySqlCommand micomd = new MySqlCommand(consdeta, conn))
                     {
-                        micomd.Parameters.AddWithValue("@ser", serie);   // dgv_GRE_est.Rows[i].Cells[2].Value.ToString().Substring(0, 4)
-                        micomd.Parameters.AddWithValue("@num", numero);   // dgv_GRE_est.Rows[i].Cells[2].Value.ToString().Substring(5, 8)
+                        micomd.Parameters.AddWithValue("@ser", serie);
+                        micomd.Parameters.AddWithValue("@num", numero);
+                        micomd.Parameters.AddWithValue("@tdv", tipo);
                         using (MySqlDataReader drg = micomd.ExecuteReader())
                         {
                             while (drg.Read())  // #fila,a.cantprodi,a.unimedpro,a.descprodi,a.pesoprodi
                             {
-                                dt[y, 0] = (y + 1).ToString();
-                                dt[y, 1] = drg.GetString(0);
-                                dt[y, 2] = drg.GetString(1);
-                                dt[y, 3] = drg.GetString(2);
-                                dt[y, 4] = drg.GetString(3);
+                                //dt[y, 0] = (y + 1).ToString();
+                                dt[y, 0] = "OriDest";
+                                dt[y, 1] = drg.GetString("cantbul");
+                                dt[y, 2] = drg.GetString("unimedp");
+                                dt[y, 3] = drg.GetString("codgror");             // guia transportista
+                                dt[y, 4] = drg.GetString("descpro");             // descripcion de la carga
+                                dt[y, 5] = drg.GetString("docsremit");           // documento relacionado remitente de la guia transportista
                                 y += 1;
                             }
-
                         }
-
                     }
                     // llamamos a la clase que imprime
-                    //impGRE_T imprime = new impGRE_T(1, v_impTK, vs, dt, va, vc);
-
+                    impDV imp = new impDV(1, v_impTK, vs, dt, va, "TK", "");
                 }
             }
         }

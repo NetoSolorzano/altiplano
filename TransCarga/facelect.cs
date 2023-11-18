@@ -3037,11 +3037,11 @@ namespace TransCarga
                     // Información de importes 
                     "ImpTotImp decimal(12,2), " +       // Monto total de impuestos                             - 22 TaxAmount
                     "ImpOpeGra decimal(12,2), " +       // Monto las operaciones gravadas                       - 23 TaxableAmount
-                    //"ImpOpeExo decimal(12,2), " +       // Monto las operaciones Exoneradas                     - 24
-                    //"ImpOpeIna decimal(12,2), " +       // Monto las operaciones inafectas del impuesto         - 25
-                    //"ImpOpeGra decimal(12,2), " +       // Monto las operaciones gratuitas                      - 26
+                    //"ImpOpeExo decimal(12,2), " +     // Monto las operaciones Exoneradas                     - 24
+                    //"ImpOpeIna decimal(12,2), " +     // Monto las operaciones inafectas del impuesto         - 25
+                    //"ImpOpeGra decimal(12,2), " +     // Monto las operaciones gratuitas                      - 26
                     "ImpIgvTot decimal(12,2), " +       // Sumatoria de IGV                                     - 27
-                    //"ImpISCTot decimal(12,2), " +       // Sumatoria de ISC                                     - 28
+                    //"ImpISCTot decimal(12,2), " +      // Sumatoria de ISC                                     - 28
                     "ImpOtrosT decimal(12,2), " +       // Sumatoria de Otros Tributos                          - 29
                     "IgvCodSun varchar(1), " +          // schemeAgencyID="6"
                     "IgvConInt varchar(4), " +          // 1000
@@ -3051,7 +3051,7 @@ namespace TransCarga
                     "TotPreVta decimal(12,2), " +       // Total precio de venta (incluye impuestos)            - 31
                     "TotDestos decimal(12,2), " +       // Monto total de descuentos del comprobante            - 32
                     "TotOtrCar decimal(12,2), " +       // Monto total de otros cargos del comprobante          - 33
-                    "TotaVenta decimal(12,2), " +         // Importe total de la venta, cesión en uso o del servicio prestado - 34
+                    "TotaVenta decimal(12,2), " +        // Importe total de la venta, cesión en uso o del servicio prestado - 34
                     "CanFilDet integer, " +              // Cantidad filas de detalle
                     "CtaDetra varchar(20), " +           // Cta detracción banco de la nación
                     "PorDetra decimal(5,1), " +          // % de la detracción
@@ -3060,8 +3060,37 @@ namespace TransCarga
                     "CodTipDet varchar(3), " +           // Código sunat tipo de detraccion (027 transporte de carga)
                     "CondPago varchar(10), " +           // Condicion de pago
                     "CodTipDoc varchar(2), " +          // Código sunat para el tipo de documento, FT=01, BV=03, etc
-                    "CodTipOpe varchar(4) " +           // Código sunat para el tipo de operación, 0101=Vta, interna facturas y boletas
-                    ")";
+                    "CodTipOpe varchar(4), " +           // Código sunat para el tipo de operación, 0101=Vta, interna facturas y boletas
+                    // ENCABEZADO-TRASLADOBIENES
+                    "cu_cpapp varchar(2), " +            // Código país del punto de origen
+                    "cu_ubipp varchar(6), " +            // Ubigeo del punto de partida 
+                    "cu_deppp varchar(50), " +           // Departamento del punto de partida
+                    "cu_propp varchar(50), " +           // Provincia del punto de partida
+                    "cu_dispp varchar(50), " +           // Distrito del punto de partida
+                    "cu_urbpp varchar(50), " +           // Urbanización del punto de partida
+                    "cu_dirpp varchar(200), " +          // Dirección detallada del punto de partida
+                    "cu_cppll varchar(2), " +            // Código país del punto de llegada
+                    "cu_ubpll varchar(6), " +            // Ubigeo del punto de llegada
+                    "cu_depll varchar(50), " +           // Departamento del punto de llegada
+                    "cu_prpll varchar(50), " +           // Provincia del punto de llegada
+                    "cu_dipll varchar(50), " +           // Distrito del punto de llegada
+                    "cu_ddpll varchar(200), " +          // Dirección detallada del punto de llegada
+                    "cu_placa varchar(7), " +            // Placa del Vehículo
+                    "cu_coins varchar(15), " +           // Constancia de inscripción del vehículo o certificado de habilitación vehicular
+                    "cu_marca varchar(50), " +           // Marca del Vehículo
+                    "cu_breve varchar(15), " +           // Nro.de licencia de conducir
+                    "cu_ructr varchar(11), " +           // RUC del transportista
+                    "cu_nomtr varchar(200), " +          // Razón social del Transportista
+                    "cu_modtr varchar(2), " +            // Modalidad de Transporte
+                    "cu_pesbr decimal(10,2), " +         // Total Peso Bruto
+                    "cu_motra varchar(2), " +            // Código de Motivo de Traslado
+                    "cu_fechi varchar(10), " +           // Fecha de Inicio de Traslado
+                    "cu_remtc varchar(15), " +           // Registro MTC
+                    "cu_nudch varchar(15), " +           // Nro.Documento del conductor
+                    "cu_tidch varchar(2), " +            // Tipo de Documento del conductor
+                    "cu_plac2 varchar(7), " +            // Placa del Vehículo secundario
+                    "cu_insub varchar(2) " +             // Indicador de subcontratación
+                ")";
                 using (SqliteCommand cmd = new SqliteCommand(sqlTabla, cnx))
                 {
                     cmd.ExecuteNonQuery();
@@ -3129,12 +3158,16 @@ namespace TransCarga
                     "EmisRuc,EmisNom,EmisCom,CodLocA,EmisUbi,EmisDir,EmisDep,EmisPro,EmisDis,EmisUrb,EmisPai,EmisCor,NumDVta,FecEmis,HorEmis,CodComp,FecVcto," +
                     "TipDocu,CodLey1,MonLetr,CodMonS,DstTipdoc,DstNumdoc,DstNomTdo,DstNombre,DstDirecc,DstDepart,DstProvin,DstDistri,DstUrbani,DstUbigeo,ImpTotImp," +
                     "ImpOpeGra,ImpIgvTot,ImpOtrosT,IgvCodSun,IgvConInt,IgvNomSun,IgvCodInt,TotValVta,TotPreVta,TotDestos,TotOtrCar,TotaVenta," +
-                    "CanFilDet,CtaDetra,PorDetra,ImpDetra,GloDetra,CodTipDet,CondPago,CodTipOpe) " +
+                    "CanFilDet,CtaDetra,PorDetra,ImpDetra,GloDetra,CodTipDet,CondPago,CodTipOpe," +
+                    "cu_cpapp,cu_ubipp,cu_deppp,cu_propp,cu_dispp,cu_urbpp,cu_dirpp,cu_cppll,cu_ubpll,cu_depll,cu_prpll,cu_dipll,cu_ddpll," +
+                    "cu_placa,cu_coins,cu_marca,cu_breve,cu_ructr,cu_nomtr,cu_modtr,cu_pesbr,u_motra,cu_fechi,cu_remtc,cu_nudch,cu_tidch,cu_plac2,cu_insub) " +
                     "values (" +
                     "@EmisRuc,@EmisNom,@EmisCom,@CodLocA,@EmisUbi,@EmisDir,@EmisDep,@EmisPro,@EmisDis,@EmisUrb,@EmisPai,@EmisCor,@NumDVta,@FecEmis,@HorEmis,@CodComp,@FecVcto," +
                     "@TipDocu,@CodLey1,@MonLetr,@CodMonS,@DstTipd,@DstNumd,@DstNomT,@DstNomb,@DstDire,@DstDepa,@DstProv,@DstDist,@DstUrba,@DstUbig,@ImpTotI," +
                     "@ImpOpeG,@ImpIgvT,@ImpOtro,@IgvCodS,@IgvConI,@IgvNomS,@IgvCodI,@TotValV,@TotPreV,@TotDest,@TotOtrC,@TotaVen," +
-                    "@CanFilD,@CtaDetr,@PorDetr,@ImpDetr,@GloDetr,@CodTipD,@CondPag,@CodTipO)";
+                    "@CanFilD,@CtaDetr,@PorDetr,@ImpDetr,@GloDetr,@CodTipD,@CondPag,@CodTipO," +
+                    "@cu_cpapp,@cu_ubipp,@cu_deppp,@cu_propp,@cu_dispp,@cu_urbpp,@cu_dirpp,@cu_cppll,@cu_ubpll,@cu_depll,@cu_prpll,@cu_dipll,@cu_ddpll," +
+                    "@cu_placa,@cu_coins,@cu_marca,@cu_breve,@cu_ructr,@cu_nomtr,@cu_modtr,@cu_pesbr,@u_motra,@cu_fechi,@cu_remtc,@cu_nudch,@cu_tidch,@cu_plac2,@cu_insub)";
                 using (SqliteCommand cmd = new SqliteCommand(metela, cnx))
                 {
                     // cabecera
@@ -3199,6 +3232,68 @@ namespace TransCarga
                     cmd.Parameters.AddWithValue("@CodTipD", (detrac == "si") ? Program.coddetra : "");
                     cmd.Parameters.AddWithValue("@CondPag", (rb_contado.Checked == true) ? "Contado" : "Credito");
                     cmd.Parameters.AddWithValue("@CodTipO", (detrac == "si") ? "1001" : "0101");    // 0101=venta interna, 1001=vta interna sujeta a detracción
+                    if (chk_cunica.Checked == true)
+                    {
+                        cmd.Parameters.AddWithValue("@cu_cpapp", );
+                        cmd.Parameters.AddWithValue("@cu_ubipp", );
+                        cmd.Parameters.AddWithValue("@cu_deppp", );
+                        cmd.Parameters.AddWithValue("@cu_propp", );
+                        cmd.Parameters.AddWithValue("@cu_dispp", );
+                        cmd.Parameters.AddWithValue("@cu_urbpp", );
+                        cmd.Parameters.AddWithValue("@cu_dirpp", );
+                        cmd.Parameters.AddWithValue("@cu_cppll", );
+                        cmd.Parameters.AddWithValue("@cu_ubpll", );
+                        cmd.Parameters.AddWithValue("@cu_depll", );
+                        cmd.Parameters.AddWithValue("@cu_prpll", );
+                        cmd.Parameters.AddWithValue("@cu_dipll", );
+                        cmd.Parameters.AddWithValue("@cu_ddpll", );
+                        cmd.Parameters.AddWithValue("@cu_placa", );
+                        cmd.Parameters.AddWithValue("@cu_coins", );
+                        cmd.Parameters.AddWithValue("@cu_marca", );
+                        cmd.Parameters.AddWithValue("@cu_breve", );
+                        cmd.Parameters.AddWithValue("@cu_ructr", );
+                        cmd.Parameters.AddWithValue("@cu_nomtr", );
+                        cmd.Parameters.AddWithValue("@cu_modtr", );
+                        cmd.Parameters.AddWithValue("@cu_pesbr", );
+                        cmd.Parameters.AddWithValue("@u_motra", );
+                        cmd.Parameters.AddWithValue("@cu_fechi", );
+                        cmd.Parameters.AddWithValue("@cu_remtc", );
+                        cmd.Parameters.AddWithValue("@cu_nudch", );
+                        cmd.Parameters.AddWithValue("@cu_tidch", );
+                        cmd.Parameters.AddWithValue("@cu_plac2", );
+                        cmd.Parameters.AddWithValue("@cu_insub", );
+                    }
+                    else
+                    {
+                        cmd.Parameters.AddWithValue("@cu_cpapp", "");
+                        cmd.Parameters.AddWithValue("@cu_ubipp", "");
+                        cmd.Parameters.AddWithValue("@cu_deppp", "");
+                        cmd.Parameters.AddWithValue("@cu_propp", "");
+                        cmd.Parameters.AddWithValue("@cu_dispp", "");
+                        cmd.Parameters.AddWithValue("@cu_urbpp", "");
+                        cmd.Parameters.AddWithValue("@cu_dirpp", "");
+                        cmd.Parameters.AddWithValue("@cu_cppll", "");
+                        cmd.Parameters.AddWithValue("@cu_ubpll", "");
+                        cmd.Parameters.AddWithValue("@cu_depll", "");
+                        cmd.Parameters.AddWithValue("@cu_prpll", "");
+                        cmd.Parameters.AddWithValue("@cu_dipll", "");
+                        cmd.Parameters.AddWithValue("@cu_ddpll", "");
+                        cmd.Parameters.AddWithValue("@cu_placa", "");
+                        cmd.Parameters.AddWithValue("@cu_coins", "");
+                        cmd.Parameters.AddWithValue("@cu_marca", "");
+                        cmd.Parameters.AddWithValue("@cu_breve", "");
+                        cmd.Parameters.AddWithValue("@cu_ructr", "");
+                        cmd.Parameters.AddWithValue("@cu_nomtr", "");
+                        cmd.Parameters.AddWithValue("@cu_modtr", "");
+                        cmd.Parameters.AddWithValue("@cu_pesbr", "");
+                        cmd.Parameters.AddWithValue("@u_motra", "");
+                        cmd.Parameters.AddWithValue("@cu_fechi", "");
+                        cmd.Parameters.AddWithValue("@cu_remtc", "");
+                        cmd.Parameters.AddWithValue("@cu_nudch", "");
+                        cmd.Parameters.AddWithValue("@cu_tidch", "");
+                        cmd.Parameters.AddWithValue("@cu_plac2", "");
+                        cmd.Parameters.AddWithValue("@cu_insub", "");
+                    }
                     cmd.ExecuteNonQuery();
                 }
                 // DETALLE
@@ -5451,17 +5546,92 @@ namespace TransCarga
         private bool imprimeTK()
         {
             bool retorna = false;
-            try
+            //try
             {
-                printDocument1.PrinterSettings.PrinterName = v_impTK;
-                printDocument1.Print();
+                //printDocument1.PrinterSettings.PrinterName = v_impTK;
+                //printDocument1.Print();
+
+                string[] vs = {"","","","","","","","","","","","","", "", "", "", "", "", "", "",   // 20
+                               "", "", "", "", "", "", "", "", "", ""};    // 10
+                string[] va = { "", "", "", "", "", "", "", "", "" };       // 9
+                string[,] dt = new string[10, 6] {
+                    { "", "", "", "", "", "" }, { "", "", "", "", "", "" }, { "", "", "", "", "", "" }, { "", "", "", "", "", "" }, { "", "", "", "", "", "" },
+                    { "", "", "", "", "", "" }, { "", "", "", "", "", "" }, { "", "", "", "", "", "" }, { "", "", "", "", "", "" }, { "", "", "", "", "", "" }
+                }; // 6 columnas, 10 filas
+                vs[0] = cmb_tdv.Text.Substring(0, 1).ToUpper() + lib.Right(tx_serie.Text, 3);   // serie (F001)
+                vs[1] = tx_numero.Text;                 // numero
+                vs[2] = tx_dat_tdv.Text;                // tx_dat_tdv.Text, codigo Transcarga del tipo de documento
+                vs[3] = Program.dirfisc;                // direccion emisor
+                if (tx_dat_tdv.Text == codBole) vs[4] = "Boleta de Venta Electrónica";
+                if (tx_dat_tdv.Text == codfact) vs[4] = "Factura Electrónica";
+                vs[5] = tx_fechope.Text;                // fecha de emision formato dd/mm/aaaa
+                vs[6] = tx_nomRem.Text;                 // nombre del cliente del comprobante
+                vs[7] = tx_numDocRem.Text;              // numero documento del cliente
+                vs[8] = tx_dirRem.Text;                 // dirección cliente
+                vs[9] = tx_distRtt.Text;                // distrito de la direccion
+                vs[10] = tx_provRtt.Text;               // provincia de la direccion
+                vs[11] = tx_dptoRtt.Text;               // departamento de la dirección
+                vs[12] = tx_tfil.Text;                  // cantidad de filas de detalle
+                vs[13] = tx_subt.Text;                  // Sub total del comprobante
+                vs[14] = tx_igv.Text;                   // igv del comprobante
+                vs[15] = tx_flete.Text;                 // importe total del comprobante
+                vs[16] = cmb_mon.Text;                  // Simbolo de la moneda
+                vs[17] = tx_fletLetras.Text;            // flete en letras
+                vs[18] = (rb_credito.Checked == true) ? "CREDITO" : "CONTADO";
+                vs[19] = tx_dat_dpla.Text;              // dias de plazo credito
+                vs[20] = glosdetra;                     // Glosa para la detracción
+                vs[21] = tipdo;                         // codigo sunat tipo comprobante
+                vs[22] = tipoDocEmi;                    // CODIGO SUNAT tipo de documento RUC/DNI del cliente
+                vs[23] = nipfe;                         // identificador de ose/pse metodo de envío
+                vs[24] = restexto;                      // texto del resolucion sunat del ose/pse
+                vs[25] = autoriz_OSE_PSE;               // autoriz del ose/pse
+                vs[26] = webose;                        // web del ose/pse
+                vs[27] = tx_digit.Text.Trim();          // usuario creador
+                vs[28] = tx_locuser.Text;               // local de emisión
+                vs[29] = despedida;                     // glosa despedida
+                // detalle
+                int tfg = (dataGridView1.Rows.Count == int.Parse(v_mfildet)) ? int.Parse(v_mfildet) : dataGridView1.Rows.Count - 1;
+                for (int l = 0; l < tfg; l++)
+                {
+                    string textF2 = dataGridView1.Rows[l].Cells["OriDest"].Value.ToString() + " - " +
+                        dataGridView1.Rows[l].Cells["Cant"].Value.ToString() + " " + dataGridView1.Rows[l].Cells["umed"].Value.ToString();
+                    if (!string.IsNullOrEmpty(dataGridView1.Rows[l].Cells[0].Value.ToString()))
+                    {
+                        dt[l, 0] = dataGridView1.Rows[l].Cells["OriDest"].Value.ToString();
+                        dt[l, 1] = dataGridView1.Rows[l].Cells["Cant"].Value.ToString();
+                        dt[l, 2] = dataGridView1.Rows[l].Cells["umed"].Value.ToString();
+                        dt[l, 3] = dataGridView1.Rows[l].Cells[0].Value.ToString();             // guia transportista
+                        dt[l, 4] = dataGridView1.Rows[l].Cells[1].Value.ToString();             // descripcion de la carga
+                        dt[l, 5] = dataGridView1.Rows[l].Cells[8].Value.ToString();             // documento relacionado remitente de la guia transportista
+                    }
+                }
+                // varios
+                va[0] = logoclt;         // Ruta y nombre del logo del emisor electrónico
+                va[1] = glosser;         // glosa del servicio en facturacion
+                va[2] = codfact;         // siglas nombre de tipo de documento Factura 
+                va[3] = "";         // 
+                va[4] = "";         // 
+                va[5] = "";         // 
+                va[6] = "";         // 
+                va[7] = "";         // 
+                va[8] = "";         // 
+
+                impDV impTK = new impDV(1, v_impTK, vs, dt, va, "TK", "");
+
+                if (File.Exists(@otro))
+                {
+                    //File.Delete(@"C:\test.txt");
+                    File.Delete(@otro);
+                }
+
                 retorna = true;
             }
-            catch (Exception ex)
+            
+            /*catch (Exception ex)
             {
                 MessageBox.Show(ex.Message,"Error en Impresora o plazo " + v_impTK);
                 retorna = false;
-            }
+            }*/
             return retorna;
         }
         private void printDoc_PrintPage(object sender, System.Drawing.Printing.PrintPageEventArgs e)
@@ -5486,7 +5656,7 @@ namespace TransCarga
                 }; // 6 columnas, 10 filas
                 vs[0] = cmb_tdv.Text.Substring(0, 1).ToUpper() + lib.Right(tx_serie.Text, 3);   // serie (F001)
                 vs[1] = tx_numero.Text;                 // numero
-                vs[2] = tx_dat_tdv.Text;                // tx_dat_tdv.Text, siglas del tipo de documento
+                vs[2] = tx_dat_tdv.Text;                // tx_dat_tdv.Text, codigo Transcarga del tipo de documento
                 vs[3] = Program.dirfisc;                // direccion emisor
                 if (tx_dat_tdv.Text == codBole) vs[4] = "Boleta de Venta Electrónica";
                 if (tx_dat_tdv.Text == codfact) vs[4] = "Factura Electrónica";
@@ -5516,8 +5686,34 @@ namespace TransCarga
                 vs[28] = tx_locuser.Text;               // local de emisión
                 vs[29] = despedida;                     // glosa despedida
                 vs[30] = "";                            // libre 
+                // detalle
+                int tfg = (dataGridView1.Rows.Count == int.Parse(v_mfildet)) ? int.Parse(v_mfildet) : dataGridView1.Rows.Count - 1;
+                for (int l = 0; l < tfg; l++)
+                {
+                    string textF2 = dataGridView1.Rows[l].Cells["OriDest"].Value.ToString() + " - " +
+                        dataGridView1.Rows[l].Cells["Cant"].Value.ToString() + " " + dataGridView1.Rows[l].Cells["umed"].Value.ToString();
+                    if (!string.IsNullOrEmpty(dataGridView1.Rows[l].Cells[0].Value.ToString()))
+                    {
+                        dt[l, 0] = dataGridView1.Rows[l].Cells["OriDest"].Value.ToString();
+                        dt[l, 1] = dataGridView1.Rows[l].Cells["Cant"].Value.ToString();
+                        dt[l, 2] = dataGridView1.Rows[l].Cells["umed"].Value.ToString();
+                        dt[l, 3] = dataGridView1.Rows[l].Cells[0].Value.ToString();             // guia transportista
+                        dt[l, 4] = dataGridView1.Rows[l].Cells[1].Value.ToString();             // descripcion de la carga
+                        dt[l, 5] = dataGridView1.Rows[l].Cells[8].Value.ToString();             // documento relacionado remitente de la guia transportista
+                    }
+                }
+                // varios
+                va[0] = logoclt;         // Ruta y nombre del logo del emisor electrónico
+                va[1] = glosser;         // glosa del servicio en facturacion
+                va[2] = codfact;         // siglas nombre de tipo de documento Factura 
+                va[3] = "";         // 
+                va[4] = "";         // 
+                va[5] = "";         // 
+                va[6] = "";         // 
+                va[7] = "";         // 
+                va[8] = "";         // 
 
-                impDV impTK = new impDV(1, v_impTK, vs);
+                impDV impTK = new impDV(1, v_impTK, vs, dt, va, "TK", "");
                 
                 if (File.Exists(@otro))
                 {
@@ -5946,10 +6142,4 @@ namespace TransCarga
         #endregion
 
     }
-    /* public class Cdr_Rpta                            // respuesta del post envio comprobante
-    {
-        public string ReferenceID { get; set; }         // código ticket respuesta
-        public string ResponseCode { get; set; }        // fecha hora de la respuesta
-        public string Description { get; set; }         // estado
-    } */
 }
