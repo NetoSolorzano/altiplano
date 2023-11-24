@@ -1041,7 +1041,7 @@ namespace TransCarga
                             "ifnull(b2.numerotel1,'') as numtel1D,ifnull(b2.numerotel2,'') as numtel2D,a.tipmongri,a.totgri,a.salgri,SUM(d.cantprodi) AS bultos,date(a.fechopegr) as fechopegr,a.tipcamgri," +
                             "max(d.descprodi) AS descrip,ifnull(m.descrizionerid,'') as mon,a.totgrMN,a.codMN,c.fecdocvta,b1.tiposocio as tipsrem,b2.tiposocio as tipsdes,a.docsremit," +
                             "a.plaplagri,a.carplagri,a.autplagri,a.confvegri,concat(lo.descrizionerid,' - ',ld.descrizionerid) as orides,c.saldofina,a.direregri as dirpartida," +
-                            "a.ubigregri as ubigpartida,a.diredegri as dirllegada,a.ubigdegri as ubigllegada,ifnull(a.fechplani,'') as fechplani,a.proplagri,ifnull(p.RazonSocial,'') as RazonSocial,d.unimedpro " +
+                            "a.ubigregri as ubigpartida,a.diredegri as dirllegada,a.ubigdegri as ubigllegada,ifnull(a.fechplani,'') as fechplani,a.proplagri,ifnull(p.RazonSocial,'') as RazonSocial,d.unimedpro,a.docsremit2 " +
                             "from cabguiai a left join detguiai d on d.idc=a.id " +
                             "LEFT JOIN controlg c ON c.serguitra = a.sergui AND c.numguitra = a.numgui " +
                             "left join anag_for p on p.ruc=a.proplagri " +
@@ -1093,7 +1093,7 @@ namespace TransCarga
                                         datguias[8] = dr.GetString("tipcamgri");     // tipo de cambio de la GR
                                         var a = dr.GetString("fechopegr").Substring(0, 10);
                                         datguias[9] = a.Substring(6,4) + "-" + a.Substring(3,2) + "-" + a.Substring(0,2);     // fecha de la GR
-                                        datguias[10] = dr.GetString("docsremit");
+                                        datguias[10] = dr.GetString("docsremit") + " " + dr.GetString("docsremit2");
                                         datguias[11] = dr.GetString("plaplagri"); 
                                         datguias[12] = dr.GetString("carplagri");
                                         datguias[13] = dr.GetString("autplagri");
@@ -1838,7 +1838,7 @@ namespace TransCarga
                 row["cu_ddpll"] = tx_dat_dpd.Text;                   // 15    Dirección detallada del punto de llegada
                 row["cu_placa"] = tx_pla_placa.Text;                   // 16    Placa del Vehículo
                 row["cu_coins"] = tx_pla_autor.Text;                   // 17    Constancia de inscripción del vehículo o certificado de habilitación vehicular
-                row["cu_marca"] = "";                   // 18    Marca del Vehículo
+                row["cu_marca"] = "";                   // 18    Marca del Vehículo 
                 row["cu_breve"] = "";                   // 19    Nro.de licencia de conducir
                 row["cu_ructr"] = tx_rucT.Text;                   // 20    RUC del transportista
                 row["cu_nomtr"] = tx_razonS.Text;                   // 21    Razón social del Transportista
@@ -3234,34 +3234,35 @@ namespace TransCarga
                     cmd.Parameters.AddWithValue("@CodTipO", (detrac == "si") ? "1001" : "0101");    // 0101=venta interna, 1001=vta interna sujeta a detracción
                     if (chk_cunica.Checked == true)
                     {
-                        cmd.Parameters.AddWithValue("@cu_cpapp", );
-                        cmd.Parameters.AddWithValue("@cu_ubipp", );
-                        cmd.Parameters.AddWithValue("@cu_deppp", );
-                        cmd.Parameters.AddWithValue("@cu_propp", );
-                        cmd.Parameters.AddWithValue("@cu_dispp", );
-                        cmd.Parameters.AddWithValue("@cu_urbpp", );
-                        cmd.Parameters.AddWithValue("@cu_dirpp", );
-                        cmd.Parameters.AddWithValue("@cu_cppll", );
-                        cmd.Parameters.AddWithValue("@cu_ubpll", );
-                        cmd.Parameters.AddWithValue("@cu_depll", );
-                        cmd.Parameters.AddWithValue("@cu_prpll", );
-                        cmd.Parameters.AddWithValue("@cu_dipll", );
-                        cmd.Parameters.AddWithValue("@cu_ddpll", );
-                        cmd.Parameters.AddWithValue("@cu_placa", );
-                        cmd.Parameters.AddWithValue("@cu_coins", );
-                        cmd.Parameters.AddWithValue("@cu_marca", );
-                        cmd.Parameters.AddWithValue("@cu_breve", );
-                        cmd.Parameters.AddWithValue("@cu_ructr", );
-                        cmd.Parameters.AddWithValue("@cu_nomtr", );
-                        cmd.Parameters.AddWithValue("@cu_modtr", );
-                        cmd.Parameters.AddWithValue("@cu_pesbr", );
-                        cmd.Parameters.AddWithValue("@u_motra", );
-                        cmd.Parameters.AddWithValue("@cu_fechi", );
-                        cmd.Parameters.AddWithValue("@cu_remtc", );
-                        cmd.Parameters.AddWithValue("@cu_nudch", );
-                        cmd.Parameters.AddWithValue("@cu_tidch", );
-                        cmd.Parameters.AddWithValue("@cu_plac2", );
-                        cmd.Parameters.AddWithValue("@cu_insub", );
+                        //
+                        cmd.Parameters.AddWithValue("@cu_cpapp", "PE");         // Código país del punto de origen
+                        cmd.Parameters.AddWithValue("@cu_ubipp", tx_dat_upo.Text);         // Ubigeo del punto de partida 
+                        cmd.Parameters.AddWithValue("@cu_deppp", tx_dp_dep.Text);         // Departamento del punto de partida
+                        cmd.Parameters.AddWithValue("@cu_propp", tx_dp_pro.Text);         // Provincia del punto de partida 
+                        cmd.Parameters.AddWithValue("@cu_dispp", tx_dp_dis.Text);         // Distrito del punto de partida
+                        cmd.Parameters.AddWithValue("@cu_urbpp", "");         // Urbanización del punto de partida
+                        cmd.Parameters.AddWithValue("@cu_dirpp", tx_dat_dpo.Text);         // Dirección detallada del punto de partida
+                        cmd.Parameters.AddWithValue("@cu_cppll", "PE");         // Código país del punto de llegada
+                        cmd.Parameters.AddWithValue("@cu_ubpll", tx_dat_upd.Text);         // Ubigeo del punto de llegada
+                        cmd.Parameters.AddWithValue("@cu_depll", tx_dd_dep.Text);         // Departamento del punto de llegada
+                        cmd.Parameters.AddWithValue("@cu_prpll", tx_dd_pro.Text);         // Provincia del punto de llegada
+                        cmd.Parameters.AddWithValue("@cu_dipll", tx_dd_dis.Text);         // Distrito del punto de llegada
+                        cmd.Parameters.AddWithValue("@cu_ddpll", tx_dat_dpd.Text);         // Dirección detallada del punto de llegada
+                        cmd.Parameters.AddWithValue("@cu_placa", tx_pla_placa.Text);         // Placa del Vehículo
+                        cmd.Parameters.AddWithValue("@cu_coins", tx_pla_autor.Text);         // Constancia de inscripción del vehículo o certificado de habilitación vehicular
+                        cmd.Parameters.AddWithValue("@cu_marca", "");         // Marca del Vehículo  
+                        cmd.Parameters.AddWithValue("@cu_breve", "");         // Nro.de licencia de conducir
+                        cmd.Parameters.AddWithValue("@cu_ructr", tx_rucT.Text);         // RUC del transportista
+                        cmd.Parameters.AddWithValue("@cu_nomtr", tx_razonS.Text);         // Razón social del Transportista
+                        cmd.Parameters.AddWithValue("@cu_modtr", texmotran);         // Modalidad de Transporte
+                        cmd.Parameters.AddWithValue("@cu_pesbr", tx_cetm.Text);         // Total Peso Bruto    02
+                        cmd.Parameters.AddWithValue("@u_motra", codtxmotran);          // Código de Motivo de Traslado    01
+                        cmd.Parameters.AddWithValue("@cu_fechi", tx_fecini.Text);         // Fecha de Inicio de Traslado 
+                        cmd.Parameters.AddWithValue("@cu_remtc", "");         // Registro MTC
+                        cmd.Parameters.AddWithValue("@cu_nudch", tx_dniChof.Text);         // Nro.Documento del conductor 
+                        cmd.Parameters.AddWithValue("@cu_tidch", 1);         // Tipo de Documento del conductor
+                        cmd.Parameters.AddWithValue("@cu_plac2", "");         // Placa del Vehículo secundario
+                        cmd.Parameters.AddWithValue("@cu_insub", "");         // Indicador de subcontratación
                     }
                     else
                     {

@@ -480,8 +480,14 @@ form repsventas, arreglar el boton de CDR, no esta jalando el cdr ..............
 form facelect, colocar en una clase el metodo de impresion de boletas y facturas en TK ............. ok 17/11/2023 falta en formato A4 para soya
 form repsventas, agregar reporte estados comprobantes sunat, metdo impresion desde clase ........... ok 17/11/2023 
 clase impDV, adecuarla para impresion de TK y A4 ................................................... ok 17/11/2023 falta A4 para soya
+form users, si el usuario es NETO, mostrar los campos encriptados para la BD ....................... ok 21/11/2023
+form guiati_e, las preguias automáticas deben enlazarse con su guía digitada y en control,
+	en el caso de Altiplano, no se registran las pre-guias de ninguna forma manual, todo automatico. ok 24/11/2023
+Trigger, cabguiai_after_insert, adecuacion para Altiplano .......................................... ok 24/11/2023
+form facelect, no esta jalando las 2 guías remitente de la GRE-T, error solo jala una! ............. 
+form preguiat, adecuar la numeración automática .................................................... me quede acá
 form facelect, agregar opciones de cargas únicas tipo soya:
-	- Facturas cargas únicas "tipo soya" en soles al crédito 1 cuota ............................... 
+	- Facturas cargas únicas "tipo soya" en soles al crédito 1 cuota ............................... falta probar facturando un GR como carga unica
 	- Facturas cargas únicas "tipo soya" en dólares al crédito 1 cuota ............................. 
 
 form facelect, considerar que sunat responda con error o cdr rechazo ............................... me quede acá 11/09/2023

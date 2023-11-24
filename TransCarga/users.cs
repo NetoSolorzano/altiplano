@@ -40,6 +40,7 @@ namespace TransCarga
         string cn_est = "";     // codigo nivel usuario estandar
         string cn_mir = "";     // codigo nivel usuario solo mira
         string cp_adm = "";     // TIPO de usuario admin
+        string uvencr = "";     // usuarios que pueden ver los campos encriptados
         libreria lib = new libreria();
         // string de conexion
         //static string serv = ConfigurationManager.AppSettings["serv"].ToString();
@@ -106,6 +107,10 @@ namespace TransCarga
             Bt_sig.Image = Image.FromFile(img_bts);
             Bt_ret.Image = Image.FromFile(img_btr);
             Bt_fin.Image = Image.FromFile(img_btf);
+
+            tx_encrip.Visible = false;
+            tx_desenc.Visible = false;
+            chk_muestra.Visible = false;
         }
         private void grilla()                   // arma la grilla
         {
@@ -168,41 +173,53 @@ namespace TransCarga
             {
                 MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
                 conn.Open();
-                string consulta = "select campo,param,valor from enlaces where formulario=@nofo";
+                string consulta = "select formulario,campo,param,valor from enlaces where formulario in (@nofo,@fuse)";
                 MySqlCommand micon = new MySqlCommand(consulta, conn);
-                micon.Parameters.AddWithValue("@nofo", "main");   // nomform
+                micon.Parameters.AddWithValue("@nofo", "main");
+                micon.Parameters.AddWithValue("@fuse", nomform);
                 MySqlDataAdapter da = new MySqlDataAdapter(micon);
                 DataTable dt = new DataTable();
                 da.Fill(dt);
                 for (int t = 0; t < dt.Rows.Count; t++)
                 {
                     DataRow row = dt.Rows[t];
-                    if (row["campo"].ToString() == "imagenes")
+                    if (row["formulario"].ToString() == "main")
                     {
-                        if (row["param"].ToString() == "img_btN") img_btN = row["valor"].ToString().Trim();         // imagen del boton de accion NUEVO
-                        if (row["param"].ToString() == "img_btE") img_btE = row["valor"].ToString().Trim();         // imagen del boton de accion EDITAR
-                        if (row["param"].ToString() == "img_btA") img_btA = row["valor"].ToString().Trim();         // imagen del boton de accion ANULAR/BORRAR
-                        if (row["param"].ToString() == "img_btQ") img_btq = row["valor"].ToString().Trim();         // imagen del boton de accion SALIR
-                        //if (row["param"].ToString() == "img_btP") img_btP = row["valor"].ToString().Trim();         // imagen del boton de accion IMPRIMIR
-                        // boton de vista preliminar .... esta por verse su utlidad
-                        if (row["param"].ToString() == "img_bti") img_bti = row["valor"].ToString().Trim();         // imagen del boton de accion IR AL INICIO
-                        if (row["param"].ToString() == "img_bts") img_bts = row["valor"].ToString().Trim();         // imagen del boton de accion SIGUIENTE
-                        if (row["param"].ToString() == "img_btr") img_btr = row["valor"].ToString().Trim();         // imagen del boton de accion RETROCEDE
-                        if (row["param"].ToString() == "img_btf") img_btf = row["valor"].ToString().Trim();         // imagen del boton de accion IR AL FINAL
-                        if (row["param"].ToString() == "img_gra") img_grab = row["valor"].ToString().Trim();         // imagen del boton grabar nuevo
-                        if (row["param"].ToString() == "img_anu") img_anul = row["valor"].ToString().Trim();         // imagen del boton grabar anular
+                        if (row["campo"].ToString() == "imagenes")
+                        {
+                            if (row["param"].ToString() == "img_btN") img_btN = row["valor"].ToString().Trim();         // imagen del boton de accion NUEVO
+                            if (row["param"].ToString() == "img_btE") img_btE = row["valor"].ToString().Trim();         // imagen del boton de accion EDITAR
+                            if (row["param"].ToString() == "img_btA") img_btA = row["valor"].ToString().Trim();         // imagen del boton de accion ANULAR/BORRAR
+                            if (row["param"].ToString() == "img_btQ") img_btq = row["valor"].ToString().Trim();         // imagen del boton de accion SALIR
+                                                                                                                        //if (row["param"].ToString() == "img_btP") img_btP = row["valor"].ToString().Trim();         // imagen del boton de accion IMPRIMIR
+                                                                                                                        // boton de vista preliminar .... esta por verse su utlidad
+                            if (row["param"].ToString() == "img_bti") img_bti = row["valor"].ToString().Trim();         // imagen del boton de accion IR AL INICIO
+                            if (row["param"].ToString() == "img_bts") img_bts = row["valor"].ToString().Trim();         // imagen del boton de accion SIGUIENTE
+                            if (row["param"].ToString() == "img_btr") img_btr = row["valor"].ToString().Trim();         // imagen del boton de accion RETROCEDE
+                            if (row["param"].ToString() == "img_btf") img_btf = row["valor"].ToString().Trim();         // imagen del boton de accion IR AL FINAL
+                            if (row["param"].ToString() == "img_gra") img_grab = row["valor"].ToString().Trim();         // imagen del boton grabar nuevo
+                            if (row["param"].ToString() == "img_anu") img_anul = row["valor"].ToString().Trim();         // imagen del boton grabar anular
+                        }
+                        if (row["campo"].ToString() == "niveles")
+                        {
+                            if (row["param"].ToString() == "admin") cn_adm = row["valor"].ToString().Trim();            // codigo admin
+                            if (row["param"].ToString() == "super") cn_sup = row["valor"].ToString().Trim();            // codigo superusuario
+                            if (row["param"].ToString() == "estan") cn_est = row["valor"].ToString().Trim();            // codigo estandar
+                            if (row["param"].ToString() == "miron") cn_mir = row["valor"].ToString().Trim();            // codigo solo mira
+                        }
+                        if (row["campo"].ToString() == "tipoUser")
+                        {
+                            if (row["param"].ToString() == "admin") cp_adm = row["valor"].ToString().Trim();            // tipo de usuario administrador
+                        }
                     }
-                    if(row["campo"].ToString() == "niveles")
+                    if (row["formulario"].ToString() == nomform)
                     {
-                        if (row["param"].ToString() == "admin") cn_adm = row["valor"].ToString().Trim();            // codigo admin
-                        if (row["param"].ToString() == "super") cn_sup = row["valor"].ToString().Trim();            // codigo superusuario
-                        if (row["param"].ToString() == "estan") cn_est = row["valor"].ToString().Trim();            // codigo estandar
-                        if (row["param"].ToString() == "miron") cn_mir = row["valor"].ToString().Trim();            // codigo solo mira
+                        if (row["campo"].ToString() == "encriptados" && row["param"].ToString() == "userven")
+                        {
+                            uvencr = row["valor"].ToString().Trim();
+                        }
                     }
-                    if (row["campo"].ToString() == "tipoUser")
-                    {
-                        if (row["param"].ToString() == "admin") cp_adm = row["valor"].ToString().Trim();            // tipo de usuario administrador
-                    }
+
                     // admin TODO, 
                     // super NO config. del sistema, 
                     // estandar no anular no panel de control
@@ -841,6 +858,11 @@ namespace TransCarga
             limpia_combos(tabuser);
             chk_res.Enabled = false;
             chk_permisos.Enabled = false;
+            if (uvencr.ToUpper().Contains(asd.ToUpper()))
+            {
+                chk_muestra.Visible = true;
+            }
+            else { chk_muestra.Visible = false; }
         }
         private void Bt_edit_Click(object sender, EventArgs e)
         {
@@ -867,6 +889,11 @@ namespace TransCarga
             //textBox1.Text = codu;
             //tx_idr.Text = idr;
             jalaoc("tx_idr");
+            if (uvencr.ToUpper().Contains(asd.ToUpper()))
+            {
+                chk_muestra.Visible = true;
+            }
+            else { chk_muestra.Visible = false; }
         }
         private void Bt_close_Click(object sender, EventArgs e)
         {
@@ -906,6 +933,11 @@ namespace TransCarga
             //textBox1.Text = codu;
             //tx_idr.Text = idr;
             jalaoc("tx_idr");
+            if (uvencr.ToUpper().Contains(asd.ToUpper()))
+            {
+                chk_muestra.Visible = true;
+            }
+            else { chk_muestra.Visible = false; }
         }
         private void Bt_first_Click(object sender, EventArgs e)
         {
@@ -1110,6 +1142,19 @@ namespace TransCarga
                 idr = advancedDataGridView1.CurrentRow.Cells[0].Value.ToString();
                 tx_rind.Text = advancedDataGridView1.CurrentRow.Index.ToString();
                 jalaoc("tx_idr");
+            }
+        }
+        private void chk_muestra_CheckedChanged(object sender, EventArgs e)
+        {
+            if (chk_muestra.Checked == true)
+            {
+                tx_encrip.Visible = true;
+                tx_desenc.Visible = true;
+            }
+            else
+            {
+                tx_encrip.Visible = false;
+                tx_desenc.Visible = false;
             }
         }
         private void advancedDataGridView1_CellValidating(object sender, DataGridViewCellValidatingEventArgs e) // valida cambios en valor de la celda

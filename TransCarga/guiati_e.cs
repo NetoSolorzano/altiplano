@@ -281,8 +281,12 @@ namespace TransCarga
                 tx_pregr_num.Enabled = true;
                 tx_pregr_num.ReadOnly = ("NUEVO".Contains(Tx_modo.Text)) ? false : true;
                 tx_pregr_num.Text = "";
+                bt_preg.Tag = "";
             }
-            bt_preg.Tag = "";
+            else
+            {
+                bt_preg.Tag = "Crealo";     // En el caso de Altiplano, al ser recontra automáticas todas las GRE-T se crean con su pre-guia
+            }
             lb_glodeta.Text = gloDeta;
             tx_flete.Text = "";
             tx_pagado.Text = "";
@@ -2519,7 +2523,7 @@ namespace TransCarga
             if (modo == "NUEVO")
             {
                 // validaciones de pre-guia
-                if (bt_preg.Tag.ToString() == "")
+                if (usoPGm == "manual" && bt_preg.Tag.ToString() == "")
                 {
                     MessageBox.Show("Debe ingresar la Pre Guía", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
@@ -2799,6 +2803,7 @@ namespace TransCarga
                     mpg.Parameters.AddWithValue("@pret", "0");
                     mpg.ExecuteNonQuery();
                     mpg.Dispose();
+                    tx_pregr_num.Text = lib.Right(("0000000" + idPG), 8);
                 }
                 //
                 if (v_clte_rem == "N" && rb_car_ofi.Checked == true) v_clte_rem = "P";  // N=nombre y direccion | P=solo nombre

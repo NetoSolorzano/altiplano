@@ -93,6 +93,7 @@
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.button1 = new System.Windows.Forms.Button();
+            this.chk_muestra = new System.Windows.Forms.CheckBox();
             this.toolStrip1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabgrilla.SuspendLayout();
@@ -378,6 +379,7 @@
             // 
             // tabuser
             // 
+            this.tabuser.Controls.Add(this.chk_muestra);
             this.tabuser.Controls.Add(this.tx_desenc);
             this.tabuser.Controls.Add(this.tx_encrip);
             this.tabuser.Controls.Add(this.chk_permisos);
@@ -425,7 +427,6 @@
             this.tx_desenc.ReadOnly = true;
             this.tx_desenc.Size = new System.Drawing.Size(526, 20);
             this.tx_desenc.TabIndex = 190;
-            this.tx_desenc.Visible = false;
             // 
             // tx_encrip
             // 
@@ -434,7 +435,6 @@
             this.tx_encrip.ReadOnly = true;
             this.tx_encrip.Size = new System.Drawing.Size(526, 20);
             this.tx_encrip.TabIndex = 189;
-            this.tx_encrip.Visible = false;
             // 
             // chk_permisos
             // 
@@ -783,6 +783,18 @@
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
+            // chk_muestra
+            // 
+            this.chk_muestra.AutoSize = true;
+            this.chk_muestra.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.chk_muestra.Location = new System.Drawing.Point(85, 258);
+            this.chk_muestra.Name = "chk_muestra";
+            this.chk_muestra.Size = new System.Drawing.Size(64, 17);
+            this.chk_muestra.TabIndex = 191;
+            this.chk_muestra.Text = "Muestra";
+            this.chk_muestra.UseVisualStyleBackColor = true;
+            this.chk_muestra.CheckedChanged += new System.EventHandler(this.chk_muestra_CheckedChanged);
+            // 
             // users
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -885,5 +897,6 @@
         private System.Windows.Forms.CheckBox chk_permisos;
         private System.Windows.Forms.TextBox tx_desenc;
         private System.Windows.Forms.TextBox tx_encrip;
+        private System.Windows.Forms.CheckBox chk_muestra;
     }
 }
