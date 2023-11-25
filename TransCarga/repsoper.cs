@@ -2369,8 +2369,8 @@ namespace TransCarga
 
         private void bt_GRE_impri_Click(object sender, EventArgs e)
         {
-            string[] formatos = { "A5", "A4" };
-            string[] cristals = { v_CR_gr_ind, v_CR_gre_A4 };
+            string[] formatos = { "A5", "A4", "TK" };
+            string[] cristals = { v_CR_gr_ind, v_CR_gre_A4, "" };
             if (rb_a5.Checked == false && rb_tk.Checked == false)
             {
                 MessageBox.Show("Debe seleccionar un formato","Atención",MessageBoxButtons.OK,MessageBoxIcon.Information);

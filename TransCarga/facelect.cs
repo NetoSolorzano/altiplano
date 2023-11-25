@@ -2962,6 +2962,8 @@ namespace TransCarga
                         res2 = fqr.FirstChild.ChildNodes.Item(1).InnerText; // <cbc:ResponseCode>0</cbc:ResponseCode>
                         res3 = fqr.FirstChild.ChildNodes.Item(2).InnerText; // <cbc:Description>La Factura numero F002-00009074, ha sido aceptada</cbc:Description>
                     }
+                    // aca debemos saber si es un NUEVO registro o es una EDICION regenerando el XML
+
                     {
                         // actualizamos los campos de la tabla 
                         string actua = "insert into adifactu (idc,nticket,fticket,estadoS,cdr,cdrgener,textoQR) values (@idc,@nti,@fti,@est,@cdrt,@cdrg,@tqr)";
@@ -3153,6 +3155,14 @@ namespace TransCarga
                 string cdvta = cmb_tdv.Text.Substring(0, 1) + lib.Right(tx_serie.Text, 3) + "-" + tx_numero.Text;
                 
                 cnx.Open();
+                using (SqliteCommand cmd = new SqliteCommand("delete from dt_cabdv where id>0", cnx))
+                {
+                    cmd.ExecuteNonQuery();
+                }
+                using (SqliteCommand cmd = new SqliteCommand("delete from dt_detdv where id>0", cnx))
+                {
+                    cmd.ExecuteNonQuery();
+                }
                 // CABECERA
                 string metela = "insert into dt_cabdv (" +
                     "EmisRuc,EmisNom,EmisCom,CodLocA,EmisUbi,EmisDir,EmisDep,EmisPro,EmisDis,EmisUrb,EmisPai,EmisCor,NumDVta,FecEmis,HorEmis,CodComp,FecVcto," +

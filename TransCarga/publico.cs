@@ -9,6 +9,7 @@ namespace TransCarga
 {
     class publico
     {
+        string v_TKnombre = "";     // nombre de la impresora de Tickets para guias electrónicas
         // string de conexion
         string DB_CONN_STR = "server=" + login.serv + ";uid=" + login.usua + ";pwd=" + login.cont + ";database=" + login.data + ";";
         libreria lib = new libreria();
@@ -16,6 +17,41 @@ namespace TransCarga
         DataTable dtgrtdet = new DataTable();
         DataTable dtplanCab = new DataTable();  // cabecera
         DataTable dtplanDet = new DataTable();  // detalle 
+        private void jalainfo()
+        {
+            try
+            {
+                MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
+                conn.Open();
+                string consulta = "select formulario,campo,param,valor from enlaces where formulario in(@gret)";
+                MySqlCommand micon = new MySqlCommand(consulta, conn);
+                micon.Parameters.AddWithValue("@gret", "guiati_e");
+                MySqlDataAdapter da = new MySqlDataAdapter(micon);
+                DataTable dt = new DataTable();
+                da.Fill(dt);
+                for (int t = 0; t < dt.Rows.Count; t++)
+                {
+                    DataRow row = dt.Rows[t];
+                    if (row["formulario"].ToString() == "guiati_e")
+                    {
+                        if (row["campo"].ToString() == "impresion")
+                        {
+                            if (row["param"].ToString() == "impTK") v_TKnombre = row["valor"].ToString();
+                        }
+                    }
+
+                }
+                da.Dispose();
+                dt.Dispose();
+                conn.Close();
+            }
+            catch (MySqlException ex)
+            {
+                MessageBox.Show(ex.Message, "Error de conexión");
+                Application.Exit();
+                return;
+            }
+        }
         public void sololee(Form lfrm)
         {
             foreach (Control oControls in lfrm.Controls)
@@ -205,6 +241,7 @@ namespace TransCarga
         }
         public void muestra_gr(string ser, string cor, string nomfcr, string RimgQR, string gloDeta, string v_impTK, string[] formatoA, string[] CrystalA)                 // muestra la grt 
         {
+            jalainfo();
             using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
             {
                 if (lib.procConn(conn) == true)
@@ -362,8 +399,17 @@ namespace TransCarga
                     var aaa = dtgrtcab.Rows[0]["marca1"].ToString();
                     if (aaa == "False") { vi_formato = formatoA[0]; v_CR_gr_ind = CrystalA[0]; }
                     if (aaa == "True") { vi_formato = formatoA[1]; v_CR_gr_ind = CrystalA[1]; }
-                    impGRE_T impGRE = new impGRE_T(1, v_impTK, vs, dt, va, vc, vi_formato, v_CR_gr_ind);
-                }       // formato guía electrónica
+                    if (v_impTK == v_TKnombre)
+                    {
+                        vi_formato = formatoA[2]; 
+                        v_CR_gr_ind = CrystalA[2];
+                        impGRE_T impGRE = new impGRE_T(1, v_impTK, vs, dt, va, vc, vi_formato, v_CR_gr_ind);
+                    }
+                    else
+                    {
+                        impGRE_T impGRE = new impGRE_T(1, v_impTK, vs, dt, va, vc, vi_formato, v_CR_gr_ind);
+                    }
+                }
             }
         }
         public void muestra_pl(string ser, string cor, string nomfcr)                 // muestra la planilla de carga
