@@ -3160,14 +3160,14 @@ namespace TransCarga
                     "ImpOpeGra,ImpIgvTot,ImpOtrosT,IgvCodSun,IgvConInt,IgvNomSun,IgvCodInt,TotValVta,TotPreVta,TotDestos,TotOtrCar,TotaVenta," +
                     "CanFilDet,CtaDetra,PorDetra,ImpDetra,GloDetra,CodTipDet,CondPago,CodTipOpe," +
                     "cu_cpapp,cu_ubipp,cu_deppp,cu_propp,cu_dispp,cu_urbpp,cu_dirpp,cu_cppll,cu_ubpll,cu_depll,cu_prpll,cu_dipll,cu_ddpll," +
-                    "cu_placa,cu_coins,cu_marca,cu_breve,cu_ructr,cu_nomtr,cu_modtr,cu_pesbr,u_motra,cu_fechi,cu_remtc,cu_nudch,cu_tidch,cu_plac2,cu_insub) " +
+                    "cu_placa,cu_coins,cu_marca,cu_breve,cu_ructr,cu_nomtr,cu_modtr,cu_pesbr,cu_motra,cu_fechi,cu_remtc,cu_nudch,cu_tidch,cu_plac2,cu_insub) " +
                     "values (" +
                     "@EmisRuc,@EmisNom,@EmisCom,@CodLocA,@EmisUbi,@EmisDir,@EmisDep,@EmisPro,@EmisDis,@EmisUrb,@EmisPai,@EmisCor,@NumDVta,@FecEmis,@HorEmis,@CodComp,@FecVcto," +
                     "@TipDocu,@CodLey1,@MonLetr,@CodMonS,@DstTipd,@DstNumd,@DstNomT,@DstNomb,@DstDire,@DstDepa,@DstProv,@DstDist,@DstUrba,@DstUbig,@ImpTotI," +
                     "@ImpOpeG,@ImpIgvT,@ImpOtro,@IgvCodS,@IgvConI,@IgvNomS,@IgvCodI,@TotValV,@TotPreV,@TotDest,@TotOtrC,@TotaVen," +
                     "@CanFilD,@CtaDetr,@PorDetr,@ImpDetr,@GloDetr,@CodTipD,@CondPag,@CodTipO," +
                     "@cu_cpapp,@cu_ubipp,@cu_deppp,@cu_propp,@cu_dispp,@cu_urbpp,@cu_dirpp,@cu_cppll,@cu_ubpll,@cu_depll,@cu_prpll,@cu_dipll,@cu_ddpll," +
-                    "@cu_placa,@cu_coins,@cu_marca,@cu_breve,@cu_ructr,@cu_nomtr,@cu_modtr,@cu_pesbr,@u_motra,@cu_fechi,@cu_remtc,@cu_nudch,@cu_tidch,@cu_plac2,@cu_insub)";
+                    "@cu_placa,@cu_coins,@cu_marca,@cu_breve,@cu_ructr,@cu_nomtr,@cu_modtr,@cu_pesbr,@cu_motra,@cu_fechi,@cu_remtc,@cu_nudch,@cu_tidch,@cu_plac2,@cu_insub)";
                 using (SqliteCommand cmd = new SqliteCommand(metela, cnx))
                 {
                     // cabecera
@@ -3256,7 +3256,7 @@ namespace TransCarga
                         cmd.Parameters.AddWithValue("@cu_nomtr", tx_razonS.Text);         // Razón social del Transportista
                         cmd.Parameters.AddWithValue("@cu_modtr", texmotran);         // Modalidad de Transporte
                         cmd.Parameters.AddWithValue("@cu_pesbr", tx_cetm.Text);         // Total Peso Bruto    02
-                        cmd.Parameters.AddWithValue("@u_motra", codtxmotran);          // Código de Motivo de Traslado    01
+                        cmd.Parameters.AddWithValue("@cu_motra", codtxmotran);          // Código de Motivo de Traslado    01
                         cmd.Parameters.AddWithValue("@cu_fechi", tx_fecini.Text);         // Fecha de Inicio de Traslado 
                         cmd.Parameters.AddWithValue("@cu_remtc", "");         // Registro MTC
                         cmd.Parameters.AddWithValue("@cu_nudch", tx_dniChof.Text);         // Nro.Documento del conductor 
@@ -3287,7 +3287,7 @@ namespace TransCarga
                         cmd.Parameters.AddWithValue("@cu_nomtr", "");
                         cmd.Parameters.AddWithValue("@cu_modtr", "");
                         cmd.Parameters.AddWithValue("@cu_pesbr", "");
-                        cmd.Parameters.AddWithValue("@u_motra", "");
+                        cmd.Parameters.AddWithValue("@cu_motra", "");
                         cmd.Parameters.AddWithValue("@cu_fechi", "");
                         cmd.Parameters.AddWithValue("@cu_remtc", "");
                         cmd.Parameters.AddWithValue("@cu_nudch", "");

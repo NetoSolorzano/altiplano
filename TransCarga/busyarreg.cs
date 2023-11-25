@@ -41,6 +41,8 @@ namespace TransCarga
         string img_btq = "";
         string nfCRgr = "";             // nombre formato CR para visualizacion de guias
         string vcestper = "";           // nombres de estados que si se permite el arreglo o modificacion
+        string v_CR_gr_ind = "";
+        string v_CR_gre_A4 = "";
         #endregion
 
         public busyarreg()
@@ -73,11 +75,12 @@ namespace TransCarga
             {
                 MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
                 conn.Open();
-                string consulta = "select formulario,campo,param,valor from enlaces where formulario in (@nofo,@noga,@nofg)";
+                string consulta = "select formulario,campo,param,valor from enlaces where formulario in (@nofo,@noga,@nofg,@ngre)";
                 MySqlCommand micon = new MySqlCommand(consulta, conn);
                 micon.Parameters.AddWithValue("@nofo", "main");
                 micon.Parameters.AddWithValue("@noga", nomform);
                 micon.Parameters.AddWithValue("@nofg", "guiati");
+                micon.Parameters.AddWithValue("@ngre", "guiati_e");
                 MySqlDataAdapter da = new MySqlDataAdapter(micon);
                 DataTable dt = new DataTable();
                 da.Fill(dt);
@@ -107,6 +110,14 @@ namespace TransCarga
                     {
                         if (row["campo"].ToString() == "impresion" && row["param"].ToString() == "nomGRir_cr") nfCRgr = row["valor"].ToString().Trim();         // campo de codigo de estado almacen reparto
                         //if (row["campo"].ToString() == "estAlmacen" && row["param"].ToString() == "recepcion") vcead = row["valor"].ToString().Trim();       // estado almacen recepcionado
+                    }
+                    if (row["formulario"].ToString() == "guiati_e")
+                    {
+                        if (row["campo"].ToString() == "impresion")
+                        {
+                            if (row["param"].ToString() == "nomGRE_cr") v_CR_gr_ind = row["valor"].ToString().Trim();
+                            if (row["param"].ToString() == "nomGRE_A4") v_CR_gre_A4 = row["valor"].ToString().Trim();
+                        }
                     }
                 }
                 da.Dispose();
@@ -562,9 +573,12 @@ namespace TransCarga
         {
             if (Tx_modo.Text.Trim() != "" && advancedDataGridView1.Columns[e.ColumnIndex].Name == "SERIE")
             {
+                // ACA SOLO SE PUEDE CORREGIR LOS # DE GUIAS DE LAS MECANIZADAS ... NO ELECTRONICAS
                 string vser = advancedDataGridView1.Rows[e.RowIndex].Cells["SERIE"].Value.ToString();
                 string vnum = advancedDataGridView1.Rows[e.RowIndex].Cells["GUIA"].Value.ToString();
-                pub.muestra_gr(vser, vnum, nfCRgr, "", "", "", "", "");
+                string[] formatos = { "A5", "A4" };
+                string[] cristals = { v_CR_gr_ind, v_CR_gre_A4 };
+                pub.muestra_gr(vser, vnum, nfCRgr, "", "", "", formatos, cristals);
             }
         }
         #endregion

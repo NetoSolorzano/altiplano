@@ -203,7 +203,7 @@ namespace TransCarga
             }
             return (int)pixel;
         }
-        public void muestra_gr(string ser, string cor, string nomfcr, string RimgQR, string gloDeta, string v_impTK, string vi_formato, string v_CR_gr_ind)                 // muestra la grt 
+        public void muestra_gr(string ser, string cor, string nomfcr, string RimgQR, string gloDeta, string v_impTK, string[] formatoA, string[] CrystalA)                 // muestra la grt 
         {
             using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
             {
@@ -341,8 +341,8 @@ namespace TransCarga
                     vc[15] = "";                                  // Choferes - Apellidos (ya esta incluido en el nombre)
 
                     va[0] = dtgrtcab.Rows[0]["textoQR"].ToString();                 // Varios: texto del código QR ->tx_dat_textoqr.Text
-                    va[1] = RimgQR;                                         // "C:\temp\"+"imgQR.png"
-                    va[2] = "";                                 // despedida;
+                    va[1] = RimgQR;                                                 // "C:\temp\"+"imgQR.png"
+                    va[2] = "";                                  // Varios: linea de despedida
                     va[3] = "";                                  // Varios: segunda linea de despedida
                     va[4] = "";                                 // glosa1;
                     va[5] = "";                                 // glosa2;
@@ -357,6 +357,11 @@ namespace TransCarga
                     dt[y, 3] = gloDeta + " " + dtgrtdet.Rows[y]["descprodi"].ToString();    // detalle: Descripción
                     dt[y, 4] = dtgrtdet.Rows[y][7].ToString();               // detalle: peso
 
+                    string vi_formato = "";
+                    string v_CR_gr_ind = "";
+                    var aaa = dtgrtcab.Rows[0]["marca1"].ToString();
+                    if (aaa == "False") { vi_formato = formatoA[0]; v_CR_gr_ind = CrystalA[0]; }
+                    if (aaa == "True") { vi_formato = formatoA[1]; v_CR_gr_ind = CrystalA[1]; }
                     impGRE_T impGRE = new impGRE_T(1, v_impTK, vs, dt, va, vc, vi_formato, v_CR_gr_ind);
                 }       // formato guía electrónica
             }

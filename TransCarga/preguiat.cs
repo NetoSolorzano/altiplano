@@ -188,6 +188,12 @@ namespace TransCarga
                 tx_numero.ReadOnly = ("NUEVO,EDITAR".Contains(Tx_modo.Text)) ? false : true;
                 tx_numero.Text = "";
             }
+            else
+            {
+                tx_numero.Enabled = true;
+                tx_numero.ReadOnly = ("NUEVO".Contains(Tx_modo.Text)) ? true : false;
+                tx_numero.Text = "";
+            }
             tx_dat_locori.Text = v_clu;
             cmb_origen.SelectedValue = tx_dat_locori.Text;
             cmb_origen_SelectionChangeCommitted(null, null);
@@ -909,7 +915,7 @@ namespace TransCarga
                 // - con valor, es porque la numeración en MANUAL 
                 string yuca0 = "";
                 string yuca1 = "";
-                if (usoPGm == "manual") yuca0 = "numpregui,"; yuca1 = "@npg,";
+                if (usoPGm == "manual") { yuca0 = "numpregui,"; yuca1 = "@npg,"; }
                 try
                 {
                     string inserta = "insert into cabpregr (" +

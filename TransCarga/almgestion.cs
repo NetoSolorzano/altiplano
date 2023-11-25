@@ -57,6 +57,16 @@ namespace TransCarga
         string vcear = "";                                   // cosdigo estado de almacen en reparto
         string vcead = "";                                  // codigo de estado almacen recepcionado
         string nfCRgr = "";                                 // nombre formato CR para visualizacion de guias
+        // variables de impresion formatos etc de guias electrónicas
+        string vi_formato = "";
+        string vi_copias = "";
+        string v_impMat = "";
+        string v_impA5 = "";
+        string v_impTK = "";
+        string v_CR_gr_ind = "";
+        string v_CR_gre_A4 = "";
+        string rutaQR = "";
+        string nomImgQR = "";
         #endregion
 
         public almgestion()
@@ -95,11 +105,12 @@ namespace TransCarga
             {
                 MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
                 conn.Open();
-                string consulta = "select formulario,campo,param,valor from enlaces where formulario in (@nofo,@noga,@nofg)";
+                string consulta = "select formulario,campo,param,valor from enlaces where formulario in (@nofo,@noga,@nofg,@fgre)";
                 MySqlCommand micon = new MySqlCommand(consulta, conn);
                 micon.Parameters.AddWithValue("@nofo", "main");
                 micon.Parameters.AddWithValue("@noga", nomform);
                 micon.Parameters.AddWithValue("@nofg", "guiati");
+                micon.Parameters.AddWithValue("@fgre", "guiati_e");
                 MySqlDataAdapter da = new MySqlDataAdapter(micon);
                 DataTable dt = new DataTable();
                 da.Fill(dt);
@@ -132,6 +143,21 @@ namespace TransCarga
                     {
                         if (row["campo"].ToString() == "impresion" && row["param"].ToString() == "nomGRir_cr") nfCRgr = row["valor"].ToString().Trim();         // campo de codigo de estado almacen reparto
                         //if (row["campo"].ToString() == "estAlmacen" && row["param"].ToString() == "recepcion") vcead = row["valor"].ToString().Trim();       // estado almacen recepcionado
+                    }
+                    if (row["formulario"].ToString() == "guiati_e")
+                    {
+                        if (row["campo"].ToString() == "impresion")
+                        {
+                            if (row["param"].ToString() == "formato") vi_formato = row["valor"].ToString().Trim();
+                            if (row["param"].ToString() == "copias") vi_copias = row["valor"].ToString().Trim();
+                            if (row["param"].ToString() == "impMatris") v_impMat = row["valor"].ToString().Trim();
+                            if (row["param"].ToString() == "impA5") v_impA5 = row["valor"].ToString().Trim();
+                            if (row["param"].ToString() == "impTK") v_impTK = row["valor"].ToString().Trim();
+                            if (row["param"].ToString() == "nomGRE_cr") v_CR_gr_ind = row["valor"].ToString().Trim();
+                            if (row["param"].ToString() == "nomGRE_A4") v_CR_gre_A4 = row["valor"].ToString().Trim();
+                            if (row["param"].ToString() == "rutaQR") rutaQR = row["valor"].ToString().Trim();      // "C:\temp\"
+                            if (row["param"].ToString() == "nomImgQR") nomImgQR = row["valor"].ToString().Trim();    // "imgQR.png"
+                        }
                     }
                 }
                 da.Dispose();
@@ -1584,7 +1610,9 @@ namespace TransCarga
             {
                 string vser = advancedDataGridView1.Rows[e.RowIndex].Cells["GUIA"].Value.ToString().Substring(0, 4);
                 string vnum = advancedDataGridView1.Rows[e.RowIndex].Cells["GUIA"].Value.ToString().Substring(4, 8);
-                pub.muestra_gr(vser, vnum, nfCRgr, @"C:\temp\imgQR.png", "DICE CONTENER ", "", "A5", "");   // FALTA VARIABILIZAR 27/10/2023
+                string[] formatos = { "A5", "A4" };
+                string[] cristals = { v_CR_gr_ind, v_CR_gre_A4 };
+                pub.muestra_gr(vser, vnum, nfCRgr, (@rutaQR + nomImgQR), "DICE CONTENER ", "", formatos, cristals);
             }
         }
         #endregion

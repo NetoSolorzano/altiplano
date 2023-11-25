@@ -80,6 +80,7 @@ namespace TransCarga
         string v_impMat = "";           // nombre de la impresora matricial
         string v_impPDF = "";           // nombre de la impresora virtual para pdf
         string v_CR_gr_ind = "";
+        string v_CR_gre_A4 = "";
         string rutaQR = "";      // "C:\temp\"
         string nomImgQR = "";    // "imgQR.png"
         string gloDeta = "";
@@ -90,22 +91,8 @@ namespace TransCarga
         DataTable dt = new DataTable();
         DataTable dtestad = new DataTable();
         DataTable dttaller = new DataTable();
-        //DataTable dtplanCab = new DataTable();      // planilla de carga - cabecera
-        //DataTable dtplanDet = new DataTable();      // planilla de carga - detalle
-        //DataTable dtgrtcab = new DataTable();       // guia rem transpor - cabecera
-        //DataTable dtgrtdet = new DataTable();       // guia rem transpor - detalle
-                                                    //
         acGRE_sunat _E = new acGRE_sunat();           // instanciamos la clase 
         int cuenta = -1;     // contador de repeticiones de visualizacion en columnas de estados GRE
-        //string[] filaimp = { "", "", "", "", "", "", "", "", "", "", "", "", "" };
-        /*DataGridViewCheckBoxColumn chkc = new DataGridViewCheckBoxColumn()
-        {
-            Name = "chck",
-            HeaderText = " ",
-            Width = 30,
-            ReadOnly = false,
-            FillWeight = 10
-        };*/
         DataGridViewCheckBoxColumn chkGRE = new DataGridViewCheckBoxColumn()
         {
             Name = "chkGRE",
@@ -313,6 +300,7 @@ namespace TransCarga
                             if (row["param"].ToString() == "impTK") v_impTK = row["valor"].ToString();
                             if (row["param"].ToString() == "impPDF") v_impPDF = row["valor"].ToString();
                             if (row["param"].ToString() == "nomGRE_cr") v_CR_gr_ind = row["valor"].ToString().Trim();
+                            if (row["param"].ToString() == "nomGRE_A4") v_CR_gre_A4 = row["valor"].ToString().Trim();
                             if (row["param"].ToString() == "rutaQR") rutaQR = row["valor"].ToString().Trim();      // "C:\temp\"
                             if (row["param"].ToString() == "nomImgQR") nomImgQR = row["valor"].ToString().Trim();    // "imgQR.png"
                         }
@@ -1326,8 +1314,10 @@ namespace TransCarga
             {
                 if (tx_ser.Text.Trim() != "" && tx_num.Text.Trim() != "")
                 {
-                    if (tx_ser.Text.Substring(0, 1) == "0") pub.muestra_gr(tx_ser.Text, tx_num.Text, rpt_grt, "", gloDeta, "", "", "");     // guia mecanizada
-                    else pub.muestra_gr(tx_ser.Text, tx_num.Text, "", (rutaQR + nomImgQR), gloDeta, "", "A5", v_CR_gr_ind);    // guia electrónica, si no tiene impresora va en pantalla
+                    string[] formatos = { "A5", "A4" };
+                    string[] cristals = { v_CR_gr_ind, v_CR_gre_A4 };
+                    if (tx_ser.Text.Substring(0, 1) == "0") pub.muestra_gr(tx_ser.Text, tx_num.Text, rpt_grt, "", gloDeta, "", formatos, cristals);     // guia mecanizada
+                    else pub.muestra_gr(tx_ser.Text, tx_num.Text, "", (rutaQR + nomImgQR), gloDeta, "", formatos, cristals);    // guia electrónica, si no tiene impresora va en pantalla
                 }
                 else
                 {
@@ -2161,14 +2151,16 @@ namespace TransCarga
         }
         private void advancedDataGridView1_CellDoubleClick(object sender, DataGridViewCellEventArgs e)      // no usamos
         {
+            string[] formatos = { "A5", "A4" };
+            string[] cristals = { v_CR_gr_ind, v_CR_gre_A4 };
             if (tabControl1.SelectedTab.Name == "tabres")
             {
                 if (dgv_resumen.Columns[e.ColumnIndex].Name == "GUIA")
                 {
                     string ser = dgv_resumen.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString().Substring(0, 4);
                     string num = dgv_resumen.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString().Substring(5, 8);
-                    if (ser.Substring(0, 1) == "0") pub.muestra_gr(ser, num, rpt_grt, (rutaQR + nomImgQR), gloDeta, v_impTK, vi_formato, v_CR_gr_ind);
-                    else pub.muestra_gr(ser, num, "", (rutaQR + nomImgQR), gloDeta, "", "A5", v_CR_gr_ind);    // guia electrónica, si no tiene impresora va en pantalla
+                    if (ser.Substring(0, 1) == "0") pub.muestra_gr(ser, num, rpt_grt, (rutaQR + nomImgQR), gloDeta, v_impTK, formatos, cristals);
+                    else pub.muestra_gr(ser, num, "", (rutaQR + nomImgQR), gloDeta, "", formatos, cristals);    // guia electrónica, si no tiene impresora va en pantalla
                 }
             }
             if (tabControl1.SelectedTab.Name == "tabvtas")
@@ -2183,15 +2175,16 @@ namespace TransCarga
                     {
                         if (dgv_guias.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Value.ToString().Substring(0, 1) == "0")
                         {
+
                             pub.muestra_gr(dgv_guias.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Value.ToString(),
                                 dgv_guias.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString(),
-                                rpt_grt, (rutaQR + nomImgQR), gloDeta, v_impTK, vi_formato, v_CR_gr_ind);
+                                rpt_grt, (rutaQR + nomImgQR), gloDeta, v_impTK, formatos, cristals);
                         }
                         else
                         {
                             pub.muestra_gr(dgv_guias.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Value.ToString(),
                                 dgv_guias.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString(),
-                                "", (rutaQR + nomImgQR), gloDeta, "", "A5", v_CR_gr_ind);
+                                "", (rutaQR + nomImgQR), gloDeta, "", formatos, cristals);
                         }
                     }
                 }
@@ -2203,13 +2196,13 @@ namespace TransCarga
                         {
                             pub.muestra_gr(dgv_guias.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Value.ToString(),
                                 dgv_guias.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString(),
-                                rpt_grt, (rutaQR + nomImgQR), gloDeta, v_impTK, vi_formato, v_CR_gr_ind);
+                                rpt_grt, (rutaQR + nomImgQR), gloDeta, v_impTK, formatos, cristals);
                         }
                         else
                         {
                             pub.muestra_gr(dgv_guias.Rows[e.RowIndex].Cells[e.ColumnIndex - 1].Value.ToString(),
                                 dgv_guias.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString(),
-                                "", (rutaQR + nomImgQR), gloDeta, "", "A5", v_CR_gr_ind);
+                                "", (rutaQR + nomImgQR), gloDeta, "", formatos, cristals);
                         }
                     }
                 }
@@ -2229,8 +2222,8 @@ namespace TransCarga
                 {
                     string ser = dgv_reval.Rows[e.RowIndex].Cells["SERGR"].Value.ToString();
                     string num = dgv_reval.Rows[e.RowIndex].Cells["NUMGR"].Value.ToString();
-                    if (ser.Substring(0, 1) == "0") pub.muestra_gr(ser, num, rpt_grt, (rutaQR + nomImgQR), gloDeta, v_impTK, vi_formato, v_CR_gr_ind);
-                    else pub.muestra_gr(ser, num, "", (rutaQR + nomImgQR), gloDeta, "", "A5", v_CR_gr_ind);    // guia electrónica, si no tiene impresora va en pantalla
+                    if (ser.Substring(0, 1) == "0") pub.muestra_gr(ser, num, rpt_grt, (rutaQR + nomImgQR), gloDeta, v_impTK, formatos, cristals);
+                    else pub.muestra_gr(ser, num, "", (rutaQR + nomImgQR), gloDeta, "", formatos, cristals);    // guia electrónica, si no tiene impresora va en pantalla
                 }
             }
         }
@@ -2275,6 +2268,8 @@ namespace TransCarga
         }
         private void DataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)        // Click en las columnas boton
         {
+            string[] formatos = { "A5", "A4" };
+            string[] cristals = { v_CR_gr_ind, v_CR_gre_A4 };
             if (e.ColumnIndex > -1 && cuenta != e.RowIndex)
             {
                 if (dgv_GRE_est.Columns[e.ColumnIndex].Name.ToString() == "consulta")   // consulta solo si estado sunat no es Aceptado o Rechazado
@@ -2324,7 +2319,7 @@ namespace TransCarga
                 {
                     pub.muestra_gr(dgv_GRE_est.Rows[e.RowIndex].Cells["GUIA_ELEC"].Value.ToString().Substring(0, 4),
                         dgv_GRE_est.Rows[e.RowIndex].Cells["GUIA_ELEC"].Value.ToString().Substring(5, 8),
-                        "", (rutaQR + nomImgQR), gloDeta, v_impPDF, "TK", "");
+                        "", (rutaQR + nomImgQR), gloDeta, v_impPDF, formatos, cristals);
                 }
                 if (dgv_GRE_est.Columns[e.ColumnIndex].Name.ToString() == "iA5")        // esta impresion debe ser en la pantalla
                 {
@@ -2332,7 +2327,7 @@ namespace TransCarga
                     {
                         pub.muestra_gr(dgv_GRE_est.Rows[e.RowIndex].Cells["GUIA_ELEC"].Value.ToString().Substring(0, 4),
                             dgv_GRE_est.Rows[e.RowIndex].Cells["GUIA_ELEC"].Value.ToString().Substring(5, 8),
-                            "", (rutaQR + nomImgQR), gloDeta, "", "A5", v_CR_gr_ind);
+                            "", (rutaQR + nomImgQR), gloDeta, "", formatos, cristals);
                         //cuenta = e.RowIndex;
                     }
                 }
@@ -2374,6 +2369,8 @@ namespace TransCarga
 
         private void bt_GRE_impri_Click(object sender, EventArgs e)
         {
+            string[] formatos = { "A5", "A4" };
+            string[] cristals = { v_CR_gr_ind, v_CR_gre_A4 };
             if (rb_a5.Checked == false && rb_tk.Checked == false)
             {
                 MessageBox.Show("Debe seleccionar un formato","Atención",MessageBoxButtons.OK,MessageBoxIcon.Information);
@@ -2392,13 +2389,13 @@ namespace TransCarga
                         {
                             pub.muestra_gr(dgv_GRE_est.Rows[i].Cells["GUIA_ELEC"].Value.ToString().Substring(0, 4),
                                 dgv_GRE_est.Rows[i].Cells["GUIA_ELEC"].Value.ToString().Substring(5, 8), 
-                                "", (rutaQR + nomImgQR), gloDeta, v_impTK, "TK", "");
+                                "", (rutaQR + nomImgQR), gloDeta, v_impTK, formatos, cristals);
                         }
                         if (rb_a5.Checked == true)
                         {
                             pub.muestra_gr(dgv_GRE_est.Rows[i].Cells["GUIA_ELEC"].Value.ToString().Substring(0, 4),
                                 dgv_GRE_est.Rows[i].Cells["GUIA_ELEC"].Value.ToString().Substring(5, 8), 
-                                "", (rutaQR + nomImgQR), gloDeta, v_impA5, vi_formato, v_CR_gr_ind);
+                                "", (rutaQR + nomImgQR), gloDeta, v_impA5, formatos, cristals);
                         }
                     }
                 }

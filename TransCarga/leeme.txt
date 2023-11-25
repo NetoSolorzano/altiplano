@@ -484,8 +484,15 @@ form users, si el usuario es NETO, mostrar los campos encriptados para la BD ...
 form guiati_e, las preguias automáticas deben enlazarse con su guía digitada y en control,
 	en el caso de Altiplano, no se registran las pre-guias de ninguna forma manual, todo automatico. ok 24/11/2023
 Trigger, cabguiai_after_insert, adecuacion para Altiplano .......................................... ok 24/11/2023
-form facelect, no esta jalando las 2 guías remitente de la GRE-T, error solo jala una! ............. 
-form preguiat, adecuar la numeración automática .................................................... me quede acá
+form facelect, no esta jalando las 2 guías remitente de la GRE-T, error solo jala una! ............. ok 24/11/2023
+form preguiat, adecuar la numeración automática .................................................... ok 24/11/2023 En Altiplano quitar el boton NUEVO ... OK
+form facelect, regeneración de xml esta volviendo a crear un registro en adifactu, arreglar! ....... 
+clase publico, asegurarse que jale el campo "marca1" indicativo de carga única o no 
+	enviar en los parametros los 2 formatos A4,A5 y los 2 crystal .................................. ok 24/11/2023
+forms almgestion, adecuar la impresion en formatos e impresoras .................................... ok 25/11/2023
+form busyarreg, adecuar a guías electrónicas y la impresion en formatos e impresoras ............... ok 25/11/2023
+form repsoper adecuar la impresion en formatos e impresoras ........................................ ok 25/11/2023
+form repsoper, cuando las guías electrónicas sean de carga unica debe jalar el formato A4 .......... 
 form facelect, agregar opciones de cargas únicas tipo soya:
 	- Facturas cargas únicas "tipo soya" en soles al crédito 1 cuota ............................... falta probar facturando un GR como carga unica
 	- Facturas cargas únicas "tipo soya" en dólares al crédito 1 cuota ............................. 

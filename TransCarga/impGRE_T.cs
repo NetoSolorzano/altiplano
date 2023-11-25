@@ -82,7 +82,7 @@ namespace TransCarga
 
             var[0] = varios[0];         // Varios: texto del código QR ->tx_dat_textoqr.Text
             var[1] = varios[1];         // Ruta y nombre de la imagen QR
-            var[2] = varios[2];         // despedid1
+            var[2] = varios[2];         // despedida 1
             var[3] = varios[3];         // despedid2
             var[4] = varios[4];         // Glosa final comprobante 1 -> "Representación impresa sin valor legal de la"
             var[5] = varios[5];         // Glosa final comprobante 2 -> "Guía de Remisión Electrónica de Transportista"
