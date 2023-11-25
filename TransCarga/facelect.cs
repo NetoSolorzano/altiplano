@@ -2963,10 +2963,41 @@ namespace TransCarga
                         res3 = fqr.FirstChild.ChildNodes.Item(2).InnerText; // <cbc:Description>La Factura numero F002-00009074, ha sido aceptada</cbc:Description>
                     }
                     // aca debemos saber si es un NUEVO registro o es una EDICION regenerando el XML
-
+                    if (Tx_modo.Text == "NUEVO")
+                    {
+                        string actua = "";
+                        if (chk_cunica.Checked == false)
+                        {
+                            // insertamos
+                            actua = "insert into adifactu (idc,nticket,fticket,estadoS,cdr,cdrgener,textoQR) values (@idc,@nti,@fti,@est,@cdrt,@cdrg,@tqr)";
+                        }
+                        else
+                        {
+                            // actualizamos los campos de la tabla
+                            actua = "update adifactu set nticket=@nti,fticket=@fti,estadoS=@est,cdr=@cdrt,cdrgener=@cdrg,textoQR=@tqr " +
+                                "where idc=@idc";
+                        }
+                        using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
+                        {
+                            conn.Open();
+                            using (MySqlCommand micon = new MySqlCommand(actua, conn))
+                            {
+                                micon.Parameters.AddWithValue("@idc", tx_idr.Text);
+                                micon.Parameters.AddWithValue("@nti", idx.InnerText.ToString());
+                                micon.Parameters.AddWithValue("@fti", fhx);
+                                micon.Parameters.AddWithValue("@est", (res2 == "0") ? "Aceptado" : "Rechazado");
+                                micon.Parameters.AddWithValue("@cdrt", respuesta);
+                                micon.Parameters.AddWithValue("@cdrg", res2);
+                                micon.Parameters.AddWithValue("@tqr", res3);
+                                micon.ExecuteNonQuery();
+                            }
+                        }
+                    }
+                    if (Tx_modo.Text == "EDITAR")
                     {
                         // actualizamos los campos de la tabla 
-                        string actua = "insert into adifactu (idc,nticket,fticket,estadoS,cdr,cdrgener,textoQR) values (@idc,@nti,@fti,@est,@cdrt,@cdrg,@tqr)";
+                        string actua = "update adifactu set nticket=@nti,fticket=@fti,estadoS=@est,cdr=@cdrt,cdrgener=@cdrg,textoQR=@tqr " +
+                                "where idc=@idc";
                         using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
                         {
                             conn.Open();
