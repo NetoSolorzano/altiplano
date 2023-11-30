@@ -3122,7 +3122,8 @@ namespace TransCarga
                     "cu_nudch varchar(15), " +           // Nro.Documento del conductor
                     "cu_tidch varchar(2), " +            // Tipo de Documento del conductor
                     "cu_plac2 varchar(7), " +            // Placa del Vehículo secundario
-                    "cu_insub varchar(2) " +             // Indicador de subcontratación
+                    "cu_insub varchar(2), " +             // Indicador de subcontratación
+                    "cu_marCU varchar(1) " +             // "1"=carga unica, "0"=carga normal
                 ")";
                 using (SqliteCommand cmd = new SqliteCommand(sqlTabla, cnx))
                 {
@@ -3201,14 +3202,14 @@ namespace TransCarga
                     "ImpOpeGra,ImpIgvTot,ImpOtrosT,IgvCodSun,IgvConInt,IgvNomSun,IgvCodInt,TotValVta,TotPreVta,TotDestos,TotOtrCar,TotaVenta," +
                     "CanFilDet,CtaDetra,PorDetra,ImpDetra,GloDetra,CodTipDet,CondPago,CodTipOpe," +
                     "cu_cpapp,cu_ubipp,cu_deppp,cu_propp,cu_dispp,cu_urbpp,cu_dirpp,cu_cppll,cu_ubpll,cu_depll,cu_prpll,cu_dipll,cu_ddpll," +
-                    "cu_placa,cu_coins,cu_marca,cu_breve,cu_ructr,cu_nomtr,cu_modtr,cu_pesbr,cu_motra,cu_fechi,cu_remtc,cu_nudch,cu_tidch,cu_plac2,cu_insub) " +
+                    "cu_placa,cu_coins,cu_marca,cu_breve,cu_ructr,cu_nomtr,cu_modtr,cu_pesbr,cu_motra,cu_fechi,cu_remtc,cu_nudch,cu_tidch,cu_plac2,cu_insub,cu_marCU) " +
                     "values (" +
                     "@EmisRuc,@EmisNom,@EmisCom,@CodLocA,@EmisUbi,@EmisDir,@EmisDep,@EmisPro,@EmisDis,@EmisUrb,@EmisPai,@EmisCor,@NumDVta,@FecEmis,@HorEmis,@CodComp,@FecVcto," +
                     "@TipDocu,@CodLey1,@MonLetr,@CodMonS,@DstTipd,@DstNumd,@DstNomT,@DstNomb,@DstDire,@DstDepa,@DstProv,@DstDist,@DstUrba,@DstUbig,@ImpTotI," +
                     "@ImpOpeG,@ImpIgvT,@ImpOtro,@IgvCodS,@IgvConI,@IgvNomS,@IgvCodI,@TotValV,@TotPreV,@TotDest,@TotOtrC,@TotaVen," +
                     "@CanFilD,@CtaDetr,@PorDetr,@ImpDetr,@GloDetr,@CodTipD,@CondPag,@CodTipO," +
                     "@cu_cpapp,@cu_ubipp,@cu_deppp,@cu_propp,@cu_dispp,@cu_urbpp,@cu_dirpp,@cu_cppll,@cu_ubpll,@cu_depll,@cu_prpll,@cu_dipll,@cu_ddpll," +
-                    "@cu_placa,@cu_coins,@cu_marca,@cu_breve,@cu_ructr,@cu_nomtr,@cu_modtr,@cu_pesbr,@cu_motra,@cu_fechi,@cu_remtc,@cu_nudch,@cu_tidch,@cu_plac2,@cu_insub)";
+                    "@cu_placa,@cu_coins,@cu_marca,@cu_breve,@cu_ructr,@cu_nomtr,@cu_modtr,@cu_pesbr,@cu_motra,@cu_fechi,@cu_remtc,@cu_nudch,@cu_tidch,@cu_plac2,@cu_insub,@cu_marCU)";
                 using (SqliteCommand cmd = new SqliteCommand(metela, cnx))
                 {
                     // cabecera
@@ -3263,7 +3264,8 @@ namespace TransCarga
                     if (decimal.Parse(tx_fletMN.Text) > decimal.Parse(Program.valdetra)) 
                     {
                         detrac = "si";
-                        vtotdet = Math.Round(double.Parse(tx_flete.Text) * double.Parse(Program.pordetra) / 100, 2);    // totalDetraccion
+                        //vtotdet = Math.Round(double.Parse(tx_flete.Text) * double.Parse(Program.pordetra) / 100, 2);    // totalDetraccion 
+                        vtotdet = Math.Round(double.Parse(tx_fletMN.Text) * double.Parse(Program.pordetra) / 100, 2);    // totalDetraccion 
                     }
                     cmd.Parameters.AddWithValue("@CanFilD", tx_tfil.Text);
                     cmd.Parameters.AddWithValue("@CtaDetr", (detrac == "si") ? Program.ctadetra : "");
@@ -3275,7 +3277,6 @@ namespace TransCarga
                     cmd.Parameters.AddWithValue("@CodTipO", (detrac == "si") ? "1001" : "0101");    // 0101=venta interna, 1001=vta interna sujeta a detracción
                     if (chk_cunica.Checked == true)
                     {
-                        //
                         cmd.Parameters.AddWithValue("@cu_cpapp", "PE");         // Código país del punto de origen
                         cmd.Parameters.AddWithValue("@cu_ubipp", tx_dat_upo.Text);         // Ubigeo del punto de partida 
                         cmd.Parameters.AddWithValue("@cu_deppp", tx_dp_dep.Text);         // Departamento del punto de partida
@@ -3299,11 +3300,12 @@ namespace TransCarga
                         cmd.Parameters.AddWithValue("@cu_pesbr", tx_cetm.Text);         // Total Peso Bruto    02
                         cmd.Parameters.AddWithValue("@cu_motra", codtxmotran);          // Código de Motivo de Traslado    01
                         cmd.Parameters.AddWithValue("@cu_fechi", tx_fecini.Text);         // Fecha de Inicio de Traslado 
-                        cmd.Parameters.AddWithValue("@cu_remtc", "");         // Registro MTC
+                        cmd.Parameters.AddWithValue("@cu_remtc", (tx_rucT.Text.Trim() != Program.ruc) ? "faltAdecuar" : Program.regmtc);         // Registro MTC
                         cmd.Parameters.AddWithValue("@cu_nudch", tx_dniChof.Text);         // Nro.Documento del conductor 
                         cmd.Parameters.AddWithValue("@cu_tidch", 1);         // Tipo de Documento del conductor
                         cmd.Parameters.AddWithValue("@cu_plac2", "");         // Placa del Vehículo secundario
-                        cmd.Parameters.AddWithValue("@cu_insub", "");         // Indicador de subcontratación
+                        cmd.Parameters.AddWithValue("@cu_insub", (tx_rucT.Text.Trim() != Program.ruc) ? "true" : "false");         // Indicador de subcontratación (true/false)
+                        cmd.Parameters.AddWithValue("@cu_marCU", "1");          // 1=carga unica, 0=carga normal
                     }
                     else
                     {
@@ -3334,7 +3336,8 @@ namespace TransCarga
                         cmd.Parameters.AddWithValue("@cu_nudch", "");
                         cmd.Parameters.AddWithValue("@cu_tidch", "");
                         cmd.Parameters.AddWithValue("@cu_plac2", "");
-                        cmd.Parameters.AddWithValue("@cu_insub", "");
+                        cmd.Parameters.AddWithValue("@cu_insub", "false");           // true/false
+                        cmd.Parameters.AddWithValue("@cu_marCU", "0");          // 1=carga unica, 0=carga normal
                     }
                     cmd.ExecuteNonQuery();
                 }
@@ -5213,6 +5216,16 @@ namespace TransCarga
                     char cno = caractNo.ToCharArray()[0];
                     textBox.Text = textBox.Text.Replace(cno, ' ');
                 }
+            }
+        }
+        private void tx_rucT_Validating(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if ((Tx_modo.Text == "NUEVO" || Tx_modo.Text == "EDITAR") && tx_rucT.Text != "" && tx_rucT.Text != Program.ruc)
+            {
+                MessageBox.Show("Falta registrar el registro MTC del 3ro","Falta adecuar");
+                tx_rucT.Text = "";
+                tx_razonS.Text = "";
+                return;
             }
         }
         #endregion

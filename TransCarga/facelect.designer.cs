@@ -195,6 +195,7 @@
             this.label9 = new System.Windows.Forms.Label();
             this.chk_sinco = new System.Windows.Forms.CheckBox();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.label39 = new System.Windows.Forms.Label();
             this.label38 = new System.Windows.Forms.Label();
             this.tx_dniChof = new System.Windows.Forms.TextBox();
             this.groupBox46 = new System.Windows.Forms.GroupBox();
@@ -241,6 +242,7 @@
             this.label27 = new System.Windows.Forms.Label();
             this.tx_pla_placa = new System.Windows.Forms.TextBox();
             this.label21 = new System.Windows.Forms.Label();
+            this.tx_valRefTM = new System.Windows.Forms.TextBox();
             this.chk_cunica = new System.Windows.Forms.CheckBox();
             this.tx_dat_upd = new System.Windows.Forms.TextBox();
             this.tx_dat_upo = new System.Windows.Forms.TextBox();
@@ -255,8 +257,6 @@
             this.tx_numGR = new TransCarga.NumericTextBox();
             this.tx_tfil = new TransCarga.NumericTextBox();
             this.tx_totcant = new TransCarga.NumericTextBox();
-            this.tx_valRefTM = new System.Windows.Forms.TextBox();
-            this.label39 = new System.Windows.Forms.Label();
             this.toolStrip1.SuspendLayout();
             this.groupBox11.SuspendLayout();
             this.groupBox7.SuspendLayout();
@@ -1998,6 +1998,17 @@
             this.panel2.Size = new System.Drawing.Size(702, 120);
             this.panel2.TabIndex = 416;
             // 
+            // label39
+            // 
+            this.label39.AutoSize = true;
+            this.label39.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.label39.Location = new System.Drawing.Point(153, 100);
+            this.label39.Name = "label39";
+            this.label39.Size = new System.Drawing.Size(72, 13);
+            this.label39.TabIndex = 524;
+            this.label39.Text = "Val.Ref. x TM\r\n";
+            this.label39.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
             // label38
             // 
             this.label38.AutoSize = true;
@@ -2098,6 +2109,7 @@
             this.tx_rucT.Size = new System.Drawing.Size(99, 20);
             this.tx_rucT.TabIndex = 427;
             this.tx_rucT.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.tx_rucT.Validating += new System.ComponentModel.CancelEventHandler(this.tx_rucT_Validating);
             // 
             // label37
             // 
@@ -2450,6 +2462,16 @@
             this.label21.Text = "Placa";
             this.label21.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
+            // tx_valRefTM
+            // 
+            this.tx_valRefTM.BackColor = System.Drawing.SystemColors.Window;
+            this.tx_valRefTM.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_valRefTM.Location = new System.Drawing.Point(224, 97);
+            this.tx_valRefTM.Name = "tx_valRefTM";
+            this.tx_valRefTM.Size = new System.Drawing.Size(47, 18);
+            this.tx_valRefTM.TabIndex = 523;
+            this.tx_valRefTM.Tag = "Valor referencial por TM";
+            // 
             // chk_cunica
             // 
             this.chk_cunica.ForeColor = System.Drawing.Color.Black;
@@ -2595,27 +2617,6 @@
             this.tx_totcant.Size = new System.Drawing.Size(41, 20);
             this.tx_totcant.TabIndex = 25;
             this.tx_totcant.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // tx_valRefTM
-            // 
-            this.tx_valRefTM.BackColor = System.Drawing.SystemColors.Window;
-            this.tx_valRefTM.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_valRefTM.Location = new System.Drawing.Point(224, 97);
-            this.tx_valRefTM.Name = "tx_valRefTM";
-            this.tx_valRefTM.Size = new System.Drawing.Size(47, 18);
-            this.tx_valRefTM.TabIndex = 523;
-            this.tx_valRefTM.Tag = "Valor referencial por TM";
-            // 
-            // label39
-            // 
-            this.label39.AutoSize = true;
-            this.label39.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label39.Location = new System.Drawing.Point(153, 100);
-            this.label39.Name = "label39";
-            this.label39.Size = new System.Drawing.Size(72, 13);
-            this.label39.TabIndex = 524;
-            this.label39.Text = "Val.Ref. x TM\r\n";
-            this.label39.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // facelect
             // 
