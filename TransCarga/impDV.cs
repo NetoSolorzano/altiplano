@@ -23,11 +23,11 @@ namespace TransCarga
             { "", "", "", "", "", "" }, { "", "", "", "", "", "" }, { "", "", "", "", "", "" }, { "", "", "", "", "", "" }, { "", "", "", "", "", "" },
             { "", "", "", "", "", "" }, { "", "", "", "", "", "" }, { "", "", "", "", "", "" }, { "", "", "", "", "", "" }, { "", "", "", "", "", "" }
         }; // 6 columnas, 10 filas
-
+        string[] cu = { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" };    // 17
         short copias;
         string otro = "";               // ruta y nombre del png código QR
 
-        public impDV(int nCopias, string nomImp, string[] cabecera, string[,] detalle, string[] varios, string formato, string nomforCR)
+        public impDV(int nCopias, string nomImp, string[] cabecera, string[,] detalle, string[] varios, string[] cunica, string formato, string nomforCR)
         {
             copias = (short)nCopias;
             vs[0] = cabecera[0];   // serie (F001)
@@ -60,6 +60,24 @@ namespace TransCarga
             vs[27] = cabecera[27];     // usuario creador
             vs[28] = cabecera[28];     // local de emisión
             vs[29] = cabecera[29];     // glosa despedida
+
+            cu[0] = cunica[0];          // "placa");
+            cu[1] = cunica[1];          // "confv");
+            cu[2] = cunica[2];          // "autoriz");
+            cu[3] = cunica[3];          // "cargaEf");
+            cu[4] = cunica[4];          // "cargaUt");
+            cu[5] = cunica[5];          // "rucTrans");
+            cu[6] = cunica[6];          // "nomTrans");
+            cu[7] = cunica[7];          // "fecIniTras");
+            cu[8] = cunica[8];          // "dirPartida");
+            cu[9] = cunica[9];          // "ubiPartida");
+            cu[10] = cunica[10];        // "dirDestin");
+            cu[11] = cunica[11];        // "ubiDestin");
+            cu[12] = cunica[12];        // "dniChof");
+            cu[13] = cunica[13];        // "brevete");
+            cu[14] = cunica[14];        // "valRefViaje");
+            cu[15] = cunica[15];        // "valRefVehic");
+            cu[16] = cunica[16];        // "valRefTon");
 
             for (int o=0; o <= int.Parse(vs[12]); o++)
             {
@@ -109,7 +127,7 @@ namespace TransCarga
                         if (File.Exists(@va[1])) File.Delete(@va[1]);
                         va[1] = "";
                     }
-                    if (nomImp != "" && nomforCR != "")
+                    if (nomImp != "" && nomforCR != "")                     // impresion directa en impresora
                     {
                         conClie data = generaReporte(nomforCR);
                         ReportDocument repo = new ReportDocument();
@@ -122,7 +140,7 @@ namespace TransCarga
                     {
 
                     }
-                    if (nomImp == "" && nomforCR != "")
+                    if (nomImp == "" && nomforCR != "")                     // visualización en pantalla
                     {
                         conClie datos = generaReporte(nomforCR);
                         frmvizoper visualizador = new frmvizoper(datos);

@@ -72,6 +72,8 @@ namespace TransCarga
         string v_mfildet = "";          // maximo numero de filas en el detalle, coord. con el formato
         string vi_copias = "";          // cant copias impresion
         string v_impTK = "";            // nombre de la ticketera
+        string forA4CRn = "";           // ruta y nombre del formato CR de factura/boletas "normales"
+        string forA4CRcu = "";          // ruta y nombre del formato CR de facturas de cargas únicas
         #endregion
 
         libreria lib = new libreria();
@@ -219,7 +221,8 @@ namespace TransCarga
                                         if (lite.GetString(2).ToString() == "filasDet") v_mfildet = lite.GetString(3).ToString().Trim();       // maxima cant de filas de detalle
                                         if (lite.GetString(2).ToString() == "copias") vi_copias = lite.GetString(3).ToString().Trim();
                                         if (lite.GetString(2).ToString() == "impTK") v_impTK = lite.GetString(3).ToString().Trim();
-                                        //if (lite.GetString(2).ToString() == "nomfor_cr") v_CR_gr_ind = lite.GetString(3).ToString().Trim();
+                                        if (lite.GetString(2).ToString() == "forA4CRn") forA4CRn = lite.GetString(3).ToString().Trim();           // ruta y nombre del formato CR de factura/boletas "normales"
+                                        if (lite.GetString(2).ToString() == "forA4CRcu") forA4CRcu = lite.GetString(3).ToString().Trim();          // ruta y nombre del formato CR de facturas de cargas únicas
                                     }
                                 }
                                 if (lite.GetString(0).ToString() == "clients")
@@ -412,6 +415,17 @@ namespace TransCarga
                     btnCDR.DefaultCellStyle.Padding = padding;
                     btnCDR.DefaultCellStyle.Font = chiq;
                     btnCDR.DefaultCellStyle.SelectionBackColor = Color.White;
+
+                    DataGridViewButtonColumn btnA4 = new DataGridViewButtonColumn();
+                    btnA4.HeaderText = "iA4";
+                    btnA4.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                    btnA4.Name = "iA4";
+                    btnA4.Width = 60;
+                    btnA4.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                    btnA4.DefaultCellStyle.Padding = padding;
+                    btnA4.DefaultCellStyle.Font = chiq;
+                    btnA4.DefaultCellStyle.SelectionBackColor = Color.White;
+
                     /*
                     DataGridViewButtonColumn btnPDF = new DataGridViewButtonColumn();
                     btnPDF.HeaderText = "PDF";
@@ -435,31 +449,32 @@ namespace TransCarga
                     //     0  ,  1 ,      2    ,   3  ,  4   ,  5  ,   6   ,  7  ,  8   ,  9   ,  10   ,    11    ,   12     ,   13   , 14
                     dgv_sunat_est.CellClick += DataGridView1_CellClick;
                     dgv_sunat_est.Columns.Insert(7, btnTk);
+                    dgv_sunat_est.Columns.Insert(8, btnA4);
                     //dgv_sunat_est.Columns.Insert(8, btnPDF);   // .Add(btnPDF);
-                    dgv_sunat_est.Columns.Insert(8, btnCDR);   // .Add(btnCDR);
-                    dgv_sunat_est.Columns.Insert(9, btnAct);   // .Add(btnAct);
-                    dgv_sunat_est.Columns[10].Visible = false;
+                    dgv_sunat_est.Columns.Insert(9, btnCDR);   // .Add(btnCDR);
+                    dgv_sunat_est.Columns.Insert(10, btnAct);   // .Add(btnAct);
                     dgv_sunat_est.Columns[11].Visible = false;
                     dgv_sunat_est.Columns[12].Visible = false;
                     dgv_sunat_est.Columns[13].Visible = false;
                     dgv_sunat_est.Columns[14].Visible = false;
+                    dgv_sunat_est.Columns[15].Visible = false;
                     if (dgv_sunat_est.Rows.Count > 0)         // autosize filas
                     {
-                        for (int i = 0; i < dgv_sunat_est.Columns.Count - 10; i++)
+                        for (int i = 0; i < dgv_sunat_est.Columns.Count - 11; i++)
                         {
                             dgv_sunat_est.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
                             _ = decimal.TryParse(dgv_sunat_est.Rows[0].Cells[i].Value.ToString(), out decimal vd);
                             if (vd != 0) dgv_sunat_est.Columns[i].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
                         }
                         b = 0;
-                        for (int i = 0; i < dgv_sunat_est.Columns.Count - 10; i++)
+                        for (int i = 0; i < dgv_sunat_est.Columns.Count - 11; i++)
                         {
                             int a = dgv_sunat_est.Columns[i].Width;
                             b += a;
                             dgv_sunat_est.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
                             dgv_sunat_est.Columns[i].Width = a;
                         }
-                        if (b < dgv_sunat_est.Width) dgv_sunat_est.Width = dgv_sunat_est.Width - 10;
+                        if (b < dgv_sunat_est.Width) dgv_sunat_est.Width = dgv_sunat_est.Width - 11;
                         dgv_sunat_est.ReadOnly = true;
                     }
                     if (dgv_sunat_est.Rows.Count > 0)
@@ -467,6 +482,7 @@ namespace TransCarga
                         for (int i = 0; i < dgv_sunat_est.Rows.Count; i++)
                         {
                             dgv_sunat_est.Rows[i].Cells["iTK"].Value = "TK";
+                            dgv_sunat_est.Rows[i].Cells["iA4"].Value = "A4";
                             if (dgv_sunat_est.Rows[i].Cells["iTK"].Value != null)
                             {
                                 if (dgv_sunat_est.Rows[i].Cells["CDR_GEN"].Value.ToString() == "0")
@@ -1261,12 +1277,19 @@ namespace TransCarga
                 string cdtip = (dgv_sunat_est.Rows[e.RowIndex].Cells[1].Value.ToString() == "F") ? codfact : codBole;
                 imprime(cdtip,
                     dgv_sunat_est.Rows[e.RowIndex].Cells[2].Value.ToString().Substring(0, 4),
-                    dgv_sunat_est.Rows[e.RowIndex].Cells[2].Value.ToString().Substring(5, 8));
+                    dgv_sunat_est.Rows[e.RowIndex].Cells[2].Value.ToString().Substring(5, 8), "TK");
+            }
+            if (dgv_sunat_est.Columns[e.ColumnIndex].Name.ToString() == "iA4")
+            {
+                string cdtip = (dgv_sunat_est.Rows[e.RowIndex].Cells[1].Value.ToString() == "F") ? codfact : codBole;
+                imprime(cdtip,
+                    dgv_sunat_est.Rows[e.RowIndex].Cells[2].Value.ToString().Substring(0, 4),
+                    dgv_sunat_est.Rows[e.RowIndex].Cells[2].Value.ToString().Substring(5, 8), "A4");
             }
         }
         #endregion
 
-        private void imprime(string tipo,string serie, string numero)
+        private void imprime(string tipo,string serie, string numero, string Formato)
         {
             string[] vs = {"","","","","","","","","","","","","", "", "", "", "", "", "", "",   // 20
                                "", "", "", "", "", "", "", "", "", ""};    // 10
@@ -1275,6 +1298,7 @@ namespace TransCarga
                     { "", "", "", "", "", "" }, { "", "", "", "", "", "" }, { "", "", "", "", "", "" }, { "", "", "", "", "", "" }, { "", "", "", "", "", "" },
                     { "", "", "", "", "", "" }, { "", "", "", "", "", "" }, { "", "", "", "", "", "" }, { "", "", "", "", "", "" }, { "", "", "", "", "", "" }
             }; // 6 columnas, 10 filas
+            string[] cu = { "","","","","","","","","","","","","","","","",""};    // 17
             using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
             {
                 conn.Open();
@@ -1345,7 +1369,24 @@ namespace TransCarga
                                     vs[27] = dr.GetString("userc").Trim();  // usuario creador
                                     vs[28] = dr.GetString("nomLocO").Trim();    // local de emisión
                                     vs[29] = despedida;                     // glosa despedida
-
+                                    // carga unica
+                                    cu[0] = dr.GetString("placa");
+                                    cu[1] = dr.GetString("confv");
+                                    cu[2] = dr.GetString("autoriz");
+                                    cu[3] = dr.GetString("cargaEf");
+                                    cu[4] = dr.GetString("cargaUt");
+                                    cu[5] = dr.GetString("rucTrans");
+                                    cu[6] = dr.GetString("nomTrans");
+                                    cu[7] = dr.GetString("fecIniTras");
+                                    cu[8] = dr.GetString("dirPartida");
+                                    cu[9] = dr.GetString("ubiPartida");
+                                    cu[10] = dr.GetString("dirDestin");
+                                    cu[11] = dr.GetString("ubiDestin");
+                                    cu[12] = dr.GetString("dniChof");
+                                    cu[13] = dr.GetString("brevete");
+                                    cu[14] = dr.GetString("valRefViaje");
+                                    cu[15] = dr.GetString("valRefVehic");
+                                    cu[16] = dr.GetString("valRefTon");
                                     // varios
                                     glosser = dr.GetString("glosaser");
                                     va[0] = logoclt;         // Ruta y nombre del logo del emisor electrónico
@@ -1396,7 +1437,15 @@ namespace TransCarga
                         }
                     }
                     // llamamos a la clase que imprime
-                    impDV imp = new impDV(1, v_impTK, vs, dt, va, "TK", "");
+                    if (Formato == "A4") 
+                    {
+                        if (cu[0] != "") { impDV imp = new impDV(1, "", vs, dt, va, cu, Formato, forA4CRcu); }  // vistas en pantalla
+                        else { impDV imp = new impDV(1, "", vs, dt, va, cu, Formato, forA4CRn); }   // vistas en pantalla
+                    }
+                    else
+                    {
+                        impDV imp = new impDV(1, v_impTK, vs, dt, va, cu, Formato, "");
+                    }
                 }
             }
         }

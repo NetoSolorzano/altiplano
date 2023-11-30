@@ -5613,6 +5613,8 @@ namespace TransCarga
                     { "", "", "", "", "", "" }, { "", "", "", "", "", "" }, { "", "", "", "", "", "" }, { "", "", "", "", "", "" }, { "", "", "", "", "", "" },
                     { "", "", "", "", "", "" }, { "", "", "", "", "", "" }, { "", "", "", "", "", "" }, { "", "", "", "", "", "" }, { "", "", "", "", "", "" }
                 }; // 6 columnas, 10 filas
+                string[] cu = { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" };    // 17
+
                 vs[0] = cmb_tdv.Text.Substring(0, 1).ToUpper() + lib.Right(tx_serie.Text, 3);   // serie (F001)
                 vs[1] = tx_numero.Text;                 // numero
                 vs[2] = tx_dat_tdv.Text;                // tx_dat_tdv.Text, codigo Transcarga del tipo de documento
@@ -5671,7 +5673,7 @@ namespace TransCarga
                 va[7] = "";         // 
                 va[8] = "";         // 
 
-                impDV impTK = new impDV(1, v_impTK, vs, dt, va, "TK", "");
+                impDV impTK = new impDV(1, v_impTK, vs, dt, va, cu, "TK", "");
 
                 if (File.Exists(@otro))
                 {
@@ -5709,6 +5711,8 @@ namespace TransCarga
                     { "", "", "", "", "", "" }, { "", "", "", "", "", "" }, { "", "", "", "", "", "" }, { "", "", "", "", "", "" }, { "", "", "", "", "", "" },
                     { "", "", "", "", "", "" }, { "", "", "", "", "", "" }, { "", "", "", "", "", "" }, { "", "", "", "", "", "" }, { "", "", "", "", "", "" }
                 }; // 6 columnas, 10 filas
+                string[] cu = { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" };    // 17
+
                 vs[0] = cmb_tdv.Text.Substring(0, 1).ToUpper() + lib.Right(tx_serie.Text, 3);   // serie (F001)
                 vs[1] = tx_numero.Text;                 // numero
                 vs[2] = tx_dat_tdv.Text;                // tx_dat_tdv.Text, codigo Transcarga del tipo de documento
@@ -5768,7 +5772,7 @@ namespace TransCarga
                 va[7] = "";         // 
                 va[8] = "";         // 
 
-                impDV impTK = new impDV(1, v_impTK, vs, dt, va, "TK", "");
+                impDV impTK = new impDV(1, v_impTK, vs, dt, va, cu, "TK", "");
                 
                 if (File.Exists(@otro))
                 {

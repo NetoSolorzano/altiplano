@@ -220,6 +220,12 @@
     <Compile Include="facelect.designer.cs">
       <DependentUpon>facelect.cs</DependentUpon>
     </Compile>
+    <Compile Include="forA4CRcu.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>forA4CRcu.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="frmvizoper.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -513,6 +519,10 @@
     </EmbeddedResource>
     <EmbeddedResource Include="facelect.resx">
       <DependentUpon>facelect.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="forA4CRcu.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>forA4CRcu.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="frmvizoper.resx">
       <DependentUpon>frmvizoper.cs</DependentUpon>

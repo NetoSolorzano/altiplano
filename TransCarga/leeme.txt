@@ -496,7 +496,8 @@ form facelect, regeneración de xml esta volviendo a crear un registro en adifac
 form facelect, agregar opciones de cargas únicas tipo soya:
 	- Facturas cargas únicas "tipo soya" en soles al crédito 1 cuota ............................... ok 24/11/2023
 	- Facturas cargas únicas "tipo soya" en dólares al crédito 1 cuota ............................. ok 29/11/2023
-form repsventas, agregar columna boton de A4 (formato crystal) ..................................... 
+form repsventas, agregar columna boton de A4 (formato crystal) ..................................... ok 30/11/2023
+clase impDV, adecuaciones para imresion en A4 y en pantalla ........................................ ok 30/11/2023
 Formatos crystal para los pdf de fcturas y boletas estándares:
 	- cargas únicas ................................................................................ 
 	- multimoneda y con/sin detracción ............................................................. 
