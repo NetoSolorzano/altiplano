@@ -16,8 +16,8 @@ namespace TransCarga
     class impDV
     {
         libreria lib = new libreria();
-        string[] vs = {"","","","","","","","","","","","","", "", "", "", "", "", "", "",   // 20
-                               "", "", "", "", "", "", "", "", "", ""};    // 10
+        string[] vs = {"", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",     // 20
+                       "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""};    // 20
         string[] va = { "", "", "", "", "", "", "", "", "" };       // 9
         string[,] dt = new string[10, 6] { 
             { "", "", "", "", "", "" }, { "", "", "", "", "", "" }, { "", "", "", "", "", "" }, { "", "", "", "", "", "" }, { "", "", "", "", "", "" },
@@ -60,6 +60,16 @@ namespace TransCarga
             vs[27] = cabecera[27];     // usuario creador
             vs[28] = cabecera[28];     // local de emisión
             vs[29] = cabecera[29];     // glosa despedida
+            vs[30] = cabecera[30];    // nombre del emisor del comprobante
+            vs[31] = cabecera[31];    // ruc del emisor
+            vs[32] = cabecera[32];    // fecha vencimiento del comprob.
+            vs[33] = cabecera[33];    // forma de pago incluyendo # de cuotas (siempre es 1 cuota en Transcarga)
+            vs[34] = cabecera[34];    // modalidad de transporte
+            vs[35] = cabecera[35];    // motivo de traslado
+            vs[36] = "";
+            vs[37] = "";
+            vs[38] = "";
+            vs[39] = "";
 
             cu[0] = cunica[0];          // "placa");
             cu[1] = cunica[1];          // "confv");
@@ -514,11 +524,18 @@ namespace TransCarga
             cabRow.userc = vs[27];
             cabRow.localEmi = vs[28];
             cabRow.glosDesped = vs[29];
-
+            cabRow.nomEmisor = vs[30];    // nombre del emisor del comprobante
+            cabRow.rucEmisor = vs[31];    // ruc del emisor
+            cabRow.fecVence = vs[32];    // fecha vencimiento del comprob.
+            cabRow.formaPago = vs[33];    // forma de pago incluyendo # de cuotas (siempre es 1 cuota en Transcarga)
+            cabRow.modTransp = vs[34];    // modalidad de transporte
+            cabRow.motTrasla = vs[35];    // motivo de traslado
+            DV.cVta_cab.AddcVta_cabRow(cabRow);
+            
             // DETALLE
-            conClie.cVta_detRow detRow = DV.cVta_det.NewcVta_detRow();
-            for (int o = 0; o <= int.Parse(vs[12]); o++)
+            for (int o = 0; o < int.Parse(vs[12]); o++)
             {
+                conClie.cVta_detRow detRow = DV.cVta_det.NewcVta_detRow();
                 detRow.id = "0";
                 detRow.OriDest = dt[o, 0];      // ["OriDest"]
                 detRow.cant = dt[o, 1];         // ["Cant"]
@@ -527,6 +544,7 @@ namespace TransCarga
                 detRow.descrip = dt[o, 4];      // descripcion de la carga
                 detRow.docRel1 = dt[o, 5];      // documento relacionado remitente de la guia transportista
                 detRow.docRel2 = "";            // 
+                DV.cVta_det.AddcVta_detRow(detRow);
             }
 
             // CARGA UNICA
@@ -548,10 +566,8 @@ namespace TransCarga
             cuRow.valRefViaje = cu[14];        // "valRefViaje");
             cuRow.valRefVehic = cu[15];        // "valRefVehic");
             cuRow.valRefTon = cu[16];        // "valRefTon");
-
-            DV.cVta_cab.AddcVta_cabRow(cabRow);
-            DV.cVta_det.AddcVta_detRow(detRow);
             DV.cVta_cu.AddcVta_cuRow(cuRow);
+
             return DV;
         }
     }

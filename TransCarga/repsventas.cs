@@ -1264,8 +1264,8 @@ namespace TransCarga
 
         private void imprime(string tipo,string serie, string numero, string Formato)
         {
-            string[] vs = {"","","","","","","","","","","","","", "", "", "", "", "", "", "",   // 20
-                               "", "", "", "", "", "", "", "", "", ""};    // 10
+            string[] vs = {"", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",      // 20
+                           "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""};     // 20
             string[] va = { "", "", "", "", "", "", "", "", "" };       // 9
             string[,] dt = new string[10, 6] {
                     { "", "", "", "", "", "" }, { "", "", "", "", "", "" }, { "", "", "", "", "", "" }, { "", "", "", "", "", "" }, { "", "", "", "", "", "" },
@@ -1287,7 +1287,8 @@ namespace TransCarga
                         "a.cargaunica,a.porcendscto,a.valordscto,a.conPago,a.pagauto,ifnull(ad.placa,'') as placa,ifnull(ad.confv,'') as confv,ifnull(ad.autoriz,'') as autoriz,m.descrizionerid as nomon,t.codsunat as cdtdv," +
                         "ifnull(ad.cargaEf,0) as cargaEf,ifnull(ad.cargaUt,0) as cargaUt,ifnull(ad.rucTrans,'') as rucTrans,ifnull(ad.nomTrans,'') as nomTrans,ifnull(date_format(ad.fecIniTras,'%Y-%m-%d'),'') as fecIniTras," +
                         "ifnull(ad.dirPartida,'') as dirPartida,ifnull(ad.ubiPartida,'') as ubiPartida,ifnull(ad.dirDestin,'') as dirDestin,ifnull(ad.ubiDestin,'') as ubiDestin,ifnull(ad.dniChof,'') as dniChof," +
-                        "ifnull(ad.brevete,'') as brevete,ifnull(ad.valRefViaje,0) as valRefViaje,ifnull(ad.valRefVehic,0) as valRefVehic,ifnull(ad.valRefTon,0) as valRefTon,l.descrizionerid as nomLocO " +
+                        "ifnull(ad.brevete,'') as brevete,ifnull(ad.valRefViaje,0) as valRefViaje,ifnull(ad.valRefVehic,0) as valRefVehic,ifnull(ad.valRefTon,0) as valRefTon,l.descrizionerid as nomLocO," +
+                        "if(a.plazocred='',DATE_FORMAT(a.fechope,'%d/%m/%Y'),DATE_FORMAT(date_add(a.fechope, interval t.marca1),'%d/%m/%Y')) as fvence,if(a.plazocred='','Contado','Credito - N° Cuotas : 1') as condicion " +
                         "from cabfactu a " +
                         "left join adifactu ad on ad.idc=a.id and ad.tipoAd=1 " +
                         "left join desc_est b on b.idcodice=a.estdvta " +
@@ -1296,6 +1297,7 @@ namespace TransCarga
                         "left join desc_tdv t on t.idcodice=a.tipdvta " +
                         "left join desc_doc d on d.idcodice=a.tidoclt " +
                         "left join desc_loc l on l.idcodice=a.locorig " +
+                        "left join desc_tpa t on t.idcodice=a.plazocred " +
                         "left join series s on s.tipdoc=a.tipdvta and s.serie=a.serdvta " +
                         "left join cabcobran c on c.tipdoco=a.tipdvta and c.serdoco=a.serdvta and c.numdoco=a.numdvta and c.estdcob<>@coda " +
                         "where a.tipdvta=@tdv and a.serdvta=@ser and a.numdvta=@num";
@@ -1311,7 +1313,7 @@ namespace TransCarga
                             {
                                 if (dr.Read())
                                 {
-                                    vs[0] = serie;                          // serie (F001)
+                                    vs[0] = dr.GetString("martdve") + lib.Right(serie,3);                          // serie (F001)
                                     vs[1] = numero;                         // numero
                                     vs[2] = tipo;                           // tx_dat_tdv.Text, codigo Transcarga del tipo de documento
                                     vs[3] = Program.dirfisc;                // direccion emisor
@@ -1342,6 +1344,13 @@ namespace TransCarga
                                     vs[27] = dr.GetString("userc").Trim();  // usuario creador
                                     vs[28] = dr.GetString("nomLocO").Trim();    // local de emisión
                                     vs[29] = despedida;                     // glosa despedida
+                                    vs[30] = Program.cliente;               // nombre del emisor del comprobante
+                                    vs[31] = Program.ruc;                   // ruc del emisor
+                                    vs[32] = dr.GetString("fvence");        // fecha vencimiento del comprob.
+                                    vs[33] = dr.GetString("condicion");     // forma de pago incluyendo # de cuotas (siempre es 1 cuota en Transcarga)
+                                    vs[34] = "Transporte Privado";          // modalidad de transporte
+                                    vs[35] = "Venta";                       // motivo de traslado
+
                                     // carga unica
                                     cu[0] = dr.GetString("placa");
                                     cu[1] = dr.GetString("confv");
