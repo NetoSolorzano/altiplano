@@ -479,26 +479,80 @@ namespace TransCarga
         }
         private conClie generaReporte(string cristalito)            // cambiar a facturas/boletas
         {
-            conClie guiaT = new conClie();
-            conClie.gr_ind_cabRow rowcabeza = guiaT.gr_ind_cab.Newgr_ind_cabRow();
+            conClie DV = new conClie();
+            conClie.cVta_cabRow cabRow = DV.cVta_cab.NewcVta_cabRow();
             // CABECERA
-            rowcabeza.formatoRPT = cristalito;
-            rowcabeza.id = "0";         // no tenemos este dato en la clase
-            // pie
-            rowcabeza.marcamodelo = "";         // no tenemos este dato en la clase
-            rowcabeza.fechora_imp = DateTime.Now.ToString();
-            rowcabeza.horEmiCre = "";           // hora de emisión ... para efectos de la impresion en TK y A5 no importa ... 10/10/2023
-            // varios
-            //
-            guiaT.gr_ind_cab.Addgr_ind_cabRow(rowcabeza);
-            //
-            // DETALLE  
-            for (int y = 0; y < 3; y++)
-            {
+            cabRow.formatoRPT = cristalito;
+            cabRow.id = "0";         // 
+            cabRow.serie = vs[0];
+            cabRow.numero = vs[1];
+            cabRow.tipDoc = vs[2];
+            cabRow.dirEmisor = vs[3];
+            cabRow.nomTipdoc = vs[4];
+            cabRow.fecEmi = vs[5];
+            cabRow.nomClte = vs[6];
+            cabRow.nDocClte = vs[7];
+            cabRow.DirClte = vs[8];
+            cabRow.distClte = vs[9];
+            cabRow.provClte = vs[10];
+            cabRow.depaClte = vs[11];
+            cabRow.canfdet = vs[12];
+            cabRow.subtotal = vs[13];
+            cabRow.igv = vs[14];
+            cabRow.total = vs[15];
+            cabRow.moneda = vs[16];
+            cabRow.fleteLetras = vs[17];
+            cabRow.codicion = vs[18];
+            cabRow.dplazo = vs[19];
+            cabRow.glosaDet = vs[20];
+            cabRow.tipcomSunat = vs[21];
+            cabRow.tdClteSunat = vs[22];
+            cabRow.provee = vs[23];
+            cabRow.resolTex = vs[24];
+            cabRow.autorizSunat = vs[25];
+            cabRow.webose = vs[26];
+            cabRow.userc = vs[27];
+            cabRow.localEmi = vs[28];
+            cabRow.glosDesped = vs[29];
 
+            // DETALLE
+            conClie.cVta_detRow detRow = DV.cVta_det.NewcVta_detRow();
+            for (int o = 0; o <= int.Parse(vs[12]); o++)
+            {
+                detRow.id = "0";
+                detRow.OriDest = dt[o, 0];      // ["OriDest"]
+                detRow.cant = dt[o, 1];         // ["Cant"]
+                detRow.umed = dt[o, 2];         // ["umed"]
+                detRow.guiaT = dt[o, 3];        // guia transportista
+                detRow.descrip = dt[o, 4];      // descripcion de la carga
+                detRow.docRel1 = dt[o, 5];      // documento relacionado remitente de la guia transportista
+                detRow.docRel2 = "";            // 
             }
-            //
-            return guiaT;
+
+            // CARGA UNICA
+            conClie.cVta_cuRow cuRow = DV.cVta_cu.NewcVta_cuRow();
+            cuRow.placa = cu[0];          // "placa");
+            cuRow.confv = cu[1];          // "confv");
+            cuRow.autoriz = cu[2];          // "autoriz");
+            cuRow.cargaEf = cu[3];          // "cargaEf");
+            cuRow.cargaUt = cu[4];          // "cargaUt");
+            cuRow.rucTrans = cu[5];          // "rucTrans");
+            cuRow.nomTrans = cu[6];          // "nomTrans");
+            cuRow.fecIniTras = cu[7];          // "fecIniTras");
+            cuRow.dirPartida = cu[8];          // "dirPartida");
+            cuRow.ubiPartida = cu[9];          // "ubiPartida");
+            cuRow.dirDestin = cu[10];        // "dirDestin");
+            cuRow.ubiDestin = cu[11];        // "ubiDestin");
+            cuRow.dniChof = cu[12];        // "dniChof");
+            cuRow.brevete = cu[13];        // "brevete");
+            cuRow.valRefViaje = cu[14];        // "valRefViaje");
+            cuRow.valRefVehic = cu[15];        // "valRefVehic");
+            cuRow.valRefTon = cu[16];        // "valRefTon");
+
+            DV.cVta_cab.AddcVta_cabRow(cabRow);
+            DV.cVta_det.AddcVta_detRow(detRow);
+            DV.cVta_cu.AddcVta_cuRow(cuRow);
+            return DV;
         }
     }
 }

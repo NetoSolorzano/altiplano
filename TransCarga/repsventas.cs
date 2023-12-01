@@ -148,106 +148,79 @@ namespace TransCarga
         }
         private void jalainfo()                                     // obtiene datos de imagenes
         {
-            try
+            for (int t = 0; t < Program.dt_enlaces.Rows.Count; t++)
             {
-                using (SqliteConnection cnx = new SqliteConnection(CadenaConexion))
+                DataRow row = Program.dt_enlaces.Rows[t];
+                if (row["formulario"].ToString() == "main")
                 {
-                    cnx.Open();
-                    string consulta = "select formulario,campo,param,valor from dt_enlaces where formulario in (@nofo,@ped,@clie)";
-                    using (SqliteCommand micon = new SqliteCommand(consulta, cnx))
+                    if (row["campo"].ToString() == "imagenes")
                     {
-                        micon.Parameters.AddWithValue("@nofo", "main");
-                        micon.Parameters.AddWithValue("@ped", "facelect");
-                        micon.Parameters.AddWithValue("@clie", "clients");
-                        SqliteDataReader lite = micon.ExecuteReader();
-                        if (lite.HasRows == true)
-                        {
-                            while (lite.Read())
-                            {
-                                lite.GetString(0).ToString();
-                                if (lite.GetString(0).ToString() == "main")
-                                {
-                                    if (lite.GetString(1).ToString() == "imagenes")
-                                    {
-                                        if (lite.GetString(2).ToString() == "img_btN") img_btN = lite.GetString(3).ToString().Trim();         // imagen del boton de accion NUEVO
-                                        if (lite.GetString(2).ToString() == "img_btE") img_btE = lite.GetString(3).ToString().Trim();         // imagen del boton de accion EDITAR
-                                        if (lite.GetString(2).ToString() == "img_btP") img_btP = lite.GetString(3).ToString().Trim();         // imagen del boton de accion IMPRIMIR
-                                        if (lite.GetString(2).ToString() == "img_btA") img_btA = lite.GetString(3).ToString().Trim();         // imagen del boton de accion ANULAR/BORRAR
-                                        if (lite.GetString(2).ToString() == "img_btexc") img_btexc = lite.GetString(3).ToString().Trim();     // imagen del boton exporta a excel
-                                        if (lite.GetString(2).ToString() == "img_btQ") img_btq = lite.GetString(3).ToString().Trim();         // imagen del boton de accion SALIR
-                                        //if (row["param"].ToString() == "img_btP") img_btP = lite.GetString(3).ToString().Trim();        // imagen del boton de accion IMPRIMIR
-                                        if (lite.GetString(2).ToString() == "img_gra") img_grab = lite.GetString(3).ToString().Trim();         // imagen del boton grabar nuevo
-                                        if (lite.GetString(2).ToString() == "img_anu") img_anul = lite.GetString(3).ToString().Trim();         // imagen del boton grabar anular
-                                        if (lite.GetString(2).ToString() == "img_imprime") img_imprime = lite.GetString(3).ToString().Trim();  // imagen del boton IMPRIMIR REPORTE
-                                        if (lite.GetString(2).ToString() == "img_pre") img_preview = lite.GetString(3).ToString().Trim();  // imagen del boton VISTA PRELIMINAR
-                                        if (lite.GetString(2).ToString() == "logoPrin") logoclt = lite.GetString(3).ToString().Trim();         // logo emisor
-                                    }
-                                    if (lite.GetString(1).ToString() == "estado")
-                                    {
-                                        if (lite.GetString(2).ToString() == "anulado") codAnul = lite.GetString(3).ToString().Trim();         // codigo doc anulado
-                                        if (lite.GetString(2).ToString() == "generado") codGene = lite.GetString(3).ToString().Trim();        // codigo doc generado
-                                        DataRow[] fila = dtestad.Select("idcodice='" + codAnul + "'");
-                                        nomAnul = fila[0][0].ToString();
-                                    }
-                                    if (lite.GetString(1).ToString() == "sunat")
-                                    {
-                                        if (lite.GetString(2).ToString() == "client_id") client_id_sunat = lite.GetString(3).ToString().Trim();         // id del api sunat
-                                        if (lite.GetString(2).ToString() == "client_pass") client_pass_sunat = lite.GetString(3).ToString().Trim();     // password del api sunat
-                                        if (lite.GetString(2).ToString() == "user_sol") u_sol_sunat = lite.GetString(3).ToString().Trim();              // usuario sol portal sunat del cliente 
-                                        if (lite.GetString(2).ToString() == "clave_sol") c_sol_sunat = lite.GetString(3).ToString().Trim();             // clave sol portal sunat del cliente 
-                                        if (lite.GetString(2).ToString() == "scope") scope_sunat = lite.GetString(3).ToString().Trim();                 // scope del api sunat
-                                    }
-
-                                    if (lite.GetString(1).ToString() == "rutas")
-                                    {
-                                        if (lite.GetString(2).ToString() == "grt_txt") rutatxt = lite.GetString(3).ToString().Trim();         // ruta de los txt para las guías elect
-                                        if (lite.GetString(2).ToString() == "grt_xml") rutaxml = lite.GetString(3).ToString().Trim();         // 
-                                    }
-                                }
-                                if (lite.GetString(0).ToString() == "facelect")
-                                {
-                                    if (lite.GetString(1).ToString() == "documento" && lite.GetString(2).ToString() == "factura") codfact = lite.GetString(3).ToString().Trim();         // 
-                                    if (lite.GetString(1).ToString() == "documento" && lite.GetString(2).ToString() == "boleta") codBole = lite.GetString(3).ToString().Trim();         // 
-                                    if (lite.GetString(1).ToString() == "moneda" && lite.GetString(2).ToString() == "default") codmon = lite.GetString(3).ToString().Trim();
-                                    if (lite.GetString(1).ToString() == "detraccion" && lite.GetString(2).ToString() == "glosa") glosdetra = lite.GetString(3).ToString().Trim();    // glosa detraccion
-                                    if (lite.GetString(1).ToString() == "factelect" && lite.GetString(2).ToString() == "ose-pse") nipfe = lite.GetString(3).ToString().Trim();
-                                    if (lite.GetString(1).ToString() == "factelect" && lite.GetString(2).ToString() == "textaut") restexto = lite.GetString(3).ToString().Trim();
-                                    if (lite.GetString(1).ToString() == "factelect" && lite.GetString(2).ToString() == "autoriz") autoriz_OSE_PSE = lite.GetString(3).ToString().Trim();
-                                    if (lite.GetString(1).ToString() == "factelect" && lite.GetString(2).ToString() == "despedi") despedida = lite.GetString(3).ToString().Trim();
-                                    if (lite.GetString(1).ToString() == "factelect" && lite.GetString(2).ToString() == "webose") webose = lite.GetString(3).ToString().Trim();
-                                    if (lite.GetString(1).ToString() == "impresion")
-                                    {
-                                        if (lite.GetString(2).ToString() == "formato") vi_formato = lite.GetString(3).ToString().Trim();
-                                        if (lite.GetString(2).ToString() == "filasDet") v_mfildet = lite.GetString(3).ToString().Trim();       // maxima cant de filas de detalle
-                                        if (lite.GetString(2).ToString() == "copias") vi_copias = lite.GetString(3).ToString().Trim();
-                                        if (lite.GetString(2).ToString() == "impTK") v_impTK = lite.GetString(3).ToString().Trim();
-                                        if (lite.GetString(2).ToString() == "forA4CRn") forA4CRn = lite.GetString(3).ToString().Trim();           // ruta y nombre del formato CR de factura/boletas "normales"
-                                        if (lite.GetString(2).ToString() == "forA4CRcu") forA4CRcu = lite.GetString(3).ToString().Trim();          // ruta y nombre del formato CR de facturas de cargas únicas
-                                    }
-                                }
-                                if (lite.GetString(0).ToString() == "clients")
-                                {
-                                    if (lite.GetString(1).ToString() == "documento" && lite.GetString(2).ToString() == "dni") coddni = lite.GetString(3).ToString().Trim();
-                                    if (lite.GetString(1).ToString() == "documento" && lite.GetString(2).ToString() == "ruc") codruc = lite.GetString(3).ToString().Trim();
-                                }
-
-                            }
-                            // parametros para token
-                            c_t[0] = client_id_sunat;
-                            c_t[1] = scope_sunat;
-                            c_t[2] = client_id_sunat;
-                            c_t[3] = client_pass_sunat;
-                            c_t[4] = u_sol_sunat;
-                            c_t[5] = c_sol_sunat;
-                        }
+                        if (row["param"].ToString() == "img_btN") img_btN = row["valor"].ToString().Trim();         // imagen del boton de accion NUEVO
+                        if (row["param"].ToString() == "img_btE") img_btE = row["valor"].ToString().Trim();         // imagen del boton de accion EDITAR
+                        if (row["param"].ToString() == "img_btP") img_btP = row["valor"].ToString().Trim();         // imagen del boton de accion IMPRIMIR
+                        if (row["param"].ToString() == "img_btA") img_btA = row["valor"].ToString().Trim();         // imagen del boton de accion ANULAR/BORRAR
+                        if (row["param"].ToString() == "img_btexc") img_btexc = row["valor"].ToString().Trim();     // imagen del boton exporta a excel
+                        if (row["param"].ToString() == "img_btQ") img_btq = row["valor"].ToString().Trim();         // imagen del boton de accion SALIR
+                        if (row["param"].ToString() == "img_gra") img_grab = row["valor"].ToString().Trim();         // imagen del boton grabar nuevo
+                        if (row["param"].ToString() == "img_anu") img_anul = row["valor"].ToString().Trim();         // imagen del boton grabar anular
+                        if (row["param"].ToString() == "img_imprime") img_imprime = row["valor"].ToString().Trim();  // imagen del boton IMPRIMIR REPORTE
+                        if (row["param"].ToString() == "img_pre") img_preview = row["valor"].ToString().Trim();     // imagen del boton VISTA PRELIMINAR
+                        if (row["param"].ToString() == "logoPrin") logoclt = row["valor"].ToString().Trim();         // logo emisor
+                    }
+                    if (row["campo"].ToString() == "estado")
+                    {
+                        if (row["param"].ToString() == "anulado") codAnul = row["valor"].ToString().Trim();         // codigo doc anulado
+                        if (row["param"].ToString() == "generado") codGene = row["valor"].ToString().Trim();        // codigo doc generado
+                        DataRow[] fila = dtestad.Select("idcodice='" + codAnul + "'");
+                        nomAnul = fila[0][0].ToString();
+                    }
+                    if (row["campo"].ToString() == "sunat")
+                    {
+                        if (row["param"].ToString() == "client_id") client_id_sunat = row["valor"].ToString().Trim();         // id del api sunat
+                        if (row["param"].ToString() == "client_pass") client_pass_sunat = row["valor"].ToString().Trim();     // password del api sunat
+                        if (row["param"].ToString() == "user_sol") u_sol_sunat = row["valor"].ToString().Trim();              // usuario sol portal sunat del cliente 
+                        if (row["param"].ToString() == "clave_sol") c_sol_sunat = row["valor"].ToString().Trim();             // clave sol portal sunat del cliente 
+                        if (row["param"].ToString() == "scope") scope_sunat = row["valor"].ToString().Trim();                 // scope del api sunat
+                    }
+                    if (row["campo"].ToString() == "rutas")
+                    {
+                        if (row["param"].ToString() == "grt_txt") rutatxt = row["valor"].ToString().Trim();         // ruta de los txt para las guías elect
+                        if (row["param"].ToString() == "grt_xml") rutaxml = row["valor"].ToString().Trim();         // 
                     }
                 }
-            }
-            catch (MySqlException ex)
-            {
-                MessageBox.Show(ex.Message, "Error de conexión");
-                Application.Exit();
-                return;
+                if (row["formulario"].ToString() == "facelect")
+                {
+                    if (row["campo"].ToString() == "documento" && row["param"].ToString() == "factura") codfact = row["valor"].ToString().Trim();         // 
+                    if (row["campo"].ToString() == "documento" && row["param"].ToString() == "boleta") codBole = row["valor"].ToString().Trim();         // 
+                    if (row["campo"].ToString() == "moneda" && row["param"].ToString() == "default") codmon = row["valor"].ToString().Trim();
+                    if (row["campo"].ToString() == "detraccion" && row["param"].ToString() == "glosa") glosdetra = row["valor"].ToString().Trim();    // glosa detraccion
+                    if (row["campo"].ToString() == "factelect" && row["param"].ToString() == "ose-pse") nipfe = row["valor"].ToString().Trim();
+                    if (row["campo"].ToString() == "factelect" && row["param"].ToString() == "textaut") restexto = row["valor"].ToString().Trim();
+                    if (row["campo"].ToString() == "factelect" && row["param"].ToString() == "autoriz") autoriz_OSE_PSE = row["valor"].ToString().Trim();
+                    if (row["campo"].ToString() == "factelect" && row["param"].ToString() == "despedi") despedida = row["valor"].ToString().Trim();
+                    if (row["campo"].ToString() == "factelect" && row["param"].ToString() == "webose") webose = row["valor"].ToString().Trim();
+                    if (row["campo"].ToString() == "impresion")
+                    {
+                        if (row["param"].ToString() == "formato") vi_formato = row["valor"].ToString().Trim();
+                        if (row["param"].ToString() == "filasDet") v_mfildet = row["valor"].ToString().Trim();       // maxima cant de filas de detalle
+                        if (row["param"].ToString() == "copias") vi_copias = row["valor"].ToString().Trim();
+                        if (row["param"].ToString() == "impTK") v_impTK = row["valor"].ToString().Trim();
+                        if (row["param"].ToString() == "forA4CRn") forA4CRn = row["valor"].ToString().Trim();           // ruta y nombre del formato CR de factura/boletas "normales"
+                        if (row["param"].ToString() == "forA4CRcu") forA4CRcu = row["valor"].ToString().Trim();          // ruta y nombre del formato CR de facturas de cargas únicas
+                    }
+                }
+                if (row["formulario"].ToString() == "clients")
+                {
+                    if (row["campo"].ToString() == "documento" && row["param"].ToString() == "dni") coddni = row["valor"].ToString().Trim();
+                    if (row["campo"].ToString() == "documento" && row["param"].ToString() == "ruc") codruc = row["valor"].ToString().Trim();
+                }
+                // parametros para token
+                c_t[0] = client_id_sunat;
+                c_t[1] = scope_sunat;
+                c_t[2] = client_id_sunat;
+                c_t[3] = client_pass_sunat;
+                c_t[4] = u_sol_sunat;
+                c_t[5] = c_sol_sunat;
             }
         }
         public void dataload(string quien)                          // jala datos para los combos y la grilla
