@@ -74,6 +74,7 @@ namespace TransCarga
         string v_impTK = "";            // nombre de la ticketera
         string forA4CRn = "";           // ruta y nombre del formato CR de factura/boletas "normales"
         string forA4CRcu = "";          // ruta y nombre del formato CR de facturas de cargas únicas
+        string vi_rutaQR = "";          // ruta y nombre del QR 
         #endregion
 
         libreria lib = new libreria();
@@ -81,7 +82,7 @@ namespace TransCarga
         NumLetra nlet = new NumLetra();
         DataTable dtestad = new DataTable();
         DataTable dttaller = new DataTable();
-        DataTable dtsunatE = new DataTable();       // comprobantes elec - estados sunat
+        int cuenta = -1;     // contador de repeticiones de visualizacion en columnas de estados
         // string de conexion
         string DB_CONN_STR = "server=" + login.serv + ";uid=" + login.usua + ";pwd=" + login.cont + ";database=" + login.data + ";";
         public static string CadenaConexion = "Data Source=TransCarga.db";  // Data Source=TransCarga;Mode=Memory;Cache=Shared
@@ -207,6 +208,7 @@ namespace TransCarga
                         if (row["param"].ToString() == "impTK") v_impTK = row["valor"].ToString().Trim();
                         if (row["param"].ToString() == "forA4CRn") forA4CRn = row["valor"].ToString().Trim();           // ruta y nombre del formato CR de factura/boletas "normales"
                         if (row["param"].ToString() == "forA4CRcu") forA4CRcu = row["valor"].ToString().Trim();          // ruta y nombre del formato CR de facturas de cargas únicas
+                        if (row["param"].ToString() == "rutaQR") vi_rutaQR = row["valor"].ToString().Trim();               // Ruta del archivo imagen del QR
                     }
                 }
                 if (row["formulario"].ToString() == "clients")
@@ -643,8 +645,9 @@ namespace TransCarga
         }
         private void bt_sunatEst_Click(object sender, EventArgs e)      // estados sunat de comprobantes
         {
-            dtsunatE.Rows.Clear();
-            dtsunatE.Columns.Clear();
+            //dtsunatE.Rows.Clear();
+            //dtsunatE.Columns.Clear();
+            DataTable dtsunatE = new DataTable();
             // validaciones
             if (tx_dat_sunat_sede.Text == "")
             {
@@ -683,10 +686,12 @@ namespace TransCarga
                         dgv_sunat_est.DataSource = null;
                         dgv_sunat_est.Columns.Clear();
                         dgv_sunat_est.Rows.Clear();
-                        //
+                        dgv_sunat_est.CellClick -= null;
+                        cuenta = -1;
                         da.Fill(dtsunatE);
                         dgv_sunat_est.DataSource = dtsunatE;
                         grilla("dgv_sunat_est");
+                        dtsunatE.Dispose();
                     }
                 }
             }
@@ -1152,113 +1157,121 @@ namespace TransCarga
         }
         private void DataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)        // Click en las columnas boton
         {
-            if (dgv_sunat_est.Columns[e.ColumnIndex].Name.ToString() == "consulta")
+            if (e.ColumnIndex > -1 && cuenta != e.RowIndex)
             {
-                if (true)
+                if (dgv_sunat_est.Columns[e.ColumnIndex].Name.ToString() == "consulta")
                 {
-                    if (dgv_sunat_est.Rows[e.RowIndex].Cells[6].Value.ToString() == "0" ||
-                        dgv_sunat_est.Rows[e.RowIndex].Cells[6].Value.ToString().Trim() == "")
+                    if (true)
                     {
-                        dgv_sunat_est.Rows[e.RowIndex].Cells[8].ReadOnly = true;
-                        dgv_sunat_est.Rows[e.RowIndex].Cells[9].ReadOnly = true;
-                        consultaE(dgv_sunat_est.Rows[e.RowIndex].Cells[13].Value.ToString(), e.RowIndex);
+                        if (dgv_sunat_est.Rows[e.RowIndex].Cells[6].Value.ToString() == "0" ||
+                            dgv_sunat_est.Rows[e.RowIndex].Cells[6].Value.ToString().Trim() == "")
+                        {
+                            dgv_sunat_est.Rows[e.RowIndex].Cells[8].ReadOnly = true;
+                            dgv_sunat_est.Rows[e.RowIndex].Cells[9].ReadOnly = true;
+                            consultaE(dgv_sunat_est.Rows[e.RowIndex].Cells[13].Value.ToString(), e.RowIndex);
+                        }
                     }
                 }
-            }
-            if (dgv_sunat_est.Columns[e.ColumnIndex].Name.ToString() == "cdr")                    // columna CDR
-            {
-                if (dgv_sunat_est.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString() != "")
+                if (dgv_sunat_est.Columns[e.ColumnIndex].Name.ToString() == "cdr")                    // columna CDR
                 {
-                    // PRIMERO deberíamos buscar el cdr.xml en el directorio respectivo
-                    // Si hay, deberia sacar un mensaje indicando la ruta donde esta el xml respuesta
-                    // Si NO hay, DEBERIAMOS CONSULTAR EN SUNAT EL CDR DEL COMPROBANTE
-                    string archi = "R-" + Program.ruc + "-" + ((dgv_sunat_est.Rows[e.RowIndex].Cells["tipo"].Value.ToString() == "F") ? "01" : "03") + "-" +
-                        dgv_sunat_est.Rows[e.RowIndex].Cells["tipo"].Value.ToString() + lib.Right(dgv_sunat_est.Rows[e.RowIndex].Cells[2].Value.ToString(), 12) + ".zip";
-                    if (File.Exists(@rutaxml + archi) == true)     // si hay el xml
+                    if (dgv_sunat_est.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString() != "")
                     {
-                        MessageBox.Show("El xml zip de respuesta esta en:" + Environment.NewLine +
-                            rutaxml + archi, "El CDR está descargado");
-                    }
-                    else
-                    {
-                        // no hay el xml ... armarlo desde el dato guardado en la tabla adifactu
-                        if (true)
+                        // PRIMERO deberíamos buscar el cdr.xml en el directorio respectivo
+                        // Si hay, deberia sacar un mensaje indicando la ruta donde esta el xml respuesta
+                        // Si NO hay, DEBERIAMOS CONSULTAR EN SUNAT EL CDR DEL COMPROBANTE
+                        string archi = "R-" + Program.ruc + "-" + ((dgv_sunat_est.Rows[e.RowIndex].Cells["tipo"].Value.ToString() == "F") ? "01" : "03") + "-" +
+                            dgv_sunat_est.Rows[e.RowIndex].Cells["tipo"].Value.ToString() + lib.Right(dgv_sunat_est.Rows[e.RowIndex].Cells[2].Value.ToString(), 12) + ".zip";
+                        if (File.Exists(@rutaxml + archi) == true)     // si hay el xml
                         {
-                            // OPCION 1: leemos el byte[] de la tabla y lo armamos en el directorio 
-                            {
-                                Byte[] arCdr = Encoding.ASCII.GetBytes(dgv_sunat_est.Rows[e.RowIndex].Cells["Rspta"].Value.ToString());
-                                File.WriteAllBytes("nose", arCdr);
-                                FileStream fstrm = new FileStream(@rutaxml + archi, FileMode.CreateNew, FileAccess.Write);
-                                //BinaryWriter writer = new BinaryWriter(fstrm);
-                                fstrm.Write(arCdr, 0, arCdr.Length);
-                                //writer.Write(arCdr);
-                                //writer.Close();
-                                fstrm.Close();
-                                //Esta funcionalidad ... no esta bien 28/09/2023 .... no graba el zip correctamente porque posiblemente el campo de la tabla no tenga el tipo correcto .... no se
-                            }
-                            {
-                                // OPCION 2: jalamos el cdr del webservice soap de consulta
-                                string pRuc = Program.ruc;
-                                string pTip = ((dgv_sunat_est.Rows[e.RowIndex].Cells["tipo"].Value.ToString() == "F") ? "01" : "03");
-                                string pSer = dgv_sunat_est.Rows[e.RowIndex].Cells["tipo"].Value.ToString() + dgv_sunat_est.Rows[e.RowIndex].Cells[2].Value.ToString().Substring(1, 3);
-                                int pNum = int.Parse(dgv_sunat_est.Rows[e.RowIndex].Cells[2].Value.ToString().Substring(5, 8));
-
-                                // no me funca esta consulta SOAP, no se como programar la consulta .... 04/10/2023
-                                ServiceConsultaCDR.billServiceClient aaa = new ServiceConsultaCDR.billServiceClient();
-                                aaa.Endpoint.Name = "BillConsultServicePort";
-                                // 29/09/2023 me quede acá
-                                string x = aaa.getStatusCdr(pRuc, pTip, pSer, pNum).statusMessage;
-
-                            }
+                            MessageBox.Show("El xml zip de respuesta esta en:" + Environment.NewLine +
+                                rutaxml + archi, "El CDR está descargado");
                         }
-                        // alternativa 2, hacemos la consulta del CDR al WS de consultas de sunat .. NO FUNCA, EL SERVICIO WEB REST NO RESPONDE, 06/10/2023
-                        if (false)
+                        else
                         {
-                            try
+                            // no hay el xml ... armarlo desde el dato guardado en la tabla adifactu
+                            if (true)
                             {
-                                string pRuc = Program.ruc;
-                                string pTip = ((dgv_sunat_est.Rows[e.RowIndex].Cells["tipo"].Value.ToString() == "F") ? "01" : "03");
-                                string pSer = dgv_sunat_est.Rows[e.RowIndex].Cells["tipo"].Value.ToString() + dgv_sunat_est.Rows[e.RowIndex].Cells[2].Value.ToString().Substring(1, 3);
-                                string pNum = dgv_sunat_est.Rows[e.RowIndex].Cells[2].Value.ToString().Substring(5, 8);
-
-                                string token = _E.conex_token_(c_t);
-                                /* var resCon = _E.consCDR(pRuc, token, pTip, pSer, pNum, rutaxml);
-                                if (resCon == null)
+                                // OPCION 1: leemos el byte[] de la tabla y lo armamos en el directorio 
                                 {
-                                    MessageBox.Show("Tenemos problemas con la respuesta", "Error en comprobante", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    Byte[] arCdr = Encoding.ASCII.GetBytes(dgv_sunat_est.Rows[e.RowIndex].Cells["Rspta"].Value.ToString());
+                                    File.WriteAllBytes("nose", arCdr);
+                                    FileStream fstrm = new FileStream(@rutaxml + archi, FileMode.CreateNew, FileAccess.Write);
+                                    //BinaryWriter writer = new BinaryWriter(fstrm);
+                                    fstrm.Write(arCdr, 0, arCdr.Length);
+                                    //writer.Write(arCdr);
+                                    //writer.Close();
+                                    fstrm.Close();
+                                    //Esta funcionalidad ... no esta bien 28/09/2023 .... no graba el zip correctamente porque posiblemente el campo de la tabla no tenga el tipo correcto .... no se
                                 }
-                                else
                                 {
-                                    if (resCon.Item1 == "Rechazado" || resCon.Item1 == "Error")
+                                    // OPCION 2: jalamos el cdr del webservice soap de consulta
+                                    string pRuc = Program.ruc;
+                                    string pTip = ((dgv_sunat_est.Rows[e.RowIndex].Cells["tipo"].Value.ToString() == "F") ? "01" : "03");
+                                    string pSer = dgv_sunat_est.Rows[e.RowIndex].Cells["tipo"].Value.ToString() + dgv_sunat_est.Rows[e.RowIndex].Cells[2].Value.ToString().Substring(1, 3);
+                                    int pNum = int.Parse(dgv_sunat_est.Rows[e.RowIndex].Cells[2].Value.ToString().Substring(5, 8));
+
+                                    // no me funca esta consulta SOAP, no se como programar la consulta .... 04/10/2023
+                                    ServiceConsultaCDR.billServiceClient aaa = new ServiceConsultaCDR.billServiceClient();
+                                    aaa.Endpoint.Name = "BillConsultServicePort";
+                                    // 29/09/2023 me quede acá
+                                    string x = aaa.getStatusCdr(pRuc, pTip, pSer, pNum).statusMessage;
+
+                                }
+                            }
+                            // alternativa 2, hacemos la consulta del CDR al WS de consultas de sunat .. NO FUNCA, EL SERVICIO WEB REST NO RESPONDE, 06/10/2023
+                            if (false)
+                            {
+                                try
+                                {
+                                    string pRuc = Program.ruc;
+                                    string pTip = ((dgv_sunat_est.Rows[e.RowIndex].Cells["tipo"].Value.ToString() == "F") ? "01" : "03");
+                                    string pSer = dgv_sunat_est.Rows[e.RowIndex].Cells["tipo"].Value.ToString() + dgv_sunat_est.Rows[e.RowIndex].Cells[2].Value.ToString().Substring(1, 3);
+                                    string pNum = dgv_sunat_est.Rows[e.RowIndex].Cells[2].Value.ToString().Substring(5, 8);
+
+                                    string token = _E.conex_token_(c_t);
+                                    /* var resCon = _E.consCDR(pRuc, token, pTip, pSer, pNum, rutaxml);
+                                    if (resCon == null)
                                     {
-                                        MessageBox.Show(resCon.Item2, resCon.Item1, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                        MessageBox.Show("Tenemos problemas con la respuesta", "Error en comprobante", MessageBoxButtons.OK, MessageBoxIcon.Error);
                                     }
+                                    else
+                                    {
+                                        if (resCon.Item1 == "Rechazado" || resCon.Item1 == "Error")
+                                        {
+                                            MessageBox.Show(resCon.Item2, resCon.Item1, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                        }
+                                    }
+                                    */
                                 }
-                                */
-                            }
-                            catch (Exception ex)
-                            {
-                                MessageBox.Show(ex.Message, "Error al enviar a Sunat", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                                //return retorna;
+                                catch (Exception ex)
+                                {
+                                    MessageBox.Show(ex.Message, "Error al enviar a Sunat", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    //return retorna;
+                                }
                             }
                         }
                     }
                 }
+                if (dgv_sunat_est.Columns[e.ColumnIndex].Name.ToString() == "iTK")
+                {
+                    string cdtip = (dgv_sunat_est.Rows[e.RowIndex].Cells[1].Value.ToString() == "F") ? codfact : codBole;
+                    imprime(cdtip,
+                        dgv_sunat_est.Rows[e.RowIndex].Cells[2].Value.ToString().Substring(0, 4),
+                        dgv_sunat_est.Rows[e.RowIndex].Cells[2].Value.ToString().Substring(5, 8), "TK");
+                }
+                if (dgv_sunat_est.Columns[e.ColumnIndex].Name.ToString() == "iA4")
+                {
+                    string cdtip = (dgv_sunat_est.Rows[e.RowIndex].Cells[1].Value.ToString() == "F") ? codfact : codBole;
+                    imprime(cdtip,
+                        dgv_sunat_est.Rows[e.RowIndex].Cells[2].Value.ToString().Substring(0, 4),
+                        dgv_sunat_est.Rows[e.RowIndex].Cells[2].Value.ToString().Substring(5, 8), "A4");
+                }
+                cuenta = e.RowIndex;
             }
-            if (dgv_sunat_est.Columns[e.ColumnIndex].Name.ToString() == "iTK")
-            {
-                string cdtip = (dgv_sunat_est.Rows[e.RowIndex].Cells[1].Value.ToString() == "F") ? codfact : codBole;
-                imprime(cdtip,
-                    dgv_sunat_est.Rows[e.RowIndex].Cells[2].Value.ToString().Substring(0, 4),
-                    dgv_sunat_est.Rows[e.RowIndex].Cells[2].Value.ToString().Substring(5, 8), "TK");
-            }
-            if (dgv_sunat_est.Columns[e.ColumnIndex].Name.ToString() == "iA4")
-            {
-                string cdtip = (dgv_sunat_est.Rows[e.RowIndex].Cells[1].Value.ToString() == "F") ? codfact : codBole;
-                imprime(cdtip,
-                    dgv_sunat_est.Rows[e.RowIndex].Cells[2].Value.ToString().Substring(0, 4),
-                    dgv_sunat_est.Rows[e.RowIndex].Cells[2].Value.ToString().Substring(5, 8), "A4");
-            }
+        }
+        private void dgv_sunat_est_CellLeave(object sender, DataGridViewCellEventArgs e)
+        {
+            cuenta = -1;
         }
         #endregion
 
@@ -1274,16 +1287,19 @@ namespace TransCarga
             string[] cu = { "","","","","","","","","","","","","","","","",""};    // 17
             using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
             {
+                string mcu = "";        // marca de carga unica
+                string vce = "";        // carga efectiva
+                string gse = "";        // glosa de servicio
                 conn.Open();
                 if (conn.State == ConnectionState.Open)
                 {
-                    string consdeta = "select a.codgror,a.cantbul,a.unimedp,a.descpro,a.pesogro,b.docsremit,a.totalgr,a.totalgr/a.cantbul as preUni,(a.totalgr/a.cantbul)/1.18 as valUni " +
+                    string consdeta = "select a.codgror,a.cantbul,a.unimedp,a.descpro,a.pesogro,b.docsremit,a.totalgr,0 as preUni,0 as valUni " +
                         "from detfactu a left join cabguiai b on concat(b.sergui,'-',b.numgui)=a.codgror " +
                         "where a.tipdocvta=@tdv and a.serdvta=@ser and a.numdvta=@num";
 
                     string consulta = "select a.id,DATE_FORMAT(a.fechope,'%d/%m/%Y') AS fechope,a.martdve,a.tipdvta,a.serdvta,a.numdvta,a.ticltgr,a.tidoclt,a.nudoclt,a.nombclt,a.direclt,a.dptoclt,a.provclt,a.distclt,a.ubigclt,a.corrclt,a.teleclt," +
                         "a.locorig,a.dirorig,a.ubiorig,a.obsdvta,a.canfidt,a.canbudt,a.mondvta,a.tcadvta,a.subtota,a.igvtota,a.porcigv,a.totdvta,a.totpags,a.saldvta,a.estdvta,a.frase01,a.impreso,d.codsunat as ctdcl," +
-                        "a.tipoclt,a.m1clien,a.tippago,a.ferecep,a.userc,a.fechc,a.userm,a.fechm,b.descrizionerid as nomest,ifnull(c.id,'') as cobra,a.idcaja,a.plazocred,a.totdvMN,ifnull(p.marca1,'') as dpc,s.glosaser," +
+                        "a.tipoclt,a.m1clien,a.tippago,a.ferecep,a.userc,a.fechc,a.userm,a.fechm,b.descrizionerid as nomest,ifnull(c.id,'') as cobra,a.idcaja,a.plazocred,a.totdvMN,ifnull(p.marca1,'') as dpc,ifnull(s.glosaser,'') as glosaser," +
                         "a.cargaunica,a.porcendscto,a.valordscto,a.conPago,a.pagauto,ifnull(ad.placa,'') as placa,ifnull(ad.confv,'') as confv,ifnull(ad.autoriz,'') as autoriz,m.descrizionerid as inimon,t.codsunat as cdtdv," +
                         "ifnull(ad.cargaEf,0) as cargaEf,ifnull(ad.cargaUt,0) as cargaUt,ifnull(ad.rucTrans,'') as rucTrans,ifnull(ad.nomTrans,'') as nomTrans,ifnull(date_format(ad.fecIniTras,'%Y-%m-%d'),'') as fecIniTras," +
                         "ifnull(ad.dirPartida,'') as dirPartida,ifnull(ad.ubiPartida,'') as ubiPartida,ifnull(ad.dirDestin,'') as dirDestin,ifnull(ad.ubiDestin,'') as ubiDestin,ifnull(ad.dniChof,'') as dniChof," +
@@ -1331,7 +1347,7 @@ namespace TransCarga
                                     vs[14] = dr.GetString("igvtota");       // igv del comprobante
                                     vs[15] = dr.GetString("totdvta");       // importe total del comprobante
                                     vs[16] = dr.GetString("inimon"); ;       // Simbolo de la moneda
-                                    vs[17] = nlet.Convertir(dr.GetString("totdvta"),true);                  // flete en letras
+                                    vs[17] = nlet.Convertir(dr.GetString("totdvta"),true) + ((dr.GetString("mondvta") == codmon) ? " SOLES" : " DOLARES AMERICANOS");                  // flete en letras
                                     vs[18] = (dr.GetString("tippago").Trim() != "" && dr.GetString("plazocred").Trim() == "") ? "CONTADO" : "CREDITO";
                                     vs[19] = (dr.GetString("plazocred") != "") ? dr.GetString("dpc") : "";  // dias de plazo credito
                                     vs[20] = (dr.GetDouble("totdvMN") >= double.Parse(Program.valdetra))? glosdetra : "";   // Glosa para la detracción SI TIENE
@@ -1353,7 +1369,6 @@ namespace TransCarga
                                     vs[36] = dr.GetString("nonmone");       // nombre de la moneda
                                     vs[37] = "0";                           // tot operaciones inafectas
                                     vs[38] = "0";                           // tot operaciones exoneradas
-
                                     // carga unica
                                     cu[0] = dr.GetString("placa");
                                     cu[1] = dr.GetString("confv");
@@ -1381,8 +1396,12 @@ namespace TransCarga
                                     va[4] = (dr.GetDouble("totdvMN") * double.Parse(Program.pordetra) / 100).ToString("#0.00");         // monto detracción
                                     va[5] = Program.ctadetra;         // cta. detracción
                                     va[6] = "";         // concatenado de Guias Transportista para Formato de cargas unicas
-                                    va[7] = "";         // 
+                                    va[7] = vi_rutaQR + "pngqr";         // ruta y nombre del png codigo QR
                                     va[8] = "";         // 
+
+                                    mcu = dr.GetString("cargaunica");
+                                    vce = dr.GetString("cargaEf");
+                                    gse = glosser;
                                 }
                                 else
                                 {
@@ -1400,31 +1419,48 @@ namespace TransCarga
                         }
                     }
                     // detalle del comprobante
-                    int y = 0;
-                    using (MySqlCommand micomd = new MySqlCommand(consdeta, conn))
+                    //if (mcu == "0")
                     {
-                        micomd.Parameters.AddWithValue("@ser", serie);
-                        micomd.Parameters.AddWithValue("@num", numero);
-                        micomd.Parameters.AddWithValue("@tdv", tipo);
-                        using (MySqlDataReader drg = micomd.ExecuteReader())
+                        int y = 0;
+                        using (MySqlCommand micomd = new MySqlCommand(consdeta, conn))
                         {
-                            while (drg.Read())  // #fila,a.cantprodi,a.unimedpro,a.descprodi,a.pesoprodi
+                            micomd.Parameters.AddWithValue("@ser", serie);
+                            micomd.Parameters.AddWithValue("@num", numero);
+                            micomd.Parameters.AddWithValue("@tdv", tipo);
+                            using (MySqlDataReader drg = micomd.ExecuteReader())
                             {
-                                //dt[y, 0] = (y + 1).ToString();
-                                dt[y, 0] = "OriDest";
-                                dt[y, 1] = drg.GetString("cantbul");
-                                dt[y, 2] = drg.GetString("unimedp");
-                                dt[y, 3] = drg.GetString("codgror");             // guia transportista
-                                dt[y, 4] = drg.GetString("descpro");             // descripcion de la carga
-                                dt[y, 5] = drg.GetString("docsremit");           // documento relacionado remitente de la guia transportista
-                                dt[y, 6] = drg.GetString("valUni");             // valor unitario
-                                dt[y, 7] = drg.GetString("preUni");             // precio unitario
-                                dt[y, 8] = drg.GetString("totalgr");            // total
-                                y += 1;
-                                va[6] = va[6] + " " + drg.GetString("codgror");
+                                while (drg.Read())  // #fila,a.cantprodi,a.unimedpro,a.descprodi,a.pesoprodi
+                                {
+                                    //dt[y, 0] = (y + 1).ToString();
+                                    dt[y, 0] = "OriDest";
+                                    dt[y, 1] = drg.GetString("cantbul");
+                                    dt[y, 2] = drg.GetString("unimedp");
+                                    dt[y, 3] = drg.GetString("codgror");             // guia transportista
+                                    dt[y, 4] = drg.GetString("descpro");             // descripcion de la carga
+                                    dt[y, 5] = drg.GetString("docsremit");           // documento relacionado remitente de la guia transportista
+                                    dt[y, 6] = drg.GetString("valUni");             // valor unitario
+                                    dt[y, 7] = drg.GetString("preUni");             // precio unitario
+                                    dt[y, 8] = drg.GetString("totalgr");            // total
+                                    y += 1;
+                                    va[6] = va[6] + " " + drg.GetString("codgror");
+                                }
                             }
                         }
                     }
+                    if (mcu == "1")
+                    {
+                        dt[0, 0] = "";
+                        dt[0, 1] = vce;                                 // cantidad
+                        dt[0, 2] = "TONELADA";                          // unidad de medida
+                        dt[0, 3] = "";                                  // guia transportista
+                        dt[0, 4] = gse + " " + dt[0, 4];                // descripcion de la carga
+                        //dt[0, 5] = drg.GetString("docsremit");          // documento relacionado remitente de la guia transportista
+                        double pu = Math.Round(double.Parse(dt[0, 8]) / double.Parse(vce), 2);
+                        dt[0, 6] = (pu/1.18).ToString("#0.00");         // valor unitario
+                        dt[0, 7] = pu.ToString("#0.00");                // precio unitario
+                        //dt[y, 8] = drg.GetString("totalgr");            // total
+                    }
+
                     // llamamos a la clase que imprime
                     if (Formato == "A4") 
                     {
@@ -1438,6 +1474,7 @@ namespace TransCarga
                 }
             }
         }
+
         private string consultaE(string ticket, int rowIndex)       // consulta estado en Sunat
         {
             string retorna = "";

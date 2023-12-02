@@ -9626,6 +9626,8 @@ namespace TransCarga {
             
             private global::System.Data.DataColumn columncuenDet;
             
+            private global::System.Data.DataColumn columnubicapng;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public cVta_vaDataTable() {
@@ -9717,6 +9719,14 @@ namespace TransCarga {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn ubicapngColumn {
+                get {
+                    return this.columnubicapng;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -9752,7 +9762,7 @@ namespace TransCarga {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
-            public cVta_vaRow AddcVta_vaRow(string id, string logoRutNom, string glosSerFact, string guiasTrans, string porcDet, string montDet, string cuenDet) {
+            public cVta_vaRow AddcVta_vaRow(string id, string logoRutNom, string glosSerFact, string guiasTrans, string porcDet, string montDet, string cuenDet, string ubicapng) {
                 cVta_vaRow rowcVta_vaRow = ((cVta_vaRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         id,
@@ -9761,7 +9771,8 @@ namespace TransCarga {
                         guiasTrans,
                         porcDet,
                         montDet,
-                        cuenDet};
+                        cuenDet,
+                        ubicapng};
                 rowcVta_vaRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowcVta_vaRow);
                 return rowcVta_vaRow;
@@ -9791,6 +9802,7 @@ namespace TransCarga {
                 this.columnporcDet = base.Columns["porcDet"];
                 this.columnmontDet = base.Columns["montDet"];
                 this.columncuenDet = base.Columns["cuenDet"];
+                this.columnubicapng = base.Columns["ubicapng"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -9810,6 +9822,8 @@ namespace TransCarga {
                 base.Columns.Add(this.columnmontDet);
                 this.columncuenDet = new global::System.Data.DataColumn("cuenDet", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columncuenDet);
+                this.columnubicapng = new global::System.Data.DataColumn("ubicapng", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnubicapng);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -20285,6 +20299,22 @@ namespace TransCarga {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string ubicapng {
+                get {
+                    try {
+                        return ((string)(this[this.tablecVta_va.ubicapngColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("El valor de la columna \'ubicapng\' de la tabla \'cVta_va\' es DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tablecVta_va.ubicapngColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public bool IsidNull() {
                 return this.IsNull(this.tablecVta_va.idColumn);
             }
@@ -20365,6 +20395,18 @@ namespace TransCarga {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public void SetcuenDetNull() {
                 this[this.tablecVta_va.cuenDetColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsubicapngNull() {
+                return this.IsNull(this.tablecVta_va.ubicapngColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetubicapngNull() {
+                this[this.tablecVta_va.ubicapngColumn] = global::System.Convert.DBNull;
             }
         }
         

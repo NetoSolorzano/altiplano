@@ -108,8 +108,8 @@ namespace TransCarga
             va[3] = varios[3];         // porcentaje detracción
             va[4] = varios[4];         // monto detracción
             va[5] = varios[5];         // cta. detracción
-            va[6] = varios[6];         // 
-            va[7] = varios[7];         // 
+            va[6] = varios[6];         // concatenado de Guias Transportista para Formato de cargas unicas
+            va[7] = varios[7];         // ruta y nombre del png codigo QR
             va[8] = varios[8];         // 
 
             switch (formato)
@@ -125,20 +125,21 @@ namespace TransCarga
                     // no hay comprobantes en A5 16/11/2023
                     break;
                 case "A4":
-                    if (va[0] != "")
+                    if (true)
                     {
-                        string codigo = va[0];                             // tx_dat_textoqr.Text
-                        if (File.Exists(@va[1])) File.Delete(@va[1]);
+                        string separ = "|";
+                        string codigo = vs[31] + separ + vs[21] + separ +
+                            vs[0] + separ + vs[1] + separ +
+                            vs[14] + separ + vs[15] + separ +
+                            vs[5].Substring(6, 4) + "-" + vs[5].Substring(3, 2) + "-" + vs[5].Substring(0, 2) + separ + vs[22] + separ +
+                            vs[7] + separ;
+
+                        if (File.Exists(@va[7])) File.Delete(@va[7]);
                         var qrEncoder = new QrEncoder(ErrorCorrectionLevel.H);
                         var qrCode = qrEncoder.Encode(codigo);
                         var renderer = new GraphicsRenderer(new FixedModuleSize(5, QuietZoneModules.Two), Brushes.Black, Brushes.White);
-                        using (var stream = new FileStream(@va[1], FileMode.Create))
+                        using (var stream = new FileStream(@va[7], FileMode.Create))
                             renderer.WriteToStream(qrCode.Matrix, ImageFormat.Png, stream);
-                    }
-                    else
-                    {
-                        if (File.Exists(@va[1])) File.Delete(@va[1]);
-                        va[1] = "";
                     }
                     if (nomImp != "" && nomforCR != "")                     // impresion directa en impresora
                     {
@@ -147,7 +148,7 @@ namespace TransCarga
                         repo.Load(nomforCR);
                         repo.SetDataSource(data);
                         repo.PrintOptions.PrinterName = nomImp;
-                        repo.PrintToPrinter((short)nCopias, false, 1, 1);
+                        repo.PrintToPrinter(copias, false, 1, 1);
                     }
                     if (nomImp != "" && nomforCR == "")
                     {
@@ -429,6 +430,7 @@ namespace TransCarga
                     lt = (lib.CentimeterToPixel(anchTik) - e.Graphics.MeasureString(previo, lt_med).Width) / 2;
                     puntoF = new PointF(lt, posi);
                     e.Graphics.DrawString(previo, lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                    
                     string separ = "|";
                     string codigo = rucclie + separ + vs[21] + separ +
                         serie + separ + vs[1] + separ +
@@ -453,6 +455,7 @@ namespace TransCarga
                     RectangleF rec = new RectangleF(puntoF, cuadro);
                     e.Graphics.DrawImage(png, rec);
                     png.Dispose();
+                    
                     // leyenda 2
                     posi = posi + lib.CentimeterToPixel(3);
                     if (vs[23] != "factDirecta")
@@ -586,6 +589,7 @@ namespace TransCarga
             vaRow.montDet = va[4];
             vaRow.porcDet = va[3];
             vaRow.guiasTrans = va[6];
+            vaRow.ubicapng = va[7];
             DV.cVta_va.AddcVta_vaRow(vaRow);
             return DV;
         }
