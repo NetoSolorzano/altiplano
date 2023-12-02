@@ -54,6 +54,8 @@ namespace TransCarga {
         
         private cVta_detDataTable tablecVta_det;
         
+        private cVta_vaDataTable tablecVta_va;
+        
         private global::System.Data.SchemaSerializationMode _schemaSerializationMode = global::System.Data.SchemaSerializationMode.IncludeSchema;
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -126,6 +128,9 @@ namespace TransCarga {
                 }
                 if ((ds.Tables["cVta_det"] != null)) {
                     base.Tables.Add(new cVta_detDataTable(ds.Tables["cVta_det"]));
+                }
+                if ((ds.Tables["cVta_va"] != null)) {
+                    base.Tables.Add(new cVta_vaDataTable(ds.Tables["cVta_va"]));
                 }
                 this.DataSetName = ds.DataSetName;
                 this.Prefix = ds.Prefix;
@@ -297,6 +302,16 @@ namespace TransCarga {
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+        [global::System.ComponentModel.Browsable(false)]
+        [global::System.ComponentModel.DesignerSerializationVisibility(global::System.ComponentModel.DesignerSerializationVisibility.Content)]
+        public cVta_vaDataTable cVta_va {
+            get {
+                return this.tablecVta_va;
+            }
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
         [global::System.ComponentModel.BrowsableAttribute(true)]
         [global::System.ComponentModel.DesignerSerializationVisibilityAttribute(global::System.ComponentModel.DesignerSerializationVisibility.Visible)]
         public override global::System.Data.SchemaSerializationMode SchemaSerializationMode {
@@ -406,6 +421,9 @@ namespace TransCarga {
                 }
                 if ((ds.Tables["cVta_det"] != null)) {
                     base.Tables.Add(new cVta_detDataTable(ds.Tables["cVta_det"]));
+                }
+                if ((ds.Tables["cVta_va"] != null)) {
+                    base.Tables.Add(new cVta_vaDataTable(ds.Tables["cVta_va"]));
                 }
                 this.DataSetName = ds.DataSetName;
                 this.Prefix = ds.Prefix;
@@ -530,6 +548,12 @@ namespace TransCarga {
                     this.tablecVta_det.InitVars();
                 }
             }
+            this.tablecVta_va = ((cVta_vaDataTable)(base.Tables["cVta_va"]));
+            if ((initTable == true)) {
+                if ((this.tablecVta_va != null)) {
+                    this.tablecVta_va.InitVars();
+                }
+            }
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -570,6 +594,8 @@ namespace TransCarga {
             base.Tables.Add(this.tablecVta_cu);
             this.tablecVta_det = new cVta_detDataTable();
             base.Tables.Add(this.tablecVta_det);
+            this.tablecVta_va = new cVta_vaDataTable();
+            base.Tables.Add(this.tablecVta_va);
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -659,6 +685,12 @@ namespace TransCarga {
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
         private bool ShouldSerializecVta_det() {
+            return false;
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+        private bool ShouldSerializecVta_va() {
             return false;
         }
         
@@ -761,6 +793,9 @@ namespace TransCarga {
         
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
         public delegate void cVta_detRowChangeEventHandler(object sender, cVta_detRowChangeEvent e);
+        
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+        public delegate void cVta_vaRowChangeEventHandler(object sender, cVta_vaRowChangeEvent e);
         
         /// <summary>
         ///Represents the strongly named DataTable class.
@@ -7881,6 +7916,8 @@ namespace TransCarga {
             
             private global::System.Data.DataColumn columntotal;
             
+            private global::System.Data.DataColumn columnnomMone;
+            
             private global::System.Data.DataColumn columnmoneda;
             
             private global::System.Data.DataColumn columnfleteLetras;
@@ -7914,6 +7951,10 @@ namespace TransCarga {
             private global::System.Data.DataColumn columnmodTransp;
             
             private global::System.Data.DataColumn columnmotTrasla;
+            
+            private global::System.Data.DataColumn columntotOpInafec;
+            
+            private global::System.Data.DataColumn columntotOpExone;
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
@@ -8118,6 +8159,14 @@ namespace TransCarga {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn nomMoneColumn {
+                get {
+                    return this.columnnomMone;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public global::System.Data.DataColumn monedaColumn {
                 get {
                     return this.columnmoneda;
@@ -8254,6 +8303,22 @@ namespace TransCarga {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn totOpInafecColumn {
+                get {
+                    return this.columntotOpInafec;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn totOpExoneColumn {
+                get {
+                    return this.columntotOpExone;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -8311,6 +8376,7 @@ namespace TransCarga {
                         string subtotal, 
                         string igv, 
                         string total, 
+                        string nomMone, 
                         string moneda, 
                         string fleteLetras, 
                         string codicion, 
@@ -8327,7 +8393,9 @@ namespace TransCarga {
                         string glosDesped, 
                         string formaPago, 
                         string modTransp, 
-                        string motTrasla) {
+                        string motTrasla, 
+                        string totOpInafec, 
+                        string totOpExone) {
                 cVta_cabRow rowcVta_cabRow = ((cVta_cabRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         formatoRPT,
@@ -8351,6 +8419,7 @@ namespace TransCarga {
                         subtotal,
                         igv,
                         total,
+                        nomMone,
                         moneda,
                         fleteLetras,
                         codicion,
@@ -8367,7 +8436,9 @@ namespace TransCarga {
                         glosDesped,
                         formaPago,
                         modTransp,
-                        motTrasla};
+                        motTrasla,
+                        totOpInafec,
+                        totOpExone};
                 rowcVta_cabRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowcVta_cabRow);
                 return rowcVta_cabRow;
@@ -8411,6 +8482,7 @@ namespace TransCarga {
                 this.columnsubtotal = base.Columns["subtotal"];
                 this.columnigv = base.Columns["igv"];
                 this.columntotal = base.Columns["total"];
+                this.columnnomMone = base.Columns["nomMone"];
                 this.columnmoneda = base.Columns["moneda"];
                 this.columnfleteLetras = base.Columns["fleteLetras"];
                 this.columncodicion = base.Columns["codicion"];
@@ -8428,6 +8500,8 @@ namespace TransCarga {
                 this.columnformaPago = base.Columns["formaPago"];
                 this.columnmodTransp = base.Columns["modTransp"];
                 this.columnmotTrasla = base.Columns["motTrasla"];
+                this.columntotOpInafec = base.Columns["totOpInafec"];
+                this.columntotOpExone = base.Columns["totOpExone"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -8475,6 +8549,8 @@ namespace TransCarga {
                 base.Columns.Add(this.columnigv);
                 this.columntotal = new global::System.Data.DataColumn("total", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columntotal);
+                this.columnnomMone = new global::System.Data.DataColumn("nomMone", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnnomMone);
                 this.columnmoneda = new global::System.Data.DataColumn("moneda", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnmoneda);
                 this.columnfleteLetras = new global::System.Data.DataColumn("fleteLetras", typeof(string), null, global::System.Data.MappingType.Element);
@@ -8509,6 +8585,10 @@ namespace TransCarga {
                 base.Columns.Add(this.columnmodTransp);
                 this.columnmotTrasla = new global::System.Data.DataColumn("motTrasla", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnmotTrasla);
+                this.columntotOpInafec = new global::System.Data.DataColumn("totOpInafec", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columntotOpInafec);
+                this.columntotOpExone = new global::System.Data.DataColumn("totOpExone", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columntotOpExone);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -9161,6 +9241,12 @@ namespace TransCarga {
             
             private global::System.Data.DataColumn columndocRel2;
             
+            private global::System.Data.DataColumn columnvalUnit;
+            
+            private global::System.Data.DataColumn columnpreUnit;
+            
+            private global::System.Data.DataColumn columnTotal;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public cVta_detDataTable() {
@@ -9260,6 +9346,30 @@ namespace TransCarga {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn valUnitColumn {
+                get {
+                    return this.columnvalUnit;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn preUnitColumn {
+                get {
+                    return this.columnpreUnit;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn TotalColumn {
+                get {
+                    return this.columnTotal;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -9295,7 +9405,7 @@ namespace TransCarga {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
-            public cVta_detRow AddcVta_detRow(string id, string OriDest, string cant, string umed, string guiaT, string descrip, string docRel1, string docRel2) {
+            public cVta_detRow AddcVta_detRow(string id, string OriDest, string cant, string umed, string guiaT, string descrip, string docRel1, string docRel2, string valUnit, string preUnit, string Total) {
                 cVta_detRow rowcVta_detRow = ((cVta_detRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         id,
@@ -9305,7 +9415,10 @@ namespace TransCarga {
                         guiaT,
                         descrip,
                         docRel1,
-                        docRel2};
+                        docRel2,
+                        valUnit,
+                        preUnit,
+                        Total};
                 rowcVta_detRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowcVta_detRow);
                 return rowcVta_detRow;
@@ -9336,6 +9449,9 @@ namespace TransCarga {
                 this.columndescrip = base.Columns["descrip"];
                 this.columndocRel1 = base.Columns["docRel1"];
                 this.columndocRel2 = base.Columns["docRel2"];
+                this.columnvalUnit = base.Columns["valUnit"];
+                this.columnpreUnit = base.Columns["preUnit"];
+                this.columnTotal = base.Columns["Total"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -9357,6 +9473,12 @@ namespace TransCarga {
                 base.Columns.Add(this.columndocRel1);
                 this.columndocRel2 = new global::System.Data.DataColumn("docRel2", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columndocRel2);
+                this.columnvalUnit = new global::System.Data.DataColumn("valUnit", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnvalUnit);
+                this.columnpreUnit = new global::System.Data.DataColumn("preUnit", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnpreUnit);
+                this.columnTotal = new global::System.Data.DataColumn("Total", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnTotal);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -9443,6 +9565,337 @@ namespace TransCarga {
                 global::System.Xml.Schema.XmlSchemaAttribute attribute2 = new global::System.Xml.Schema.XmlSchemaAttribute();
                 attribute2.Name = "tableTypeName";
                 attribute2.FixedValue = "cVta_detDataTable";
+                type.Attributes.Add(attribute2);
+                type.Particle = sequence;
+                global::System.Xml.Schema.XmlSchema dsSchema = ds.GetSchemaSerializable();
+                if (xs.Contains(dsSchema.TargetNamespace)) {
+                    global::System.IO.MemoryStream s1 = new global::System.IO.MemoryStream();
+                    global::System.IO.MemoryStream s2 = new global::System.IO.MemoryStream();
+                    try {
+                        global::System.Xml.Schema.XmlSchema schema = null;
+                        dsSchema.Write(s1);
+                        for (global::System.Collections.IEnumerator schemas = xs.Schemas(dsSchema.TargetNamespace).GetEnumerator(); schemas.MoveNext(); ) {
+                            schema = ((global::System.Xml.Schema.XmlSchema)(schemas.Current));
+                            s2.SetLength(0);
+                            schema.Write(s2);
+                            if ((s1.Length == s2.Length)) {
+                                s1.Position = 0;
+                                s2.Position = 0;
+                                for (; ((s1.Position != s1.Length) 
+                                            && (s1.ReadByte() == s2.ReadByte())); ) {
+                                    ;
+                                }
+                                if ((s1.Position == s1.Length)) {
+                                    return type;
+                                }
+                            }
+                        }
+                    }
+                    finally {
+                        if ((s1 != null)) {
+                            s1.Close();
+                        }
+                        if ((s2 != null)) {
+                            s2.Close();
+                        }
+                    }
+                }
+                xs.Add(dsSchema);
+                return type;
+            }
+        }
+        
+        /// <summary>
+        ///Represents the strongly named DataTable class.
+        ///</summary>
+        [global::System.Serializable()]
+        [global::System.Xml.Serialization.XmlSchemaProviderAttribute("GetTypedTableSchema")]
+        public partial class cVta_vaDataTable : global::System.Data.TypedTableBase<cVta_vaRow> {
+            
+            private global::System.Data.DataColumn columnid;
+            
+            private global::System.Data.DataColumn columnlogoRutNom;
+            
+            private global::System.Data.DataColumn columnglosSerFact;
+            
+            private global::System.Data.DataColumn columnguiasTrans;
+            
+            private global::System.Data.DataColumn columnporcDet;
+            
+            private global::System.Data.DataColumn columnmontDet;
+            
+            private global::System.Data.DataColumn columncuenDet;
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public cVta_vaDataTable() {
+                this.TableName = "cVta_va";
+                this.BeginInit();
+                this.InitClass();
+                this.EndInit();
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            internal cVta_vaDataTable(global::System.Data.DataTable table) {
+                this.TableName = table.TableName;
+                if ((table.CaseSensitive != table.DataSet.CaseSensitive)) {
+                    this.CaseSensitive = table.CaseSensitive;
+                }
+                if ((table.Locale.ToString() != table.DataSet.Locale.ToString())) {
+                    this.Locale = table.Locale;
+                }
+                if ((table.Namespace != table.DataSet.Namespace)) {
+                    this.Namespace = table.Namespace;
+                }
+                this.Prefix = table.Prefix;
+                this.MinimumCapacity = table.MinimumCapacity;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            protected cVta_vaDataTable(global::System.Runtime.Serialization.SerializationInfo info, global::System.Runtime.Serialization.StreamingContext context) : 
+                    base(info, context) {
+                this.InitVars();
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn idColumn {
+                get {
+                    return this.columnid;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn logoRutNomColumn {
+                get {
+                    return this.columnlogoRutNom;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn glosSerFactColumn {
+                get {
+                    return this.columnglosSerFact;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn guiasTransColumn {
+                get {
+                    return this.columnguiasTrans;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn porcDetColumn {
+                get {
+                    return this.columnporcDet;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn montDetColumn {
+                get {
+                    return this.columnmontDet;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn cuenDetColumn {
+                get {
+                    return this.columncuenDet;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            [global::System.ComponentModel.Browsable(false)]
+            public int Count {
+                get {
+                    return this.Rows.Count;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public cVta_vaRow this[int index] {
+                get {
+                    return ((cVta_vaRow)(this.Rows[index]));
+                }
+            }
+            
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public event cVta_vaRowChangeEventHandler cVta_vaRowChanging;
+            
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public event cVta_vaRowChangeEventHandler cVta_vaRowChanged;
+            
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public event cVta_vaRowChangeEventHandler cVta_vaRowDeleting;
+            
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public event cVta_vaRowChangeEventHandler cVta_vaRowDeleted;
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void AddcVta_vaRow(cVta_vaRow row) {
+                this.Rows.Add(row);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public cVta_vaRow AddcVta_vaRow(string id, string logoRutNom, string glosSerFact, string guiasTrans, string porcDet, string montDet, string cuenDet) {
+                cVta_vaRow rowcVta_vaRow = ((cVta_vaRow)(this.NewRow()));
+                object[] columnValuesArray = new object[] {
+                        id,
+                        logoRutNom,
+                        glosSerFact,
+                        guiasTrans,
+                        porcDet,
+                        montDet,
+                        cuenDet};
+                rowcVta_vaRow.ItemArray = columnValuesArray;
+                this.Rows.Add(rowcVta_vaRow);
+                return rowcVta_vaRow;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public override global::System.Data.DataTable Clone() {
+                cVta_vaDataTable cln = ((cVta_vaDataTable)(base.Clone()));
+                cln.InitVars();
+                return cln;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            protected override global::System.Data.DataTable CreateInstance() {
+                return new cVta_vaDataTable();
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            internal void InitVars() {
+                this.columnid = base.Columns["id"];
+                this.columnlogoRutNom = base.Columns["logoRutNom"];
+                this.columnglosSerFact = base.Columns["glosSerFact"];
+                this.columnguiasTrans = base.Columns["guiasTrans"];
+                this.columnporcDet = base.Columns["porcDet"];
+                this.columnmontDet = base.Columns["montDet"];
+                this.columncuenDet = base.Columns["cuenDet"];
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            private void InitClass() {
+                this.columnid = new global::System.Data.DataColumn("id", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnid);
+                this.columnlogoRutNom = new global::System.Data.DataColumn("logoRutNom", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnlogoRutNom);
+                this.columnglosSerFact = new global::System.Data.DataColumn("glosSerFact", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnglosSerFact);
+                this.columnguiasTrans = new global::System.Data.DataColumn("guiasTrans", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnguiasTrans);
+                this.columnporcDet = new global::System.Data.DataColumn("porcDet", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnporcDet);
+                this.columnmontDet = new global::System.Data.DataColumn("montDet", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnmontDet);
+                this.columncuenDet = new global::System.Data.DataColumn("cuenDet", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columncuenDet);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public cVta_vaRow NewcVta_vaRow() {
+                return ((cVta_vaRow)(this.NewRow()));
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            protected override global::System.Data.DataRow NewRowFromBuilder(global::System.Data.DataRowBuilder builder) {
+                return new cVta_vaRow(builder);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            protected override global::System.Type GetRowType() {
+                return typeof(cVta_vaRow);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            protected override void OnRowChanged(global::System.Data.DataRowChangeEventArgs e) {
+                base.OnRowChanged(e);
+                if ((this.cVta_vaRowChanged != null)) {
+                    this.cVta_vaRowChanged(this, new cVta_vaRowChangeEvent(((cVta_vaRow)(e.Row)), e.Action));
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            protected override void OnRowChanging(global::System.Data.DataRowChangeEventArgs e) {
+                base.OnRowChanging(e);
+                if ((this.cVta_vaRowChanging != null)) {
+                    this.cVta_vaRowChanging(this, new cVta_vaRowChangeEvent(((cVta_vaRow)(e.Row)), e.Action));
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            protected override void OnRowDeleted(global::System.Data.DataRowChangeEventArgs e) {
+                base.OnRowDeleted(e);
+                if ((this.cVta_vaRowDeleted != null)) {
+                    this.cVta_vaRowDeleted(this, new cVta_vaRowChangeEvent(((cVta_vaRow)(e.Row)), e.Action));
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            protected override void OnRowDeleting(global::System.Data.DataRowChangeEventArgs e) {
+                base.OnRowDeleting(e);
+                if ((this.cVta_vaRowDeleting != null)) {
+                    this.cVta_vaRowDeleting(this, new cVta_vaRowChangeEvent(((cVta_vaRow)(e.Row)), e.Action));
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void RemovecVta_vaRow(cVta_vaRow row) {
+                this.Rows.Remove(row);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public static global::System.Xml.Schema.XmlSchemaComplexType GetTypedTableSchema(global::System.Xml.Schema.XmlSchemaSet xs) {
+                global::System.Xml.Schema.XmlSchemaComplexType type = new global::System.Xml.Schema.XmlSchemaComplexType();
+                global::System.Xml.Schema.XmlSchemaSequence sequence = new global::System.Xml.Schema.XmlSchemaSequence();
+                conClie ds = new conClie();
+                global::System.Xml.Schema.XmlSchemaAny any1 = new global::System.Xml.Schema.XmlSchemaAny();
+                any1.Namespace = "http://www.w3.org/2001/XMLSchema";
+                any1.MinOccurs = new decimal(0);
+                any1.MaxOccurs = decimal.MaxValue;
+                any1.ProcessContents = global::System.Xml.Schema.XmlSchemaContentProcessing.Lax;
+                sequence.Items.Add(any1);
+                global::System.Xml.Schema.XmlSchemaAny any2 = new global::System.Xml.Schema.XmlSchemaAny();
+                any2.Namespace = "urn:schemas-microsoft-com:xml-diffgram-v1";
+                any2.MinOccurs = new decimal(1);
+                any2.ProcessContents = global::System.Xml.Schema.XmlSchemaContentProcessing.Lax;
+                sequence.Items.Add(any2);
+                global::System.Xml.Schema.XmlSchemaAttribute attribute1 = new global::System.Xml.Schema.XmlSchemaAttribute();
+                attribute1.Name = "namespace";
+                attribute1.FixedValue = ds.Namespace;
+                type.Attributes.Add(attribute1);
+                global::System.Xml.Schema.XmlSchemaAttribute attribute2 = new global::System.Xml.Schema.XmlSchemaAttribute();
+                attribute2.Name = "tableTypeName";
+                attribute2.FixedValue = "cVta_vaDataTable";
                 type.Attributes.Add(attribute2);
                 type.Particle = sequence;
                 global::System.Xml.Schema.XmlSchema dsSchema = ds.GetSchemaSerializable();
@@ -18051,6 +18504,22 @@ namespace TransCarga {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string nomMone {
+                get {
+                    try {
+                        return ((string)(this[this.tablecVta_cab.nomMoneColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("El valor de la columna \'nomMone\' de la tabla \'cVta_cab\' es DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tablecVta_cab.nomMoneColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public string moneda {
                 get {
                     try {
@@ -18323,6 +18792,38 @@ namespace TransCarga {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string totOpInafec {
+                get {
+                    try {
+                        return ((string)(this[this.tablecVta_cab.totOpInafecColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("El valor de la columna \'totOpInafec\' de la tabla \'cVta_cab\' es DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tablecVta_cab.totOpInafecColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string totOpExone {
+                get {
+                    try {
+                        return ((string)(this[this.tablecVta_cab.totOpExoneColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("El valor de la columna \'totOpExone\' de la tabla \'cVta_cab\' es DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tablecVta_cab.totOpExoneColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public bool IsformatoRPTNull() {
                 return this.IsNull(this.tablecVta_cab.formatoRPTColumn);
             }
@@ -18575,6 +19076,18 @@ namespace TransCarga {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsnomMoneNull() {
+                return this.IsNull(this.tablecVta_cab.nomMoneColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetnomMoneNull() {
+                this[this.tablecVta_cab.nomMoneColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public bool IsmonedaNull() {
                 return this.IsNull(this.tablecVta_cab.monedaColumn);
             }
@@ -18775,6 +19288,30 @@ namespace TransCarga {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public void SetmotTraslaNull() {
                 this[this.tablecVta_cab.motTraslaColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IstotOpInafecNull() {
+                return this.IsNull(this.tablecVta_cab.totOpInafecColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SettotOpInafecNull() {
+                this[this.tablecVta_cab.totOpInafecColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IstotOpExoneNull() {
+                return this.IsNull(this.tablecVta_cab.totOpExoneColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SettotOpExoneNull() {
+                this[this.tablecVta_cab.totOpExoneColumn] = global::System.Convert.DBNull;
             }
         }
         
@@ -19441,6 +19978,54 @@ namespace TransCarga {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string valUnit {
+                get {
+                    try {
+                        return ((string)(this[this.tablecVta_det.valUnitColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("El valor de la columna \'valUnit\' de la tabla \'cVta_det\' es DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tablecVta_det.valUnitColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string preUnit {
+                get {
+                    try {
+                        return ((string)(this[this.tablecVta_det.preUnitColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("El valor de la columna \'preUnit\' de la tabla \'cVta_det\' es DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tablecVta_det.preUnitColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string Total {
+                get {
+                    try {
+                        return ((string)(this[this.tablecVta_det.TotalColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("El valor de la columna \'Total\' de la tabla \'cVta_det\' es DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tablecVta_det.TotalColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public bool IsidNull() {
                 return this.IsNull(this.tablecVta_det.idColumn);
             }
@@ -19533,6 +20118,253 @@ namespace TransCarga {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public void SetdocRel2Null() {
                 this[this.tablecVta_det.docRel2Column] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsvalUnitNull() {
+                return this.IsNull(this.tablecVta_det.valUnitColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetvalUnitNull() {
+                this[this.tablecVta_det.valUnitColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IspreUnitNull() {
+                return this.IsNull(this.tablecVta_det.preUnitColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetpreUnitNull() {
+                this[this.tablecVta_det.preUnitColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsTotalNull() {
+                return this.IsNull(this.tablecVta_det.TotalColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetTotalNull() {
+                this[this.tablecVta_det.TotalColumn] = global::System.Convert.DBNull;
+            }
+        }
+        
+        /// <summary>
+        ///Represents strongly named DataRow class.
+        ///</summary>
+        public partial class cVta_vaRow : global::System.Data.DataRow {
+            
+            private cVta_vaDataTable tablecVta_va;
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            internal cVta_vaRow(global::System.Data.DataRowBuilder rb) : 
+                    base(rb) {
+                this.tablecVta_va = ((cVta_vaDataTable)(this.Table));
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string id {
+                get {
+                    try {
+                        return ((string)(this[this.tablecVta_va.idColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("El valor de la columna \'id\' de la tabla \'cVta_va\' es DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tablecVta_va.idColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string logoRutNom {
+                get {
+                    try {
+                        return ((string)(this[this.tablecVta_va.logoRutNomColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("El valor de la columna \'logoRutNom\' de la tabla \'cVta_va\' es DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tablecVta_va.logoRutNomColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string glosSerFact {
+                get {
+                    try {
+                        return ((string)(this[this.tablecVta_va.glosSerFactColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("El valor de la columna \'glosSerFact\' de la tabla \'cVta_va\' es DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tablecVta_va.glosSerFactColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string guiasTrans {
+                get {
+                    try {
+                        return ((string)(this[this.tablecVta_va.guiasTransColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("El valor de la columna \'guiasTrans\' de la tabla \'cVta_va\' es DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tablecVta_va.guiasTransColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string porcDet {
+                get {
+                    try {
+                        return ((string)(this[this.tablecVta_va.porcDetColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("El valor de la columna \'porcDet\' de la tabla \'cVta_va\' es DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tablecVta_va.porcDetColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string montDet {
+                get {
+                    try {
+                        return ((string)(this[this.tablecVta_va.montDetColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("El valor de la columna \'montDet\' de la tabla \'cVta_va\' es DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tablecVta_va.montDetColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string cuenDet {
+                get {
+                    try {
+                        return ((string)(this[this.tablecVta_va.cuenDetColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("El valor de la columna \'cuenDet\' de la tabla \'cVta_va\' es DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tablecVta_va.cuenDetColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsidNull() {
+                return this.IsNull(this.tablecVta_va.idColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetidNull() {
+                this[this.tablecVta_va.idColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IslogoRutNomNull() {
+                return this.IsNull(this.tablecVta_va.logoRutNomColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetlogoRutNomNull() {
+                this[this.tablecVta_va.logoRutNomColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsglosSerFactNull() {
+                return this.IsNull(this.tablecVta_va.glosSerFactColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetglosSerFactNull() {
+                this[this.tablecVta_va.glosSerFactColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsguiasTransNull() {
+                return this.IsNull(this.tablecVta_va.guiasTransColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetguiasTransNull() {
+                this[this.tablecVta_va.guiasTransColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsporcDetNull() {
+                return this.IsNull(this.tablecVta_va.porcDetColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetporcDetNull() {
+                this[this.tablecVta_va.porcDetColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsmontDetNull() {
+                return this.IsNull(this.tablecVta_va.montDetColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetmontDetNull() {
+                this[this.tablecVta_va.montDetColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IscuenDetNull() {
+                return this.IsNull(this.tablecVta_va.cuenDetColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetcuenDetNull() {
+                this[this.tablecVta_va.cuenDetColumn] = global::System.Convert.DBNull;
             }
         }
         
@@ -20032,6 +20864,40 @@ namespace TransCarga {
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public cVta_detRow Row {
+                get {
+                    return this.eventRow;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataRowAction Action {
+                get {
+                    return this.eventAction;
+                }
+            }
+        }
+        
+        /// <summary>
+        ///Row event argument class
+        ///</summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+        public class cVta_vaRowChangeEvent : global::System.EventArgs {
+            
+            private cVta_vaRow eventRow;
+            
+            private global::System.Data.DataRowAction eventAction;
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public cVta_vaRowChangeEvent(cVta_vaRow row, global::System.Data.DataRowAction action) {
+                this.eventRow = row;
+                this.eventAction = action;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public cVta_vaRow Row {
                 get {
                     return this.eventRow;
                 }

@@ -19,9 +19,9 @@ namespace TransCarga
         string[] vs = {"", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",     // 20
                        "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""};    // 20
         string[] va = { "", "", "", "", "", "", "", "", "" };       // 9
-        string[,] dt = new string[10, 6] { 
-            { "", "", "", "", "", "" }, { "", "", "", "", "", "" }, { "", "", "", "", "", "" }, { "", "", "", "", "", "" }, { "", "", "", "", "", "" },
-            { "", "", "", "", "", "" }, { "", "", "", "", "", "" }, { "", "", "", "", "", "" }, { "", "", "", "", "", "" }, { "", "", "", "", "", "" }
+        string[,] dt = new string[10, 9] { 
+            { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" },
+            { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }
         }; // 6 columnas, 10 filas
         string[] cu = { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" };    // 17
         short copias;
@@ -66,9 +66,9 @@ namespace TransCarga
             vs[33] = cabecera[33];    // forma de pago incluyendo # de cuotas (siempre es 1 cuota en Transcarga)
             vs[34] = cabecera[34];    // modalidad de transporte
             vs[35] = cabecera[35];    // motivo de traslado
-            vs[36] = "";
-            vs[37] = "";
-            vs[38] = "";
+            vs[36] = cabecera[36];    // nombre de la moneda
+            vs[37] = cabecera[37];    // tot operaciones inafectas
+            vs[38] = cabecera[38];    // tot operaciones exoneradas
             vs[39] = "";
 
             cu[0] = cunica[0];          // "placa");
@@ -97,14 +97,17 @@ namespace TransCarga
                 dt[o, 3] = detalle[o, 3];   // guia transportista
                 dt[o, 4] = detalle[o, 4];   // descripcion de la carga
                 dt[o, 5] = detalle[o, 5];   // documento relacionado remitente de la guia transportista
+                dt[o, 6] = detalle[o, 6];   // valor unitario
+                dt[o, 7] = detalle[o, 7];   // precio unitario
+                dt[o, 8] = detalle[o, 8];   // total
             }
 
             va[0] = varios[0];         // Ruta y nombre del logo del emisor electrónico
             va[1] = varios[1];         // glosa del servicio en facturacion
             va[2] = varios[2];         // Código Transcarga del tipo de documento Factura 
-            va[3] = varios[3];         // 
-            va[4] = varios[4];         // 
-            va[5] = varios[5];         // 
+            va[3] = varios[3];         // porcentaje detracción
+            va[4] = varios[4];         // monto detracción
+            va[5] = varios[5];         // cta. detracción
             va[6] = varios[6];         // 
             va[7] = varios[7];         // 
             va[8] = varios[8];         // 
@@ -530,6 +533,9 @@ namespace TransCarga
             cabRow.formaPago = vs[33];    // forma de pago incluyendo # de cuotas (siempre es 1 cuota en Transcarga)
             cabRow.modTransp = vs[34];    // modalidad de transporte
             cabRow.motTrasla = vs[35];    // motivo de traslado
+            cabRow.nomMone = vs[36];      // nombre de la moneda
+            cabRow.totOpInafec = vs[37];    // tot operaciones inafectas
+            cabRow.totOpExone = vs[38];     // tot operaciones exoneradas
             DV.cVta_cab.AddcVta_cabRow(cabRow);
             
             // DETALLE
@@ -544,6 +550,9 @@ namespace TransCarga
                 detRow.descrip = dt[o, 4];      // descripcion de la carga
                 detRow.docRel1 = dt[o, 5];      // documento relacionado remitente de la guia transportista
                 detRow.docRel2 = "";            // 
+                detRow.valUnit = dt[o, 6];      // valor unitario
+                detRow.preUnit = dt[o, 7];      // precio unitario
+                detRow.Total = dt[o, 8];        // total fila
                 DV.cVta_det.AddcVta_detRow(detRow);
             }
 
@@ -568,6 +577,16 @@ namespace TransCarga
             cuRow.valRefTon = cu[16];        // "valRefTon");
             DV.cVta_cu.AddcVta_cuRow(cuRow);
 
+            // DATOS VARIOS
+            conClie.cVta_vaRow vaRow = DV.cVta_va.NewcVta_vaRow();
+            vaRow.id = "0";
+            vaRow.cuenDet = va[5];
+            vaRow.glosSerFact = va[1];
+            vaRow.logoRutNom = va[0];
+            vaRow.montDet = va[4];
+            vaRow.porcDet = va[3];
+            vaRow.guiasTrans = va[6];
+            DV.cVta_va.AddcVta_vaRow(vaRow);
             return DV;
         }
     }

@@ -1267,9 +1267,9 @@ namespace TransCarga
             string[] vs = {"", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",      // 20
                            "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""};     // 20
             string[] va = { "", "", "", "", "", "", "", "", "" };       // 9
-            string[,] dt = new string[10, 6] {
-                    { "", "", "", "", "", "" }, { "", "", "", "", "", "" }, { "", "", "", "", "", "" }, { "", "", "", "", "", "" }, { "", "", "", "", "", "" },
-                    { "", "", "", "", "", "" }, { "", "", "", "", "", "" }, { "", "", "", "", "", "" }, { "", "", "", "", "", "" }, { "", "", "", "", "", "" }
+            string[,] dt = new string[10, 9] {
+                    { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" },
+                    { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }
             }; // 6 columnas, 10 filas
             string[] cu = { "","","","","","","","","","","","","","","","",""};    // 17
             using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
@@ -1277,18 +1277,19 @@ namespace TransCarga
                 conn.Open();
                 if (conn.State == ConnectionState.Open)
                 {
-                    string consdeta = "select a.codgror,a.cantbul,a.unimedp,a.descpro,a.pesogro,b.docsremit " +
+                    string consdeta = "select a.codgror,a.cantbul,a.unimedp,a.descpro,a.pesogro,b.docsremit,a.totalgr,a.totalgr/a.cantbul as preUni,(a.totalgr/a.cantbul)/1.18 as valUni " +
                         "from detfactu a left join cabguiai b on concat(b.sergui,'-',b.numgui)=a.codgror " +
                         "where a.tipdocvta=@tdv and a.serdvta=@ser and a.numdvta=@num";
 
                     string consulta = "select a.id,DATE_FORMAT(a.fechope,'%d/%m/%Y') AS fechope,a.martdve,a.tipdvta,a.serdvta,a.numdvta,a.ticltgr,a.tidoclt,a.nudoclt,a.nombclt,a.direclt,a.dptoclt,a.provclt,a.distclt,a.ubigclt,a.corrclt,a.teleclt," +
                         "a.locorig,a.dirorig,a.ubiorig,a.obsdvta,a.canfidt,a.canbudt,a.mondvta,a.tcadvta,a.subtota,a.igvtota,a.porcigv,a.totdvta,a.totpags,a.saldvta,a.estdvta,a.frase01,a.impreso,d.codsunat as ctdcl," +
                         "a.tipoclt,a.m1clien,a.tippago,a.ferecep,a.userc,a.fechc,a.userm,a.fechm,b.descrizionerid as nomest,ifnull(c.id,'') as cobra,a.idcaja,a.plazocred,a.totdvMN,ifnull(p.marca1,'') as dpc,s.glosaser," +
-                        "a.cargaunica,a.porcendscto,a.valordscto,a.conPago,a.pagauto,ifnull(ad.placa,'') as placa,ifnull(ad.confv,'') as confv,ifnull(ad.autoriz,'') as autoriz,m.descrizionerid as nomon,t.codsunat as cdtdv," +
+                        "a.cargaunica,a.porcendscto,a.valordscto,a.conPago,a.pagauto,ifnull(ad.placa,'') as placa,ifnull(ad.confv,'') as confv,ifnull(ad.autoriz,'') as autoriz,m.descrizionerid as inimon,t.codsunat as cdtdv," +
                         "ifnull(ad.cargaEf,0) as cargaEf,ifnull(ad.cargaUt,0) as cargaUt,ifnull(ad.rucTrans,'') as rucTrans,ifnull(ad.nomTrans,'') as nomTrans,ifnull(date_format(ad.fecIniTras,'%Y-%m-%d'),'') as fecIniTras," +
                         "ifnull(ad.dirPartida,'') as dirPartida,ifnull(ad.ubiPartida,'') as ubiPartida,ifnull(ad.dirDestin,'') as dirDestin,ifnull(ad.ubiDestin,'') as ubiDestin,ifnull(ad.dniChof,'') as dniChof," +
                         "ifnull(ad.brevete,'') as brevete,ifnull(ad.valRefViaje,0) as valRefViaje,ifnull(ad.valRefVehic,0) as valRefVehic,ifnull(ad.valRefTon,0) as valRefTon,l.descrizionerid as nomLocO," +
-                        "if(a.plazocred='',DATE_FORMAT(a.fechope,'%d/%m/%Y'),DATE_FORMAT(date_add(a.fechope, interval t.marca1),'%d/%m/%Y')) as fvence,if(a.plazocred='','Contado','Credito - N° Cuotas : 1') as condicion " +
+                        "if(a.plazocred='',DATE_FORMAT(a.fechope,'%d/%m/%Y'),DATE_FORMAT(date_add(a.fechope, interval p.marca1 day),'%d/%m/%Y')) as fvence,if(a.plazocred='','Contado','Credito - N° Cuotas : 1') as condicion," +
+                        "m.descrizione as nonmone " +
                         "from cabfactu a " +
                         "left join adifactu ad on ad.idc=a.id and ad.tipoAd=1 " +
                         "left join desc_est b on b.idcodice=a.estdvta " +
@@ -1297,7 +1298,6 @@ namespace TransCarga
                         "left join desc_tdv t on t.idcodice=a.tipdvta " +
                         "left join desc_doc d on d.idcodice=a.tidoclt " +
                         "left join desc_loc l on l.idcodice=a.locorig " +
-                        "left join desc_tpa t on t.idcodice=a.plazocred " +
                         "left join series s on s.tipdoc=a.tipdvta and s.serie=a.serdvta " +
                         "left join cabcobran c on c.tipdoco=a.tipdvta and c.serdoco=a.serdvta and c.numdoco=a.numdvta and c.estdcob<>@coda " +
                         "where a.tipdvta=@tdv and a.serdvta=@ser and a.numdvta=@num";
@@ -1330,11 +1330,11 @@ namespace TransCarga
                                     vs[13] = dr.GetString("subtota");       // Sub total del comprobante
                                     vs[14] = dr.GetString("igvtota");       // igv del comprobante
                                     vs[15] = dr.GetString("totdvta");       // importe total del comprobante
-                                    vs[16] = dr.GetString("nomon"); ;       // Simbolo de la moneda
+                                    vs[16] = dr.GetString("inimon"); ;       // Simbolo de la moneda
                                     vs[17] = nlet.Convertir(dr.GetString("totdvta"),true);                  // flete en letras
                                     vs[18] = (dr.GetString("tippago").Trim() != "" && dr.GetString("plazocred").Trim() == "") ? "CONTADO" : "CREDITO";
                                     vs[19] = (dr.GetString("plazocred") != "") ? dr.GetString("dpc") : "";  // dias de plazo credito
-                                    vs[20] = glosdetra;                     // Glosa para la detracción
+                                    vs[20] = (dr.GetDouble("totdvMN") >= double.Parse(Program.valdetra))? glosdetra : "";   // Glosa para la detracción SI TIENE
                                     vs[21] = dr.GetString("cdtdv");         // codigo sunat tipo comprobante
                                     vs[22] = dr.GetString("ctdcl");         // CODIGO SUNAT tipo de documento RUC/DNI del cliente
                                     vs[23] = nipfe;                         // identificador de ose/pse metodo de envío
@@ -1350,6 +1350,9 @@ namespace TransCarga
                                     vs[33] = dr.GetString("condicion");     // forma de pago incluyendo # de cuotas (siempre es 1 cuota en Transcarga)
                                     vs[34] = "Transporte Privado";          // modalidad de transporte
                                     vs[35] = "Venta";                       // motivo de traslado
+                                    vs[36] = dr.GetString("nonmone");       // nombre de la moneda
+                                    vs[37] = "0";                           // tot operaciones inafectas
+                                    vs[38] = "0";                           // tot operaciones exoneradas
 
                                     // carga unica
                                     cu[0] = dr.GetString("placa");
@@ -1373,11 +1376,11 @@ namespace TransCarga
                                     glosser = dr.GetString("glosaser");
                                     va[0] = logoclt;         // Ruta y nombre del logo del emisor electrónico
                                     va[1] = glosser;         // glosa del servicio en facturacion
-                                    va[2] = codfact;         // siglas nombre de tipo de documento Factura 
-                                    va[3] = "";         // 
-                                    va[4] = "";         // 
-                                    va[5] = "";         // 
-                                    va[6] = "";         // 
+                                    va[2] = "";         // libre
+                                    va[3] = Program.pordetra;         // porcentaje detracción
+                                    va[4] = (dr.GetDouble("totdvMN") * double.Parse(Program.pordetra) / 100).ToString("#0.00");         // monto detracción
+                                    va[5] = Program.ctadetra;         // cta. detracción
+                                    va[6] = "";         // concatenado de Guias Transportista para Formato de cargas unicas
                                     va[7] = "";         // 
                                     va[8] = "";         // 
                                 }
@@ -1414,7 +1417,11 @@ namespace TransCarga
                                 dt[y, 3] = drg.GetString("codgror");             // guia transportista
                                 dt[y, 4] = drg.GetString("descpro");             // descripcion de la carga
                                 dt[y, 5] = drg.GetString("docsremit");           // documento relacionado remitente de la guia transportista
+                                dt[y, 6] = drg.GetString("valUni");             // valor unitario
+                                dt[y, 7] = drg.GetString("preUni");             // precio unitario
+                                dt[y, 8] = drg.GetString("totalgr");            // total
                                 y += 1;
+                                va[6] = va[6] + " " + drg.GetString("codgror");
                             }
                         }
                     }
