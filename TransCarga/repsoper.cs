@@ -579,12 +579,14 @@ namespace TransCarga
                     */
                     break;
                 case "dgv_GRE_est":
+                    tiplg = new Font("Arial", 6, FontStyle.Regular);
                     dgv_GRE_est.Font = tiplg;
                     dgv_GRE_est.DefaultCellStyle.Font = tiplg;
                     dgv_GRE_est.RowTemplate.Height = 18;
                     dgv_GRE_est.AllowUserToAddRows = false;
-                    if (dgv_GRE_est.DataSource == null) dgv_GRE_est.ColumnCount = 7;
-                    dgv_GRE_est.Width = Parent.Width - 50; // 1015;
+                    // 06/12/2023
+                    //if (dgv_GRE_est.DataSource == null) dgv_GRE_est.ColumnCount = 7;
+                    //dgv_GRE_est.Width = Parent.Width - 50; // 1015;
 
                     Padding padding = new Padding();
                     padding.Left = 16;
@@ -640,67 +642,79 @@ namespace TransCarga
                     btnAct.Text = "...Actualiza...";
                     btnAct.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
                     btnAct.Name = "consulta";
-                    btnAct.Width = 140;
+                    btnAct.Width = 120;
                     btnAct.UseColumnTextForButtonValue = true;
                     btnAct.DefaultCellStyle.Padding = padding;
-
-                    // EMISION,P_GUIA,GUIA_ELEC,ORIGEN,DESTINO,ESTADO,SUNAT,CDR_GEN,............,cdrS,ad.textoQR,ad.nticket,g.cantfilas,g.id,ad.ulterror 
-                    //     0     1        2       3       4      5      6     7     8 9 10 11 12  13      14         15          16       17     18
+                    // 
+                    // EMISION,P_GUIA,GUIA_ELEC,ORIGEN,DESTINO,REMITENTE,DOC.RELACIONADO,ESTADO,SUNAT,CDR_GEN,..............,cdrS,ad.textoQR,ad.nticket,g.cantfilas,g.id,ad.ulterror 
+                    //     0     1        2       3       4        5            6          7      8     9     10 11 12 13 14  15      16         17          18       19     20
                     //dgv_GRE_est.CellPainting += grid_CellPainting;        // no funciona bien, no se adecua
                     dgv_GRE_est.CellClick += DataGridView1_CellClick;
-                    dgv_GRE_est.Columns.Insert(8, btnTk);
-                    dgv_GRE_est.Columns.Insert(9, btnA5);
-                    dgv_GRE_est.Columns.Insert(10, btnPDF);   // .Add(btnPDF);
-                    dgv_GRE_est.Columns.Insert(11, btnCDR);   // .Add(btnCDR);
-                    dgv_GRE_est.Columns.Insert(12, btnAct);   // .Add(btnAct);
-                    dgv_GRE_est.Columns[13].Visible = false;
-                    dgv_GRE_est.Columns[14].Visible = false;
+                    dgv_GRE_est.Columns[0].Width = 60;
+                    dgv_GRE_est.Columns[1].Width = 60;
+                    dgv_GRE_est.Columns[2].Width = 70;
+                    dgv_GRE_est.Columns[3].Width = 90;
+                    dgv_GRE_est.Columns[4].Width = 90;
+                    dgv_GRE_est.Columns[5].Width = 100;
+                    dgv_GRE_est.Columns[6].Width = 100;
+                    dgv_GRE_est.Columns[7].Width = 60;
+                    dgv_GRE_est.Columns[8].Width = 70;
+                    dgv_GRE_est.Columns[9].Width = 50;
+                    dgv_GRE_est.Columns.Insert(10, btnTk);
+                    dgv_GRE_est.Columns.Insert(11, btnA5);
+                    dgv_GRE_est.Columns.Insert(12, btnPDF);   // .Add(btnPDF);
+                    dgv_GRE_est.Columns.Insert(13, btnCDR);   // .Add(btnCDR);
+                    dgv_GRE_est.Columns.Insert(14, btnAct);   // .Add(btnAct);
                     dgv_GRE_est.Columns[15].Visible = false;
                     dgv_GRE_est.Columns[16].Visible = false;
                     dgv_GRE_est.Columns[17].Visible = false;
-                    dgv_GRE_est.Columns[18].Visible = true;
+                    dgv_GRE_est.Columns[18].Visible = false;
+                    dgv_GRE_est.Columns[19].Visible = false;
+                    dgv_GRE_est.Columns[20].Visible = true;
+                    /* 06/12/2023
                     if (dgv_GRE_est.Rows.Count > 0)         // autosize filas
                     {
-                        for (int i = 0; i < dgv_GRE_est.Columns.Count - 11; i++)
+                        for (int i = 0; i < dgv_GRE_est.Columns.Count - 13; i++)
                         {
                             dgv_GRE_est.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
                             _ = decimal.TryParse(dgv_GRE_est.Rows[0].Cells[i].Value.ToString(), out decimal vd);
                             if (vd != 0) dgv_GRE_est.Columns[i].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
                         }
                         b = 0;
-                        for (int i = 0; i < dgv_GRE_est.Columns.Count - 11; i++)
+                        for (int i = 0; i < dgv_GRE_est.Columns.Count - 13; i++)
                         {
                             int a = dgv_GRE_est.Columns[i].Width;
                             b += a;
                             dgv_GRE_est.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
                             dgv_GRE_est.Columns[i].Width = a;
                         }
-                        if (b < dgv_GRE_est.Width) dgv_GRE_est.Width = dgv_GRE_est.Width - 11;
+                        if (b < dgv_GRE_est.Width) dgv_GRE_est.Width = dgv_GRE_est.Width - 13;
                         dgv_GRE_est.ReadOnly = true;
                     }
+                    */
                     if (dgv_GRE_est.Rows.Count > 0)
                     {
                         for (int i = 0; i < dgv_GRE_est.Rows.Count; i++)
                         {
-                            dgv_GRE_est.Rows[i].Cells["iTK"].Value = "TK";      // 7
+                            dgv_GRE_est.Rows[i].Cells["iTK"].Value = "TK";
                             dgv_GRE_est.Rows[i].Cells["iA5"].Value = "A5";
-                            if (dgv_GRE_est.Rows[i].Cells["CDR_GEN"].Value != null)     // 6
+                            if (dgv_GRE_est.Rows[i].Cells["CDR_GEN"].Value != null)
                             {
-                                if (dgv_GRE_est.Rows[i].Cells["CDR_GEN"].Value.ToString() == "1")   // 6
+                                if (dgv_GRE_est.Rows[i].Cells["CDR_GEN"].Value.ToString() == "1")
                                 {
-                                    dgv_GRE_est.Rows[i].Cells["pdf"].ReadOnly = false;  // 8
-                                    dgv_GRE_est.Rows[i].Cells["pdf"].Value = "PDF";     // 8
-                                    dgv_GRE_est.Rows[i].Cells["cdr"].ReadOnly = false;  // 9
-                                    dgv_GRE_est.Rows[i].Cells["cdr"].Value = "CDR";     // 9
-                                    dgv_GRE_est.Rows[i].Cells["consulta"].ReadOnly = true;  // 10
+                                    dgv_GRE_est.Rows[i].Cells["pdf"].ReadOnly = false;
+                                    dgv_GRE_est.Rows[i].Cells["pdf"].Value = "PDF";
+                                    dgv_GRE_est.Rows[i].Cells["cdr"].ReadOnly = false;
+                                    dgv_GRE_est.Rows[i].Cells["cdr"].Value = "CDR";
+                                    dgv_GRE_est.Rows[i].Cells["consulta"].ReadOnly = true;
                                 }
                                 else
                                 {
-                                    dgv_GRE_est.Rows[i].Cells["pdf"].ReadOnly = true;       // 8
-                                    dgv_GRE_est.Rows[i].Cells["pdf"].Value = "";            // 8
-                                    dgv_GRE_est.Rows[i].Cells["cdr"].ReadOnly = true;       // 9
-                                    dgv_GRE_est.Rows[i].Cells["cdr"].Value = "";            // 9
-                                    dgv_GRE_est.Rows[i].Cells["consulta"].ReadOnly = false; // 10
+                                    dgv_GRE_est.Rows[i].Cells["pdf"].ReadOnly = true;
+                                    dgv_GRE_est.Rows[i].Cells["pdf"].Value = "";
+                                    dgv_GRE_est.Rows[i].Cells["cdr"].ReadOnly = true;
+                                    dgv_GRE_est.Rows[i].Cells["cdr"].Value = "";
+                                    dgv_GRE_est.Rows[i].Cells["consulta"].ReadOnly = false;
                                 }
                             }
                         }
@@ -860,7 +874,7 @@ namespace TransCarga
                     case "dgv_GRE_est":
                         for (int i = 0; i < dgv_GRE_est.Rows.Count; i++)
                         {
-                            if (dgv_GRE_est.Rows[i].Cells[5].Value.ToString() != etiq_anulado)
+                            if (dgv_GRE_est.Rows[i].Cells["ESTADO"].Value.ToString() != etiq_anulado)
                             {
                                 cr = cr + 1;
                             }
@@ -1196,6 +1210,7 @@ namespace TransCarga
         {
             chk_GRE_imp.Checked = false;
             DataTable dtsunatE = new DataTable();       // guías transp elec - estados
+            string misgr = "";
             // validaciones
             if (rb_GRE_R.Checked == false && rb_GRE_T.Checked == false)
             {
@@ -1209,6 +1224,10 @@ namespace TransCarga
                 rb_GRE_orig.Focus();
                 return;
             }
+            if (chk_misG.Checked == true)
+            {
+                misgr = " AND g.userc=@asd";
+            }
             //
             string consulta = "";
             if (rb_GRE_R.Checked == true)
@@ -1219,17 +1238,19 @@ namespace TransCarga
                     "LEFT JOIN desc_loc lo ON lo.IDCodice = g.locorigen " +
                     "LEFT JOIN desc_loc ld ON ld.IDCodice = g.locdestin " +
                     "LEFT JOIN desc_est es ON es.IDCodice = g.estadoser " +
-                    "WHERE marca_gre<>'' AND g.fechopegr between @fecini and @fecfin";
+                    "WHERE marca_gre<>''" + misgr + " AND g.fechopegr between @fecini and @fecfin";
             }
             if (rb_GRE_T.Checked == true)
             {
-                consulta = "SELECT g.fechopegr AS EMISION,g.numpregui as P_GUIA,concat(g.sergui,'-',g.numgui) AS GUIA_ELEC,lo.descrizionerid AS ORIGEN,ld.DescrizioneRid AS DESTINO," +
+                consulta = "SELECT g.fechopegr AS EMISION,g.numpregui as P_GUIA,concat(g.sergui,'-',g.numgui) AS GUIA_ELEC,lo.descrizionerid AS ORIGEN," +
+                    "ld.DescrizioneRid AS DESTINO,g.nombregri as REMITENTE,CONCAT(dt.descrizionerid,' ',g.docsremit) as DOC_RELACIONADO," +
                     "es.DescrizioneRid AS ESTADO,ad.estadoS AS SUNAT,ad.cdrgener AS CDR_GEN,ad.cdr as cdrS,ad.textoQR,ad.nticket,g.cantfilas,g.id,ad.ulterror as ULT_ERROR " +
                     "FROM cabguiai g LEFT JOIN adiguias ad ON ad.idg = g.id " +
                     "LEFT JOIN desc_loc lo ON lo.IDCodice = g.locorigen " +
                     "LEFT JOIN desc_loc ld ON ld.IDCodice = g.locdestin " +
                     "LEFT JOIN desc_est es ON es.IDCodice = g.estadoser " +
-                    "WHERE marca_gre<>'' AND g.fechopegr between @fecini and @fecfin";
+                    "LEFT JOIN desc_dtm dt ON dt.idcodice = g.tidocor " +
+                    "WHERE marca_gre<>''" + misgr + " AND g.fechopegr between @fecini and @fecfin";
             }
             string parte = "";
             if (tx_dat_GRE_sede.Text != "" && rb_GRE_orig.Checked == true) parte = parte + " and g.locorigen=@loca";
@@ -1244,6 +1265,7 @@ namespace TransCarga
                     micon.Parameters.AddWithValue("@fecini", dtp_GRE_fini.Value.ToString("yyyy-MM-dd"));
                     micon.Parameters.AddWithValue("@fecfin", dtp_GRE_fter.Value.ToString("yyyy-MM-dd"));
                     micon.Parameters.AddWithValue("@esta", (tx_dat_GRE_est.Text != "") ? tx_dat_GRE_est.Text : "");
+                    if (chk_misG.Checked == true) micon.Parameters.AddWithValue("@asd", asd);
                     using (MySqlDataAdapter da = new MySqlDataAdapter(micon))
                     {
                         dgv_GRE_est.DataSource = null;

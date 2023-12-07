@@ -92,12 +92,13 @@
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
             this.gbox_serie = new System.Windows.Forms.GroupBox();
+            this.groupBox25 = new System.Windows.Forms.GroupBox();
+            this.groupBox26 = new System.Windows.Forms.GroupBox();
+            this.tx_serie = new System.Windows.Forms.TextBox();
             this.groupBox9 = new System.Windows.Forms.GroupBox();
             this.groupBox15 = new System.Windows.Forms.GroupBox();
             this.bt_preg = new System.Windows.Forms.Button();
             this.tx_n_auto = new System.Windows.Forms.TextBox();
-            this.groupBox25 = new System.Windows.Forms.GroupBox();
-            this.groupBox26 = new System.Windows.Forms.GroupBox();
             this.groupBox23 = new System.Windows.Forms.GroupBox();
             this.groupBox24 = new System.Windows.Forms.GroupBox();
             this.label17 = new System.Windows.Forms.Label();
@@ -297,15 +298,14 @@
             this.tx_tfil = new TransCarga.NumericTextBox();
             this.tx_totpes = new TransCarga.NumericTextBox();
             this.tx_totcant = new TransCarga.NumericTextBox();
-            this.tx_serie = new System.Windows.Forms.TextBox();
             this.toolStrip1.SuspendLayout();
             this.groupBox11.SuspendLayout();
             this.groupBox7.SuspendLayout();
             this.pn_usloc.SuspendLayout();
             this.groupBox5.SuspendLayout();
             this.gbox_serie.SuspendLayout();
-            this.groupBox9.SuspendLayout();
             this.groupBox25.SuspendLayout();
+            this.groupBox9.SuspendLayout();
             this.groupBox23.SuspendLayout();
             this.groupBox19.SuspendLayout();
             this.groupBox21.SuspendLayout();
@@ -984,6 +984,32 @@
             this.gbox_serie.TabIndex = 289;
             this.gbox_serie.TabStop = false;
             // 
+            // groupBox25
+            // 
+            this.groupBox25.BackColor = System.Drawing.Color.White;
+            this.groupBox25.Controls.Add(this.groupBox26);
+            this.groupBox25.Location = new System.Drawing.Point(6, 51);
+            this.groupBox25.Name = "groupBox25";
+            this.groupBox25.Size = new System.Drawing.Size(93, 1);
+            this.groupBox25.TabIndex = 336;
+            this.groupBox25.TabStop = false;
+            // 
+            // groupBox26
+            // 
+            this.groupBox26.Location = new System.Drawing.Point(0, -26);
+            this.groupBox26.Name = "groupBox26";
+            this.groupBox26.Size = new System.Drawing.Size(164, 1);
+            this.groupBox26.TabIndex = 113;
+            this.groupBox26.TabStop = false;
+            // 
+            // tx_serie
+            // 
+            this.tx_serie.Location = new System.Drawing.Point(55, 32);
+            this.tx_serie.Name = "tx_serie";
+            this.tx_serie.Size = new System.Drawing.Size(45, 20);
+            this.tx_serie.TabIndex = 1;
+            this.tx_serie.Leave += new System.EventHandler(this.tx_serie_Leave);
+            // 
             // groupBox9
             // 
             this.groupBox9.BackColor = System.Drawing.Color.White;
@@ -1022,24 +1048,6 @@
             this.tx_n_auto.Size = new System.Drawing.Size(27, 18);
             this.tx_n_auto.TabIndex = 353;
             this.tx_n_auto.Visible = false;
-            // 
-            // groupBox25
-            // 
-            this.groupBox25.BackColor = System.Drawing.Color.White;
-            this.groupBox25.Controls.Add(this.groupBox26);
-            this.groupBox25.Location = new System.Drawing.Point(6, 51);
-            this.groupBox25.Name = "groupBox25";
-            this.groupBox25.Size = new System.Drawing.Size(93, 1);
-            this.groupBox25.TabIndex = 336;
-            this.groupBox25.TabStop = false;
-            // 
-            // groupBox26
-            // 
-            this.groupBox26.Location = new System.Drawing.Point(0, -26);
-            this.groupBox26.Name = "groupBox26";
-            this.groupBox26.Size = new System.Drawing.Size(164, 1);
-            this.groupBox26.TabIndex = 113;
-            this.groupBox26.TabStop = false;
             // 
             // groupBox23
             // 
@@ -3084,7 +3092,7 @@
             this.tx_rucEorig.Size = new System.Drawing.Size(100, 20);
             this.tx_rucEorig.TabIndex = 22;
             this.tx_rucEorig.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.tx_rucEorig.Leave += new System.EventHandler(this.tx_rucEorig_Leave);
+            this.tx_rucEorig.Validating += new System.ComponentModel.CancelEventHandler(this.tx_rucEorig_Validating);
             // 
             // tx_tfil
             // 
@@ -3118,14 +3126,6 @@
             this.tx_totcant.Size = new System.Drawing.Size(41, 20);
             this.tx_totcant.TabIndex = 329;
             this.tx_totcant.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // tx_serie
-            // 
-            this.tx_serie.Location = new System.Drawing.Point(55, 32);
-            this.tx_serie.Name = "tx_serie";
-            this.tx_serie.Size = new System.Drawing.Size(45, 20);
-            this.tx_serie.TabIndex = 1;
-            this.tx_serie.Leave += new System.EventHandler(this.tx_serie_Leave);
             // 
             // guiati_e
             // 
@@ -3268,8 +3268,8 @@
             this.groupBox5.ResumeLayout(false);
             this.gbox_serie.ResumeLayout(false);
             this.gbox_serie.PerformLayout();
-            this.groupBox9.ResumeLayout(false);
             this.groupBox25.ResumeLayout(false);
+            this.groupBox9.ResumeLayout(false);
             this.groupBox23.ResumeLayout(false);
             this.groupBox19.ResumeLayout(false);
             this.groupBox21.ResumeLayout(false);

@@ -312,6 +312,7 @@ namespace TransCarga
             rb_kg.Checked = true;
             cmb_docorig2.Enabled = false;   // solo se permite por defecto un solo documento origen relacionado
             // solo 1 excepto hasta 2 si el primero tiene el código "31", "65", "66", "67", "68", "69", o "09"  ... OJO que si es 09 sunat permite muchos mas pero no lo implemente aun.
+            if (Tx_modo.Text == "NUEVO") rb_pDes.Checked = true;
         }
         private void jalainfo()                 // obtiene datos de imagenes y variables
         {
@@ -439,6 +440,8 @@ namespace TransCarga
             c_t[3] = client_pass_sunat;
             c_t[4] = u_sol_sunat;
             c_t[5] = c_sol_sunat;
+
+            //ipeeg = "API_SUNAT";            // borrame 05/12/2023     
         }
         private void jalaoc(string campo)       // jala guia individual
         {
@@ -3481,6 +3484,7 @@ namespace TransCarga
                         tx_telR.ReadOnly = false;
                         //v_clte_rem = "E";
                     }
+                    cmb_docDes.Focus();
                 }
             }
             if (tx_numDocRem.Text.Trim() != "" && tx_mld.Text.Trim() == "")
@@ -3612,6 +3616,7 @@ namespace TransCarga
                         tx_telD.ReadOnly = false;
                         //v_clte_des = "E";
                     }
+                    cmb_docorig.Focus();
                 }
             }
             if (tx_numDocDes.Text.Trim() != "" && tx_mldD.Text.Trim() == "")
@@ -3844,6 +3849,7 @@ namespace TransCarga
             if ((Tx_modo.Text == "NUEVO" || Tx_modo.Text == "EDITAR") && tx_det_peso.Text.Trim() != "")
             {
                 tx_totpes.Text = tx_det_peso.Text;
+                tx_flete.Focus();
             }
         }
         private void tx_det_desc_Leave(object sender, EventArgs e)
@@ -3877,13 +3883,17 @@ namespace TransCarga
                 chk_man.Checked = false;
             }
         }
-        private void tx_rucEorig_Leave(object sender, EventArgs e)              // validamos el ruc del emisor documento origen 1
-        {
-            valiruc(tx_rucEorig);
-        }
         private void tx_rucEorig2_Leave(object sender, EventArgs e)              // validamos el ruc del emisor documento origen 2
         {
             valiruc(tx_rucEorig2);
+        }
+        private void tx_rucEorig_Validating(object sender, System.ComponentModel.CancelEventArgs e)              // validamos el ruc del emisor documento origen 1
+        {
+            valiruc(tx_rucEorig);
+            if (Tx_modo.Text == "NUEVO")
+            {
+                tx_det_cant.Focus();
+            }
         }
         #endregion
 
@@ -3978,7 +3988,8 @@ namespace TransCarga
                 Bt_sig.Enabled = false;
                 Bt_ret.Enabled = false;
                 Bt_fin.Enabled = false;
-                tx_pregr_num.Focus();
+                //tx_pregr_num.Focus();       // 06/12/2023 ya no
+                cmb_destino.Focus();
             }
         }
         private void Bt_edit_Click(object sender, EventArgs e)
@@ -4040,7 +4051,7 @@ namespace TransCarga
             }
             else
             {
-                if (Tx_modo.Text == "NUEVO")
+                if (Tx_modo.Text == "NUEVO" && tx_idr.Text == "")
                 {
                     MessageBox.Show("No se puede imprimir sin grabar!", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
@@ -4696,5 +4707,6 @@ namespace TransCarga
         {
             //jalainfo();
         }
+
     }
 }
