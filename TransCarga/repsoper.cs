@@ -579,10 +579,10 @@ namespace TransCarga
                     */
                     break;
                 case "dgv_GRE_est":
-                    tiplg = new Font("Arial", 6, FontStyle.Regular);
+                    tiplg = new Font("Arial", 6, FontStyle.Bold);
                     dgv_GRE_est.Font = tiplg;
                     dgv_GRE_est.DefaultCellStyle.Font = tiplg;
-                    dgv_GRE_est.RowTemplate.Height = 18;
+                    dgv_GRE_est.RowTemplate.Height = 16;    // 18
                     dgv_GRE_est.AllowUserToAddRows = false;
                     // 06/12/2023
                     //if (dgv_GRE_est.DataSource == null) dgv_GRE_est.ColumnCount = 7;
@@ -653,10 +653,10 @@ namespace TransCarga
                     dgv_GRE_est.Columns[0].Width = 60;
                     dgv_GRE_est.Columns[1].Width = 60;
                     dgv_GRE_est.Columns[2].Width = 70;
-                    dgv_GRE_est.Columns[3].Width = 90;
-                    dgv_GRE_est.Columns[4].Width = 90;
+                    dgv_GRE_est.Columns[3].Width = 70;
+                    dgv_GRE_est.Columns[4].Width = 70;
                     dgv_GRE_est.Columns[5].Width = 100;
-                    dgv_GRE_est.Columns[6].Width = 100;
+                    dgv_GRE_est.Columns[6].Width = 130;
                     dgv_GRE_est.Columns[7].Width = 60;
                     dgv_GRE_est.Columns[8].Width = 70;
                     dgv_GRE_est.Columns[9].Width = 50;
@@ -2290,8 +2290,6 @@ namespace TransCarga
         }
         private void DataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)        // Click en las columnas boton
         {
-            string[] formatos = { "A5", "A4" };
-            string[] cristals = { v_CR_gr_ind, v_CR_gre_A4 };
             if (e.ColumnIndex > -1 && cuenta != e.RowIndex)
             {
                 if (dgv_GRE_est.Columns[e.ColumnIndex].Name.ToString() == "consulta")   // consulta solo si estado sunat no es Aceptado o Rechazado
@@ -2339,12 +2337,16 @@ namespace TransCarga
                 }
                 if (dgv_GRE_est.Columns[e.ColumnIndex].Name.ToString() == "iTK")        // esta impresion debe ser en la pantalla
                 {
+                    string[] formatos = { "TK", "TK" };
+                    string[] cristals = { "", "" };
                     pub.muestra_gr(dgv_GRE_est.Rows[e.RowIndex].Cells["GUIA_ELEC"].Value.ToString().Substring(0, 4),
                         dgv_GRE_est.Rows[e.RowIndex].Cells["GUIA_ELEC"].Value.ToString().Substring(5, 8),
                         "", (rutaQR + nomImgQR), gloDeta, v_impPDF, formatos, cristals);
                 }
                 if (dgv_GRE_est.Columns[e.ColumnIndex].Name.ToString() == "iA5")        // esta impresion debe ser en la pantalla
                 {
+                    string[] formatos = { "A5", "A4" };
+                    string[] cristals = { v_CR_gr_ind, v_CR_gre_A4 };
                     if (true)   // cuenta != e.RowIndex
                     {
                         pub.muestra_gr(dgv_GRE_est.Rows[e.RowIndex].Cells["GUIA_ELEC"].Value.ToString().Substring(0, 4),

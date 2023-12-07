@@ -370,7 +370,7 @@
             this.toolStripSeparator11});
             this.toolStrip1.Location = new System.Drawing.Point(0, 408);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(1228, 35);
+            this.toolStrip1.Size = new System.Drawing.Size(1090, 35);
             this.toolStrip1.TabIndex = 34;
             this.toolStrip1.Text = "toolStrip1";
             // 
@@ -603,7 +603,7 @@
             this.tabgrhist.Controls.Add(this.bt_hisGR);
             this.tabgrhist.Location = new System.Drawing.Point(4, 22);
             this.tabgrhist.Name = "tabgrhist";
-            this.tabgrhist.Size = new System.Drawing.Size(1026, 377);
+            this.tabgrhist.Size = new System.Drawing.Size(1214, 377);
             this.tabgrhist.TabIndex = 10;
             this.tabgrhist.Text = "Seguimiento GR";
             this.tabgrhist.UseVisualStyleBackColor = true;
@@ -741,7 +741,7 @@
             this.tabreval.Controls.Add(this.label12);
             this.tabreval.Location = new System.Drawing.Point(4, 22);
             this.tabreval.Name = "tabreval";
-            this.tabreval.Size = new System.Drawing.Size(1026, 377);
+            this.tabreval.Size = new System.Drawing.Size(1076, 377);
             this.tabreval.TabIndex = 9;
             this.tabreval.Text = "Revalorizaciones";
             this.tabreval.UseVisualStyleBackColor = true;
@@ -802,7 +802,7 @@
             this.groupBox44.Controls.Add(this.groupBox45);
             this.groupBox44.Location = new System.Drawing.Point(251, 371);
             this.groupBox44.Name = "groupBox44";
-            this.groupBox44.Size = new System.Drawing.Size(533, 1);
+            this.groupBox44.Size = new System.Drawing.Size(395, 1);
             this.groupBox44.TabIndex = 432;
             this.groupBox44.TabStop = false;
             // 
@@ -886,7 +886,7 @@
             this.dgv_reval.DateWithTime = false;
             this.dgv_reval.Location = new System.Drawing.Point(3, 52);
             this.dgv_reval.Name = "dgv_reval";
-            this.dgv_reval.Size = new System.Drawing.Size(1020, 295);
+            this.dgv_reval.Size = new System.Drawing.Size(1068, 295);
             this.dgv_reval.TabIndex = 403;
             this.dgv_reval.TimeFilter = false;
             this.dgv_reval.SortStringChanged += new System.EventHandler(this.advancedDataGridView1_SortStringChanged);
@@ -982,7 +982,7 @@
             this.tabplacar.Controls.Add(this.tx_tflets);
             this.tabplacar.Location = new System.Drawing.Point(4, 22);
             this.tabplacar.Name = "tabplacar";
-            this.tabplacar.Size = new System.Drawing.Size(1026, 377);
+            this.tabplacar.Size = new System.Drawing.Size(1076, 377);
             this.tabplacar.TabIndex = 8;
             this.tabplacar.Text = "Planilla Carga";
             this.tabplacar.UseVisualStyleBackColor = true;
@@ -1047,7 +1047,7 @@
             this.groupBox38.Controls.Add(this.groupBox43);
             this.groupBox38.Location = new System.Drawing.Point(5, 371);
             this.groupBox38.Name = "groupBox38";
-            this.groupBox38.Size = new System.Drawing.Size(704, 1);
+            this.groupBox38.Size = new System.Drawing.Size(566, 1);
             this.groupBox38.TabIndex = 422;
             this.groupBox38.TabStop = false;
             // 
@@ -1256,7 +1256,7 @@
             this.dgv_plan.DateWithTime = false;
             this.dgv_plan.Location = new System.Drawing.Point(3, 52);
             this.dgv_plan.Name = "dgv_plan";
-            this.dgv_plan.Size = new System.Drawing.Size(1020, 295);
+            this.dgv_plan.Size = new System.Drawing.Size(1068, 295);
             this.dgv_plan.TabIndex = 394;
             this.dgv_plan.TimeFilter = false;
             this.dgv_plan.SortStringChanged += new System.EventHandler(this.advancedDataGridView1_SortStringChanged);
@@ -1393,7 +1393,7 @@
             this.tabgrti.Controls.Add(this.tx_totval);
             this.tabgrti.Location = new System.Drawing.Point(4, 22);
             this.tabgrti.Name = "tabgrti";
-            this.tabgrti.Size = new System.Drawing.Size(1026, 377);
+            this.tabgrti.Size = new System.Drawing.Size(1076, 377);
             this.tabgrti.TabIndex = 7;
             this.tabgrti.Text = "Guías Transp. ";
             this.tabgrti.UseVisualStyleBackColor = true;
@@ -1478,7 +1478,7 @@
             this.panel4.Controls.Add(this.rb_imComp);
             this.panel4.Controls.Add(this.rb_imSimp);
             this.panel4.Controls.Add(this.chk_impGrp);
-            this.panel4.Location = new System.Drawing.Point(729, 349);
+            this.panel4.Location = new System.Drawing.Point(591, 349);
             this.panel4.Name = "panel4";
             this.panel4.Size = new System.Drawing.Size(292, 27);
             this.panel4.TabIndex = 418;
@@ -1731,7 +1731,7 @@
             this.dgv_guias.DateWithTime = false;
             this.dgv_guias.Location = new System.Drawing.Point(3, 52);
             this.dgv_guias.Name = "dgv_guias";
-            this.dgv_guias.Size = new System.Drawing.Size(1020, 295);
+            this.dgv_guias.Size = new System.Drawing.Size(1068, 295);
             this.dgv_guias.TabIndex = 385;
             this.dgv_guias.TimeFilter = false;
             this.dgv_guias.SortStringChanged += new System.EventHandler(this.advancedDataGridView1_SortStringChanged);
@@ -1917,7 +1917,7 @@
             this.tabvtas.Controls.Add(this.label25);
             this.tabvtas.Location = new System.Drawing.Point(4, 22);
             this.tabvtas.Name = "tabvtas";
-            this.tabvtas.Size = new System.Drawing.Size(1026, 377);
+            this.tabvtas.Size = new System.Drawing.Size(1076, 377);
             this.tabvtas.TabIndex = 6;
             this.tabvtas.Text = "Pre Guías";
             this.tabvtas.UseVisualStyleBackColor = true;
@@ -2030,7 +2030,7 @@
             this.dgv_vtas.DateWithTime = false;
             this.dgv_vtas.Location = new System.Drawing.Point(6, 52);
             this.dgv_vtas.Name = "dgv_vtas";
-            this.dgv_vtas.Size = new System.Drawing.Size(1015, 322);
+            this.dgv_vtas.Size = new System.Drawing.Size(1067, 322);
             this.dgv_vtas.TabIndex = 367;
             this.dgv_vtas.TimeFilter = false;
             this.dgv_vtas.SortStringChanged += new System.EventHandler(this.advancedDataGridView1_SortStringChanged);
@@ -2214,7 +2214,7 @@
             this.tabres.Controls.Add(this.bt_resumen);
             this.tabres.Location = new System.Drawing.Point(4, 22);
             this.tabres.Name = "tabres";
-            this.tabres.Size = new System.Drawing.Size(1026, 377);
+            this.tabres.Size = new System.Drawing.Size(1076, 377);
             this.tabres.TabIndex = 3;
             this.tabres.Text = "Servicio por Cliente";
             this.tabres.UseVisualStyleBackColor = true;
@@ -2314,7 +2314,7 @@
             this.dgv_resumen.DateWithTime = false;
             this.dgv_resumen.Location = new System.Drawing.Point(4, 69);
             this.dgv_resumen.Name = "dgv_resumen";
-            this.dgv_resumen.Size = new System.Drawing.Size(1019, 275);
+            this.dgv_resumen.Size = new System.Drawing.Size(1069, 275);
             this.dgv_resumen.TabIndex = 389;
             this.dgv_resumen.TimeFilter = false;
             this.dgv_resumen.SortStringChanged += new System.EventHandler(this.advancedDataGridView1_SortStringChanged);
@@ -2631,7 +2631,7 @@
             this.tabControl1.Multiline = true;
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(1222, 403);
+            this.tabControl1.Size = new System.Drawing.Size(1084, 403);
             this.tabControl1.TabIndex = 4;
             // 
             // tabGREstat
@@ -2665,7 +2665,7 @@
             this.tabGREstat.Controls.Add(this.tx_GRE_fv);
             this.tabGREstat.Location = new System.Drawing.Point(4, 22);
             this.tabGREstat.Name = "tabGREstat";
-            this.tabGREstat.Size = new System.Drawing.Size(1214, 377);
+            this.tabGREstat.Size = new System.Drawing.Size(1076, 377);
             this.tabGREstat.TabIndex = 11;
             this.tabGREstat.Text = "GRE Estados";
             this.tabGREstat.UseVisualStyleBackColor = true;
@@ -2751,7 +2751,7 @@
             this.panel10.Controls.Add(this.chk_GRE_iAcep);
             this.panel10.Controls.Add(this.bt_GRE_impri);
             this.panel10.Controls.Add(this.chk_GRE_imp);
-            this.panel10.Location = new System.Drawing.Point(705, 351);
+            this.panel10.Location = new System.Drawing.Point(567, 351);
             this.panel10.Name = "panel10";
             this.panel10.Size = new System.Drawing.Size(506, 27);
             this.panel10.TabIndex = 454;
@@ -3052,7 +3052,7 @@
             this.dgv_GRE_est.DateWithTime = false;
             this.dgv_GRE_est.Location = new System.Drawing.Point(3, 52);
             this.dgv_GRE_est.Name = "dgv_GRE_est";
-            this.dgv_GRE_est.Size = new System.Drawing.Size(1208, 299);
+            this.dgv_GRE_est.Size = new System.Drawing.Size(1070, 299);
             this.dgv_GRE_est.TabIndex = 437;
             this.dgv_GRE_est.TimeFilter = false;
             this.dgv_GRE_est.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgv_GRE_est_CellDoubleClick);
@@ -3148,7 +3148,7 @@
             this.AutoScroll = true;
             this.AutoSize = true;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.ClientSize = new System.Drawing.Size(1228, 443);
+            this.ClientSize = new System.Drawing.Size(1090, 443);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.toolStrip1);
             this.MaximizeBox = false;

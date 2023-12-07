@@ -3940,21 +3940,21 @@ namespace TransCarga
                     this.Bt_edit.Visible = true;
                 }
                 else { this.Bt_edit.Visible = false; }
-                //if (Convert.ToString(row["btn5"]) == "S")
-                //{
-                //    this.Bt_print.Visible = true;
-                //}
-                //else { this.Bt_print.Visible = false; }
                 if (Convert.ToString(row["btn3"]) == "S")
                 {
                     this.Bt_anul.Visible = true;
                 }
                 else { this.Bt_anul.Visible = false; }
-                //if (Convert.ToString(row["btn4"]) == "S")
-                //{
-                //    this.Bt_ver.Visible = true;
-                //}
-                //else { this.Bt_ver.Visible = false; }
+                if (Convert.ToString(row["btn4"]) == "S")
+                {
+                    this.Bt_ver.Visible = true;
+                }
+                else { this.Bt_ver.Visible = false; }
+                if (Convert.ToString(row["btn5"]) == "S")
+                {
+                    this.Bt_print.Visible = true;
+                }
+                else { this.Bt_print.Visible = false; }
                 if (Convert.ToString(row["btn6"]) == "S")
                 {
                     this.Bt_close.Visible = true;
