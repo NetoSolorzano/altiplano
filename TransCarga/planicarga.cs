@@ -283,7 +283,7 @@ namespace TransCarga
         {
             dataGridView1.Rows.Clear();
             dataGridView1.Columns.Clear();
-            dataGridView1.ColumnCount = 19;
+            dataGridView1.ColumnCount = 21;
             dataGridView1.Columns[0].Name = "fila";
             dataGridView1.Columns[0].HeaderText = "Fila";
             dataGridView1.Columns[0].ReadOnly = true;
@@ -340,7 +340,9 @@ namespace TransCarga
             dataGridView1.Columns[17].Name = "docvta";
             dataGridView1.Columns[17].HeaderText = "Docvta";
             dataGridView1.Columns[17].Visible = false;
-            dataGridView1.Columns[18].Visible = false;
+            dataGridView1.Columns[18].Visible = false;      // pre - guia
+            dataGridView1.Columns[19].Visible = false;      // nombre remiten
+            dataGridView1.Columns[20].Visible = false;      // telef remiten
             if (Tx_modo.Text == "EDITAR")
             {
                 DataGridViewCheckBoxColumn marca = new DataGridViewCheckBoxColumn();
@@ -606,7 +608,7 @@ namespace TransCarga
             string jalad = "select a.idc,a.serplacar,a.numplacar,a.fila,(g.numpregui*1) as numpreg,a.serguia,a.numguia,a.totcant,floor(a.totpeso) as totpeso,b.descrizionerid as MON,a.totflet," +
                 "a.estadoser,a.codmone,'X' as marca,a.id,a.pagado,a.salxcob,g.nombdegri,g.diredegri,g.teledegri,a.nombult,u1.nombre AS distrit,u2.nombre as provin," +
                 "concat(left(d.descrizionerid,1),SUBSTRING(g.serdocvta,2,3),'-',g.numdocvta)," +
-                "(g.numpregui*1) as numpregui " +
+                "(g.numpregui*1) as numpregui,g.nombregri,g.teleregri " +
                 "from detplacar a " +
                 "left join desc_mon b on b.idcodice = a.codmone " +
                 "left join cabguiai g on g.sergui = a.serguia and g.numgui = a.numguia " +
@@ -630,25 +632,27 @@ namespace TransCarga
                             if (Tx_modo.Text != "EDITAR")
                             {
                                 dataGridView1.Rows.Add(
-                                    row[3].ToString(),
-                                    row[4].ToString(),
-                                    row[5].ToString(),
-                                    row[6].ToString(),
-                                    row[7].ToString(),
-                                    row[8].ToString(),
-                                    row[9].ToString(),
-                                    row[10].ToString(),
-                                    row[15].ToString(),
-                                    row[16].ToString(),
-                                    row[12].ToString(),
-                                    row[13].ToString(),
-                                    row[14].ToString(),
-                                    row[17].ToString(),
-                                    row[18].ToString() + " - " + row[21].ToString() + " - " + row[22].ToString(),
-                                    row[19].ToString(),
-                                    row[20].ToString(),
-                                    row[23].ToString(),
-                                    row[24].ToString()
+                                    row[3].ToString(),      // 0 fila
+                                    row[4].ToString(),      // 1 num pre guia
+                                    row[5].ToString(),      // 2 ser guia
+                                    row[6].ToString(),      // 3 num guia
+                                    row[7].ToString(),      // 4 tot bultos
+                                    row[8].ToString(),      // 5 tot peso
+                                    row[9].ToString(),      // 6 simbolo de moneda
+                                    row[10].ToString(),     // 7 total flete
+                                    row[15].ToString(),     // 8 valor pagado de la guia
+                                    row[16].ToString(),     // 9 saldo x cobrar de la GR
+                                    row[12].ToString(),     // 10 cod moneda
+                                    row[13].ToString(),     // 11 marca para edicion
+                                    row[14].ToString(),     // 12 id de la fila
+                                    row[17].ToString(),     // 13 nombre destinat
+                                    row[18].ToString() + " - " + row[21].ToString() + " - " + row[22].ToString(),   // 14 dir destinat
+                                    row[19].ToString(),     // 15 telef destinat
+                                    row[20].ToString(),     // 16 nombre de bulto
+                                    row[23].ToString(),     // 17 doc vta
+                                    row[24].ToString(),     // 18 pre - guia
+                                    row[25].ToString(),     // 19 nombre remiten
+                                    row[26].ToString()      // 20 telef remiten
                                     );
                             }
                             else
@@ -673,6 +677,8 @@ namespace TransCarga
                                     row[20].ToString(),
                                     row[23].ToString(),
                                     row[24].ToString(),
+                                    row[25].ToString(),
+                                    row[26].ToString(),
                                     false
                                     );
                             }
@@ -2621,9 +2627,8 @@ namespace TransCarga
                     rowdetalle.dirdest = row.Cells[14].Value.ToString();
                     rowdetalle.teldest = row.Cells[15].Value.ToString();
                     rowdetalle.nombulto = row.Cells[16].Value.ToString();
-                    rowdetalle.nomremi = "";    // row.Cells[].Value.ToString();
                     rowdetalle.docvta = row.Cells[17].Value.ToString();
-                    rowdetalle.nomremi = row.Cells[18].Value.ToString();
+                    rowdetalle.nomremi = row.Cells[19].Value.ToString();
                     rowdetalle.numpregr = row.Cells["numpreg"].Value.ToString();
                     PlaniC.placar_det.Addplacar_detRow(rowdetalle);
                 }
