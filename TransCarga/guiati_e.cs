@@ -3901,7 +3901,7 @@ namespace TransCarga
         public void toolboton()
         {
             DataTable mdtb = new DataTable();
-            const string consbot = "select * from permisos where formulario=@nomform and usuario=@use";
+            const string consbot = "select * from permisos where formulario=@nomform and upper(usuario)=@use";
             MySqlConnection conn = new MySqlConnection(DB_CONN_STR);
             conn.Open();
             if (conn.State == ConnectionState.Open)
@@ -3910,7 +3910,7 @@ namespace TransCarga
                 {
                     MySqlCommand consulb = new MySqlCommand(consbot, conn);
                     consulb.Parameters.AddWithValue("@nomform", nomform);
-                    consulb.Parameters.AddWithValue("@use", asd);
+                    consulb.Parameters.AddWithValue("@use", asd.ToUpper());
                     MySqlDataAdapter mab = new MySqlDataAdapter(consulb);
                     mab.Fill(mdtb);
                 }

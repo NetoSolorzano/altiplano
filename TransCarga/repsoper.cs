@@ -1032,6 +1032,9 @@ namespace TransCarga
                 rb_GR_origen.Focus();
                 return;
             }
+            string ordenado = "";
+            if (rb_ordrem.Checked == true) ordenado = "R";
+            if (rb_orddes.Checked == true) ordenado = "D";
             using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
             {
                 conn.Open();
@@ -1046,7 +1049,7 @@ namespace TransCarga
                     micon.Parameters.AddWithValue("@excl", (chk_excl_guias.Checked == true) ? "1" : "0");
                     micon.Parameters.AddWithValue("@orides", (rb_GR_origen.Checked == true) ? "O" : "D");   // local -> O=origen || D=destino
                     micon.Parameters.AddWithValue("@placa", cmb_placa.Text.Trim());
-                    micon.Parameters.AddWithValue("@orden", "");
+                    micon.Parameters.AddWithValue("@orden", ordenado);
                     using (MySqlDataAdapter da = new MySqlDataAdapter(micon))
                     {
                         dgv_guias.DataSource = null;
@@ -1792,7 +1795,7 @@ namespace TransCarga
                             try
                             {
                                 fimp.PrintOptions.PrinterName = v_impTK;
-                                fimp.PrintToPrinter(int.Parse(vi_copias), false, 1, 1);
+                                fimp.PrintToPrinter(2, false, 1, 1); // int.Parse(vi_copias), false, 1, 1
                             }
                             catch (Exception ex)
                             {
@@ -1996,6 +1999,10 @@ namespace TransCarga
                 rb_imComp.Visible = true;
                 rb_imSimp.Visible = true;
                 bt_dale.Visible = true;
+                for (int i = 0; i < dgv_guias.Rows.Count; i++)
+                {
+                    dgv_guias.Rows[i].Cells[0].Value = true;
+                }
             }
             else
             {
