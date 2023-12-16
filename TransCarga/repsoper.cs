@@ -1795,7 +1795,8 @@ namespace TransCarga
                             try
                             {
                                 fimp.PrintOptions.PrinterName = v_impTK;
-                                fimp.PrintToPrinter(2, false, 1, 1); // int.Parse(vi_copias), false, 1, 1
+                                fimp.PrintToPrinter(1, false, 1, 1);    // 1 copia
+                                fimp.PrintToPrinter(1, false, 1, 1);    // 2da copia
                             }
                             catch (Exception ex)
                             {
@@ -1807,8 +1808,7 @@ namespace TransCarga
                 }
                 if (rb_imComp.Checked == true)      // formato completo de la GR (2 x A4)
                 {
-
-
+                    // no imprimimos masivamente las guias mecanizadas
                 }
             }
             
