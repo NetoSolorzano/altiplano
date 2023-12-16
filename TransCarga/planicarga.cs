@@ -1645,10 +1645,10 @@ namespace TransCarga
                         int fila = 0;
                         for (int i = 0; i < dataGridView1.Rows.Count - 1; i++)
                         {
-                            if (dataGridView1.Rows[i].Cells[19].Value != null)   // fila marcada para borrar
+                            if (dataGridView1.Rows[i].Cells["Borra"].Value != null)   // fila marcada para borrar
                             {
                                 // saca la guia de detplacar
-                                if (dataGridView1.Rows[i].Cells[19].Value.ToString() == "True")
+                                if (dataGridView1.Rows[i].Cells["Borra"].Value.ToString() == "True")
                                 {
                                     string consulta = "borraseguro";
                                     using (MySqlCommand comed = new MySqlCommand(consulta, conn))
