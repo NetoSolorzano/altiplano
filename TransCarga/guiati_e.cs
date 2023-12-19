@@ -2053,195 +2053,196 @@ namespace TransCarga
         private void button1_Click(object sender, EventArgs e)
         {
             s_d_r = "Con";      // por defecto las guías van con documento relacionado 20/10/2023
-            #region validaciones generales del form
-            if (tx_serie.Text.Trim() == "")
-            {
-                tx_serie.Focus();
-                return;
-            }
-            // aca va la validacion de la numeracion
-            if (tx_n_auto.Text == "M" && tx_numero.Text.Trim() == "")
-            {
-                tx_numero.Focus();
-                return;
-            }
-            if (tx_dat_locori.Text.Trim() == "")
-            {
-                cmb_origen.Focus();
-                return;
-            }
-            if (tx_ubigO.Text.Trim() == "")
-            {
-                MessageBox.Show("Ingrese ubigeo correcto", " Error en origen! ");
-                tx_ubigO.Focus();
-                return;
-            }
-            if (tx_dat_locdes.Text.Trim() == "")
-            {
-                cmb_destino.Focus();
-                return;
-            }
-            if (tx_ubigD.Text.Trim() == "")
-            {
-                MessageBox.Show("Ingrese ubigeo correcto", " Error en destino! ");
-                tx_ubigD.Focus();
-                return;
-            }
-            if (tx_flete.Text.Trim() == "" || tx_flete.Text.Trim() == "0")
-            {
-                MessageBox.Show("Ingrese el valor del flete", " Atención ");
-                tx_flete.Focus();
-                return;
-            }
-            if (tx_totcant.Text.Trim() == "")
-            {
-                MessageBox.Show("Ingrese el detalle del envío", " Falta cantidad ");
-                tx_det_cant.Focus();
-                return;
-            }
-            if (tx_totpes.Text.Trim() == "")
-            {
-                MessageBox.Show("Ingrese el detalle del envío", " Falta peso ");
-                tx_det_peso.Focus();
-                return;
-            }
-            if (tx_det_umed.Text.Trim() == "")
-            {
-                MessageBox.Show("Ingrese el detalle del envío", " Falta unidad medida ");
-                tx_det_umed.Focus();
-                return;
-            }
-            if (tx_det_desc.Text.Trim() == "")
-            {
-                MessageBox.Show("Ingrese el detalle del envío", " Falta detalle");
-                tx_det_desc.Focus();
-                return;
-
-            }
-            if (tx_dat_tdRem.Text.Trim() == "")
-            {
-                MessageBox.Show("Seleccione el tipo de documento", " Error en Remitente ");
-                tx_dat_tdRem.Focus();
-                return;
-            }
-            if (tx_numDocRem.Text.Trim() == "")
-            {
-                MessageBox.Show("Ingrese el número de documento", " Error en Remitente ");
-                tx_numDocRem.Focus();
-                return;
-            }
-            if (tx_nomRem.Text.Trim() == "")
-            {
-                MessageBox.Show("Ingrese el nombre o razón social", " Error en Remitente ");
-                tx_nomRem.Focus();
-                return;
-            }
-            if (tx_dirRem.Text.Trim() == "")
-            {
-                MessageBox.Show("Ingrese la dirección", " Error en Remitente ");
-                tx_dirRem.Focus();
-                return;
-            }
-            if (tx_dptoRtt.Text.Trim() == "" || tx_provRtt.Text.Trim() == "" || tx_distRtt.Text.Trim() == "")
-            {
-                MessageBox.Show("Complete la dirección, departamento, provincia y distrito", "Error en remitente", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                tx_dirRem.Focus();
-                return;
-            }
-            if (tx_dat_tDdest.Text.Trim() == "")
-            {
-                MessageBox.Show("Seleccione el tipo de documento", " Error en Destinatario ");
-                tx_dat_tDdest.Focus();
-                return;
-            }
-            if (tx_numDocDes.Text.Trim() == "")
-            {
-                MessageBox.Show("Ingrese el número de documento", " Error en Destinatario ");
-                tx_numDocDes.Focus();
-                return;
-            }
-            if (tx_nomDrio.Text.Trim() == "")
-            {
-                MessageBox.Show("Ingrese el nombre o razón social", " Error en Destinatario ");
-                tx_nomDrio.Focus();
-                return;
-            }
-            if (tx_dirDrio.Text.Trim() == "")
-            {
-                MessageBox.Show("Ingrese la dirección", " Error en Destinatario ");
-                tx_dirDrio.Focus();
-                return;
-            }
-            if (tx_dptoDrio.Text.Trim() == "" || tx_proDrio.Text.Trim() == "" || tx_disDrio.Text.Trim() == "")
-            {
-                MessageBox.Show("Complete la dirección, departamento, provincia y distrito", "Error en destinatario", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                tx_dirDrio.Focus();
-                return;
-            }
-            if (tx_ubigRtt.Text.Trim().Length != 6)
-            {
-                MessageBox.Show("Seleccione correctamente Departamento, Provincia y Distrito","Seleccione en orden",MessageBoxButtons.OK,MessageBoxIcon.Error);
-                tx_dptoRtt.Focus();
-                return;
-            }
-            if (tx_ubigDtt.Text.Trim().Length != 6)
-            {
-                MessageBox.Show("Seleccione correctamente Departamento, Provincia y Distrito", "Seleccione en orden", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                tx_dptoDrio.Focus();
-                return;
-            }
-            if (tx_dat_mone.Text.Trim() == "")
-            {
-                MessageBox.Show("Seleccione el tipo de moneda", " Atención ");
-                cmb_mon.Focus();
-                return;
-            }
-            else
-            {
-                if (tx_dat_mone.Text.Trim() != MonDeft)
-                {
-                    tx_fletMN.Text = (decimal.Parse(tx_flete.Text) * decimal.Parse(tx_tipcam.Text)).ToString("#0.00");
-                }
-                else
-                {
-                    tx_fletMN.Text = tx_flete.Text;
-                }
-            }
-            if (tx_dat_tdRem.Text != vtc_ruc && tx_dat_docOr.Text.Trim() == "")     // tx_dat_docOr.Text.Trim() == ""
-            {
-                var aa = MessageBox.Show("Debería registrar al menos un documento origen" + Environment.NewLine +
-                    "desea continuar sin datos relacionados?", "Confirme documento relacionado",MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                if (aa == DialogResult.No)
-                {
-                    cmb_docorig.Focus();
-                    return;
-                }
-                else
-                {
-                    tx_rucEorig.Text = "";
-                    tx_docsOr.Text = "";
-                    tx_dat_docOr.Text = "";
-                    tx_dat_dorigS.Text = "";
-                    //
-                    tx_rucEorig2.Text = "";
-                    tx_docsOr2.Text = "";
-                    tx_dat_docOr2.Text = "";
-                    tx_dat_dorigS2.Text = "";
-                    //
-                    s_d_r = "Sin";
-                }
-            }       // solo remitentes sin ruc se puede permitir sin docs relacionados
-            if (tx_dat_tdRem.Text == vtc_ruc && tx_dat_docOr.Text.Trim() == "")
-            {
-                var aa = MessageBox.Show("Debe registrar al menos un documento origen", "Error, remitente con RUC", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                {
-                    cmb_docorig.Focus();
-                    return;
-                }
-            }       // remitente con RUC es ogligatorio al menos un doc relacionado
-            #endregion
             if (Tx_modo.Text == "NUEVO" || Tx_modo.Text == "EDITAR")
             {
+                #region validaciones generales del form
+                if (tx_serie.Text.Trim() == "")
+                {
+                    tx_serie.Focus();
+                    return;
+                }
+                // aca va la validacion de la numeracion
+                if (tx_n_auto.Text == "M" && tx_numero.Text.Trim() == "")
+                {
+                    tx_numero.Focus();
+                    return;
+                }
+                if (tx_dat_locori.Text.Trim() == "")
+                {
+                    cmb_origen.Focus();
+                    return;
+                }
+                if (tx_ubigO.Text.Trim() == "")
+                {
+                    MessageBox.Show("Ingrese ubigeo correcto", " Error en origen! ");
+                    tx_ubigO.Focus();
+                    return;
+                }
+                if (tx_dat_locdes.Text.Trim() == "")
+                {
+                    cmb_destino.Focus();
+                    return;
+                }
+                if (tx_ubigD.Text.Trim() == "")
+                {
+                    MessageBox.Show("Ingrese ubigeo correcto", " Error en destino! ");
+                    tx_ubigD.Focus();
+                    return;
+                }
+                if (tx_flete.Text.Trim() == "" || tx_flete.Text.Trim() == "0")
+                {
+                    MessageBox.Show("Ingrese el valor del flete", " Atención ");
+                    tx_flete.Focus();
+                    return;
+                }
+                if (tx_totcant.Text.Trim() == "")
+                {
+                    MessageBox.Show("Ingrese el detalle del envío", " Falta cantidad ");
+                    tx_det_cant.Focus();
+                    return;
+                }
+                if (tx_totpes.Text.Trim() == "")
+                {
+                    MessageBox.Show("Ingrese el detalle del envío", " Falta peso ");
+                    tx_det_peso.Focus();
+                    return;
+                }
+                if (tx_det_umed.Text.Trim() == "")
+                {
+                    MessageBox.Show("Ingrese el detalle del envío", " Falta unidad medida ");
+                    tx_det_umed.Focus();
+                    return;
+                }
+                if (tx_det_desc.Text.Trim() == "")
+                {
+                    MessageBox.Show("Ingrese el detalle del envío", " Falta detalle");
+                    tx_det_desc.Focus();
+                    return;
+
+                }
+                if (tx_dat_tdRem.Text.Trim() == "")
+                {
+                    MessageBox.Show("Seleccione el tipo de documento", " Error en Remitente ");
+                    tx_dat_tdRem.Focus();
+                    return;
+                }
+                if (tx_numDocRem.Text.Trim() == "")
+                {
+                    MessageBox.Show("Ingrese el número de documento", " Error en Remitente ");
+                    tx_numDocRem.Focus();
+                    return;
+                }
+                if (tx_nomRem.Text.Trim() == "")
+                {
+                    MessageBox.Show("Ingrese el nombre o razón social", " Error en Remitente ");
+                    tx_nomRem.Focus();
+                    return;
+                }
+                if (tx_dirRem.Text.Trim() == "")
+                {
+                    MessageBox.Show("Ingrese la dirección", " Error en Remitente ");
+                    tx_dirRem.Focus();
+                    return;
+                }
+                if (tx_dptoRtt.Text.Trim() == "" || tx_provRtt.Text.Trim() == "" || tx_distRtt.Text.Trim() == "")
+                {
+                    MessageBox.Show("Complete la dirección, departamento, provincia y distrito", "Error en remitente", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    tx_dirRem.Focus();
+                    return;
+                }
+                if (tx_dat_tDdest.Text.Trim() == "")
+                {
+                    MessageBox.Show("Seleccione el tipo de documento", " Error en Destinatario ");
+                    tx_dat_tDdest.Focus();
+                    return;
+                }
+                if (tx_numDocDes.Text.Trim() == "")
+                {
+                    MessageBox.Show("Ingrese el número de documento", " Error en Destinatario ");
+                    tx_numDocDes.Focus();
+                    return;
+                }
+                if (tx_nomDrio.Text.Trim() == "")
+                {
+                    MessageBox.Show("Ingrese el nombre o razón social", " Error en Destinatario ");
+                    tx_nomDrio.Focus();
+                    return;
+                }
+                if (tx_dirDrio.Text.Trim() == "")
+                {
+                    MessageBox.Show("Ingrese la dirección", " Error en Destinatario ");
+                    tx_dirDrio.Focus();
+                    return;
+                }
+                if (tx_dptoDrio.Text.Trim() == "" || tx_proDrio.Text.Trim() == "" || tx_disDrio.Text.Trim() == "")
+                {
+                    MessageBox.Show("Complete la dirección, departamento, provincia y distrito", "Error en destinatario", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    tx_dirDrio.Focus();
+                    return;
+                }
+                if (tx_ubigRtt.Text.Trim().Length != 6)
+                {
+                    MessageBox.Show("Seleccione correctamente Departamento, Provincia y Distrito", "Seleccione en orden", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    tx_dptoRtt.Focus();
+                    return;
+                }
+                if (tx_ubigDtt.Text.Trim().Length != 6)
+                {
+                    MessageBox.Show("Seleccione correctamente Departamento, Provincia y Distrito", "Seleccione en orden", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    tx_dptoDrio.Focus();
+                    return;
+                }
+                if (tx_dat_mone.Text.Trim() == "")
+                {
+                    MessageBox.Show("Seleccione el tipo de moneda", " Atención ");
+                    cmb_mon.Focus();
+                    return;
+                }
+                else
+                {
+                    if (tx_dat_mone.Text.Trim() != MonDeft)
+                    {
+                        tx_fletMN.Text = (decimal.Parse(tx_flete.Text) * decimal.Parse(tx_tipcam.Text)).ToString("#0.00");
+                    }
+                    else
+                    {
+                        tx_fletMN.Text = tx_flete.Text;
+                    }
+                }
+                if (tx_dat_tdRem.Text != vtc_ruc && tx_dat_docOr.Text.Trim() == "")     // tx_dat_docOr.Text.Trim() == ""
+                {
+                    var aa = MessageBox.Show("Debería registrar al menos un documento origen" + Environment.NewLine +
+                        "desea continuar sin datos relacionados?", "Confirme documento relacionado", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                    if (aa == DialogResult.No)
+                    {
+                        cmb_docorig.Focus();
+                        return;
+                    }
+                    else
+                    {
+                        tx_rucEorig.Text = "";
+                        tx_docsOr.Text = "";
+                        tx_dat_docOr.Text = "";
+                        tx_dat_dorigS.Text = "";
+                        //
+                        tx_rucEorig2.Text = "";
+                        tx_docsOr2.Text = "";
+                        tx_dat_docOr2.Text = "";
+                        tx_dat_dorigS2.Text = "";
+                        //
+                        s_d_r = "Sin";
+                    }
+                }       // solo remitentes sin ruc se puede permitir sin docs relacionados
+                if (tx_dat_tdRem.Text == vtc_ruc && tx_dat_docOr.Text.Trim() == "")
+                {
+                    var aa = MessageBox.Show("Debe registrar al menos un documento origen", "Error, remitente con RUC", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    {
+                        cmb_docorig.Focus();
+                        return;
+                    }
+                }       // remitente con RUC es ogligatorio al menos un doc relacionado
+                #endregion
+
                 #region validaciones GR electrónicas Sunat
                 if (tx_pla_dniChof.Text.Trim() == "")
                 {

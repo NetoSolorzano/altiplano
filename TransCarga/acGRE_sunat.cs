@@ -81,18 +81,51 @@ namespace TransCarga
                     if (response.ResponseStatus.ToString() != "Completed") retorna = false;
                     else retorna = true;
                     // actualizamos los campos de la tabla 
-                    string actua = "update " + nomTabla + " set nticket=@nti,fticket=@fti,estadoS=@est,cdr=@cdr where idg=@idg";
                     using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
                     {
                         conn.Open();
-                        using (MySqlCommand micon = new MySqlCommand(actua, conn))
+                        string busid = "select count(id) from adiguias where idg=@idg";
+                        using (MySqlCommand micon = new MySqlCommand(busid, conn))
                         {
                             micon.Parameters.AddWithValue("@idg", tx_idr);
-                            micon.Parameters.AddWithValue("@nti", result.numTicket);
-                            micon.Parameters.AddWithValue("@fti", result.fecRecepcion);
-                            micon.Parameters.AddWithValue("@est", "Enviado");
-                            micon.Parameters.AddWithValue("@cdr", "0");
-                            micon.ExecuteNonQuery();
+                            MySqlDataReader dr = micon.ExecuteReader();
+                            if (dr.Read())
+                            {
+                                if (dr.GetInt16(0) == 0)
+                                {
+                                    string actag = "insert into " + nomTabla + " (idg,serie,numero,nticket,fticket,estadoS,cdr) values (@idg,@seg,@nug,@nti,@fti,@est,@cdr)";
+                                    using (MySqlCommand mi0 = new MySqlCommand(actag, conn))
+                                    {
+                                        mi0.Parameters.AddWithValue("@idg", tx_idr);
+                                        mi0.Parameters.AddWithValue("@seg", tx_serie);
+                                        mi0.Parameters.AddWithValue("@nug", tx_numero);
+                                        mi0.Parameters.AddWithValue("@nti", result.numTicket);
+                                        mi0.Parameters.AddWithValue("@fti", result.fecRecepcion);
+                                        mi0.Parameters.AddWithValue("@est", "Enviado");
+                                        mi0.Parameters.AddWithValue("@cdr", "0");
+                                        mi0.ExecuteNonQuery();
+                                    }
+                                }
+                                if (dr.GetInt16(0) == 1)
+                                {
+                                    string actua = "update " + nomTabla + " set nticket=@nti,fticket=@fti,estadoS=@est,cdr=@cdr where idg=@idg";
+                                    using (MySqlCommand mi1 = new MySqlCommand(actua, conn))
+                                    {
+                                        mi1.Parameters.AddWithValue("@idg", tx_idr);
+                                        mi1.Parameters.AddWithValue("@nti", result.numTicket);
+                                        mi1.Parameters.AddWithValue("@fti", result.fecRecepcion);
+                                        mi1.Parameters.AddWithValue("@est", "Enviado");
+                                        mi1.Parameters.AddWithValue("@cdr", "0");
+                                        mi1.ExecuteNonQuery();
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                MessageBox.Show("Fallo en busqueda de registro en adiguias","Error interno",MessageBoxButtons.OK,MessageBoxIcon.Error);
+                                Application.Exit();
+                                return retorna = false;
+                            }
                         }
                     }
                 }
