@@ -1932,7 +1932,8 @@ namespace TransCarga
             {
                 //glosser2 = dataGridView1.Rows[s].Cells["OriDest"].Value.ToString() + " - " + tx_totcant.Text.Trim() + " " + tx_dat_nombd.Text; // " Bultos"; 
                 glosser2 = dataGridView1.Rows[s].Cells["OriDest"].Value.ToString() + " - " +
-                    dataGridView1.Rows[s].Cells["Cant"].Value.ToString() + " " + dataGridView1.Rows[s].Cells["umed"].Value.ToString(); // " Bultos"; 
+                    dataGridView1.Rows[s].Cells["Cant"].Value.ToString() + " " + 
+                    dataGridView1.Rows[s].Cells["umed"].Value.ToString() + " " + dataGridView1.Rows[s].Cells["guiasclte"].Value.ToString();
                 DataRow row = tdfe.NewRow();
                 row["Idatper"] = "";                                                        // datos personalizados del item
                 row["Idescri"] = glosser + " " + dataGridView1.Rows[s].Cells["Descrip"].Value.ToString() + " " + glosser2;   // Descripcion
@@ -3346,7 +3347,8 @@ namespace TransCarga
                 {
                     //glosser2 = dataGridView1.Rows[i].Cells["OriDest"].Value.ToString() + " - " + tx_totcant.Text.Trim() + " " + tx_dat_nombd.Text; // " Bultos"; 
                     string glosser2 = dataGridView1.Rows[i].Cells["OriDest"].Value.ToString() + " - " +
-                            dataGridView1.Rows[i].Cells["Cant"].Value.ToString() + " " + dataGridView1.Rows[i].Cells["umed"].Value.ToString();
+                            dataGridView1.Rows[i].Cells["Cant"].Value.ToString() + " " + 
+                            dataGridView1.Rows[i].Cells["umed"].Value.ToString() + " " + dataGridView1.Rows[i].Cells["guiasclte"].Value.ToString();
                     string descrip = dataGridView1.Rows[i].Cells[1].Value.ToString();
                     double preunit = double.Parse(dataGridView1.Rows[i].Cells[4].Value.ToString());
                     double valunit = double.Parse(dataGridView1.Rows[i].Cells[4].Value.ToString()) / (1 + (double.Parse(v_igv) / 100));

@@ -888,16 +888,16 @@ namespace TransCarga
             int totcant = 0;
             decimal totpes = 0;
             decimal totfle = 0, totpag = 0, totsal = 0;
-            //a.fila,a.numpreg,a.serguia,a.numguia,a.totcant,a.totpeso,b.descrizionerid as MON,a.totflet,a.totpag,a.salgri
+            // totcant, totpeso, totflet
             for (int i = 0; i < dataGridView1.Rows.Count; i++)
             {
                 if (Tx_modo.Text == "EDITAR" && tx_dat_estad.Text == codGene)
                 {
                     if (dataGridView1.Rows.Count > 0 && dataGridView1.Rows[i].Cells[13].Value != null)
                     {
-                        if (dataGridView1.Columns.Count > 19)
+                        if (dataGridView1.Columns.Count > 21)
                         {
-                            if (dataGridView1.Rows[i].Cells[19].Value.ToString() == "False")
+                            if (dataGridView1.Rows[i].Cells["Borra"].Value.ToString() == "False")
                             {
                                 if (dataGridView1.Rows[i].Cells[4].Value != null)
                                 {
