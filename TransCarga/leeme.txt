@@ -511,9 +511,10 @@ form repsoper, Guias Transp. -> agregar opciones de ordenamiento x Destinat y Re
 form repsoper, Guias Transp. -> que el check de impresion grupal sea marcado x defecto ............. ok 15/12/2023
 form repsoper, Guias Transp. -> impresion grupal con 2 copias ...................................... ok 16/12/2023
 form planicarga, modo Edicion, arreglo de check para retirar guia de la planilla ................... ok 16/12/2023
-clase acGRE_sunat, al regenerar xml, sino existe la GRE en adiguias debería crearla ................ ok 19/12/2023 falta probar
-form planicarga, no esta totalizando la grilla y no graba esos totales cuando cierras planilla ..... ok 19/12/2023 falta probar
-form facelect, agregar al detalle de los comprobantes "normales" la guia remitente ................. ok 19/12/2023 falta probar
+clase acGRE_sunat, al regenerar xml, sino existe la GRE en adiguias debería crearla ................ ok 19/12/2023
+form planicarga, no esta totalizando la grilla y no graba esos totales cuando cierras planilla ..... ok 19/12/2023
+form facelect, agregar al detalle de los comprobantes "normales" la guia remitente ................. ok 19/12/2023
+clase impGRE_T, adecuaciones de pamela y agregar cant de bultos en el formato TK ................... ok 23/12/2023
 Formatos crystal para los pdf de fcturas y boletas estándares:
 	- normales, soles y dolares, contado y crédito, con y sin detracción ........................... 
 	- cargas únicas ................................................................................ 

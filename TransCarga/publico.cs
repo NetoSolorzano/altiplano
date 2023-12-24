@@ -391,7 +391,7 @@ namespace TransCarga
                     dt[y, 0] = (y + 1).ToString();                           // detalle: Num de fila
                     dt[y, 1] = dtgrtdet.Rows[y]["cantprodi"].ToString();     // tx_det_cant.Text;                // detalle: Cant.
                     dt[y, 2] = dtgrtdet.Rows[y]["unimedpro"].ToString();     // detalle: Unidad de medida
-                    dt[y, 3] = gloDeta + " " + dtgrtdet.Rows[y]["descprodi"].ToString();    // detalle: Descripción
+                    dt[y, 3] = dtgrtdet.Rows[y]["descprodi"].ToString();    // detalle: Descripción     gloDeta + " " + 
                     dt[y, 4] = dtgrtdet.Rows[y][7].ToString();               // detalle: peso
 
                     string vi_formato = "";

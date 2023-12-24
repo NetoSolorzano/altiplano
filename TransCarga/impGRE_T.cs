@@ -203,10 +203,12 @@ namespace TransCarga
                 string dirclie = Program.dirfisc;
                 // TIPOS DE LETRA PARA EL DOCUMENTO FORMATO TICKET
                 Font lt_gra = new Font("Arial", 11);                // grande
-                Font lt_tit = new Font("Lucida Console", 10);       // mediano
+                Font lt_tit = new Font("Arial", 10);       // mediano
                 Font lt_med = new Font("Arial", 9);                 // normal textos
+                Font lt_medN = new Font("Arial", 9, FontStyle.Bold);                 // normal textos EN NEGRITA
                 Font lt_peq = new Font("Arial", 8);                 // pequeño
-                                                                    //
+                Font lt_peqN = new Font("Arial", 8, FontStyle.Bold);                 // pequeño EN NEGRITA
+                                                                     //
                 float anchTik = 7.8F;                               // ancho del TK en centimetros
                 int coli = 5;                                       // columna inicial
                 float posi = 20;                                    // posicion x,y inicial
@@ -234,14 +236,14 @@ namespace TransCarga
                     string titdoc = "Guía de Remisión Electrónica Transportista";
                     posi = posi + alfi + 8;
                     //float lt = (lib.CentimeterToPixel(anchTik) - e.Graphics.MeasureString(titdoc, lt_gra).Width) / 2;
-                    lt = (ancho - e.Graphics.MeasureString(titdoc, lt_gra).Width) / 2;
-                    puntoF = new PointF(lt, posi);
-                    e.Graphics.DrawString(titdoc, lt_gra, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                    //lt = (ancho - e.Graphics.MeasureString(titdoc, lt_tit).Width) / 2;
+                    puntoF = new PointF(1, posi);
+                    e.Graphics.DrawString(titdoc, lt_tit, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                     posi = posi + alfi + 8;
                     string titnum = "Nro. " + serie + " - " + corre;
                     //lt = (lib.CentimeterToPixel(anchTik) - e.Graphics.MeasureString(titnum, lt_gra).Width) / 2;
                     lt = (ancho - e.Graphics.MeasureString(titnum, lt_gra).Width) / 2;
-                    puntoF = new PointF(lt, posi);
+                    puntoF = new PointF(lt - 10, posi);
                     e.Graphics.DrawString(titnum, lt_gra, Brushes.Black, puntoF, StringFormat.GenericTypographic);
 
                     if (var[0] != "")
@@ -288,7 +290,7 @@ namespace TransCarga
                     e.Graphics.DrawString("Dom.Fiscal", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                     posi = posi + alfi;
                     puntoF = new PointF(coli + 20, posi);
-                    SizeF cuad = new SizeF(lib.CentimeterToPixel(anchTik) - (20), alfi * 2);
+                    SizeF cuad = new SizeF(lib.CentimeterToPixel(anchTik) - (30), alfi * 2);
                     RectangleF recdom = new RectangleF(puntoF, cuad);
                     e.Graphics.DrawString(dirclie, lt_peq, Brushes.Black, recdom, StringFormat.GenericTypographic);
                     posi = posi + alfi * 2;
@@ -399,7 +401,7 @@ namespace TransCarga
                     e.Graphics.DrawString(cab[13] + " " + cab[14], lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                     posi = posi + alfi;
                     puntoF = new PointF(coli + 20, posi);
-                    e.Graphics.DrawString(cab[15], lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                    e.Graphics.DrawString(cab[15], lt_peqN, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                     posi = posi + alfi;
                     puntoF = new PointF(coli + 20, posi);
                     e.Graphics.DrawString("Fecha de Traslado", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
@@ -478,12 +480,12 @@ namespace TransCarga
                     puntoF = new PointF(coli, posi);
                     e.Graphics.DrawString("Bienes a transportar", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                     posi = posi + alfi;
-                    for (int z=0; z < 3; z++)   // // #fila,a.cantprodi,a.unimedpro,a.descprodi,a.pesoprodi
+                    for (int z=0; z < 3; z++)       // #fila [0], cantprodi [1], unimedpro [2], descprodi [3], pesoprodi [4]
                     {
                         if (det[z, 4] != "")
                         {
                             puntoF = new PointF(coli + 20, posi);
-                            e.Graphics.DrawString(det[z, 4] + " " + ((cab[18] == "K") ? "KGM" : "TNM"),
+                            e.Graphics.DrawString(det[z, 1] + " " + det[z, 2] + " - " + det[z, 4] + " " + ((cab[18] == "K") ? "KGM" : "TNM"),
                                 lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                             string gDetalle = det[z, 3];
                             double xxx = (e.Graphics.MeasureString(gDetalle, lt_peq).Width / lib.CentimeterToPixel(anchTik)) + 1;
@@ -503,16 +505,16 @@ namespace TransCarga
                     e.Graphics.DrawString("", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                     posi = posi + alfi;
                     puntoF = new PointF(coli, posi);
-                    string previo = " M.N. " + cab[30];     // var[5];
+                    string previo = " M.N. " + decimal.Parse(cab[30]).ToString("#0");     // var[5];
                     //lt = (ancho - e.Graphics.MeasureString(previo, lt_med).Width) / 2;
                     puntoF = new PointF(coli, posi);
-                    e.Graphics.DrawString(previo, lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
-                    posi = posi + alfi * 3;
-                    puntoF = new PointF(coli + 20, posi);
-                    e.Graphics.DrawString("-------------------------", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                    e.Graphics.DrawString(previo, lt_medN, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                    posi = posi + alfi * 4;
+                    puntoF = new PointF(coli + 60, posi);
+                    e.Graphics.DrawString("----------------------------------------", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                     posi = posi + 10;
-                    puntoF = new PointF(coli + 20, posi);
-                    e.Graphics.DrawString(" Recibi Conforme", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                    puntoF = new PointF(coli + 60, posi);
+                    e.Graphics.DrawString("           Recibi Conforme", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                     posi = posi + alfi * 2;
                     string locyus = cab[28] + " - " + cab[27];
                     puntoF = new PointF(coli, posi);
