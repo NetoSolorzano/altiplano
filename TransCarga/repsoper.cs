@@ -1376,6 +1376,22 @@ namespace TransCarga
                         else
                         {
                             // para guías electrónicas no hay formato "simple" 21/09/2023
+                            // 29-12-2023 se habilita con la observacion de que en el caso de las guias electrónicas
+                            //            se debería hacer al menos una boleta
+                            conClie data = generareporte(0, dgv_hisDat);
+                            ReportDocument fimp = new ReportDocument();
+                            fimp.Load(v_CR_gr_simple);
+                            fimp.SetDataSource(data);
+                            try
+                            {
+                                fimp.PrintOptions.PrinterName = v_impTK;
+                                fimp.PrintToPrinter(int.Parse(vi_copias), false, 1, 1);
+                            }
+                            catch (Exception ex)
+                            {
+                                MessageBox.Show("No se encuentra la impresora de las guías simples" + Environment.NewLine +
+                                    ex.Message, "Error en configuración", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
                         }
                     }
                     else
