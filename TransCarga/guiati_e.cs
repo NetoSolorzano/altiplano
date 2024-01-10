@@ -2425,7 +2425,7 @@ namespace TransCarga
                             tx_docsOr.Focus();
                             return;
                         }
-                    }    // RUC emisor doc. relacionado GUIA remitente debe ser igual al ruc del remitente
+                    }    // RUC emisor doc. relacionado 1 GUIA remitente debe ser igual al ruc del remitente
                     if (tx_dat_dorigS2.Text != "" && "09".Contains(tx_dat_dorigS2.Text) &&
                         lib.IsAllDigits(tx_docsOr2.Text.Substring(0, 1)) == false)
                     {
@@ -2436,7 +2436,7 @@ namespace TransCarga
                             tx_docsOr2.Focus();
                             return;
                         }
-                    }                                       // RUC emisor doc. relacionado GUIA remitente debe ser igual al ruc del remitente
+                    }                                       // RUC emisor doc. relacionado 2 GUIA remitente debe ser igual al ruc del remitente
                     if (tx_dat_dorigS.Text != "" && "31".Contains(tx_dat_dorigS.Text) && lib.IsAllDigits(tx_docsOr.Text.Substring(0, 1)) == false)
                     {
                         if (tx_pla_ruc.Text != tx_rucEorig.Text)
@@ -2446,8 +2446,8 @@ namespace TransCarga
                             tx_pla_ruc.Focus();
                             return;
                         }
-                    }   // RUC emisor doc. relacionado GUIA Transportista debe ser igual al ruc del dueño del camion que hará el traslado
-                    if (tx_dat_dorigS2.Text != "" && "09".Contains(tx_dat_dorigS2.Text) &&
+                    }   // RUC emisor doc. relacionado 1 GUIA Transportista debe ser igual al ruc del dueño del camion que hará el traslado
+                    if (tx_dat_dorigS2.Text != "" && "31".Contains(tx_dat_dorigS2.Text) &&
                         lib.IsAllDigits(tx_docsOr2.Text.Substring(0, 1)) == false)
                     {
                         if (tx_pla_ruc.Text != tx_rucEorig2.Text)
