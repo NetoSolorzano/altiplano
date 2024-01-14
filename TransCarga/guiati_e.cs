@@ -225,13 +225,13 @@ namespace TransCarga
             tx_pregr_num.MaxLength = 8;     // numero de la pre-guia
             tx_serie.MaxLength = 4;         // serie guia
             tx_numero.MaxLength = 8;        // numero guia
-            tx_dirRem.MaxLength = 100;
+            tx_dirRem.MaxLength = 90;
             tx_nomRem.MaxLength = 100;           // nombre remitente
             tx_distRtt.MaxLength = 45;
             tx_provRtt.MaxLength = 45;
             tx_dptoRtt.MaxLength = 45;
             tx_nomDrio.MaxLength = 100;           // nombre destinatario
-            tx_dirDrio.MaxLength = 100;
+            tx_dirDrio.MaxLength = 90;
             tx_disDrio.MaxLength = 45;
             tx_proDrio.MaxLength = 45;
             tx_dptoDrio.MaxLength = 45;
@@ -2936,45 +2936,55 @@ namespace TransCarga
                     micon.Parameters.AddWithValue("@nbnam", Environment.MachineName);
                     micon.ExecuteNonQuery();
                 }
-                using (MySqlCommand micon = new MySqlCommand("select last_insert_id()", conn))
-                {
-                    using (MySqlDataReader dr = micon.ExecuteReader())
+                try
+                {   // agregado este try el 13/01/2024 para controlar errores en obtener el id y/o en las actualizaciones
+                    using (MySqlCommand micon = new MySqlCommand("select last_insert_id()", conn))
                     {
-                        if (dr.Read())
+                        using (MySqlDataReader dr = micon.ExecuteReader())
                         {
-                            tx_idr.Text = dr.GetString(0);
+                            if (dr.Read())
+                            {
+                                tx_idr.Text = dr.GetString(0);
+                            }
                         }
                     }
-                }
-                if (ipeeg == "API_SUNAT")       // en otro metodo no usamos la tabla adiguias
-                {
-                    // adicionales
-                    string actag = "insert into adiguias (idg,serie,numero) values (@idg,@seg,@nug)";
-                    using (MySqlCommand micon = new MySqlCommand(actag, conn))
+                    if (ipeeg == "API_SUNAT")       // en otro metodo no usamos la tabla adiguias
                     {
-                        micon.Parameters.AddWithValue("@idg", tx_idr.Text);
-                        micon.Parameters.AddWithValue("@seg", tx_serie.Text);
-                        micon.Parameters.AddWithValue("@nug", tx_numero.Text);
+                        // adicionales
+                        string actag = "insert into adiguias (idg,serie,numero,nticket) values (@idg,@seg,@nug,@ntk)";
+                        using (MySqlCommand micon = new MySqlCommand(actag, conn))
+                        {
+                            micon.Parameters.AddWithValue("@idg", tx_idr.Text);
+                            micon.Parameters.AddWithValue("@seg", tx_serie.Text);
+                            micon.Parameters.AddWithValue("@nug", tx_numero.Text);
+                            micon.Parameters.AddWithValue("@ntk", DateTime.Now.Ticks + "_" + asd);
+                            micon.ExecuteNonQuery();
+                        }
+                    }
+                    // detalle
+                    int fila = 1;
+                    string inserd2 = "update detguiai set " +
+                                    "cantprodi=@can,unimedpro=@uni,codiprodi=@cod,descprodi=@des,pesoprodi=@pes,precprodi=@preu,totaprodi=@pret " +
+                                    "where idc=@idr and fila=@fila";
+                    using (MySqlCommand micon = new MySqlCommand(inserd2, conn))
+                    {
+                        micon.Parameters.AddWithValue("@idr", tx_idr.Text);
+                        micon.Parameters.AddWithValue("@fila", fila);
+                        micon.Parameters.AddWithValue("@can", tx_det_cant.Text); // dataGridView1.Rows[i].Cells[0].Value.ToString());
+                        micon.Parameters.AddWithValue("@uni", tx_det_umed.Text); // dataGridView1.Rows[i].Cells[1].Value.ToString());
+                        micon.Parameters.AddWithValue("@cod", "");
+                        micon.Parameters.AddWithValue("@des", gloDeta + " " + tx_det_desc.Text);    // dataGridView1.Rows[i].Cells[2].Value.ToString().Trim());
+                        micon.Parameters.AddWithValue("@pes", tx_det_peso.Text);    // dataGridView1.Rows[i].Cells[3].Value.ToString());
+                        micon.Parameters.AddWithValue("@preu", "0");
+                        micon.Parameters.AddWithValue("@pret", "0");
                         micon.ExecuteNonQuery();
                     }
                 }
-                // detalle
-                int fila = 1;
-                string inserd2 = "update detguiai set " +
-                                "cantprodi=@can,unimedpro=@uni,codiprodi=@cod,descprodi=@des,pesoprodi=@pes,precprodi=@preu,totaprodi=@pret " +
-                                "where idc=@idr and fila=@fila";
-                using (MySqlCommand micon = new MySqlCommand(inserd2, conn))
+                catch (MySqlException ex)
                 {
-                    micon.Parameters.AddWithValue("@idr", tx_idr.Text);
-                    micon.Parameters.AddWithValue("@fila", fila);
-                    micon.Parameters.AddWithValue("@can", tx_det_cant.Text); // dataGridView1.Rows[i].Cells[0].Value.ToString());
-                    micon.Parameters.AddWithValue("@uni", tx_det_umed.Text); // dataGridView1.Rows[i].Cells[1].Value.ToString());
-                    micon.Parameters.AddWithValue("@cod", "");
-                    micon.Parameters.AddWithValue("@des", gloDeta + " " + tx_det_desc.Text);    // dataGridView1.Rows[i].Cells[2].Value.ToString().Trim());
-                    micon.Parameters.AddWithValue("@pes", tx_det_peso.Text);    // dataGridView1.Rows[i].Cells[3].Value.ToString());
-                    micon.Parameters.AddWithValue("@preu", "0");
-                    micon.Parameters.AddWithValue("@pret", "0");
-                    micon.ExecuteNonQuery();
+                    MessageBox.Show("Ocurrio un error interno" + Environment.NewLine + 
+                        "el programa continuara su ejecución" + Environment.NewLine +
+                        ex.Message,"Atención",MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
                 // clientes 
                 string actua = "update anagrafiche set Direcc1=@ndir,ubigeo=@ubig,Localidad=@dist,Provincia=@prov,depart=@depa," +
