@@ -1089,7 +1089,7 @@ namespace TransCarga
                 DataTable dtg = (DataTable)dgv_regvtas.DataSource;
                 dtg.DefaultView.RowFilter = dgv_regvtas.FilterString;
             }
-            if (tabControl1.SelectedTab.Name == "tabfacts")
+            if (tabControl1.SelectedTab.Name == "tabSunat")
             {
                 DataTable dtg = (DataTable)dgv_sunat_est.DataSource;
                 dtg.DefaultView.RowFilter = dgv_sunat_est.FilterString;

@@ -3345,15 +3345,30 @@ namespace TransCarga
                 // DETALLE
                 for (int i=0; i< dataGridView1.Rows.Count - 1; i++)
                 {
-                    //glosser2 = dataGridView1.Rows[i].Cells["OriDest"].Value.ToString() + " - " + tx_totcant.Text.Trim() + " " + tx_dat_nombd.Text; // " Bultos"; 
-                    string glosser2 = dataGridView1.Rows[i].Cells["OriDest"].Value.ToString() + " - " +
-                            dataGridView1.Rows[i].Cells["Cant"].Value.ToString() + " " + 
-                            dataGridView1.Rows[i].Cells["umed"].Value.ToString() + " " + dataGridView1.Rows[i].Cells["guiasclte"].Value.ToString();
-                    string descrip = dataGridView1.Rows[i].Cells[1].Value.ToString();
-                    double preunit = double.Parse(dataGridView1.Rows[i].Cells[4].Value.ToString());
-                    double valunit = double.Parse(dataGridView1.Rows[i].Cells[4].Value.ToString()) / (1 + (double.Parse(v_igv) / 100));
-                    double sumimpl = double.Parse(dataGridView1.Rows[i].Cells[4].Value.ToString()) - valunit;
+                    string glosser2 = "";       // detalle de la linea
+                    string descrip = "";        // descripcion del la linea
+                    double preunit = 0;         // precio unitario de la linea
+                    double valunit = 0;         // valor sin igv de la linea
+                    double sumimpl = 0;         // igv de la fila
 
+                    glosser2 = dataGridView1.Rows[i].Cells["OriDest"].Value.ToString() + " - " +
+                        dataGridView1.Rows[i].Cells["Cant"].Value.ToString() + " " +
+                        dataGridView1.Rows[i].Cells["umed"].Value.ToString() + " " + dataGridView1.Rows[i].Cells["guiasclte"].Value.ToString();
+                    descrip = dataGridView1.Rows[i].Cells[1].Value.ToString();
+
+                    if (tx_dat_mone.Text == MonDeft)
+                    {
+                        preunit = double.Parse(dataGridView1.Rows[i].Cells[4].Value.ToString());
+                        valunit = double.Parse(dataGridView1.Rows[i].Cells[4].Value.ToString()) / (1 + (double.Parse(v_igv) / 100));
+                        sumimpl = double.Parse(dataGridView1.Rows[i].Cells[4].Value.ToString()) - valunit;
+                    }
+                    else
+                    {
+                        // solo somos bi moneda , soles y dolares, sino no es soles entonces es dolares
+                        preunit = Math.Round(double.Parse(dataGridView1.Rows[i].Cells[4].Value.ToString()) / double.Parse(tx_tipcam.Text), 2);
+                        valunit = Math.Round(preunit / (1 + (double.Parse(v_igv) / 100)), 2); // double.Parse(dataGridView1.Rows[i].Cells[4].Value.ToString()) / (1 + (double.Parse(v_igv) / 100));
+                        sumimpl = Math.Round(preunit - valunit, 2); // double.Parse(dataGridView1.Rows[i].Cells[4].Value.ToString()) - valunit;
+                    }
                     metela = "insert into dt_detdv (" +
                         "NumDVta,Numline,Cantprd,CodMone,ValVtaI,PreVtaU,ValIgvI,DesDet1,DesDet2,CodIntr,ValUnit,ValPeso,UniMedS," +
                         "GuiaTra,CodTipG,PorcIgv,CodSunI,CodSunT,NomSunI,NomIntI) values (" +
