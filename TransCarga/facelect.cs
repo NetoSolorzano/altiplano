@@ -642,7 +642,7 @@ namespace TransCarga
                             // campos de carga unica
                             // a.placa,a.confveh,a.autoriz,a.detPeso,a.detputil,a.detMon1,a.detMon2,a.detMon3,a.dirporig,a.ubiporig,a.dirpdest,a.ubipdest,
                             // ad.placa,ad.confv,ad.autoriz,ad.cargaEf,ad.cargaUt,ad.rucTrans,ad.nomTrans,ad.fecIniTras,ad.dirPartida,ad.ubiPartida,ad.dirDestin,ad.ubiDestin,ad.dniChof,ad.brevete,ad.valRefViaje,ad.valRefVehic,ad.valRefTon "
-                            if (dr.GetInt16("cargaunica") == 1)
+                            if (true)       // dr.GetInt16("cargaunica") == 1  ... 16/02/2024
                             {
                                 tx_pla_placa.Text = dr.GetString("placa");
                                 tx_pla_confv.Text = dr.GetString("confv");
@@ -662,7 +662,7 @@ namespace TransCarga
                                 tx_valref2.Text = dr.GetString("valRefVehic");
                                 tx_valref3.Text = dr.GetString("valRefTon");
 
-                                chk_cunica.Checked = true;
+                                if (dr.GetInt16("cargaunica") == 1) chk_cunica.Checked = true;
                                 string[] retub = lib.retDPDubigeo(tx_dat_upo.Text);
                                 tx_dp_dep.Text = retub[0];
                                 tx_dp_pro.Text = retub[1];
@@ -1181,7 +1181,7 @@ namespace TransCarga
         }
         private void cargaunica()               // campos de carga unica
         {
-            if (chk_cunica.Checked == true)  // Tx_modo.Text == "NUEVO" && 
+            if (true)  // chk_cunica.Checked == true  ... 16/02/2024
             {
                 //panel2.Enabled = true;
                 tx_dat_dpo.Enabled = true;
@@ -3110,6 +3110,7 @@ namespace TransCarga
                     "cu_dipll varchar(50), " +           // Distrito del punto de llegada
                     "cu_ddpll varchar(200), " +          // Dirección detallada del punto de llegada
                     "cu_placa varchar(7), " +            // Placa del Vehículo
+                    "cu_confv varchar(7), " +            // Configuracion vehicular
                     "cu_coins varchar(15), " +           // Constancia de inscripción del vehículo o certificado de habilitación vehicular
                     "cu_marca varchar(50), " +           // Marca del Vehículo
                     "cu_breve varchar(15), " +           // Nro.de licencia de conducir
@@ -3202,14 +3203,14 @@ namespace TransCarga
                     "TipDocu,CodLey1,MonLetr,CodMonS,DstTipdoc,DstNumdoc,DstNomTdo,DstNombre,DstDirecc,DstDepart,DstProvin,DstDistri,DstUrbani,DstUbigeo,ImpTotImp," +
                     "ImpOpeGra,ImpIgvTot,ImpOtrosT,IgvCodSun,IgvConInt,IgvNomSun,IgvCodInt,TotValVta,TotPreVta,TotDestos,TotOtrCar,TotaVenta," +
                     "CanFilDet,CtaDetra,PorDetra,ImpDetra,GloDetra,CodTipDet,CondPago,CodTipOpe," +
-                    "cu_cpapp,cu_ubipp,cu_deppp,cu_propp,cu_dispp,cu_urbpp,cu_dirpp,cu_cppll,cu_ubpll,cu_depll,cu_prpll,cu_dipll,cu_ddpll," +
+                    "cu_cpapp,cu_ubipp,cu_deppp,cu_propp,cu_dispp,cu_urbpp,cu_dirpp,cu_cppll,cu_ubpll,cu_depll,cu_prpll,cu_dipll,cu_ddpll,cu_confv," +
                     "cu_placa,cu_coins,cu_marca,cu_breve,cu_ructr,cu_nomtr,cu_modtr,cu_pesbr,cu_motra,cu_fechi,cu_remtc,cu_nudch,cu_tidch,cu_plac2,cu_insub,cu_marCU) " +
                     "values (" +
                     "@EmisRuc,@EmisNom,@EmisCom,@CodLocA,@EmisUbi,@EmisDir,@EmisDep,@EmisPro,@EmisDis,@EmisUrb,@EmisPai,@EmisCor,@NumDVta,@FecEmis,@HorEmis,@CodComp,@FecVcto," +
                     "@TipDocu,@CodLey1,@MonLetr,@CodMonS,@DstTipd,@DstNumd,@DstNomT,@DstNomb,@DstDire,@DstDepa,@DstProv,@DstDist,@DstUrba,@DstUbig,@ImpTotI," +
                     "@ImpOpeG,@ImpIgvT,@ImpOtro,@IgvCodS,@IgvConI,@IgvNomS,@IgvCodI,@TotValV,@TotPreV,@TotDest,@TotOtrC,@TotaVen," +
                     "@CanFilD,@CtaDetr,@PorDetr,@ImpDetr,@GloDetr,@CodTipD,@CondPag,@CodTipO," +
-                    "@cu_cpapp,@cu_ubipp,@cu_deppp,@cu_propp,@cu_dispp,@cu_urbpp,@cu_dirpp,@cu_cppll,@cu_ubpll,@cu_depll,@cu_prpll,@cu_dipll,@cu_ddpll," +
+                    "@cu_cpapp,@cu_ubipp,@cu_deppp,@cu_propp,@cu_dispp,@cu_urbpp,@cu_dirpp,@cu_cppll,@cu_ubpll,@cu_depll,@cu_prpll,@cu_dipll,@cu_ddpll,@cu_confv," +
                     "@cu_placa,@cu_coins,@cu_marca,@cu_breve,@cu_ructr,@cu_nomtr,@cu_modtr,@cu_pesbr,@cu_motra,@cu_fechi,@cu_remtc,@cu_nudch,@cu_tidch,@cu_plac2,@cu_insub,@cu_marCU)";
                 using (SqliteCommand cmd = new SqliteCommand(metela, cnx))
                 {
@@ -3239,8 +3240,8 @@ namespace TransCarga
                     cmd.Parameters.AddWithValue("@DstTipd", tipoDocEmi);
                     cmd.Parameters.AddWithValue("@DstNumd", tx_numDocRem.Text);
                     cmd.Parameters.AddWithValue("@DstNomT", "");                // glosa, texto o nombre sunat del doc del destinatario
-                    cmd.Parameters.AddWithValue("@DstNomb", tx_nomRem.Text);
-                    cmd.Parameters.AddWithValue("@DstDire", tx_dirRem.Text);
+                    cmd.Parameters.AddWithValue("@DstNomb", tx_nomRem.Text);    // "<![CDATA[" + tx_nomRem.Text + "]]>"  ... no funca
+                    cmd.Parameters.AddWithValue("@DstDire", tx_dirRem.Text);    // "<![CDATA[" + tx_dirRem.Text + "]]>"
                     cmd.Parameters.AddWithValue("@DstDepa", tx_dptoRtt.Text);
                     cmd.Parameters.AddWithValue("@DstProv", tx_provRtt.Text);
                     cmd.Parameters.AddWithValue("@DstDist", tx_distRtt.Text);
@@ -3275,69 +3276,42 @@ namespace TransCarga
                     cmd.Parameters.AddWithValue("@GloDetr", (detrac == "si") ? glosdetra + " " + Program.ctadetra : "");
                     cmd.Parameters.AddWithValue("@CodTipD", (detrac == "si") ? Program.coddetra : "");
                     cmd.Parameters.AddWithValue("@CondPag", (rb_contado.Checked == true) ? "Contado" : "Credito");
-                    cmd.Parameters.AddWithValue("@CodTipO", (detrac == "si") ? "1001" : "0101");    // 0101=venta interna, 1001=vta interna sujeta a detracción
-                    if (chk_cunica.Checked == true)
+                    cmd.Parameters.AddWithValue("@CodTipO", (detrac == "si") ? "1004" : "0101");    // 0101=venta interna, 1001=vta interna sujeta a detracción, 1004=Op. Sujeta a Detracción - Servicios de Transporte Carga
+                    cmd.Parameters.AddWithValue("@cu_cpapp", "PE");         // Código país del punto de origen
+                    cmd.Parameters.AddWithValue("@cu_ubipp", tx_dat_upo.Text);         // Ubigeo del punto de partida 
+                    cmd.Parameters.AddWithValue("@cu_deppp", tx_dp_dep.Text);         // Departamento del punto de partida
+                    cmd.Parameters.AddWithValue("@cu_propp", tx_dp_pro.Text);         // Provincia del punto de partida 
+                    cmd.Parameters.AddWithValue("@cu_dispp", tx_dp_dis.Text);         // Distrito del punto de partida
+                    cmd.Parameters.AddWithValue("@cu_urbpp", "");         // Urbanización del punto de partida
+                    cmd.Parameters.AddWithValue("@cu_dirpp", tx_dat_dpo.Text);         // Dirección detallada del punto de partida
+                    cmd.Parameters.AddWithValue("@cu_cppll", "PE");         // Código país del punto de llegada
+                    cmd.Parameters.AddWithValue("@cu_ubpll", tx_dat_upd.Text);         // Ubigeo del punto de llegada
+                    cmd.Parameters.AddWithValue("@cu_depll", tx_dd_dep.Text);         // Departamento del punto de llegada
+                    cmd.Parameters.AddWithValue("@cu_prpll", tx_dd_pro.Text);         // Provincia del punto de llegada
+                    cmd.Parameters.AddWithValue("@cu_dipll", tx_dd_dis.Text);         // Distrito del punto de llegada
+                    cmd.Parameters.AddWithValue("@cu_ddpll", tx_dat_dpd.Text);         // Dirección detallada del punto de llegada
+                    cmd.Parameters.AddWithValue("@cu_placa", tx_pla_placa.Text);         // Placa del Vehículo
+                    cmd.Parameters.AddWithValue("@cu_confv", tx_pla_confv.Text);         // configuración vehicular
+                    cmd.Parameters.AddWithValue("@cu_coins", tx_pla_autor.Text);         // Constancia de inscripción del vehículo o certificado de habilitación vehicular
+                    cmd.Parameters.AddWithValue("@cu_marca", "");         // Marca del Vehículo  
+                    cmd.Parameters.AddWithValue("@cu_breve", "");         // Nro.de licencia de conducir
+                    cmd.Parameters.AddWithValue("@cu_ructr", tx_rucT.Text);         // RUC del transportista
+                    cmd.Parameters.AddWithValue("@cu_nomtr", tx_razonS.Text);         // Razón social del Transportista
+                    cmd.Parameters.AddWithValue("@cu_modtr", texmotran);         // Modalidad de Transporte
+                    cmd.Parameters.AddWithValue("@cu_pesbr", tx_cetm.Text);         // Total Peso Bruto    02
+                    cmd.Parameters.AddWithValue("@cu_motra", codtxmotran);          // Código de Motivo de Traslado    01
+                    cmd.Parameters.AddWithValue("@cu_fechi", tx_fecini.Text);         // Fecha de Inicio de Traslado 
+                    cmd.Parameters.AddWithValue("@cu_remtc", (tx_rucT.Text.Trim() != Program.ruc) ? "faltAdecuar" : Program.regmtc);         // Registro MTC
+                    cmd.Parameters.AddWithValue("@cu_nudch", tx_dniChof.Text);         // Nro.Documento del conductor 
+                    cmd.Parameters.AddWithValue("@cu_tidch", 1);         // Tipo de Documento del conductor
+                    cmd.Parameters.AddWithValue("@cu_plac2", "");         // Placa del Vehículo secundario
+                    cmd.Parameters.AddWithValue("@cu_insub", (tx_rucT.Text.Trim() != Program.ruc) ? "true" : "false");         // Indicador de subcontratación (true/false)
+                    if (chk_cunica.Checked == true)         // 15/02/2024
                     {
-                        cmd.Parameters.AddWithValue("@cu_cpapp", "PE");         // Código país del punto de origen
-                        cmd.Parameters.AddWithValue("@cu_ubipp", tx_dat_upo.Text);         // Ubigeo del punto de partida 
-                        cmd.Parameters.AddWithValue("@cu_deppp", tx_dp_dep.Text);         // Departamento del punto de partida
-                        cmd.Parameters.AddWithValue("@cu_propp", tx_dp_pro.Text);         // Provincia del punto de partida 
-                        cmd.Parameters.AddWithValue("@cu_dispp", tx_dp_dis.Text);         // Distrito del punto de partida
-                        cmd.Parameters.AddWithValue("@cu_urbpp", "");         // Urbanización del punto de partida
-                        cmd.Parameters.AddWithValue("@cu_dirpp", tx_dat_dpo.Text);         // Dirección detallada del punto de partida
-                        cmd.Parameters.AddWithValue("@cu_cppll", "PE");         // Código país del punto de llegada
-                        cmd.Parameters.AddWithValue("@cu_ubpll", tx_dat_upd.Text);         // Ubigeo del punto de llegada
-                        cmd.Parameters.AddWithValue("@cu_depll", tx_dd_dep.Text);         // Departamento del punto de llegada
-                        cmd.Parameters.AddWithValue("@cu_prpll", tx_dd_pro.Text);         // Provincia del punto de llegada
-                        cmd.Parameters.AddWithValue("@cu_dipll", tx_dd_dis.Text);         // Distrito del punto de llegada
-                        cmd.Parameters.AddWithValue("@cu_ddpll", tx_dat_dpd.Text);         // Dirección detallada del punto de llegada
-                        cmd.Parameters.AddWithValue("@cu_placa", tx_pla_placa.Text);         // Placa del Vehículo
-                        cmd.Parameters.AddWithValue("@cu_coins", tx_pla_autor.Text);         // Constancia de inscripción del vehículo o certificado de habilitación vehicular
-                        cmd.Parameters.AddWithValue("@cu_marca", "");         // Marca del Vehículo  
-                        cmd.Parameters.AddWithValue("@cu_breve", "");         // Nro.de licencia de conducir
-                        cmd.Parameters.AddWithValue("@cu_ructr", tx_rucT.Text);         // RUC del transportista
-                        cmd.Parameters.AddWithValue("@cu_nomtr", tx_razonS.Text);         // Razón social del Transportista
-                        cmd.Parameters.AddWithValue("@cu_modtr", texmotran);         // Modalidad de Transporte
-                        cmd.Parameters.AddWithValue("@cu_pesbr", tx_cetm.Text);         // Total Peso Bruto    02
-                        cmd.Parameters.AddWithValue("@cu_motra", codtxmotran);          // Código de Motivo de Traslado    01
-                        cmd.Parameters.AddWithValue("@cu_fechi", tx_fecini.Text);         // Fecha de Inicio de Traslado 
-                        cmd.Parameters.AddWithValue("@cu_remtc", (tx_rucT.Text.Trim() != Program.ruc) ? "faltAdecuar" : Program.regmtc);         // Registro MTC
-                        cmd.Parameters.AddWithValue("@cu_nudch", tx_dniChof.Text);         // Nro.Documento del conductor 
-                        cmd.Parameters.AddWithValue("@cu_tidch", 1);         // Tipo de Documento del conductor
-                        cmd.Parameters.AddWithValue("@cu_plac2", "");         // Placa del Vehículo secundario
-                        cmd.Parameters.AddWithValue("@cu_insub", (tx_rucT.Text.Trim() != Program.ruc) ? "true" : "false");         // Indicador de subcontratación (true/false)
                         cmd.Parameters.AddWithValue("@cu_marCU", "1");          // 1=carga unica, 0=carga normal
                     }
                     else
                     {
-                        cmd.Parameters.AddWithValue("@cu_cpapp", "");
-                        cmd.Parameters.AddWithValue("@cu_ubipp", "");
-                        cmd.Parameters.AddWithValue("@cu_deppp", "");
-                        cmd.Parameters.AddWithValue("@cu_propp", "");
-                        cmd.Parameters.AddWithValue("@cu_dispp", "");
-                        cmd.Parameters.AddWithValue("@cu_urbpp", "");
-                        cmd.Parameters.AddWithValue("@cu_dirpp", "");
-                        cmd.Parameters.AddWithValue("@cu_cppll", "");
-                        cmd.Parameters.AddWithValue("@cu_ubpll", "");
-                        cmd.Parameters.AddWithValue("@cu_depll", "");
-                        cmd.Parameters.AddWithValue("@cu_prpll", "");
-                        cmd.Parameters.AddWithValue("@cu_dipll", "");
-                        cmd.Parameters.AddWithValue("@cu_ddpll", "");
-                        cmd.Parameters.AddWithValue("@cu_placa", "");
-                        cmd.Parameters.AddWithValue("@cu_coins", "");
-                        cmd.Parameters.AddWithValue("@cu_marca", "");
-                        cmd.Parameters.AddWithValue("@cu_breve", "");
-                        cmd.Parameters.AddWithValue("@cu_ructr", "");
-                        cmd.Parameters.AddWithValue("@cu_nomtr", "");
-                        cmd.Parameters.AddWithValue("@cu_modtr", "");
-                        cmd.Parameters.AddWithValue("@cu_pesbr", "");
-                        cmd.Parameters.AddWithValue("@cu_motra", "");
-                        cmd.Parameters.AddWithValue("@cu_fechi", "");
-                        cmd.Parameters.AddWithValue("@cu_remtc", "");
-                        cmd.Parameters.AddWithValue("@cu_nudch", "");
-                        cmd.Parameters.AddWithValue("@cu_tidch", "");
-                        cmd.Parameters.AddWithValue("@cu_plac2", "");
-                        cmd.Parameters.AddWithValue("@cu_insub", "false");           // true/false
                         cmd.Parameters.AddWithValue("@cu_marCU", "0");          // 1=carga unica, 0=carga normal
                     }
                     cmd.ExecuteNonQuery();
@@ -3709,6 +3683,7 @@ namespace TransCarga
                 tx_flete_Leave(null, null);
                 rb_si.Checked = false;
                 rb_no.Checked = false;   // true
+                cargaunica();               // llamamos a la carga de carga de datos complementarios para la detracción y otros mas  ... 16/02/2024
             }
         }
         private void button1_Click(object sender, EventArgs e)
@@ -4392,7 +4367,7 @@ namespace TransCarga
                     retorna = true;         // no hubo errores!
                 }
                 // adicionales a la factura
-                if (chk_cunica.Checked == true)
+                if (true)         // chk_cunica.Checked == true  ... 16/02/2024
                 {
                     string insert = "insert into adifactu (idc,tipoAd,placa,confv,autoriz,cargaEf,cargaUt,rucTrans,nomTrans,fecIniTras,dirPartida,ubiPartida," +
                         "dirDestin,ubiDestin,dniChof,brevete,valRefViaje,valRefVehic,valRefTon) " +
@@ -4401,7 +4376,7 @@ namespace TransCarga
                     using (MySqlCommand micon = new MySqlCommand(insert, conn))
                     {
                         micon.Parameters.AddWithValue("@idr", tx_idr.Text);
-                        micon.Parameters.AddWithValue("@tiad", "1");    // 1=carga unica
+                        micon.Parameters.AddWithValue("@tiad", (chk_cunica.Checked == true) ? "1" : "0");    // 1=carga unica
                         micon.Parameters.AddWithValue("@plac", tx_pla_placa.Text);
                         micon.Parameters.AddWithValue("@conf", tx_pla_confv.Text);
                         micon.Parameters.AddWithValue("@auto", tx_pla_autor.Text);
@@ -5205,7 +5180,7 @@ namespace TransCarga
         }
         private void chk_cunica_CheckedChanged(object sender, EventArgs e)
         {
-            cargaunica();
+            //cargaunica();
             if (chk_cunica.Checked == true)
             {
                 if (Tx_modo.Text != "NUEVO") panel2.Enabled = false;

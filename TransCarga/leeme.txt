@@ -521,6 +521,22 @@ P.A. corre_serie, le puse el start transaction y el commit .....................
 form repsoper, Seguimiento GR -> permtir imprimir notitas .......................................... ok 29/12/2023
 form guiati_e, corrección error de dedo en validacion sunat 2do doc relacionado .................... ok 10/01/2024
 form guiati_e, arreglar problema de la actualización del detalle y nticket de adiguias ............. ok 13/01/2024
+form facelect, opción FACT.DIRECTA desde sistema del contribuyente a los metodos de gestión:
+	- F y B normales, sin detracción en soles al contado ........................................... ok 10/09/2023
+	- Fact normales, sin detracción en soles al crédito ............................................ ok 10/09/2023 .. por consultar detrac 1001 o 1004 
+	- Fact normales, CON detracción en soles al contado ............................................ ok 13/02/2024 .. por consultar detrac 1001 o 1004 
+	- Fact normales, CON detracción en soles al crédito ............................................ ok 13/02/2024 .. por consultar detrac 1001 o 1004 
+	- F y B normales, sin detracción en DOLARES al contado ......................................... ok 13/02/2022 .. por consultar detrac 1001 o 1004 
+	OJO, falta contemplar el caso en la GR esta dolares y se desea una F/B en soles ................ 
+	- Fact normales, sin detracción en DOLARES al crédito .......................................... ok 13/02/2024 .. por consultar detrac 1001 o 1004 
+	- Fact normales, CON detracción en DOLARES al contado .......................................... ok 13/02/2024 .. por consultar detrac 1001 o 1004 
+	- Fact normales, CON detracción en DOLARES al crédito .......................................... ok 16/02/2024 .. Yo decidí usar el 1004 para todos los casos, aun no consulto con Antonio
+form facelect, adecuaciones para grabar datos adicionales de transporte para detracciones .......... ok 16/02/2024
+form repsventas, agregar columna boton XML para descargar de forma similar al CDR .................. falta una función para generar xml de un comprobante existente y aceptada por sunat
+	- Fact cargas unicas, con detracción en soles al contado ....................................... ok 16/02/2024 
+	- Fact cargas unicas, con detracción en dolares al contado ..................................... ok 16/02/2024 
+	- Fact cargas unicas, con detracción en soles al crédito ....................................... 
+	- Fact cargas unicas, con detracción en dolares al credito ..................................... 
 form guiati_e, colocar en la descripción de cada fila detalle <cant><bultos> en GRE SUNAT .......... 
 Formatos crystal para los pdf de fcturas y boletas estándares:
 	- normales, soles y dolares, contado y crédito, con y sin detracción ........................... 
@@ -529,13 +545,3 @@ Formatos crystal para los pdf de fcturas y boletas estándares:
 	- contado/credito ..............................................................................
 form notcredclts, habilitar y agregar modo corrección de descripción ............................... 
 form facelect, considerar que sunat responda con error o cdr rechazo ............................... me quede acá 11/09/2023
-form facelect, opción FACT.DIRECTA desde sistema del contribuyente a los metodos de gestión:
-	- F y B normales, sin detracción en soles al contado ........................................... ok 10/09/2023
-	- Fact normales, sin detracción en soles al crédito ............................................ ok 10/09/2023 .. por consultar detrac 1001 o 1004 
-	- Fact normales, CON detracción en soles al contado ............................................ ok 13/02/2024 .. por consultar detrac 1001 o 1004 
-	- Fact normales, CON detracción en soles al crédito ............................................ ok 13/02/2024 .. por consultar detrac 1001 o 1004 
-	- F y B normales, sin detracción en DOLARES al contado ......................................... ok 13/02/2022 .. por consultar detrac 1001 o 1004 
-	OJO, falta contemplar el caso en la GR esta dolares y se desea una F/B en soles ................ 
-	- Fact normales, sin detracción en DOLARES al crédito ..........................................  .. por consultar detrac 1001 o 1004 
-	- Fact normales, CON detracción en DOLARES al contado ..........................................  .. por consultar detrac 1001 o 1004 
-	- Fact normales, CON detracción en DOLARES al crédito ..........................................  .. por consultar detrac 1001 o 1004 
