@@ -3046,6 +3046,7 @@ namespace TransCarga
                     "EmisUrb varchar(50), " +           // urbanización, pueblo, localidad
                     "EmisPai varchar(2), " +            // código sunat del país emisor
                     "EmisCor varchar(100), " +          // correo del emisor de la guía
+                    "EmisTel varchar(11), " +           // teléfono del emisor
                     "NumDVta varchar(12), " +           // serie+numero
                     "FecEmis varchar(10), " +
                     "HorEmis varchar(8), " +
@@ -3066,8 +3067,10 @@ namespace TransCarga
                     "DstDistri varchar(50), " +
                     "DstUrbani varchar(50), " +         // urbanización, pueblo, localidad
                     "DstUbigeo varchar(6), " +          // ubigeo de la direc del cliente                       - 20
+                    "DstCorre varchar(100), " +         // correo del cliente
+                    "DstTelef varchar(11), " +          // teléfono del cliente
                     // Información de descuentos Globales               // no usamos dsctos globales 17/06/2023 - 21
-                    
+
                     // Información de importes 
                     "ImpTotImp decimal(12,2), " +       // Monto total de impuestos                             - 22 TaxAmount
                     "ImpOpeGra decimal(12,2), " +       // Monto las operaciones gravadas                       - 23 TaxableAmount
@@ -3093,8 +3096,9 @@ namespace TransCarga
                     "GloDetra varchar(200), " +          // Glosa general de la detracción
                     "CodTipDet varchar(3), " +           // Código sunat tipo de detraccion (027 transporte de carga)
                     "CondPago varchar(10), " +           // Condicion de pago
-                    "CodTipDoc varchar(2), " +          // Código sunat para el tipo de documento, FT=01, BV=03, etc
+                    "CodTipDoc varchar(2), " +           // Código sunat para el tipo de documento, FT=01, BV=03, etc
                     "CodTipOpe varchar(4), " +           // Código sunat para el tipo de operación, 0101=Vta, interna facturas y boletas
+                    "TipoCamb decimal(8,2), " +          // tipo de cambio
                     // ENCABEZADO-TRASLADOBIENES
                     "cu_cpapp varchar(2), " +            // Código país del punto de origen
                     "cu_ubipp varchar(6), " +            // Ubigeo del punto de partida 
@@ -3159,7 +3163,8 @@ namespace TransCarga
                     "CodSunI varchar(2), " +        // codigo sunat del igv, (10)
                     "CodSunT varchar(4), " +        // codigo sunat del tributo, (1000)
                     "NomSunI varchar(10), " +       // nombre sunat del impuesto, (IGV)
-                    "NomIntI varchar(10)" +         // nombre internacional del impuesto, (VAT)
+                    "NomIntI varchar(10), " +       // nombre internacional del impuesto, (VAT)
+                    "GuiaRem varchar(50) " +        // guias de remision de la guía transportista
                     ")";
                 using (SqliteCommand cmd = new SqliteCommand(sqlTabla, cnx))
                 {
@@ -3202,14 +3207,14 @@ namespace TransCarga
                     "EmisRuc,EmisNom,EmisCom,CodLocA,EmisUbi,EmisDir,EmisDep,EmisPro,EmisDis,EmisUrb,EmisPai,EmisCor,NumDVta,FecEmis,HorEmis,CodComp,FecVcto," +
                     "TipDocu,CodLey1,MonLetr,CodMonS,DstTipdoc,DstNumdoc,DstNomTdo,DstNombre,DstDirecc,DstDepart,DstProvin,DstDistri,DstUrbani,DstUbigeo,ImpTotImp," +
                     "ImpOpeGra,ImpIgvTot,ImpOtrosT,IgvCodSun,IgvConInt,IgvNomSun,IgvCodInt,TotValVta,TotPreVta,TotDestos,TotOtrCar,TotaVenta," +
-                    "CanFilDet,CtaDetra,PorDetra,ImpDetra,GloDetra,CodTipDet,CondPago,CodTipOpe," +
+                    "CanFilDet,CtaDetra,PorDetra,ImpDetra,GloDetra,CodTipDet,CondPago,CodTipOpe,TipoCamb," +
                     "cu_cpapp,cu_ubipp,cu_deppp,cu_propp,cu_dispp,cu_urbpp,cu_dirpp,cu_cppll,cu_ubpll,cu_depll,cu_prpll,cu_dipll,cu_ddpll,cu_confv," +
                     "cu_placa,cu_coins,cu_marca,cu_breve,cu_ructr,cu_nomtr,cu_modtr,cu_pesbr,cu_motra,cu_fechi,cu_remtc,cu_nudch,cu_tidch,cu_plac2,cu_insub,cu_marCU) " +
                     "values (" +
                     "@EmisRuc,@EmisNom,@EmisCom,@CodLocA,@EmisUbi,@EmisDir,@EmisDep,@EmisPro,@EmisDis,@EmisUrb,@EmisPai,@EmisCor,@NumDVta,@FecEmis,@HorEmis,@CodComp,@FecVcto," +
                     "@TipDocu,@CodLey1,@MonLetr,@CodMonS,@DstTipd,@DstNumd,@DstNomT,@DstNomb,@DstDire,@DstDepa,@DstProv,@DstDist,@DstUrba,@DstUbig,@ImpTotI," +
                     "@ImpOpeG,@ImpIgvT,@ImpOtro,@IgvCodS,@IgvConI,@IgvNomS,@IgvCodI,@TotValV,@TotPreV,@TotDest,@TotOtrC,@TotaVen," +
-                    "@CanFilD,@CtaDetr,@PorDetr,@ImpDetr,@GloDetr,@CodTipD,@CondPag,@CodTipO," +
+                    "@CanFilD,@CtaDetr,@PorDetr,@ImpDetr,@GloDetr,@CodTipD,@CondPag,@CodTipO,@TipoCam," +
                     "@cu_cpapp,@cu_ubipp,@cu_deppp,@cu_propp,@cu_dispp,@cu_urbpp,@cu_dirpp,@cu_cppll,@cu_ubpll,@cu_depll,@cu_prpll,@cu_dipll,@cu_ddpll,@cu_confv," +
                     "@cu_placa,@cu_coins,@cu_marca,@cu_breve,@cu_ructr,@cu_nomtr,@cu_modtr,@cu_pesbr,@cu_motra,@cu_fechi,@cu_remtc,@cu_nudch,@cu_tidch,@cu_plac2,@cu_insub,@cu_marCU)";
                 using (SqliteCommand cmd = new SqliteCommand(metela, cnx))
@@ -3277,7 +3282,8 @@ namespace TransCarga
                     cmd.Parameters.AddWithValue("@CodTipD", (detrac == "si") ? Program.coddetra : "");
                     cmd.Parameters.AddWithValue("@CondPag", (rb_contado.Checked == true) ? "Contado" : "Credito");
                     cmd.Parameters.AddWithValue("@CodTipO", (detrac == "si") ? "1004" : "0101");    // 0101=venta interna, 1001=vta interna sujeta a detracción, 1004=Op. Sujeta a Detracción - Servicios de Transporte Carga
-                    cmd.Parameters.AddWithValue("@cu_cpapp", "PE");         // Código país del punto de origen
+                    cmd.Parameters.AddWithValue("@TipoCam", tx_tipcam.Text);        // Tipo de cambio 
+                    cmd.Parameters.AddWithValue("@cu_cpapp", "PE");                 // Código país del punto de origen
                     cmd.Parameters.AddWithValue("@cu_ubipp", tx_dat_upo.Text);         // Ubigeo del punto de partida 
                     cmd.Parameters.AddWithValue("@cu_deppp", tx_dp_dep.Text);         // Departamento del punto de partida
                     cmd.Parameters.AddWithValue("@cu_propp", tx_dp_pro.Text);         // Provincia del punto de partida 
@@ -3338,16 +3344,24 @@ namespace TransCarga
                     }
                     else
                     {
-                        // solo somos bi moneda , soles y dolares, sino no es soles entonces es dolares
-                        preunit = Math.Round(double.Parse(dataGridView1.Rows[i].Cells[4].Value.ToString()) / double.Parse(tx_tipcam.Text), 2);
-                        valunit = Math.Round(preunit / (1 + (double.Parse(v_igv) / 100)), 2); // double.Parse(dataGridView1.Rows[i].Cells[4].Value.ToString()) / (1 + (double.Parse(v_igv) / 100));
-                        sumimpl = Math.Round(preunit - valunit, 2); // double.Parse(dataGridView1.Rows[i].Cells[4].Value.ToString()) - valunit;
+                        if (dataGridView1.Rows[i].Cells[9].Value.ToString() != MonDeft) // si la moneda de la fila es <> soles y la moneda del comprobante tambien es <> soles
+                        {
+                            preunit = double.Parse(dataGridView1.Rows[i].Cells[4].Value.ToString());
+                            valunit = double.Parse(dataGridView1.Rows[i].Cells[4].Value.ToString()) / (1 + (double.Parse(v_igv) / 100));
+                            sumimpl = double.Parse(dataGridView1.Rows[i].Cells[4].Value.ToString()) - valunit;
+                        }
+                        else
+                        {   // la moneda de la fila = soles y la moneda del comprobante es <> soles ==> hay que convertirlo a dolares
+                            preunit = Math.Round(double.Parse(dataGridView1.Rows[i].Cells[4].Value.ToString()) / double.Parse(tx_tipcam.Text), 2);
+                            valunit = Math.Round(preunit / (1 + (double.Parse(v_igv) / 100)), 2); // double.Parse(dataGridView1.Rows[i].Cells[4].Value.ToString()) / (1 + (double.Parse(v_igv) / 100));
+                            sumimpl = Math.Round(preunit - valunit, 2); // double.Parse(dataGridView1.Rows[i].Cells[4].Value.ToString()) - valunit;
+                        }
                     }
                     metela = "insert into dt_detdv (" +
                         "NumDVta,Numline,Cantprd,CodMone,ValVtaI,PreVtaU,ValIgvI,DesDet1,DesDet2,CodIntr,ValUnit,ValPeso,UniMedS," +
-                        "GuiaTra,CodTipG,PorcIgv,CodSunI,CodSunT,NomSunI,NomIntI) values (" +
+                        "GuiaTra,CodTipG,PorcIgv,CodSunI,CodSunT,NomSunI,NomIntI,GuiaRem) values (" +
                         "@NumGu,@Numli,@Cantp,@CodMo,@ValVt,@PreVt,@ValIg,@DesD1,@DesD2,@CodIn,@ValUn,@ValPe,@UniMe," +
-                        "@GuiaT,@CodTG,@PIgvn,@CodSI,@CodST,@NomSI,@NomII)";
+                        "@GuiaT,@CodTG,@PIgvn,@CodSI,@CodST,@NomSI,@NomII,@GuiaR)";
                     using (SqliteCommand cmd = new SqliteCommand(metela, cnx))
                     {
                         cmd.Parameters.AddWithValue("@NumGu", cdvta);      // "V001-98000006"
@@ -3370,6 +3384,7 @@ namespace TransCarga
                         cmd.Parameters.AddWithValue("@CodST", "1000");              // codigo sunat del tributo, (1000)
                         cmd.Parameters.AddWithValue("@NomSI", "IGV");               // nombre sunat del impuesto
                         cmd.Parameters.AddWithValue("@NomII", "VAT");               // nombre internacional del impuesto
+                        cmd.Parameters.AddWithValue("@GuiaR", dataGridView1.Rows[i].Cells[8].Value.ToString());            // guias remitente de cada guía transportista
                         cmd.ExecuteNonQuery();
                     }
                 }
