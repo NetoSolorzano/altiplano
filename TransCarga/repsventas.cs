@@ -51,7 +51,8 @@ namespace TransCarga
         string codAnul = "";            // codigo de documento anulado
         string nomAnul = "";            // texto nombre del estado anulado
         string codGene = "";            // codigo documento nuevo generado
-        //int pageCount = 1, cuenta = 0;
+                                        //int pageCount = 1, cuenta = 0;
+        string glosser2 = "";           // glosa 2 que va despues de la glosa principal
         string rutatxt = "";            // ruta para las guias de remision electronicas
         string rutaxml = "";            // ruta para los XML de las guias de remision
         string[] c_t = new string[6] { "", "", "", "", "", "" }; // parametros para generar el token
@@ -75,6 +76,7 @@ namespace TransCarga
         string forA4CRn = "";           // ruta y nombre del formato CR de factura/boletas "normales"
         string forA4CRcu = "";          // ruta y nombre del formato CR de facturas de cargas únicas
         string vi_rutaQR = "";          // ruta y nombre del QR 
+        string v_igv = "";              // valor del igv actual
         #endregion
 
         libreria lib = new libreria();
@@ -86,6 +88,7 @@ namespace TransCarga
         // string de conexion
         string DB_CONN_STR = "server=" + login.serv + ";uid=" + login.usua + ";pwd=" + login.cont + ";database=" + login.data + ";";
         public static string CadenaConexion = "Data Source=TransCarga.db";  // Data Source=TransCarga;Mode=Memory;Cache=Shared
+        string[] varios = { "", "", "", "", "", "", "", "", "", "", "", "", "", "" };       // 14 
 
         public repsventas()
         {
@@ -215,6 +218,12 @@ namespace TransCarga
                 {
                     if (row["campo"].ToString() == "documento" && row["param"].ToString() == "dni") coddni = row["valor"].ToString().Trim();
                     if (row["campo"].ToString() == "documento" && row["param"].ToString() == "ruc") codruc = row["valor"].ToString().Trim();
+                }
+                if (row["formulario"].ToString() == "interno")              // codigo enlace interno de anulacion del cliente con en BD A0
+                {
+                    //if (row["campo"].ToString() == "anulado" && row["param"].ToString() == "A0") vint_A0 = row["valor"].ToString().Trim();
+                    //if (row["campo"].ToString() == "codinDV" && row["param"].ToString() == "DV") v_codidv = row["valor"].ToString().Trim();           // codigo de dov.vta en tabla TDV
+                    if (row["campo"].ToString() == "igv" && row["param"].ToString() == "%") v_igv = row["valor"].ToString().Trim();
                 }
                 // parametros para token
                 c_t[0] = client_id_sunat;
@@ -401,17 +410,16 @@ namespace TransCarga
                     btnA4.DefaultCellStyle.Font = chiq;
                     btnA4.DefaultCellStyle.SelectionBackColor = Color.White;
 
+                    DataGridViewButtonColumn btnXML = new DataGridViewButtonColumn();
+                    btnXML.HeaderText = "XML";
+                    btnXML.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                    btnXML.Name = "xml";
+                    btnXML.Width = 60;
+                    btnXML.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                    btnXML.DefaultCellStyle.Padding = padding;
+                    btnXML.DefaultCellStyle.Font = chiq;
+                    btnXML.DefaultCellStyle.SelectionBackColor = Color.White;
                     /*
-                    DataGridViewButtonColumn btnPDF = new DataGridViewButtonColumn();
-                    btnPDF.HeaderText = "PDF";
-                    btnPDF.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
-                    btnPDF.Name = "pdf";
-                    btnPDF.Width = 60;
-                    btnPDF.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-                    btnPDF.DefaultCellStyle.Padding = padding;
-                    btnPDF.DefaultCellStyle.Font = chiq;
-                    btnPDF.DefaultCellStyle.SelectionBackColor = Color.White;
-                    */
                     DataGridViewButtonColumn btnAct = new DataGridViewButtonColumn();
                     btnAct.HeaderText = "Sunat"; // ACTUALIZA
                     btnAct.Text = "...Consulta...";
@@ -420,6 +428,7 @@ namespace TransCarga
                     btnAct.Width = 140;
                     btnAct.UseColumnTextForButtonValue = true;
                     btnAct.DefaultCellStyle.Padding = padding;
+                    */
                     // EMISION,TIPO,COMPROBANTE,ORIGEN,ESTADO,SUNAT,CDR_GEN,btnTK,btnCDR,btnACT,ad.cdr as Rspta,ad.textoQR,ad.nticket,f.canfidt,f.id
                     //     0  ,  1 ,      2    ,   3  ,  4   ,  5  ,   6   ,  7  ,  8   ,  9   ,  10   ,    11    ,   12     ,   13   , 14
                     dgv_sunat_est.CellClick += DataGridView1_CellClick;
@@ -427,7 +436,7 @@ namespace TransCarga
                     dgv_sunat_est.Columns.Insert(8, btnA4);
                     //dgv_sunat_est.Columns.Insert(8, btnPDF);   // .Add(btnPDF);
                     dgv_sunat_est.Columns.Insert(9, btnCDR);   // .Add(btnCDR);
-                    dgv_sunat_est.Columns.Insert(10, btnAct);   // .Add(btnAct);
+                    dgv_sunat_est.Columns.Insert(10, btnXML);   // .Add(btnAct);
                     dgv_sunat_est.Columns[11].Visible = false;
                     dgv_sunat_est.Columns[12].Visible = false;
                     dgv_sunat_est.Columns[13].Visible = false;
@@ -458,6 +467,7 @@ namespace TransCarga
                         {
                             dgv_sunat_est.Rows[i].Cells["iTK"].Value = "TK";
                             dgv_sunat_est.Rows[i].Cells["iA4"].Value = "A4";
+                            dgv_sunat_est.Rows[i].Cells["xml"].Value = "XML";
                             if (dgv_sunat_est.Rows[i].Cells["iTK"].Value != null)
                             {
                                 if (dgv_sunat_est.Rows[i].Cells["CDR_GEN"].Value.ToString() == "0")
@@ -467,15 +477,15 @@ namespace TransCarga
                                     dgv_sunat_est.Rows[i].Cells["cdr"].ReadOnly = false;
                                     dgv_sunat_est.Rows[i].Cells["cdr"].Value = "CDR";
                                     dgv_sunat_est.Rows[i].Cells["cdr"].ReadOnly = true;
-                                    dgv_sunat_est.Rows[i].Cells["consulta"].ReadOnly = true;
-                                    dgv_sunat_est.Rows[i].Cells["consulta"].Value = "";
+                                    dgv_sunat_est.Rows[i].Cells["xml"].ReadOnly = true;
+                                    dgv_sunat_est.Rows[i].Cells["xml"].Value = "XML";
                                 }
                                 else
                                 {
                                     dgv_sunat_est.Rows[i].Cells["cdr"].ReadOnly = true;
                                     dgv_sunat_est.Rows[i].Cells["cdr"].Value = "";
-                                    dgv_sunat_est.Rows[i].Cells["consulta"].ReadOnly = false;
-                                    dgv_sunat_est.Rows[i].Cells["consulta"].Value = "...Consulta...";
+                                    dgv_sunat_est.Rows[i].Cells["xml"].ReadOnly = false;
+                                    dgv_sunat_est.Rows[i].Cells["xml"].Value = "";
                                     //dgv_sunat_est.Rows[i].Cells[10].ReadOnly = false;
                                 }
                             }
@@ -660,10 +670,13 @@ namespace TransCarga
             if (rb_dVtas.Checked == true)   // facturas y boletas
             {
                 consulta = "SELECT f.fechope AS EMISION,f.martdve as TIPO,CONCAT(f.serdvta,'-',f.numdvta) AS COMPROBANTE,lo.descrizionerid AS ORIGEN," +
-                    "es.DescrizioneRid AS ESTADO,ad.estadoS AS SUNAT,ad.cdrgener AS CDR_GEN,ad.cdr as Rspta,ad.textoQR,ad.nticket,f.canfidt,f.id " + // ,ad.ulterror as ULT_ERROR
+                    "es.DescrizioneRid AS ESTADO,ad.estadoS AS SUNAT,ad.cdrgener AS CDR_GEN,ad.cdr as Rspta,ad.textoQR,ad.nticket,f.canfidt,f.id,s.glosaser," + // ,ad.ulterror as ULT_ERROR
+                    "f.totdvta,f.totdvMN,d.codgror " +
                     "FROM cabfactu f LEFT JOIN adifactu ad ON ad.idc = f.id " +
+                    "left join detfactu d on d.idc=f.id " +
                     "LEFT JOIN desc_loc lo ON lo.IDCodice = f.locorig " +
                     "LEFT JOIN desc_est es ON es.IDCodice = f.estdvta  " +
+                    "left join series s on s.tipdoc=f.tipdvta and s.serie=f.serdvta " +
                     "WHERE f.fechope between @fecini and @fecfin";  // marca_gre<>'' AND 
             }
             if (rb_notaC.Checked == true)   // notas de crédito
@@ -1155,11 +1168,11 @@ namespace TransCarga
                 }
             }*/
         }
-        private void DataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)        // Click en las columnas boton
+        private void DataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)        // Click en las columnas boton 
         {
             if (e.ColumnIndex > -1 && cuenta != e.RowIndex)
             {
-                if (dgv_sunat_est.Columns[e.ColumnIndex].Name.ToString() == "consulta")
+                if (dgv_sunat_est.Columns[e.ColumnIndex].Name.ToString() == "xml")
                 {
                     if (true)
                     {
@@ -1168,7 +1181,30 @@ namespace TransCarga
                         {
                             dgv_sunat_est.Rows[e.RowIndex].Cells[8].ReadOnly = true;
                             dgv_sunat_est.Rows[e.RowIndex].Cells[9].ReadOnly = true;
-                            consultaE(dgv_sunat_est.Rows[e.RowIndex].Cells[13].Value.ToString(), e.RowIndex);
+
+                            varios[0] = logoclt;                // Ruta y nombre del logo del emisor electrónico
+                            varios[1] = dgv_sunat_est.Rows[e.RowIndex].Cells["glosaser"].Value.ToString();         // glosa del servicio en facturacion
+                            varios[2] = codfact;                // Código Transcarga del tipo de documento Factura 
+                            varios[3] = Program.pordetra;       // porcentaje detracción
+                            if (double.Parse(dgv_sunat_est.Rows[e.RowIndex].Cells["totdvMN"].Value.ToString()) >= double.Parse(Program.valdetra))
+                            {
+                                varios[4] = (double.Parse(dgv_sunat_est.Rows[e.RowIndex].Cells["totdvMN"].Value.ToString()) * double.Parse(Program.pordetra) / 100).ToString("#0.00");         // monto detracción
+                            }
+                            varios[5] = Program.ctadetra;         // cta. detracción
+                            varios[6] = dgv_sunat_est.Rows[e.RowIndex].Cells["codgror"].Value.ToString();         // concatenado de Guias Transportista para Formato de cargas unicas
+                            varios[7] = "";         // ruta y nombre del png codigo QR
+                            varios[8] = "";         // 
+                            varios[9] = codmon;         // moneda por defecto MN del sistema
+                            varios[10] = v_igv;        // valor igv en procentaje 
+                            varios[11] = "";        // rutaxml 
+                            varios[12] = "";        // rutaCertifc
+                            varios[13] = "";        // claveCertif
+
+                            xmlComprobantes xmlc = new xmlComprobantes();
+                            xmlc.llenaTablaLite(dgv_sunat_est.Rows[e.RowIndex].Cells["TIPO"].Value.ToString(),
+                                dgv_sunat_est.Rows[e.RowIndex].Cells["COMPROBANTE"].Value.ToString().Substring(0, 4),
+                                lib.Right(dgv_sunat_est.Rows[e.RowIndex].Cells["COMPROBANTE"].Value.ToString(), 8),
+                                varios);
                         }
                     }
                 }

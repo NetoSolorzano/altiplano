@@ -82,6 +82,7 @@
     <Reference Include="Microsoft.Data.Sqlite, Version=1.0.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Data.Sqlite.1.0.1\lib\net451\Microsoft.Data.Sqlite.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.VisualStudio.DebuggerVisualizers, Version=16.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="MySql.Data, Version=8.0.18.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\..\Solorsoft_DNI_RUC\Solorsoft_DNI_RUC\bin\Debug\MySql.Data.dll</HintPath>
@@ -480,6 +481,7 @@
     <Compile Include="vtipcam.designer.cs">
       <DependentUpon>vtipcam.cs</DependentUpon>
     </Compile>
+    <Compile Include="xmlComprobantes.cs" />
     <EmbeddedResource Include="almgestion.resx">
       <DependentUpon>almgestion.cs</DependentUpon>
     </EmbeddedResource>
