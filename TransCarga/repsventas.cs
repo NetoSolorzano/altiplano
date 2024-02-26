@@ -77,6 +77,8 @@ namespace TransCarga
         string forA4CRcu = "";          // ruta y nombre del formato CR de facturas de cargas únicas
         string vi_rutaQR = "";          // ruta y nombre del QR 
         string v_igv = "";              // valor del igv actual
+        string claveCertif = "";        // clave del certificado de seguridad
+        string rutaCertifc = "";        // ruta del certificado
         #endregion
 
         libreria lib = new libreria();
@@ -185,6 +187,8 @@ namespace TransCarga
                         if (row["param"].ToString() == "user_sol") u_sol_sunat = row["valor"].ToString().Trim();              // usuario sol portal sunat del cliente 
                         if (row["param"].ToString() == "clave_sol") c_sol_sunat = row["valor"].ToString().Trim();             // clave sol portal sunat del cliente 
                         if (row["param"].ToString() == "scope") scope_sunat = row["valor"].ToString().Trim();                 // scope del api sunat
+                        if (row["param"].ToString() == "rutaCertifc") rutaCertifc = row["valor"].ToString().Trim();           // Ruta y nombre del certificado .pfx
+                        if (row["param"].ToString() == "claveCertif") claveCertif = row["valor"].ToString().Trim();           // Clave del certificado
                     }
                     if (row["campo"].ToString() == "rutas")
                     {
@@ -429,8 +433,8 @@ namespace TransCarga
                     btnAct.UseColumnTextForButtonValue = true;
                     btnAct.DefaultCellStyle.Padding = padding;
                     */
-                    // EMISION,TIPO,COMPROBANTE,ORIGEN,ESTADO,SUNAT,CDR_GEN,btnTK,btnCDR,btnACT,ad.cdr as Rspta,ad.textoQR,ad.nticket,f.canfidt,f.id
-                    //     0  ,  1 ,      2    ,   3  ,  4   ,  5  ,   6   ,  7  ,  8   ,  9   ,  10   ,    11    ,   12     ,   13   , 14
+                    // EMISION,TIPO,COMPROBANTE,ORIGEN,ESTADO,SUNAT,CDR_GEN,btnTK,btnCDR,btnACT,ad.cdr as Rspta,ad.textoQR,ad.nticket,f.canfidt,f.id,glosaser,f.totdvta,f.totdvMN,d.codgror,tipdvta
+                    //     0  ,  1 ,      2    ,   3  ,  4   ,  5  ,   6   ,  7  ,  8   ,  9   ,  10   ,    11    ,   12     ,   13   , 14     ,  15,   16   ,    17   ,    18   ,   19    ,   20
                     dgv_sunat_est.CellClick += DataGridView1_CellClick;
                     dgv_sunat_est.Columns.Insert(7, btnTk);
                     dgv_sunat_est.Columns.Insert(8, btnA4);
@@ -442,16 +446,21 @@ namespace TransCarga
                     dgv_sunat_est.Columns[13].Visible = false;
                     dgv_sunat_est.Columns[14].Visible = false;
                     dgv_sunat_est.Columns[15].Visible = false;
+                    dgv_sunat_est.Columns[16].Visible = false;
+                    dgv_sunat_est.Columns[17].Visible = false;
+                    dgv_sunat_est.Columns[18].Visible = false;
+                    dgv_sunat_est.Columns[19].Visible = false;
+                    dgv_sunat_est.Columns[20].Visible = false;
                     if (dgv_sunat_est.Rows.Count > 0)         // autosize filas
                     {
-                        for (int i = 0; i < dgv_sunat_est.Columns.Count - 11; i++)
+                        for (int i = 0; i < 7; i++)     // columnas visibles del 0 al 6
                         {
                             dgv_sunat_est.Columns[i].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
                             _ = decimal.TryParse(dgv_sunat_est.Rows[0].Cells[i].Value.ToString(), out decimal vd);
                             if (vd != 0) dgv_sunat_est.Columns[i].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
                         }
                         b = 0;
-                        for (int i = 0; i < dgv_sunat_est.Columns.Count - 11; i++)
+                        for (int i = 0; i < 7; i++)
                         {
                             int a = dgv_sunat_est.Columns[i].Width;
                             b += a;
@@ -670,8 +679,8 @@ namespace TransCarga
             if (rb_dVtas.Checked == true)   // facturas y boletas
             {
                 consulta = "SELECT f.fechope AS EMISION,f.martdve as TIPO,CONCAT(f.serdvta,'-',f.numdvta) AS COMPROBANTE,lo.descrizionerid AS ORIGEN," +
-                    "es.DescrizioneRid AS ESTADO,ad.estadoS AS SUNAT,ad.cdrgener AS CDR_GEN,ad.cdr as Rspta,ad.textoQR,ad.nticket,f.canfidt,f.id,s.glosaser," + // ,ad.ulterror as ULT_ERROR
-                    "f.totdvta,f.totdvMN,d.codgror " +
+                    "es.DescrizioneRid AS ESTADO,ad.estadoS AS SUNAT,ad.cdrgener AS CDR_GEN,ad.cdr as Rspta,ad.textoQR,ad.nticket,f.canfidt,f.id," + // ,ad.ulterror as ULT_ERROR
+                    "ifnull(s.glosaser,'') as glosaser,f.totdvta,f.totdvMN,d.codgror,f.tipdvta " +
                     "FROM cabfactu f LEFT JOIN adifactu ad ON ad.idc = f.id " +
                     "left join detfactu d on d.idc=f.id " +
                     "LEFT JOIN desc_loc lo ON lo.IDCodice = f.locorig " +
@@ -1192,16 +1201,16 @@ namespace TransCarga
                             }
                             varios[5] = Program.ctadetra;         // cta. detracción
                             varios[6] = dgv_sunat_est.Rows[e.RowIndex].Cells["codgror"].Value.ToString();         // concatenado de Guias Transportista para Formato de cargas unicas
-                            varios[7] = "";         // ruta y nombre del png codigo QR
-                            varios[8] = "";         // 
+                            varios[7] = "";             // ruta y nombre del png codigo QR
+                            varios[8] = "";             // 
                             varios[9] = codmon;         // moneda por defecto MN del sistema
-                            varios[10] = v_igv;        // valor igv en procentaje 
-                            varios[11] = "";        // rutaxml 
-                            varios[12] = "";        // rutaCertifc
-                            varios[13] = "";        // claveCertif
+                            varios[10] = v_igv;         // valor igv en procentaje 
+                            varios[11] = rutaxml;       // rutaxml 
+                            varios[12] = rutaCertifc;   // rutaCertifc
+                            varios[13] = claveCertif;   // claveCertif
 
-                            xmlComprobantes xmlc = new xmlComprobantes();
-                            xmlc.llenaTablaLite(dgv_sunat_est.Rows[e.RowIndex].Cells["TIPO"].Value.ToString(),
+                            xmlComprobantes xmlc = new xmlComprobantes();   // dgv_sunat_est.Rows[e.RowIndex].Cells["TIPO"].Value.ToString()
+                            xmlc.llenaTablaLite(dgv_sunat_est.Rows[e.RowIndex].Cells["tipdvta"].Value.ToString(),
                                 dgv_sunat_est.Rows[e.RowIndex].Cells["COMPROBANTE"].Value.ToString().Substring(0, 4),
                                 lib.Right(dgv_sunat_est.Rows[e.RowIndex].Cells["COMPROBANTE"].Value.ToString(), 8),
                                 varios);
@@ -1326,17 +1335,18 @@ namespace TransCarga
                 string mcu = "";        // marca de carga unica
                 string vce = "";        // carga efectiva
                 string gse = "";        // glosa de servicio
+                double pigv = 0;
                 conn.Open();
                 if (conn.State == ConnectionState.Open)
                 {
-                    string consdeta = "select a.codgror,a.cantbul,a.unimedp,a.descpro,a.pesogro,b.docsremit,a.totalgr,0 as preUni,0 as valUni " +
+                    string consdeta = "select a.codgror,a.cantbul,a.unimedp,a.descpro,a.pesogro,b.docsremit,round(a.totalgr,2) as totalgr,round(a.totalgr,2) as preUni,round(a.totalgr/(1 + (@pigv/100)),2) as valUni " +
                         "from detfactu a left join cabguiai b on concat(b.sergui,'-',b.numgui)=a.codgror " +
                         "where a.tipdocvta=@tdv and a.serdvta=@ser and a.numdvta=@num";
 
                     string consulta = "select a.id,DATE_FORMAT(a.fechope,'%d/%m/%Y') AS fechope,a.martdve,a.tipdvta,a.serdvta,a.numdvta,a.ticltgr,a.tidoclt,a.nudoclt,a.nombclt,a.direclt,a.dptoclt,a.provclt,a.distclt,a.ubigclt,a.corrclt,a.teleclt," +
-                        "a.locorig,a.dirorig,a.ubiorig,a.obsdvta,a.canfidt,a.canbudt,a.mondvta,a.tcadvta,a.subtota,a.igvtota,a.porcigv,a.totdvta,a.totpags,a.saldvta,a.estdvta,a.frase01,a.impreso,d.codsunat as ctdcl," +
-                        "a.tipoclt,a.m1clien,a.tippago,a.ferecep,a.userc,a.fechc,a.userm,a.fechm,b.descrizionerid as nomest,ifnull(c.id,'') as cobra,a.idcaja,a.plazocred,a.totdvMN,ifnull(p.marca1,'') as dpc,ifnull(s.glosaser,'') as glosaser," +
-                        "a.cargaunica,a.porcendscto,a.valordscto,a.conPago,a.pagauto,ifnull(ad.placa,'') as placa,ifnull(ad.confv,'') as confv,ifnull(ad.autoriz,'') as autoriz,m.descrizionerid as inimon,t.codsunat as cdtdv," +
+                        "a.locorig,a.dirorig,a.ubiorig,a.obsdvta,a.canfidt,a.canbudt,a.mondvta,a.tcadvta,round(a.subtota) as subtota,round(a.igvtota) as igvtota,a.porcigv,round(a.totdvta) as totdvta,round(a.totpags,2) as totpags,round(a.saldvta,2) as saldvta,a.estdvta,a.frase01,a.impreso,d.codsunat as ctdcl," +
+                        "a.tipoclt,a.m1clien,a.tippago,a.ferecep,a.userc,a.fechc,a.userm,a.fechm,b.descrizionerid as nomest,ifnull(c.id,'') as cobra,a.idcaja,a.plazocred,round(a.totdvMN,2) as totdvMN,ifnull(p.marca1,'') as dpc,ifnull(s.glosaser,'') as glosaser," +
+                        "a.cargaunica,a.porcendscto,round(a.valordscto,2) as valordscto,a.conPago,a.pagauto,ifnull(ad.placa,'') as placa,ifnull(ad.confv,'') as confv,ifnull(ad.autoriz,'') as autoriz,m.descrizionerid as inimon,t.codsunat as cdtdv," +
                         "ifnull(ad.cargaEf,0) as cargaEf,ifnull(ad.cargaUt,0) as cargaUt,ifnull(ad.rucTrans,'') as rucTrans,ifnull(ad.nomTrans,'') as nomTrans,ifnull(date_format(ad.fecIniTras,'%Y-%m-%d'),'') as fecIniTras," +
                         "ifnull(ad.dirPartida,'') as dirPartida,ifnull(ad.ubiPartida,'') as ubiPartida,ifnull(ad.dirDestin,'') as dirDestin,ifnull(ad.ubiDestin,'') as ubiDestin,ifnull(ad.dniChof,'') as dniChof," +
                         "ifnull(ad.brevete,'') as brevete,ifnull(ad.valRefViaje,0) as valRefViaje,ifnull(ad.valRefVehic,0) as valRefVehic,ifnull(ad.valRefTon,0) as valRefTon,l.descrizionerid as nomLocO," +
@@ -1438,6 +1448,7 @@ namespace TransCarga
                                     mcu = dr.GetString("cargaunica");
                                     vce = dr.GetString("cargaEf");
                                     gse = glosser;
+                                    pigv = dr.GetDouble("porcigv");
                                 }
                                 else
                                 {
@@ -1463,6 +1474,7 @@ namespace TransCarga
                             micomd.Parameters.AddWithValue("@ser", serie);
                             micomd.Parameters.AddWithValue("@num", numero);
                             micomd.Parameters.AddWithValue("@tdv", tipo);
+                            micomd.Parameters.AddWithValue("@pigv", pigv);          // % igv del comprobante
                             using (MySqlDataReader drg = micomd.ExecuteReader())
                             {
                                 while (drg.Read())  // #fila,a.cantprodi,a.unimedpro,a.descprodi,a.pesoprodi

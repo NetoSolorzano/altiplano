@@ -19,14 +19,30 @@ namespace TransCarga
         //
         string[] vs = {"", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",     // 20
                        "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",    // 20
-                       "", "", "", "", "", "", ""};     // 7
+                       "", "", "", "", "", "", "", ""};     // 8
         string[] va = { "", "", "", "", "", "", "", "", "", "", "", "", "", "" };       // 14
         string[,] dt = new string[10, 10] {
             { "", "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "", "" },
             { "", "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "", "" }
         }; // 6 columnas, 10 filas
         string[] cu = { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" };    // 29
+        string glosdetra = "";
+
         libreria lib = new libreria();
+        NumLetra numLetra = new NumLetra();
+
+        private void jalainfo()                 // obtiene datos de imagenes y variables
+        {
+            for (int t = 0; t < Program.dt_enlaces.Rows.Count; t++)
+            {
+                DataRow row = Program.dt_enlaces.Rows[t];
+                if (row["formulario"].ToString() == "facelect")
+                {
+                    if (row["campo"].ToString() == "detraccion" && row["param"].ToString() == "glosa") glosdetra = row["valor"].ToString().Trim();    // glosa detraccion
+                }
+            }
+        }
+
         public bool CreaTablaLiteDV()                  // llamado en el load del form, crea las tablas al iniciar
         {
             bool retorna = false;
@@ -299,12 +315,12 @@ namespace TransCarga
             */
             #endregion
 
-            if (tipdo == null || tipdo == "")   // tenemos datos del comprobante en las matrices
+            if (true)   // tipdo == null || tipdo == ""
             {
                 using (SqliteConnection cnx = new SqliteConnection(CadenaConexion))
                 {
                     string fecemi = cabecera[5].Substring(6, 4) + "-" + cabecera[5].Substring(3, 2) + "-" + cabecera[5].Substring(0, 2);
-                    string fansi = DateTime.Parse(fecemi).AddDays(double.Parse((cabecera[19] == "") ? "0" : cabecera[19])).Date.ToString("yyyy-MM-dd");        // fecha de emision + dias plazo credito
+                    string fansi = DateTime.Parse(fecemi).AddDays(double.Parse((cabecera[19] == "") ? "0" : cabecera[19])).Date.ToString("yyyy-MM-dd");        // fecha de emision + dias plazo credito 
                     string cdvta = cabecera[2].Substring(0, 1) + lib.Right(cabecera[0], 3) + "-" + cabecera[1];
 
                     cnx.Open();
@@ -354,7 +370,7 @@ namespace TransCarga
 
                         cmd.Parameters.AddWithValue("@TipDocu", tipdo);             // SUNAT:Identificador de Tipo de Documento
                         cmd.Parameters.AddWithValue("@CodLey1", "1000");
-                        cmd.Parameters.AddWithValue("@MonLetr", "SON: " + cabecera[17]);
+                        cmd.Parameters.AddWithValue("@MonLetr", "SON: " + cabecera[17]);  
                         cmd.Parameters.AddWithValue("@CodMonS", cabecera[40]);
                         cmd.Parameters.AddWithValue("@DstTipd", cabecera[22]);
                         cmd.Parameters.AddWithValue("@DstNumd", cabecera[7]);
@@ -391,7 +407,7 @@ namespace TransCarga
                         cmd.Parameters.AddWithValue("@CtaDetr", (detrac == "si") ? Program.ctadetra : "");
                         cmd.Parameters.AddWithValue("@PorDetr", (detrac == "si") ? Program.pordetra : "");
                         cmd.Parameters.AddWithValue("@ImpDetr", (detrac == "si") ? vtotdet : 0);
-                        cmd.Parameters.AddWithValue("@GloDetr", (detrac == "si") ? cabecera[20] + " " + Program.ctadetra : "");
+                        cmd.Parameters.AddWithValue("@GloDetr", (detrac == "si") ? cabecera[20] + " " + Program.ctadetra : ""); // glosdetra + " " + Program.ctadetra : ""
                         cmd.Parameters.AddWithValue("@CodTipD", (detrac == "si") ? Program.coddetra : "");
                         cmd.Parameters.AddWithValue("@CondPag", (cabecera[18] == "CONTADO" || cabecera[18] == "Contado") ? "Contado" : "Credito");
                         cmd.Parameters.AddWithValue("@CodTipO", cabecera[43]);          // 0101=venta interna, 1001=vta interna sujeta a detracción, 1004=Op. Sujeta a Detracción - Servicios de Transporte Carga
@@ -513,34 +529,42 @@ namespace TransCarga
 
             return retorna;
         }
-    
+
         public bool llenaTablaLite(string tipdo, string serdo, string numdo, string[] var)  // codigo_tipo_comprobante, serie, numero, valorigv
         {
             bool retorna = false;
+            string tipdoS = "";
+            jalainfo();
 
             string consulta = "select a.id,DATE_FORMAT(a.fechope,'%d/%m/%Y') as fechope,a.martdve,a.tipdvta,a.serdvta,a.numdvta,a.ticltgr,a.tidoclt,a.nudoclt,a.nombclt,a.direclt,a.dptoclt,a.provclt,a.distclt,a.ubigclt,a.corrclt,a.teleclt," +
                         "a.locorig,a.dirorig,a.ubiorig,a.obsdvta,a.canfidt,a.canbudt,a.mondvta,a.tcadvta,a.subtota,a.igvtota,a.porcigv,a.totdvta,a.totpags,a.saldvta,a.estdvta,a.frase01,a.impreso," +
-                        "a.tipoclt,a.m1clien,a.tippago,a.ferecep,a.userc,a.fechc,a.userm,a.fechm,b.descrizionerid as nomest,ifnull(c.id,'') as cobra,a.idcaja,a.plazocred,a.totdvMN," +
-                        "a.cargaunica,a.porcendscto,a.valordscto,a.conPago,a.pagauto,ifnull(ad.placa,'') as placa,ifnull(ad.confv,'') as confv,ifnull(ad.autoriz,'') as autoriz,ifnull(dd.codsunat,'') as tidocltS" +
+                        "a.tipoclt,a.m1clien,a.tippago,a.ferecep,a.userc,a.fechc,a.userm,a.fechm,b.descrizionerid as nomest,'' as cobra,a.idcaja,a.plazocred,a.totdvMN," +
+                        "a.cargaunica,a.porcendscto,a.valordscto,a.conPago,a.pagauto,ifnull(ad.placa,'') as placa,ifnull(ad.confv,'') as confv,ifnull(ad.autoriz,'') as autoriz,ifnull(dd.codsunat,'') as tidocltS," +
                         "ifnull(ad.cargaEf,0) as cargaEf,ifnull(ad.cargaUt,0) as cargaUt,ifnull(ad.rucTrans,'') as rucTrans,ifnull(ad.nomTrans,'') as nomTrans,ifnull(date_format(ad.fecIniTras,'%Y-%m-%d'),'') as fecIniTras," +
                         "ifnull(ad.dirPartida,'') as dirPartida,ifnull(ad.ubiPartida,'') as ubiPartida,ifnull(ad.dirDestin,'') as dirDestin,ifnull(ad.ubiDestin,'') as ubiDestin,ifnull(ad.dniChof,'') as dniChof," +
-                        "ifnull(ad.brevete,'') as brevete,ifnull(ad.valRefViaje,0) as valRefViaje,ifnull(ad.valRefVehic,0) as valRefVehic,ifnull(ad.valRefTon,0) as valRefTon " +
+                        "ifnull(ad.brevete,'') as brevete,ifnull(ad.valRefViaje,0) as valRefViaje,ifnull(ad.valRefVehic,0) as valRefVehic,ifnull(ad.valRefTon,0) as valRefTon,dv.codsunat,m.deta1,m.codsunat," +
+                        "a.detPeso,ifnull(if(ifnull(v.numreg1,bf.referen2)='',bf.referen2,v.numreg1),bf.referen2) as regmtc,ifnull(tp.marca1,'0') as marca1 " +
                         "from cabfactu a " +
                         "left join adifactu ad on ad.idc=a.id and ad.tipoAd=1 " +
                         "left join desc_est b on b.idcodice=a.estdvta " +
                         "left join desc_doc dd on dd.idcodice=a.tidoclt " +
-                        "left join cabcobran c on c.tipdoco=a.tipdvta and c.serdoco=a.serdvta and c.numdoco=a.numdvta and c.estdcob<>@coda " +
+                        "left join desc_tdv dv on dv.idcodice=a.tipdvta " +
+                        "left join desc_mon m on m.idcodice=a.mondvta " +
+                        "left join vehiculos v on v.placa=ad.placa " +
+                        "left join desc_tpa  tp on tp.idcodice=a.plazocred " +
+                        "inner join baseconf bf " +
                         "where a.tipdvta=@tdv and a.serdvta=@ser and a.numdvta=@num";
-            
+                        //"left join cabcobran c on c.tipdoco=a.tipdvta and c.serdoco=a.serdvta and c.numdoco=a.numdvta and c.estdcob<>@coda " +
+
             string jalad = "select a.filadet,a.codgror,a.cantbul,d.unimedpro,a.descpro,a.pesogro,a.codmogr,a.totalgr," +
                 "g.totgrMN,g.codMN,g.fechopegr,g.docsremit,g.tipmongri,concat(lo.descrizionerid,' - ',ld.descrizionerid) as orides," +
-                "b.porcendscto,b.valordscto,d.unimedpro " +
+                "b.porcendscto,b.valordscto,d.unimedpro,b.tipdvta,b.serdvta,b.numdvta " +
                 "from detfactu a left join cabguiai g on concat(g.sergui,'-',g.numgui)=a.codgror " +
                 "left join detguiai d on d.idc=g.id " +
                 "left join desc_loc lo on lo.idcodice=g.locorigen " +
                 "left join desc_loc ld on ld.idcodice=g.locdestin " +
                 "left join cabfactu b on b.id=a.idc " +
-                "where a.tipdvta=@tdv and a.serdvta=@ser and a.numdvta=@num";
+                "where b.tipdvta=@tdv and b.serdvta=@ser and b.numdvta=@num";
 
             using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
             {
@@ -558,33 +582,54 @@ namespace TransCarga
                             {
                                 if (dr.Read())
                                 {
-                                    vs[5] = dr.GetString("fechope").Substring(0, 10);
-                                    vs[2] = dr.GetString("tipdvta");
                                     vs[0] = dr.GetString("serdvta");
                                     vs[1] = dr.GetString("numdvta");
+                                    vs[2] = dr.GetString("martdve");    // tipdvta
+
+                                    vs[5] = dr.GetString("fechope").Substring(0, 10);
                                     //rb_remGR.Checked = (dr.GetString("ticltgr") == "1") ? true : false;
                                     //rb_desGR.Checked = (dr.GetString("ticltgr") == "2") ? true : false;
                                     //rb_otro.Checked = (dr.GetString("ticltgr") == "3") ? true : false;
-                                    vs[22] = dr.GetString("tidocltS");
-                                    vs[7] = dr.GetString("nudoclt");
                                     vs[6] = dr.GetString("nombclt");
+                                    vs[7] = dr.GetString("nudoclt");
                                     vs[8] = dr.GetString("direclt");
-                                    vs[11] = dr.GetString("dptoclt");
-                                    vs[10] = dr.GetString("provclt");
                                     vs[9] = dr.GetString("distclt");
-                                    vs[41] = dr.GetString("ubigclt");
-                                    vs[46] = dr.GetString("corrclt");
-                                    vs[47] = dr.GetString("teleclt");
-                                    //locorig,dirorig,ubiorig
-                                    //tx_obser1.Text = dr.GetString("obsdvta");
+                                    vs[10] = dr.GetString("provclt");
+                                    vs[11] = dr.GetString("dptoclt");
                                     vs[12] = dr.GetString("canfidt");
-                                    //tx_totcant.Text = dr.GetString("canbudt");  // total bultos
-                                    vs[45] = dr.GetString("mondvta");
-                                    vs[44] = dr.GetString("tcadvta");
                                     vs[13] = Math.Round(dr.GetDecimal("subtota"), 2).ToString();
                                     vs[14] = Math.Round(dr.GetDecimal("igvtota"), 2).ToString();
                                     //,,,porcigv
                                     vs[15] = Math.Round(dr.GetDecimal("totdvta"), 2).ToString();           // total inc. igv
+                                    vs[17] = numLetra.Convertir(vs[15], true) + dr.GetString("deta1");
+                                    if (dr.GetString("conPago") != "")
+                                    {
+                                        if (dr.GetString("conPago") == "0") vs[18] = "CONTADO";
+                                        if (dr.GetString("conPago") == "1") vs[18] = "CREDITO";
+                                    }
+                                    vs[19] = dr.GetString("marca1");
+                                    vs[20] = glosdetra;
+                                    vs[22] = dr.GetString("tidocltS");
+
+                                    if (dr.GetString("userm") == "") vs[27] = lib.nomuser(dr.GetString("userc"));
+                                    else vs[27] = lib.nomuser(dr.GetString("userm"));
+                                    vs[40] = dr.GetString("codsunat");
+                                    vs[41] = dr.GetString("ubigclt");
+                                    vs[42] = Math.Round(dr.GetDecimal("totdvMN"), 2).ToString();
+                                    string vtotdet = "0";
+                                    vs[43] = "0101";
+                                    if (decimal.Parse(vs[42]) > decimal.Parse(Program.valdetra))
+                                    {
+                                        vs[43] = "1004";
+                                        vtotdet = Math.Round(double.Parse(vs[42]) * double.Parse(Program.pordetra) / 100, 2).ToString();    // totalDetraccion 
+                                    }
+                                    vs[44] = dr.GetString("tcadvta");
+                                    vs[45] = dr.GetString("mondvta");
+                                    vs[46] = dr.GetString("corrclt");
+                                    vs[47] = dr.GetString("teleclt");
+                                    //locorig,dirorig,ubiorig
+                                    //tx_obser1.Text = dr.GetString("obsdvta");
+                                    //tx_totcant.Text = dr.GetString("canbudt");  // total bultos
                                     //tx_pagado.Text = dr.GetString("totpags");
                                     //tx_salxcob.Text = dr.GetString("saldvta");
                                     //tx_dat_estad.Text = dr.GetString("estdvta");        // estado
@@ -592,21 +637,10 @@ namespace TransCarga
                                     //tx_dat_m1clte.Text = dr.GetString("m1clien");
                                     //tx_impreso.Text = dr.GetString("impreso");
                                     //tx_idcob.Text = dr.GetString("cobra");              // id de cobranza
-                                    vs[1] = dr.GetString("numdvta");
                                     //tx_estado.Text = dr.GetString("nomest");   // lib.nomstat(tx_dat_estad.Text);
-                                    if (dr.GetString("userm") == "") vs[27] = lib.nomuser(dr.GetString("userc"));
-                                    else vs[27] = lib.nomuser(dr.GetString("userm"));
-                                    if (dr.GetString("conPago") != "")
-                                    {
-                                        if (dr.GetString("conPago") == "0") vs[18] = "CONTADO";
-                                        if (dr.GetString("conPago") == "1") vs[18] = "CREDITO";
-                                       //if (dr.GetString("pagauto") == "S") rb_si.Checked = true;
-                                       // else rb_no.Checked = true;
-                                    }
                                     //tx_valdscto.Text = dr.GetString("valordscto");
                                     //tx_dat_porcDscto.Text = dr.GetString("porcendscto");
                                     //tx_dat_plazo.Text = dr.GetString("plazocred");
-                                    vs[42] = Math.Round(dr.GetDecimal("totdvMN"), 2).ToString();
                                     // campos de carga unica
                                     // a.placa,a.confveh,a.autoriz,a.detPeso,a.detputil,a.detMon1,a.detMon2,a.detMon3,a.dirporig,a.ubiporig,a.dirpdest,a.ubipdest,
                                     // ad.placa,ad.confv,ad.autoriz,ad.cargaEf,ad.cargaUt,ad.rucTrans,ad.nomTrans,ad.fecIniTras,ad.dirPartida,ad.ubiPartida,ad.dirDestin,ad.ubiDestin,ad.dniChof,ad.brevete,ad.valRefViaje,ad.valRefVehic,ad.valRefTon "
@@ -638,7 +672,14 @@ namespace TransCarga
                                         cu[20] = retud[0];
                                         cu[21] = retud[1];
                                         cu[22] = retud[2];
+                                        cu[23] = "02";      // codigo modalidad de transporte .. esto deberia grabarse en la tabla adifactu
+                                        cu[24] = dr.GetString("detPeso");
+                                        cu[25] = "01";      // codigo motivo de traslado .. .. esto deberia grabarse en la tabla adifactu
+                                        cu[26] = dr.GetString("regmtc");
+                                        cu[27] = "1";
+                                        cu[28] = dr.GetString("cargaunica");
                                     }
+                                    tipdoS = dr.GetString("codsunat");
                                 }
                                 else
                                 {
@@ -695,25 +736,27 @@ namespace TransCarga
                 }
             }
             // llamada a llenaTablaLiteDV
-            if (llenaTablaLiteDV(tipdo, serdo, numdo, vs, dt, var, cu) == true) retorna = true;
+            if (llenaTablaLiteDV(tipdoS, serdo, numdo, vs, dt, var, cu) == true) retorna = true;
             else
             {
                 MessageBox.Show("Error en completar datos del XML", "Error Interno", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 retorna = false;
             }
 
-            // llamada al programa de generación del xml del comprobante - F002-00010014
-            if (llamaXmlDocVta(var, vs[0] + "-" + vs[1], tipdo) == true) retorna = true;
-            else
-            {
-                MessageBox.Show("Error en generar el XML", "Error Interno", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                retorna = false;
-            }
-
             return retorna;
         }
+        
         public bool llamaXmlDocVta(string[] varios, string cdvta, string tipdo)
         {
+            /*  p.Arguments = 
+                ruta = args[0];                         // ruta donde se grabará el xml
+                ruce = args[1];                         // ruc del emisor del comprobante
+                docv = args[2];                         // comprobante en formato <ruc>-<codDV>-<serie>-<numero>
+                ifir = args[3].ToLower();               // indicador si se debe firmar | true = si firmar, false = no firmar
+                cert = args[4];                         // ruta y nombre del certificado .pfx
+                clav = args[5];                         // clave del certificado
+                tipg = args[6];                         // tipo de comprobante de venta codigo Sunat
+            */
             bool retorna = false;
             string rutalocal = System.IO.Path.GetDirectoryName(Application.ExecutablePath);
             ProcessStartInfo p = new ProcessStartInfo();                                                // true = firma comprobante
