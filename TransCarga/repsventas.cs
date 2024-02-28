@@ -1324,7 +1324,7 @@ namespace TransCarga
         {
             string[] vs = {"", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",      // 20
                            "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""};     // 20
-            string[] va = { "", "", "", "", "", "", "", "", "" };       // 9
+            string[] va = { "", "", "", "", "", "", "", "", "", "" };       // 10
             string[,] dt = new string[10, 9] {
                     { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" },
                     { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }
@@ -1445,16 +1445,33 @@ namespace TransCarga
                                     va[1] = glosser;         // glosa del servicio en facturacion
                                     va[2] = "";         // libre
                                     va[3] = Program.pordetra;         // porcentaje detracción
+                                    double impDetr = dr.GetDouble("totdvMN") * double.Parse(Program.pordetra) / 100;               // importe calculado de la detracción
                                     va[4] = (dr.GetDouble("totdvMN") * double.Parse(Program.pordetra) / 100).ToString("#0.00");         // monto detracción
                                     va[5] = Program.ctadetra;         // cta. detracción
                                     va[6] = "";         // concatenado de Guias Transportista para Formato de cargas unicas
                                     va[7] = vi_rutaQR + "pngqr";         // ruta y nombre del png codigo QR
                                     va[8] = "";         // 
+                                    va[9] = dr.GetString("tcadvta");    // tipo de cambio
 
                                     mcu = dr.GetString("cargaunica");
                                     vce = dr.GetString("cargaEf");
                                     gse = glosser;
                                     pigv = dr.GetDouble("porcigv");
+                                    //
+                                    double valCuot = 0;                     // valor de la cuota SI ES CREDITO
+                                    if (vs[20] == "" && vs[18] == "CREDITO") valCuot = dr.GetDouble("totdvta");
+                                    else
+                                    {
+                                        if (dr.GetString("mondvta") == codmon)      // comprobante en soles?
+                                        {
+                                            valCuot = dr.GetDouble("totdvta") - impDetr;
+                                        }
+                                        else
+                                        {
+                                            valCuot = Math.Round(dr.GetDouble("totdvta") - (impDetr / double.Parse(va[9])), 2);
+                                        }
+                                    }
+                                    vs[39] = valCuot.ToString("#0.00");
                                 }
                                 else
                                 {

@@ -18,7 +18,7 @@ namespace TransCarga
         libreria lib = new libreria();
         string[] vs = {"", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",     // 20
                        "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""};    // 20
-        string[] va = { "", "", "", "", "", "", "", "", "" };       // 9
+        string[] va = { "", "", "", "", "", "", "", "", "", "" };       // 10
         string[,] dt = new string[10, 9] { 
             { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" },
             { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }
@@ -539,6 +539,7 @@ namespace TransCarga
             cabRow.nomMone = vs[36];      // nombre de la moneda
             cabRow.totOpInafec = vs[37];    // tot operaciones inafectas
             cabRow.totOpExone = vs[38];     // tot operaciones exoneradas
+            cabRow.valCuota = vs[39];       // valor de la cuota
             DV.cVta_cab.AddcVta_cabRow(cabRow);
             
             // DETALLE
@@ -590,6 +591,7 @@ namespace TransCarga
             vaRow.porcDet = va[3];
             vaRow.guiasTrans = va[6];
             vaRow.ubicapng = va[7];
+            vaRow.tipcambio = va[9];
             DV.cVta_va.AddcVta_vaRow(vaRow);
             return DV;
         }
