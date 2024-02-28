@@ -532,8 +532,8 @@ form facelect, opción FACT.DIRECTA desde sistema del contribuyente a los metodo
 	- Fact normales, CON detracción en DOLARES al contado .......................................... ok 13/02/2024 .. por consultar detrac 1001 o 1004 
 	- Fact normales, CON detracción en DOLARES al crédito .......................................... ok 16/02/2024 .. Yo decidí usar el 1004 para todos los casos, aun no consulto con Antonio
 form facelect, adecuaciones para grabar datos adicionales de transporte para detracciones .......... ok 16/02/2024
-clase xmlComprobantes, creación de la clase para centralizar la generacion de los xml ventas ....... me quede acá
-form repsventas, agregar columna boton XML para descargar de forma similar al CDR .................. me quede acá
+clase xmlComprobantes, creación de la clase para centralizar la generacion de los xml ventas ....... ok 27/02/2024
+form repsventas, agregar columna boton XML para descargar de forma similar al CDR .................. ok 27/02/2024
 form facelect, opción FACT.DIRECTA desde sistema del contribuyente a los metodos de gestión:
 	- Fact cargas unicas, con detracción en soles al contado ....................................... ok 16/02/2024 
 	- Fact cargas unicas, con detracción en dolares al contado ..................................... ok 16/02/2024 

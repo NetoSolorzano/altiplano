@@ -416,6 +416,8 @@
               <xs:element name="totOpInafec" msprop:Generator_ColumnVarNameInTable="columntotOpInafec" msprop:Generator_ColumnPropNameInRow="totOpInafec" msprop:Generator_ColumnPropNameInTable="totOpInafecColumn" msprop:Generator_UserColumnName="totOpInafec" type="xs:string" minOccurs="0" />
               <xs:element name="totOpExone" msprop:Generator_ColumnVarNameInTable="columntotOpExone" msprop:Generator_ColumnPropNameInRow="totOpExone" msprop:Generator_ColumnPropNameInTable="totOpExoneColumn" msprop:Generator_UserColumnName="totOpExone" type="xs:string" minOccurs="0" />
               <xs:element name="valCuota" msprop:Generator_ColumnVarNameInTable="columnvalCuota" msprop:Generator_ColumnPropNameInRow="valCuota" msprop:Generator_ColumnPropNameInTable="valCuotaColumn" msprop:Generator_UserColumnName="valCuota" type="xs:string" minOccurs="0" />
+              <xs:element name="dirSucursal" msprop:Generator_ColumnVarNameInTable="columndirSucursal" msprop:Generator_ColumnPropNameInRow="dirSucursal" msprop:Generator_ColumnPropNameInTable="dirSucursalColumn" msprop:Generator_UserColumnName="dirSucursal" type="xs:string" minOccurs="0" />
+              <xs:element name="obsComp" msprop:Generator_ColumnVarNameInTable="columnobsComp" msprop:Generator_ColumnPropNameInRow="obsComp" msprop:Generator_ColumnPropNameInTable="obsCompColumn" msprop:Generator_UserColumnName="obsComp" type="xs:string" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>

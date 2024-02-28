@@ -16,8 +16,8 @@ namespace TransCarga
     class impDV
     {
         libreria lib = new libreria();
-        string[] vs = {"", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",     // 20
-                       "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""};    // 20
+        string[] vs = {"", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",     // 21
+                       "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""};    // 21
         string[] va = { "", "", "", "", "", "", "", "", "", "" };       // 10
         string[,] dt = new string[10, 9] { 
             { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" },
@@ -69,7 +69,9 @@ namespace TransCarga
             vs[36] = cabecera[36];    // nombre de la moneda
             vs[37] = cabecera[37];    // tot operaciones inafectas
             vs[38] = cabecera[38];    // tot operaciones exoneradas
-            vs[39] = "";
+            vs[39] = cabecera[39];      // 
+            vs[40] = cabecera[40];      // dirección de la sucursal
+            vs[41] = cabecera[41];      // observ. del comprobante
 
             cu[0] = cunica[0];          // "placa");
             cu[1] = cunica[1];          // "confv");
@@ -392,6 +394,16 @@ namespace TransCarga
                     e.Graphics.DrawString(monlet, lt_peq, Brushes.Black, recto, StringFormat.GenericTypographic);
                     if (monlet.Length <= 30) posi = posi + alfi;
                     else posi = posi + alfi + alfi;
+                    // observaciones
+                    if (vs[41].Trim() != "")
+                    {
+                        decimal largo = vs[41].Trim().Length / 40;
+                        decimal qw = Math.Ceiling(largo);
+                        siz = new SizeF(lib.CentimeterToPixel(anchTik), alfi * (float)qw);
+                        recto = new RectangleF(puntoF, siz);
+                        e.Graphics.DrawString("Obs.:" + vs[41].Trim(), lt_peq, Brushes.Black, recto, StringFormat.GenericTypographic);
+                        posi = posi + alfi * (float)qw;
+                    }
                     if (vs[2] == va[2])
                     {
                         // forma de pago
@@ -540,6 +552,8 @@ namespace TransCarga
             cabRow.totOpInafec = vs[37];    // tot operaciones inafectas
             cabRow.totOpExone = vs[38];     // tot operaciones exoneradas
             cabRow.valCuota = vs[39];       // valor de la cuota
+            cabRow.dirSucursal = vs[40];    // direccion de la sucursal
+            cabRow.obsComp = vs[41];        // observaciones del comprobante
             DV.cVta_cab.AddcVta_cabRow(cabRow);
             
             // DETALLE

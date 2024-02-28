@@ -1322,8 +1322,8 @@ namespace TransCarga
 
         private void imprime(string tipo,string serie, string numero, string Formato)
         {
-            string[] vs = {"", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",      // 20
-                           "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""};     // 20
+            string[] vs = {"", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",      // 21
+                           "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""};     // 21
             string[] va = { "", "", "", "", "", "", "", "", "", "" };       // 10
             string[,] dt = new string[10, 9] {
                     { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" },
@@ -1342,11 +1342,21 @@ namespace TransCarga
                     /*string consdeta = "select a.codgror,a.cantbul,a.unimedp,a.descpro,a.pesogro,b.docsremit,round(a.totalgr,2) as totalgr,round(a.totalgr,2) as preUni," +
                         "round(a.totalgr/(1 + (@pigv/100)),2) as valUni " +
                         "from detfactu a left join cabguiai b on concat(b.sergui,'-',b.numgui)=a.codgror " +
-                        "where a.tipdocvta=@tdv and a.serdvta=@ser and a.numdvta=@num"; */
+                        "where a.tipdocvta=@tdv and a.serdvta=@ser and a.numdvta=@num"; 
                     string consdeta = "select a.codgror,a.cantbul,ifnull(b.unimedpro,'') as unimedp,a.descpro,a.pesogro,ifnull(b.docsremit,'') as docsremit," +
                         "round(a.totalgr,2) as totalgr,round(a.totalgr,2) as preUni,round(a.totalgr/(1+(@pigv/100)),2) as valUni " +
                         "from detfactu a left JOIN " +
                         "(SELECT x.sergui, x.numgui, x.docsremit, y.unimedpro from cabguiai x LEFT JOIN detguiai y ON x.id = y.idc WHERE x.tipdocvta = @tdv AND x.serdocvta = @ser AND x.numdocvta = @num)b on concat(b.sergui, '-', b.numgui) = a.codgror " +
+                        "where a.tipdocvta = @tdv and a.serdvta = @ser and a.numdvta = @num";
+                    */
+                    string consdeta = "select a.codgror,a.cantbul,ifnull(b.unimedpro, '') as unimedp,a.descpro,a.pesogro,ifnull(b.docsremit, '') as docsremit," +
+                        "round(a.totalgr, 2) as totalgr,round(a.totalgr, 2) as preUni,round(a.totalgr / (1 + (@pigv / 100)), 2) as valUni,concat(dl.DescrizioneRid, '-', dd.DescrizioneRid) AS orides " +
+                        "from detfactu a " +
+                        "left JOIN(SELECT x.sergui, x.numgui, x.docsremit, y.unimedpro, x.locorigen, x.locdestin " +
+                        "from cabguiai x LEFT JOIN detguiai y ON x.id = y.idc " +
+                        "WHERE x.tipdocvta = @tdv AND x.serdocvta = @ser AND x.numdocvta = @num)b on concat(b.sergui, '-', b.numgui) = a.codgror " +
+                        "LEFT JOIN desc_loc dl ON dl.IDCodice = b.locorigen " +
+                        "LEFT JOIN desc_loc dd ON dd.IDCodice = b.locdestin " +
                         "where a.tipdocvta = @tdv and a.serdvta = @ser and a.numdvta = @num";
 
                     string consulta = "select a.id,DATE_FORMAT(a.fechope,'%d/%m/%Y') AS fechope,a.martdve,a.tipdvta,a.serdvta,a.numdvta,a.ticltgr,a.tidoclt,a.nudoclt,a.nombclt,a.direclt,a.dptoclt,a.provclt,a.distclt,a.ubigclt,a.corrclt,a.teleclt," +
@@ -1355,7 +1365,7 @@ namespace TransCarga
                         "a.cargaunica,a.porcendscto,round(a.valordscto,2) as valordscto,a.conPago,a.pagauto,ifnull(ad.placa,'') as placa,ifnull(ad.confv,'') as confv,ifnull(ad.autoriz,'') as autoriz,m.descrizionerid as inimon,t.codsunat as cdtdv," +
                         "ifnull(ad.cargaEf,0) as cargaEf,ifnull(ad.cargaUt,0) as cargaUt,ifnull(ad.rucTrans,'') as rucTrans,ifnull(ad.nomTrans,'') as nomTrans,ifnull(date_format(ad.fecIniTras,'%Y-%m-%d'),'') as fecIniTras," +
                         "ifnull(ad.dirPartida,'') as dirPartida,ifnull(ad.ubiPartida,'') as ubiPartida,ifnull(ad.dirDestin,'') as dirDestin,ifnull(ad.ubiDestin,'') as ubiDestin,ifnull(ad.dniChof,'') as dniChof," +
-                        "ifnull(ad.brevete,'') as brevete,ifnull(ad.valRefViaje,0) as valRefViaje,ifnull(ad.valRefVehic,0) as valRefVehic,ifnull(ad.valRefTon,0) as valRefTon,l.descrizionerid as nomLocO," +
+                        "ifnull(ad.brevete,'') as brevete,ifnull(ad.valRefViaje,0) as valRefViaje,ifnull(ad.valRefVehic,0) as valRefVehic,ifnull(ad.valRefTon,0) as valRefTon,l.descrizionerid as nomLocO,concat(l.deta1,' ',l.deta4,'-',l.deta3,'-',l.deta2) as dirSuc," +
                         "if(a.plazocred='',DATE_FORMAT(a.fechope,'%d/%m/%Y'),DATE_FORMAT(date_add(a.fechope, interval p.marca1 day),'%d/%m/%Y')) as fvence,if(a.plazocred='','Contado','Credito - N° Cuotas : 1') as condicion," +
                         "m.deta1 as nonmone " +
                         "from cabfactu a " +
@@ -1472,6 +1482,8 @@ namespace TransCarga
                                         }
                                     }
                                     vs[39] = valCuot.ToString("#0.00");
+                                    vs[40] = dr.GetString("dirSuc");        // direccion de la sucursal
+                                    vs[41] = dr.GetString("obsdvta");       // observaciones del comprobante
                                 }
                                 else
                                 {
@@ -1503,7 +1515,7 @@ namespace TransCarga
                                 while (drg.Read())  // #fila,a.cantprodi,a.unimedpro,a.descprodi,a.pesoprodi
                                 {
                                     //dt[y, 0] = (y + 1).ToString();
-                                    dt[y, 0] = "OriDest";
+                                    dt[y, 0] = drg.GetString("orides");
                                     dt[y, 1] = drg.GetString("cantbul");
                                     dt[y, 2] = drg.GetString("unimedp");
                                     dt[y, 3] = drg.GetString("codgror");             // guia transportista

@@ -7958,6 +7958,10 @@ namespace TransCarga {
             
             private global::System.Data.DataColumn columnvalCuota;
             
+            private global::System.Data.DataColumn columndirSucursal;
+            
+            private global::System.Data.DataColumn columnobsComp;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public cVta_cabDataTable() {
@@ -8329,6 +8333,22 @@ namespace TransCarga {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn dirSucursalColumn {
+                get {
+                    return this.columndirSucursal;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn obsCompColumn {
+                get {
+                    return this.columnobsComp;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -8406,7 +8426,9 @@ namespace TransCarga {
                         string motTrasla, 
                         string totOpInafec, 
                         string totOpExone, 
-                        string valCuota) {
+                        string valCuota, 
+                        string dirSucursal, 
+                        string obsComp) {
                 cVta_cabRow rowcVta_cabRow = ((cVta_cabRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         formatoRPT,
@@ -8450,7 +8472,9 @@ namespace TransCarga {
                         motTrasla,
                         totOpInafec,
                         totOpExone,
-                        valCuota};
+                        valCuota,
+                        dirSucursal,
+                        obsComp};
                 rowcVta_cabRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowcVta_cabRow);
                 return rowcVta_cabRow;
@@ -8515,6 +8539,8 @@ namespace TransCarga {
                 this.columntotOpInafec = base.Columns["totOpInafec"];
                 this.columntotOpExone = base.Columns["totOpExone"];
                 this.columnvalCuota = base.Columns["valCuota"];
+                this.columndirSucursal = base.Columns["dirSucursal"];
+                this.columnobsComp = base.Columns["obsComp"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -8604,6 +8630,10 @@ namespace TransCarga {
                 base.Columns.Add(this.columntotOpExone);
                 this.columnvalCuota = new global::System.Data.DataColumn("valCuota", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnvalCuota);
+                this.columndirSucursal = new global::System.Data.DataColumn("dirSucursal", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columndirSucursal);
+                this.columnobsComp = new global::System.Data.DataColumn("obsComp", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnobsComp);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -18883,6 +18913,38 @@ namespace TransCarga {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string dirSucursal {
+                get {
+                    try {
+                        return ((string)(this[this.tablecVta_cab.dirSucursalColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("El valor de la columna \'dirSucursal\' de la tabla \'cVta_cab\' es DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tablecVta_cab.dirSucursalColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string obsComp {
+                get {
+                    try {
+                        return ((string)(this[this.tablecVta_cab.obsCompColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("El valor de la columna \'obsComp\' de la tabla \'cVta_cab\' es DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tablecVta_cab.obsCompColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public bool IsformatoRPTNull() {
                 return this.IsNull(this.tablecVta_cab.formatoRPTColumn);
             }
@@ -19383,6 +19445,30 @@ namespace TransCarga {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public void SetvalCuotaNull() {
                 this[this.tablecVta_cab.valCuotaColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsdirSucursalNull() {
+                return this.IsNull(this.tablecVta_cab.dirSucursalColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetdirSucursalNull() {
+                this[this.tablecVta_cab.dirSucursalColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsobsCompNull() {
+                return this.IsNull(this.tablecVta_cab.obsCompColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetobsCompNull() {
+                this[this.tablecVta_cab.obsCompColumn] = global::System.Convert.DBNull;
             }
         }
         
