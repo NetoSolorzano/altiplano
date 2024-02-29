@@ -156,6 +156,7 @@ namespace TransCarga
         DataTable dtp = new DataTable();        // plazo de credito 
         DataTable tcfe = new DataTable();       // facturacion electronica - cabecera
         DataTable tdfe = new DataTable();       // facturacion electronica -detalle
+        DataTable dtmps = new DataTable();      // medio de pago sunat detracción
         string[] datcltsR = { "", "", "", "", "", "", "", "", "" };
         string[] datcltsD = { "", "", "", "", "", "", "", "", "" };
         string[] datguias = { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }; // 18
@@ -862,6 +863,19 @@ namespace TransCarga
                             v_estcaj = dr.GetString("statusc");
                             v_idcaj = dr.GetString("id");
                         }
+                    }
+                }
+                // medio de pago sunat detracción
+                using (MySqlCommand comps = new MySqlCommand("select idcodice,descrizionerid,codsunat,marca1 from desc_mps where numero=@bloq", conn))
+                {
+                    comps.Parameters.AddWithValue("@bloq", 1);
+                    using (MySqlDataAdapter datms = new MySqlDataAdapter(comps))
+                    {
+                        dtmps.Clear();
+                        datms.Fill(dtmps);
+                        cmb_mpsdet.DataSource = dtmps;
+                        cmb_mpsdet.DisplayMember = "descrizione";
+                        cmb_mpsdet.ValueMember = "idcodice";
                     }
                 }
             }
@@ -5588,6 +5602,15 @@ namespace TransCarga
             {
                 tx_dat_plazo.Text = "";
                 tx_dat_dpla.Text = "";
+            }
+        }
+        private void cmb_mpsdet_SelectionChangeCommitted(object sender, EventArgs e)
+        {
+            if (cmb_mpsdet.SelectedIndex > -1)
+            {
+                tx_dat_mpsd.Text = cmb_mpsdet.SelectedValue.ToString();
+                DataRow[] row = dtmps.Select("idcodice='" + tx_dat_mpsd.Text + "'");
+                tx_dat_mpsCS.Text = row[0][2].ToString();
             }
         }
         #endregion comboboxes

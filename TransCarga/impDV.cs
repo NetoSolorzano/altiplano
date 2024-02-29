@@ -112,7 +112,8 @@ namespace TransCarga
             va[5] = varios[5];         // cta. detracción
             va[6] = varios[6];         // concatenado de Guias Transportista para Formato de cargas unicas
             va[7] = varios[7];         // ruta y nombre del png codigo QR
-            va[8] = varios[8];         // 
+            va[8] = varios[8];         // medio de pago sunat de la detracción
+            va[9] = varios[9];         // tipo de cambio
 
             switch (formato)
             {
@@ -605,6 +606,7 @@ namespace TransCarga
             vaRow.porcDet = va[3];
             vaRow.guiasTrans = va[6];
             vaRow.ubicapng = va[7];
+            vaRow.mpsdet = va[8];            // medio de pago sunat de la detracción
             vaRow.tipcambio = va[9];
             DV.cVta_va.AddcVta_vaRow(vaRow);
             return DV;

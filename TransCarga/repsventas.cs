@@ -1367,7 +1367,7 @@ namespace TransCarga
                         "ifnull(ad.dirPartida,'') as dirPartida,ifnull(ad.ubiPartida,'') as ubiPartida,ifnull(ad.dirDestin,'') as dirDestin,ifnull(ad.ubiDestin,'') as ubiDestin,ifnull(ad.dniChof,'') as dniChof," +
                         "ifnull(ad.brevete,'') as brevete,ifnull(ad.valRefViaje,0) as valRefViaje,ifnull(ad.valRefVehic,0) as valRefVehic,ifnull(ad.valRefTon,0) as valRefTon,l.descrizionerid as nomLocO,concat(l.deta1,' ',l.deta4,'-',l.deta3,'-',l.deta2) as dirSuc," +
                         "if(a.plazocred='',DATE_FORMAT(a.fechope,'%d/%m/%Y'),DATE_FORMAT(date_add(a.fechope, interval p.marca1 day),'%d/%m/%Y')) as fvence,if(a.plazocred='','Contado','Credito - N° Cuotas : 1') as condicion," +
-                        "m.deta1 as nonmone " +
+                        "m.deta1 as nonmone,a.mpsdet " +
                         "from cabfactu a " +
                         "left join adifactu ad on ad.idc=a.id and ad.tipoAd=1 " +
                         "left join desc_est b on b.idcodice=a.estdvta " +
@@ -1376,6 +1376,7 @@ namespace TransCarga
                         "left join desc_tdv t on t.idcodice=a.tipdvta " +
                         "left join desc_doc d on d.idcodice=a.tidoclt " +
                         "left join desc_loc l on l.idcodice=a.locorig " +
+                        "left join desc_mps ps on ps.idcodice=a.mpsdet " +
                         "left join series s on s.tipdoc=a.tipdvta and s.serie=a.serdvta " +
                         "left join cabcobran c on c.tipdoco=a.tipdvta and c.serdoco=a.serdvta and c.numdoco=a.numdvta and c.estdcob<>@coda " +
                         "where a.tipdvta=@tdv and a.serdvta=@ser and a.numdvta=@num";
@@ -1451,16 +1452,16 @@ namespace TransCarga
                                     cu[16] = dr.GetString("valRefTon");
                                     // varios
                                     glosser = dr.GetString("glosaser");
-                                    va[0] = logoclt;         // Ruta y nombre del logo del emisor electrónico
-                                    va[1] = glosser;         // glosa del servicio en facturacion
-                                    va[2] = "";         // libre
-                                    va[3] = Program.pordetra;         // porcentaje detracción
+                                    va[0] = logoclt;                    // Ruta y nombre del logo del emisor electrónico
+                                    va[1] = glosser;                    // glosa del servicio en facturacion
+                                    va[2] = codfact;                    // Código Transcarga del tipo de documento Factura 
+                                    va[3] = Program.pordetra;           // porcentaje detracción
                                     double impDetr = dr.GetDouble("totdvMN") * double.Parse(Program.pordetra) / 100;               // importe calculado de la detracción
                                     va[4] = (dr.GetDouble("totdvMN") * double.Parse(Program.pordetra) / 100).ToString("#0.00");         // monto detracción
                                     va[5] = Program.ctadetra;         // cta. detracción
                                     va[6] = "";         // concatenado de Guias Transportista para Formato de cargas unicas
                                     va[7] = vi_rutaQR + "pngqr";         // ruta y nombre del png codigo QR
-                                    va[8] = "";         // 
+                                    va[8] = dr.GetString("mpsdet");     // medio de pago sunat de la detracción
                                     va[9] = dr.GetString("tcadvta");    // tipo de cambio
 
                                     mcu = dr.GetString("cargaunica");
