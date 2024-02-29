@@ -2985,12 +2985,14 @@ namespace TransCarga
                     if (Tx_modo.Text == "NUEVO")
                     {
                         string actua = "";
+                        /*
                         if (chk_cunica.Checked == false)
                         {
                             // insertamos
                             actua = "insert into adifactu (idc,nticket,fticket,estadoS,cdr,cdrgener,textoQR) values (@idc,@nti,@fti,@est,@cdrt,@cdrg,@tqr)";
                         }
                         else
+                        */
                         {
                             // actualizamos los campos de la tabla
                             actua = "update adifactu set nticket=@nti,fticket=@fti,estadoS=@est,cdr=@cdrt,cdrgener=@cdrg,textoQR=@tqr " +
@@ -4357,7 +4359,7 @@ namespace TransCarga
                     micon.Parameters.AddWithValue("@dpdest", tx_dat_dpd.Text);
                     micon.Parameters.AddWithValue("@updest", tx_dat_upd.Text);
                     micon.Parameters.AddWithValue("@conPag", (rb_contado.Checked == true)? "0" : "1");  // 0=contado, 1=credito
-                    micon.Parameters.AddWithValue("@mpsdet", tx_dat_mpsCS.Text);
+                    micon.Parameters.AddWithValue("@mpsdet", tx_dat_mpsd.Text);
                     micon.Parameters.AddWithValue("@verApp", verapp);
                     micon.Parameters.AddWithValue("@asd", asd);
                     micon.Parameters.AddWithValue("@iplan", lib.iplan());

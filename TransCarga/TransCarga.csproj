@@ -167,6 +167,12 @@
       <DependentUpon>CompVta1.rpt</DependentUpon>
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="CompVtaCU11.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CompVtaCU1.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="conClie.cs">
       <DependentUpon>conClie.xsd</DependentUpon>
     </Compile>
@@ -513,6 +519,10 @@
     <EmbeddedResource Include="CompVta1.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>CompVta1.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CompVtaCU1.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CompVtaCU11.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="ctacteclte1.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
