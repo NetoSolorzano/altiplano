@@ -314,6 +314,10 @@ namespace TransCarga
             tx_idcaja.ReadOnly = true;
             tx_idcaja.Text = "";
             tx_fletLetras.ReadOnly = true;
+            tx_imp_det.Text = "";
+            tx_por_det.Text = "";
+            cmb_mpsdet.SelectedIndex = -1;
+            cmb_mpsdet.Enabled = false;
             if (Tx_modo.Text == "NUEVO" && v_estcaj == codAbie)      // caja esta abierta?
             {
                 if (fshoy != TransCarga.Program.vg_fcaj)  // fecha de la caja vs fecha de hoy
@@ -866,7 +870,7 @@ namespace TransCarga
                     }
                 }
                 // medio de pago sunat detracción
-                using (MySqlCommand comps = new MySqlCommand("select idcodice,descrizionerid,codsunat,marca1 from desc_mps where numero=@bloq", conn))
+                using (MySqlCommand comps = new MySqlCommand("select idcodice,descrizione,codsunat,marca1 from desc_mps where numero=@bloq", conn))
                 {
                     comps.Parameters.AddWithValue("@bloq", 1);
                     using (MySqlDataAdapter datms = new MySqlDataAdapter(comps))
@@ -3872,6 +3876,17 @@ namespace TransCarga
                     MessageBox.Show("No puede cobrar en automático", "No existe caja abierta");
                     rb_no.PerformClick();
                 }
+                // ***************************      detracción      ******************************
+                if (double.Parse(tx_fletMN.Text) >= double.Parse(Program.valdetra) && tx_imp_det.Text == "")
+                {
+                    cmb_mpsdet.Enabled = true;
+                    tx_por_det.Text = Program.pordetra;
+                    tx_imp_det.Text = (double.Parse(tx_fletMN.Text) * double.Parse(Program.pordetra) / 100).ToString("0.00");
+                    MessageBox.Show("El comprobante tiene DETRACCIÓN, seleccione el" + Environment.NewLine + 
+                        "medio de pago de esa obligación","Atención",MessageBoxButtons.OK,MessageBoxIcon.Information);
+                    cmb_mpsdet.Focus();
+                    return;
+                }
                 if (chk_cunica.Checked == true)
                 {
                     if (tx_cetm.Text.Trim() == "")
@@ -4272,12 +4287,12 @@ namespace TransCarga
                     "fechope,martdve,tipdvta,serdvta,numdvta,ticltgr,tidoclt,nudoclt,nombclt,direclt,dptoclt,provclt,distclt,ubigclt,corrclt,teleclt," +
                     "locorig,dirorig,ubiorig,obsdvta,canfidt,canbudt,mondvta,tcadvta,subtota,igvtota,porcigv,totdvta,totpags,saldvta,estdvta,frase01," +
                     "tipoclt,m1clien,tippago,ferecep,impreso,codMN,subtMN,igvtMN,totdvMN,pagauto,tipdcob,idcaja,plazocred,porcendscto,valordscto," +
-                    "cargaunica,placa,confveh,autoriz,detPeso,detputil,detMon1,detMon2,detMon3,dirporig,ubiporig,dirpdest,ubipdest,conPago," +
+                    "cargaunica,placa,confveh,autoriz,detPeso,detputil,detMon1,detMon2,detMon3,dirporig,ubiporig,dirpdest,ubipdest,conPago,mpsdet," +
                     "verApp,userc,fechc,diriplan4,diripwan4,netbname) values (" +
                     "@fechop,@mtdvta,@ctdvta,@serdv,@numdv,@tcdvta,@tdcrem,@ndcrem,@nomrem,@dircre,@dptocl,@provcl,@distcl,@ubicre,@mailcl,@telecl," +
                     "@ldcpgr,@didegr,@ubdegr,@obsprg,@canfil,@totcpr,@monppr,@tcoper,@subpgr,@igvpgr,@porcigv,@totpgr,@pagpgr,@salxpa,@estpgr,@frase1," +
                     "@ticlre,@m1clte,@tipacc,@feredv,@impSN,@codMN,@subMN,@igvMN,@totMN,@pagaut,@tipdco,@idcaj,@plazc,@pordesc,@valdesc," +
-                    "@caruni,@placa,@confv,@autor,@dPeso,@dputil,@dMon1,@dMon2,@dMon3,@dporig,@uporig,@dpdest,@updest,@conPag," +
+                    "@caruni,@placa,@confv,@autor,@dPeso,@dputil,@dMon1,@dMon2,@dMon3,@dporig,@uporig,@dpdest,@updest,@conPag,@mpsdet," +
                     "@verApp,@asd,now(),@iplan,@ipwan,@nbnam)";
                 using (MySqlCommand micon = new MySqlCommand(inserta, conn))
                 {
@@ -4342,6 +4357,7 @@ namespace TransCarga
                     micon.Parameters.AddWithValue("@dpdest", tx_dat_dpd.Text);
                     micon.Parameters.AddWithValue("@updest", tx_dat_upd.Text);
                     micon.Parameters.AddWithValue("@conPag", (rb_contado.Checked == true)? "0" : "1");  // 0=contado, 1=credito
+                    micon.Parameters.AddWithValue("@mpsdet", tx_dat_mpsCS.Text);
                     micon.Parameters.AddWithValue("@verApp", verapp);
                     micon.Parameters.AddWithValue("@asd", asd);
                     micon.Parameters.AddWithValue("@iplan", lib.iplan());
@@ -5611,6 +5627,21 @@ namespace TransCarga
                 tx_dat_mpsd.Text = cmb_mpsdet.SelectedValue.ToString();
                 DataRow[] row = dtmps.Select("idcodice='" + tx_dat_mpsd.Text + "'");
                 tx_dat_mpsCS.Text = row[0][2].ToString();
+            }
+            else
+            {
+                tx_dat_mpsd.Text = "";
+                tx_dat_mpsCS.Text = "";
+            }
+        }
+        private void cmb_mpsdet_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (cmb_mpsdet.SelectedIndex == -1)
+            {
+                tx_dat_mpsd.Text = "";
+                tx_dat_mpsCS.Text = "";
+                tx_imp_det.Text = "";
+                tx_por_det.Text = "";
             }
         }
         #endregion comboboxes
