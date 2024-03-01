@@ -1350,7 +1350,7 @@ namespace TransCarga
                         "where a.tipdocvta = @tdv and a.serdvta = @ser and a.numdvta = @num";
                     */
                     string consdeta = "select a.codgror,a.cantbul,ifnull(b.unimedpro, '') as unimedp,a.descpro,a.pesogro,ifnull(b.docsremit, '') as docsremit," +
-                        "round(a.totalgr, 2) as totalgr,round(a.totalgr, 2) as preUni,round(a.totalgr / (1 + (@pigv / 100)), 2) as valUni,concat(dl.DescrizioneRid, '-', dd.DescrizioneRid) AS orides " +
+                        "round(a.totalgr, 2) as totalgr,round(a.totalgr, 2) as preUni,round(a.totalgr / (1 + (@pigv / 100)), 2) as valUni,ifnull(concat(dl.DescrizioneRid, '-', dd.DescrizioneRid),'') AS orides " +
                         "from detfactu a " +
                         "left JOIN(SELECT x.sergui, x.numgui, x.docsremit, y.unimedpro, x.locorigen, x.locdestin " +
                         "from cabguiai x LEFT JOIN detguiai y ON x.id = y.idc " +
