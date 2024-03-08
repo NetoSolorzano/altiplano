@@ -5669,14 +5669,16 @@ namespace TransCarga
                 //printDocument1.PrinterSettings.PrinterName = v_impTK;
                 //printDocument1.Print();
 
-                string[] vs = {"", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",      // 20
-                               "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""};     // 20
+                string[] vs = {"", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",      // 21
+                               "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""};     // 21
                 string[] va = { "", "", "", "", "", "", "", "", "" };       // 9
                 string[,] dt = new string[10, 9] {
                     { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" },
                     { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }
                 }; // 6 columnas, 10 filas
                 string[] cu = { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" };    // 17
+                DataRow[] row = dtm.Select("idcodice='" + tx_dat_mone.Text + "'");
+                string nommone = row[0][3].ToString();
 
                 vs[0] = cmb_tdv.Text.Substring(0, 1).ToUpper() + lib.Right(tx_serie.Text, 3);   // serie (F001)
                 vs[1] = tx_numero.Text;                 // numero
@@ -5709,6 +5711,32 @@ namespace TransCarga
                 vs[27] = tx_digit.Text.Trim();          // usuario creador
                 vs[28] = tx_locuser.Text;               // local de emisión
                 vs[29] = despedida;                     // glosa despedida
+                vs[30] = Program.cliente;               // nombre del emisor del comprobante
+                vs[31] = Program.ruc;                   // ruc del emisor
+                vs[32] = (rb_credito.Checked == true) ? DateTime.Parse(tx_fechope.Text).AddDays(double.Parse(tx_dat_dpla.Text)).Date.ToString("dd-MM-yyyy") : "";
+                vs[33] = (rb_credito.Checked == true) ? "Credito - N° Cuotas : 1" : "Contado";      // condicion
+                vs[34] = "Transporte Privado";          // modalidad de transporte;
+                vs[35] = "Venta";                       // motivo de traslado
+                vs[36] = nommone;                       // nombre de la moneda
+                vs[37] = "0";                           // tot operaciones inafectas
+                vs[38] = "0";                           // tot operaciones exoneradas
+                double impDetr = Double.Parse(tx_fletMN.Text) * double.Parse(Program.pordetra) / 100;               // importe calculado de la detracción
+                double valCuot = 0;                     // valor de la cuota SI ES CREDITO
+                if (rb_credito.Checked == true) valCuot = Double.Parse(tx_flete.Text);
+                else
+                {
+                    if (tx_dat_mone.Text == MonDeft)      // comprobante en soles?
+                    {
+                        valCuot = Double.Parse(tx_flete.Text) - impDetr;
+                    }
+                    else
+                    {
+                        valCuot = Math.Round(Double.Parse(tx_flete.Text) - (impDetr / double.Parse(tx_tipcam.Text)), 2);
+                    }
+                }
+                vs[39] = valCuot.ToString("#0.00");
+                vs[40] = ;      // direccion del local de la serie emitida
+                vs[41] = tx_obser1.Text;
                 // detalle
                 int tfg = (dataGridView1.Rows.Count == int.Parse(v_mfildet)) ? int.Parse(v_mfildet) : dataGridView1.Rows.Count - 1;
                 for (int l = 0; l < tfg; l++)
@@ -5723,18 +5751,23 @@ namespace TransCarga
                         dt[l, 3] = dataGridView1.Rows[l].Cells[0].Value.ToString();             // guia transportista
                         dt[l, 4] = dataGridView1.Rows[l].Cells[1].Value.ToString();             // descripcion de la carga
                         dt[l, 5] = dataGridView1.Rows[l].Cells[8].Value.ToString();             // documento relacionado remitente de la guia transportista
+                        dt[l, 6] = ;
+                        dt[l, 7] = ;
+                        dt[l, 8] = ;
+                        va[6] = va[6] + " " + drg.GetString("codgror");
                     }
                 }
                 // varios
                 va[0] = logoclt;         // Ruta y nombre del logo del emisor electrónico
                 va[1] = glosser;         // glosa del servicio en facturacion
                 va[2] = codfact;         // siglas nombre de tipo de documento Factura 
-                va[3] = "";         // 
-                va[4] = "";         // 
-                va[5] = "";         // 
-                va[6] = "";         // 
-                va[7] = "";         // 
-                va[8] = "";         // 
+                va[3] = Program.pordetra;           // porcentaje detracción
+                va[4] = (Double.Parse(tx_fletMN.Text) * double.Parse(Program.pordetra) / 100).ToString("#0.00");         // monto detracción
+                va[5] = Program.ctadetra;         // cta. detracción
+                //va[6] = "";         // concatenado de Guias Transportista para Formato de cargas unicas
+                va[7] = vi_rutaQR + "pngqr";         // ruta y nombre del png codigo QR
+                va[8] = dr.GetString("mpsTex");     // medio de pago sunat de la detracción
+                va[9] = tx_tipcam.Text;
 
                 impDV impTK = new impDV(1, v_impTK, vs, dt, va, cu, "TK", "");
 
