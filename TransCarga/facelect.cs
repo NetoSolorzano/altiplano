@@ -126,6 +126,7 @@ namespace TransCarga
         string rutaCertifc = "";        // Ruta y nombre del certificado .pfx
         string wsPostS = "";          // Ruta post webservice Sunat
         string claveCertif = "";        // Clave del certificado
+        string vi_rutaQR = "";          // ruta de generación del QR
         string[] c_t = new string[6] { "", "", "", "", "", "" }; // parametros para generar el token sunat
         //
         string verapp = System.Diagnostics.FileVersionInfo.GetVersionInfo(Application.ExecutablePath).FileVersion;
@@ -462,6 +463,7 @@ namespace TransCarga
                             if (row["param"].ToString() == "copias") vi_copias = row["valor"].ToString().Trim();
                             if (row["param"].ToString() == "impTK") v_impTK = row["valor"].ToString().Trim();
                             if (row["param"].ToString() == "nomfor_cr") v_CR_gr_ind = row["valor"].ToString().Trim();
+                            if (row["param"].ToString() == "rutaQR") vi_rutaQR = row["valor"].ToString().Trim();               // Ruta del archivo imagen del QR
                         }
                         if (row["campo"].ToString() == "moneda" && row["param"].ToString() == "default") MonDeft = row["valor"].ToString().Trim();      // moneda por defecto
                         if (row["campo"].ToString() == "detraccion" && row["param"].ToString() == "glosa") glosdetra = row["valor"].ToString().Trim();    // glosa detraccion
@@ -799,7 +801,7 @@ namespace TransCarga
                 }
                 // datos para el combobox documento de venta
                 cmb_tdv.Items.Clear();
-                string consu = "select distinct a.idcodice,a.descrizionerid,a.enlace1,a.codsunat,b.glosaser,b.serie " +
+                string consu = "select distinct a.idcodice,a.descrizionerid,a.enlace1,a.codsunat,b.glosaser,b.serie,b.dir_pe,b.ubigeo " +
                     "from desc_tdv a LEFT JOIN series b ON b.tipdoc = a.IDCodice where a.numero=@bloq and a.codigo=@codv and b.sede=@loca";
                 using (MySqlCommand cdv = new MySqlCommand(consu, conn))
                 {
@@ -5671,7 +5673,7 @@ namespace TransCarga
 
                 string[] vs = {"", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",      // 21
                                "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""};     // 21
-                string[] va = { "", "", "", "", "", "", "", "", "" };       // 9
+                string[] va = { "", "", "", "", "", "", "", "", "", "" };       // 10
                 string[,] dt = new string[10, 9] {
                     { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" },
                     { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }
@@ -5735,7 +5737,8 @@ namespace TransCarga
                     }
                 }
                 vs[39] = valCuot.ToString("#0.00");
-                vs[40] = ;      // direccion del local de la serie emitida
+                DataRow[] row1 = dttd1.Select("idcodice='" + tx_dat_tdv.Text + "' and serie='" + tx_serie.Text + "'");   // select distinct a.idcodice,a.descrizionerid,a.enlace1,a.codsunat,b.glosaser,b.serie,b.dir_pe,b.ubigeo 
+                vs[40] = row1[0][6].ToString();      // direccion del local de la serie emitida
                 vs[41] = tx_obser1.Text;
                 // detalle
                 int tfg = (dataGridView1.Rows.Count == int.Parse(v_mfildet)) ? int.Parse(v_mfildet) : dataGridView1.Rows.Count - 1;
@@ -5751,10 +5754,10 @@ namespace TransCarga
                         dt[l, 3] = dataGridView1.Rows[l].Cells[0].Value.ToString();             // guia transportista
                         dt[l, 4] = dataGridView1.Rows[l].Cells[1].Value.ToString();             // descripcion de la carga
                         dt[l, 5] = dataGridView1.Rows[l].Cells[8].Value.ToString();             // documento relacionado remitente de la guia transportista
-                        dt[l, 6] = ;
-                        dt[l, 7] = ;
-                        dt[l, 8] = ;
-                        va[6] = va[6] + " " + drg.GetString("codgror");
+                        dt[l, 6] = Math.Round(double.Parse(dataGridView1.Rows[l].Cells[4].Value.ToString())/(1 + double.Parse(v_igv)/100),2).ToString("#0.00");             // valor unitario
+                        dt[l, 7] = dataGridView1.Rows[l].Cells[4].Value.ToString();             // precio unitario
+                        dt[l, 8] = dataGridView1.Rows[l].Cells[4].Value.ToString();             // total
+                        va[6] = va[6] + " " + dataGridView1.Rows[l].Cells[8].Value.ToString();
                     }
                 }
                 // varios
@@ -5766,7 +5769,7 @@ namespace TransCarga
                 va[5] = Program.ctadetra;         // cta. detracción
                 //va[6] = "";         // concatenado de Guias Transportista para Formato de cargas unicas
                 va[7] = vi_rutaQR + "pngqr";         // ruta y nombre del png codigo QR
-                va[8] = dr.GetString("mpsTex");     // medio de pago sunat de la detracción
+                va[8] = tx_dat_mpsCS.Text;     // medio de pago sunat de la detracción
                 va[9] = tx_tipcam.Text;
 
                 impDV impTK = new impDV(1, v_impTK, vs, dt, va, cu, "TK", "");
