@@ -534,7 +534,7 @@ form facelect, opción FACT.DIRECTA desde sistema del contribuyente a los metodo
 form facelect, adecuaciones para grabar datos adicionales de transporte para detracciones .......... ok 16/02/2024
 clase xmlComprobantes, creación de la clase para centralizar la generacion de los xml ventas ....... ok 27/02/2024
 form repsventas, agregar columna boton XML para descargar de forma similar al CDR .................. ok 27/02/2024
-form facelect, adecuar la impresion a la clase modificada para cargas unicas ....................... me quede aca 08/03/2024
+form facelect, adecuar la impresion a la clase modificada para cargas unicas ....................... ok 08/03/2024
 form facelect, opción FACT.DIRECTA desde sistema del contribuyente a los metodos de gestión:
 	- Fact cargas unicas, con detracción en soles al contado ....................................... ok 16/02/2024 
 	- Fact cargas unicas, con detracción en dolares al contado ..................................... ok 16/02/2024 
