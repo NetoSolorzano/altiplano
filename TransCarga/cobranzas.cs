@@ -709,6 +709,8 @@ namespace TransCarga
                                                     }
                                                     tx_dat_mone.Text = tx_dat_mod.Text;
                                                     cmb_mon.SelectedValue = tx_dat_mod.Text;
+                                                    // si la moneda del doc es dolares, debe jalar tipo de cambio
+                                                    tx_tipcam.Text = lib.valtc(tx_fechope.Text.Substring(6, 4) + "-" + tx_fechope.Text.Substring(3, 2) + "-" + tx_fechope.Text.Substring(0, 2)).ToString("#0.00");
                                                     hay = "si";
                                                 }
                                             }
@@ -1761,7 +1763,11 @@ namespace TransCarga
                     tx_dat_mone.Text = cmb_mon.SelectedValue.ToString();
                     if (tx_dat_mone.Text == tx_dat_mod.Text)
                     {
-                        tipcambio(tx_dat_mone.Text);
+                        if (tx_dat_mone.Text == MonDeft) tipcambio(tx_dat_mone.Text);   // si la moneda es destino es soles, enviamos a funcion moneda dolares
+                        else
+                        {
+                            tx_tipcam.Text = lib.valtc(tx_fechope.Text.Substring(6,4) + "-" + tx_fechope.Text.Substring(3, 2) + "-" +tx_fechope.Text.Substring(0, 2)).ToString("#0.00");
+                        }
                     }
                     else
                     {

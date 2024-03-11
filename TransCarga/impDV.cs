@@ -398,6 +398,7 @@ namespace TransCarga
                     // observaciones
                     if (vs[41].Trim() != "")
                     {
+                        puntoF = new PointF(coli, posi);
                         decimal largo = vs[41].Trim().Length / 40;
                         decimal qw = Math.Ceiling(largo);
                         siz = new SizeF(lib.CentimeterToPixel(anchTik), alfi * (float)qw);
@@ -408,7 +409,7 @@ namespace TransCarga
                     if (vs[2] == va[2])
                     {
                         // forma de pago
-                        posi = posi + (alfi / 1.5F);
+                        posi = posi + alfi; // (alfi / 1.5F);
                         string ahiva = "";
                         if (vs[18] == "CREDITO")    // 
                         {

@@ -1316,7 +1316,8 @@ namespace TransCarga
         public decimal valtc(string fechat)                                 // retorna el tipo de cambio de la fecha en texto
         {
             decimal retorna = 0;
-            string consulta = "select valor1 from cambios where fecha=@fec";
+            //string consulta = "select valor1 from cambios where fecha=@fec";
+            string consulta = "select mext1 from tipcamref where fechope=@fec";
             MySqlConnection conl = new MySqlConnection(DB_CONN_STR);
             conl.Open();
             if (conl.State == ConnectionState.Open)
