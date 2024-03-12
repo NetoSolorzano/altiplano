@@ -3829,6 +3829,12 @@ namespace TransCarga
             string iserror = "no";
             if (modo == "NUEVO")
             {
+                // valida que si es carga unica debe tener detraccion ... cargas unicas y tramos es un tratamiento para el pago de detracciones
+                if (chk_cunica.Checked == true && double.Parse(tx_fletMN.Text) <= double.Parse(Program.valdetra))
+                {
+                    MessageBox.Show("Comprobante de Cargas unicas debe tener detracción","Error",MessageBoxButtons.OK,MessageBoxIcon.Warning);
+                    return;
+                }
                 // valida contado o credito
                 if (rb_contado.Checked == false && rb_credito.Checked == false)
                 {
@@ -5703,7 +5709,7 @@ namespace TransCarga
                 vs[17] = tx_fletLetras.Text;            // flete en letras
                 vs[18] = (rb_credito.Checked == true) ? "CREDITO" : "CONTADO";
                 vs[19] = tx_dat_dpla.Text;              // dias de plazo credito
-                vs[20] = glosdetra;                     // Glosa para la detracción
+                vs[20] = (double.Parse(tx_fletMN.Text) >= double.Parse(Program.valdetra)) ? glosdetra : "";                     // Glosa para la detracción
                 vs[21] = tipdo;                         // codigo sunat tipo comprobante
                 vs[22] = tipoDocEmi;                    // CODIGO SUNAT tipo de documento RUC/DNI del cliente
                 vs[23] = nipfe;                         // identificador de ose/pse metodo de envío

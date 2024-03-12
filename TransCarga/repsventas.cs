@@ -680,9 +680,9 @@ namespace TransCarga
             {
                 consulta = "SELECT f.fechope AS EMISION,f.martdve as TIPO,CONCAT(f.serdvta,'-',f.numdvta) AS COMPROBANTE,lo.descrizionerid AS ORIGEN," +
                     "es.DescrizioneRid AS ESTADO,ad.estadoS AS SUNAT,ad.cdrgener AS CDR_GEN,ad.cdr as Rspta,ad.textoQR,ad.nticket,f.canfidt,f.id," + // ,ad.ulterror as ULT_ERROR
-                    "ifnull(s.glosaser,'') as glosaser,f.totdvta,f.totdvMN,d.codgror,f.tipdvta " +
+                    "ifnull(s.glosaser,'') as glosaser,f.totdvta,f.totdvMN,'d.codgror',f.tipdvta " +
                     "FROM cabfactu f LEFT JOIN adifactu ad ON ad.idc = f.id " +
-                    "left join detfactu d on d.idc=f.id " +
+                    //"left join detfactu d on d.idc=f.id " +               // d.codgror <- no deberia estar acá, hay fact con varios detalles 12/03/2024
                     "LEFT JOIN desc_loc lo ON lo.IDCodice = f.locorig " +
                     "LEFT JOIN desc_est es ON es.IDCodice = f.estdvta  " +
                     "left join series s on s.tipdoc=f.tipdvta and s.serie=f.serdvta " +

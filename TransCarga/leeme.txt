@@ -536,6 +536,7 @@ clase xmlComprobantes, creación de la clase para centralizar la generacion de l
 form repsventas, agregar columna boton XML para descargar de forma similar al CDR .................. ok 27/02/2024
 form facelect, adecuar la impresion a la clase modificada para cargas unicas ....................... ok 08/03/2024
 form cobranzas, arreglos para las cobranzas en dolares (juliaca) ................................... ok 11/03/2024
+form repsventas, estados, corrección para evitar repeticion de filas por varios detalles x comprob . ok 12/03/2024
 form facelect, opción FACT.DIRECTA desde sistema del contribuyente a los metodos de gestión:
 	- Fact cargas unicas, con detracción en soles al contado ....................................... ok 16/02/2024 
 	- Fact cargas unicas, con detracción en dolares al contado ..................................... ok 16/02/2024 
