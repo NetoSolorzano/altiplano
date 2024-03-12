@@ -1336,29 +1336,10 @@ namespace TransCarga
                 string vce = "";        // carga efectiva
                 string gse = "";        // glosa de servicio
                 double pigv = 0;
+                string mCmpte = "";        // moneda del comprobante
                 conn.Open();
                 if (conn.State == ConnectionState.Open)
                 {
-                    /*string consdeta = "select a.codgror,a.cantbul,a.unimedp,a.descpro,a.pesogro,b.docsremit,round(a.totalgr,2) as totalgr,round(a.totalgr,2) as preUni," +
-                        "round(a.totalgr/(1 + (@pigv/100)),2) as valUni " +
-                        "from detfactu a left join cabguiai b on concat(b.sergui,'-',b.numgui)=a.codgror " +
-                        "where a.tipdocvta=@tdv and a.serdvta=@ser and a.numdvta=@num"; 
-                    string consdeta = "select a.codgror,a.cantbul,ifnull(b.unimedpro,'') as unimedp,a.descpro,a.pesogro,ifnull(b.docsremit,'') as docsremit," +
-                        "round(a.totalgr,2) as totalgr,round(a.totalgr,2) as preUni,round(a.totalgr/(1+(@pigv/100)),2) as valUni " +
-                        "from detfactu a left JOIN " +
-                        "(SELECT x.sergui, x.numgui, x.docsremit, y.unimedpro from cabguiai x LEFT JOIN detguiai y ON x.id = y.idc WHERE x.tipdocvta = @tdv AND x.serdocvta = @ser AND x.numdocvta = @num)b on concat(b.sergui, '-', b.numgui) = a.codgror " +
-                        "where a.tipdocvta = @tdv and a.serdvta = @ser and a.numdvta = @num";
-                    */
-                    string consdeta = "select a.codgror,a.cantbul,ifnull(b.unimedpro, '') as unimedp,a.descpro,a.pesogro,ifnull(b.docsremit, '') as docsremit," +
-                        "round(a.totalgr, 2) as totalgr,round(a.totalgr, 2) as preUni,round(a.totalgr / (1 + (@pigv / 100)), 2) as valUni,ifnull(concat(dl.DescrizioneRid, '-', dd.DescrizioneRid),'') AS orides " +
-                        "from detfactu a " +
-                        "left JOIN(SELECT x.sergui, x.numgui, x.docsremit, y.unimedpro, x.locorigen, x.locdestin " +
-                        "from cabguiai x LEFT JOIN detguiai y ON x.id = y.idc " +
-                        "WHERE x.tipdocvta = @tdv AND x.serdocvta = @ser AND x.numdocvta = @num)b on concat(b.sergui, '-', b.numgui) = a.codgror " +
-                        "LEFT JOIN desc_loc dl ON dl.IDCodice = b.locorigen " +
-                        "LEFT JOIN desc_loc dd ON dd.IDCodice = b.locdestin " +
-                        "where a.tipdocvta = @tdv and a.serdvta = @ser and a.numdvta = @num";
-
                     string consulta = "select a.id,DATE_FORMAT(a.fechope,'%d/%m/%Y') AS fechope,a.martdve,a.tipdvta,a.serdvta,a.numdvta,a.ticltgr,a.tidoclt,a.nudoclt,a.nombclt,a.direclt,a.dptoclt,a.provclt,a.distclt,a.ubigclt,a.corrclt,a.teleclt," +
                         "a.locorig,a.dirorig,a.ubiorig,a.obsdvta,a.canfidt,a.canbudt,a.mondvta,a.tcadvta,round(a.subtota,2) as subtota,round(a.igvtota,2) as igvtota,a.porcigv,round(a.totdvta,2) as totdvta,round(a.totpags,2) as totpags,round(a.saldvta,2) as saldvta,a.estdvta,a.frase01,a.impreso,d.codsunat as ctdcl," +
                         "a.tipoclt,a.m1clien,a.tippago,a.ferecep,a.userc,a.fechc,a.userm,a.fechm,b.descrizionerid as nomest,ifnull(c.id,'') as cobra,a.idcaja,a.plazocred,round(a.totdvMN,2) as totdvMN,ifnull(p.marca1,'') as dpc,ifnull(s.glosaser,'') as glosaser," +
@@ -1468,6 +1449,7 @@ namespace TransCarga
                                     vce = dr.GetString("cargaEf");
                                     gse = glosser;
                                     pigv = dr.GetDouble("porcigv");
+                                    mCmpte = dr.GetString("mondvta");
                                     //
                                     double valCuot = 0;                     // valor de la cuota SI ES CREDITO
                                     if (vs[20] == "" && vs[18] == "CREDITO") valCuot = dr.GetDouble("totdvta");
@@ -1502,15 +1484,42 @@ namespace TransCarga
                         }
                     }
                     // detalle del comprobante
-                    //if (mcu == "0")
                     {
                         int y = 0;
+                        string consdeta = "";
+                        if (mCmpte == codmon)
+                        {
+                            consdeta = "select a.codgror,a.cantbul,ifnull(b.unimedpro, '') as unimedp,a.descpro,a.pesogro,ifnull(b.docsremit, '') as docsremit," +
+                                "round(a.totalgr, 2) as totalgr,round(a.totalgr, 2) as preUni,round(a.totalgr / (1 + (@pigv / 100)), 2) as valUni,ifnull(concat(dl.DescrizioneRid, '-', dd.DescrizioneRid),'') AS orides " +
+                                "from detfactu a " +
+                                "left JOIN(SELECT x.sergui, x.numgui, x.docsremit, y.unimedpro, x.locorigen, x.locdestin " +
+                                "from cabguiai x LEFT JOIN detguiai y ON x.id = y.idc " +
+                                "WHERE x.tipdocvta = @tdv AND x.serdocvta = @ser AND x.numdocvta = @num)b on concat(b.sergui, '-', b.numgui) = a.codgror " +
+                                "LEFT JOIN desc_loc dl ON dl.IDCodice = b.locorigen " +
+                                "LEFT JOIN desc_loc dd ON dd.IDCodice = b.locdestin " +
+                                "where a.tipdocvta = @tdv and a.serdvta = @ser and a.numdvta = @num";
+                        }
+                        else
+                        {
+                            // EL DETALLE TIENE QUE SER EN DOLARES
+                            consdeta = "select a.codgror,a.cantbul,ifnull(b.unimedpro, '') as unimedp,a.descpro,a.pesogro,ifnull(b.docsremit, '') as docsremit," +
+                                "round(a.totalgrMN/@tc, 2) as totalgr,round(a.totalgrMN/@tc, 2) as preUni,round(round(a.totalgr/@tc,2) / (1 + (@pigv / 100)),2) as valUni," +
+                                "ifnull(concat(dl.DescrizioneRid, '-', dd.DescrizioneRid),'') AS orides " +
+                                "from detfactu a " +
+                                "left JOIN(SELECT x.sergui, x.numgui, x.docsremit, y.unimedpro, x.locorigen, x.locdestin " +
+                                "from cabguiai x LEFT JOIN detguiai y ON x.id = y.idc " +
+                                "WHERE x.tipdocvta = @tdv AND x.serdocvta = @ser AND x.numdocvta = @num)b on concat(b.sergui, '-', b.numgui) = a.codgror " +
+                                "LEFT JOIN desc_loc dl ON dl.IDCodice = b.locorigen " +
+                                "LEFT JOIN desc_loc dd ON dd.IDCodice = b.locdestin " +
+                                "where a.tipdocvta = @tdv and a.serdvta = @ser and a.numdvta = @num";
+                        }
                         using (MySqlCommand micomd = new MySqlCommand(consdeta, conn))
                         {
                             micomd.Parameters.AddWithValue("@ser", serie);
                             micomd.Parameters.AddWithValue("@num", numero);
                             micomd.Parameters.AddWithValue("@tdv", tipo);
                             micomd.Parameters.AddWithValue("@pigv", pigv);          // % igv del comprobante
+                            if (mCmpte != codmon) micomd.Parameters.AddWithValue("@tc", va[9]);
                             using (MySqlDataReader drg = micomd.ExecuteReader())
                             {
                                 while (drg.Read())  // #fila,a.cantprodi,a.unimedpro,a.descprodi,a.pesoprodi
@@ -1530,6 +1539,7 @@ namespace TransCarga
                                 }
                             }
                         }
+
                     }
                     if (mcu == "1")
                     {

@@ -424,12 +424,12 @@ namespace TransCarga
                         e.Graphics.DrawString(ahiva, lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                         posi = posi + alfi * 1.5F;
                         // leyenda de detracción
-                        if (double.Parse(vs[15]) > double.Parse(Program.valdetra))
+                        if (vs[20] != "")   // double.Parse(vs[15]) > double.Parse(Program.valdetra)
                         {
                             siz = new SizeF(lib.CentimeterToPixel(anchTik), 15 * 3);
                             puntoF = new PointF(coli, posi);
                             recto = new RectangleF(puntoF, siz);
-                            e.Graphics.DrawString(vs[20].Trim() + " " + Program.ctadetra.Trim(), lt_peq, Brushes.Black, recto, StringFormat.GenericTypographic);
+                            e.Graphics.DrawString(vs[20].Trim() + " Cta.BN " + Program.ctadetra.Trim(), lt_peq, Brushes.Black, recto, StringFormat.GenericTypographic);
                             posi = posi + alfi * 3;
                         }
                     }
