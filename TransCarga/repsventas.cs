@@ -1325,9 +1325,9 @@ namespace TransCarga
             string[] vs = {"", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",      // 21
                            "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""};     // 21
             string[] va = { "", "", "", "", "", "", "", "", "", "" };       // 10
-            string[,] dt = new string[10, 9] {
-                    { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" },
-                    { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }
+            string[,] dt = new string[10, 10] {
+                    { "", "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "", "" },
+                    { "", "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "", "" }
             }; // 6 columnas, 10 filas
             string[] cu = { "","","","","","","","","","","","","","","","","", ""};    // 18
             using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
@@ -1536,27 +1536,27 @@ namespace TransCarga
                                     dt[y, 6] = drg.GetString("valUni");             // valor unitario
                                     dt[y, 7] = drg.GetString("preUni");             // precio unitario
                                     dt[y, 8] = drg.GetString("totalgr");            // total
+                                    dt[y, 9] = drg.GetString("pesogro");             // peso
                                     y += 1;
                                     va[6] = va[6] + " " + drg.GetString("codgror");
+                                    //
+                                    if (mcu == "1")
+                                    {
+                                        dt[y, 0] = "";
+                                        dt[y, 1] = dt[y, 9];                            // cantidad
+                                        dt[y, 2] = "TONELADA";                          // unidad de medida
+                                        dt[y, 3] = "";                                  // guia transportista
+                                        dt[y, 4] = gse + " " + dt[0, 4];                // descripcion de la carga
+                                        //dt[y, 5] = drg.GetString("docsremit");          // documento relacionado remitente de la guia transportista
+                                        double pu = Math.Round(double.Parse(dt[0, 8]) / double.Parse(dt[y, 9]), 2);
+                                        dt[y, 6] = (pu / 1 + (double.Parse(v_igv)/100)).ToString("#0.00");         // valor unitario 
+                                        dt[y, 7] = pu.ToString("#0.00");                // precio unitario
+                                        //dt[y, 8] = drg.GetString("totalgr");            // total
+                                    }
                                 }
                             }
                         }
-
                     }
-                    if (mcu == "1")
-                    {
-                        dt[0, 0] = "";
-                        dt[0, 1] = vce;                                 // cantidad
-                        dt[0, 2] = "TONELADA";                          // unidad de medida
-                        dt[0, 3] = "";                                  // guia transportista
-                        dt[0, 4] = gse + " " + dt[0, 4];                // descripcion de la carga
-                        //dt[0, 5] = drg.GetString("docsremit");          // documento relacionado remitente de la guia transportista
-                        double pu = Math.Round(double.Parse(dt[0, 8]) / double.Parse(vce), 2);
-                        dt[0, 6] = (pu/1.18).ToString("#0.00");         // valor unitario
-                        dt[0, 7] = pu.ToString("#0.00");                // precio unitario
-                        //dt[y, 8] = drg.GetString("totalgr");            // total
-                    }
-
                     // llamamos a la clase que imprime
                     if (Formato == "A4") 
                     {

@@ -9307,6 +9307,8 @@ namespace TransCarga {
             
             private global::System.Data.DataColumn columnTotal;
             
+            private global::System.Data.DataColumn columnpeso;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public cVta_detDataTable() {
@@ -9430,6 +9432,14 @@ namespace TransCarga {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn pesoColumn {
+                get {
+                    return this.columnpeso;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -9465,7 +9475,7 @@ namespace TransCarga {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
-            public cVta_detRow AddcVta_detRow(string id, string OriDest, string cant, string umed, string guiaT, string descrip, string docRel1, string docRel2, string valUnit, string preUnit, string Total) {
+            public cVta_detRow AddcVta_detRow(string id, string OriDest, string cant, string umed, string guiaT, string descrip, string docRel1, string docRel2, string valUnit, string preUnit, string Total, string peso) {
                 cVta_detRow rowcVta_detRow = ((cVta_detRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         id,
@@ -9478,7 +9488,8 @@ namespace TransCarga {
                         docRel2,
                         valUnit,
                         preUnit,
-                        Total};
+                        Total,
+                        peso};
                 rowcVta_detRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowcVta_detRow);
                 return rowcVta_detRow;
@@ -9512,6 +9523,7 @@ namespace TransCarga {
                 this.columnvalUnit = base.Columns["valUnit"];
                 this.columnpreUnit = base.Columns["preUnit"];
                 this.columnTotal = base.Columns["Total"];
+                this.columnpeso = base.Columns["peso"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -9539,6 +9551,8 @@ namespace TransCarga {
                 base.Columns.Add(this.columnpreUnit);
                 this.columnTotal = new global::System.Data.DataColumn("Total", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnTotal);
+                this.columnpeso = new global::System.Data.DataColumn("peso", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnpeso);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -20240,6 +20254,22 @@ namespace TransCarga {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string peso {
+                get {
+                    try {
+                        return ((string)(this[this.tablecVta_det.pesoColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("El valor de la columna \'peso\' de la tabla \'cVta_det\' es DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tablecVta_det.pesoColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public bool IsidNull() {
                 return this.IsNull(this.tablecVta_det.idColumn);
             }
@@ -20368,6 +20398,18 @@ namespace TransCarga {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public void SetTotalNull() {
                 this[this.tablecVta_det.TotalColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IspesoNull() {
+                return this.IsNull(this.tablecVta_det.pesoColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetpesoNull() {
+                this[this.tablecVta_det.pesoColumn] = global::System.Convert.DBNull;
             }
         }
         

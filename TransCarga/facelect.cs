@@ -160,8 +160,8 @@ namespace TransCarga
         DataTable dtmps = new DataTable();      // medio de pago sunat detracción
         string[] datcltsR = { "", "", "", "", "", "", "", "", "" };
         string[] datcltsD = { "", "", "", "", "", "", "", "", "" };
-        string[] datguias = { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }; // 18
-        string[] datcargu = { "", "", "", "", "", "", "", "", "", "", "", "", "", "" };    // 14
+        string[] datguias = { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }; // 20
+        string[] datcargu = { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" };    // 15
         public facelect()
         {
             InitializeComponent();
@@ -1005,6 +1005,8 @@ namespace TransCarga
                 datguias[15] = "";  // local origen-destino
                 datguias[16] = "";  // saldo de la GR
                 datguias[17] = "";  // unidad medida 
+                datguias[18] = "";  // peso en kilogramos
+                datguias[19] = "";  // libre
                 //
                 datcargu[0] = "";   // direc. partida
                 datcargu[1] = "";   // depart. pto. partida
@@ -1020,6 +1022,7 @@ namespace TransCarga
                 datcargu[11] = "";  // razon social del ruc
                 datcargu[12] = "";  // fecha inicio del traslado
                 datcargu[13] = "";  // registro mtc del camion
+                datcargu[14] = "0";  // Sumatoria de peso en TN total de las guías
 
                 // validamos que la GR: 1.exista, 2.No este facturada, 3.No este anulada
                 // y devolvemos una fila con los datos del remitente y otra fila los datos del destinatario
@@ -1061,7 +1064,7 @@ namespace TransCarga
                             "ifnull(b1.numerotel2,'') as numtel2R,a.tidodegri,a.nudodegri,b2.razonsocial as nombdegri,b2.direcc1 as diredegri,b2.ubigeo as ubigdegri,ifnull(b2.email,'') as emailD," +
                             "ifnull(b2.numerotel1,'') as numtel1D,ifnull(b2.numerotel2,'') as numtel2D,a.tipmongri,a.totgri,a.salgri,SUM(d.cantprodi) AS bultos,date(a.fechopegr) as fechopegr,a.tipcamgri," +
                             "max(d.descprodi) AS descrip,ifnull(m.descrizionerid,'') as mon,a.totgrMN,a.codMN,c.fecdocvta,b1.tiposocio as tipsrem,b2.tiposocio as tipsdes,a.docsremit," +
-                            "a.plaplagri,a.carplagri,a.autplagri,a.confvegri,concat(lo.descrizionerid,' - ',ld.descrizionerid) as orides,c.saldofina,a.direregri as dirpartida,v.numreg1," +
+                            "a.plaplagri,a.carplagri,a.autplagri,a.confvegri,concat(lo.descrizionerid,' - ',ld.descrizionerid) as orides,c.saldofina,a.direregri as dirpartida,v.numreg1,a.pestotgri," +
                             "a.ubigregri as ubigpartida,a.diredegri as dirllegada,a.ubigdegri as ubigllegada,ifnull(a.fechplani,'') as fechplani,a.proplagri,ifnull(p.RazonSocial,'') as RazonSocial,d.unimedpro,a.docsremit2 " +
                             "from cabguiai a left join detguiai d on d.idc=a.id " +
                             "LEFT JOIN controlg c ON c.serguitra = a.sergui AND c.numguitra = a.numgui " +
@@ -1123,6 +1126,7 @@ namespace TransCarga
                                         datguias[15] = dr.GetString("orides");
                                         datguias[16] = dr.GetString("salgri");
                                         datguias[17] = dr.GetString("unimedpro");
+                                        datguias[18] = dr.GetString("pestotgri");       // peso en KG
                                         //
                                         datcargu[0] = dr.GetString("dirpartida");
                                         datcargu[4] = dr.GetString("ubigpartida");   // ubigeo punto partida
@@ -1136,10 +1140,11 @@ namespace TransCarga
                                         datcargu[6] = aa[0];   // depart. pto. llegada
                                         datcargu[7] = aa[1];   // provin. pto. llegada
                                         datcargu[8] = aa[2];   // distri. pto. llegada
-                                        datcargu[10] = dr.GetString("proplagri");  // ruc del camion
+                                        datcargu[10] = dr.GetString("proplagri");    // ruc del camion
                                         datcargu[11] = dr.GetString("RazonSocial");  // razon social del ruc
                                         datcargu[12] = dr.GetString("fechplani");    // fecha inicio traslado
                                         datcargu[13] = dr.GetString("numreg1");      // registro mtc del camión
+                                        datcargu[14] = (double.Parse(datcargu[14]) + double.Parse(dr.GetString("pestotgri"))).ToString("#0.00");    // sumatoria peso en TN
                                         //
                                         tx_dat_saldoGR.Text = dr.GetString("salgri");
                                         retorna = true;
@@ -1217,7 +1222,7 @@ namespace TransCarga
                     tx_rucT.Text = datcargu[10].ToString();
                     tx_razonS.Text = datcargu[11].ToString();
                     tx_fecini.Text = (datcargu[12].ToString().Length < 10) ? "" : datcargu[12].ToString().Substring(0, 10);
-                    tx_cetm.Text = "";
+                    tx_cetm.Text = datcargu[14];
                     tx_cutm.Text = "";
                     tx_valref1.Text = "";
                     tx_valref2.Text = "";
@@ -3155,7 +3160,7 @@ namespace TransCarga
                     "cu_tidch varchar(2), " +            // Tipo de Documento del conductor
                     "cu_plac2 varchar(7), " +            // Placa del Vehículo secundario
                     "cu_insub varchar(2), " +             // Indicador de subcontratación
-                    "cu_marCU varchar(1) " +             // "1"=carga unica, "0"=carga normal
+                    "cu_marCU varchar(1), " +             // "1"=carga unica, "0"=carga normal
                     "cu_regmtc varchar(15)" +            // registro mtc
                 ")";
                 using (SqliteCommand cmd = new SqliteCommand(sqlTabla, cnx))
@@ -3182,7 +3187,7 @@ namespace TransCarga
                                                     // Código de producto SUNAT                             - 46
                                                     // Propiedades Adicionales del Ítem                     - 47
                     "ValUnit decimal(12,2), " +     // Valor unitario del ítem                              - 48
-                    "ValPeso real, " +              // peso de la carga, va unido a la unidad de medida 
+                    "ValPeso real, " +              // peso de la carga, va unido a la unidad de medida en TN
                     "UniMedS varchar(3), " +        // codigo unidad de medida de sunat
                     "GuiaTra varchar(13), " +       // numero guía relacionada
                     "CodTipG varchar(2), " +        // codigo sunat tipo de guía relacionada
@@ -3412,7 +3417,7 @@ namespace TransCarga
                         cmd.Parameters.AddWithValue("@DesD2", "");                  //"Dice contener Enseres domésticos"
                         cmd.Parameters.AddWithValue("@CodIn", "");                  // código del item
                         cmd.Parameters.AddWithValue("@ValUn", valunit.ToString());  // Valor unitario del ítem
-                        cmd.Parameters.AddWithValue("@ValPe", "");                  // peso
+                        cmd.Parameters.AddWithValue("@ValPe", dataGridView1.Rows[i].Cells[14].Value.ToString());                  // peso en TN
                         cmd.Parameters.AddWithValue("@UniMe", "ZZ");    // dataGridView1.Rows[i].Cells[13].Value.ToString()
                         cmd.Parameters.AddWithValue("@GuiaT", dataGridView1.Rows[i].Cells[0].Value.ToString());     // serie(4)-numero(8)
                         cmd.Parameters.AddWithValue("@CodTG", "31");
@@ -3655,7 +3660,7 @@ namespace TransCarga
                     }
                 }
                 //dataGridView1.Rows.Clear(); nooooo, se puede hacer una fact de varias guias, n guias
-                dataGridView1.Rows.Add(datguias[0], datguias[1], datguias[2], datguias[3], datguias[4], datguias[5], datguias[6], datguias[9], datguias[10], datguias[7], datguias[15],datguias[16],datguias[16],datguias[17]);     // insertamos en la grilla los datos de la GR
+                dataGridView1.Rows.Add(datguias[0], datguias[1], datguias[2], datguias[3], datguias[4], datguias[5], datguias[6], datguias[9], datguias[10], datguias[7], datguias[15],datguias[16],datguias[16],datguias[17],datguias[18]);     // insertamos en la grilla los datos de la GR
                 int totfil = 0;
                 int totcant = 0;
                 decimal totflet = 0;    // acumulador en moneda de la GR 
@@ -4430,7 +4435,7 @@ namespace TransCarga
                                 micon.Parameters.AddWithValue("@bult", dataGridView1.Rows[i].Cells[2].Value.ToString());
                                 micon.Parameters.AddWithValue("@unim", "");
                                 micon.Parameters.AddWithValue("@desc", dataGridView1.Rows[i].Cells[1].Value.ToString());
-                                micon.Parameters.AddWithValue("@peso", "0");
+                                micon.Parameters.AddWithValue("@peso", dataGridView1.Rows[i].Cells[14].Value.ToString());
                                 micon.Parameters.AddWithValue("@codm", dataGridView1.Rows[i].Cells[3].Value.ToString());
                                 micon.Parameters.AddWithValue("@pret", dataGridView1.Rows[i].Cells[4].Value.ToString());
                                 micon.Parameters.AddWithValue("@cmnn", dataGridView1.Rows[i].Cells[6].Value.ToString());
@@ -5835,9 +5840,9 @@ namespace TransCarga
                 string[] vs = {"","","","","","","","","","","","","", "", "", "", "", "", "", "",   // 20
                                "", "", "", "", "", "", "", "", "", ""};    // 10
                 string[] va = { "", "", "", "", "", "", "", "", "" };       // 9
-                string[,] dt = new string[10, 6] {
-                    { "", "", "", "", "", "" }, { "", "", "", "", "", "" }, { "", "", "", "", "", "" }, { "", "", "", "", "", "" }, { "", "", "", "", "", "" },
-                    { "", "", "", "", "", "" }, { "", "", "", "", "", "" }, { "", "", "", "", "", "" }, { "", "", "", "", "", "" }, { "", "", "", "", "", "" }
+                string[,] dt = new string[10, 7] {
+                    { "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "" },
+                    { "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "" }
                 }; // 6 columnas, 10 filas
                 string[] cu = { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" };    // 17
 
@@ -5887,6 +5892,7 @@ namespace TransCarga
                         dt[l, 3] = dataGridView1.Rows[l].Cells[0].Value.ToString();             // guia transportista
                         dt[l, 4] = dataGridView1.Rows[l].Cells[1].Value.ToString();             // descripcion de la carga
                         dt[l, 5] = dataGridView1.Rows[l].Cells[8].Value.ToString();             // documento relacionado remitente de la guia transportista
+                        dt[l, 6] = dataGridView1.Rows[l].Cells[14].Value.ToString();            // peso 
                     }
                 }
                 // varios
