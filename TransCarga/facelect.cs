@@ -1019,6 +1019,7 @@ namespace TransCarga
                 datcargu[10] = "";  // ruc del camion
                 datcargu[11] = "";  // razon social del ruc
                 datcargu[12] = "";  // fecha inicio del traslado
+                datcargu[13] = "";  // registro mtc del camion
 
                 // validamos que la GR: 1.exista, 2.No este facturada, 3.No este anulada
                 // y devolvemos una fila con los datos del remitente y otra fila los datos del destinatario
@@ -1060,7 +1061,7 @@ namespace TransCarga
                             "ifnull(b1.numerotel2,'') as numtel2R,a.tidodegri,a.nudodegri,b2.razonsocial as nombdegri,b2.direcc1 as diredegri,b2.ubigeo as ubigdegri,ifnull(b2.email,'') as emailD," +
                             "ifnull(b2.numerotel1,'') as numtel1D,ifnull(b2.numerotel2,'') as numtel2D,a.tipmongri,a.totgri,a.salgri,SUM(d.cantprodi) AS bultos,date(a.fechopegr) as fechopegr,a.tipcamgri," +
                             "max(d.descprodi) AS descrip,ifnull(m.descrizionerid,'') as mon,a.totgrMN,a.codMN,c.fecdocvta,b1.tiposocio as tipsrem,b2.tiposocio as tipsdes,a.docsremit," +
-                            "a.plaplagri,a.carplagri,a.autplagri,a.confvegri,concat(lo.descrizionerid,' - ',ld.descrizionerid) as orides,c.saldofina,a.direregri as dirpartida," +
+                            "a.plaplagri,a.carplagri,a.autplagri,a.confvegri,concat(lo.descrizionerid,' - ',ld.descrizionerid) as orides,c.saldofina,a.direregri as dirpartida,v.numreg1," +
                             "a.ubigregri as ubigpartida,a.diredegri as dirllegada,a.ubigdegri as ubigllegada,ifnull(a.fechplani,'') as fechplani,a.proplagri,ifnull(p.RazonSocial,'') as RazonSocial,d.unimedpro,a.docsremit2 " +
                             "from cabguiai a left join detguiai d on d.idc=a.id " +
                             "LEFT JOIN controlg c ON c.serguitra = a.sergui AND c.numguitra = a.numgui " +
@@ -1070,6 +1071,7 @@ namespace TransCarga
                             "left join desc_mon m on m.idcodice=a.tipmongri " +
                             "left join desc_loc lo on lo.idcodice=a.locorigen " +
                             "left join desc_loc ld on ld.idcodice=a.locdestin " +
+                            "left join vehiculos v on v.placa=a.plaplagri " +
                             "WHERE a.sergui = @ser AND a.numgui = @num AND a.estadoser not IN(@est) AND c.fecdocvta IS NULL";
                         using (MySqlCommand micon = new MySqlCommand(consulta, conn))
                         {
@@ -1137,6 +1139,7 @@ namespace TransCarga
                                         datcargu[10] = dr.GetString("proplagri");  // ruc del camion
                                         datcargu[11] = dr.GetString("RazonSocial");  // razon social del ruc
                                         datcargu[12] = dr.GetString("fechplani");    // fecha inicio traslado
+                                        datcargu[13] = dr.GetString("numreg1");      // registro mtc del camión
                                         //
                                         tx_dat_saldoGR.Text = dr.GetString("salgri");
                                         retorna = true;
@@ -1229,6 +1232,7 @@ namespace TransCarga
                     tx_dd_pro.Text = datcargu[7].ToString();
                     tx_dd_dis.Text = datcargu[8].ToString();
                     tx_dat_upd.Text = datcargu[9].ToString();     // datcltsD[4].ToString();
+                    tx_regmtc.Text = datcargu[13].ToString();     // registro mtc del camion
                 }
                 tx_dat_nombd.ReadOnly = false;
             }
@@ -3078,7 +3082,7 @@ namespace TransCarga
                     "CodLey1 varchar(4), " +             // codigo sunat de leyenda MONTO EN LETRAS
                     "MonLetr varchar(150), " +           // monto en letras
                     "CodMonS varchar(3)," +              // código internacional de moneda 
-                    // datos del destinatario
+                                                         // datos del destinatario
                     "DstTipdoc varchar(2), " +          // código sunat del tipo de documento del destinatario  - 18
                     "DstNumdoc varchar(11), " +         // número del documento del destinatario                - 18
                     "DstNomTdo varchar(50), " +         // glosa, texto o nombre sunat del doc del destinatario
@@ -3091,16 +3095,16 @@ namespace TransCarga
                     "DstUbigeo varchar(6), " +          // ubigeo de la direc del cliente                       - 20
                     "DstCorre varchar(100), " +         // correo del cliente
                     "DstTelef varchar(11), " +          // teléfono del cliente
-                    // Información de descuentos Globales               // no usamos dsctos globales 17/06/2023 - 21
+                                                        // Información de descuentos Globales               // no usamos dsctos globales 17/06/2023 - 21
 
                     // Información de importes 
                     "ImpTotImp decimal(12,2), " +       // Monto total de impuestos                             - 22 TaxAmount
                     "ImpOpeGra decimal(12,2), " +       // Monto las operaciones gravadas                       - 23 TaxableAmount
-                    //"ImpOpeExo decimal(12,2), " +     // Monto las operaciones Exoneradas                     - 24
-                    //"ImpOpeIna decimal(12,2), " +     // Monto las operaciones inafectas del impuesto         - 25
-                    //"ImpOpeGra decimal(12,2), " +     // Monto las operaciones gratuitas                      - 26
+                                                        //"ImpOpeExo decimal(12,2), " +     // Monto las operaciones Exoneradas                     - 24
+                                                        //"ImpOpeIna decimal(12,2), " +     // Monto las operaciones inafectas del impuesto         - 25
+                                                        //"ImpOpeGra decimal(12,2), " +     // Monto las operaciones gratuitas                      - 26
                     "ImpIgvTot decimal(12,2), " +       // Sumatoria de IGV                                     - 27
-                    //"ImpISCTot decimal(12,2), " +      // Sumatoria de ISC                                     - 28
+                                                        //"ImpISCTot decimal(12,2), " +      // Sumatoria de ISC                                     - 28
                     "ImpOtrosT decimal(12,2), " +       // Sumatoria de Otros Tributos                          - 29
                     "IgvCodSun varchar(1), " +          // schemeAgencyID="6"
                     "IgvConInt varchar(4), " +          // 1000
@@ -3121,7 +3125,7 @@ namespace TransCarga
                     "CodTipDoc varchar(2), " +           // Código sunat para el tipo de documento, FT=01, BV=03, etc
                     "CodTipOpe varchar(4), " +           // Código sunat para el tipo de operación, 0101=Vta, interna facturas y boletas
                     "TipoCamb decimal(8,2), " +          // tipo de cambio
-                    // ENCABEZADO-TRASLADOBIENES
+                                                         // ENCABEZADO-TRASLADOBIENES
                     "cu_cpapp varchar(2), " +            // Código país del punto de origen
                     "cu_ubipp varchar(6), " +            // Ubigeo del punto de partida 
                     "cu_deppp varchar(50), " +           // Departamento del punto de partida
@@ -3152,6 +3156,7 @@ namespace TransCarga
                     "cu_plac2 varchar(7), " +            // Placa del Vehículo secundario
                     "cu_insub varchar(2), " +             // Indicador de subcontratación
                     "cu_marCU varchar(1) " +             // "1"=carga unica, "0"=carga normal
+                    "cu_regmtc varchar(15)" +            // registro mtc
                 ")";
                 using (SqliteCommand cmd = new SqliteCommand(sqlTabla, cnx))
                 {
@@ -3334,6 +3339,7 @@ namespace TransCarga
                     cmd.Parameters.AddWithValue("@cu_tidch", 1);         // Tipo de Documento del conductor
                     cmd.Parameters.AddWithValue("@cu_plac2", "");         // Placa del Vehículo secundario
                     cmd.Parameters.AddWithValue("@cu_insub", (tx_rucT.Text.Trim() != Program.ruc) ? "true" : "false");         // Indicador de subcontratación (true/false)
+                    cmd.Parameters.AddWithValue("@cu_regmtc", tx_regmtc.Text);
                     if (chk_cunica.Checked == true)         // 15/02/2024
                     {
                         cmd.Parameters.AddWithValue("@cu_marCU", "1");          // 1=carga unica, 0=carga normal
@@ -3360,9 +3366,18 @@ namespace TransCarga
 
                     if (tx_dat_mone.Text == MonDeft)
                     {
-                        preunit = double.Parse(dataGridView1.Rows[i].Cells[4].Value.ToString());
-                        valunit = double.Parse(dataGridView1.Rows[i].Cells[4].Value.ToString()) / (1 + (double.Parse(v_igv) / 100));
-                        sumimpl = double.Parse(dataGridView1.Rows[i].Cells[4].Value.ToString()) - valunit;
+                        if (dataGridView1.Rows[i].Cells[9].Value.ToString() == MonDeft)
+                        {
+                            preunit = double.Parse(dataGridView1.Rows[i].Cells[4].Value.ToString());
+                            valunit = double.Parse(dataGridView1.Rows[i].Cells[4].Value.ToString()) / (1 + (double.Parse(v_igv) / 100));
+                            sumimpl = double.Parse(dataGridView1.Rows[i].Cells[4].Value.ToString()) - valunit;
+                        }
+                        else
+                        {
+                            preunit = Math.Round(double.Parse(dataGridView1.Rows[i].Cells[4].Value.ToString()) * double.Parse(tx_tipcam.Text), 2);
+                            valunit = Math.Round(preunit / (1 + (double.Parse(v_igv) / 100)), 2);
+                            sumimpl = Math.Round(preunit - valunit, 2); // double.Parse(dataGridView1.Rows[i].Cells[4].Value.ToString()) - valunit;
+                        }
                     }
                     else
                     {
@@ -3832,7 +3847,15 @@ namespace TransCarga
                 // valida que si es carga unica debe tener detraccion ... cargas unicas y tramos es un tratamiento para el pago de detracciones
                 if (chk_cunica.Checked == true && double.Parse(tx_fletMN.Text) <= double.Parse(Program.valdetra))
                 {
-                    MessageBox.Show("Comprobante de Cargas unicas debe tener detracción","Error",MessageBoxButtons.OK,MessageBoxIcon.Warning);
+                    MessageBox.Show("Comprobante de Cargas unicas debe tener detracción","Error, corrija",MessageBoxButtons.OK,MessageBoxIcon.Warning);
+                    chk_cunica.Checked = false;
+                    chk_cunica.Focus();
+                    return;
+                }
+                // valida que si es carga unica debe tener como maximo 4 filas de detalle
+                if (chk_cunica.Checked == true && int.Parse(tx_tfil.Text) > 4)
+                {
+                    MessageBox.Show("Comprobante de cargas únicas solo puede tener 4 filas como máximo", "Error, corrija", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
                 // valida contado o credito
@@ -5684,7 +5707,7 @@ namespace TransCarga
                     { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" },
                     { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }
                 }; // 6 columnas, 10 filas
-                string[] cu = { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" };    // 17
+                string[] cu = { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" };    // 18
                 DataRow[] row = dtm.Select("idcodice='" + tx_dat_mone.Text + "'");
                 string nommone = row[0][3].ToString();
 

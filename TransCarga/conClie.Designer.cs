@@ -8803,6 +8803,8 @@ namespace TransCarga {
             
             private global::System.Data.DataColumn columnvalRefTon;
             
+            private global::System.Data.DataColumn columnregMTC;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public cVta_cuDataTable() {
@@ -8982,6 +8984,14 @@ namespace TransCarga {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn regMTCColumn {
+                get {
+                    return this.columnregMTC;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -9035,7 +9045,8 @@ namespace TransCarga {
                         string brevete, 
                         string valRefViaje, 
                         string valRefVehic, 
-                        string valRefTon) {
+                        string valRefTon, 
+                        string regMTC) {
                 cVta_cuRow rowcVta_cuRow = ((cVta_cuRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         id,
@@ -9055,7 +9066,8 @@ namespace TransCarga {
                         brevete,
                         valRefViaje,
                         valRefVehic,
-                        valRefTon};
+                        valRefTon,
+                        regMTC};
                 rowcVta_cuRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowcVta_cuRow);
                 return rowcVta_cuRow;
@@ -9096,6 +9108,7 @@ namespace TransCarga {
                 this.columnvalRefViaje = base.Columns["valRefViaje"];
                 this.columnvalRefVehic = base.Columns["valRefVehic"];
                 this.columnvalRefTon = base.Columns["valRefTon"];
+                this.columnregMTC = base.Columns["regMTC"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -9137,6 +9150,8 @@ namespace TransCarga {
                 base.Columns.Add(this.columnvalRefVehic);
                 this.columnvalRefTon = new global::System.Data.DataColumn("valRefTon", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnvalRefTon);
+                this.columnregMTC = new global::System.Data.DataColumn("regMTC", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnregMTC);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -19790,6 +19805,22 @@ namespace TransCarga {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string regMTC {
+                get {
+                    try {
+                        return ((string)(this[this.tablecVta_cu.regMTCColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("El valor de la columna \'regMTC\' de la tabla \'cVta_cu\' es DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tablecVta_cu.regMTCColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public bool IsidNull() {
                 return this.IsNull(this.tablecVta_cu.idColumn);
             }
@@ -20002,6 +20033,18 @@ namespace TransCarga {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public void SetvalRefTonNull() {
                 this[this.tablecVta_cu.valRefTonColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsregMTCNull() {
+                return this.IsNull(this.tablecVta_cu.regMTCColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetregMTCNull() {
+                this[this.tablecVta_cu.regMTCColumn] = global::System.Convert.DBNull;
             }
         }
         

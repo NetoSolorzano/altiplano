@@ -23,7 +23,7 @@ namespace TransCarga
             { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" },
             { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "" }
         }; // 6 columnas, 10 filas
-        string[] cu = { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" };    // 17
+        string[] cu = { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" };    // 18
         short copias;
         string otro = "";               // ruta y nombre del png código QR
 
@@ -90,6 +90,7 @@ namespace TransCarga
             cu[14] = cunica[14];        // "valRefViaje");
             cu[15] = cunica[15];        // "valRefVehic");
             cu[16] = cunica[16];        // "valRefTon");
+            cu[17] = cunica[17];        // registro mct
 
             for (int o=0; o <= int.Parse(vs[12]); o++)
             {
@@ -595,6 +596,7 @@ namespace TransCarga
             cuRow.valRefViaje = cu[14];        // "valRefViaje");
             cuRow.valRefVehic = cu[15];        // "valRefVehic");
             cuRow.valRefTon = cu[16];        // "valRefTon");
+            cuRow.regMTC = cu[17];          // registro mct
             DV.cVta_cu.AddcVta_cuRow(cuRow);
 
             // DATOS VARIOS
