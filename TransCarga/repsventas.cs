@@ -1539,16 +1539,16 @@ namespace TransCarga
                                     dt[y, 9] = drg.GetString("pesogro");             // peso
                                     va[6] = va[6] + " " + drg.GetString("codgror");
                                     //
-                                    if (mcu == "1")
+                                    if (mcu == "1" && Formato == "A4")
                                     {
                                         dt[y, 0] = "";
                                         dt[y, 1] = Math.Round(double.Parse(dt[y, 9])/1000,2).ToString("#0.00");   // cantidad
                                         dt[y, 2] = "TONELADA";                          // unidad de medida
-                                        dt[y, 3] = "";                                  // guia transportista
-                                        dt[y, 4] = gse + " " + dt[0, 4];                // descripcion de la carga
+                                        //dt[y, 3] = "";                                  // guia transportista
+                                        dt[y, 4] = glosser + " " + dt[y, 4];                // descripcion de la carga
                                         //dt[y, 5] = drg.GetString("docsremit");          // documento relacionado remitente de la guia transportista
-                                        double pu = Math.Round(double.Parse(dt[y, 8]) / double.Parse(dt[y, 9])/1000, 2);
-                                        dt[y, 6] = (pu / 1 + (double.Parse(v_igv)/100)).ToString("#0.00");         // valor unitario 
+                                        double pu = Math.Round(double.Parse(dt[y, 8]) / (double.Parse(dt[y, 9]) / 1000), 2);
+                                        dt[y, 6] = (pu / (1 + (double.Parse(v_igv) / 100))).ToString("#0.00");         // valor unitario 
                                         dt[y, 7] = pu.ToString("#0.00");                // precio unitario
                                         //dt[y, 8] = drg.GetString("totalgr");            // total
                                     }

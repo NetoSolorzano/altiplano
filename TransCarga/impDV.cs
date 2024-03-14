@@ -297,7 +297,9 @@ namespace TransCarga
                     int tfg = int.Parse(vs[12]);
                     for (int l = 0; l < tfg; l++)
                     {
-                        string textF2 = dt[l, 0] + " - " + dt[l, 1] + " " + dt[l, 2];
+                        string textF2 = "";
+                        if (dt[l, 0] != "") textF2 = textF2 + dt[l, 0] + " - ";
+                        textF2 = textF2 + dt[l, 1] + " " + dt[l, 2];
                         {
                             puntoF = new PointF(coli, posi);
                             e.Graphics.DrawString(va[1], lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);
