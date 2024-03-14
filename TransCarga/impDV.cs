@@ -306,7 +306,7 @@ namespace TransCarga
                             e.Graphics.DrawString(textF2, lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                             posi = posi + alfi;
                             puntoF = new PointF(coli, posi);
-                            string qqq = "GRT-" + dt[0, 3] + " " + dt[0, 4];
+                            string qqq = "GRT-" + dt[l, 3] + " " + dt[l, 4];
                             if (qqq.Length > 41) siz = new SizeF(lib.CentimeterToPixel(anchTik), 30);
                             else siz = new SizeF(lib.CentimeterToPixel(anchTik), 15);
                             recto = new RectangleF(puntoF, siz);
@@ -314,7 +314,7 @@ namespace TransCarga
                             posi = posi + alfi;
                             if (qqq.Length > 41) posi = posi + alfi - 4;
                             puntoF = new PointF(coli, posi);
-                            e.Graphics.DrawString("Según doc.cliente: " + dt[0, 5], lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                            e.Graphics.DrawString("Según doc.cliente: " + dt[l, 5], lt_peq, Brushes.Black, puntoF, StringFormat.GenericTypographic);
                             posi = posi + alfi * 2;
                         }
                     }

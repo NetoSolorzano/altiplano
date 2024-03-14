@@ -1144,7 +1144,7 @@ namespace TransCarga
                                         datcargu[11] = dr.GetString("RazonSocial");  // razon social del ruc
                                         datcargu[12] = dr.GetString("fechplani");    // fecha inicio traslado
                                         datcargu[13] = dr.GetString("numreg1");      // registro mtc del camión
-                                        datcargu[14] = (double.Parse(datcargu[14]) + double.Parse(dr.GetString("pestotgri"))).ToString("#0.00");    // sumatoria peso en TN
+                                        datcargu[14] = double.Parse(dr.GetString("pestotgri")).ToString("#0.00");    // sumatoria peso en TN
                                         //
                                         tx_dat_saldoGR.Text = dr.GetString("salgri");
                                         retorna = true;
@@ -1222,7 +1222,8 @@ namespace TransCarga
                     tx_rucT.Text = datcargu[10].ToString();
                     tx_razonS.Text = datcargu[11].ToString();
                     tx_fecini.Text = (datcargu[12].ToString().Length < 10) ? "" : datcargu[12].ToString().Substring(0, 10);
-                    tx_cetm.Text = datcargu[14];
+                    double asd = (double.Parse(((tx_cetm.Text == "") ? "0" : tx_cetm.Text)) * 1000 + double.Parse(datcargu[14]));
+                    tx_cetm.Text = (asd/1000).ToString("#0.00");
                     tx_cutm.Text = "";
                     tx_valref1.Text = "";
                     tx_valref2.Text = "";
@@ -5840,9 +5841,9 @@ namespace TransCarga
                 string[] vs = {"","","","","","","","","","","","","", "", "", "", "", "", "", "",   // 20
                                "", "", "", "", "", "", "", "", "", ""};    // 10
                 string[] va = { "", "", "", "", "", "", "", "", "" };       // 9
-                string[,] dt = new string[10, 7] {
-                    { "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "" },
-                    { "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "" }
+                string[,] dt = new string[10, 10] {
+                    { "", "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "", "" },
+                    { "", "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "", "" }
                 }; // 6 columnas, 10 filas
                 string[] cu = { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" };    // 17
 
@@ -5892,7 +5893,10 @@ namespace TransCarga
                         dt[l, 3] = dataGridView1.Rows[l].Cells[0].Value.ToString();             // guia transportista
                         dt[l, 4] = dataGridView1.Rows[l].Cells[1].Value.ToString();             // descripcion de la carga
                         dt[l, 5] = dataGridView1.Rows[l].Cells[8].Value.ToString();             // documento relacionado remitente de la guia transportista
-                        dt[l, 6] = dataGridView1.Rows[l].Cells[14].Value.ToString();            // peso 
+                        dt[l, 6] = "0";
+                        dt[l, 7] = "0";
+                        dt[l, 8] = "0";
+                        dt[l, 9] = dataGridView1.Rows[l].Cells[14].Value.ToString();            // peso 
                     }
                 }
                 // varios
