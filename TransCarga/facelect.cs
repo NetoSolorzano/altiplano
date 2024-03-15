@@ -272,7 +272,7 @@ namespace TransCarga
             tx_distRtt.MaxLength = 25;
             tx_provRtt.MaxLength = 25;
             tx_dptoRtt.MaxLength = 25;
-            tx_obser1.MaxLength = 150;
+            tx_obser1.MaxLength = 249;
             tx_telc1.MaxLength = 12;
             tx_telc2.MaxLength = 12;
             tx_fletLetras.MaxLength = 249;
@@ -3364,11 +3364,21 @@ namespace TransCarga
                     double preunit = 0;         // precio unitario de la linea
                     double valunit = 0;         // valor sin igv de la linea
                     double sumimpl = 0;         // igv de la fila
-
-                    glosser2 = dataGridView1.Rows[i].Cells["OriDest"].Value.ToString() + " - " +
-                        dataGridView1.Rows[i].Cells["Cant"].Value.ToString() + " " +
-                        dataGridView1.Rows[i].Cells["umed"].Value.ToString() + " " + dataGridView1.Rows[i].Cells["guiasclte"].Value.ToString();
-                    descrip = dataGridView1.Rows[i].Cells[1].Value.ToString();
+                    if (chk_cunica.Checked == true)
+                    {
+                        // 
+                        glosser2 = dataGridView1.Rows[i].Cells["OriDest"].Value.ToString().Trim() + ", " +
+                            dataGridView1.Rows[i].Cells["Cant"].Value.ToString() + " " +
+                            dataGridView1.Rows[i].Cells["umed"].Value.ToString();       // + " " + dataGridView1.Rows[i].Cells["guiasclte"].Value.ToString();
+                        descrip = dataGridView1.Rows[i].Cells[1].Value.ToString();
+                    }
+                    else
+                    {
+                        glosser2 = dataGridView1.Rows[i].Cells["OriDest"].Value.ToString() + " - " +
+                            dataGridView1.Rows[i].Cells["Cant"].Value.ToString() + " " +
+                            dataGridView1.Rows[i].Cells["umed"].Value.ToString() + " " + dataGridView1.Rows[i].Cells["guiasclte"].Value.ToString();
+                        descrip = dataGridView1.Rows[i].Cells[1].Value.ToString();
+                    }
 
                     if (tx_dat_mone.Text == MonDeft)
                     {

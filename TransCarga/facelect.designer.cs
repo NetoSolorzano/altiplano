@@ -101,6 +101,21 @@
             this.groupBox10 = new System.Windows.Forms.GroupBox();
             this.tx_ubigRtt = new System.Windows.Forms.TextBox();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.guias = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Descrip = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Cant = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.moneda = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.valor = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.valorMN = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.codmonloc = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.fechaGR = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.guiasclte = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.codmondoc = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.OriDest = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.saldo = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.valorel = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.umed = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.pesoKG = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.gbox_flete = new System.Windows.Forms.GroupBox();
             this.panel3 = new System.Windows.Forms.Panel();
             this.rb_credito = new System.Windows.Forms.RadioButton();
@@ -251,21 +266,6 @@
             this.tx_tfil = new TransCarga.NumericTextBox();
             this.tx_totcant = new TransCarga.NumericTextBox();
             this.tx_regmtc = new System.Windows.Forms.TextBox();
-            this.guias = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Descrip = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Cant = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.moneda = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.valor = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.valorMN = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.codmonloc = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.fechaGR = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.guiasclte = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.codmondoc = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.OriDest = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.saldo = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.valorel = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.umed = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.pesoKG = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.toolStrip1.SuspendLayout();
             this.groupBox11.SuspendLayout();
             this.groupBox7.SuspendLayout();
@@ -1033,6 +1033,101 @@
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.Size = new System.Drawing.Size(597, 162);
             this.dataGridView1.TabIndex = 21;
+            // 
+            // guias
+            // 
+            this.guias.FillWeight = 90F;
+            this.guias.HeaderText = "GUIA";
+            this.guias.Name = "guias";
+            this.guias.Width = 90;
+            // 
+            // Descrip
+            // 
+            this.Descrip.FillWeight = 300F;
+            this.Descrip.HeaderText = "DESCRIPCION";
+            this.Descrip.Name = "Descrip";
+            this.Descrip.Width = 300;
+            // 
+            // Cant
+            // 
+            this.Cant.FillWeight = 40F;
+            this.Cant.HeaderText = "C.BUL";
+            this.Cant.Name = "Cant";
+            this.Cant.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.Cant.Width = 40;
+            // 
+            // moneda
+            // 
+            this.moneda.FillWeight = 40F;
+            this.moneda.HeaderText = "MON";
+            this.moneda.Name = "moneda";
+            this.moneda.Width = 40;
+            // 
+            // valor
+            // 
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            this.valor.DefaultCellStyle = dataGridViewCellStyle1;
+            this.valor.FillWeight = 80F;
+            this.valor.HeaderText = "  VALOR";
+            this.valor.Name = "valor";
+            this.valor.Width = 80;
+            // 
+            // valorMN
+            // 
+            this.valorMN.HeaderText = "VALMONLOC";
+            this.valorMN.Name = "valorMN";
+            this.valorMN.Visible = false;
+            // 
+            // codmonloc
+            // 
+            this.codmonloc.HeaderText = "CODMN";
+            this.codmonloc.Name = "codmonloc";
+            this.codmonloc.Visible = false;
+            // 
+            // fechaGR
+            // 
+            this.fechaGR.HeaderText = "FechaGR";
+            this.fechaGR.Name = "fechaGR";
+            // 
+            // guiasclte
+            // 
+            this.guiasclte.HeaderText = "guiasclte";
+            this.guiasclte.Name = "guiasclte";
+            this.guiasclte.ReadOnly = true;
+            // 
+            // codmondoc
+            // 
+            this.codmondoc.HeaderText = "codmondoc";
+            this.codmondoc.Name = "codmondoc";
+            this.codmondoc.Visible = false;
+            // 
+            // OriDest
+            // 
+            this.OriDest.HeaderText = "Orig-Dest";
+            this.OriDest.Name = "OriDest";
+            // 
+            // saldo
+            // 
+            this.saldo.HeaderText = "saldo";
+            this.saldo.Name = "saldo";
+            this.saldo.ReadOnly = true;
+            // 
+            // valorel
+            // 
+            this.valorel.HeaderText = "valorel";
+            this.valorel.Name = "valorel";
+            this.valorel.ReadOnly = true;
+            // 
+            // umed
+            // 
+            this.umed.HeaderText = "Umed";
+            this.umed.Name = "umed";
+            // 
+            // pesoKG
+            // 
+            this.pesoKG.HeaderText = "pesoKG";
+            this.pesoKG.Name = "pesoKG";
+            this.pesoKG.Visible = false;
             // 
             // gbox_flete
             // 
@@ -2402,9 +2497,9 @@
             // 
             this.tx_dat_upd.BackColor = System.Drawing.SystemColors.Window;
             this.tx_dat_upd.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_dat_upd.Location = new System.Drawing.Point(8, 470);
+            this.tx_dat_upd.Location = new System.Drawing.Point(34, 389);
             this.tx_dat_upd.Name = "tx_dat_upd";
-            this.tx_dat_upd.Size = new System.Drawing.Size(47, 18);
+            this.tx_dat_upd.Size = new System.Drawing.Size(24, 18);
             this.tx_dat_upd.TabIndex = 424;
             this.tx_dat_upd.Visible = false;
             // 
@@ -2412,9 +2507,9 @@
             // 
             this.tx_dat_upo.BackColor = System.Drawing.SystemColors.Window;
             this.tx_dat_upo.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_dat_upo.Location = new System.Drawing.Point(8, 450);
+            this.tx_dat_upo.Location = new System.Drawing.Point(34, 371);
             this.tx_dat_upo.Name = "tx_dat_upo";
-            this.tx_dat_upo.Size = new System.Drawing.Size(47, 18);
+            this.tx_dat_upo.Size = new System.Drawing.Size(24, 18);
             this.tx_dat_upo.TabIndex = 423;
             this.tx_dat_upo.Visible = false;
             // 
@@ -2507,7 +2602,7 @@
             this.tx_dat_mpsd.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tx_dat_mpsd.Location = new System.Drawing.Point(9, 371);
             this.tx_dat_mpsd.Name = "tx_dat_mpsd";
-            this.tx_dat_mpsd.Size = new System.Drawing.Size(34, 18);
+            this.tx_dat_mpsd.Size = new System.Drawing.Size(24, 18);
             this.tx_dat_mpsd.TabIndex = 433;
             this.tx_dat_mpsd.Tag = "medio de pago sunat detraccion";
             this.tx_dat_mpsd.Visible = false;
@@ -2518,7 +2613,7 @@
             this.tx_dat_mpsCS.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tx_dat_mpsCS.Location = new System.Drawing.Point(9, 389);
             this.tx_dat_mpsCS.Name = "tx_dat_mpsCS";
-            this.tx_dat_mpsCS.Size = new System.Drawing.Size(34, 18);
+            this.tx_dat_mpsCS.Size = new System.Drawing.Size(24, 18);
             this.tx_dat_mpsCS.TabIndex = 434;
             this.tx_dat_mpsCS.Tag = "medio de pago codigo sunat";
             this.tx_dat_mpsCS.Visible = false;
@@ -2622,107 +2717,12 @@
             // 
             this.tx_regmtc.BackColor = System.Drawing.SystemColors.Window;
             this.tx_regmtc.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tx_regmtc.Location = new System.Drawing.Point(40, 395);
+            this.tx_regmtc.Location = new System.Drawing.Point(0, 403);
             this.tx_regmtc.Name = "tx_regmtc";
-            this.tx_regmtc.Size = new System.Drawing.Size(25, 18);
+            this.tx_regmtc.Size = new System.Drawing.Size(24, 18);
             this.tx_regmtc.TabIndex = 439;
             this.tx_regmtc.Tag = "reg mtc del vehiculo";
             this.tx_regmtc.Visible = false;
-            // 
-            // guias
-            // 
-            this.guias.FillWeight = 90F;
-            this.guias.HeaderText = "GUIA";
-            this.guias.Name = "guias";
-            this.guias.Width = 90;
-            // 
-            // Descrip
-            // 
-            this.Descrip.FillWeight = 300F;
-            this.Descrip.HeaderText = "DESCRIPCION";
-            this.Descrip.Name = "Descrip";
-            this.Descrip.Width = 300;
-            // 
-            // Cant
-            // 
-            this.Cant.FillWeight = 40F;
-            this.Cant.HeaderText = "C.BUL";
-            this.Cant.Name = "Cant";
-            this.Cant.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.Cant.Width = 40;
-            // 
-            // moneda
-            // 
-            this.moneda.FillWeight = 40F;
-            this.moneda.HeaderText = "MON";
-            this.moneda.Name = "moneda";
-            this.moneda.Width = 40;
-            // 
-            // valor
-            // 
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            this.valor.DefaultCellStyle = dataGridViewCellStyle1;
-            this.valor.FillWeight = 80F;
-            this.valor.HeaderText = "  VALOR";
-            this.valor.Name = "valor";
-            this.valor.Width = 80;
-            // 
-            // valorMN
-            // 
-            this.valorMN.HeaderText = "VALMONLOC";
-            this.valorMN.Name = "valorMN";
-            this.valorMN.Visible = false;
-            // 
-            // codmonloc
-            // 
-            this.codmonloc.HeaderText = "CODMN";
-            this.codmonloc.Name = "codmonloc";
-            this.codmonloc.Visible = false;
-            // 
-            // fechaGR
-            // 
-            this.fechaGR.HeaderText = "FechaGR";
-            this.fechaGR.Name = "fechaGR";
-            // 
-            // guiasclte
-            // 
-            this.guiasclte.HeaderText = "guiasclte";
-            this.guiasclte.Name = "guiasclte";
-            this.guiasclte.ReadOnly = true;
-            // 
-            // codmondoc
-            // 
-            this.codmondoc.HeaderText = "codmondoc";
-            this.codmondoc.Name = "codmondoc";
-            this.codmondoc.Visible = false;
-            // 
-            // OriDest
-            // 
-            this.OriDest.HeaderText = "Orig-Dest";
-            this.OriDest.Name = "OriDest";
-            // 
-            // saldo
-            // 
-            this.saldo.HeaderText = "saldo";
-            this.saldo.Name = "saldo";
-            this.saldo.ReadOnly = true;
-            // 
-            // valorel
-            // 
-            this.valorel.HeaderText = "valorel";
-            this.valorel.Name = "valorel";
-            this.valorel.ReadOnly = true;
-            // 
-            // umed
-            // 
-            this.umed.HeaderText = "Umed";
-            this.umed.Name = "umed";
-            // 
-            // pesoKG
-            // 
-            this.pesoKG.HeaderText = "pesoKG";
-            this.pesoKG.Name = "pesoKG";
-            this.pesoKG.Visible = false;
             // 
             // facelect
             // 
