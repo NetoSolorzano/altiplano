@@ -1439,8 +1439,10 @@ namespace TransCarga
                                     va[1] = glosser;                    // glosa del servicio en facturacion
                                     va[2] = codfact;                    // Código Transcarga del tipo de documento Factura 
                                     va[3] = Program.pordetra;           // porcentaje detracción
-                                    double impDetr = dr.GetDouble("totdvMN") * double.Parse(Program.pordetra) / 100;               // importe calculado de la detracción
-                                    va[4] = (dr.GetDouble("totdvMN") * double.Parse(Program.pordetra) / 100).ToString("#0.00");         // monto detracción
+                                    double impDetr = 0;
+                                    if (cu[14] == "0.00") impDetr = Math.Round(dr.GetDouble("totdvMN") * double.Parse(Program.pordetra) / 100, 0);               // importe calculado de la detracción
+                                    impDetr = Math.Round(double.Parse(cu[14]) * double.Parse(Program.pordetra) / 100, 0);
+                                    va[4] = impDetr.ToString("#0.00");
                                     va[5] = Program.ctadetra;         // cta. detracción
                                     va[6] = "";         // concatenado de Guias Transportista para Formato de cargas unicas
                                     va[7] = vi_rutaQR + "pngqr";         // ruta y nombre del png codigo QR
@@ -1541,16 +1543,12 @@ namespace TransCarga
                                     //
                                     if (mcu == "1" && Formato == "A4")
                                     {
-                                        dt[y, 0] = "";
+                                        dt[y, 4] = glosser + " " + dt[y, 0] + ", " + dt[y, 1] + " " + dt[y, 2] + " " + dt[y, 4] + "Según doc.cliente: " + dt[y, 5];     // descripcion de la carga
                                         dt[y, 1] = Math.Round(double.Parse(dt[y, 9])/1000,2).ToString("#0.00");   // cantidad
                                         dt[y, 2] = "TONELADA";                          // unidad de medida
-                                        //dt[y, 3] = "";                                  // guia transportista
-                                        dt[y, 4] = glosser + " " + dt[y, 4];                // descripcion de la carga
-                                        //dt[y, 5] = drg.GetString("docsremit");          // documento relacionado remitente de la guia transportista
                                         double pu = Math.Round(double.Parse(dt[y, 8]) / (double.Parse(dt[y, 9]) / 1000), 2);
                                         dt[y, 6] = (pu / (1 + (double.Parse(v_igv) / 100))).ToString("#0.00");         // valor unitario 
                                         dt[y, 7] = pu.ToString("#0.00");                // precio unitario
-                                        //dt[y, 8] = drg.GetString("totalgr");            // total
                                     }
                                     y += 1;
                                 }

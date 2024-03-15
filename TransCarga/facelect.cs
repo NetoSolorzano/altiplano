@@ -3304,8 +3304,11 @@ namespace TransCarga
                     if (decimal.Parse(tx_fletMN.Text) > decimal.Parse(Program.valdetra)) 
                     {
                         detrac = "si";
-                        //vtotdet = Math.Round(double.Parse(tx_flete.Text) * double.Parse(Program.pordetra) / 100, 2);    // totalDetraccion 
-                        vtotdet = Math.Round(double.Parse(tx_fletMN.Text) * double.Parse(Program.pordetra) / 100, 2);    // totalDetraccion 
+                        if (tx_valref1.Text.Trim() != "" && double.Parse(tx_valref1.Text) > 0)   // usamos en los casos en que el cliente quiere el calculo de la detraccion según el valor referencial o no
+                        {
+                            vtotdet = Math.Round(double.Parse(tx_valref1.Text) * double.Parse(Program.pordetra) / 100, 0);    // totalDetraccion en base al valor referencial
+                        }
+                        else vtotdet = Math.Round(double.Parse(tx_fletMN.Text) * double.Parse(Program.pordetra) / 100, 0);    // totalDetraccion 
                     }
                     cmd.Parameters.AddWithValue("@CanFilD", tx_tfil.Text);
                     cmd.Parameters.AddWithValue("@CtaDetr", (detrac == "si") ? Program.ctadetra : "");
@@ -3370,7 +3373,7 @@ namespace TransCarga
                         glosser2 = dataGridView1.Rows[i].Cells["OriDest"].Value.ToString().Trim() + ", " +
                             dataGridView1.Rows[i].Cells["Cant"].Value.ToString() + " " +
                             dataGridView1.Rows[i].Cells["umed"].Value.ToString();       // + " " + dataGridView1.Rows[i].Cells["guiasclte"].Value.ToString();
-                        descrip = dataGridView1.Rows[i].Cells[1].Value.ToString();
+                        descrip = dataGridView1.Rows[i].Cells[1].Value.ToString() + "Según doc.cliente: " + dataGridView1.Rows[i].Cells["guiasclte"].Value.ToString();
                     }
                     else
                     {
