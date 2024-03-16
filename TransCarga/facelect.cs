@@ -3373,7 +3373,7 @@ namespace TransCarga
                         glosser2 = dataGridView1.Rows[i].Cells["OriDest"].Value.ToString().Trim() + ", " +
                             dataGridView1.Rows[i].Cells["Cant"].Value.ToString() + " " +
                             dataGridView1.Rows[i].Cells["umed"].Value.ToString();       // + " " + dataGridView1.Rows[i].Cells["guiasclte"].Value.ToString();
-                        descrip = dataGridView1.Rows[i].Cells[1].Value.ToString() + "Según doc.cliente: " + dataGridView1.Rows[i].Cells["guiasclte"].Value.ToString();
+                        descrip = dataGridView1.Rows[i].Cells[1].Value.ToString() + " Según doc.cliente: " + dataGridView1.Rows[i].Cells["guiasclte"].Value.ToString().Trim();
                     }
                     else
                     {
@@ -3863,6 +3863,15 @@ namespace TransCarga
             string iserror = "no";
             if (modo == "NUEVO")
             {
+                if (tx_fletMN.Text == "")
+                {
+                    if (tx_dat_mone.Text == MonDeft) tx_fletMN.Text = tx_flete.Text;
+                    else
+                    {
+                        cmb_mon.Focus();
+                        return;
+                    }
+                }
                 // valida que si es carga unica debe tener detraccion ... cargas unicas y tramos es un tratamiento para el pago de detracciones
                 if (chk_cunica.Checked == true && double.Parse(tx_fletMN.Text) <= double.Parse(Program.valdetra))
                 {

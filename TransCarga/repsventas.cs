@@ -52,7 +52,7 @@ namespace TransCarga
         string nomAnul = "";            // texto nombre del estado anulado
         string codGene = "";            // codigo documento nuevo generado
                                         //int pageCount = 1, cuenta = 0;
-        string glosser2 = "";           // glosa 2 que va despues de la glosa principal
+        string glosser2 = "";           // glosa ALTERNATIVA DEL DETALLE DEL DOC.VENTA
         string rutatxt = "";            // ruta para las guias de remision electronicas
         string rutaxml = "";            // ruta para los XML de las guias de remision
         string[] c_t = new string[6] { "", "", "", "", "", "" }; // parametros para generar el token
@@ -216,6 +216,7 @@ namespace TransCarga
                         if (row["param"].ToString() == "forA4CRn") forA4CRn = row["valor"].ToString().Trim();           // ruta y nombre del formato CR de factura/boletas "normales"
                         if (row["param"].ToString() == "forA4CRcu") forA4CRcu = row["valor"].ToString().Trim();          // ruta y nombre del formato CR de facturas de cargas únicas
                         if (row["param"].ToString() == "rutaQR") vi_rutaQR = row["valor"].ToString().Trim();               // Ruta del archivo imagen del QR
+                        if (row["param"].ToString() == "gloserA") glosser2 = row["valor"].ToString().Trim();               // glosa cuando no se jala de la tabla series
                     }
                 }
                 if (row["formulario"].ToString() == "clients")
@@ -223,7 +224,7 @@ namespace TransCarga
                     if (row["campo"].ToString() == "documento" && row["param"].ToString() == "dni") coddni = row["valor"].ToString().Trim();
                     if (row["campo"].ToString() == "documento" && row["param"].ToString() == "ruc") codruc = row["valor"].ToString().Trim();
                 }
-                if (row["formulario"].ToString() == "interno")              // codigo enlace interno de anulacion del cliente con en BD A0
+                if (row["formulario"].ToString() == "interno")              // codigo enlace interno de anulacion del cliente con en BD A0   glosser2
                 {
                     //if (row["campo"].ToString() == "anulado" && row["param"].ToString() == "A0") vint_A0 = row["valor"].ToString().Trim();
                     //if (row["campo"].ToString() == "codinDV" && row["param"].ToString() == "DV") v_codidv = row["valor"].ToString().Trim();           // codigo de dov.vta en tabla TDV
@@ -1435,6 +1436,7 @@ namespace TransCarga
                                     cu[17] = dr.GetString("numreg1");
                                     // varios
                                     glosser = dr.GetString("glosaser");
+                                    if (glosser == "") glosser = glosser2; 
                                     va[0] = logoclt;                    // Ruta y nombre del logo del emisor electrónico
                                     va[1] = glosser;                    // glosa del servicio en facturacion
                                     va[2] = codfact;                    // Código Transcarga del tipo de documento Factura 
@@ -1543,11 +1545,11 @@ namespace TransCarga
                                     //
                                     if (mcu == "1" && Formato == "A4")
                                     {
-                                        dt[y, 4] = glosser + " " + dt[y, 0] + ", " + dt[y, 1] + " " + dt[y, 2] + " " + dt[y, 4] + "Según doc.cliente: " + dt[y, 5];     // descripcion de la carga
+                                        dt[y, 4] = glosser + " " + dt[y, 0] + ", " + dt[y, 1] + " " + dt[y, 2] + " " + dt[y, 4] + " Según doc.cliente: " + dt[y, 5];     // descripcion de la carga
                                         dt[y, 1] = Math.Round(double.Parse(dt[y, 9])/1000,2).ToString("#0.00");   // cantidad
                                         dt[y, 2] = "TONELADA";                          // unidad de medida
                                         double pu = Math.Round(double.Parse(dt[y, 8]) / (double.Parse(dt[y, 9]) / 1000), 2);
-                                        dt[y, 6] = (pu / (1 + (double.Parse(v_igv) / 100))).ToString("#0.00");         // valor unitario 
+                                        dt[y, 6] = (pu / (1 + (double.Parse(v_igv) / 100))).ToString("#0.00000");         // valor unitario 
                                         dt[y, 7] = pu.ToString("#0.00");                // precio unitario
                                     }
                                     y += 1;
