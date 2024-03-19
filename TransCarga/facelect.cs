@@ -1674,7 +1674,7 @@ namespace TransCarga
             }
             if (provee == "factDirecta")
             {
-                if (sunat_api(tipdo, tipoMoneda, tipoDocEmi) == true) retorna = true;
+                if (sunat_api(tipdo, tipoMoneda, tipoDocEmi, accion, ctab) == true) retorna = true;
                 else retorna = false;
             }
             return retorna;
@@ -2901,12 +2901,11 @@ namespace TransCarga
         #endregion
 
         #region factDirecta sistema del contribuyente
-        private bool sunat_api(string tipdo, string tipoMoneda, string tipoDocEmi)                 // SI VAMOS A USAR 26/05/2023 este metodo directo
+        private bool sunat_api(string tipdo, string tipoMoneda, string tipoDocEmi, string accion, int ctab)                 // SI VAMOS A USAR 26/05/2023 este metodo directo
         {
             bool retorna = false;
-            //guiati_e guiati_E = new guiati_e();
             string token = "noPideToken";  // _Sunat.conex_token_(c_t);           // no pide token para el envío del comprobante en soap
-            if (token != null && token != "")
+            if (accion == "alta")   // token != null && token != ""
             {
                 string aZip = "";
                 string aXml = "";
@@ -3048,8 +3047,142 @@ namespace TransCarga
                         }
                     }
                 }
-
                 retorna = true;
+            }
+            if (accion == "baja")
+            {
+                string _fecemi = tx_fechact.Text.Substring(6, 4) + "-" + tx_fechact.Text.Substring(3, 2) + "-" + tx_fechact.Text.Substring(0, 2);   // fecha de emision   yyyy-mm-dd
+                string _fecdoc = tx_fechope.Text.Substring(6, 4) + "-" + tx_fechope.Text.Substring(3, 2) + "-" + tx_fechope.Text.Substring(0, 2);
+                string _secuen = lib.Right("00" + ctab.ToString(), 3);
+                string _codbaj = "RA" + "-" + tx_fechact.Text.Substring(6, 4) + tx_fechact.Text.Substring(3, 2) + tx_fechact.Text.Substring(0, 2);  // codigo comunicacion de baja
+                string _tipdoc = tipdo;
+                //
+                string aZip = "";
+                string aXml = "";
+                if (llenaTablaLiteANU(tipoDocEmi, (_codbaj + "-" + _secuen), _fecemi, _fecdoc, _tipdoc) != true)
+                {
+                    MessageBox.Show("No se pudo llenar las tablas sqlite", "Error interno", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                else
+                {
+                    aXml = Program.ruc + "-" + _codbaj + _secuen + ".xml";     // "RA" + "-" + cmb_tdv.Text.Substring(0, 1) + lib.Right(tx_serie.Text, 3) + "-" + tx_numero.Text + ".xml";
+                    aZip = Program.ruc + "-" + _codbaj + _secuen + ".zip";     // "RA" + "-" + cmb_tdv.Text.Substring(0, 1) + lib.Right(tx_serie.Text, 3) + "-" + tx_numero.Text + ".zip";
+                }
+                if (aXml != "")
+                {
+                    // - zipear el xml, 
+                    if (File.Exists(rutaxml + aZip) == true)
+                    {
+                        File.Delete(rutaxml + aZip);
+                    }
+                    using (ZipArchive zip = ZipFile.Open(rutaxml + aZip, ZipArchiveMode.Create))
+                    {
+                        string source = rutaxml + aXml;
+                        zip.CreateEntryFromFile(source, aXml);
+                    }
+                    // - byte[]ar el zip, 
+                    var bytexml = File.ReadAllBytes(rutaxml + aZip);
+                    Byte[] respuesta = null;
+                    try
+                    {
+                        ServiceRefSunat.billServiceClient ws = new ServiceRefSunat.billServiceClient();
+                        ws.Open();
+                        respuesta = ws.sendBill(aZip, bytexml, "");
+                        ws.Close();
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message, "Error al enviar Anulación a Sunat", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return retorna;
+                    }
+                    if (File.Exists(rutaxml + "R-" + aZip) == true)
+                    {
+                        File.Delete(rutaxml + "R-" + aZip);
+                    }
+                    FileStream fstrm = new FileStream(rutaxml + "R-" + aZip, FileMode.CreateNew, FileAccess.Write);
+                    fstrm.Write(respuesta, 0, respuesta.Length);
+                    fstrm.Close();
+                    if (!Directory.Exists(@"c:/temp/"))
+                    {
+                        Directory.CreateDirectory(@"c:/temp/");
+                    }
+                    System.IO.Compression.ZipFile.ExtractToDirectory(rutaxml + "R-" + aZip, @"c:/temp/");        // @"c:/temp/temporal.zip", @"c:/temp/"
+                    FileStream archiS = new FileStream(@"c:/temp/" + "R-" + aXml, FileMode.Open, FileAccess.Read);        // @"c:/temp/" + archi, FileMode.Open, FileAccess.Read
+                    XmlDocument archiXml = new XmlDocument();
+                    archiXml.Load(archiS);
+                    XmlNode idx = archiXml.GetElementsByTagName("ID", "urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2").Item(0);
+                    XmlNode fex = archiXml.GetElementsByTagName("ResponseDate", "urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2").Item(0);
+                    XmlNode hex = archiXml.GetElementsByTagName("ResponseTime", "urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2").Item(0);
+                    string fhx = fex.InnerText.ToString() + " " + hex.InnerText.ToString();
+                    XmlNode fqr = archiXml.GetElementsByTagName("DocumentResponse", "urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2").Item(0);
+                    archiS.Close();
+                    File.Delete(@"c:/temp/" + "R-" + aXml);     // borramos el xml del temporal
+                    string res2 = "", res3 = "";
+                    if (fqr == null)
+                    {
+                        XmlNode fer = archiXml.GetElementsByTagName("Description", "urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2").Item(0);
+                        // esta parte falta .. cuando el comprobante es rechazado 07/09/23
+                        // ...........
+                        // acá me quede 11/09/2023
+                        // .............
+                    }
+                    else
+                    {
+                        //res1 = fqr.FirstChild.ChildNodes.Item(0).InnerText; // <cbc:ReferenceID>F002-00009074</cbc:ReferenceID>
+                        res2 = fqr.FirstChild.ChildNodes.Item(1).InnerText; // <cbc:ResponseCode>0</cbc:ResponseCode>
+                        res3 = fqr.FirstChild.ChildNodes.Item(2).InnerText; // <cbc:Description>La Factura numero F002-00009074, ha sido aceptada</cbc:Description>
+                    }
+                    // aca debemos saber si es un NUEVO registro o es una EDICION regenerando el XML
+                    if (Tx_modo.Text == "NUEVO")
+                    {
+                        string actua = "";
+                        /*
+                        {
+                            // actualizamos los campos de la tabla
+                            actua = "update adifactu set nticket=@nti,fticket=@fti,estadoS=@est,cdr=@cdrt,cdrgener=@cdrg,textoQR=@tqr " +
+                                "where idc=@idc";
+                        }
+                        using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
+                        {
+                            conn.Open();
+                            using (MySqlCommand micon = new MySqlCommand(actua, conn))
+                            {
+                                micon.Parameters.AddWithValue("@idc", tx_idr.Text);
+                                micon.Parameters.AddWithValue("@nti", idx.InnerText.ToString());
+                                micon.Parameters.AddWithValue("@fti", fhx);
+                                micon.Parameters.AddWithValue("@est", (res2 == "0") ? "Aceptado" : "Rechazado");
+                                micon.Parameters.AddWithValue("@cdrt", respuesta);
+                                micon.Parameters.AddWithValue("@cdrg", res2);
+                                micon.Parameters.AddWithValue("@tqr", res3);
+                                micon.ExecuteNonQuery();
+                            }
+                        }
+                        */
+                    }
+                    if (Tx_modo.Text == "EDITAR")
+                    {
+                        /* actualizamos los campos de la tabla 
+                        string actua = "update adifactu set nticket=@nti,fticket=@fti,estadoS=@est,cdr=@cdrt,cdrgener=@cdrg,textoQR=@tqr " +
+                                "where idc=@idc";
+                        using (MySqlConnection conn = new MySqlConnection(DB_CONN_STR))
+                        {
+                            conn.Open();
+                            using (MySqlCommand micon = new MySqlCommand(actua, conn))
+                            {
+                                micon.Parameters.AddWithValue("@idc", tx_idr.Text);
+                                micon.Parameters.AddWithValue("@nti", idx.InnerText.ToString());
+                                micon.Parameters.AddWithValue("@fti", fhx);
+                                micon.Parameters.AddWithValue("@est", (res2 == "0") ? "Aceptado" : "Rechazado");
+                                micon.Parameters.AddWithValue("@cdrt", respuesta);
+                                micon.Parameters.AddWithValue("@cdrg", res2);
+                                micon.Parameters.AddWithValue("@tqr", res3);
+                                micon.ExecuteNonQuery();
+                            }
+                        }
+                        */
+                    }
+                }
+
             }
             return retorna;
         }
@@ -3058,7 +3191,7 @@ namespace TransCarga
             using (SqliteConnection cnx = new SqliteConnection(CadenaConexion))
             {
                 cnx.Open();
-                string sqlborra = "DROP TABLE IF EXISTS dt_cabdv; DROP TABLE IF EXISTS dt_detdv; DROP TABLE IF EXISTS dt_docrel";
+                string sqlborra = "DROP TABLE IF EXISTS dt_cabdv; DROP TABLE IF EXISTS dt_detdv; DROP TABLE IF EXISTS dt_anula";
                 using (SqliteCommand cmdB = new SqliteCommand(sqlborra, cnx))
                 {
                     cmdB.ExecuteNonQuery();
@@ -3079,6 +3212,7 @@ namespace TransCarga
                     "EmisPai varchar(2), " +            // código sunat del país emisor
                     "EmisCor varchar(100), " +          // correo del emisor de la guía
                     "EmisTel varchar(11), " +           // teléfono del emisor
+                    "EmisTDoc varchar(1), " +           // codigo tipo doc sunat
                     "NumDVta varchar(12), " +           // serie+numero
                     "FecEmis varchar(10), " +
                     "HorEmis varchar(8), " +
@@ -3203,18 +3337,35 @@ namespace TransCarga
                 {
                     cmd.ExecuteNonQuery();
                 }
-                /* / ********************* GUIAS RELACIONADAS ************************ //
-                sqlTabla = "create table dt_docrel (" +
+                // ********************* ANULACIONES ************************ //
+                sqlTabla = "create table dt_anula (" +
                     "id integer primary key autoincrement, " +
-                    "NumGuia varchar(12), " +
-                    "clinea integer, " +
-                    "codDoc varchar(2), " + 
-                    "numDoc varchar(15)";
+                    "docBaja varchar(15), " +           // identificador de la baja
+                    "FecEmis varchar(10), " +           // emision de la baja   
+                    "FecDoc varchar(10), " +            // fecha doc dado de baja
+                    "EmisRuc varchar(11), " +           // ruc del emisor               - 16
+                    "EmisNom varchar(150), " +          // Razón social del emisor      - 15
+                    "EmisCom varchar(150), " +          // Nombre Comercial del emisor  - 14
+                    "CodLocA varchar(4), " +            // Código local anexo emisor    - 17
+                    "EmisUbi varchar(6), " +            // ubigeo del emisor
+                    "EmisDir varchar(200), " +
+                    "EmisDep varchar(50), " +
+                    "EmisPro varchar(50), " +
+                    "EmisDis varchar(50), " +
+                    "EmisUrb varchar(50), " +           // urbanización, pueblo, localidad
+                    "EmisPai varchar(2), " +            // código sunat del país emisor
+                    "EmisCor varchar(100), " +          // correo del emisor de la guía
+                    "EmisTel varchar(11), " +           // teléfono del emisor
+                    "EmisTDoc varchar(1), " +           // tipo documento sunat del emisor
+                    "Numline integer, " +               // Número de orden del Ítem 
+                    "CodComp varchar(2), " +            // código sunat del comprobante anulado
+                    "SerComp varchar(4), " +            // serie del comprobante anulado
+                    "NumComp varchar(8), " +            // numero del comprobante anulado
+                    "motivoA varchar(45))";              // tipo anulación
                 using (SqliteCommand cmd = new SqliteCommand(sqlTabla, cnx))
                 {
                     cmd.ExecuteNonQuery();
                 }
-                */
             }
         }
         private bool llenaTablaLiteDV(string tipdo, string tipoMoneda, string tipoDocEmi)          // llena tabla con los datos del comprobante y llama al app que crea el xml
@@ -3461,6 +3612,66 @@ namespace TransCarga
             }
 
             return retorna;
+        }
+        private bool llenaTablaLiteANU(string tipoDocEmi, string idbaja, string _fecemi, string _fecdoc, string _tipdoc)
+        {
+            bool retorna = false;
+            using (SqliteConnection cnx = new SqliteConnection(CadenaConexion))
+            {
+                cnx.Open();
+                using (SqliteCommand cmd = new SqliteCommand("delete from dt_anula where id>0", cnx))
+                {
+                    cmd.ExecuteNonQuery();
+                }
+                // 
+                string metela = "insert into dt_anula (" +
+                    "docBaja,FecEmis,FecDoc,EmisRuc,EmisNom,CodLocA,EmisUbi,EmisDir,EmisDep,EmisPro,EmisDis,EmisUrb," +
+                    "EmisPai,EmisCor,EmisTel,EmisTDoc,Numline,CodComp,SerComp,NumComp,motivoA) " +
+                    "values (" +
+                    "@docBaja,@FecEmis,@FecDoc,@EmisRuc,@EmisNom,@CodLocA,@EmisUbi,@EmisDir,@EmisDep,@EmisPro,@EmisDis,@EmisUrb," +
+                    "@EmisPai,@EmisCor,@EmisTel,@EmisTD,@Numlin,@CodCom,@SerCom,@NumCom,@motivA)";
+                using (SqliteCommand cmd = new SqliteCommand(metela, cnx))
+                {
+                    cmd.Parameters.AddWithValue("@docBaja", idbaja);
+                    cmd.Parameters.AddWithValue("@FecEmis", _fecemi);          // fecha de la emision de la baja
+                    cmd.Parameters.AddWithValue("@FecDoc", _fecdoc);         // fecha del comprobante a anular
+                    cmd.Parameters.AddWithValue("@EmisRuc", Program.ruc);                 // "20430100344"
+                    cmd.Parameters.AddWithValue("@EmisNom", Program.cliente);             // "J&L Technology SAC"
+                    cmd.Parameters.AddWithValue("@CodLocA", Program.codlocsunat);         // codigo sunat local anexo emisor
+                    cmd.Parameters.AddWithValue("@EmisUbi", Program.ubidirfis);           // "070101"
+                    cmd.Parameters.AddWithValue("@EmisDir", Program.dirfisc);             // "Calle Sigma Mz.A19 Lt.16 Sector I"
+                    cmd.Parameters.AddWithValue("@EmisDep", Program.depfisc);             // "Callao"
+                    cmd.Parameters.AddWithValue("@EmisPro", Program.provfis);             // "Callao"
+                    cmd.Parameters.AddWithValue("@EmisDis", Program.distfis);             // "Callao"
+                    cmd.Parameters.AddWithValue("@EmisUrb", "-");                         // "Bocanegra"
+                    cmd.Parameters.AddWithValue("@EmisPai", "PE");                        // país del emisor
+                    cmd.Parameters.AddWithValue("@EmisCor", Program.mailclte);            // "neto.solorzano@solorsoft.com"
+                    cmd.Parameters.AddWithValue("@EmisTel", "");
+                    cmd.Parameters.AddWithValue("@EmisTD", tipoDocEmi);
+                    cmd.Parameters.AddWithValue("@Numlin", "1");
+                    cmd.Parameters.AddWithValue("@CodCom", _tipdoc);                      // codigo del comprobante
+                    cmd.Parameters.AddWithValue("@SerCom", (cmb_tdv.Text.Substring(0, 1)) + lib.Right(tx_serie.Text,3));
+                    cmd.Parameters.AddWithValue("@NumCom", tx_numero.Text);
+                    cmd.Parameters.AddWithValue("@motivA", "ANULACION");
+                    cmd.ExecuteNonQuery();
+                }
+                // llamada al programa de generación del xml del comprobante
+                string rutalocal = System.IO.Path.GetDirectoryName(Application.ExecutablePath);
+                ProcessStartInfo p = new ProcessStartInfo();                                                // true = firma comprobante
+                p.Arguments = rutaxml + " " + Program.ruc + " " +
+                     idbaja + " " +
+                    true + " " + rutaCertifc + " " + claveCertif + " " + _tipdoc;
+                p.FileName = @rutalocal + "/xmlDocVta/xmlDocVta.exe";
+                var proc = Process.Start(p);
+                proc.WaitForExit();
+                if (proc.ExitCode == 1) retorna = true;
+                else retorna = false;
+
+                retorna = true;
+            }
+
+            return retorna;
+
         }
         #endregion
 
