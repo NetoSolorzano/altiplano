@@ -1325,7 +1325,7 @@ namespace TransCarga
         {
             string[] vs = {"", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",      // 21
                            "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""};     // 21
-            string[] va = { "", "", "", "", "", "", "", "", "", "" };       // 10
+            string[] va = { "", "", "", "", "", "", "", "", "", "", "" };       // 11
             string[,] dt = new string[10, 10] {
                     { "", "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "", "" },
                     { "", "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "", "" }
@@ -1349,7 +1349,7 @@ namespace TransCarga
                         "ifnull(ad.dirPartida,'') as dirPartida,ifnull(ad.ubiPartida,'') as ubiPartida,ifnull(ad.dirDestin,'') as dirDestin,ifnull(ad.ubiDestin,'') as ubiDestin,ifnull(ad.dniChof,'') as dniChof," +
                         "ifnull(ad.brevete,'') as brevete,ifnull(ad.valRefViaje,0) as valRefViaje,ifnull(ad.valRefVehic,0) as valRefVehic,ifnull(ad.valRefTon,0) as valRefTon,l.descrizionerid as nomLocO,concat(l.deta1,' ',l.deta4,'-',l.deta3,'-',l.deta2) as dirSuc," +
                         "if(a.plazocred='',DATE_FORMAT(a.fechope,'%d/%m/%Y'),DATE_FORMAT(date_add(a.fechope, interval p.marca1 day),'%d/%m/%Y')) as fvence,if(a.plazocred='','Contado','Credito - N° Cuotas : 1') as condicion," +
-                        "m.deta1 as nonmone,a.mpsdet,ifnull(ps.descrizione,'') as mpsTex,v.numreg1 " +
+                        "m.deta1 as nonmone,a.mpsdet,ifnull(ps.descrizione,'') as mpsTex,ifnull(v.numreg1,'') as numreg1 " +
                         "from cabfactu a " +
                         "left join adifactu ad on ad.idc=a.id and ad.tipoAd=1 " +
                         "left join desc_est b on b.idcodice=a.estdvta " +
@@ -1450,6 +1450,7 @@ namespace TransCarga
                                     va[7] = vi_rutaQR + "pngqr";         // ruta y nombre del png codigo QR
                                     va[8] = dr.GetString("mpsTex");     // medio de pago sunat de la detracción
                                     va[9] = dr.GetString("tcadvta");    // tipo de cambio
+                                    va[10] = (dr.GetString("estdvta") == codAnul) ? dr.GetString("nomest") : "";
 
                                     mcu = dr.GetString("cargaunica");
                                     vce = dr.GetString("cargaEf");

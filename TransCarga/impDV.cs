@@ -18,7 +18,7 @@ namespace TransCarga
         libreria lib = new libreria();
         string[] vs = {"", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",     // 21
                        "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""};    // 21
-        string[] va = { "", "", "", "", "", "", "", "", "", "" };       // 10
+        string[] va = { "", "", "", "", "", "", "", "", "", "", "" };       // 11
         string[,] dt = new string[10, 10] { 
             { "", "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "", "" },
             { "", "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "", "" }, { "", "", "", "", "", "", "", "", "", "" }
@@ -115,6 +115,7 @@ namespace TransCarga
             va[7] = varios[7];         // ruta y nombre del png codigo QR
             va[8] = varios[8];         // medio de pago sunat de la detracción
             va[9] = varios[9];         // tipo de cambio
+            va[10] = varios[10];       // estado ANULADO del comprobante en Transcarga, sino esta anulado va vacío
 
             switch (formato)
             {
@@ -181,7 +182,7 @@ namespace TransCarga
                 Font lt_tit = new Font("Lucida Console", 10);       // mediano
                 Font lt_med = new Font("Arial", 9);                // normal textos
                 Font lt_peq = new Font("Arial", 8);                 // pequeño
-                                                                    //
+                Font lt_gig = new Font("Arial", 14);                //
                 float anchTik = 7.8F;                               // ancho del TK en centimetros
                 int coli = 5;                                      // columna inicial
                 float posi = 20;                                    // posicion x,y inicial
@@ -247,6 +248,12 @@ namespace TransCarga
                     lt = (lib.CentimeterToPixel(anchTik) - e.Graphics.MeasureString(titnum, lt_gra).Width) / 2;
                     puntoF = new PointF(lt, posi);
                     e.Graphics.DrawString(titnum, lt_gra, Brushes.Black, puntoF, StringFormat.GenericTypographic);                  // serie y numero
+                    if (va[10] != "")       // osea esta anulado
+                    {
+                        posi = posi + alfi + alfi/2;
+                        puntoF = new PointF(coli, posi);
+                        e.Graphics.DrawString(" *********** " + va[10] + " *********** ", lt_gig, Brushes.Black, puntoF, StringFormat.GenericTypographic);
+                    }
                     posi = posi + alfi + alfi;
                     puntoF = new PointF(coli, posi);
                     e.Graphics.DrawString("F. Emisión", lt_med, Brushes.Black, puntoF, StringFormat.GenericTypographic);
@@ -614,6 +621,7 @@ namespace TransCarga
             vaRow.ubicapng = va[7];
             vaRow.mpsdet = va[8];            // medio de pago sunat de la detracción
             vaRow.tipcambio = va[9];
+            vaRow.EstTransC = va[10];
             DV.cVta_va.AddcVta_vaRow(vaRow);
             return DV;
         }

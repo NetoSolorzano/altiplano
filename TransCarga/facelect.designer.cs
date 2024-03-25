@@ -266,6 +266,8 @@
             this.tx_tfil = new TransCarga.NumericTextBox();
             this.tx_totcant = new TransCarga.NumericTextBox();
             this.tx_regmtc = new System.Windows.Forms.TextBox();
+            this.tx_dat_fecAnu = new System.Windows.Forms.TextBox();
+            this.tx_sede = new System.Windows.Forms.TextBox();
             this.toolStrip1.SuspendLayout();
             this.groupBox11.SuspendLayout();
             this.groupBox7.SuspendLayout();
@@ -2724,6 +2726,27 @@
             this.tx_regmtc.Tag = "reg mtc del vehiculo";
             this.tx_regmtc.Visible = false;
             // 
+            // tx_dat_fecAnu
+            // 
+            this.tx_dat_fecAnu.BackColor = System.Drawing.SystemColors.Window;
+            this.tx_dat_fecAnu.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_dat_fecAnu.Location = new System.Drawing.Point(735, 29);
+            this.tx_dat_fecAnu.Name = "tx_dat_fecAnu";
+            this.tx_dat_fecAnu.Size = new System.Drawing.Size(26, 18);
+            this.tx_dat_fecAnu.TabIndex = 440;
+            this.tx_dat_fecAnu.Visible = false;
+            // 
+            // tx_sede
+            // 
+            this.tx_sede.BackColor = System.Drawing.SystemColors.Window;
+            this.tx_sede.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tx_sede.Location = new System.Drawing.Point(136, 30);
+            this.tx_sede.Name = "tx_sede";
+            this.tx_sede.Size = new System.Drawing.Size(26, 18);
+            this.tx_sede.TabIndex = 441;
+            this.tx_sede.Tag = "codigo local de emision";
+            this.tx_sede.Visible = false;
+            // 
             // facelect
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -2731,6 +2754,8 @@
             this.AutoSize = true;
             this.BackColor = System.Drawing.Color.LightSteelBlue;
             this.ClientSize = new System.Drawing.Size(769, 562);
+            this.Controls.Add(this.tx_sede);
+            this.Controls.Add(this.tx_dat_fecAnu);
             this.Controls.Add(this.tx_regmtc);
             this.Controls.Add(this.groupBox27);
             this.Controls.Add(this.tx_por_det);
@@ -3109,5 +3134,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn valorel;
         private System.Windows.Forms.DataGridViewTextBoxColumn umed;
         private System.Windows.Forms.DataGridViewTextBoxColumn pesoKG;
+        private System.Windows.Forms.TextBox tx_dat_fecAnu;
+        private System.Windows.Forms.TextBox tx_sede;
     }
 }
