@@ -15,6 +15,7 @@ using CrystalDecisions.CrystalReports.Engine;
 using System.Xml;
 using System.IO.Compression;
 using Microsoft.Data.Sqlite;
+using System.Diagnostics;
 
 namespace TransCarga
 {
@@ -87,7 +88,8 @@ namespace TransCarga
         string usuaInteg = "";          // usuario de la integracion con SeenCorp
         string clavInteg = "";          // clave de la integracion con SeenCorp
         string nipfe = "";              // proveedor electrónico
-        string v_CR_NC1 = "";           // ruta y nombre del formato CR
+        string rutaCertifc = "";        // Ruta y nombre del certificado .pfx
+        string claveCertif = "";        // Clave del certificado
         //
         static libreria lib = new libreria();   // libreria de procedimientos
         static NumLetra numLetra = new NumLetra();
@@ -111,8 +113,6 @@ namespace TransCarga
         DataTable dttd1 = new DataTable();
         DataTable dtm = new DataTable();        // moneda
         DataTable dttdn = new DataTable();      // tip doc notas cred
-        string[] datcltsD = { "", "", "", "", "", "", "", "", "" };
-        string[] datguias = { "", "", "", "", "", "", "", "", "", "", "" };
         string[] vs = {"", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",      // 20
                            "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""};     // 20
         string[] va = { "", "", "", "", "", "", "", "", "", "" };      // 10
@@ -209,8 +209,6 @@ namespace TransCarga
         }
         private void initIngreso()
         {
-            string[] datcltsD = { "", "", "", "", "", "", "", "", "" };
-            string[] datguias = { "", "", "", "", "", "", "", "", "", "", "" };
             string[] vs = {"", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",      // 20
                            "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""};     // 20
             string[] va = { "", "", "", "", "", "", "", "", "", "" };      // 10
@@ -302,6 +300,17 @@ namespace TransCarga
                             if (row["param"].ToString() == "grt_xml") rutaxml = row["valor"].ToString().Trim();         // 
                             if (row["param"].ToString() == "fe_txt") rutatxt = row["valor"].ToString().Trim();         // ruta de los txt para la fact. electronica
                         }
+                        if (row["campo"].ToString() == "sunat")
+                        {
+                            //if (row["param"].ToString() == "client_id") client_id_sunat = row["valor"].ToString().Trim();         // id del api sunat
+                            //if (row["param"].ToString() == "client_pass") client_pass_sunat = row["valor"].ToString().Trim();     // password del api sunat
+                            //if (row["param"].ToString() == "user_sol") u_sol_sunat = row["valor"].ToString().Trim();              // usuario sol portal sunat del cliente 
+                            //if (row["param"].ToString() == "clave_sol") c_sol_sunat = row["valor"].ToString().Trim();             // clave sol portal sunat del cliente 
+                            //if (row["param"].ToString() == "scope") scope_sunat = row["valor"].ToString().Trim();                 // scope del api sunat
+                            if (row["param"].ToString() == "rutaCertifc") rutaCertifc = row["valor"].ToString().Trim();           // Ruta y nombre del certificado .pfx
+                            if (row["param"].ToString() == "claveCertif") claveCertif = row["valor"].ToString().Trim();           // Clave del certificado
+                            //if (row["param"].ToString() == "wsPostSunatF") wsPostS = row["valor"].ToString().Trim();               // ruta api sunat para postear
+                        }
                     }
                     if (row["formulario"].ToString() == nomform)
                     {
@@ -315,7 +324,7 @@ namespace TransCarga
                         {
                             if (row["param"].ToString() == "formato") vi_formato = row["valor"].ToString().Trim();
                             if (row["param"].ToString() == "copias") vi_copias = row["valor"].ToString().Trim();
-                            if (row["param"].ToString() == "nomfor_cr") v_CR_NC1 = row["valor"].ToString().Trim();
+                            //if (row["param"].ToString() == "nomfor_cr") v_CR_NC1 = row["valor"].ToString().Trim();
                         }
                         if (row["campo"].ToString() == "moneda" && row["param"].ToString() == "default") MonDeft = row["valor"].ToString().Trim();      // moneda por defecto
                         if (row["campo"].ToString() == "detraccion" && row["param"].ToString() == "glosa") glosdet = row["valor"].ToString().Trim();    // glosa detraccion
@@ -534,12 +543,12 @@ namespace TransCarga
                 // datos para el combobox documento de venta
                 cmb_tdv.Items.Clear();
                 string tcon = "select distinct a.idcodice,a.descrizionerid,a.enlace1,a.codsunat,b.glosaser,a.deta1 " +
-                    "from desc_tdv a LEFT JOIN series b ON b.tipdoc = a.IDCodice where numero=@bloq and codigo=@codv or codigo=@conc";
+                    "from desc_tdv a LEFT JOIN series b ON b.tipdoc = a.IDCodice where numero=@bloq and codigo=@codv";  //  or codigo=@conc
                 using (MySqlCommand cdv = new MySqlCommand(tcon, conn))
                 {
                     cdv.Parameters.AddWithValue("@bloq", 1);
                     cdv.Parameters.AddWithValue("@codv", v_codidv);
-                    cdv.Parameters.AddWithValue("@conc", v_codinc);
+                    //cdv.Parameters.AddWithValue("@conc", v_codinc);
                     using (MySqlDataAdapter datv = new MySqlDataAdapter(cdv))
                     {
                         dttd1.Clear();
@@ -1025,7 +1034,7 @@ namespace TransCarga
             using (SqliteConnection cnx = new SqliteConnection(CadenaConexion))
             {
                 cnx.Open();
-                string sqlborra = "DROP TABLE IF EXISTS dt_cabdv; DROP TABLE IF EXISTS dt_detnc";
+                string sqlborra = "DROP TABLE IF EXISTS dt_cabnc; DROP TABLE IF EXISTS dt_detnc";
                 using (SqliteCommand cmdB = new SqliteCommand(sqlborra, cnx))
                 {
                     cmdB.ExecuteNonQuery();
@@ -1113,7 +1122,6 @@ namespace TransCarga
                     "DesDet1 varchar(100), " +      // Descripción detallada                                - 
                     "DesDet2 varchar(100), " +
                     "CodIntr varchar(50), " +       // Código de producto                                   - 
-                    "ValUnit decimal(12,2), " +     // Valor unitario del ítem                              - 
                     "ValPeso real, " +              // peso de la carga, va unido a la unidad de medida en TN
                     "UniMedS varchar(3), " +        // codigo unidad de medida de sunat
                     "ValUnit decimal(12,2), " +     // valor unitario
@@ -1232,43 +1240,31 @@ namespace TransCarga
                 // DETALLE
                 for (int i = 0; i < dataGridView1.Rows.Count - 1; i++)
                 {
-                    
-
+                    double preunit = double.Parse(dataGridView1.Rows[i].Cells[4].Value.ToString());
+                    double valunit = double.Parse(dataGridView1.Rows[i].Cells[4].Value.ToString()) / (1 + (double.Parse(v_igv) / 100));
 
                     metela = "insert into dt_detnc (" +
                         "Numline,Cantprd,DesDet1,DesDet2,CodIntr,ValUnit,ValPeso,UniMedS,ValUnit,PreUnit,Totfila) " +
                         "values (" +
-                        "@NumGu,@Numli,@Cantp,@CodMo,@ValVt,@PreVt,@ValIg,@DesD1,@DesD2,@CodIn,@ValUn,@ValPe,@UniMe)";
+                        "@Numline,@Cantprd,@DesDet1,@DesDet2,@CodIntr,@ValUnit,@ValPeso,@UniMedS,@ValUnit,@PreUnit,@Totfila)";
                     using (SqliteCommand cmd = new SqliteCommand(metela, cnx))
                     {
-                        cmd.Parameters.AddWithValue("@NumGu", cdvta);      // "V001-98000006"
-                        cmd.Parameters.AddWithValue("@Numli", i + 1.ToString());
-                        cmd.Parameters.AddWithValue("@Cantp", "1");    // dataGridView1.Rows[i].Cells[2].Value.ToString()
-                        cmd.Parameters.AddWithValue("@CodMo", tipoMoneda);
-                        cmd.Parameters.AddWithValue("@ValVt", valunit.ToString());  // valor venta  s/igv
-                        cmd.Parameters.AddWithValue("@PreVt", preunit.ToString());  // precio venta c/igv
-                        cmd.Parameters.AddWithValue("@ValIg", sumimpl.ToString());  // Afectación al IGV por ítem
-                        cmd.Parameters.AddWithValue("@DesD1", glosser + " " + glosser2 + " " + descrip);             // "Servicio de Transporte de carga terrestre "
-                        cmd.Parameters.AddWithValue("@DesD2", "");                  //"Dice contener Enseres domésticos"
-                        cmd.Parameters.AddWithValue("@CodIn", "");                  // código del item
-                        cmd.Parameters.AddWithValue("@ValUn", valunit.ToString());  // Valor unitario del ítem
-                        cmd.Parameters.AddWithValue("@ValPe", dataGridView1.Rows[i].Cells[14].Value.ToString());                  // peso en TN
-                        cmd.Parameters.AddWithValue("@UniMe", "ZZ");    // dataGridView1.Rows[i].Cells[13].Value.ToString()
-                        cmd.Parameters.AddWithValue("@GuiaT", dataGridView1.Rows[i].Cells[0].Value.ToString());     // serie(4)-numero(8)
-                        cmd.Parameters.AddWithValue("@CodTG", "31");
-                        cmd.Parameters.AddWithValue("@PIgvn", v_igv);
-                        cmd.Parameters.AddWithValue("@CodSI", "10");                // Código de tipo de afectación del IGV
-                        cmd.Parameters.AddWithValue("@CodST", "1000");              // codigo sunat del tributo, (1000)
-                        cmd.Parameters.AddWithValue("@NomSI", "IGV");               // nombre sunat del impuesto
-                        cmd.Parameters.AddWithValue("@NomII", "VAT");               // nombre internacional del impuesto
-                        cmd.Parameters.AddWithValue("@GuiaR", dataGridView1.Rows[i].Cells[8].Value.ToString());            // guias remitente de cada guía transportista
+                        cmd.Parameters.AddWithValue("@Numline", i + 1.ToString());
+                        cmd.Parameters.AddWithValue("@Cantprd", dataGridView1.Rows[i].Cells[2].Value.ToString());
+                        cmd.Parameters.AddWithValue("@DesDet1", dataGridView1.Rows[i].Cells[1].Value.ToString());
+                        cmd.Parameters.AddWithValue("@DesDet2", "");                  //"Dice contener Enseres domésticos"
+                        cmd.Parameters.AddWithValue("@CodIntr", "");                  // código del item
+                        cmd.Parameters.AddWithValue("@ValUnit", valunit.ToString());  // valor venta  s/igv
+                        cmd.Parameters.AddWithValue("@ValPeso", dataGridView1.Rows[i].Cells[14].Value.ToString());
+                        cmd.Parameters.AddWithValue("@UniMedS", dataGridView1.Rows[i].Cells[13].Value.ToString());
+                        cmd.Parameters.AddWithValue("@PreUnit", preunit.ToString());  // precio venta c/igv
+                        cmd.Parameters.AddWithValue("@Totfila", preunit.ToString());
                         cmd.ExecuteNonQuery();
                     }
                 }
                 // llamada al programa de generación del xml del comprobante
                 string rutalocal = System.IO.Path.GetDirectoryName(Application.ExecutablePath);
-                //string[] parametros = new string[] { rutaxml, Program.ruc, tx_serie.Text + "-" + tx_numero.Text };
-                ProcessStartInfo p = new ProcessStartInfo();                                                // true = firma comprobante
+                ProcessStartInfo p = new ProcessStartInfo();   
                 p.Arguments = rutaxml + " " + Program.ruc + " " +
                      cdvta + " " +
                     true + " " + rutaCertifc + " " + claveCertif + " " + tipdo;
@@ -1277,10 +1273,7 @@ namespace TransCarga
                 proc.WaitForExit();
                 if (proc.ExitCode == 1) retorna = true;
                 else retorna = false;
-
-                retorna = true;
             }
-
             return retorna;
         }
 
