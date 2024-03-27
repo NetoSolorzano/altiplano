@@ -4,6 +4,10 @@
 
     partial class conClie
     {
+        partial class cNot_credDataTable
+        {
+        }
+
         partial class cVta_cabDataTable
         {
         }
