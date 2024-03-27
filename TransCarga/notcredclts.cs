@@ -68,9 +68,10 @@ namespace TransCarga
         string codfact = "";            // idcodice de factura
         string v_igv = "";              // valor igv %
         string logoclt = "";            // ruta y nombre archivo logo
-        //string fshoy = "";              // fecha hoy del servidor en formato ansi
-        //string codppc = "";             // codigo del plazo de pago por defecto para fact a crédito
+        string v_codncAnu = "";         // codigo de la nota de credito por anulacion
         string v_codnot = "";           // codigo tipo de documento nota de credito
+        string NtipNot = "";            // nombre del tipo de la nota
+        string motivoA = "";            // motivo de la nota, anulacion
         //
         string rutatxt = "";            // ruta de los txt para la fact. electronica
         string rutaxml = "";            // ruta para los XML
@@ -316,9 +317,12 @@ namespace TransCarga
                     {
                         if (row["campo"].ToString() == "documento")
                         {
-                            if (row["param"].ToString() == "frase2") v_fra2 = row["valor"].ToString().Trim();                // frase cuando se cancela el doc.vta.
+                            if (row["param"].ToString() == "frase2") v_fra2 = row["valor"].ToString().Trim();                // frase nombre nota de credito
                             if (row["param"].ToString() == "codigo") v_codnot = row["valor"].ToString().Trim();              // codigo nota de credito
                             if (row["param"].ToString() == "factura") codfact = row["valor"].ToString().Trim();              // codigo doc.venta factura
+                            if (row["param"].ToString() == "codNCAnu") v_codncAnu = row["valor"].ToString().Trim();          // codigo Not Cred por Anulación
+                            if (row["param"].ToString() == "ntipnot") NtipNot = row["valor"].ToString().Trim();              // nombre del motivo
+                            if (row["param"].ToString() == "motivoA") motivoA = row["valor"].ToString().Trim();              // motivo de la nota
                         }
                         if (row["campo"].ToString() == "impresion")
                         {
@@ -680,7 +684,14 @@ namespace TransCarga
                                 da.Fill(dtu);
                                 foreach (DataRow row in dtu.Rows)
                                 {
-                                    dataGridView1.Rows.Add(row[0], row[3], row[1], row[7], row[4], row[6], row[5], "", "", row[7]);
+                                    if (tx_dat_mone.Text == MonDeft)    // soles?
+                                    {
+                                        dataGridView1.Rows.Add(row[0], row[3], row[1], row[7], row[6], row[6], row[5], "", "", row[7]);
+                                    }
+                                    else
+                                    {
+                                        dataGridView1.Rows.Add(row[0], row[3], row[1], row[7], row[4], row[6], row[5], "", "", row[7]);
+                                    }
                                 }
                             }
                         }
@@ -774,10 +785,10 @@ namespace TransCarga
             }
             return (int)pixel;
         }
-        private void llena_matris_FE()
+        private void llena_matris_FE(string tipdoNC)
         {
-            DataRow[] row = dttd1.Select("idcodice='" + tx_dat_tnota.Text + "'");             // tipo de documento venta
-            tipdo = row[0][3].ToString();
+            //DataRow[] row = dttd1.Select("idcodice='" + tx_dat_tnota.Text + "'");             // tipo de documento venta
+            //tipdo = row[0][3].ToString();
             DataRow[] rowm = dtm.Select("idcodice='" + tx_dat_mone.Text + "'");         // tipo de moneda
             tipoMoneda = rowm[0][2].ToString().Trim();
             // 
@@ -829,7 +840,7 @@ namespace TransCarga
             va[5] = ""; // Program.ctadetra;           // cta. detracción
             va[6] = "";                         // concatenado de Guias Transportista para Formato de cargas unicas
             va[7] = rutaQR + "pngqr";           // ruta y nombre del png codigo QR va[7]
-            va[8] = rutaQR + Program.ruc + "-" + tipdo + "-" + vs[0] + "-" + vs[1] + ".pdf";                // ruta y nombre del pdf a subir a seencorp
+            va[8] = rutaQR + Program.ruc + "-" + tipdoNC + "-" + vs[0] + "-" + vs[1] + ".pdf";                // ruta y nombre del pdf a subir a seencorp
             va[9] = tx_tipcam.Text;
             // detalle
             // a.codgror,a.descpro,a.cantbul,'',a.totalgr,'','',ifnull(b.fechopegr,''),a.codmogr,   a.unimedp,a.pesogro,ifnull(b.docsremit,'')
@@ -873,12 +884,12 @@ namespace TransCarga
             DataRow[] rowm = dtm.Select("idcodice='" + tx_dat_mone.Text + "'");         // tipo de moneda
             tipoMoneda = rowm[0][2].ToString().Trim();
             //
-            string ctnota = "01";                                                       // tipo de nota de credito 01=anulacion
-            string ntnota = "Anulación de la operación";                                // nombre del tipo de nota
+            string ctnota = v_codncAnu;                                                       // tipo de nota de credito 01=anulacion
+            string ntnota = v_fra2;                                // nombre del tipo de nota
             string fedoco = tx_fecemi.Text.Substring(6, 4) + "-" +
                 tx_fecemi.Text.Substring(3, 2) + "-" + tx_fecemi.Text.Substring(0, 2);  // fecha del documento que se anula
 
-            llena_matris_FE();
+            llena_matris_FE(tipdo);
 
             if (provee == "factDirecta")
             {
@@ -886,7 +897,7 @@ namespace TransCarga
                 {
                     string aZip = "";
                     string aXml = "";
-                    if (llenaTablaLiteNC(tipdo, tipoMoneda, tipoDocEmi) != true)
+                    if (llenaTablaLiteNC(tipdo, serie, corre, ctnota, ntnota, tipoMoneda, tipoDocEmi, tipdv, serdv, numdv, fedoco) != true)
                     {
                         MessageBox.Show("No se pudo llenar las tablas sqlite", "Error interno", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
@@ -1134,14 +1145,14 @@ namespace TransCarga
                 }
             }
         }
-        private bool llenaTablaLiteNC(string tipdo, string tipoMoneda, string tipoDocEmi)          // llena tabla con los datos del comprobante y llama al app que crea el xml
+        private bool llenaTablaLiteNC(string tipdo, string sernc, string numnc, string tipnc, string nomnc, string tipoMoneda, string tipoDocEmi,
+            string tipdv, string serdv, string numdv, string fedoco)          // llena tabla con los datos del comprobante y llama al app que crea el xml
         {
             bool retorna = false;
             using (SqliteConnection cnx = new SqliteConnection(CadenaConexion))
             {
-                string fecemi = vs[5].Substring(6, 4) + "-" + vs[5].Substring(3, 2) + "-" + vs[5].Substring(0, 2);
-                string cdvta = vs[0] + "-" + vs[1];
-
+                string fecemi = tx_fechope.Text.Substring(6, 4) + "-" + tx_fechope.Text.Substring(3, 2) + "-" + tx_fechope.Text.Substring(0, 2);
+                //string cdvta = vs[0] + "-" + vs[1];
                 cnx.Open();
                 using (SqliteCommand cmd = new SqliteCommand("delete from dt_cabnc where id>0", cnx))
                 {
@@ -1180,61 +1191,61 @@ namespace TransCarga
                     cmd.Parameters.AddWithValue("@EmisPai", "PE");                        // país del emisor
                     cmd.Parameters.AddWithValue("@EmisCor", Program.mailclte);            // "neto.solorzano@solorsoft.com"
                     cmd.Parameters.AddWithValue("@EmisTel", Program.telclte1);
-                    cmd.Parameters.AddWithValue("@EmisTDoc", "6");
+                    cmd.Parameters.AddWithValue("@EmisTDoc", tipoDocEmi);
                     // 
-                    cmd.Parameters.AddWithValue("@SeriNot", vs[0]);
-                    cmd.Parameters.AddWithValue("@NumeNot", vs[1]);
-                    cmd.Parameters.AddWithValue("@TipoNot", vs[2]);
-                    cmd.Parameters.AddWithValue("@NumNotC", vs[0] + "-" + vs[1]);
-                    cmd.Parameters.AddWithValue("@IdenNot", vs[4]);
-                    cmd.Parameters.AddWithValue("@FecEmis", vs[5]);
+                    cmd.Parameters.AddWithValue("@SeriNot", sernc);
+                    cmd.Parameters.AddWithValue("@NumeNot", numnc);
+                    cmd.Parameters.AddWithValue("@TipoNot", tipnc);
+                    cmd.Parameters.AddWithValue("@NumNotC", sernc + "-" + numnc);
+                    cmd.Parameters.AddWithValue("@IdenNot", nomnc);
+                    cmd.Parameters.AddWithValue("@FecEmis", tx_fechope.Text);
                     cmd.Parameters.AddWithValue("@HorEmis", DateTime.Now.Hour.ToString() + ":" + DateTime.Now.Minute.ToString() + ":" + DateTime.Now.Second.ToString());
                     cmd.Parameters.AddWithValue("@TipDocu", tipdo);
                     cmd.Parameters.AddWithValue("@CodLey1", "1000");
-                    cmd.Parameters.AddWithValue("@MonLetr", "SON: " + vs[17]);
-                    cmd.Parameters.AddWithValue("@CodMonS", vs[36]);
-                    cmd.Parameters.AddWithValue("@NtipNot", vs[32]);
+                    cmd.Parameters.AddWithValue("@MonLetr", "SON: " + tx_fletLetras.Text);
+                    cmd.Parameters.AddWithValue("@CodMonS", tipoMoneda);
+                    cmd.Parameters.AddWithValue("@NtipNot", motivoA);
                     // 
-                    cmd.Parameters.AddWithValue("@DstTipdoc", tipoDocEmi);
-                    cmd.Parameters.AddWithValue("@DstNumdoc", vs[7]);
-                    cmd.Parameters.AddWithValue("@DstNombre", vs[6]);             // "<![CDATA[" + tx_nomRem.Text + "]]>"  ... no funca
-                    cmd.Parameters.AddWithValue("@DstDirecc", vs[8]);    // "<![CDATA[" + tx_dirRem.Text + "]]>"
-                    cmd.Parameters.AddWithValue("@DstDepart", vs[11]);
-                    cmd.Parameters.AddWithValue("@DstProvin", vs[10]);
-                    cmd.Parameters.AddWithValue("@DstDistri", vs[9]);
+                    cmd.Parameters.AddWithValue("@DstTipdoc", tx_dat_tdRem.Text);
+                    cmd.Parameters.AddWithValue("@DstNumdoc", tx_numDocRem.Text);
+                    cmd.Parameters.AddWithValue("@DstNombre", tx_nomRem.Text);             // "<![CDATA[" + tx_nomRem.Text + "]]>"  ... no funca
+                    cmd.Parameters.AddWithValue("@DstDirecc", tx_dirRem.Text);    // "<![CDATA[" + tx_dirRem.Text + "]]>"
+                    cmd.Parameters.AddWithValue("@DstDepart", tx_dptoRtt.Text);
+                    cmd.Parameters.AddWithValue("@DstProvin", tx_provRtt.Text);
+                    cmd.Parameters.AddWithValue("@DstDistri", tx_distRtt.Text);
                     cmd.Parameters.AddWithValue("@DstUrbani", "");
                     cmd.Parameters.AddWithValue("@DstUbigeo", "");
                     cmd.Parameters.AddWithValue("@DstCorre", "");
                     cmd.Parameters.AddWithValue("@DstTelef", "");
                     // 
-                    cmd.Parameters.AddWithValue("@ImpTotImp", vs[14]);       // Monto total de impuestos
-                    cmd.Parameters.AddWithValue("@ImpOpeGra", vs[13]);      // Monto las operaciones gravadas
-                    cmd.Parameters.AddWithValue("@ImpIgvTot", vs[14]);       // Sumatoria de IGV
+                    cmd.Parameters.AddWithValue("@ImpTotImp", tx_igv.Text);       // Monto total de impuestos
+                    cmd.Parameters.AddWithValue("@ImpOpeGra", tx_subt.Text);      // Monto las operaciones gravadas
+                    cmd.Parameters.AddWithValue("@ImpIgvTot", tx_igv.Text);       // Sumatoria de IGV
                     cmd.Parameters.AddWithValue("@ImpOtrosT", "0");               // Sumatoria de Otros Tributos
-                    cmd.Parameters.AddWithValue("@TotValVta", vs[13]);      // Total valor de venta                    
-                    cmd.Parameters.AddWithValue("@TotPreVta", vs[15]);     // Total precio de venta (incluye impuestos)
+                    cmd.Parameters.AddWithValue("@TotValVta", tx_subt.Text);      // Total valor de venta                    
+                    cmd.Parameters.AddWithValue("@TotPreVta", tx_flete.Text);     // Total precio de venta (incluye impuestos)
                     cmd.Parameters.AddWithValue("@TotDestos", "0");
                     cmd.Parameters.AddWithValue("@TotOtrCar", "0");
-                    cmd.Parameters.AddWithValue("@TotaVenta", vs[15]);
-                    cmd.Parameters.AddWithValue("@CanFilDet", vs[12]);
+                    cmd.Parameters.AddWithValue("@TotaVenta", tx_flete.Text);
+                    cmd.Parameters.AddWithValue("@CanFilDet", tx_tfil.Text);
                     cmd.Parameters.AddWithValue("@CondPago", "");
-                    cmd.Parameters.AddWithValue("@TipoCamb", va[9]);
+                    cmd.Parameters.AddWithValue("@TipoCamb", tx_tipcam.Text);
                     // 
-                    cmd.Parameters.AddWithValue("@nipfe", vs[23]);
-                    cmd.Parameters.AddWithValue("@restexto", vs[24]);
-                    cmd.Parameters.AddWithValue("@autoriOP", vs[25]);
-                    cmd.Parameters.AddWithValue("@webose", vs[26]);
-                    cmd.Parameters.AddWithValue("@userCrea", vs[27]);
-                    cmd.Parameters.AddWithValue("@nomLocC", vs[28]);
-                    cmd.Parameters.AddWithValue("@desped0", vs[29]);
-                    cmd.Parameters.AddWithValue("@motivoA", vs[33]);
-                    cmd.Parameters.AddWithValue("@modTrans", vs[34]);
-                    cmd.Parameters.AddWithValue("@motiTras", vs[35]);
-                    cmd.Parameters.AddWithValue("@fecEComp", vs[37]);
-                    cmd.Parameters.AddWithValue("@Comprob", vs[38]);          // comprobante relacionado
-                    cmd.Parameters.AddWithValue("@rutLogo", va[0]);
-                    cmd.Parameters.AddWithValue("@rutNomQR", va[7]);
-                    cmd.Parameters.AddWithValue("@rutNoPdf", va[8]);
+                    cmd.Parameters.AddWithValue("@nipfe", nipfe);
+                    cmd.Parameters.AddWithValue("@restexto", restexto);
+                    cmd.Parameters.AddWithValue("@autoriOP", autoriz_OSE_PSE);
+                    cmd.Parameters.AddWithValue("@webose", webose);
+                    cmd.Parameters.AddWithValue("@userCrea", tx_digit.Text);
+                    cmd.Parameters.AddWithValue("@nomLocC", "");
+                    cmd.Parameters.AddWithValue("@desped0", despedida);
+                    cmd.Parameters.AddWithValue("@motivoA", tx_obser1.Text);
+                    cmd.Parameters.AddWithValue("@modTrans", "");
+                    cmd.Parameters.AddWithValue("@motiTras", "");
+                    cmd.Parameters.AddWithValue("@fecEComp", fedoco);
+                    cmd.Parameters.AddWithValue("@Comprob", serdv + "-"+ numdv);          // comprobante relacionado
+                    cmd.Parameters.AddWithValue("@rutLogo", logoclt);
+                    cmd.Parameters.AddWithValue("@rutNomQR", rutaQR + "pngqr");
+                    cmd.Parameters.AddWithValue("@rutNoPdf", rutaQR + Program.ruc + "-" + tipdo + "-" + sernc + "-" + numnc + ".pdf");
                     cmd.ExecuteNonQuery();
                 }
                 // DETALLE
@@ -1255,8 +1266,8 @@ namespace TransCarga
                         cmd.Parameters.AddWithValue("@DesDet2", "");                  //"Dice contener Enseres domésticos"
                         cmd.Parameters.AddWithValue("@CodIntr", "");                  // código del item
                         cmd.Parameters.AddWithValue("@ValUnit", valunit.ToString());  // valor venta  s/igv
-                        cmd.Parameters.AddWithValue("@ValPeso", dataGridView1.Rows[i].Cells[14].Value.ToString());
-                        cmd.Parameters.AddWithValue("@UniMedS", dataGridView1.Rows[i].Cells[13].Value.ToString());
+                        cmd.Parameters.AddWithValue("@ValPeso", "");
+                        cmd.Parameters.AddWithValue("@UniMedS", "");
                         cmd.Parameters.AddWithValue("@PreUnit", preunit.ToString());  // precio venta c/igv
                         cmd.Parameters.AddWithValue("@Totfila", preunit.ToString());
                         cmd.ExecuteNonQuery();
@@ -1266,7 +1277,7 @@ namespace TransCarga
                 string rutalocal = System.IO.Path.GetDirectoryName(Application.ExecutablePath);
                 ProcessStartInfo p = new ProcessStartInfo();   
                 p.Arguments = rutaxml + " " + Program.ruc + " " +
-                     cdvta + " " +
+                    sernc + "-" + numnc  + " " +
                     true + " " + rutaCertifc + " " + claveCertif + " " + tipdo;
                 p.FileName = @rutalocal + "/xmlDocVta/xmlDocVta.exe";
                 var proc = Process.Start(p);
@@ -1310,6 +1321,12 @@ namespace TransCarga
         #region boton_form GRABA EDITA ANULA
         private void bt_agr_Click(object sender, EventArgs e)
         {
+            int x = (tx_tfil.Text == "") ? 0 : int.Parse(tx_tfil.Text);
+            if (Tx_modo.Text != "NUEVO" || x > 0)
+            {
+                MessageBox.Show("Solo puede hacerce una nota por comprobante de venta");
+                return;
+            }
             if (tx_serGR.Text.Trim() != "" && tx_numGR.Text.Trim() != "" && Tx_modo.Text == "NUEVO")
             {
                 // validamos que la FT: 1.exista, 2.No este anulada
@@ -1430,6 +1447,12 @@ namespace TransCarga
                 {
                     MessageBox.Show("Problemas con el tipo de cambio", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     cmb_mon.Focus();
+                    return;
+                }
+                if (tx_obser1.Text == "")
+                {
+                    MessageBox.Show("Debe registrar el motivo de la nota","Atención",MessageBoxButtons.OK,MessageBoxIcon.Hand);
+                    tx_obser1.Focus();
                     return;
                 }
                 if (tx_idr.Text.Trim() == "")
@@ -2192,7 +2215,7 @@ namespace TransCarga
         }
         private void printDoc_PrintPage(object sender, System.Drawing.Printing.PrintPageEventArgs e)
         {
-            if (vs[0] == "") llena_matris_FE();
+            //if (vs[0] == "") llena_matris_FE();
             //impNota imp = new impNota(1, "", vs, dt, va, cu, "A4", v_CR_NC1, false);    // vistas en pantalla
         }
         private void imprime_A5(object sender, System.Drawing.Printing.PrintPageEventArgs e)
